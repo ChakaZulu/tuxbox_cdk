@@ -105,6 +105,10 @@ AC_ARG_WITH(driverdir,
 	[  --with-driverdir=DIR    driver dir from cvs [[[CVS/]driver]]],
 	[driverdir="$with_driverdir"],[driverdir="NONE"])
 
+AC_ARG_WITH(hostapsdir,
+	[  --with-hostappsdir=DIR  hostapps dir from cvs [[[CVS/]hostapps]]],
+	[hostappsdir="$with_driverdir"],[hostappsdir="NONE"])
+
 if test "$cvsdir" = "NONE"; then
 	if test "$appsdir" = "NONE"; then
 		appsdir="$buildprefix/apps"
@@ -114,6 +118,9 @@ if test "$cvsdir" = "NONE"; then
 	fi
 	if test "$driverdir" = "NONE"; then
 		driverdir="$buildprefix/driver"
+	fi
+	if test "$hostappsdir" = "NONE"; then
+		hostappsdir="$buildprefix/hostapps"
 	fi
 else
 	if test "$appsdir" = "NONE"; then
@@ -125,23 +132,43 @@ else
 	if test "$driverdir" = "NONE"; then
 		driverdir="$cvsdir/driver"
 	fi
+	if test "$hostappsdir" = "NONE"; then
+		hostappsdir="$cvsdir/hostapps"
+	fi
 fi
 
+AC_MSG_CHECKING([for apps directory])
 if test ! -f "$appsdir/configure.ac" ; then
-	AC_MSG_ERROR([can't find $appsdir/configure.ac])
+	AC_MSG_RESULT([no])
+else
+	AC_MSG_RESULT([yes])
 fi
 
-if test ! -f "$bootdir/ppcboot/include/config_dbox.h" ; then
-	AC_MSG_ERROR([can't find $bootdir/ppcboot/include/config_dbox.h])
+AC_MSG_CHECKING([for boot directory])
+if test ! -f "$bootdir/ppcboot/Makefile" ; then
+	AC_MSG_ERROR([no])
+else
+	AC_MSG_RESULT([yes])
 fi
 
+AC_MSG_CHECKING([for driver directory])
 if test ! -f "$driverdir/Makefile" ; then
-	AC_MSG_ERROR([can't find $driverdir/Makefile])
+	AC_MSG_ERROR([no])
+else
+	AC_MSG_RESULT([yes])
+fi
+
+AC_MSG_CHECKING([for hostapps directory])
+if test ! -f "$hostappsdir/configure.ac" ; then
+	AC_MSG_RESULT([no])
+else
+	AC_MSG_RESULT([yes])
 fi
 
 AC_SUBST(appsdir)
 AC_SUBST(bootdir)
 AC_SUBST(driverdir)
+AC_SUBST(hostappsdir)
 
 if test "$targetruleset" = "flash"; then
 	AC_PATH_PROG(PYTHON,python,no)
@@ -291,6 +318,7 @@ AC_MSG_RESULT([Buildprefix:	$buildprefix])
 AC_MSG_RESULT([Appsdir:		$appsdir])
 AC_MSG_RESULT([Bootdir:		$bootdir])
 AC_MSG_RESULT([Driverdir:	$driverdir])
+AC_MSG_RESULT([Hostappsdir:	$hostappsdir])
 AC_MSG_RESULT()
 
 AC_OUTPUT([
