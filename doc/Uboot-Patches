@@ -1,0 +1,103 @@
+U-Boot: Changes for tuxbox
+--------------------------
+
+Quick and dirty description of the patches that are applied to the original U-Boot tree.
+May they be a guide for someone trying to port to uboot 2.x or something.
+
+/:
+Makefile (patch)
+	- add u-boot.stripped and u-boot.treeboot targets
+	- add dbox2_config target
+	- add the removal of mktree and its output to "make clean" and "make clobber"
+
+/common:
+cmd_flash.c (patch)
+	- new option for command "flash" called "ld" (lockdown) added
+
+cmd_fs.c (new)
+	- new command
+
+cmd_net.c (patch)
+	- export function "netboot_update_env(void)"
+
+cmd_nvedit.c (patch)
+	- "saveenv"-function now only present if both commands "env" and "flash" are present AND
+	  also CFG_ENV_IS_IN_NVRAM or CFG_ENV_IS_IN_EEPROM is defined.
+	  Originally either of these was sufficient (AND was OR).
+
+devices.c (patch)
+	- add dbox2-init function
+
+env_common.c (patch)
+	- add CFG_DBOX2_ENV_READ_FS-option to get environment from flash
+
+main.c (patch)
+	- print messages on LCD
+	- allow selection of up to 5 autoboot items from a list defined in the config
+
+/cpu/mpc8xx
+cpu_init.c (patch)
+	- if we define CONFIG_SECONDSTAGE don't init memory controller (BMon does this for us)
+
+start.S (patch)
+	- if CONFIG_SECONDSTAGE is defined we have to manually skip the initial version-bytes
+
+/fs/cramfs
+cramfs.c (patch)
+uncompress.c (patch)
+/fs/jffs2
+compr_rtime.c (patch)
+compr_rubin.c (patch)
+compr_zlib.c (patch)
+jffs2_1pass.c (patch)
+mini_inflate.c (patch)
+	- only use these if dbox2-specific CONFIG_FS contains cramfs/jffs2
+
+/include
+cmd_confdefs.h (patch)
+	- add defines for CONFIG_FS
+
+cmd_fs.h (new)
+	- header for dbox2-specific fs-command
+
+commproc.h (patch)
+	- add defines for ethernet
+
+devices.h (patch)
+	- add init routine
+
+flash.h (patch)
+	- add STM_ID_28W320CB and STM320CB
+
+lcd.h (patch)
+	- replace lcd_init (void *lcdbase) by lcd_init (void) if CONFIG_LCD_BOARD is defined
+
+version.h (patch)
+	- add "Tuxbox" comment to U_BOOT_VERSION
+
+/include/jffs2
+load_kernel.h
+	- hide double defined struct if cmd_fs.h is used
+
+/lib-generic
+crc32.c (patch)
+	- change complement behaviour for JFFS2-FS
+
+/net
+bootp.c (patch)
+	- compensate bootmanager's inability to send the network root path
+	- ignore Broadcast Address Option
+	- debug_ext unhandled DHCP-Options instead of just printing them all the time
+net.c (patch)
+	- do netboot_update_env when we reached NETLOOP_SUCCESS (all network information received)
+tftp.c (patch)
+	- do not retry TFTP after an error
+
+/tools
+Makefile (patch)
+	- build mktree
+mktree.c (new)
+	- tool to build a tree bootable image (for BMon)
+
+
+Carsten Juttner 1-May-2004
