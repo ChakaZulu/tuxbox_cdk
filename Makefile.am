@@ -1048,7 +1048,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	cd @DIR_dvbdate@ && \
 		$(MAKE) dvbdate \
 			$(BUILDENV) \
-			CPPFLAGS="-I$(driverdir)/dvb/include" && \
+			CPPFLAGS="-I$(driverdir)/dvb/include -DNEWSTRUCT" && \
 		@INSTALL_dvbdate@
 	@CLEANUP_dvbdate@
 	touch $@
@@ -1067,7 +1067,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 .dvbtext: .bootstrap @DEPENDS_dvbtext@
 	@PREPARE_dvbtext@
 	cd @DIR_dvbtext@ && \
-		$(target)-gcc $(TARGET_CFLAGS) -I$(driverdir)/include -o dvbtext dvbtext.c && \
+		$(target)-gcc $(TARGET_CFLAGS) -I$(driverdir)/dvb/include -DNEWSTRUCT -o dvbtext dvbtext.c && \
 		@INSTALL_dvbtext@
 	@CLEANUP_dvbtext@
 	touch $@

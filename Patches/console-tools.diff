@@ -55,3 +55,15 @@ diff -Naur console-tools-0.2.3.orig/vttools/screendump.c console-tools-0.2.3/vtt
        if((fd = open(consnam, 0)) < 0) 
  	{
  	  perror(consnam);
+--- console-tools-0.2.3.orig/contrib/codepage.c	1999-04-08 23:29:41.000000000 +0200
++++ console-tools-0.2.3/contrib/codepage.c	2004-02-26 17:45:34.000000000 +0100
+@@ -227,8 +227,7 @@
+ 	if (optc)
+ 	  return 0;
+ 
+-        fprintf(stderr, "\
+-Warning: CP format is a hack!\n
++        fprintf(stderr, "Warning: CP format is a hack!\n\
+          The files produced may or may not be usable!\n");
+ 
+ 	sprintf(outfile, "%d.cp", CPEntryHeader.codepage);

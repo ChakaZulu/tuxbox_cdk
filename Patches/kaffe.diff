@@ -316,9 +316,93 @@ diff -Naur kaffe-1.0.6.orig/configure kaffe-1.0.6/configure
  
  echo $ac_n "checking for inline""... $ac_c" 1>&6
  echo "configure:6483: checking for inline" >&5
-diff -Naur kaffe-1.0.6.orig/libraries/clib/native/System.c kaffe-1.0.6/libraries/clib/native/System.c
---- kaffe-1.0.6.orig/libraries/clib/native/System.c	Thu Jun 22 16:17:11 2000
-+++ kaffe-1.0.6/libraries/clib/native/System.c	Sat Jan  5 14:23:30 2002
+diff -Naur kaffe-1.0.6/config/i386/linux/md.h kaffe-1.0.6.new/config/i386/linux/md.h
+--- kaffe-1.0.6/config/i386/linux/md.h	2000-05-23 19:55:34.000000000 +0200
++++ kaffe-1.0.6.new/config/i386/linux/md.h	2004-02-26 14:30:47.000000000 +0100
+@@ -23,8 +23,8 @@
+ extern void init_md(void);
+ #define	INIT_MD()	init_md()
+ 
+-#define SIGNAL_ARGS(sig, sc) int sig, struct sigcontext *##sc
+-#define SIGNAL_CONTEXT_POINTER(sc) struct sigcontext *##sc
++#define SIGNAL_ARGS(sig, sc) int sig, struct sigcontext sc
++#define SIGNAL_CONTEXT_POINTER(sc) struct sigcontext * sc
+ #define GET_SIGNAL_CONTEXT_POINTER(sc) (&sc)
+ #define SIGNAL_PC(scp) scp->eip
+ 
+diff -Naur kaffe-1.0.6/config/i386/trampolines.c kaffe-1.0.6.new/config/i386/trampolines.c
+--- kaffe-1.0.6/config/i386/trampolines.c	1999-12-06 07:47:17.000000000 +0100
++++ kaffe-1.0.6.new/config/i386/trampolines.c	2004-02-26 14:41:54.000000000 +0100
+@@ -33,9 +33,9 @@
+ 
+ asm(
+ 	START_ASM_FUNC() C_FUNC_NAME(i386_do_fixup_trampoline) "\n"
+-C_FUNC_NAME(i386_do_fixup_trampoline) ":			\n
+-	call	" C_FUNC_NAME(soft_fixup_trampoline) "		\n
+-	popl	%ecx						\n
++C_FUNC_NAME(i386_do_fixup_trampoline) ":			\n\
++	call	" C_FUNC_NAME(soft_fixup_trampoline) "		\n\
++	popl	%ecx						\n\
+ 	jmp	*%eax"
+ 	END_ASM_FUNC()
+ );
+@@ -48,17 +48,16 @@
+  */
+ asm(
+ 	START_ASM_FUNC() C_FUNC_NAME(__kaffe_i386_gcj_fixup) "\n"
+-C_FUNC_NAME(__kaffe_i386_gcj_fixup) ":
+-	mov	(%esp), %eax	# get return address
+-	add	-4(%eax), %eax	# add jump relative offset from previous instr.
+-				# this points at at jmp *$off(%ebx) instr.
+-	mov	2(%eax), %eax	# extract 'off'
+-	add	%ebx, %eax	# compute $off(%ebx)
+-	pushl	%eax		# pass as first argument
+-	call	" C_FUNC_NAME(gcj_fixup_trampoline) " # returns target
+-	addl	$4, %esp	# remove argument
+-	jmp	*%eax		# jump to target
+-"
++C_FUNC_NAME(__kaffe_i386_gcj_fixup) ":\
++	mov	(%esp), %eax	# get return address\
++	add	-4(%eax), %eax	# add jump relative offset from previous instr.\
++				# this points at at jmp *$off(%ebx) instr.\
++	mov	2(%eax), %eax	# extract 'off'\
++	add	%ebx, %eax	# compute $off(%ebx)\
++	pushl	%eax		# pass as first argument\
++	call	" C_FUNC_NAME(gcj_fixup_trampoline) " # returns target\
++	addl	$4, %esp	# remove argument\
++	jmp	*%eax		# jump to target"
+ 	END_ASM_FUNC()
+ );
+ 
+diff -Naur kaffe-1.0.6/kaffe/kaffevm/jit3/machine.h kaffe-1.0.6.new/kaffe/kaffevm/jit3/machine.h
+--- kaffe-1.0.6/kaffe/kaffevm/jit3/machine.h	1999-12-05 02:44:45.000000000 +0100
++++ kaffe-1.0.6.new/kaffe/kaffevm/jit3/machine.h	2004-02-26 14:11:33.000000000 +0100
+@@ -148,8 +148,8 @@
+ 	int     codelen;
+ } nativeCodeInfo;
+ 
+-#define	willCatch(FLAG)	willcatch.##FLAG = true
+-#define	canCatch(FLAG)	willcatch.##FLAG
++#define	willCatch(FLAG)	willcatch. FLAG = true
++#define	canCatch(FLAG)	willcatch. FLAG
+ 
+ void setupGlobalRegisters(void);
+ void setupArgumentRegisters(void);
+diff -Naur kaffe-1.0.6/kaffe/kaffevm/systems/unix-jthreads/jthread.c kaffe-1.0.6.new/kaffe/kaffevm/systems/unix-jthreads/jthread.c
+--- kaffe-1.0.6/kaffe/kaffevm/systems/unix-jthreads/jthread.c	2000-06-21 09:04:40.000000000 +0200
++++ kaffe-1.0.6.new/kaffe/kaffevm/systems/unix-jthreads/jthread.c	2004-02-26 14:28:45.000000000 +0100
+@@ -135,7 +135,7 @@
+ 
+ /* A signal context pointer type, used in parameter lists/declarations */
+ #ifndef SIGNAL_CONTEXT_POINTER
+-#define SIGNAL_CONTEXT_POINTER(x) void *##x
++#define SIGNAL_CONTEXT_POINTER(x) void *x
+ #endif
+ 
+ /* Get the PC from a signal context pointer */
+diff -Naur kaffe-1.0.6/libraries/clib/native/System.c kaffe-1.0.6.new/libraries/clib/native/System.c
+--- kaffe-1.0.6/libraries/clib/native/System.c	2000-06-22 16:17:11.000000000 +0200
++++ kaffe-1.0.6.new/libraries/clib/native/System.c	2004-02-26 14:10:47.000000000 +0100
 @@ -20,9 +20,7 @@
  #if defined(HAVE_PWD_H)
  #include <pwd.h>
@@ -328,4 +412,4 @@ diff -Naur kaffe-1.0.6.orig/libraries/clib/native/System.c kaffe-1.0.6/libraries
 -#endif
  #include <ctype.h>
  #include "../../../kaffe/kaffevm/classMethod.h"
- #include "../../../kaffe/kaffevm/gtypes.h"
+ #include "../../../kaffe/kaffevm/gtypes.h"diff -Naur kaffe-1.0.6.orig/libraries/clib/native/System.c kaffe-1.0.6/libraries/clib/native/System.c
