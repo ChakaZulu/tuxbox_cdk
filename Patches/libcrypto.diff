@@ -1,6 +1,6 @@
 diff -Naur openssl-0.9.7a/Configure openssl-0.9.7a.patched/Configure
 --- openssl-0.9.7a/Configure	2003-02-18 13:15:09.000000000 +0100
-+++ openssl-0.9.7a.patched/Configure	2003-02-21 19:58:32.000000000 +0100
++++ openssl-0.9.7a.patched/Configure	2003-02-21 21:11:34.000000000 +0100
 @@ -557,6 +557,9 @@
  ##### OS/2 EMX
  "OS2-EMX", "gcc::::::::",
@@ -13,7 +13,7 @@ diff -Naur openssl-0.9.7a/Configure openssl-0.9.7a.patched/Configure
  "vxworks-ppc750","ccppc:-ansi -nostdinc -DPPC750 -D_REENTRANT -fvolatile -fno-builtin -fno-for-scope -fsigned-char -Wall -msoft-float -mlongcall -DCPU=PPC604 -I\$(WIND_BASE)/target/h \$(DEBUG_FLAG):::VXWORKS:-r:::::",
 diff -Naur openssl-0.9.7a/Makefile.org openssl-0.9.7a.patched/Makefile.org
 --- openssl-0.9.7a/Makefile.org	2003-02-14 14:11:44.000000000 +0100
-+++ openssl-0.9.7a.patched/Makefile.org	2003-02-21 20:02:19.000000000 +0100
++++ openssl-0.9.7a.patched/Makefile.org	2003-02-21 21:11:34.000000000 +0100
 @@ -283,10 +283,9 @@
  	fi; \
  	( set -x; ${CC} ${SHARED_LDFLAGS} \
@@ -50,26 +50,7 @@ diff -Naur openssl-0.9.7a/Makefile.org openssl-0.9.7a.patched/Makefile.org
  # ./libcrypto (with ./ as path information) compiled into libssl, hence
 diff -Naur openssl-0.9.7a/crypto/md2/md2test.c openssl-0.9.7a.patched/crypto/md2/md2test.c
 --- openssl-0.9.7a/crypto/md2/md2test.c	2003-02-19 12:22:18.000000000 +0100
-+++ openssl-0.9.7a.patched/crypto/md2/md2test.c	2003-02-21 19:58:32.000000000 +0100
-@@ -59,7 +59,6 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
--#include <openssl/md2.h>
- 
- #include "../e_os.h"
- 
-@@ -70,6 +69,7 @@
-     return(0);
- }
- #else
-+#include <openssl/md2.h>
- #include <openssl/evp.h>
- 
- #ifdef CHARSET_EBCDIC
-diff -Naur openssl-0.9.7a/test/md2test.c openssl-0.9.7a.patched/test/md2test.c
---- openssl-0.9.7a/test/md2test.c	2003-02-19 12:22:18.000000000 +0100
-+++ openssl-0.9.7a.patched/test/md2test.c	2003-02-21 19:58:32.000000000 +0100
++++ openssl-0.9.7a.patched/crypto/md2/md2test.c	2003-02-21 21:11:34.000000000 +0100
 @@ -59,7 +59,6 @@
  #include <stdio.h>
  #include <stdlib.h>
