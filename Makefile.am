@@ -419,7 +419,7 @@ boot: .ppcboot .linuxkernel .driver
 #   own applications
 #
 
-apps: .dvbsnoop .edvb .lcars .lcdmenu .neutrino .stream
+apps: .dvbsnoop .dvbstream .edvb .lcars .lcdmenu .neutrino .stream
 
 $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	cd $(appsdir) && \
@@ -472,6 +472,16 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	make -C $(appsdir)/zapit all install
 	install -d $(targetprefix)/var/zapit
 	touch .zapit
+
+
+############################
+#
+#  3rd party apps
+#
+
+.dvbstream: $(appsdir)/Makefile
+	make -C $(appsdir)/dvbstream all install
+	touch .dvbstream
 
 
 #######################
