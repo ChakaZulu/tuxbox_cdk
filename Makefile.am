@@ -912,6 +912,28 @@ $(DEPDIR)/lsof: bootstrap @DEPENDS_lsof@
 	@CLEANUP_lsof@
 	touch $@
 
+$(DEPDIR)/dropbear: bootstrap libz @DEPENDS_dropbear@
+	@PREPARE_dropbear@
+	cd @DIR_dropbear@ && \
+		$(BUILDENV) \
+		autoconf && \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--disable-syslog \
+			--disable-shadow \
+			--disable-lastlog \
+			--disable-utmp \
+			--disable-utmpx \
+			--disable-wtmp \
+			--disable-wtmpx && \
+		cp ../Patches/dropbear-options.h options.h && \
+		$(MAKE) PROGRAMS="dropbear" && \
+		$(MAKE) install PROGRAMS="dropbear" DESTDIR=$(targetprefix)
+	@CLEANUP_dropbear@
+	touch $@
+
 $(DEPDIR)/ssh: bootstrap libcrypto libz @DEPENDS_ssh@
 	@PREPARE_ssh@
 	cd @DIR_ssh@ && \
