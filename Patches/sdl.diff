@@ -217,15 +217,6 @@
  	nread = read(keyboard_fd, keybuf, BUFSIZ);
  	for ( i=0; i<nread; ++i ) {
  		scancode = keybuf[i] & 0x7F;
-@@ -900,7 +1082,7 @@
- 			pressed = SDL_PRESSED;
- 		}
- 		TranslateKey(scancode, &keysym);
--		/* Handle Alt-FN for vt switch */
-+		// Handle Alt-FN for vt switch 
- 		switch (keysym.sym) {
- 		    case SDLK_F1:
- 		    case SDLK_F2:
 @@ -920,12 +1102,14 @@
  				}
  				break;
@@ -311,44 +302,6 @@ diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.4/src/vi
  	}
  	console_fd = open(SDL_fbdev, O_RDWR, 0);
  	if ( console_fd < 0 ) {
-diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.c.rej SDL-1.2.4/src/video/fbcon/SDL_fbvideo.c.rej
---- Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.c.rej	1970-01-01 01:00:00.000000000 +0100
-+++ SDL-1.2.4/src/video/fbcon/SDL_fbvideo.c.rej	2002-08-19 05:26:28.000000000 +0200
-@@ -0,0 +1,34 @@
-+***************
-+*** 161,167 ****
-+  
-+  	SDL_fbdev = getenv("SDL_FBDEV");
-+  	if ( SDL_fbdev == NULL ) {
-+- 		SDL_fbdev = "/dev/fb0";
-+  	}
-+  	console = open(SDL_fbdev, O_RDWR, 0);
-+  	if ( console >= 0 ) {
-+--- 161,167 ----
-+  
-+  	SDL_fbdev = getenv("SDL_FBDEV");
-+  	if ( SDL_fbdev == NULL ) {
-++ 		SDL_fbdev = "/dev/fb/0";
-+  	}
-+  	console = open(SDL_fbdev, O_RDWR, 0);
-+  	if ( console >= 0 ) {
-+***************
-+*** 336,342 ****
-+  	/* Initialize the library */
-+  	SDL_fbdev = getenv("SDL_FBDEV");
-+  	if ( SDL_fbdev == NULL ) {
-+- 		SDL_fbdev = "/dev/fb0";
-+  	}
-+  	console_fd = open(SDL_fbdev, O_RDWR, 0);
-+  	if ( console_fd < 0 ) {
-+--- 336,342 ----
-+  	/* Initialize the library */
-+  	SDL_fbdev = getenv("SDL_FBDEV");
-+  	if ( SDL_fbdev == NULL ) {
-++ 		SDL_fbdev = "/dev/fb/0";
-+  	}
-+  	console_fd = open(SDL_fbdev, O_RDWR, 0);
-+  	if ( console_fd < 0 ) {
 diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.h SDL-1.2.4/src/video/fbcon/SDL_fbvideo.h
 --- Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.h	2002-03-06 12:23:04.000000000 +0100
 +++ SDL-1.2.4/src/video/fbcon/SDL_fbvideo.h	2002-08-19 05:25:36.000000000 +0200
