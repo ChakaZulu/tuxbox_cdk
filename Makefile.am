@@ -320,7 +320,7 @@ libs: \
 
 .libcommoncplusplus: .bootstrap .libxml2 @DEPENDS_libcommoncplusplus@
 	@PREPARE_libcommoncplusplus@
-	cd @DIR_libcommoncplusplus@ && &&\
+	cd @DIR_libcommoncplusplus@ &&\
 		CC=$(target)-gcc CXX=$(target)-g++ \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
