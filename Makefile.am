@@ -237,7 +237,7 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libxml2
 	@CLEANUP_libcrypto@
 	touch .libcrypto
 
-.libcurl: .bootstrap @DEPENDS_libcurl@
+.libcurl: .bootstrap .libcrypto @DEPENDS_libcurl@
 	@PREPARE_libcurl@
 	cd @DIR_libcurl@ && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
@@ -245,8 +245,8 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libxml2
 		./configure \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
-			--with-random=no \
-			--with-ssl=no && \
+			--with-random \
+			--with-ssl && \
 		make all && \
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
