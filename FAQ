@@ -1,0 +1,25 @@
+#
+#  $Id: FAQ,v 1.1 2002/01/05 17:12:53 obi Exp $
+#
+#  Frequently Asked Questions about the Cross Development Kit
+#
+
+Q: why is there no configure script?
+A: autoconf creates configure from configure.ac
+
+Q: why is there no Makefile, neither in the root
+   directory nor in any subdirectory?
+A: configure creates Makefile from Makefile.in
+
+Q: why is there no Makefile.in?
+A: automake creates Makefile.in from Makefile.am
+
+Q: why does nobody want to answer my question?
+A: because it has probably already been answered
+   many times and is already documented
+
+Q: what is a good place to look for more answers to
+   my problems with linux and d-box 2?
+A: the forum at http://tuxbox.berlios.de/forum/
+   provides a very good search facility
+
