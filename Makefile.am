@@ -416,6 +416,7 @@ libs: \
 .libsigc: .bootstrap @DEPENDS_libsigc@
 	@PREPARE_libsigc@
 	cd @DIR_libsigc@ && \
+		libtoolize --automake --force && aclocal && autoconf && automake && \
 		CC=$(target)-gcc \
 		CXX=$(target)-g++ \
 		CFLAGS="$(TARGET_CFLAGS)" \
