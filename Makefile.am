@@ -1042,12 +1042,13 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@PREPARE_vls@
 	cd @DIR_vls@ && \
 		@BUILDENV_vls@ \
+		CCFLAGS="-mcpu=823 -O3 -mmultiple -mstring -pipe" \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
 			--disable-dvd \
-			--with-dvb=$(driverdir)/include && \
+			--with-dvb=$(driverdir)/dvb/include && \
 		$(MAKE) all && \
 		@INSTALL_vls@
 	@CLEANUP_vls@
@@ -1170,6 +1171,8 @@ $(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
 .dvbsnoop: $(appsdir)/dvb/dvbsnoop/Makefile
 	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
 	touch .dvbsnoop
+
+# dvb/zapit
 
 $(appsdir)/dvb/zapit/Makefile: .bootstrap .tuxbox_tools .misc_libs
 	cd $(appsdir)/dvb/zapit && $(CONFIGURE) --with-neutrino-source=$(appsdir)/tuxbox/neutrino

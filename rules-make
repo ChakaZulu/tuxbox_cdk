@@ -113,5 +113,5 @@ dvbdate;20020918;dvbdate;dvbdate-20020918.tar.bz2;extract:dvbdate-20020918.tar.b
 dvbstream;20020918;dvbstream;dvbstream-20020918.tar.bz2;extract:dvbstream-20020918.tar.bz2
 dvbtext;0.1;dvbtext-0.1;dvbtext-0.1.tar.gz;extract:dvbtext-0.1.tar.gz
 dvbtune;20021029;dvbtune;dvbtune-20021029.tar.bz2;extract:dvbtune-20021029.tar.bz2
-vls;0.4.0;vls-0.4.0;vls-0.4.0.tar.bz2;extract:vls-0.4.0.tar.bz2
+vls;0.4.0;vls-0.4.0;vls-0.4.0.tar.bz2:vls.diff;extract:vls-0.4.0.tar.bz2;patch:vls.diff
 

@@ -1,0 +1,420 @@
+diff -Naur vls-0.4.0.orig/configure vls-0.4.0/configure
+--- vls-0.4.0.orig/configure	Sun Oct 13 20:23:45 2002
++++ vls-0.4.0/configure	Wed Nov 20 06:31:22 2002
+@@ -6584,8 +6584,8 @@
+   save_CPPFLAGS=$CPPFLAGS
+   CPPFLAGS="$save_CPPFLAGS $test_CFLAGS"
+   if test "${ac_cv_header_ost_sec_h+set}" = set; then
+-  echo "$as_me:$LINENO: checking for ost/sec.h" >&5
+-echo $ECHO_N "checking for ost/sec.h... $ECHO_C" >&6
++  echo "$as_me:$LINENO: checking for linux/dvb/dmx.h" >&5
++echo $ECHO_N "checking for linux/dvb/dmx.h... $ECHO_C" >&6
+ if test "${ac_cv_header_ost_sec_h+set}" = set; then
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ fi
+@@ -6593,13 +6593,13 @@
+ echo "${ECHO_T}$ac_cv_header_ost_sec_h" >&6
+ else
+   # Is the header compilable?
+-echo "$as_me:$LINENO: checking ost/sec.h usability" >&5
+-echo $ECHO_N "checking ost/sec.h usability... $ECHO_C" >&6
++echo "$as_me:$LINENO: checking linux/dvb/dmx.h usability" >&5
++echo $ECHO_N "checking linux/dvb/dmx.h usability... $ECHO_C" >&6
+ cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+ #include "confdefs.h"
+ $ac_includes_default
+-#include <ost/sec.h>
++#include <linux/dvb/dmx.h>
+ _ACEOF
+ rm -f conftest.$ac_objext
+ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+@@ -6624,12 +6624,12 @@
+ echo "${ECHO_T}$ac_header_compiler" >&6
+ 
+ # Is the header present?
+-echo "$as_me:$LINENO: checking ost/sec.h presence" >&5
+-echo $ECHO_N "checking ost/sec.h presence... $ECHO_C" >&6
++echo "$as_me:$LINENO: checking linux/dvb/dmx.h presence" >&5
++echo $ECHO_N "checking linux/dvb/dmx.h presence... $ECHO_C" >&6
+ cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+ #include "confdefs.h"
+-#include <ost/sec.h>
++#include <linux/dvb/dmx.h>
+ _ACEOF
+ if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
+   (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
+@@ -6661,20 +6661,20 @@
+ # So?  What about this header?
+ case $ac_header_compiler:$ac_header_preproc in
+   yes:no )
+-    { echo "$as_me:$LINENO: WARNING: ost/sec.h: accepted by the compiler, rejected by the preprocessor!" >&5
+-echo "$as_me: WARNING: ost/sec.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: ost/sec.h: proceeding with the preprocessor's result" >&5
+-echo "$as_me: WARNING: ost/sec.h: proceeding with the preprocessor's result" >&2;};;
++    { echo "$as_me:$LINENO: WARNING: linux/dvb/dmx.h: accepted by the compiler, rejected by the preprocessor!" >&5
++echo "$as_me: WARNING: linux/dvb/dmx.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
++    { echo "$as_me:$LINENO: WARNING: linux/dvb/dmx.h: proceeding with the preprocessor's result" >&5
++echo "$as_me: WARNING: linux/dvb/dmx.h: proceeding with the preprocessor's result" >&2;};;
+   no:yes )
+-    { echo "$as_me:$LINENO: WARNING: ost/sec.h: present but cannot be compiled" >&5
+-echo "$as_me: WARNING: ost/sec.h: present but cannot be compiled" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: ost/sec.h: check for missing prerequisite headers?" >&5
+-echo "$as_me: WARNING: ost/sec.h: check for missing prerequisite headers?" >&2;}
+-    { echo "$as_me:$LINENO: WARNING: ost/sec.h: proceeding with the preprocessor's result" >&5
+-echo "$as_me: WARNING: ost/sec.h: proceeding with the preprocessor's result" >&2;};;
++    { echo "$as_me:$LINENO: WARNING: linux/dvb/dmx.h: present but cannot be compiled" >&5
++echo "$as_me: WARNING: linux/dvb/dmx.h: present but cannot be compiled" >&2;}
++    { echo "$as_me:$LINENO: WARNING: linux/dvb/dmx.h: check for missing prerequisite headers?" >&5
++echo "$as_me: WARNING: linux/dvb/dmx.h: check for missing prerequisite headers?" >&2;}
++    { echo "$as_me:$LINENO: WARNING: linux/dvb/dmx.h: proceeding with the preprocessor's result" >&5
++echo "$as_me: WARNING: linux/dvb/dmx.h: proceeding with the preprocessor's result" >&2;};;
+ esac
+-echo "$as_me:$LINENO: checking for ost/sec.h" >&5
+-echo $ECHO_N "checking for ost/sec.h... $ECHO_C" >&6
++echo "$as_me:$LINENO: checking for linux/dvb/dmx.h" >&5
++echo $ECHO_N "checking for linux/dvb/dmx.h... $ECHO_C" >&6
+ if test "${ac_cv_header_ost_sec_h+set}" = set; then
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+diff -Naur vls-0.4.0.orig/configure.in vls-0.4.0/configure.in
+--- vls-0.4.0.orig/configure.in	Sun Oct 13 20:23:45 2002
++++ vls-0.4.0/configure.in	Wed Nov 20 06:31:22 2002
+@@ -305,7 +305,7 @@
+   fi
+   save_CPPFLAGS=$CPPFLAGS
+   CPPFLAGS="$save_CPPFLAGS $test_CFLAGS"
+-  AC_CHECK_HEADER([ost/sec.h],[
++  AC_CHECK_HEADER([linux/dvb/dmx.h],[
+     PLUGINS="${PLUGINS} dvbinput dvbreader"
+     if test x${with_dvb} != x
+     then
+diff -Naur vls-0.4.0.orig/doc/vls-guide.sgml vls-0.4.0/doc/vls-guide.sgml
+--- vls-0.4.0.orig/doc/vls-guide.sgml	Sun Oct 13 20:23:45 2002
++++ vls-0.4.0/doc/vls-guide.sgml	Wed Nov 20 06:31:22 2002
+@@ -636,7 +636,7 @@
+   <tscreen>
+   "DvbInputName" is the name of the dvb input you want to configure.
+   "devicenumber" is the number of the DVB device you want to read from
+-  (read from /dev/ost/dvr&lt;devicenumber&gt;, default is "").
++  (read from /dev/dvb/adapter&lt;devicenumber&gt;/dvr0, default is "0").
+   "frequency" is the frequency of the transponder given in kHz.
+   "polarization" is "1" (Horizontal) or "0" (Vertical). "symrate"
+   is the symbol rate. "diseqc" is the DiSEqC address of the used
+diff -Naur vls-0.4.0.orig/src/modules/dvbinput/dvbinput.cpp vls-0.4.0/src/modules/dvbinput/dvbinput.cpp
+--- vls-0.4.0.orig/src/modules/dvbinput/dvbinput.cpp	Sun Oct 13 20:23:45 2002
++++ vls-0.4.0/src/modules/dvbinput/dvbinput.cpp	Wed Nov 20 06:33:48 2002
+@@ -34,6 +34,7 @@
+ 
+ #include <fcntl.h>
+ #include <sys/ioctl.h>
++#include <asm/errno.h>
+ 
+ #ifdef HAVE_DVBPSI_DVBPSI_H
+ #   include <dvbpsi/dvbpsi.h>
+@@ -47,9 +48,8 @@
+ #   include "src/tables/pmt.h"
+ #endif
+ 
+-#include <ost/sec.h>
+-#include <ost/frontend.h>
+-#include <ost/dmx.h>
++#include <linux/dvb/frontend.h>
++#include <linux/dvb/dmx.h>
+ 
+ #include "../../mpeg/mpeg.h"
+ #include "../../mpeg/ts.h"
+@@ -134,14 +134,13 @@
+   C_Application* pApp = C_Application::GetApp();
+   ASSERT(pApp);
+ 
+-  C_String strNumber = pApp->GetSetting(GetName() + ".DeviceNumber", "");
++  C_String strNumber = pApp->GetSetting(GetName() + ".DeviceNumber", "0");
+ 
+   m_strType     = pApp->GetSetting(GetName() + ".DeviceType", "nova").ToLower();
+   
+-  m_strSec      = "/dev/ost/sec" + strNumber;
+-  m_strFrontend = "/dev/ost/frontend" + strNumber;
+-  m_strDemux    = "/dev/ost/demux" + strNumber;
+-  m_strDvr      = "/dev/ost/dvr" + strNumber;
++  m_strFrontend = "/dev/dvb/adapter" + strNumber + "/frontend0";
++  m_strDemux    = "/dev/dvb/adapter" + strNumber + "/demux0";
++  m_strDvr      = "/dev/dvb/adapter" + strNumber + "/dvr0";
+ 
+   m_iFrequency = pApp->GetSetting(GetName() + ".Frequency", "0").ToInt();
+   m_iPolarization = pApp->GetSetting(GetName() + ".Polarization", "0").ToInt();
+@@ -155,8 +154,16 @@
+ 
+   m_iSendMethod = pApp->GetSetting(GetName() + ".SendMethod", "0").ToInt();
+ 
++  // Open the frontend device
++  iFrontFd = open(m_strFrontend.GetString(), O_RDWR | O_NONBLOCK);
++
++  if(iFrontFd < 0)
++  {
++    throw E_Exception(GEN_ERR, "Unable to open \"" + m_strFrontend +
++                      "\": " + GetErrorMsg());
++  }
++
+   // Hardware initialization
+-  SecControl();
+   SetFrontend();
+ 
+   // PAT decoder initialization
+@@ -234,6 +241,8 @@
+     delete m_pConverter;
+   }
+ 
++  close(iFrontFd);
++
+   m_cEndInit.Release();
+ }
+ 
+@@ -286,7 +295,7 @@
+         Log(m_hLog, LOG_ERROR, "Unable to open demux");
+       else
+       {
+-        struct dmxPesFilterParams pesFilterParams;
++        struct dmx_pes_filter_params pesFilterParams;
+   
+         pesFilterParams.pid     = iPid;
+         pesFilterParams.input   = DMX_IN_FRONTEND;
+@@ -299,21 +308,21 @@
+         // But, with DVB-S Cards, you should put the exact type ...
+         // It implicates that can receive only 1 audio channel
+         
+-        if(m_strType=="nova") pesFilterParams.pesType = DMX_PES_OTHER;
++        if(m_strType=="nova") pesFilterParams.pes_type = DMX_PES_OTHER;
+         else
+         {
+           switch(iType)
+           {
+             case TS_TYPE_MPEG1_VIDEO:
+             case TS_TYPE_MPEG2_VIDEO:
+-               pesFilterParams.pesType = DMX_PES_VIDEO;
++               pesFilterParams.pes_type = DMX_PES_VIDEO;
+                break;
+             case TS_TYPE_MPEG1_AUDIO:
+             case TS_TYPE_MPEG2_AUDIO:
+-               pesFilterParams.pesType = DMX_PES_AUDIO;
++               pesFilterParams.pes_type = DMX_PES_AUDIO;
+                break;
+             default:
+-              pesFilterParams.pesType = DMX_PES_OTHER;
++              pesFilterParams.pes_type = DMX_PES_OTHER;
+               break;
+           }
+         }
+@@ -322,13 +331,13 @@
+         if(ioctl(iFd, DMX_SET_PES_FILTER, &pesFilterParams) < 0)
+         {
+           Log(m_hLog, LOG_ERROR, C_String("Unable to set demux filter for PID ")
+-	  	        + iPid + C_String("type : ") + pesFilterParams.pesType);
++	  	        + iPid + C_String("type : ") + pesFilterParams.pes_type);
+           close(iFd);
+         }
+         else
+         {
+           LogDbg(m_hLog, C_String("Demux filter n°")+i+ C_String(" type: ") +
+-                      pesFilterParams.pesType + C_String(" set for PID ") + iPid);
++                      pesFilterParams.pes_type + C_String(" set for PID ") + iPid);
+           m_iDemuxes[2 * i] = iPid;
+           m_iDemuxes[2 * i + 1] = iFd;
+         }
+@@ -447,92 +456,71 @@
+ //------------------------------------------------------------------------------
+ // Hardware initialization
+ //------------------------------------------------------------------------------
+-void C_DvbInput::SecControl()
++void C_DvbInput::SetFrontend()
+ {
+-  struct secCommand sSCmd;
+-  struct secCmdSequence sSCmdSeq;
+-  int iSecFd;
+-
+-  // Open the device
+-  iSecFd = open(m_strSec.GetString(), O_RDWR);
+-
+-  if(iSecFd < 0)
+-  {
+-    throw E_Exception(GEN_ERR, "Unable to open \"" + m_strSec +
+-                      "\": " + GetErrorMsg());
+-  }
++  struct dvb_diseqc_master_cmd sSCmd;
++  fe_sec_mini_cmd_t miniCommand;
++  fe_sec_tone_mode_t continuousTone;
++  fe_sec_voltage_t voltage;
++  struct dvb_frontend_parameters sFeParams;
++  struct dvb_frontend_event event;
+ 
+   // Set the frequency of the transponder, taking into account the
+   // local frequencies of the LNB
+-  sSCmdSeq.continuousTone = (m_iFrequency < m_iLnbSLof) ?
+-                            SEC_TONE_OFF : SEC_TONE_ON;
++  continuousTone = (m_iFrequency < m_iLnbSLof) ?
++                   SEC_TONE_OFF : SEC_TONE_ON;
+ 
+   // Set the polarity of the transponder by setting the correct
+   // voltage on the universal LNB
+-  sSCmdSeq.voltage = (m_iPolarization) ? SEC_VOLTAGE_18 : SEC_VOLTAGE_13;
++  voltage = (m_iPolarization) ? SEC_VOLTAGE_18 : SEC_VOLTAGE_13;
+ 
+   // In case we have a DiSEqC, set it to the correct address
+-  sSCmd.type = 0;
+-  sSCmd.u.diseqc.addr = 0x10;
+-  sSCmd.u.diseqc.cmd = 0x38;
+-  sSCmd.u.diseqc.numParams = 1;
+-  sSCmd.u.diseqc.params[0] =   0xF0
+-                            | ((m_iDiSEqC * 4) & 0x0F)
+-                            | (sSCmdSeq.continuousTone == SEC_TONE_ON ? 1 : 0)
+-                            | (sSCmdSeq.voltage == SEC_VOLTAGE_18 ? 2 : 0);
+-
+-  sSCmdSeq.miniCommand = SEC_MINI_NONE;
+-  sSCmdSeq.numCommands = 1;
+-  sSCmdSeq.commands = &sSCmd;
++  sSCmd.msg_len = 4;
++  sSCmd.msg[0] = 0xE0;
++  sSCmd.msg[1] = 0x10;
++  sSCmd.msg[2] = 0x38;
++  sSCmd.msg[3] = 0xF0
++               | ((m_iDiSEqC * 4) & 0x0F)
++               | (continuousTone == SEC_TONE_ON ? 1 : 0)
++               | (voltage == SEC_VOLTAGE_18 ? 2 : 0);
++
++  miniCommand = ((m_iDiSEqC / 4) % 2) ? SEC_MINI_B : SEC_MINI_A;
+ 
+   // Send the data to the SEC device to prepare the LNB for tuning
+   Log(m_hLog, LOG_NOTE, "Sending data to the SEC");
+ 
+-  if(ioctl(iSecFd, SEC_SEND_SEQUENCE, &sSCmdSeq) < 0)
+-  {
+-    close(iSecFd);
+-    throw E_Exception(GEN_ERR, "Unable to send data to the SEC");
+-  }
++  ioctl(iFrontFd, FE_SET_TONE, SEC_TONE_OFF);
++  ioctl(iFrontFd, FE_SET_VOLTAGE, voltage);
++  usleep(15 * 1000);
++  ioctl(iFrontFd, FE_DISEQC_SEND_MASTER_CMD, &sSCmd);
++  usleep(15 * 1000);
++  ioctl(iFrontFd, FE_DISEQC_SEND_BURST, miniCommand);
++  usleep(15 * 1000);
++  ioctl(iFrontFd, FE_SET_TONE, continuousTone);
+ 
+   Log(m_hLog, LOG_NOTE, "Data successfully sent to the SEC\n");
+ 
+-  close(iSecFd);
+-}
+-
+-
+-//------------------------------------------------------------------------------
+-// Hardware initialization
+-//------------------------------------------------------------------------------
+-void C_DvbInput::SetFrontend()
+-{
+-  FrontendParameters sFeParams;
+-  int iFrontFd;
+-
+-  // Open the device
+-  iFrontFd = open(m_strFrontend.GetString(), O_RDWR);
+-
+-  if(iFrontFd < 0)
+-  {
+-    throw E_Exception(GEN_ERR, "Unable to open \"" + m_strSec +
+-                      "\": " + GetErrorMsg());
+-  }
+-
+   // Set the frequency of the transponder, taking into account the
+   // local frequencies of the LNB
+-  sFeParams.Frequency = (m_iFrequency < m_iLnbSLof) ?
++  sFeParams.frequency = (m_iFrequency < m_iLnbSLof) ?
+                         m_iFrequency - m_iLnbLof1 : m_iFrequency - m_iLnbLof2;
++  sFeParams.inversion = INVERSION_AUTO;
+ 
+   // Set symbol rate and FEC
+-  sFeParams.u.qpsk.SymbolRate = m_iSymbolRate;
+-  sFeParams.u.qpsk.FEC_inner = FEC_AUTO;
++  sFeParams.u.qpsk.symbol_rate = m_iSymbolRate;
++  sFeParams.u.qpsk.fec_inner = FEC_AUTO;
+ 
+   // Now send it all to the frontend device
+ 
+   Log(m_hLog, LOG_NOTE, "Sending data to the Frontend");
+ 
++  while (1) {
++    if (ioctl(iFrontFd, FE_GET_EVENT, &event) == -1)
++	break;
++  }
++
+   if(ioctl(iFrontFd, FE_SET_FRONTEND, &sFeParams) < 0)
+   {
+-    close(iFrontFd);
+     throw E_Exception(GEN_ERR, "Unable to send data to the Frontend");
+   }
+ 
+@@ -541,7 +529,6 @@
+   // Check if it worked
+   fd_set sFdSet;
+   struct timeval sTimeVal;
+-  FrontendEvent event;
+ 
+   // poll for Frontend event to check if tuning worked
+ tamere:
+@@ -555,34 +542,32 @@
+     ASSERT(FD_ISSET(iFrontFd, &sFdSet));
+ 
+     Log(m_hLog, LOG_NOTE, "Frontend: getting event");
+-    if(ioctl(iFrontFd, FE_GET_EVENT, &event) == -EBUFFEROVERFLOW)
++    if(ioctl(iFrontFd, FE_GET_EVENT, &event) == -EOVERFLOW)
+     {
+-      close(iFrontFd);
+       throw E_Exception(GEN_ERR, "Frontend: unable to get event");
+     }
+       
++    if (event.status & FE_HAS_LOCK) {
++      Log(m_hLog, LOG_NOTE, "Frontend: completion is OK");
++      if(m_strType != "nova") sleep(1);
++    }
++
++    else if (event.status & FE_TIMEDOUT) {
++      throw E_Exception(GEN_ERR, "Frontend: time out: " + GetErrorMsg());
++    }
+ 
+-    switch(event.type)
+-    {  
+-    case FE_UNEXPECTED_EV:
+-      close(iFrontFd);
+-      throw E_Exception(GEN_ERR, "Frontend: unexpected event");
+-    case FE_FAILURE_EV:
++    else {
+       Log(m_hLog, LOG_NOTE, "Frontend: failure event received");
+       sleep(1);
+       goto tamere;
+-    case FE_COMPLETION_EV:
+-      Log(m_hLog, LOG_NOTE, "Frontend: completion is OK");
+-      if(m_strType != "nova") sleep(1);
+     }
++
+   }
+   else
+   {
+-    close(iFrontFd);
+     throw E_Exception(GEN_ERR, "Frontend: time out: " + GetErrorMsg());
+   }
+ 
+-  close(iFrontFd);
+ }
+ 
+ 
+diff -Naur vls-0.4.0.orig/src/modules/dvbinput/dvbinput.h vls-0.4.0/src/modules/dvbinput/dvbinput.h
+--- vls-0.4.0.orig/src/modules/dvbinput/dvbinput.h	Sun Oct 13 20:23:45 2002
++++ vls-0.4.0/src/modules/dvbinput/dvbinput.h	Wed Nov 20 06:31:22 2002
+@@ -111,6 +111,8 @@
+   // Muxes and streamers
+   C_HashTable<u16, C_TsMux> m_cMuxes;
+   C_HashTable<u16, C_TsStreamer> m_cStreamers;
++
++  int iFrontFd;
+ };
+ 
+ 
