@@ -1,5 +1,5 @@
 EXTRA_DIST = \
-	rcS.in start start_lcars start_neutrino start_sshd
+	rcS.in start start_lcars start_neutrino start_sshd.in
 
 FILES = \
 	rcS start start_lcars start_neutrino start_sshd
