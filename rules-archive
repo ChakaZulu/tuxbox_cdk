@@ -22,13 +22,15 @@ glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnu
 busybox-0.60.1.tar.gz;ftp://busybox.net/busybox
 tinylogin-0.80.tar.gz;ftp://oss.lineo.com/tinylogin
 modutils-2.4.9.tar.bz2
-netkit-rsh-0.17.tar.gz
+netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
+netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
+netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 
 #
 # contrib libs
 #
 curl-7.9.1.tar.bz2;http://curl.haxx.se/download
-freetype-2.0.4.tar.bz2;http://prdownloads.sourceforge.net/freetype
+freetype-2.0.5.tar.bz2;http://prdownloads.sourceforge.net/freetype
 ncurses-5.2.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
 libpng-1.0.12.tar.gz
@@ -45,9 +47,7 @@ arial32.exe;http://www.microsoft.com/typography/downloads
 courie32.exe;http://www.microsoft.com/typography/downloads
 
 #
-# additional
+# development
 #
 gdb-5.0.tar.gz;ftp://ftp.freenet.de/pub/ftp.gnu.org/gnu/gdb
-netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
-netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 strace-4.2.tar.gz;http://prdownloads.sourceforge.net/strace

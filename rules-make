@@ -24,13 +24,16 @@ gcc;3.0.2;gcc-3.0.2;gcc-core-3.0.2.tar.gz:gcc-g++-3.0.2.tar.gz;extract:gcc-core-
 busybox;0.60.1;busybox-0.60.1;busybox-0.60.1.tar.gz:busybox.diff;extract:busybox-0.60.1.tar.gz;patch:busybox.diff
 tinylogin;0.80;tinylogin-0.80;tinylogin-0.80.tar.gz:tinylogin.diff;extract:tinylogin-0.80.tar.gz;patch:tinylogin.diff
 modutils;2.4.9;modutils-2.4.9;modutils-2.4.9.tar.bz2;extract:modutils-2.4.9.tar.bz2
+inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
 rsh;0.17;netkit-rsh-0.17;netkit-rsh-0.17.tar.gz;extract:netkit-rsh-0.17.tar.gz
+telnetd;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz;extract:netkit-telnet-0.17.tar.gz
 
 #
 # contrib libs
 #
 libcurl;7.9.1;curl-7.9.1;curl-7.9.1.tar.bz2;extract:curl-7.9.1.tar.bz2
-libfreetype;2.0.4;freetype-2.0.4;freetype-2.0.4.tar.bz2:freetype.diff;extract:freetype-2.0.4.tar.bz2;patch:freetype.diff
+#libfreetype;2.0.4;freetype-2.0.4;freetype-2.0.4.tar.bz2:freetype.diff;extract:freetype-2.0.4.tar.bz2;patch:freetype.diff
+libfreetype;2.0.5;freetype-2.0.5;freetype-2.0.5.tar.bz2;extract:freetype-2.0.5.tar.bz2
 libncurses;5.2;ncurses-5.2;ncurses-5.2.tar.gz:ncurses.diff;extract:ncurses-5.2.tar.gz;patch:ncurses.diff
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff
 libpng;1.0.12;libpng-1.0.12;libpng-1.0.12.tar.gz;extract:libpng-1.0.12.tar.gz
@@ -45,10 +48,8 @@ cabextract;0.5;cabextract-0.5;cabextract-0.5.tar.gz;extract:cabextract-0.5.tar.g
 msttf;0.0;msttf;arial32.exe:arialb32.exe:courie32.exe;dircreate;dirextract:arial32.exe;dirextract:arialb32.exe;dirextract:courie32.exe
 
 #
-# additional
+# development
 #
 gdb;5.0;gdb-5.0;gdb-5.0.tar.gz:gdb.diff;extract:gdb-5.0.tar.gz;patch:gdb.diff
-inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
-telnetd;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz;extract:netkit-telnet-0.17.tar.gz
 strace;4.2;strace-4.2;strace-4.2.tar.gz:strace.diff;extract:strace-4.2.tar.gz;patch:strace.diff
 

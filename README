@@ -1,33 +1,213 @@
 #
-#  $Id: README,v 1.4 2001/12/11 08:36:22 obi Exp $
+#  $Id: README,v 1.5 2001/12/13 04:53:22 obi Exp $
 #
 
-Hier ganz kurz die Kommandos zum bauen des cdk:
+Folgende tools werden lokal benoetigt bevor das bauen los geht:
+---------------------------------------------------------------
+ - cvs
+ - autoconf 2.50
+ - automake 1.4
+ - libtool 1.4.2
+ - make
+ - makeinfo (gehoert zu texinfo)
+ - tar
+ - bunzip
+ - gunzip
+ - patch
+ - infocmp (gehoert zu ncurses)
+ - gcc
+ - yacc
+ - flex
+ - bison
 
-Als normaler user (beispielsweise "tuxuser"):
 
-# mkdir ~/tuxbox-cvs
-# cd ~/tuxbox-cvs
-# cvs -d:pserver:anonymous@cvs.tuxbox.berlios.de:/cvsroot/tuxbox login
-# cvs -d:pserver:anonymous@cvs.tuxbox.berlios.de:/cvsroot/tuxbox -z9 co .
-# cd cdk
-# ./autogen.sh
-# ./configure --prefix=/dbox2 --with-cvsdir=$PWD/..
 
-Dann als root das Installationsverzeichnis anlegen (wie in prefix angegeben):
+Hier die Kommandos zum bauen des cdk:
+-------------------------------------
 
-# mkdir /dbox2
-# chown tuxuser /dbox2
+ - Als normaler user (beispielsweise "tuxuser"):
 
-Und wieder als normaler user:
+mkdir $HOME/tuxbox-cvs
+cd $HOME/tuxbox-cvs
+cvs -d:pserver:anonymous@cvs.tuxbox.berlios.de:/cvsroot/tuxbox login
+cvs -d:pserver:anonymous@cvs.tuxbox.berlios.de:/cvsroot/tuxbox -z9 co .
+cd cdk
+./autogen.sh
+./configure --prefix=/dbox2 --with-cvsdir=$HOME/tuxbox-cvs
 
-# make .zapit .sections .neutrino
-# make .edvb
-# make .lcdmenu
-# make .stream
 
-(je nachdem, was man haben moechte)
+ - Dann als root das Installationsverzeichnis anlegen (wie in prefix angegeben):
 
-make all wird nachgeliefert
+mkdir /dbox2
+chown tuxuser /dbox2
 
+
+ - Und wieder als normaler user, je nachdem, was man bauen moechte
+
+make .neutrino
+make .edvb
+make .lcars
+make .lcdmenu
+make .stream
+
+
+ - oder um den kompletten kladderadatsch zu bauen
+ 
+make all
+
+
+
+Und so baut man neue tools in das cdk ein:
+------------------------------------------
+Zunaechst macht man sich Gedanken darueber, ob das, was man einbauen will Sinn
+macht. Wenn man meint, die Idee waere gut, dann kann man anfangen sie zu
+integrieren.
+
+Handelt es sich hierbei um veraenderte Software anderer Leute, so nehme man den
+unveraenderten Quellcode und erstelle dazu ein passendes patch. Das geht mit
+dem Kommando "diff -Naur paket.orig paket > paket.diff". Das erstellte Patch
+gehoert in das Verzeichnis $HOME/tuxbox-cvs/cdk/Patches.
+
+Was nun noch fehlt sind ein paar Eintraege in folgenden Dateien:
+$HOME/tuxbox-cvs/cdk/Makefile.am
+$HOME/tuxbox-cvs/cdk/configure.ac
+$HOME/tuxbox-cvs/cdk/rules-archive
+$HOME/tuxbox-cvs/cdk/rules-make
+$HOME/tuxbox-cvs/cdk/rules-install
+
+Beginnen wir mit rules-archive:
+-------------------------------
+Hier gehoert genau eine zeile pro Paket hinein, und zwar der Name des Archivs,
+sowie eine oder mehrere http- oder ftp-Adressen, von denen das Archiv direkt
+geladen werden kann. Diese werden mit Semikolon voneinander getrennt.
+
+z.B.
+paket-1.0.tar.gz;http://www.pakethome.de/download
+
+Als naechstes zu rules-make:
+----------------------------
+Wieder braucht man eine Zeile pro Paket. Und wieder werden die Eintraege mit
+Semikolon getrennt. Diesmal sind es allerdings ein paar meer und zwar die
+folgenden:
+
+ - Bezeichner fuer die Software
+ - Versionsnummer der Software
+ - Verzeichnisname nach dem entpacken der Software
+ - Archivname und Name eventueller Patches (durch Doppelpunkt getrennt)
+ - eine oder mehrere Regeln zum bearbeiten des Archivs und vorhandender Patches
+
+Der Bezeichner wird wieder in rules-install, configure.ac und Makefile.am zum
+Einsatz kommen. Er ist prinzipiell frei waehlbar, sollte aber dennoch moeglichst
+viel mit dem Paketnamen gemeinsam haben.
+
+Was mit Versionsnummer gemeint ist sollte jedem klar sein.
+
+Der darauf folgende Verzeichnisname muss dem Pfad entsprechen, der in dem zu
+entpackenden Archiv gespeichert ist. Ist kein Pfad gespeichert, so muss man
+einen Pfad moeglichst sinnvoll waehlen und spaeter bei den Regeln anstatt
+extract dirextract verwenden.
+
+Archivname sollte auch klar sein. Falls zusaetzliche Dateien existieren, die
+fuer das Paket benutzt werden, seien es diffs oder zusaetzliche Archive, so
+gibt man deren Namen ohne Verzeichnis und durch Doppelpunkt getrennt an.
+
+Zu guter letzt traegt man die Regeln ein, nach denen mit dem Archiv und seinen
+Patches verfahren werden soll:
+extract    - extrahiert ein Paket
+dirextract - extrahiert ein Paket in das angegebene Verzeichnis
+patch      - patcht eine diff Datei in ein extrahiertes Paket
+
+Fuer weitere Regeln kann man einen Blick in die Datei rules-make werfen.
+
+z.B. sieht das dann so aus;
+paket;1.0;paket-1.0;paket-1.0.tar.gz;extract:paket-1.0.tar.gz
+
+oder falls ein patch vorhanden ist:
+paket;1.0;paket-1.0;paket-1.0.tar.gz:paket.diff;extract:paket-1.0.tar.gz;patch:paket.diff
+
+rules-install ist wieder kuerzer:
+---------------------------------
+Falls die installation von Hand im Makefile.am geregelt wird, reicht es, hier
+den Bezeichner in eine eigene Zeile zu schreiben. Ansonsten nimmt man in der
+Regel folgenden Eintrag:
+
+paket;make:install
+
+Es koennen mehrere Befehle angegeben werden, diese sind per Semikolon von
+einander zu trennen. Befehle und zugehoerige Parameter werden durch Doppelpunkt
+getrennt.
+
+configure.ac:
+-------------
+Hier sucht man sich die passende Sektion in der Datei aus (an den vorhandenen
+Eintraegen orientieren) und fuegt dort entweder TUXBOX_RULES_MAKE(...) oder
+TUXBOX_RULES_MAKE_EXDIR(...) ein. Anstatt der Punkte benutzt man den in
+rules-make gewaehlten Bezeichner.
+
+Beispiel:
+TUXBOX_RULES_MAKE(paket)
+erstellt Variablen, aus den Daten in rules-install, rules-make und
+rules-install, die in Makefile.am benutzt werden koennen. Es werden die
+folgenden Variablen definiert:
+DEPENDS_paket - benoetigte Archive und Patches
+PREPARE_paket - Kommandos zum extrahieren und patchen des Paketes
+DIR_paket     - Name des Verzeichnisses, in das entpackt wurde
+INSTALL_paket - Installationsbefehle
+CLEANUP_paket - Befehle zum entfernen von Dateien nach Bau und Installation
+
+TUXBOX_RULES_MAKE_EXDIR(paket)
+tut prinzipiell dasselbe, hat jedoch den Unterschied, dass es fuer Pakete
+benutzt wird, bei denen das bauen nicht im quellverzeichnis selbst passieren
+soll. Zusaetzlich wird die folgende Variable definiert:
+CONFIGURE_paket - Aufruf des Konfiurationsskriptes des Paketes
+
+Makefile.am:
+------------
+Wer Makefiles kennt, der hat es leicht. Diese Datei ist sozusagen der Rohbau
+des Makefiles und unterscheidet sich nur durch die Variablen, die durch den
+Aufruf von configure ersetzt und in ein Makefile geschrieben werden.
+
+Regeln, die zu einem Paket gehoeren, Werden wie der oben gewaehlte Bezeichner
+mit einem Punkt vorangestellt genannt.
+
+Am Ende jeder Regel steht ein touch <Regelname>.
+Durch das Erstellen dieser Dateien wird gekennzeichnet, ob ein Programm
+bereits gebaut wurde.
+
+Beispiel fuer eine Regel:
+
+.paket: @DEPENDS_paket@
+	@PREPARE_paket@
+	cd @DIR_paket@ && \
+		CC=$(TARGET)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--target=$(TARGET) \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_paket@
+	@CLEANUP_paket@
+	touch .paket
+
+Weiterhin gibt es in Makefile.am Regeln, die verschiedene Regeln gruppieren
+und letztendlich zu einer globalen Regel ("all") zusammengefasst werden.
+Dort, wo das hinzugefuegte Paket kategorisch am besten einzuordnen ist, fuegt
+man den Eintrag hinzu, z.B.
+
+devel = .gdb .strace .paket
+
+Am Ende der Datei ist dir Regel zum saeubern der Umgebung zu finden. Auch
+hier muss man an geeigneter Stelle den Regelnamen auffuehren, so dass die
+Markierung, die nach erfolgreichem bauen angelegt wurde, entfernt werden
+kann.
+
+
+
+So, dass reicht hoffentlich erstmal... Jedenfalls werde ich langsam muede und
+muss mal schlafen. Ernsthafte Fragen, Verbesserungen, Vorschlaege und Kritik
+bitte ins Forum, in #dbox2, ins CVS oder an mich per mail.
+
+  obi <obi@saftware.de>
 

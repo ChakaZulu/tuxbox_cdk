@@ -2,7 +2,7 @@ TARGET = powerpc-tuxbox-linux-gnu
 
 PATH := $(hostprefix)/bin:$(PATH)
 
-all: core libs root apps boot
+all: core libs root apps boot devel
 
 #######################
 #
@@ -14,14 +14,18 @@ bootstrap: .gcc
 core: .gcc
 
 .directories:
+	install -d $(targetprefix)/bin
 	install -d $(targetprefix)/dev
-	install -d $(targetprefix)/proc
+	install -d $(targetprefix)/etc
 	install -d $(targetprefix)/include
 	install -d $(targetprefix)/lib
-	install -d $(targetprefix)/ucodes
-	install -d $(targetprefix)/var
-	install -d $(targetprefix)/var/zapit
+	install -d $(targetprefix)/proc
+	install -d $(targetprefix)/root
+	install -d $(targetprefix)/sbin
 	install -d $(targetprefix)/tmp
+	install -d $(targetprefix)/usr
+	install -d $(targetprefix)/var
+	install -d $(targetprefix)/var/ucodes
 	install -d $(hostprefix)/$(TARGET)
 	install -d $(bootprefix)
 	-rm $(hostprefix)/$(TARGET)/include
@@ -119,9 +123,9 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 #   minimal root
 #
 
-root: .busybox .tinylogin .modutils .etc
+root: .busybox .tinylogin .modutils .telnetd .msttf
 
-.busybox: .gcc @DEPENDS_busybox@
+.busybox: .gcc .etc @DEPENDS_busybox@
 	@PREPARE_busybox@
 	cd @DIR_busybox@ && \
 		make CROSS=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
@@ -129,7 +133,7 @@ root: .busybox .tinylogin .modutils .etc
 	@CLEANUP_busybox@
 	touch .busybox
 
-.tinylogin: .gcc @DEPENDS_tinylogin@
+.tinylogin: .gcc .etc @DEPENDS_tinylogin@
 	@PREPARE_tinylogin@
 	cd @DIR_tinylogin@ && \
 		make CROSS=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
@@ -137,7 +141,7 @@ root: .busybox .tinylogin .modutils .etc
 	@CLEANUP_tinylogin@
 	touch .tinylogin
 	
-.modutils: .gcc @DEPENDS_modutils@
+.modutils: .gcc .etc @DEPENDS_modutils@
 	@PREPARE_modutils@
 	cd @DIR_modutils@ && \
 		CC=$(TARGET)-gcc CXX=$(TARGET)-g++ CFLAGS="$(TARGET_CFLAGS)" \
@@ -153,18 +157,68 @@ root: .busybox .tinylogin .modutils .etc
 	@CLEANUP_modutils@
 	touch .modutils
 
-.etc: .busybox .tinylogin .modutils
+.etc:
 	cp -Rf ./etc $(targetprefix)
 	find $(targetprefix)/etc -type d -name "CVS" -exec rm -rf {} \; || /bin/true
 	chmod 755 $(targetprefix)/etc/init.d/*
 	touch .etc
 
+.inetd: .gcc .etc @DEPENDS_inetd@
+	@PREPARE_inetd@
+	touch @DIR_inetd@/MCONFIG
+	cd @DIR_inetd@/inetd && \
+		CC=$(TARGET)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		make all && \
+		install -m644 inetd $(targetprefix)/sbin
+	@CLEANUP_inetd@
+	touch .inetd
+
+.telnetd: .gcc .inetd @DEPENDS_telnetd@
+	@PREPARE_telnetd@
+	touch @DIR_telnetd@/MCONFIG
+	cd @DIR_telnetd@/telnetd && \
+		CC=$(TARGET)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LIBS=-lutil \
+		make all && \
+		install -m644 telnetd $(targetprefix)/sbin/in.telnetd
+	@CLEANUP_telnetd@
+	touch .telnetd
+
+.cabextract: .gcc @DEPENDS_cabextract@
+	@PREPARE_cabextract@
+	cd @DIR_cabextract@ && \
+		./configure \
+			--prefix=$(hostprefix) && \
+		make all && \
+		@INSTALL_cabextract@
+	@CLEANUP_cabextract@
+	touch .cabextract
+
+.msttf: .cabextract @DEPENDS_msttf@
+	@PREPARE_msttf@
+	install -d $(FONTDIR)
+	install -m 0644 @DIR_msttf@/AriBlk.TTF $(FONTDIR)/Arial_Black.ttf
+	install -m 0644 @DIR_msttf@/Arial.TTF $(FONTDIR)/Arial.ttf
+	install -m 0644 @DIR_msttf@/Arialbd.TTF $(FONTDIR)/Arial_Bold.ttf
+	install -m 0644 @DIR_msttf@/Arialbi.TTF $(FONTDIR)/Arial_Bold_Italic.ttf
+	install -m 0644 @DIR_msttf@/Ariali.TTF $(FONTDIR)/Arial_Italic.ttf
+	install -m 0644 @DIR_msttf@/cour.ttf $(FONTDIR)/Courier_New.ttf
+	install -m 0644 @DIR_msttf@/courbd.ttf $(FONTDIR)/Courier_New_Bold.ttf
+	install -m 0644 @DIR_msttf@/courbi.ttf $(FONTDIR)/Courier_New_Bold_Italic.ttf
+	install -m 0644 @DIR_msttf@/couri.ttf $(FONTDIR)/Courier_New_Italic.ttf
+	@CLEANUP_msttf@
+	touch .msttf
+
 
 #######################
 #
-#   support tools
+#   development tools
 #
- 
+
+devel: .gdb .strace
+
 .gdb: .gcc .libncurses @DEPENDS_gdb@
 	@PREPARE_gdb@
 	cd @DIR_gdb@ && \
@@ -181,29 +235,6 @@ root: .busybox .tinylogin .modutils .etc
 	@CLEANUP_gdb@
 	touch .gdb
 
-.inetd: .gcc @DEPENDS_inetd@
-	@PREPARE_inetd@
-	touch @DIR_inetd@/MCONFIG
-	cd @DIR_inetd@/inetd && \
-		CC=$(TARGET)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		make all && \
-		install -m644 inetd $(targetprefix)/sbin
-	@CLEANUP_inetd@
-	touch .inetd
-
-.telnetd: .gcc @DEPENDS_telnetd@
-	@PREPARE_telnetd@
-	touch @DIR_telnetd@/MCONFIG
-	cd @DIR_telnetd@/telnetd && \
-		CC=$(TARGET)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LIBS=-lutil \
-		make all && \
-		install -m644 telnetd $(targetprefix)/sbin/in.telnetd
-	@CLEANUP_telnetd@
-	touch .telnetd
-
 .strace: .gcc @DEPENDS_strace@
 	@PREPARE_strace@
 	cd @DIR_strace@ && \
@@ -218,6 +249,7 @@ root: .busybox .tinylogin .modutils .etc
 		@INSTALL_strace@
 	@CLEANUP_strace@
 	touch .strace
+
 
 #######################
 #
@@ -381,41 +413,13 @@ boot: .ppcboot .linuxkernel .driver
 		KERNEL_LOCATION=$(buildprefix)/linux
 	touch .driver
 
-#######################
-#
-#  msttf
-#
-.cabextract: @DEPENDS_cabextract@
-	@PREPARE_cabextract@
-	cd @DIR_cabextract@ && \
-		./configure \
-			--prefix=$(hostprefix) && \
-		make all && \
-		@INSTALL_cabextract@
-	@CLEANUP_cabextract@
-	touch .cabextract
-
-.msttf: .cabextract @DEPENDS_msttf@
-	@PREPARE_msttf@
-	install -d $(FONTDIR)
-	install -m 0644 @DIR_msttf@/AriBlk.TTF $(FONTDIR)/Arial_Black.ttf
-	install -m 0644 @DIR_msttf@/Arial.TTF $(FONTDIR)/Arial.ttf
-	install -m 0644 @DIR_msttf@/Arialbd.TTF $(FONTDIR)/Arial_Bold.ttf
-	install -m 0644 @DIR_msttf@/Arialbi.TTF $(FONTDIR)/Arial_Bold_Italic.ttf
-	install -m 0644 @DIR_msttf@/Ariali.TTF $(FONTDIR)/Arial_Italic.ttf
-	install -m 0644 @DIR_msttf@/cour.ttf $(FONTDIR)/Courier_New.ttf
-	install -m 0644 @DIR_msttf@/courbd.ttf $(FONTDIR)/Courier_New_Bold.ttf
-	install -m 0644 @DIR_msttf@/courbi.ttf $(FONTDIR)/Courier_New_Bold_Italic.ttf
-	install -m 0644 @DIR_msttf@/couri.ttf $(FONTDIR)/Courier_New_Italic.ttf
-	@CLEANUP_msttf@
-	touch .msttf
 
 #######################
 #
 #   own applications
 #
 
-apps: .edvb .fx2 .zapit .neutrino .lcars .lcdmenu .stream .tools .sections .dvbsnoop
+apps: .dvbsnoop .edvb .lcars .lcdmenu .neutrino .stream
 
 $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	cd $(appsdir) && \
@@ -426,22 +430,17 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 			--with-driver=$(driverdir) \
 			--with-target=$(APPSTARGET)
 
+.dvbsnoop: $(appsdir)/Makefile
+	make -C $(appsdir)/dvbsnoop all install
+	touch .dvbsnoop
 
-.edvb: $(appsdir)/Makefile .fx2
+.edvb: $(appsdir)/Makefile .fx2 .tools
 	make -C $(appsdir)/edvb all install
 	touch .edvb
 
 .fx2: $(appsdir)/Makefile
 	make -C $(appsdir)/fx2 all install
 	touch .fx2
-
-.zapit: $(appsdir)/Makefile
-	make -C $(appsdir)/zapit all install
-	touch .zapit
-
-.neutrino: $(appsdir)/Makefile .fx2 .zapit
-	make -C $(appsdir)/mczap all install
-	touch .neutrino
 
 .lcars: $(appsdir)/Makefile .fx2
 	make -C $(appsdir)/lcars all install
@@ -451,7 +450,15 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	make -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
-.stream: $(appsdir)/Makefile
+.neutrino: $(appsdir)/Makefile .fx2 .sections .zapit
+	make -C $(appsdir)/mczap all install
+	touch .neutrino
+
+.sections: $(appsdir)/Makefile
+	make -C $(appsdir)/sections all install
+	touch .sections
+
+.stream: $(appsdir)/Makefile .inetd
 	make -C $(appsdir)/stream all install
 	touch .stream
 
@@ -459,13 +466,9 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	make -C $(appsdir)/tools all install
 	touch .tools
 
-.sections: $(appsdir)/Makefile
-	make -C $(appsdir)/sections all install
-	touch .sections
-
-.dvbsnoop: $(appsdir)/Makefile
-	make -C $(appsdir)/dvbsnoop all install
-	touch .dvbsnoop
+.zapit: $(appsdir)/Makefile
+	make -C $(appsdir)/zapit all install
+	touch .zapit
 
 
 #######################
@@ -476,12 +479,12 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 distclean-local:
 	-rm Makefile-archive
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .etc .busybox .tinylogin .modutils
+	-rm .etc .busybox .tinylogin .modutils .inetd .telnetd .cabextract .msttf
 	-rm .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
-	-rm .cabextract .msttf
 	-rm .ppcboot .linuxkernel
-	-rm .gdb .inetd
-	-rm .fx2 .edvb .neutrino .lcdmenu .stream .tools .zapit
+	-rm .gdb .strace
+	-rm .dvbsnoop .edvb .fx2 .lcars .lcdmenu
+	-rm .neutrino .sections .stream .tools .zapit
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 	-make -C $(appsdir) distclean
