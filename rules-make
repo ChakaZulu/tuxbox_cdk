@@ -25,7 +25,6 @@ watchdog;5.2;watchdog-5.2.orig;watchdog_5.2.orig.tar.gz:watchdog.diff;extract:wa
 #
 busybox;0.60.99.cvs20030114;busybox-cvs-0.60.99.cvs20030114.orig;busybox-cvs_0.60.99.cvs20030114.orig.tar.gz:busybox.config:busybox.diff;extract:busybox-cvs_0.60.99.cvs20030114.orig.tar.gz;patch:busybox.diff
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
-ifupdown;0.6.4;ifupdown-0.6.4-tuxbox.1;ifupdown-0.6.4-tuxbox.1.tar.bz2;extract:ifupdown-0.6.4-tuxbox.1.tar.bz2
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
 modutils;2.4.21;modutils-2.4.21;modutils-2.4.21.tar.bz2;extract:modutils-2.4.21.tar.bz2
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
@@ -49,7 +48,6 @@ libmad;0.14.2b;mad-0.14.2b;mad-0.14.2b.tar.gz;extract:mad-0.14.2b.tar.gz;patchti
 libncurses;5.3;ncurses-5.3;ncurses-5.3.tar.gz;extract:ncurses-5.3.tar.gz
 libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;patch:libpcap.diff
 libpng;1.2.5;libpng-1.2.5;libpng-1.2.5.tar.gz:libpng.diff;extract:libpng-1.2.5.tar.gz;patch:libpng.diff
-libpopt;1.7;popt-1.7;popt-1.7.tar.gz;extract:popt-1.7.tar.gz
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.5;SDL-1.2.5;SDL-1.2.5.tar.gz:sdl.diff;extract:SDL-1.2.5.tar.gz;patch:sdl.diff
@@ -68,7 +66,6 @@ directfb_examples;0.9.15;DirectFB-examples-0.9.15;DirectFB-examples-0.9.15.tar.g
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.diff
 lsof;4.65;lsof_4.65_src;lsof_4.65_src.tar.bz2:lsof.diff;extract:lsof_4.65_src.tar.bz2;patch:lsof.diff
-pump;0.8.11;pump-0.8.11;pump-0.8.11.tar.bz2:pump.diff;extract:pump-0.8.11.tar.bz2;patch:pump.diff
 ssh;3.5p1;openssh-3.5p1;openssh-3.5p1.tar.gz:ssh.diff;extract:openssh-3.5p1.tar.gz;patch:ssh.diff
 tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz:tcpdump.diff;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
 xrc;0.6.3;xrc-0.6.3;xrc-0.6.3.tar.gz:xrc.diff;extract:xrc-0.6.3.tar.gz;patch:xrc.diff

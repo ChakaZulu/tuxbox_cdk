@@ -22,7 +22,6 @@ watchdog;make:install:DESTDIR=TARGET
 #
 busybox;make:install:PREFIX=TARGET
 ftpd;install:-m755:vsftpd:TARGET/sbin/in.ftpd;install:-m644:vsftpd-dbox2.conf:TARGET/etc/vsftpd.conf;install:-d:TARGET/share/empty
-ifupdown;make:install:BASEDIR=TARGET
 inetd;install:-m755:inetd:TARGET/sbin
 modutils;make:install-bin:sbindir=TARGET/sbin
 netkit_telnet;install:-m755:telnet/telnet:TARGET/bin/telnet;install:-m755:telnetd/telnetd:TARGET/sbin/in.telnetd
@@ -46,7 +45,6 @@ libmad;make:install:DESTDIR=TARGET
 libncurses;make:install.libs:DESTDIR=TARGET
 libpcap;make:install:DESTDIR=TARGET
 libpng;make:install-static:install-shared:install-config:prefix=TARGET;link:TARGET/bin/libpng-config:HOST/bin/libpng-config
-libpopt;make:install:DESTDIR=TARGET
 libreadline;make:install:DESTDIR=TARGET
 libsdl;make:install-lib:DESTDIR=TARGET
 libsigc;make:install:DESTDIR=TARGET
@@ -62,7 +60,6 @@ directfb_examples;make:install:DESTDIR=TARGET
 fbset;install:-m755:fbset:TARGET/bin
 lirc;make:install
 lsof;install:-m755:lsof:TARGET/sbin
-pump;make:install:DEST=TARGET
 ssh;make:install:DESTDIR=TARGET
 tcpdump;make:install:DESTDIR=TARGET
 xrc;make:install

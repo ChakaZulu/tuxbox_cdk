@@ -179,7 +179,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 #
 
 root: \
-	.etc .busybox .ftpd .ifupdown .inetd .modutils \
+	.etc .busybox .ftpd .inetd .modutils \
 	.netkit_telnet .procps .watchdog
 
 root_optional: \
@@ -210,17 +210,6 @@ root_optional: \
 		@INSTALL_ftpd@
 	@CLEANUP_ftpd@
 	touch .ftpd
-
-.ifupdown: .bootstrap @DEPENDS_ifupdown@
-	@PREPARE_ifupdown@
-	cd @DIR_ifupdown@ && \
-		$(MAKE) all \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" && \
-		@INSTALL_ifupdown@
-	@CLEANUP_ifupdown@
-	touch .ifupdown
 
 .inetd: .bootstrap @DEPENDS_inetd@
 	@PREPARE_inetd@
@@ -309,7 +298,7 @@ libs: \
 
 libs_optional: \
 	.libcommoncplusplus .libffi \
-	.libpcap .libpopt .libxml2
+	.libpcap .libxml2
 
 .libboost: .bootstrap @DEPENDS_libboost@
 	@PREPARE_libboost@
@@ -529,21 +518,6 @@ libs_optional: \
 	@CLEANUP_libpng@
 	touch .libpng
 
-.libpopt: .bootstrap @DEPENDS_libpopt@
-	@PREPARE_libpopt@
-	cd @DIR_libpopt@ && \
-		@BUILDENV_libpopt@ \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix= \
-			--with-pic \
-			--disable-nls && \
-		$(MAKE) all && \
-		@INSTALL_libpopt@
-	@CLEANUP_libpopt@
-	touch .libpopt
-
 .libreadline: .bootstrap @DEPENDS_libreadline@
 	@PREPARE_libreadline@
 	cd @DIR_libreadline@ && \
@@ -662,7 +636,6 @@ libs_optional: \
 #
 
 contrib_apps: .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
-contrib_apps_optional: .pump
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -743,15 +716,6 @@ contrib_apps_optional: .pump
 		@INSTALL_lsof@
 	@CLEANUP_lsof@
 	touch .lsof
-
-.pump: .bootstrap .libpopt @DEPENDS_pump@
-	@PREPARE_pump@
-	cd @DIR_pump@ && \
-		@BUILDENV_pump@ \
-		$(MAKE) all && \
-		@INSTALL_pump@
-	@CLEANUP_pump@
-	touch .pump
 
 .ssh: .bootstrap .libcrypto .libz @DEPENDS_ssh@
 	@PREPARE_ssh@
@@ -1318,13 +1282,6 @@ $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
 	ln -s ../../boot $(flashprefix)/root/var/tuxbox/boot
 	@touch $(flashprefix)/.flash
 
-$(flashprefix)/.part_network: $(flashprefix)/.flash .ifupdown .pump
-	$(INSTALL) -d $(flashprefix)/root/etc/network
-	ln -sf /tmp/ifstate $(flashprefix)/root/etc/network/ifstate
-	$(INSTALL) $(targetprefix)/sbin/ifup $(targetprefix)/sbin/ifdown \
-		$(targetprefix)/sbin/pump $(flashprefix)/root/sbin
-	@touch $(flashprefix)/.part_network
-
 flash-ftpd: $(flashprefix)/.part_ftpd
 
 $(flashprefix)/.part_ftpd: $(flashprefix)/.flash $(flashprefix)/.part_inetd .ftpd
@@ -1536,17 +1493,17 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .watchdog
+	-rm .etc .busybox .ftpd .inetd .modutils .netkit_telnet .procps .watchdog
 	-rm .libboost .libcommoncplusplus .libcrypto .libcurl
 	-rm .libdirectfb .libdirectfbpp .libdvbpsi .libffi .libfreetype
-	-rm .libncurses .libjpeg .libmad .libpcap .libpng .libpopt
+	-rm .libncurses .libjpeg .libmad .libpcap .libpng
 	-rm .libreadline .libsdl .libsigc .libxml2 .libz
 	-rm .gdb .ksymoops .ltrace .strace .nano
 	-rm .kaffeh .kaffe
 	-rm .gnuboy .scummvm .sdldoom
 	-rm .ppcboot .linuxkernel .driver
 	-rm .dvbsnoop .enigma .lcars .lcdmenu .neutrino .dvb_tools .zapit
-	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump
+	-rm .console_data .console_tools .fbset .lirc .ssh .tcpdump
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	-rm .misc_libs .misc_tools .plugins .tuxbox_libs .tuxbox_tools
 	-rm -rf $(targetprefix)
