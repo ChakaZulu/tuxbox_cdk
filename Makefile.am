@@ -410,14 +410,30 @@ $(DEPDIR)/libcurl: bootstrap @DEPENDS_libcurl@
 	@CLEANUP_libcurl@
 	touch $@
 
-$(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz @DEPENDS_libdirectfb@
+# directfb needs working directfb-csource for build but only creates it for the target
+$(DEPDIR)/libdirectfb_hostdeps: bootstrap
 	@PREPARE_libdirectfb@
+	cd @DIR_libdirectfb@ && \
+	    ./autogen.sh \
+		--disable-fbdev \
+		--disable-sysfs \
+		--disable-video4linux \
+		--prefix=$(hostprefix) && \
+	    $(MAKE) -C tools directfb-csource && \
+	    $(INSTALL) -m 755 tools/directfb-csource $(hostprefix)/bin && \
+	    $(MAKE) -C tools clean
+	touch $@
+$(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz libdirectfb_hostdeps @DEPENDS_libdirectfb@
+	@if [ ! -e $(buildprefix)/@DIR_libdirectfb@/configure ]; then \
+	    @PREPARE_libdirectfb@ && \
+	    cd @DIR_libdirectfb@ && ./autogen.sh ; \
+	fi
 	cd @DIR_libdirectfb@ && \
 		$(BUILDENV) \
 		LDFLAGS=-L$(targetprefix)/lib \
 		CPPFLAGS="-I$(buildprefix)/linux/arch/ppc" \
 		CFLAGS="$(TARGET_CFLAGS) -I$(buildprefix)/linux/arch/ppc" \
-		./autogen.sh \
+		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
