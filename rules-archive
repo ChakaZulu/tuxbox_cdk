@@ -88,6 +88,7 @@ kaffe-1.0.6.tar.gz;http://www.kaffe.org/ftp/pub/kaffe
 mad-0.14.2b.tar.gz;ftp://ftp.mars.org/pub/mpeg
 #scummvm-20020314.tar.bz2
 scummvm-20020609.tar.bz2;http://scummvm.sourceforge.net/daily
+scummvm-20020717.tar.bz2;http://scummvm.sourceforge.net/daily
 
 #
 # dvb apps

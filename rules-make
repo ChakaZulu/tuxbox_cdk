@@ -89,8 +89,8 @@ kaffeh;1.0.6;kaffe-1.0.6;kaffe-1.0.6.tar.gz:kaffeh.diff;extract:kaffe-1.0.6.tar.
 # fun stuff
 #
 mad;0.14.2b;mad-0.14.2b;mad-0.14.2b.tar.gz;extract:mad-0.14.2b.tar.gz
-scummvm;20020609;scummvm;scummvm-20020609.tar.bz2:scummvm.diff;extract:scummvm-20020609.tar.bz2;patch:scummvm.diff
-#
+scummvm;20020717;scummvm;scummvm-20020717.tar.bz2:scummvm.diff;extract:scummvm-20020717.tar.bz2;patch:scummvm.diff
+
 # dvb apps
 #
 dvbstream;0.4pre2;dvbstream-0.4pre2;dvbstream-0.4pre2.tar.gz;extract:dvbstream-0.4pre2.tar.gz
