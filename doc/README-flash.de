@@ -41,7 +41,7 @@ cd $HOME/tuxbox-cvs
 cvs -d:pserver:anonymous@cvs.tuxbox.org:/cvs/tuxbox -z3 co -P .
 cd cdk
 ./autogen.sh
-./configure --prefix=/dbox2 --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode --with-targetruleset=flash
+./configure --prefix=$HOME/dbox2 --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode --with-targetruleset=flash
 
 
 - Danach kann man wie in INSTALL.en beschrieben die einzelnen oder
