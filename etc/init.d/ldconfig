@@ -1,4 +1,2 @@
 #!/bin/sh
-echo "Rebuilding ld.so.cache"
 /sbin/ldconfig -C /etc/ld.so.cache -f /etc/ld.so.conf
-

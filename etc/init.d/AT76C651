@@ -1,78 +1,21 @@
 #!/bin/sh
-
-echo "Lade soundcore"
-$INSMOD $MODDIR/kernel/drivers/sound/soundcore.o
-#modprobe soundcore
-
-echo "Lade avs"
-$INSMOD $MODDIR/misc/avs.o type=1 debug=0
-#modprobe avs
-
-echo "Lade saa7126"
-$INSMOD $MODDIR/misc/saa7126.o board=2 debug=0
-#modprobe saa7126
-
-echo "Lade event"
-$INSMOD $MODDIR/misc/event.o
-#modprobe event
-
-echo "Lade fp"
-$INSMOD $MODDIR/misc/fp.o debug=0 useimap=0
-#modprobe fp
-
-echo "Lade avia"
-$INSMOD $MODDIR/misc/avia.o pal=1 debug=0 firmware=/var/ucodes
-#modprobe avia
-
-echo "Lade enx_core"
-$INSMOD $MODDIR/misc/enx_core.o debug=0
-#modprobe enx_core
-
-echo "Lade demux"
-$INSMOD $MODDIR/misc/demux.o
-#modprobe demux
-
-echo "Lade cam"
-$INSMOD $MODDIR/misc/cam.o debug=0 firmware=/var/ucodes/cam-alpha.bin
-#modprobe cam
-
-echo "Lade dmxdev"
-$INSMOD $MODDIR/misc/dmxdev.o
-#modprobe dmxdev
-
-echo "Lade dvbdev"
-$INSMOD $MODDIR/misc/dvbdev.o
-#modprobe dvbdev
-
-echo "Lade dvb"
-$INSMOD $MODDIR/misc/dvb.o
-#modprobe dvb
-
-#echo "Lade dvb_net"
-#$INSMOD $MODDIR/misc/dvb_net.o
-#modprobe dvb_net
-
-echo "Lade at76c651"
-$INSMOD $MODDIR/misc/at76c651.o debug=0
-#modprobe at76c651
-
-echo "Lade enx_dmx"
-$INSMOD $MODDIR/misc/enx_dmx.o debug=0 ucode=/var/ucodes/ucode.bin
-#modprobe enx_dmx
-
-echo "Lade enx_vbi"
-$INSMOD $MODDIR/misc/enx_vbi.o
-#modprobe enx_vbi
-
-echo "Lade enx_fb"
-$INSMOD $MODDIR/misc/enx_fb.o debug=0
-#modprobe enx_fb
-
-echo "Lade enx_capture"
-$INSMOD $MODDIR/misc/enx_capture.o
-
-echo "Lade enx_pig"
-$INSMOD $MODDIR/misc/enx_pig.o
-
-#echo "Lade osd"
-#modprobe osd
+insmod avs type=1 debug=0
+insmod saa7126 board=2 debug=0
+insmod event
+insmod fp debug=0 useimap=0
+insmod avia pal=1 debug=0 firmware=/var/ucodes
+insmod enx_core debug=0
+insmod demux
+insmod cam debug=0 firmware=/var/ucodes/cam-alpha.bin
+insmod dmxdev
+insmod dvbdev
+#insmod dvb_frontend
+insmod dvb
+#insmod dvb_net
+insmod at76c651 debug=0
+insmod enx_dmx debug=0 ucode=/var/ucodes/ucode.bin
+insmod enx_vbi
+insmod enx_fb debug=0
+insmod enx_capture
+insmod enx_pig
+#insmod osd

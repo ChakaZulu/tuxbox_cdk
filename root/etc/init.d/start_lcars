@@ -1,4 +1,2 @@
 #!/bin/sh
-
-echo "Starte lcars"
-/bin/lcars 0 repeat=on old=on
+lcars 0 repeat=on old=on

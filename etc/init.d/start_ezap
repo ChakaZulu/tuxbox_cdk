@@ -1,5 +1,3 @@
 #!/bin/sh
-
-echo "Starte ezap"
-/bin/ezap
-/sbin/halt
+ezap
+halt

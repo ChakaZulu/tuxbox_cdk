@@ -1,78 +1,21 @@
 #!/bin/sh
-
-echo "Lade soundcore"
-$INSMOD $MODDIR/kernel/drivers/sound/soundcore.o
-#modprobe soundcore
-
-echo "Lade avs"
-$INSMOD $MODDIR/misc/avs.o type=0 debug=0
-#modprobe avs
-
-echo "Lade saa7126"
-$INSMOD $MODDIR/misc/saa7126.o board=1 debug=0
-#modprobe saa7126
-
-echo "Lade event"
-$INSMOD $MODDIR/misc/event.o
-#modprobe event
-
-echo "Lade fp"
-$INSMOD $MODDIR/misc/fp.o debug=0 useimap=0
-#modprobe fp
-
-echo "Lade avia"
-$INSMOD $MODDIR/misc/avia.o pal=1 debug=0 firmware=/var/ucodes
-#modprobe avia
-
-echo "Lade gtx_core"
-$INSMOD $MODDIR/misc/gtx_core.o debug=0
-#modprobe gtx_core
-
-echo "Lade demux"
-$INSMOD $MODDIR/misc/demux.o
-#modprobe demux
-
-echo "Lade cam"
-$INSMOD $MODDIR/misc/cam.o debug=0 firmware=/var/ucodes/cam-alpha.bin
-#modprobe cam
-
-echo "Lade dmxdev"
-$INSMOD $MODDIR/misc/dmxdev.o
-#modprobe dmxdev
-
-echo "Lade dvbdev"
-$INSMOD $MODDIR/misc/dvbdev.o
-#modprobe dvbdev
-
-echo "Lade dvb"
-$INSMOD $MODDIR/misc/dvb.o
-#modprobe dvb
-
-#echo "Lade dvb_net"
-#$INSMOD $MODDIR/misc/dvb_net.o
-#modprobe dvb_net
-
-echo "Lade ves1893"
-$INSMOD $MODDIR/misc/ves1893.o debug=0
-#modprobe ves1893
-
-echo "Lade gtx_dmx"
-$INSMOD $MODDIR/misc/gtx_dmx.o debug=0 ucode=/var/ucodes/ucode.bin
-#modprobe gtx_dmx
-
-echo "Lade gtx_vbi"
-$INSMOD $MODDIR/misc/gtx_vbi.o
-#modprobe gtx_vbi
-
-echo "Lade gtx_fb"
-$INSMOD $MODDIR/misc/gtx_fb.o debug=0
-#modprobe gtx_fb
-
-echo "Lade gtx_capture"
-$INSMOD $MODDIR/misc/gtx_capture.o
-
-echo "Lade gtx_pig"
-$INSMOD $MODDIR/misc/gtx_pig.o
-
-#echo "Lade osd"
-#modprobe osd
+insmod avs type=0 debug=0
+insmod saa7126 board=1 debug=0
+insmod event
+insmod fp debug=0 useimap=0
+insmod avia pal=1 debug=0 firmware=/var/ucodes
+insmod gtx_core debug=0
+insmod demux
+insmod cam debug=0 firmware=/var/ucodes/cam-alpha.bin
+insmod dmxdev
+insmod dvbdev
+#insmod dvb_frontend
+insmod dvb
+#insmod dvb_net
+insmod ves1893 debug=0
+insmod gtx_dmx debug=0 ucode=/var/ucodes/ucode.bin
+insmod gtx_vbi
+insmod gtx_fb debug=0
+insmod gtx_capture
+insmod gtx_pig
+#insmod osd
