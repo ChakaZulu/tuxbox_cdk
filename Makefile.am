@@ -1027,7 +1027,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	cd @DIR_dvbdate@ && \
 		$(MAKE) dvbdate \
 			@BUILDENV_dvbdate@ \
-			CPPFLAGS="-I$(driverdir)/include" \
+			CPPFLAGS="-I$(driverdir)/include" && \
 		@INSTALL_dvbdate@
 	@CLEANUP_dvbdate@
 	touch .dvbdate
