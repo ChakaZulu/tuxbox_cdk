@@ -1,0 +1,11 @@
+--- sdl.cpp	Thu Mar 14 00:19:30 2002
++++ ../../scummvm/sdl.cpp	Sun Jun  9 15:19:40 2002
+@@ -727,7 +727,7 @@
+ 	}
+ 
+ 	if (s->_videoMode == VIDEO_SCALE) {
+-				screen = SDL_SetVideoMode(320 * scale, 200 * scale, 8, fullScreen ? (SDL_SWSURFACE | SDL_FULLSCREEN) : (SDL_SWSURFACE | SDL_DOUBLEBUF));
++				screen = SDL_SetVideoMode(640, 480, 8, fullScreen ? (SDL_SWSURFACE | SDL_FULLSCREEN) : (SDL_SWSURFACE | SDL_DOUBLEBUF));
+ 	} else {
+ 		uint16 *tmp_screen = (uint16*)calloc(320*202 + 8,sizeof(uint16));
+ 		Init_2xSaI(565);
