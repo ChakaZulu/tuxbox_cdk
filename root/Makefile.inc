@@ -1,10 +1,8 @@
-RECURSIVE_TARGETS = all-recursive install-data-recursive install-exec-recursive \
-	install-recursive installcheck-recursive installdirs-recursive
+install-data-local:
+#	@$(MAKE) install-$(TARGETRULESET)
+	@$(MAKE) install-standard
 
-install-flash: 
-	@if [ "$(SUBDIRS)" ]; then $(MAKE) install-flash-recursive; else $(MAKE) install-flash-am; fi
-
-install-data-local: $(FILES) $(FILES_EXEC)
+install-standard: $(FILES) $(FILES_EXEC)
 	@files="$(FILES)" ; \
 	for i in $$files ; do \
 		install -d $(targetprefix)$(DIR) ; \
@@ -18,7 +16,7 @@ install-data-local: $(FILES) $(FILES_EXEC)
 		install -m755 $$i $(targetprefix)$(DIR) ; \
 	done
 
-install-flash-am: $(FILES_FLASH_RO) $(FILES_FLASH_RW) $(FILES_FLASH_RO_EXEC) $(FILES_FLASH_RW_EXEC)
+install-flash: $(FILES_FLASH_RO) $(FILES_FLASH_RW) $(FILES_FLASH_RO_EXEC) $(FILES_FLASH_RW_EXEC)
 	@files="$(FILES_FLASH_RO)" ; \
 	for i in $$files ; do \
 		install -d $(flashprefix_ro)$(DIR) ; \
