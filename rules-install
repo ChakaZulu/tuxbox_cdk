@@ -90,6 +90,7 @@ kaffeh;make:install
 #
 # fun stuff
 #
+gnuboy;make:install
 mad;make:install
 scummvm;install:-m755:scummvm:TARGET/bin
 sdldoom;make:install

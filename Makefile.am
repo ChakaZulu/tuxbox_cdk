@@ -929,6 +929,22 @@ java: .kaffeh .kaffe
 
 fun: .mad .scummvm
 
+.gnuboy: .bootstrap @DEPENDS_gnuboy@
+	@PREPARE_gnuboy@
+	cd @DIR_gnuboy@ && \
+		autoconf && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/include" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_gnuboy@
+	@CLEANUP_gnuboy@
+	touch .gnuboy
+
 .mad: .bootstrap .libz @DEPENDS_mad@
 	@PREPARE_mad@
 	cd @DIR_mad@ && \
