@@ -1,0 +1,383 @@
+diff -ur linux-2.4.25-dbox/.config linux-2.4.25/.config
+--- linux-2.4.25-dbox/.config	Sat Feb 21 14:39:13 2004
++++ linux-2.4.25/.config	Fri Feb 20 21:00:23 2004
+@@ -218,11 +218,15 @@
+ # CONFIG_FILTER is not set
+ CONFIG_UNIX=y
+ CONFIG_INET=y
+-# CONFIG_IP_MULTICAST is not set
++CONFIG_IP_MULTICAST=y
+ # CONFIG_IP_ADVANCED_ROUTER is not set
+-# CONFIG_IP_PNP is not set
++CONFIG_IP_PNP=y
++# CONFIG_IP_PNP_DHCP is not set
++CONFIG_IP_PNP_BOOTP=y
++# CONFIG_IP_PNP_RARP is not set
+ # CONFIG_NET_IPIP is not set
+ # CONFIG_NET_IPGRE is not set
++# CONFIG_IP_MROUTE is not set
+ # CONFIG_ARPD is not set
+ # CONFIG_INET_ECN is not set
+ # CONFIG_SYN_COOKIES is not set
+@@ -271,8 +275,45 @@
+ #
+ # ATA/IDE/MFM/RLL support
+ #
+-# CONFIG_IDE is not set
++CONFIG_IDE=y
++
++#
++# IDE, ATA and ATAPI Block devices
++#
++CONFIG_BLK_DEV_IDE=y
++
++#
++# Please see Documentation/ide.txt for help/info on IDE drives
++#
++# CONFIG_BLK_DEV_HD_IDE is not set
+ # CONFIG_BLK_DEV_HD is not set
++CONFIG_BLK_DEV_IDEDISK=y
++CONFIG_IDEDISK_MULTI_MODE=y
++CONFIG_IDEDISK_STROKE=y
++# CONFIG_BLK_DEV_IDECS is not set
++CONFIG_BLK_DEV_IDECD=y
++# CONFIG_BLK_DEV_IDETAPE is not set
++# CONFIG_BLK_DEV_IDEFLOPPY is not set
++# CONFIG_BLK_DEV_IDESCSI is not set
++# CONFIG_IDE_TASK_IOCTL is not set
++
++#
++# IDE chipset support/bugfixes
++#
++# CONFIG_BLK_DEV_CMD640 is not set
++# CONFIG_BLK_DEV_CMD640_ENHANCED is not set
++# CONFIG_BLK_DEV_ISAPNP is not set
++CONFIG_BLK_DEV_MPC8xx_IDE=y
++# CONFIG_IDE_8xx_PCCARD is not set
++# CONFIG_IDE_8xx_DIRECT is not set
++CONFIG_IDE_EXT_DIRECT=y
++# CONFIG_IDE_CHIPSETS is not set
++# CONFIG_IDEDMA_AUTO is not set
++# CONFIG_DMA_NONPCI is not set
++# CONFIG_BLK_DEV_ATARAID is not set
++# CONFIG_BLK_DEV_ATARAID_PDC is not set
++# CONFIG_BLK_DEV_ATARAID_HPT is not set
++# CONFIG_BLK_DEV_ATARAID_SII is not set
+ 
+ #
+ # SCSI support
+@@ -588,7 +629,7 @@
+ #
+ # CONFIG_QUOTA is not set
+ # CONFIG_QFMT_V2 is not set
+-# CONFIG_AUTOFS_FS is not set
++CONFIG_AUTOFS_FS=y
+ # CONFIG_AUTOFS4_FS is not set
+ # CONFIG_REISERFS_FS is not set
+ # CONFIG_REISERFS_CHECK is not set
+@@ -601,24 +643,24 @@
+ # CONFIG_BEFS_FS is not set
+ # CONFIG_BEFS_DEBUG is not set
+ # CONFIG_BFS_FS is not set
+-# CONFIG_EXT3_FS is not set
+-# CONFIG_JBD is not set
++CONFIG_EXT3_FS=y
++CONFIG_JBD=y
+ # CONFIG_JBD_DEBUG is not set
+-# CONFIG_FAT_FS is not set
+-# CONFIG_MSDOS_FS is not set
+-# CONFIG_UMSDOS_FS is not set
+-# CONFIG_VFAT_FS is not set
++CONFIG_FAT_FS=m
++CONFIG_MSDOS_FS=m
++CONFIG_UMSDOS_FS=m
++CONFIG_VFAT_FS=m
+ # CONFIG_EFS_FS is not set
+ # CONFIG_JFFS_FS is not set
+ CONFIG_JFFS2_FS=y
+ CONFIG_JFFS2_FS_DEBUG=0
+ # CONFIG_JFFS2_FS_NAND is not set
+ CONFIG_CRAMFS=y
+ # CONFIG_SQUASHFS is not set
+-# CONFIG_TMPFS is not set
++CONFIG_TMPFS=y
+ CONFIG_RAMFS=y
+-# CONFIG_ISO9660_FS is not set
+-# CONFIG_JOLIET is not set
++CONFIG_ISO9660_FS=y
++CONFIG_JOLIET=y
+ # CONFIG_ZISOFS is not set
+ # CONFIG_JFS_FS is not set
+ # CONFIG_JFS_DEBUG is not set
+@@ -635,9 +676,9 @@
+ # CONFIG_QNX4FS_FS is not set
+ # CONFIG_QNX4FS_RW is not set
+ # CONFIG_ROMFS_FS is not set
+-# CONFIG_EXT2_FS is not set
++CONFIG_EXT2_FS=y
+ # CONFIG_SYSV_FS is not set
+-# CONFIG_UDF_FS is not set
++CONFIG_UDF_FS=m
+ # CONFIG_UDF_RW is not set
+ # CONFIG_UFS_FS is not set
+ # CONFIG_UFS_FS_WRITE is not set
+@@ -652,15 +693,15 @@
+ #
+ # CONFIG_CODA_FS is not set
+ # CONFIG_INTERMEZZO_FS is not set
+-CONFIG_NFS_FS=m
++CONFIG_NFS_FS=y
+ CONFIG_NFS_V3=y
+ # CONFIG_NFS_DIRECTIO is not set
+-# CONFIG_ROOT_NFS is not set
++CONFIG_ROOT_NFS=y
+ # CONFIG_NFSD is not set
+ # CONFIG_NFSD_V3 is not set
+ # CONFIG_NFSD_TCP is not set
+-CONFIG_SUNRPC=m
+-CONFIG_LOCKD=m
++CONFIG_SUNRPC=y
++CONFIG_LOCKD=y
+ CONFIG_LOCKD_V4=y
+ CONFIG_CIFS=m
+ # CONFIG_SMB_FS is not set
+diff -ur linux-2.4.25-dbox/arch/ppc/platforms/dbox2.h linux-2.4.25/arch/ppc/platforms/dbox2.h
+--- linux-2.4.25-dbox/arch/ppc/platforms/dbox2.h	Fri Nov 28 19:26:19 2003
++++ linux-2.4.25/arch/ppc/platforms/dbox2.h	Fri Feb 20 21:00:19 2004
+@@ -1,6 +1,6 @@
+ /*
+  * D-BOX2 board specific definitions
+- * 
++ *
+  * Copyright (c) 2001-2002 Florian Schirmer (jolt@tuxbox.org)
+  */
+ 
+@@ -8,7 +8,7 @@
+ #define __MACH_DBOX2_H
+ 
+ #include <linux/config.h>
+- 
++
+ #include <asm/ppcboot.h>
+ 
+ #define	DBOX2_IMMR_BASE	0xFF000000	/* phys. addr of IMMR */
+@@ -16,6 +16,83 @@
+ 
+ #define	IMAP_ADDR	DBOX2_IMMR_BASE	/* physical base address of IMMR area */
+ #define IMAP_SIZE	DBOX2_IMAP_SIZE	/* mapped size of IMMR area */
++
++
++/*-----------------------------------------------------------------------
++ * added 11.09.2003 07:14 by RR4711 for IDE Interface support
++ *-----------------------------------------------------------------------
++*/
++
++#if (defined(CONFIG_PCMCIA_M8XX)    || defined(CONFIG_PCMCIA_M8XX_MODULE) ) && \
++    (defined(CONFIG_IDE_8xx_PCCARD) || defined(CONFIG_IDE_8xx_DIRECT) )
++#error "Do NOT defined CONFIG_PCMCIA_M8XX _and_ CONFIG_IDE_8xx_XXX !!!"
++#endif
++
++
++/*if defined(CONFIG_PCMCIA_M8XX) || defined(CONFIG_PCMCIA_M8XX_MODULE)*/
++#ifdef CONFIG_HOTPLUG
++/* define IO_BASE for PCMCIA */
++#define _IO_BASE	0x80000000
++#define _IO_BASE_SIZE	(64<<10)
++/*#define _IO_BASE_SIZE	0x1000		??? */
++
++#ifdef CONFIG_IDE
++#define ide_request_irq(irq,hand,flg,dev,id)    \
++        request_8xxirq((irq),(hand),(flg),(dev),(id))
++#endif
++#endif
++
++#define PCMCIA_MEM_SIZE		( 64 << 20 )
++
++#define MAX_HWIFS			1	/* overwrite default in include/asm-ppc/ide.h	*/
++
++/*
++ * Definitions for IDE0 Interface
++ */
++
++#if defined(CONFIG_IDE_8xx_PCCARD)
++# define IDE0_BASE_OFFSET		0
++# define IDE0_DATA_REG_OFFSET		(PCMCIA_MEM_SIZE + 0x320)
++# define IDE0_ERROR_REG_OFFSET		(2 * PCMCIA_MEM_SIZE + 0x320 + 1)
++# define IDE0_NSECTOR_REG_OFFSET	(2 * PCMCIA_MEM_SIZE + 0x320 + 2)
++# define IDE0_SECTOR_REG_OFFSET		(2 * PCMCIA_MEM_SIZE + 0x320 + 3)
++# define IDE0_LCYL_REG_OFFSET		(2 * PCMCIA_MEM_SIZE + 0x320 + 4)
++# define IDE0_HCYL_REG_OFFSET		(2 * PCMCIA_MEM_SIZE + 0x320 + 5)
++# define IDE0_SELECT_REG_OFFSET		(2 * PCMCIA_MEM_SIZE + 0x320 + 6)
++# define IDE0_STATUS_REG_OFFSET		(2 * PCMCIA_MEM_SIZE + 0x320 + 7)
++# define IDE0_CONTROL_REG_OFFSET	0x0106
++# define IDE0_IRQ_REG_OFFSET		0x000A	/* not used			*/
++
++#elif defined(CONFIG_IDE_EXT_DIRECT)
++
++#define CFG_ATA_BASE_ADDR		0x02000000
++
++#define IDE0_BASE_OFFSET		0x0000
++#define IDE0_DATA_REG_OFFSET		0x0000
++#define IDE0_ERROR_REG_OFFSET		0x0004
++#define IDE0_NSECTOR_REG_OFFSET		0x0008
++#define IDE0_SECTOR_REG_OFFSET		0x000c
++#define IDE0_LCYL_REG_OFFSET		0x0010
++#define IDE0_HCYL_REG_OFFSET		0x0014
++#define IDE0_SELECT_REG_OFFSET		0x0018
++#define IDE0_STATUS_REG_OFFSET		0x001c
++
++#define IDE0_CONTROL_REG_OFFSET		0x0038
++#define IDE0_IRQ_REG_OFFSET		0x0008
++#endif
++
++/*
++ * Interrupts
++ */
++
++#define IDE0_INTERRUPT		SIU_IRQ6	/*  external interrupt	*/
++
++#define DAB4K_IDE_TIMING_STRING	"(OR_CSNT | OR_ACS_10 | OR_BI | OR_SCY_1_CLK | OR_TRLX | OR_EHTR)"
++
++#define CFG_OR			memc_or2
++#define CFG_BR			memc_br2
++#define CFG_OR_VALUE		0xfe000966
++#define CFG_BR_VALUE		0x02000001
+ 
+ /* We don't use the 8259.
+ */
+diff -ur linux-2.4.25-dbox/drivers/ide/ide-probe.c linux-2.4.25/drivers/ide/ide-probe.c
+--- linux-2.4.25-dbox/drivers/ide/ide-probe.c	Fri Nov 28 19:26:20 2003
++++ linux-2.4.25/drivers/ide/ide-probe.c	Fri Feb 20 21:00:19 2004
+@@ -174,6 +174,7 @@
+ 	/* we depend on this a lot! */
+ 	id->model[sizeof(id->model)-1] = '\0';
+ 	printk("%s: %s, ", drive->name, id->model);
++
+ 	drive->present = 1;
+ 	drive->dead = 0;
+ 
+@@ -260,6 +261,7 @@
+ 	}
+ 	drive->media = ide_disk;
+ 	printk("%s DISK drive\n", (drive->is_flash) ? "CFA" : "ATA" );
++
+ 	QUIRK_LIST(drive);
+ 	return;
+ 
+diff -ur linux-2.4.25-dbox/drivers/ide/ppc/mpc8xx.c linux-2.4.25/drivers/ide/ppc/mpc8xx.c
+--- linux-2.4.25-dbox/drivers/ide/ppc/mpc8xx.c	Fri Jun 13 16:51:34 2003
++++ linux-2.4.25/drivers/ide/ppc/mpc8xx.c	Fri Feb 20 21:00:19 2004
+@@ -31,6 +31,8 @@
+ #include <linux/ioport.h>
+ #include <linux/ide.h>
+ #include <linux/bootmem.h>
++#include <linux/delay.h>
++
+ 
+ #include <asm/mpc8xx.h>
+ #include <asm/mmu.h>
+@@ -44,6 +46,7 @@
+ #include <asm/irq.h>
+ 
+ #include "ide_modes.h"
++
+ static int identify  (volatile u8 *p);
+ static void print_fixed (volatile u8 *p);
+ static void print_funcid (int func);
+@@ -356,17 +359,23 @@
+ 	static unsigned long ide_base = 0;
+ 	unsigned long base;
+ 
++	volatile memctl8xx_t *memctl = &(((volatile immap_t *) IMAP_ADDR)->im_memctl);
++
+ 	*p = 0;
+ 	if (irq)
+ 		*irq = 0;
+ 
+ 	if (!ide_base) {
+ 
+-		/* TODO:
+-		 * - add code to read ORx, BRx
+-		 */
++		memctl->CFG_OR = CFG_OR_VALUE;
++		memctl->CFG_BR = CFG_BR_VALUE;
++		
++		printk ("MEMCTRL_OR : %08x\n", CFG_OR_VALUE);
++		printk ("MEMCTRL_BR : %08x\n", CFG_BR_VALUE);
++
++
+ 		ide_phy_base = CFG_ATA_BASE_ADDR;
+-		ide_phy_end  = CFG_ATA_BASE_ADDR + 0x200;
++		ide_phy_end  = CFG_ATA_BASE_ADDR + 0x4000;
+ 
+ 		printk ("IDE phys mem : %08x...%08x (size %08x)\n",
+ 			ide_phy_base, ide_phy_end,
+@@ -379,6 +388,14 @@
+ 		printk ("IDE virt base: %08lx\n", ide_base);
+ #endif
+ 	}
++//	printk ("Trying to set LEDs @%08lx using 8 bit wide access...\n",ide_base+(0x800));
++//	outb(0x55,ide_base+(0x800));
++	
++//	printk ("Trying to set LEDs @%08lx using 16 bit wide access...\n",ide_base+(0x800));
++//	outw(0x00AA,ide_base+(0x800));
++	
++//	udelay(1000000);
++	
+ 
+ 	if (data_port >= MAX_HWIFS)
+ 		return;
+@@ -533,6 +550,7 @@
+ 	 * The interrupt is handled somewhere else.	-- Steven
+ 	 */
+ #endif /* CONFIG_IDE_8xx_PCCARD */
++return;
+ }
+ 
+ 
+@@ -855,3 +873,5 @@
+ 	ppc_ide_md.default_io_base      = m8xx_ide_default_io_base;
+ 	ppc_ide_md.ide_init_hwif        = m8xx_ide_init_hwif_ports;
+ }
++
++#undef DEBUG
+diff -ur linux-2.4.25-dbox/drivers/mtd/maps/dbox2-flash.c linux-2.4.25/drivers/mtd/maps/dbox2-flash.c
+--- linux-2.4.25-dbox/drivers/mtd/maps/dbox2-flash.c	Sat Feb 21 14:39:09 2004
++++ linux-2.4.25/drivers/mtd/maps/dbox2-flash.c	Fri Feb 20 21:00:19 2004
+@@ -33,13 +33,13 @@
+ 	},
+ 	{
+ 	.name		= "root (cramfs)",	
+-	.size		= 7040 * 1024, 
++	.size		= 7296 * 1024, 
+ 	.offset		= MTDPART_OFS_APPEND, 
+ 	.mask_flags	= 0
+ 	},
+ 	{
+ 	.name		= "var (jffs2)",
+-	.size		= 896 * 1024, 
++	.size		= 640 * 1024, 
+ 	.offset		= MTDPART_OFS_APPEND, 
+ 	.mask_flags	= 0
+ 	},
+diff -ur linux-2.4.25-dbox/include/asm-ppc/ide.h linux-2.4.25/include/asm-ppc/ide.h
+--- linux-2.4.25-dbox/include/asm-ppc/ide.h	Fri Jun 13 16:51:38 2003
++++ linux-2.4.25/include/asm-ppc/ide.h	Fri Feb 20 21:03:18 2004
+@@ -17,7 +17,7 @@
+ #include <asm/mpc8xx.h>
+ 
+ #ifndef MAX_HWIFS
+-#define MAX_HWIFS	8
++#define MAX_HWIFS	1
+ #endif
+ 
+ #include <asm/hdreg.h>
+@@ -108,7 +108,7 @@
+  * The following are not needed for the non-m68k ports
+  * unless direct IDE on 8xx
+  */
+-#if (defined CONFIG_APUS || defined CONFIG_BLK_DEV_MPC8xx_IDE )
++#if (defined CONFIG_APUS)
+ #define IDE_ARCH_ACK_INTR 1
+ #endif
+ 
