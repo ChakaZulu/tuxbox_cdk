@@ -88,7 +88,7 @@ gdb-6.1.1.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
 insight-6.1.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
 ltrace_0.3.26.tar.gz;ftp://ftp.debian.org/debian/pool/main/l/ltrace
 strace-4.4.98.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/strace
-nano-1.2.2.tar.gz;http://www.nano-editor.org/dist/v1.2
+nano-1.2.4.tar.gz;http://www.nano-editor.org/dist/v1.2
 mc-4.6.1-pre1.tar.gz;ftp://ftp.zcu.cz/pub/linux/utils/file/managers/mc
 joe-3.1.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/joe-editor
 
