@@ -87,7 +87,7 @@ kaffe-1.0.6.tar.gz;ftp://ftp.kaffe.org/pub/kaffe/v1.0.x-production
 # fun
 #
 gnuboy-1.0.3.tar.gz;http://gnuboy.unix-fu.org/src
-mad-0.14.2b.tar.gz;ftp://ftp.mars.org/pub/mpeg
+mad-0.14.2b.tuxbox.1.tar.bz2;ftp://ftp.mars.org/pub/mpeg
 scummvm_0.3.0b-src.tar.bz2;http://belnet.dl.sourceforge.net/sourceforge/scummvm/
 sdldoom-1.10.tar.gz;ftp://ftp2.3ddownloads.com/89958/doomworld/ports
 
