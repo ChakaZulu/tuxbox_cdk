@@ -1677,7 +1677,7 @@ distclean-local:
 	-rm .cabextract .msttf
 	-rm .gdb .ksymoops .ltrace .strace .nano
 	-rm .kaffeh .kaffe
-	-rm .scummvm .sdldoom
+	-rm .gnuboy .scummvm .sdldoom
 	-rm .ppcboot .linuxkernel .driver
 	-rm .camd .dvbsnoop .enigma .lcars .lcdmenu .neutrino .stream .zapit
 	-rm .console_data .console_tools .dsniff .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
