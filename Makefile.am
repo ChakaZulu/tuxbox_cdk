@@ -412,6 +412,19 @@ libs: \
 	@CLEANUP_libpng@
 	touch .libpng
 
+.libpopt: .bootstrap @DEPENDS_libpopt@
+	@PREPARE_libpopt@
+	cd @DIR_libpopt@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		make && \
+		@INSTALL_libpopt@
+	@CLEANUP_libpopt@
+	touch .libpopt
+
 #
 # qt embedded (current only moc)
 #
@@ -614,6 +627,17 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc
 		@INSTALL_lirc@
 	@CLEANUP_lirc@
 	touch .lirc
+
+.pump: .bootstrap .libpopt @DEPENDS_ssh@
+	@PREPARE_pump@
+	cd @DIR_pump@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		make && \
+		@INSTALL_pump@
+	@CLEANUP_pump@
+	touch .pump
 
 .ssh: .bootstrap .libcrypto .libz @DEPENDS_ssh@
 	@PREPARE_ssh@
