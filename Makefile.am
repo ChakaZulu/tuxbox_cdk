@@ -1309,7 +1309,7 @@ $(appsdir)/dvb/zapit/Makefile: .bootstrap
 
 # dvb/tools
 
-$(appsdir)/dvb/tools/Makefile: .bootstrap .libmpegtools
+$(appsdir)/dvb/tools/Makefile: .bootstrap .misc_libs
 	cd $(appsdir)/dvb/tools && $(CONFIGURE)
 
 .stream: $(appsdir)/dvb/tools/Makefile .inetd
