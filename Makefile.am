@@ -11,6 +11,11 @@ $(hostprefix)/bin/$(TARGET)-gcc:
 		make bootstrap_gcc; \
 	fi
 
+#######################
+#
+#   core
+#
+
 .directories:
 	install -d $(targetprefix)/dev
 	install -d $(targetprefix)/proc
@@ -101,9 +106,11 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	@CLEANUP_gcc@
 	touch .gcc
 
+#######################
 #
-# minimal root
+#   minimal root
 #
+
 .busybox: .gcc @DEPENDS_busybox@
 	@PREPARE_busybox@
 	make -C @DIR_busybox@ CROSS=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)"
@@ -111,9 +118,11 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	@CLEANUP_busybox@
 	touch .busybox
 
+#######################
 #
-# contrib libs
+#   contrib libs
 #
+
 .libcurl: .gcc @DEPENDS_libcurl@
 	@PREPARE_libcurl@
 	cd @DIR_libcurl@ && \
@@ -226,9 +235,11 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	@CLEANUP_libz@
 	touch .libz
 
+#######################
 #
-# own applications
+#   own applications
 #
+
 apps/Makefile: .libxml2 .freetype .libqte .curl
 	cd apps && ./autogen.sh && \
 	./configure \
@@ -239,9 +250,11 @@ apps/Makefile: .libxml2 .freetype .libqte .curl
 	make -C apps/edvb all install
 	touch .edvb
 
+#######################
 #
-# internal
+#   internal
 #
+
 distclean-local:
 	-rm Makefile-archive
 	-rm .directories .linuxdir .binutils .glibc .gcc

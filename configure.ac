@@ -46,21 +46,28 @@ AC_SUBST(targetprefix)
 AC_SUBST(hostprefix)
 AC_SUBST(buildprefix)
 
+#
+# core
+#
 KERNELVERSION=`${srcdir}/rules-make.pl ${srcdir}/rules-make${RULESET} linux version`
 AC_SUBST(KERNELVERSION)
-
 DEPENDS_linuxdir=`${srcdir}/rules-make.pl ${srcdir}/rules-make${RULESET} linux depend`
 AC_SUBST(DEPENDS_linuxdir)
 PREPARE_linuxdir=`${srcdir}/rules-make.pl ${srcdir}/rules-make${RULESET} linux prepare`
 AC_SUBST(PREPARE_linuxdir)
-
 TUXBOX_RULES_MAKE_EXDIR(binutils)
 TUXBOX_RULES_MAKE_EXDIR(bootstrap_gcc)
 TUXBOX_RULES_MAKE_EXDIR(glibc)
 TUXBOX_RULES_MAKE_EXDIR(gcc)
   
+#
+# minimal root
+#
 TUXBOX_RULES_MAKE(busybox)
 
+#
+# contrib libs
+#
 TUXBOX_RULES_MAKE(libcurl)
 TUXBOX_RULES_MAKE(libfreetype)
 TUXBOX_RULES_MAKE(libncurses)
@@ -70,6 +77,9 @@ TUXBOX_RULES_MAKE(libqt)
 TUXBOX_RULES_MAKE(libxml2)
 TUXBOX_RULES_MAKE(libz)
 
+#
+# internal
+#
 AC_CONFIG_COMMANDS_POST([
 AC_MSG_NOTICE([creating Makefile-archive])
 ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
