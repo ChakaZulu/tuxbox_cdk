@@ -147,6 +147,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 
 .etc: .busybox .tinylogin .modutils
 	cd $(targetprefix)/etc && patch -p1 < $(buildprefix)/Patches/etc.diff
+	chmod 755 $(targetprefix)/etc/init.d/*
 	touch .etc
 
 		
@@ -284,7 +285,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	make -C $(bootdir)/ppcboot distclean
 	touch .ppcboot
 
-.linuxkernel: .gcc .ppcboot
+.linuxkernel: .linuxdir .gcc .ppcboot
 	make -C @DIR_linux@ dep zImage modules CROSS_COMPILE=$(TARGET)-
 	make -C @DIR_linux@ modules_install INSTALL_MOD_PATH=$(targetprefix)
 	$(hostprefix)/bin/mkimage \
