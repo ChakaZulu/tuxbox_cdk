@@ -201,7 +201,7 @@ root: \
 	.procps .watchdog
 
 root_optional: \
-	.portmap
+	.portmap .mrouted
 
 .busybox: .bootstrap @DEPENDS_busybox@
 	@PREPARE_busybox@
@@ -281,6 +281,16 @@ endif
 	@CLEANUP_watchdog@
 	touch $@
 
+.mrouted: .bootstrap @DEPENDS_mrouted@
+	@PREPARE_mrouted@
+	cd @DIR_mrouted@ && \
+	    $(BUILDENV) \
+	    $(MAKE) all && \
+	    $(INSTALL) -m755 mrouted $(targetprefix)/bin/mrouted && \
+	    $(INSTALL) -m755 map-mbone $(targetprefix)/bin/map-mbone && \
+	    $(INSTALL) -m755 mrinfo $(targetprefix)/bin/mrinfo
+	@CLEANUP_mrouted@
+	touch $@
 
 #######################
 #
@@ -1639,7 +1649,7 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .root .busybox .ftpd .inetd .modutils .procps .watchdog
+	-rm .root .busybox .ftpd .inetd .modutils .procps .watchdog .mrouted
 	-rm .libboost .libcommoncplusplus .libcrypto .libcurl
 	-rm .libdirectfb .libdirectfbpp .libdvb .libdvbpsi .libexpat .libffi .libfreetype
 	-rm .libfribidi .libncurses .libid3tag .libjpeg .libmad .libpcap .libpng

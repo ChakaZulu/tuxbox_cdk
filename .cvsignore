@@ -75,6 +75,7 @@ linux-2.4.22
 .misc_libs
 .misc_tools
 .modutils
+.mrouted
 .nano
 .neutrino
 .portmap

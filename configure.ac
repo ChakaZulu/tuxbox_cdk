@@ -273,6 +273,7 @@ TUXBOX_RULES_MAKE(netkit_telnet)
 TUXBOX_RULES_MAKE(portmap)
 TUXBOX_RULES_MAKE(procps)
 TUXBOX_RULES_MAKE(watchdog)
+TUXBOX_RULES_MAKE(mrouted)
 
 #
 # contrib libs
