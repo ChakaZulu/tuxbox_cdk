@@ -201,7 +201,7 @@ $(DEPDIR)/gcc: @DEPENDS_gcc@
 #
 
 root: \
-	rootdirectories busybox ftpd modutils \
+	rootdirectories busybox ftpd  \
 	procps watchdog
 
 root_optional: \
