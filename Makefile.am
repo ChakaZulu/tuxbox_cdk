@@ -628,7 +628,9 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc
 			--without-shadow \
 			--with-4in6 \
 			--disable-suid-ssh \
-			--with-path="/bin:/sbin" && \
+			--with-path="/bin:/sbin" \
+			--with-privsep-user=sshd \
+			--with-privsep-path=/share/empty && \
 		make && \
 		@INSTALL_ssh@
 	@CLEANUP_ssh@
@@ -943,6 +945,11 @@ else
 endif
 	touch .driver
 
+driver-clean:
+	make -C $(driverdir) clean \
+		KERNEL_LOCATION=$(buildprefix)/linux
+	rm .driver
+
 #######################
 #
 #   own applications
@@ -1137,6 +1144,7 @@ $(flashprefix)/.part_sshd: $(flashprefix)/.flash .ssh
 	$(INSTALL) -d $(flashprefix)/root/libexec
 	$(INSTALL) $(targetprefix)/libexec/sftp-server $(flashprefix)/root/libexec
 	$(INSTALL) $(targetprefix)/sbin/sshd $(flashprefix)/root/sbin
+	$(INSTALL) -d $(flashprefix)/root/share/empty
 	@touch $(flashprefix)/.part_sshd
 
 flash-neutrino: $(flashprefix)/.part_neutrino
