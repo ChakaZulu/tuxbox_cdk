@@ -37,14 +37,14 @@ AC_ARG_WITH(targetruleset,
 	[targetruleset="$withval"],[targetruleset="standard"])
 
 if test "$targetruleset" = "standard"; then
-	TARGET_CFLAGS="-O2 -mcpu=823"
-	TARGET_CXXFLAGS="-O2 -mcpu=823"
+	TARGET_CFLAGS="-O2 -mcpu=823 -pipe"
+	TARGET_CXXFLAGS="-O2 -mcpu=823 -pipe"
 	TARGET_LDFLAGS="-s"
 	INSTALLRULESETFILE=""
 	APPSTARGET="dbox2"
 elif test "$targetruleset" = "flash"; then
-	TARGET_CFLAGS="-Os -mcpu=823"
-	TARGET_CXXFLAGS="-Os -mcpu=823"
+	TARGET_CFLAGS="-Os -mcpu=823 -pipe"
+	TARGET_CXXFLAGS="-Os -mcpu=823 -pipe"
 	TARGET_LDFLAGS="-s"
 	INSTALLRULESETFILE="-flash"
 	APPSTARGET="dbox2flash"
