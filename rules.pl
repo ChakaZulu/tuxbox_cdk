@@ -50,6 +50,10 @@ sub process_make_depends (@)
     {
       $output .= "Archive/" . $_ . " ";
     }
+    elsif ( $_ =~ m#\.(bz2|gz)$# )
+    {
+      $output .= "Archive/" . $_ . " ";
+    }
     elsif ( $_ =~ m#\.(config|diff|patch)$# )
     {
       $output .= "Patches/" . $_ . " ";
