@@ -292,7 +292,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
 		-a 00000000 -e 00000000 \
 		-d @DIR_linux@/arch/ppc/coffboot/vmlinux.gz \
-		$(bootprefix)/kernel
+		$(bootprefix)/kernel-cdk
 	make -C @DIR_linux@ clean
 	touch .linuxkernel
 
