@@ -292,7 +292,7 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 
 libs: \
 	.libcrypto .libcurl .libffi .libfreetype .libjpeg .libncurses \
-	.libpng .libqt .libreadline .libsdl .libsigc .libxml2 .libz
+	.libpng .libqt .libreadline .libsdl .libsigc .libz
 
 .libcrypto: .bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
@@ -339,7 +339,6 @@ libs: \
 			CFG="--host=${target} --prefix=${targetprefix}" && \
 		make all && \
 		@INSTALL_libfreetype@
-		$(target)-ar cru $(targetprefix)/lib/libfreetype_pic.a @DIR_libfreetype@/objs/*.o
 	@CLEANUP_libfreetype@
 	touch .libfreetype
 
@@ -363,7 +362,6 @@ libs: \
 			--without-cxx-binding \
 			--with-fallbacks='linux vt100 xterm' && \
 		@INSTALL_libncurses@
-		$(target)-ar cru $(targetprefix)/lib/libncurses_pic.a @DIR_libncurses@/obj_s/*.o @DIR_libncurses@/objects/*.o
 	@CLEANUP_libncurses@
 	touch .libncurses
 
@@ -398,10 +396,8 @@ libs: \
 .libpng: .bootstrap .libz @DEPENDS_libpng@
 	@PREPARE_libpng@
 	cd @DIR_libpng@ && \
-		cp scripts/makefile.linux Makefile && \
 		make all CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS) -DPNG_DEBUG=0" && \
 		@INSTALL_libpng@
-		$(target)-ar cru $(targetprefix)/lib/libpng_pic.a @DIR_libpng@/*.o
 	@CLEANUP_libpng@
 	touch .libpng
 
@@ -524,7 +520,6 @@ libs: \
 			--shared && \
 		make libz.so.1.1.4 && \
 		@INSTALL_libz@
-		$(target)-ar cru $(targetprefix)/lib/libz_pic.a @DIR_libz@/*.o
 	@CLEANUP_libz@
 	touch .libz
 
@@ -966,7 +961,7 @@ endif
 	make -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
-.neutrino: $(appsdir)/Makefile .libconfigfile .liblcddisplay .libmd5sum .libnet .libucodes .msttf .sections .zapit
+.neutrino: $(appsdir)/Makefile .libcramfs .libconfigfile .liblcddisplay .libmd5sum .libnet .libucodes .msttf .sections .zapit
 	make -C $(appsdir)/mczap all install
 	touch .neutrino
 
@@ -999,6 +994,10 @@ endif
 	make -C $(appsdir)/libconfigfile all install
 	touch .libconfigfile
 
+.libcramfs: $(appsdir)/Makefile
+	make -C $(appsdir)/libcramfs all install
+	touch .libcramfs
+
 .liblcddisplay: $(appsdir)/Makefile
 	make -C $(appsdir)/liblcddisplay all install
 	touch .liblcddisplay
@@ -1009,7 +1008,9 @@ endif
 
 .libmpegtools: $(appsdir)/Makefile
 	make -C $(appsdir)/libmpegtools all install
+if TARGETRULESET_FLASH
 	$(target)-ar cru $(targetprefix)/lib/libmpegtools_pic.a $(appsdir)/libmpegtools/*.o
+endif
 	touch .libmpegtools
 
 .libnet: $(appsdir)/Makefile
@@ -1048,10 +1049,14 @@ $(flashprefix)/.flash: .busybox .driver .modutils
 	for i in `find $(targetprefix)/sbin/ -lname "*busybox"` ; do cp -a $$i $(flashprefix)/root/sbin/ ; done
 
 	$(INSTALL) $(targetprefix)/sbin/insmod $(flashprefix)/root/sbin
+	$(INSTALL) $(targetprefix)/sbin/depmod $(flashprefix)/root/sbin
 	for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -a $$i $(flashprefix)/root/sbin/ ; done
 
-	cp -a $(targetprefix)/lib/modules $(flashprefix)/root/lib/
-	cp -a $(bootprefix)/kernel-cdk $(flashprefix)/root/linux
+	install -d $(flashprefix)/root/lib/modules/$(KERNELVERSION)
+	cp -a $(targetprefix)/lib/modules/$(KERNELVERSION)/kernel $(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
+		$(flashprefix)/root/lib/modules/$(KERNELVERSION)
+	install -d $(flashprefix)/root/var/lib/modules/$(KERNELVERSION)
+	cp -a $(bootprefix)/kernel-cdk $(flashprefix)/root/vmlinuz
 	@touch $(flashprefix)/.flash
 
 flash-ftpd: $(flashprefix)/.part_ftpd
@@ -1158,13 +1163,13 @@ flash-compress-complete-jffs2: $(flashprefix)/root-jffs2.img
 $(flashprefix)/root-cramfs.img: $(flashprefix)/.lib
 	@install -d $(flashprefix)/temp
 	@cp -a $(flashprefix)/root/* $(flashprefix)/temp/
-	@rm -rf $(flashprefix)/temp/var/
+	@rm -rf $(flashprefix)/temp/var/*
 	@$(FAKEROOT) $(MKCRAMFS) -n "TuxBox-`date +%Y%m%d`" $(flashprefix)/temp/ $(flashprefix)/root-cramfs.img
 	@rm -rf $(flashprefix)/temp/
 
 $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
 	@install -d $(flashprefix)/temp
-	@cp -a $(flashprefix)/root/var $(flashprefix)/temp/
+	@cp -a $(flashprefix)/root/var/* $(flashprefix)/temp/
 	@$(FAKEROOT) $(MKJFFS2) -b -e 131072 -o $(flashprefix)/var-jffs2.img -r $(flashprefix)/temp/
 	@rm -rf $(flashprefix)/temp/
 
