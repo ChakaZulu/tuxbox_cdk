@@ -919,7 +919,7 @@ fun: .mad .scummvm
 			--prefix=$(targetprefix) && \
 		make all && \
 		@INSTALL_sdldoom@
-	#@CLEANUP_sdldoom@
+	@CLEANUP_sdldoom@
 	touch .sdldoom
 
 #######################
