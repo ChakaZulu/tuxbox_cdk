@@ -1,5 +1,5 @@
 # /etc/services:
-# $Id: services,v 1.4 2002/03/06 03:58:44 obi Exp $
+# $Id: services,v 1.5 2002/03/23 00:09:07 obi Exp $
 
 echo		7/tcp
 echo		7/udp
@@ -39,5 +39,8 @@ saft		487/udp				# Simple Asynchronous File Transfer
 
 # Local services
 
+streamsec	31335/tcp
+streamavpes	31336/tcp
+streamps	31337/tcp
 streampes	31338/tcp
 streamts	31339/tcp
