@@ -1398,7 +1398,7 @@ $(DEPDIR)/dvbsnoop: $(appsdir)/dvb/dvbsnoop/config.status
 
 # dvb/libdvb++
 
-$(appsdir)/dvb/libdvb++/config.status: bootstrap
+$(appsdir)/dvb/libdvb++/config.status: bootstrap libdvbsi++
 	cd $(appsdir)/dvb/libdvb++ && $(CONFIGURE) CPPFLAGS="$(CPPFLAGS) -I$(driverdir)/dvb/include"
 
 $(DEPDIR)/libdvb++: $(appsdir)/dvb/libdvb++/config.status
