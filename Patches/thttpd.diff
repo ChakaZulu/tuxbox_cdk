@@ -1,6 +1,6 @@
 diff -aur thttpd-2.20c.orig/Makefile.in thttpd-2.20c/Makefile.in
 --- thttpd-2.20c.orig/Makefile.in	Tue Jul  4 18:21:32 2000
-+++ thttpd-2.20c/Makefile.in	Sat Aug  3 02:14:41 2002
++++ thttpd-2.20c/Makefile.in	Sat Aug  3 18:40:01 2002
 @@ -30,16 +30,16 @@
  prefix = @prefix@
  exec_prefix = @exec_prefix@
@@ -21,6 +21,15 @@ diff -aur thttpd-2.20c.orig/Makefile.in thttpd-2.20c/Makefile.in
  
  # CONFIGURE: Directory for CGI executables.
  CGIBINDIR =	$(WEBDIR)/cgi-bin
+@@ -72,7 +72,7 @@
+ 
+ CLEANFILES =	$(ALL) $(OBJ) $(GENSRC) $(GENHDR)
+ 
+-SUBDIRS =	cgi-src extras
++SUBDIRS =	extras
+ 
+ all:		this subdirs
+ this:		$(ALL)
 @@ -111,10 +111,11 @@
  install:	installthis install-man installsubdirs
  
@@ -35,10 +44,9 @@ diff -aur thttpd-2.20c.orig/Makefile.in thttpd-2.20c/Makefile.in
  
  installsubdirs:
  	for i in $(SUBDIRS) ; do ( \
-Only in thttpd-2.20c: config.cache
 diff -aur thttpd-2.20c.orig/config.h thttpd-2.20c/config.h
 --- thttpd-2.20c.orig/config.h	Tue Sep 26 23:31:16 2000
-+++ thttpd-2.20c/config.h	Fri Aug  2 18:57:56 2002
++++ thttpd-2.20c/config.h	Sat Aug  3 02:17:05 2002
 @@ -68,7 +68,7 @@
  /* When virtual hosting, enable the central directory on every host: */
  #define CGI_PATTERN "/*/cgi-bin/*"
@@ -88,10 +96,9 @@ diff -aur thttpd-2.20c.orig/config.h thttpd-2.20c/config.h
  #endif
  
  /* CONFIGURE: How often to run the occasional cleanup job.
-Only in thttpd-2.20c: config.log
 diff -aur thttpd-2.20c.orig/extras/Makefile.in thttpd-2.20c/extras/Makefile.in
 --- thttpd-2.20c.orig/extras/Makefile.in	Wed Sep 15 18:00:14 1999
-+++ thttpd-2.20c/extras/Makefile.in	Fri Aug  2 18:57:56 2002
++++ thttpd-2.20c/extras/Makefile.in	Sat Aug  3 02:17:05 2002
 @@ -68,8 +68,8 @@
  install:	all
  	rm -f $(BINDIR)/makeweb $(BINDIR)/htpasswd $(BINDIR)/syslogtocern
@@ -105,7 +112,7 @@ diff -aur thttpd-2.20c.orig/extras/Makefile.in thttpd-2.20c/extras/Makefile.in
  	rm -f $(MANDIR)/man1/makeweb.1
 diff -aur thttpd-2.20c.orig/extras/htpasswd.c thttpd-2.20c/extras/htpasswd.c
 --- thttpd-2.20c.orig/extras/htpasswd.c	Thu May 28 23:23:48 1998
-+++ thttpd-2.20c/extras/htpasswd.c	Fri Aug  2 18:57:56 2002
++++ thttpd-2.20c/extras/htpasswd.c	Sat Aug  3 02:17:05 2002
 @@ -173,8 +173,8 @@
          exit(0);
      } else if(argc != 3) usage();
@@ -119,7 +126,7 @@ diff -aur thttpd-2.20c.orig/extras/htpasswd.c thttpd-2.20c/extras/htpasswd.c
      }
 diff -aur thttpd-2.20c.orig/libhttpd.c thttpd-2.20c/libhttpd.c
 --- thttpd-2.20c.orig/libhttpd.c	Thu Nov 22 07:06:23 2001
-+++ thttpd-2.20c/libhttpd.c	Fri Aug  2 18:57:56 2002
++++ thttpd-2.20c/libhttpd.c	Sat Aug  3 02:17:05 2002
 @@ -35,6 +35,7 @@
  #include <sys/stat.h>
  #include <sys/time.h>
@@ -130,7 +137,7 @@ diff -aur thttpd-2.20c.orig/libhttpd.c thttpd-2.20c/libhttpd.c
  #include <fcntl.h>
 diff -aur thttpd-2.20c.orig/timers.h thttpd-2.20c/timers.h
 --- thttpd-2.20c.orig/timers.h	Thu Sep 14 23:10:43 2000
-+++ thttpd-2.20c/timers.h	Fri Aug  2 18:57:56 2002
++++ thttpd-2.20c/timers.h	Sat Aug  3 02:17:05 2002
 @@ -32,7 +32,7 @@
  
  #ifndef INFTIM
