@@ -1553,7 +1553,8 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	cp -a $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
 
-	cp -a $(targetprefix)/var/tuxbox/config/*.xml $(flashprefix)/root/var/tuxbox/config
+	cp -a $(targetprefix)/etc/cables.xml $(flashprefix)/etc
+	cp -a $(targetprefix)/etc/satellites.xml $(flashprefix)/etc
 	@touch $(flashprefix)/.part_neutrino
 
 flash-enigma: $(flashprefix)/.part_enigma
@@ -1565,6 +1566,8 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
 	cp -a $(targetprefix)/share/fonts/Marlett.ttf $(targetprefix)/share/fonts/unmrs.pfa \
 		$(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/v5loxica*.ttf \
 		$(flashprefix)/root/share/fonts
+	cp -a $(targetprefix)/etc/cables.xml $(flashprefix)/etc
+	cp -a $(targetprefix)/etc/satellites.xml $(flashprefix)/etc
 	@touch $(flashprefix)/.part_enigma
 
 flash-lcars: $(flashprefix)/.part_lcars
