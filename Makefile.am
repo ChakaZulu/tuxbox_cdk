@@ -401,6 +401,7 @@ libs: \
 		cp scripts/makefile.linux Makefile && \
 		make all CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS) -DPNG_DEBUG=0" && \
 		@INSTALL_libpng@
+		$(target)-ar cru $(targetprefix)/lib/libpng_pic.a @DIR_libpng@/*.o
 	@CLEANUP_libpng@
 	touch .libpng
 
