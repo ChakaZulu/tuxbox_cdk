@@ -155,7 +155,7 @@ diff -urN mad-0.14.2b.orig/libid3tag/id3tag.pc.in mad-0.14.2b/libid3tag/id3tag.p
 +Requires:
 +Version: 0.14.2b
 +Libs: -L${libdir} -lid3tag -lz
-+Cflags: -L${includedir}
++Cflags: -I${includedir}
 diff -urN mad-0.14.2b.orig/libmad/Makefile.am mad-0.14.2b/libmad/Makefile.am
 --- mad-0.14.2b.orig/libmad/Makefile.am	2001-11-09 05:55:25.000000000 +0100
 +++ mad-0.14.2b/libmad/Makefile.am	2001-11-09 05:55:25.000000000 +0100
