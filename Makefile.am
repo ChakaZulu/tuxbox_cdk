@@ -314,7 +314,7 @@ libs_optional: \
 	@PREPARE_libcrypto@
 	cd @DIR_libcrypto@ && \
 		./Configure shared no-hw no-idea no-md2 no-md4 no-mdc2 no-rc2 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
-		$(MAKE) all && \
+		$(MAKE) depend all && \
 		@INSTALL_libcrypto@
 	@CLEANUP_libcrypto@
 	touch $@
@@ -995,10 +995,9 @@ boot: .u-boot .linuxkernel .driver
 
 .u-boot: .bootstrap $(bootdir)/u-boot/Makefile
 	$(MAKE) -C $(bootdir)/u-boot $(HARDWARERULESET)_config
-	$(MAKE) -C $(bootdir)/u-boot CROSS_COMPILE=$(target)-
+	$(MAKE) -C $(bootdir)/u-boot CROSS_COMPILE=$(target)- u-boot.stripped
 
-	$(INSTALL) -m644 $(bootdir)/u-boot/u-boot $(bootprefix)
-	$(target)-strip $(bootprefix)/u-boot
+	$(INSTALL) -m644 $(bootdir)/u-boot/u-boot.stripped $(bootprefix)/u-boot
 	$(INSTALL) $(bootdir)/u-boot/tools/mkimage $(hostprefix)/bin
 
 if MAINTAINER_MODE
