@@ -587,6 +587,19 @@ libs_optional: \
 	@CLEANUP_libsigc@
 	touch .libsigc
 
+.libvorbisidec: .bootstrap @DEPENDS_libjpeg@
+	@PREPARE_libvorbisidec@
+	cd @DIR_libvorbisidec@ && \
+		@BUILDENV_libvorbisidec@ \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
+		$(MAKE) && \
+		@INSTALL_libvorbisidec@
+	@CLEANUP_libvorbisidec@
+	touch .libvorbisidec
+
 .libxml2: .bootstrap @DEPENDS_libxml2@
 	@PREPARE_libxml2@
 	cd @DIR_libxml2@ && \
