@@ -419,7 +419,7 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz
 		./configure \
 			--prefix=$(targetprefix) \
 			--shared && \
-		make libz.so.1.1.3 && \
+		make libz.so.1.1.4 && \
 		@INSTALL_libz@
 	@CLEANUP_libz@
 	touch .libz
