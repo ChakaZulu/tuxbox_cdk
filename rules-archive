@@ -9,8 +9,8 @@
 #
 # core
 #
-linux-2.4.20.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
-linux-dbox2-2.4.20-2.diff.bz2
+linux-2.4.22-pre9.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
+linux-dbox2-2.4.22-pre9.diff.bz2
 binutils-2.14.90.0.3.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
 gcc-core-3.2.3.tar.bz2;ftp://$(gnuserver)/gcc/gcc-3.2.3
 gcc-g++-3.2.3.tar.bz2;ftp://$(gnuserver)/gcc/gcc-3.2.3
@@ -22,8 +22,8 @@ watchdog_5.2.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/w/watchdog
 #
 # root
 #
-busybox-cvs.20030303.tar.bz2
-modutils-2.4.21.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
+busybox-1.00-pre2.tar.bz2;http://www.busybox.net/downloads
+modutils-2.4.25.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
@@ -55,7 +55,7 @@ boost_1_30_0.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/boost
 tremor-20030128.tar.bz2;
 fribidi-0.10.4.tar.bz2;
 expat-1.95.6.tar.gz;http://belnet.dl.sourceforge.net/sourceforge/expat
-libdvb-0.4.0.tar.gz;http://www.metzlerbros.org/dvb
+libdvb-0.4.1.tar.gz;http://www.metzlerbros.org/dvb
 gmp-4.1.2.tar.gz;ftp://ftp.informatik.rwth-aachen.de/pub/gnu/gmp
 
 #

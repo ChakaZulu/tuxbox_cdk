@@ -12,7 +12,7 @@
 #
 # core
 #
-linux;2.4.20-dbox2;linux-2.4.20;linux-2.4.20.tar.bz2:linux-dbox2-2.4.20-2.diff.bz2:v4l2-api-2.4.20.diff:input-keys.diff:fusion-full-linux-2.4.20.diff:linux-dbox2-keyboard.diff;remove:linux;extract:linux-2.4.20.tar.bz2;patch:linux-dbox2-2.4.20-2.diff.bz2;patch:v4l2-api-2.4.20.diff;patch:input-keys.diff;patch:fusion-full-linux-2.4.20.diff;patch:kernel-headers-kheaders-ppc-syscalls.diff;patch:linux-dbox2-keyboard.diff;patch:linux-2.4.20-_gcc33.patch;patch:linux-2.4.20-dbox2-flash.diff;link:linux-2.4.20:linux
+linux;2.4.22-pre9-dbox2;linux-2.4.22-pre9;linux-2.4.22-pre9.tar.bz2:linux-dbox2-2.4.22-pre9.diff.bz2:v4l2-api-2.4.22.diff:input-keys.diff:fusion-full-linux-2.4.22.diff:linux-dbox2-keyboard.diff;remove:linux;extract:linux-2.4.22-pre9.tar.bz2;patch:linux-dbox2-2.4.22-pre9.diff.bz2;patch:v4l2-api-2.4.22.diff;patch:input-keys.diff;patch:fusion-full-linux-2.4.22.diff;patch:linux-dbox2-keyboard.diff;link:linux-2.4.22-pre9:linux
 binutils;2.14.90.0.3;binutils-2.14.90.0.3;binutils-2.14.90.0.3.tar.bz2;extract:binutils-2.14.90.0.3.tar.bz2
 bootstrap_gcc;3.2.3;gcc-3.2.3;gcc-core-3.2.3.tar.bz2:gcc-core.diff;extract:gcc-core-3.2.3.tar.bz2;patch:gcc-core.diff
 gcc;3.2.3;gcc-3.2.3;gcc-core-3.2.3.tar.bz2:gcc-g++-3.2.3.tar.bz2;extract:gcc-core-3.2.3.tar.bz2;extract:gcc-g++-3.2.3.tar.bz2
@@ -23,10 +23,10 @@ watchdog;5.2;watchdog-5.2.orig;watchdog_5.2.orig.tar.gz:watchdog.diff;extract:wa
 #
 # root
 #
-busybox;cvs20030303;busybox-cvs.20030303;busybox-cvs.20030303.tar.bz2:busybox.config;extract:busybox-cvs.20030303.tar.bz2
+busybox;1.00-pre2;busybox-1.00-pre2;busybox-1.00-pre2.tar.bz2:busybox.config;extract:busybox-1.00-pre2.tar.bz2
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
-modutils;2.4.21;modutils-2.4.21;modutils-2.4.21.tar.bz2:modutils.diff;extract:modutils-2.4.21.tar.bz2;patch:modutils.diff
+modutils;2.4.25;modutils-2.4.25;modutils-2.4.25.tar.bz2:modutils.diff;extract:modutils-2.4.25.tar.bz2;patch:modutils.diff
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
 portmap;5;portmap-5;portmap-5.tar.bz2:portmap-5.diff;extract:portmap-5.tar.bz2;patch:portmap-5.diff
 procps;010114;procps-010114;procps-010114.tar.gz:procps.diff;extract:procps-010114.tar.gz;patch:procps.diff
@@ -40,7 +40,7 @@ libcrypto;0.9.7b;openssl-0.9.7b;openssl-0.9.7b.tar.gz:libcrypto.diff;extract:ope
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.bz2:libcurl.diff;extract:curl-7.10.1.tar.bz2;patch:libcurl.diff
 libdirectfb;0.9.17;DirectFB-0.9.17;DirectFB-0.9.17.tar.gz;extract:DirectFB-0.9.17.tar.gz
 libdirectfbpp;0.9.15;DFB++-0.9.15;DFB++-0.9.15.tar.gz;extract:DFB++-0.9.15.tar.gz
-libdvb;0.4.0;libdvb-0.4.0;libdvb-0.4.0.tar.gz:libdvb.diff;extract:libdvb-0.4.0.tar.gz;patch:libdvb.diff
+libdvb;0.4.1;libdvb-0.4.1;libdvb-0.4.1.tar.gz:libdvb.diff;extract:libdvb-0.4.1.tar.gz;patch:libdvb.diff
 libdvbpsi;0.1.2;libdvbpsi-0.1.2;libdvbpsi-0.1.2.tar.gz;extract:libdvbpsi-0.1.2.tar.gz
 libexpat;1.95.6;expat-1.95.6;expat-1.95.6.tar.gz:libexpat.diff;extract:expat-1.95.6.tar.gz;patch:libexpat.diff
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
