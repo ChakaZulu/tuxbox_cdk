@@ -11,5 +11,7 @@ if test ! -f /etc/ssh/ssh_host_dsa_key ; then
 	ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa -b 2048 > /dev/null
 fi
 
+@TARGETRULESET_FLASH_FALSE@chown root.root /share/empty
+
 sshd
 

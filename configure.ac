@@ -139,6 +139,7 @@ fi
 
 AC_MSG_CHECKING([for apps directory])
 if test ! -f "$appsdir/configure.ac" ; then
+	appsdir=no
 	AC_MSG_RESULT([no])
 else
 	AC_MSG_RESULT([yes])
@@ -146,6 +147,7 @@ fi
 
 AC_MSG_CHECKING([for boot directory])
 if test ! -f "$bootdir/ppcboot/Makefile" ; then
+	bootdir=no
 	AC_MSG_ERROR([no])
 else
 	AC_MSG_RESULT([yes])
@@ -153,6 +155,7 @@ fi
 
 AC_MSG_CHECKING([for driver directory])
 if test ! -f "$driverdir/Makefile" ; then
+	driverdir=no
 	AC_MSG_ERROR([no])
 else
 	AC_MSG_RESULT([yes])
@@ -160,6 +163,7 @@ fi
 
 AC_MSG_CHECKING([for hostapps directory])
 if test ! -f "$hostappsdir/configure.ac" ; then
+	hostappsdir=no
 	AC_MSG_RESULT([no])
 else
 	AC_MSG_RESULT([yes])
@@ -329,4 +333,5 @@ etc/init.d/Makefile
 etc/fstab
 etc/modules.conf
 etc/init.d/rcS
+etc/init.d/start_sshd
 ])
