@@ -21,7 +21,7 @@ $INSMOD $MODDIR/misc/fp.o debug=0 useimap=0
 #modprobe fp
 
 echo "Lade avia"
-$INSMOD $MODDIR/misc/avia.o pal=1 debug=0 firmware=/ucodes
+$INSMOD $MODDIR/misc/avia.o pal=1 debug=0 firmware=/var/ucodes
 #modprobe avia
 
 echo "Lade gtx_core"
@@ -33,7 +33,7 @@ $INSMOD $MODDIR/misc/demux.o
 #modprobe demux
 
 echo "Lade cam"
-$INSMOD $MODDIR/misc/cam.o debug=0 firmware=/ucodes/cam-alpha.bin
+$INSMOD $MODDIR/misc/cam.o debug=0 firmware=/var/ucodes/cam-alpha.bin
 #modprobe cam
 
 echo "Lade dmxdev"
@@ -57,7 +57,7 @@ $INSMOD $MODDIR/misc/ves1820.o debug=0
 #modprobe ves1820
 
 echo "Lade gtx_dmx"
-$INSMOD $MODDIR/misc/gtx_dmx.o debug=0 ucode=/ucodes/ucode.bin
+$INSMOD $MODDIR/misc/gtx_dmx.o debug=0 ucode=/var/ucodes/ucode.bin
 #modprobe gtx_dmx
 
 echo "Lade gtx_vbi"
