@@ -286,11 +286,12 @@ endif
 #   contrib libs
 #
 
-libs: \
 if WITH_LIBCRYPTO
-	.libcrypto \
+OPTIONAL_LIBCRYPTO = .libcrypto
 endif
-	.libcurl .libdirectfb .libdirectfbpp .libdvbpsi \
+
+libs: \
+	$(OPTIONAL_LIBCRYPTO) .libcurl .libdirectfb .libdirectfbpp .libdvbpsi \
 	.libfreetype .libjpeg .libmad .libid3tag .libncurses .libpng \
 	.libreadline .libsdl .libsigc .libz .libdvb
 
