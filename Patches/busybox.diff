@@ -639,9 +639,9 @@ diff -u -r1.2 telnetd.c
  	argv_init[0] = loginpath;
 +
 +#ifdef CONFIG_FEATURE_TELNETD_INETD
-+	sessions = make_new_session();
-+
 +	maxfd = 1;
++
++	sessions = make_new_session();
 +#else /* CONFIG_EATURE_TELNETD_INETD */
  	sessions = 0;
  
