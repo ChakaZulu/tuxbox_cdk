@@ -1685,6 +1685,12 @@ $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 
 		`find $(flashprefix)/root/lib/tuxbox -name "*.so"` 2>/dev/null || /bin/true
 	$(target)-strip $(flashprefix)/root/lib/* 2>/dev/null || /bin/true
 	chmod u+rwX,go+rX -R $(flashprefix)/root/
+	if [ -e $(flashprefix)/root/lib/libfx2.so ]; then \
+	if [ -e $(flashprefix)/root/lib/tuxbox/plugins/ ]; then \
+	rm -f $(flashprefix)/root/lib/tuxbox/plugins/libfx2.so ; \
+	ln -s /lib/libfx2.so $(flashprefix)/root/lib/tuxbox/plugins/libfx2.so ; \
+	fi ; \
+	fi
 	@touch $@
 
 flash-cramfs: $(flashprefix)/root-cramfs.img
