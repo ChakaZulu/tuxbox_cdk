@@ -1361,6 +1361,15 @@ $(appsdir)/misc/libs/Makefile: .bootstrap .libz
 	$(MAKE) -C $(appsdir)/misc/libs all install
 	touch .misc_libs
 
+# misc/tools
+
+$(appsdir)/misc/tools/Makefile: .bootstrap
+	cd $(appsdir)/misc/tools && $(CONFIGURE)
+
+.misc_tools: $(appsdir)/misc/tools/Makefile
+	$(MAKE) -C $(appsdir)/misc/tools all install
+	touch .misc_tools
+
 # tuxbox/enigma
 
 $(appsdir)/tuxbox/enigma/Makefile: .bootstrap .libfreetype .libmad .libpng .libsigc .misc_libs .plugins
@@ -1673,7 +1682,7 @@ distclean-local:
 	-rm .camd .dvbsnoop .enigma .lcars .lcdmenu .neutrino .stream .zapit
 	-rm .console_data .console_tools .dsniff .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
-	-rm .misc_libs .plugins .tuxbox_libs .tuxbox_tools
+	-rm .misc_libs .misc_tools .plugins .tuxbox_libs .tuxbox_tools
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 if TARGETRULESET_FLASH
