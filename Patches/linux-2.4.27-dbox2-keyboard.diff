@@ -1,0 +1,48 @@
+diff -Naur linux-2.4.27/arch/ppc/kernel/m8xx_setup.c linux-2.4.27-keyboard/arch/ppc/kernel/m8xx_setup.c
+--- linux-2.4.27/arch/ppc/kernel/m8xx_setup.c	2004-02-18 14:36:30.000000000 +0100
++++ linux-2.4.27-keyboard/arch/ppc/kernel/m8xx_setup.c	2004-08-09 22:03:50.000000000 +0200
+@@ -60,6 +60,14 @@
+ extern void m8xx_cpm_reset(uint);
+ extern void m8xx_wdt_handler_install(bd_t *bp);
+ 
++#if defined(CONFIG_DBOX2) && defined(CONFIG_VT)
++extern int pckbd_setkeycode(unsigned int scancode, unsigned int keycode);
++extern int pckbd_getkeycode(unsigned int scancode);
++extern int pckbd_translate(unsigned char scancode, unsigned char *keycode,
++                           char raw_mode);
++extern char pckbd_unexpected_up(unsigned char keycode);
++#endif
++
+ void __init
+ m8xx_setup_arch(void)
+ {
+@@ -402,10 +410,17 @@
+ 	ppc_md.find_end_of_memory	= m8xx_find_end_of_memory;
+ 	ppc_md.setup_io_mappings	= m8xx_map_io;
+ 
++#if defined(CONFIG_DBOX2) && defined(CONFIG_VT)
++	ppc_md.kbd_setkeycode		= pckbd_setkeycode;
++	ppc_md.kbd_getkeycode		= pckbd_getkeycode;
++	ppc_md.kbd_translate		= pckbd_translate;
++	ppc_md.kbd_unexpected_up	= pckbd_unexpected_up;
++#else
+ 	ppc_md.kbd_setkeycode		= NULL;
+ 	ppc_md.kbd_getkeycode		= NULL;
+ 	ppc_md.kbd_translate		= NULL;
+ 	ppc_md.kbd_unexpected_up	= NULL;
++#endif
+ 	ppc_md.kbd_leds			= NULL;
+ 	ppc_md.kbd_init_hw		= NULL;
+ 	ppc_md.ppc_kbd_sysrq_xlate	= NULL;
+diff -Naur linux-2.4.27/include/linux/pc_keyb.h linux-2.4.27-keyboard/include/linux/pc_keyb.h
+--- linux-2.4.27/include/linux/pc_keyb.h	1999-10-11 19:15:40.000000000 +0200
++++ linux-2.4.27-keyboard/include/linux/pc_keyb.h	2004-08-09 22:03:50.000000000 +0200
+@@ -11,7 +11,7 @@
+  */
+ 
+ #undef KBD_REPORT_ERR			/* Report keyboard errors */
+-#define KBD_REPORT_UNKN			/* Report unknown scan codes */
++#undef KBD_REPORT_UNKN			/* Report unknown scan codes */
+ #define KBD_REPORT_TIMEOUTS		/* Report keyboard timeouts */
+ #undef KBD_IS_FOCUS_9000		/* We have the brain-damaged FOCUS-9000 keyboard */
+ #undef INITIALIZE_MOUSE			/* Define if your PS/2 mouse needs initialization. */
