@@ -24,7 +24,7 @@ fi
 @TARGETRULESET_FLASH_TRUE@test -f /var/lib/modules/`uname -r`/modules.dep || \
 depmod -ae
 
-modprobe i2c-8xx
+modprobe dbox2_i2c
 modprobe info
 
 if [ -e /tmp/dbox.sh ]; then
@@ -54,16 +54,20 @@ modprobe dbox2_fp
 modprobe saa7126
 
 modprobe dvb-core
-modprobe tuner
+
 modprobe cam
-modprobe cam_napi
-modprobe avia_av
-modprobe avia_av_napi
 modprobe avia_gt
 modprobe avia_gt_fb
 modprobe avia_gt_oss
-modprobe avia_gt_napi
+modprobe avia_av
+
 modprobe avia_napi
+modprobe dbox2_i2c_napi
+modprobe dbox2_fp_napi
+modprobe tuner
+modprobe cam_napi
+modprobe avia_av_napi
+modprobe avia_gt_napi
 
 modprobe lcd
 
