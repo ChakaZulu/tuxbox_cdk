@@ -1252,7 +1252,7 @@ flash-ssl: flash-ssh flash-sshd flash-lib
 
 flash-enigma-all: flash-enigma flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-lib
 
-flash-neutrino-all: flash-neutrino flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-lib
+flash-neutrino-all: flash-neutrino flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-lib flash-dvb-tools
 
 flash-lcars-all: flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-lib
 
@@ -1337,6 +1337,14 @@ $(flashprefix)/.part_sshd: $(flashprefix)/.flash .ssh
 	$(INSTALL) $(targetprefix)/libexec/sftp-server $(flashprefix)/root/libexec
 	$(INSTALL) $(targetprefix)/sbin/sshd $(flashprefix)/root/sbin
 	@touch $@
+
+flash-dvb-tools: $(flashprefix)/.part_dvb_tools
+
+$(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash .dvb_tools
+        $(INSTALL) $(targetprefix)/sbin/streampes $(flashprefix)/root/sbin
+        $(INSTALL) $(targetprefix)/sbin/streamsec $(flashprefix)/root/sbin
+        $(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
+        @touch $@
 
 flash-neutrino: $(flashprefix)/.part_neutrino
 
