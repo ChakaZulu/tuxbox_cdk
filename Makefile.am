@@ -4,14 +4,14 @@ PATH := $(hostprefix)/bin:$(PATH)
 
 all: core libs root apps boot
 
-bootstrap: .gcc
-
 #######################
 #
 #   core
 #
 
-core: .directories .linuxdir .binutils .glibc .gcc
+bootstrap: .gcc
+
+core: .gcc
 
 .directories:
 	install -d $(targetprefix)/dev
@@ -66,7 +66,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	rm -rf $(hostprefix)/$(TARGET)/sys-include/asm
 	@CLEANUP_bootstrap_gcc@
 
-.glibc: @DEPENDS_glibc@
+.glibc: .binutils @DEPENDS_glibc@
 	if [ ! -f $(hostprefix)/$(TARGET)/lib/libc.so -a ! -f $(hostprefix)/bin/$(TARGET)-gcc ]; then \
 		make bootstrap_gcc; \
 	fi
