@@ -227,6 +227,15 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd
 
 libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libxml2 .libz
 
+.libcrypto: .bootstrap @DEPENDS_libcrypto@
+	@PREPARE_libcrypto@
+	cd @DIR_libcrypto@ && \
+		./Configure shared no-cast no-idea no-md2 no-md4 no-mdc2 no-rc2 no-rc4 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
+		make all && \
+		@INSTALL_libcrypto@
+	@CLEANUP_libcrypto@
+	touch .libcrypto
+
 .libcurl: .bootstrap @DEPENDS_libcurl@
 	@PREPARE_libcurl@
 	cd @DIR_libcurl@ && \

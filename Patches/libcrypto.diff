@@ -1,0 +1,25 @@
+diff -urN openssl-0.9.6c.orig/Configure openssl-0.9.6c/Configure
+--- openssl-0.9.6c.orig/Configure	Thu Dec  6 14:11:39 2001
++++ openssl-0.9.6c/Configure	Sat Mar  2 14:18:27 2002
+@@ -480,6 +480,9 @@
+ ##### Sony NEWS-OS 4.x
+ "newsos4-gcc","gcc:-O -DB_ENDIAN -DNEWS4::(unknown):-lmld -liberty:BN_LLONG RC4_CHAR RC4_CHUNK DES_PTR DES_RISC1 DES_UNROLL BF_PTR::::",
+ 
++##### TuxBox
++"tuxbox","powerpc-tuxbox-linux-gnu-gcc:-DB_ENDIAN -DTERMIO -Os -fomit-frame-pointer -Wall::-D_REENTRANT:-ldl:BN_LLONG DES_UNROLL DES_RISC2 DES_PTR MD2_CHAR RC4_INDEX::::::::::dlfcn:linux-shared:-fPIC",
++
+ );
+ 
+ my @WinTargets=qw(VC-NT VC-WIN32 VC-WIN16 VC-W31-16 VC-W31-32 VC-MSDOS BC-32
+diff -urN openssl-0.9.6c.orig/Makefile.org openssl-0.9.6c/Makefile.org
+--- openssl-0.9.6c.orig/Makefile.org	Wed Nov 14 11:44:11 2001
++++ openssl-0.9.6c/Makefile.org	Sat Mar  2 14:19:01 2002
+@@ -256,7 +256,7 @@
+ do_gnu-shared:
+ 	libs='-L. ${SHLIBDEPS}'; for i in ${SHLIBDIRS}; do \
+ 	( set -x; ${CC}  -shared -o lib$$i.so.${SHLIB_MAJOR}.${SHLIB_MINOR} \
+-		-Wl,-soname=lib$$i.so.${SHLIB_MAJOR}.${SHLIB_MINOR} \
++		-Wl,-soname=lib$$i.so.${SHLIB_MAJOR} \
+ 		-Wl,--whole-archive lib$$i.a \
+ 		-Wl,--no-whole-archive $$libs ${EX_LIBS} -lc ) || exit 1; \
+ 	libs="$$libs -l$$i"; \

@@ -31,6 +31,7 @@ netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 #
 # contrib libs
 #
+openssl-0.9.6c.tar.gz;http://www.openssl.org/source
 curl-7.9.1.tar.bz2;http://curl.haxx.se/download
 freetype-2.0.5.tar.bz2;http://prdownloads.sourceforge.net/freetype
 ncurses-5.2.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
