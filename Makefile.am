@@ -1615,7 +1615,7 @@ flash-ssl: flash-ssh flash-sshd flash-lib
 
 flash-enigma-all: flash-enigma flash-lcdmenu flash-plugins flash-ftpd flash-lib
 
-flash-neutrino-all: flash-neutrino flash-lcdmenu flash-plugins flash-ftpd flash-dvb-tools flash-lib
+flash-neutrino-all: flash-neutrino flash-lcdmenu flash-plugins flash-ftpd flash-dvb-tools flash-ftpfs flash-lib
 
 flash-lcars-all: flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-lib
 
@@ -1703,6 +1703,13 @@ $(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash dvb_tools
 	$(INSTALL) $(targetprefix)/sbin/streamsec $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/udpstreampes $(flashprefix)/root/sbin
+	@touch $@
+
+flash-ftpfs: $(flashprefix)/.part_ftpfs
+
+$(flashprefix)/.part_ftpfs: $(flashprefix)/.flash lufs
+	$(INSTALL) $(targetprefix)/bin/lufsd $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/lufsmnt $(flashprefix)/root/bin
 	@touch $@
 
 flash-neutrino: $(flashprefix)/.part_neutrino
@@ -1804,6 +1811,19 @@ $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 
 	if [ -e $(flashprefix)/root/lib/tuxbox/plugins/ ]; then \
 	rm -f $(flashprefix)/root/lib/tuxbox/plugins/libfx2.so ; \
 	ln -s /lib/libfx2.so $(flashprefix)/root/lib/tuxbox/plugins/libfx2.so ; \
+	fi ; \
+	fi
+	if [ -e $(flashprefix)/root/bin/lufsd ]; then \
+	cp -pa $(targetprefix)/lib/liblufs-ftpfs* $(flashprefix)/root/lib ; \
+	if [ -e $(flashprefix)/root/lib/liblufs-ftpfs.2.0.0 ]; then \
+	rm -f $(flashprefix)/root/lib/liblufs-ftpfs ; \
+	rm -f $(flashprefix)/root/lib/liblufs-ftpfs.2 ; \
+	mv $(flashprefix)/root/lib/liblufs-ftpfs.2.0.0 $(flashprefix)/root/lib/liblufs-ftpfs.so.2.0.0 ; \
+	ln -s liblufs-ftpfs.so.2.0.0 $(flashprefix)/root/lib/liblufs-ftpfs.so.2 ; \
+	ln -s liblufs-ftpfs.so.2.0.0 $(flashprefix)/root/lib/liblufs-ftpfs.so ; \
+	fi ; \
+	if [ -e $(flashprefix)/root/lib/liblufs-ftpfs.la ]; then \
+	rm -f $(flashprefix)/root/lib/liblufs-ftpfs.la ; \
 	fi ; \
 	fi
 	@touch $@
