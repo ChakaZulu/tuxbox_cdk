@@ -1,6 +1,6 @@
-diff -urN openssl-0.9.7b.orig/Configure openssl-0.9.7b/Configure
---- openssl-0.9.7b.orig/Configure	2003-04-10 07:46:55.000000000 +0200
-+++ openssl-0.9.7b/Configure	2003-04-11 17:56:00.000000000 +0200
+diff -Naur openssl-0.9.7c/Configure openssl-0.9.7c.patched/Configure
+--- openssl-0.9.7c/Configure	2003-09-28 16:07:01.000000000 +0200
++++ openssl-0.9.7c.patched/Configure	2003-09-30 17:44:07.000000000 +0200
 @@ -556,6 +556,9 @@
  ##### OS/2 EMX
  "OS2-EMX", "gcc::::::::",
@@ -11,9 +11,9 @@ diff -urN openssl-0.9.7b.orig/Configure openssl-0.9.7b/Configure
  ##### VxWorks for various targets
  "vxworks-ppc405","ccppc:-g -msoft-float -mlongcall -DCPU=PPC405 -I\$(WIND_BASE)/target/h:::VXWORKS:-r:::::",
  "vxworks-ppc750","ccppc:-ansi -nostdinc -DPPC750 -D_REENTRANT -fvolatile -fno-builtin -fno-for-scope -fsigned-char -Wall -msoft-float -mlongcall -DCPU=PPC604 -I\$(WIND_BASE)/target/h \$(DEBUG_FLAG):::VXWORKS:-r:::::",
-diff -urN openssl-0.9.7b.orig/Makefile.org openssl-0.9.7b/Makefile.org
---- openssl-0.9.7b.orig/Makefile.org	2003-04-08 13:54:32.000000000 +0200
-+++ openssl-0.9.7b/Makefile.org	2003-04-11 17:56:00.000000000 +0200
+diff -Naur openssl-0.9.7c/Makefile.org openssl-0.9.7c.patched/Makefile.org
+--- openssl-0.9.7c/Makefile.org	2003-08-11 11:37:17.000000000 +0200
++++ openssl-0.9.7c.patched/Makefile.org	2003-09-30 17:44:07.000000000 +0200
 @@ -173,7 +173,7 @@
  # we might set SHLIB_MARK to '$(SHARED_LIBS)'.
  SHLIB_MARK=
@@ -23,7 +23,7 @@ diff -urN openssl-0.9.7b.orig/Makefile.org openssl-0.9.7b/Makefile.org
  SHLIBDIRS= crypto ssl
  
  # dirs in crypto to build
-@@ -877,4 +877,40 @@
+@@ -879,4 +879,40 @@
  			 done); \
  	done
  

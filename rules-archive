@@ -35,7 +35,7 @@ vsftpd-1.0.1.tar.gz;ftp://vsftpd.beasts.org/users/cevans
 #
 # contrib libs
 #
-openssl-0.9.7b.tar.gz;http://www.openssl.org/source
+openssl-0.9.7c.tar.gz;http://www.openssl.org/source
 curl-7.10.1.tar.bz2;http://curl.haxx.se/download
 freetype-2.1.4.tar.bz2;http://belnet.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.3.tar.gz;ftp://$(gnuserver)/ncurses
