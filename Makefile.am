@@ -1506,7 +1506,7 @@ $(DEPDIR)/neutrino: $(appsdir)/tuxbox/neutrino/config.status
 
 # tuxbox/plugins
 
-$(appsdir)/tuxbox/plugins/config.status: bootstrap libcurl libfreetype libz misc_libs
+$(appsdir)/tuxbox/plugins/config.status: bootstrap libcurl libfreetype libz misc_libs libsigc
 	cd $(appsdir)/tuxbox/plugins && $(CONFIGURE)
 
 $(DEPDIR)/plugins: $(appsdir)/tuxbox/plugins/config.status
