@@ -302,8 +302,23 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 #
 
 libs: \
-	.libcrypto .libcurl .libffi .libfreetype .libjpeg .libncurses \
-	.libpng .libreadline .libsdl .libsigc .libz .libcommoncplusplus
+	.libcommoncplusplus libcrypto .libcurl .libffi .libfreetype .libjpeg \
+	.libncurses .libpng .libreadline .libsdl .libsigc .libz 
+
+.libcommoncplusplus: .bootstrap @DEPENDS_libcommoncplusplus@
+	@PREPARE_libcommoncplusplus@
+	cd @DIR_libcommoncplusplus@ && \
+		CC=$(target)-gcc CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_libcommoncplusplus@
+	@CLEANUP_libcommoncplusplus@
+	touch .libcommoncplusplus
 
 .libcrypto: .bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
@@ -328,21 +343,6 @@ libs: \
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
 	touch .libcurl
-
-.libcommoncplusplus: .bootstrap @DEPENDS_libcommoncplusplus@
-	@PREPARE_libcommoncplusplus@
-	cd @DIR_libcommoncplusplus@ && \
-		CC=$(target)-gcc CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--target=$(target) \
-			--prefix=$(targetprefix) && \
-		make all && \
-		@INSTALL_libcommoncplusplus@
-	@CLEANUP_libcommoncplusplus@
-	touch .libcommoncplusplus
 
 .libffi: .bootstrap @DEPENDS_libffi@
 	@PREPARE_libffi@
@@ -434,7 +434,9 @@ libs: \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix=$(targetprefix)\
+			--with-pic \
+			--disable-nls && \
 		make && \
 		@INSTALL_libpopt@
 	@CLEANUP_libpopt@
@@ -1358,18 +1360,18 @@ distclean-local:
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
-	-rm .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg
-	-rm .libpcap .libpng .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
+	-rm .libcommoncplusplus .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg
+	-rm .libpcap .libpng .libpopt .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
 	-rm .cabextract .msttf
 	-rm .gdb .ltrace .strace .nano
 	-rm .kaffeh .kaffe
 	-rm .mad .scummvm
 	-rm .ppcboot .linuxkernel .driver
-	-rm .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
+	-rm .camd .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .tools .tuxtxt .zapit
 	-rm .libconfigfile .libcramfs
 	-rm .liblcddisplay .libmd5sum .libmpegtools .libnet .libucodes
-	-rm .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc
+	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump .xrc
 	-rm .dvbstream .dvbtext .dvbtune
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)

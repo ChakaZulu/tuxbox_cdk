@@ -238,9 +238,9 @@ TUXBOX_RULES_MAKE(tinylogin)
 #
 # contrib libs
 #
+TUXBOX_RULES_MAKE(libcommoncplusplus)
 TUXBOX_RULES_MAKE(libcrypto)
 TUXBOX_RULES_MAKE(libcurl)
-TUXBOX_RULES_MAKE(libcommoncplusplus)
 TUXBOX_RULES_MAKE(libffi)
 TUXBOX_RULES_MAKE(libfreetype)
 TUXBOX_RULES_MAKE(libncurses)
