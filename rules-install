@@ -40,6 +40,7 @@ libdirectfbpp;make:install:DESTDIR=TARGET
 libdvbpsi;make:install:DESTDIR=TARGET
 libffi;make:install:DESTDIR=TARGET
 libfreetype;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARGET/bin:prefix=TARGET
+libfribidi;make:install:DESTDIR=TARGET
 libjpeg;make:install-lib:libdir=TARGET/lib:includedir=TARGET/include
 libmad;make:install:DESTDIR=TARGET
 libncurses;make:install.libs:DESTDIR=TARGET

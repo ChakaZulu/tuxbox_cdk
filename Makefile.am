@@ -436,6 +436,22 @@ libs_optional: \
 	@CLEANUP_libfreetype@
 	touch .libfreetype
 
+.libfribidi: .bootstrap @DEPENDS_libfribidi@
+	@PREPARE_libfribidi@
+	cd @DIR_libfribidi@ && \
+		@BUILDENV_libfribidi@ \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--enable-memopt && \
+		$(MAKE) all && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < fribidi.pc > fribidi.pc.tmp && \
+		mv fribidi.pc.tmp fribidi.pc && \
+		@INSTALL_libfribidi@
+	@CLEANUP_libfribidi@
+	touch .libfribidi
+
 .libjpeg: .bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libjpeg@
 	cd @DIR_libjpeg@ && \
