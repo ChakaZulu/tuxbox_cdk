@@ -5,29 +5,29 @@ AC_PROG_CC
 AC_CANONICAL_HOST
 
 AC_ARG_WITH(hostruleset,
-	[  --with-hostruleset=NAME host ruleset [[cygwin]]],
-	[hostruleset="$with_hostruleset"],[hostruleset="NONE"])
+	[  --with-hostruleset=NAME host ruleset [[standard,cygwin]]],
+	[hostruleset="$withval"],[hostruleset="standard"])
 
-if test "$host_os" = "cygwin" -a "$hostruleset" == "NONE"; then
+if test "$host_os" = "cygwin" -a "$hostruleset" == "standard"; then
 	AC_MSG_WARN([overriding standard ruleset])
 	hostruleset="cygwin"
 fi
 
-if test "$hostruleset" = "cygwin"; then
-	MAKERULESETFILE="-cygwin"
-elif test "$hostruleset" = "NONE"; then
+if test "$hostruleset" = "standard"; then
 	MAKERULESETFILE=""
+elif test "$hostruleset" = "cygwin"; then
+	MAKERULESETFILE="-cygwin"
 else
-	AC_MSG_ERROR([invalid ruleset "$hostruleset", choose on from [[cygwin]]]);
+	AC_MSG_ERROR([invalid hostruleset "$hostruleset", choose on from standard or cygwin]);
 fi
 
 AC_SUBST(BUILD,[$host])
 
 AC_ARG_WITH(targetruleset,
-	[  --with-targetrulseset=NAME target ruleset [[flash]]],
-	[targetruleset="$with_targetrulseset"],[targetruleset="NONE"])
+	[  --with-targetrulseset=NAME target ruleset [[standard,flash]]],
+	[targetruleset="$withval"],[targetruleset="standard"])
 
-if test "$targetruleset" = "NONE"; then
+if test "$targetruleset" = "standard"; then
 	TARGET_CFLAGS="-O2 -mcpu=823"
 	TARGET_CXXFLAGS="-O2 -mcpu=823"
 	TARGET_LDFLAGS="-s"
@@ -40,7 +40,7 @@ elif test "$targetruleset" = "flash"; then
 	INSTALLRULESFILE="-flash"
 	APPSTARGET="dbox2flash"
 else
-AC_MSG_ERROR([invalid ruleset "$targetruleset", choose on from [[flash]]]);
+	AC_MSG_ERROR([invalid targetruleset "$targetruleset", choose on from standard or flash]);
 fi
 
 AC_SUBST(TARGET_CFLAGS)
