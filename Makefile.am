@@ -756,7 +756,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 			--prefix=$(targetprefix) \
 			--with-devdir=/dev \
 			--with-driver=none \
-			--with-kerneldir=$(buildprefix)/linux-$(KERNELVERSION) \
+			--with-kerneldir=$(buildprefix)/linux \
 			--with-moduledir=$(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
 			--without-x && \
 		@INSTALL_lirc@
