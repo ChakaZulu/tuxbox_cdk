@@ -2,13 +2,10 @@
 
 export PATH="/sbin:/bin"
 
-# get environment from tuxbox module
-. /proc/bus/tuxbox
-
-export TUXBOX_VERSION
-export TUXBOX_CAPABILITIES
-export TUXBOX_VENDOR
-export TUXBOX_MODEL
+export TUXBOX_VERSION=`/bin/tuxinfo -v -d`
+export TUXBOX_VENDOR=`/bin/tuxinfo -i -d`
+export TUXBOX_MODEL=`/bin/tuxinfo -I -d`
+export TUXBOX_CAPABILITIES=`/bin/tuxinfo -c -d`
 
 # timezone, only applicable for middle europe
 export TZ=CET-1CEST,M3.5.0/2,M10.5.0/3
