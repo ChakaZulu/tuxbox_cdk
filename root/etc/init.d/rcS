@@ -22,6 +22,8 @@ echo "DEMOD: $DEMOD"
 
 modprobe -a saa7126 input keybdev mousedev joydev evdev dvb_frontend dvb tuner graphic lcd
 
+test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
+
 echo "Starting loopback device"
 ifconfig lo 127.0.0.1 up
 # it must be tuned to a valid ts for dvbtime
