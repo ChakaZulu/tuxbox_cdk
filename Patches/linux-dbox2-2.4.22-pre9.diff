@@ -1,0 +1,874 @@
+diff -Naur linux-2.4.22-pre9/arch/ppc/boot/common/misc-simple.c linux-2.4.22-pre9-dbox2/arch/ppc/boot/common/misc-simple.c
+--- linux-2.4.22-pre9/arch/ppc/boot/common/misc-simple.c	2003-07-20 21:38:33.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc/boot/common/misc-simple.c	2003-07-30 15:01:22.000000000 +0200
+@@ -60,6 +60,7 @@
+ 
+ unsigned long com_port;
+ unsigned long initrd_size = 0;
++unsigned long initrd_loc;
+ 
+ /* The linker tells us various locations in the image */
+ extern char __image_begin, __image_end;
+@@ -148,6 +149,20 @@
+ 		puts("initrd at:     ");
+ 		puthex((unsigned long)(&__ramdisk_begin));
+ 		puts(" "); puthex((unsigned long)(&__ramdisk_end));puts("\n");
++
++	/* Make sure we have the initrd placed after everything. */
++		if ((_ALIGN((unsigned long)(zimage_size) + (1 << 20) - 1,
++			(1 << 20))) <= (unsigned long)(&__ramdisk_end)) {
++			initrd_loc = _ALIGN((unsigned long)(initrd_size) +
++					(2 << 20) - 1, (2 << 20));
++			 memcpy((void *)initrd_loc, &__ramdisk_begin,
++					 initrd_size);
++			 puts("relocated to:  "); puthex(initrd_loc);
++			 puts(" "); puthex(initrd_loc + initrd_size);
++			 puts("\n");
++		} else {
++			initrd_loc = (unsigned long)(&__ramdisk_begin);
++	        }
+ 	}
+ 
+ 	avail_ram = (char *)0x00400000;
+diff -Naur linux-2.4.22-pre9/arch/ppc/boot/prep/misc.c linux-2.4.22-pre9-dbox2/arch/ppc/boot/prep/misc.c
+--- linux-2.4.22-pre9/arch/ppc/boot/prep/misc.c	2003-07-20 21:38:33.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc/boot/prep/misc.c	2003-07-30 15:01:22.000000000 +0200
+@@ -54,6 +54,7 @@
+ RESIDUAL hold_resid_buf;
+ RESIDUAL *hold_residual = &hold_resid_buf;
+ unsigned long initrd_size = 0;
++unsigned long initrd_loc;
+ unsigned long orig_MSR;
+ 
+ char *zimage_start;
+@@ -290,6 +291,20 @@
+ 		puts("initrd at:     ");
+ 		puthex((unsigned long)(&__ramdisk_begin));
+ 		puts(" "); puthex((unsigned long)(&__ramdisk_end));puts("\n");
++
++	/* Make sure we have the initrd placed after everything. */
++		if ((_ALIGN((unsigned long)(zimage_size) + (1 << 20) - 1,
++			(1 << 20))) <= (unsigned long)(&__ramdisk_end)) {
++			initrd_loc = _ALIGN((unsigned long)(initrd_size) +
++					(2 << 20) - 1, (2 << 20));
++			 memcpy((void *)initrd_loc, &__ramdisk_begin,
++					 initrd_size);
++			 puts("relocated to:  "); puthex(initrd_loc);
++			 puts(" "); puthex(initrd_loc + initrd_size);
++			 puts("\n");
++		} else {
++			initrd_loc = (unsigned long)(&__ramdisk_begin);
++	        }
+ 	}
+ 
+ 	avail_ram = (char *)0x00400000;
+diff -Naur linux-2.4.22-pre9/arch/ppc/boot/simple/embed_config.c linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/embed_config.c
+--- linux-2.4.22-pre9/arch/ppc/boot/simple/embed_config.c	2003-07-30 12:17:27.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/embed_config.c	2003-07-30 15:01:22.000000000 +0200
+@@ -755,3 +755,11 @@
+ }
+ #endif
+ 
++#ifdef CONFIG_DBOX2
++/* dbox2
++ * doesn't do anything right now */
++void
++embed_config(bd_t **bdp)
++{
++}
++#endif
+\ Kein Zeilenumbruch am Dateiende.
+diff -Naur linux-2.4.22-pre9/arch/ppc/boot/simple/misc-embedded.c linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/misc-embedded.c
+--- linux-2.4.22-pre9/arch/ppc/boot/simple/misc-embedded.c	2003-06-13 16:51:31.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/misc-embedded.c	2003-07-30 15:01:22.000000000 +0200
+@@ -89,6 +89,7 @@
+ 	char *cp;
+ 	int zimage_size;
+ 	unsigned long initrd_size;
++	unsigned long initrd_loc;
+ 
+ 	/* First, capture the embedded board information.  Then
+ 	 * initialize the serial console port.
+@@ -149,6 +150,20 @@
+ 		puts("initrd at:     ");
+ 		puthex((unsigned long)(&__ramdisk_begin));
+ 		puts(" "); puthex((unsigned long)(&__ramdisk_end));puts("\n");
++
++	/* Make sure we have the initrd placed after everything. */
++		if ((_ALIGN((unsigned long)(zimage_size) + (1 << 20) - 1,
++			(1 << 20))) <= (unsigned long)(&__ramdisk_end)) {
++			initrd_loc = _ALIGN((unsigned long)(initrd_size) +
++					(2 << 20) - 1, (2 << 20));
++			 memcpy((void *)initrd_loc, &__ramdisk_begin,
++					 initrd_size);
++			 puts("relocated to:  "); puthex(initrd_loc);
++			 puts(" "); puthex(initrd_loc + initrd_size);
++			 puts("\n");
++		} else {
++			initrd_loc = (unsigned long)(&__ramdisk_begin);
++	        }
+ 	}
+ 
+ 	/*
+diff -Naur linux-2.4.22-pre9/arch/ppc/boot/simple/misc-spruce.c linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/misc-spruce.c
+--- linux-2.4.22-pre9/arch/ppc/boot/simple/misc-spruce.c	2003-07-20 21:38:33.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/misc-spruce.c	2003-07-30 15:01:22.000000000 +0200
+@@ -56,6 +56,7 @@
+ char *cmd_line = cmd_buf;
+ 
+ unsigned long initrd_size = 0;
++unsigned long initrd_loc;
+ 
+ char *zimage_start;
+ int zimage_size;
+@@ -344,6 +345,20 @@
+ 		puts("initrd at:     ");
+ 		puthex((unsigned long)(&__ramdisk_begin));
+ 		puts(" "); puthex((unsigned long)(&__ramdisk_end));puts("\n");
++
++	/* Make sure we have the initrd placed after everything. */
++		if ((_ALIGN((unsigned long)(zimage_size) + (1 << 20) - 1,
++			(1 << 20))) <= (unsigned long)(&__ramdisk_end)) {
++			initrd_loc = _ALIGN((unsigned long)(initrd_size) +
++					(2 << 20) - 1, (2 << 20));
++			 memcpy((void *)initrd_loc, &__ramdisk_begin,
++					 initrd_size);
++			 puts("relocated to:  "); puthex(initrd_loc);
++			 puts(" "); puthex(initrd_loc + initrd_size);
++			 puts("\n");
++		} else {
++			initrd_loc = (unsigned long)(&__ramdisk_begin);
++	        }
+ 	}
+ 
+ 	avail_ram = (char *)0x00400000;
+diff -Naur linux-2.4.22-pre9/arch/ppc/config.in linux-2.4.22-pre9-dbox2/arch/ppc/config.in
+--- linux-2.4.22-pre9/arch/ppc/config.in	2003-07-25 04:49:04.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc/config.in	2003-07-30 15:01:22.000000000 +0200
+@@ -73,6 +73,7 @@
+ 	 RPX-Classic	CONFIG_RPXCLASSIC	\
+ 	 BSE-IP		CONFIG_BSEIP		\
+ 	 FADS		CONFIG_FADS		\
++	 D-BOX2		CONFIG_DBOX2		\
+ 	 TQM823L	CONFIG_TQM823L		\
+ 	 TQM850L	CONFIG_TQM850L		\
+ 	 TQM855L	CONFIG_TQM855L		\
+diff -Naur linux-2.4.22-pre9/arch/ppc/kernel/irq.c linux-2.4.22-pre9-dbox2/arch/ppc/kernel/irq.c
+--- linux-2.4.22-pre9/arch/ppc/kernel/irq.c	2003-07-20 21:38:33.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc/kernel/irq.c	2003-07-30 15:01:22.000000000 +0200
+@@ -507,6 +507,14 @@
+ 		else if (irq_desc[irq].handler->enable)
+ 			irq_desc[irq].handler->enable(irq);
+ 	}
++
++#ifdef CONFIG_DBOX2
++	if (action) {
++	    if (action->flags & SA_ONESHOT)
++		disable_irq_nosync(irq);
++	}
++#endif
++
+ 	spin_unlock(&desc->lock);
+ }
+ 
+diff -Naur linux-2.4.22-pre9/arch/ppc/kernel/m8xx_setup.c linux-2.4.22-pre9-dbox2/arch/ppc/kernel/m8xx_setup.c
+--- linux-2.4.22-pre9/arch/ppc/kernel/m8xx_setup.c	2003-07-20 21:38:33.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc/kernel/m8xx_setup.c	2003-07-30 15:01:22.000000000 +0200
+@@ -43,6 +43,7 @@
+ #include <asm/machdep.h>
+ #include <asm/bootinfo.h>
+ #include <asm/time.h>
++#include <asm/i8259.h>
+ 
+ #include "ppc8xx_pic.h"
+ 
+@@ -117,6 +118,22 @@
+ 	printk ("timebase_interrupt()\n");
+ }
+ 
++#ifdef CONFIG_DBOX2
++void m8xx_reset_watchdog(void)
++{
++	((volatile immap_t *)IMAP_ADDR)->im_siu_conf.sc_swsr = 0x556c;             /* write magic1 */
++	((volatile immap_t *)IMAP_ADDR)->im_siu_conf.sc_swsr = 0xaa39;             /* write magic2 */
++}
++
++void pit_interrupt(int irq, void * dev, struct pt_regs * regs)
++{
++	m8xx_reset_watchdog();
++
++	// Clear irq
++	((volatile immap_t *)IMAP_ADDR)->im_sit.sit_piscr |= PISCR_PS;
++}
++#endif
++
+ /* The decrementer counts at the system (internal) clock frequency divided by
+  * sixteen, or external oscillator divided by four.  We force the processor
+  * to use system clock divided by sixteen.
+@@ -126,6 +143,11 @@
+ 	bd_t	*binfo = (bd_t *)__res;
+ 	int freq, fp, divisor;
+ 
++#ifdef CONFIG_DBOX2
++	unsigned long sypcr;
++	unsigned short pitc, swtc, swp;
++#endif
++
+ 	/* Unlock the SCCR. */
+ 	((volatile immap_t *)IMAP_ADDR)->im_clkrstk.cark_sccrk = ~KAPWR_KEY;
+ 	((volatile immap_t *)IMAP_ADDR)->im_clkrstk.cark_sccrk = KAPWR_KEY;
+@@ -133,6 +155,18 @@
+ 	/* Force all 8xx processors to use divide by 16 processor clock. */
+ 	((volatile immap_t *)IMAP_ADDR)->im_clkrst.car_sccr |= 0x02000000;
+ 
++#ifdef CONFIG_DBOX2
++	if ((binfo->bi_intfreq < 1000000) || (binfo->bi_busfreq < 1000000)) {
++	    printk("WARNING: Frequency is not in HZ. Please consider using a newer bootloader!\n");
++	    printk("WARNING: OLD intfreq = %d busfreq = %d\n", binfo->bi_intfreq, binfo->bi_busfreq);
++
++	    binfo->bi_intfreq *= 1000000;
++	    binfo->bi_busfreq *= 1000000;
++
++	    printk("WARNING: NEW intfreq = %d busfreq = %d\n", binfo->bi_intfreq, binfo->bi_busfreq);
++	}
++#endif
++
+ 	/* Processor frequency is MHz.
+ 	 * The value 'fp' is the number of decrementer ticks per second.
+ 	 */
+@@ -184,6 +218,42 @@
+ 	if (request_irq(DEC_INTERRUPT, timebase_interrupt, 0, "tbint",
+ 				NULL) != 0)
+ 		panic("Could not allocate timer IRQ!");
++
++#ifdef CONFIG_DBOX2
++	sypcr = ((volatile immap_t *)IMAP_ADDR)->im_siu_conf.sc_sypcr;
++
++	if ((sypcr >> 2) & 0x1) {
++	    m8xx_reset_watchdog();
++
++	    if (sypcr >> 16)
++		swtc = sypcr >> 16;
++	    else
++		swtc = 0xFFFF;
++
++	    if (sypcr & 0x1)
++		swp = 2048;
++	    else
++		swp = 1;
++
++#define PITRTCLK 8192
++
++	    // Fire trigger if half of the wdt ticked down
++	    if ((swp * swtc) > (UINT_MAX / PITRTCLK))
++		pitc = swtc * swp / binfo->bi_intfreq * PITRTCLK / 2;
++	    else
++		pitc = PITRTCLK * swtc * swp / binfo->bi_intfreq / 2;
++
++	    ((volatile immap_t *)IMAP_ADDR)->im_sit.sit_pitc = pitc << 16;
++	    ((volatile immap_t *)IMAP_ADDR)->im_sit.sit_piscr = (mk_int_int_mask(PIT_INTERRUPT) << 8) | PISCR_PIE | PISCR_PTE;
++
++	    if (request_8xxirq(PIT_INTERRUPT, pit_interrupt, 0, "pit", NULL) != 0)
++		    panic("mpc8xx-wdt: could not allocate pit irq!");
++
++	    printk("mpc8xx-wdt: active wdt found (SWTC: 0x%04X, SWP: 0x%01X)\n", sypcr >> 16, sypcr & 0x1);
++	    printk("mpc8xx-wdt: keep-alive trigger activated (PITC: 0x%04X)\n", pitc);
++	}
++#endif
++
+ }
+ 
+ /* The RTC on the MPC8xx is an internal register.
+diff -Naur linux-2.4.22-pre9/arch/ppc/kernel/ppc_ksyms.c linux-2.4.22-pre9-dbox2/arch/ppc/kernel/ppc_ksyms.c
+--- linux-2.4.22-pre9/arch/ppc/kernel/ppc_ksyms.c	2003-06-13 16:51:31.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc/kernel/ppc_ksyms.c	2003-07-30 15:01:22.000000000 +0200
+@@ -343,6 +343,10 @@
+ EXPORT_SYMBOL(cpm_install_handler);
+ EXPORT_SYMBOL(cpm_free_handler);
+ EXPORT_SYMBOL(m8xx_cpm_hostalloc);
++#ifdef CONFIG_DBOX2
++EXPORT_SYMBOL(m8xx_cpm_setbrg);
++EXPORT_SYMBOL(m8xx_cpm_dpalloc);
++#endif /* CONFIG_DBOX2 */
+ #endif /* CONFIG_8xx */
+ 
+ /* Those should really be inline */
+diff -Naur linux-2.4.22-pre9/arch/ppc/kernel/time.c linux-2.4.22-pre9-dbox2/arch/ppc/kernel/time.c
+--- linux-2.4.22-pre9/arch/ppc/kernel/time.c	2003-07-20 21:38:33.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc/kernel/time.c	2003-07-30 15:01:22.000000000 +0200
+@@ -71,6 +71,10 @@
+ 
+ extern int do_sys_settimeofday(struct timeval *tv, struct timezone *tz);
+ 
++#ifdef CONFIG_DBOX2
++extern void m8xx_reset_watchdog(void);
++#endif
++
+ /* keep track of when we need to update the rtc */
+ time_t last_rtc_update;
+ extern rwlock_t xtime_lock;
+@@ -320,6 +324,11 @@
+ 		sec = ppc_md.get_rtc_time();
+ 		elapsed = 0;
+ 		do {
++
++#ifdef CONFIG_DBOX2
++			m8xx_reset_watchdog();
++#endif
++
+ 			old_stamp = stamp;
+ 			old_sec = sec;
+ 			stamp = get_native_tbl();
+diff -Naur linux-2.4.22-pre9/arch/ppc/Makefile linux-2.4.22-pre9-dbox2/arch/ppc/Makefile
+--- linux-2.4.22-pre9/arch/ppc/Makefile	2003-06-27 19:19:00.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc/Makefile	2003-07-30 15:01:22.000000000 +0200
+@@ -30,7 +30,11 @@
+ endif
+ 
+ ifdef CONFIG_8xx
+-CFLAGS := $(CFLAGS) -mcpu=860
++  ifdef CONFIG_DBOX2
++    CFLAGS := $(CFLAGS) -mcpu=823
++  else
++    CFLAGS := $(CFLAGS) -mcpu=860
++  endif
+ endif
+ 
+ ifdef CONFIG_PPC64BRIDGE
+diff -Naur linux-2.4.22-pre9/arch/ppc/platforms/dbox2.h linux-2.4.22-pre9-dbox2/arch/ppc/platforms/dbox2.h
+--- linux-2.4.22-pre9/arch/ppc/platforms/dbox2.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.22-pre9-dbox2/arch/ppc/platforms/dbox2.h	2003-07-30 15:01:22.000000000 +0200
+@@ -0,0 +1,24 @@
++/*
++ * D-BOX2 board specific definitions
++ *
++ * Copyright (c) 2001-2002 Florian Schirmer (jolt@tuxbox.org)
++ */
++
++#ifndef __MACH_DBOX2_H
++#define __MACH_DBOX2_H
++
++#include <linux/config.h>
++
++#include <asm/ppcboot.h>
++
++#define	DBOX2_IMMR_BASE	0xFF000000	/* phys. addr of IMMR */
++#define	DBOX2_IMAP_SIZE	(64 * 1024)	/* size of mapped area */
++
++#define	IMAP_ADDR	DBOX2_IMMR_BASE	/* physical base address of IMMR area */
++#define IMAP_SIZE	DBOX2_IMAP_SIZE	/* mapped size of IMMR area */
++
++/* We don't use the 8259.
++*/
++#define NR_8259_INTS	0
++
++#endif	/* __MACH_DBOX2_H */
+diff -Naur linux-2.4.22-pre9/arch/ppc64/config.in linux-2.4.22-pre9-dbox2/arch/ppc64/config.in
+--- linux-2.4.22-pre9/arch/ppc64/config.in	2003-07-25 04:49:04.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/arch/ppc64/config.in	2003-07-30 15:01:22.000000000 +0200
+@@ -8,6 +8,7 @@
+ define_bool CONFIG_GENERIC_BUST_SPINLOCK n
+ define_bool CONFIG_GENERIC_ISA_DMA y
+ define_bool CONFIG_HAVE_DEC_LOCK y
++define_bool CONFIG_PPC_ISATIMER y
+ 
+ mainmenu_name "64 bit PowerPC Linux Kernel Configuration"
+ 
+diff -Naur linux-2.4.22-pre9/drivers/char/console.c linux-2.4.22-pre9-dbox2/drivers/char/console.c
+--- linux-2.4.22-pre9/drivers/char/console.c	2002-11-29 00:53:12.000000000 +0100
++++ linux-2.4.22-pre9-dbox2/drivers/char/console.c	2003-07-30 15:01:22.000000000 +0200
+@@ -110,7 +110,11 @@
+ #include "console_macros.h"
+ 
+ 
+-const struct consw *conswitchp;
++#ifdef CONFIG_DUMMY_CONSOLE
++const struct consw *conswitchp = &dummy_con;
++#else
++const struct consw *conswitchp = 0;
++#endif
+ 
+ /* A bitmap for codes <32. A bit of 1 indicates that the code
+  * corresponding to that bit number invokes some special action
+diff -Naur linux-2.4.22-pre9/drivers/input/keybdev.c linux-2.4.22-pre9-dbox2/drivers/input/keybdev.c
+--- linux-2.4.22-pre9/drivers/input/keybdev.c	2003-07-30 12:17:28.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/drivers/input/keybdev.c	2003-07-30 15:01:22.000000000 +0200
+@@ -100,7 +100,11 @@
+ #if defined(CONFIG_MAC_ADBKEYCODES) || defined(CONFIG_ADB_KEYBOARD)
+ 	if (!mac_hid_keyboard_sends_linux_keycodes()) {
+ 		if (keycode > 255 || !mac_keycodes[keycode])
++#ifdef CONFIG_DBOX2
++			return 0;
++else
+ 			return -1;
++#endif
+        
+ 		handle_scancode((mac_keycodes[keycode] & 0x7f), down);
+ 		return 0;
+diff -Naur linux-2.4.22-pre9/drivers/mtd/chips/cfi_probe.c linux-2.4.22-pre9-dbox2/drivers/mtd/chips/cfi_probe.c
+--- linux-2.4.22-pre9/drivers/mtd/chips/cfi_probe.c	2003-06-13 16:51:34.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/drivers/mtd/chips/cfi_probe.c	2003-07-30 16:30:58.000000000 +0200
+@@ -132,9 +132,14 @@
+ 	int ofs_factor = cfi->interleave*cfi->device_type;
+ 	__u32 base = 0;
+ 	int num_erase_regions = cfi_read_query(map, base + (0x10 + 28)*ofs_factor);
++	int man_id = cfi_read_query(map, base + (0x00)*ofs_factor);
++	int dev_id = cfi_read_query(map, base + (0x01)*ofs_factor);
++
+ 	int i;
+ 
+ #ifdef DEBUG_CFI
++	printk("Man.-ID  : %x\n", man_id);
++	printk("Device-Id: %x\n", dev_id);
+ 	printk("Number of erase regions: %d\n", num_erase_regions);
+ #endif
+ 	if (!num_erase_regions)
+@@ -173,7 +178,12 @@
+ 	for (i=0; i<cfi->cfiq->NumEraseRegions; i++) {
+ 		cfi->cfiq->EraseRegionInfo[i] = le32_to_cpu(cfi->cfiq->EraseRegionInfo[i]);
+ 		
+-#ifdef DEBUG_CFI		
++		if ((man_id==0x20) && (dev_id==0xBB) && (i==1)) // ST M28W320CB report wrong EraseRegionInfo for Region 2
++			cfi->cfiq->EraseRegionInfo[i] = 0x100003E;
++		
++#ifdef DEBUG_CFI
++		printk("EraseRegionInfo[%d], %x\n", i, cfi->cfiq->EraseRegionInfo[i]);
++
+ 		printk("  Erase Region #%d: BlockSize 0x%4.4X bytes, %d blocks\n",
+ 		       i, (cfi->cfiq->EraseRegionInfo[i] >> 8) & ~0xff, 
+ 		       (cfi->cfiq->EraseRegionInfo[i] & 0xffff) + 1);
+diff -Naur linux-2.4.22-pre9/drivers/mtd/maps/dbox2-flash.c linux-2.4.22-pre9-dbox2/drivers/mtd/maps/dbox2-flash.c
+--- linux-2.4.22-pre9/drivers/mtd/maps/dbox2-flash.c	2001-10-05 00:14:59.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/drivers/mtd/maps/dbox2-flash.c	2003-07-30 15:01:22.000000000 +0200
+@@ -17,21 +17,29 @@
+  * single flash device into. If the size if zero we use up to the end of the
+  * device. */
+ static struct mtd_partition partition_info[]= {{name: "BR bootloader",		// raw
+-						      size: 128 * 1024, 
+-						      offset: 0,                  
+-						      mask_flags: MTD_WRITEABLE},
+-                                                     {name: "PPC bootloader",		// flfs
+-						      size: 128 * 1024, 
+-						      offset: MTDPART_OFS_APPEND, 
+-						      mask_flags: 0},
+-                                                     {name: "Kernel",			// idxfs
+-						      size: 768 * 1024, 
+-						      offset: MTDPART_OFS_APPEND, 
+-						      mask_flags: 0},
+-                                                     {name: "System",			// jffs
+-						      size: MTDPART_SIZ_FULL, 
+-						      offset: MTDPART_OFS_APPEND, 
+-						      mask_flags: 0}};
++							size: 128 * 1024, 
++							offset: 0,                  
++							mask_flags: MTD_WRITEABLE},
++							{name: "flfs (ppcboot)",
++							size: 128 * 1024, 
++							offset: MTDPART_OFS_APPEND, 
++							mask_flags: 0},
++							{name: "root (cramfs)",
++							size: 6912 * 1024, 
++							offset: MTDPART_OFS_APPEND, 
++							mask_flags: 0},
++							{name: "var (jffs2)",
++							size: 1024 * 1024,
++							offset: MTDPART_OFS_APPEND,
++							mask_flags: 0},
++							{name: "flash without bootloader",
++							size: MTDPART_SIZ_FULL,
++							offset: 128 * 1024,
++							mask_flags: 0},
++							{name: "complete flash",
++							size: MTDPART_SIZ_FULL,
++							offset: 0, 
++							mask_flags: MTD_WRITEABLE}};
+ 
+ #define NUM_PARTITIONS (sizeof(partition_info) / sizeof(partition_info[0]))
+ 
+@@ -146,5 +154,5 @@
+ 
+ 
+ MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Kári Davíðsson <kd@flaga.is>");
+-MODULE_DESCRIPTION("MTD map driver for Nokia/Sagem D-Box 2 board");
++MODULE_AUTHOR("Kári Davíðsson <kd@flaga.is>, Bastian Blank <waldi@tuxbox.org>");
++MODULE_DESCRIPTION("MTD map driver for D-Box 2 board");
+diff -Naur linux-2.4.22-pre9/drivers/video/Config.in linux-2.4.22-pre9-dbox2/drivers/video/Config.in
+--- linux-2.4.22-pre9/drivers/video/Config.in	2003-06-13 16:51:37.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/drivers/video/Config.in	2003-07-30 15:01:22.000000000 +0200
+@@ -73,7 +73,7 @@
+       dep_bool '  Apple "valkyrie" display support' CONFIG_FB_VALKYRIE $CONFIG_ALL_PPC
+       bool '  Chips 65550 display support' CONFIG_FB_CT65550
+       bool '  IMS Twin Turbo display support' CONFIG_FB_IMSTT
+-      bool '  S3 Trio display support' CONFIG_FB_S3TRIO
++      dep_bool '  S3 Trio display support' CONFIG_FB_S3TRIO $CONFIG_ALL_PPC
+       tristate '  VGA 16-color graphics console' CONFIG_FB_VGA16
+    fi
+    if [ "$CONFIG_PARISC" = "y" ]; then
+@@ -248,6 +248,7 @@
+       tristate '    VGA 16-color planar support' CONFIG_FBCON_VGA_PLANES
+       tristate '    VGA characters/attributes support' CONFIG_FBCON_VGA
+       tristate '    HGA monochrome support (EXPERIMENTAL)' CONFIG_FBCON_HGA
++      bool '    console shift' CONFIG_FBCON_SHIFT 0
+    else
+       # Guess what we need
+       if [ "$CONFIG_FB_ACORN" = "y" -o "$CONFIG_FB_AMIGA" = "y" -o \
+diff -Naur linux-2.4.22-pre9/drivers/video/fbcon.c linux-2.4.22-pre9-dbox2/drivers/video/fbcon.c
+--- linux-2.4.22-pre9/drivers/video/fbcon.c	2003-07-06 23:13:07.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/drivers/video/fbcon.c	2003-07-30 15:01:22.000000000 +0200
+@@ -654,9 +654,15 @@
+     
+     old_cols = conp->vc_cols;
+     old_rows = conp->vc_rows;
++
++#ifdef CONFIG_FBCON_SHIFT
++	nr_cols = p->var.xres/fontwidth(p) - 2*p->shift_x;
++	nr_cols = p->var.yres/fontheight(p) - 2*p->shift_y;
++#else /* CONFIG_FBCON_SHIFT */
+     
+     nr_cols = p->var.xres/fontwidth(p);
+     nr_rows = p->var.yres/fontheight(p);
++#endif /* CONFIG_FBCON_SHIFT */
+     
+     if (logo) {
+     	/* Need to make room for the logo */
+diff -Naur linux-2.4.22-pre9/drivers/video/fbcon-cfb16.c linux-2.4.22-pre9-dbox2/drivers/video/fbcon-cfb16.c
+--- linux-2.4.22-pre9/drivers/video/fbcon-cfb16.c	2001-10-15 22:47:13.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/drivers/video/fbcon-cfb16.c	2003-07-30 15:01:22.000000000 +0200
+@@ -46,6 +46,12 @@
+     int bytes = p->next_line, linesize = bytes * fontheight(p), rows;
+     u8 *src, *dst;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    width += p->shift_x;
++    dy += p->shift_y;
++    sy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     if (sx == 0 && dx == 0 && width * fontwidth(p) * 2 == bytes) {
+ 	fb_memmove(p->screen_base + dy * linesize,
+ 		  p->screen_base + sy * linesize,
+@@ -108,6 +114,11 @@
+     int bytes = p->next_line, lines = height * fontheight(p);
+     u32 bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    sx += p->shift_x;
++    sy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + sy * fontheight(p) * bytes + sx * fontwidth(p) * 2;
+ 
+     bgx = ((u16 *)p->dispsw_data)[attr_bgcol_ec(p, conp)];
+@@ -126,6 +137,11 @@
+     int bytes = p->next_line, rows;
+     u32 eorx, fgx, bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p) * 2;
+ 
+     fgx = ((u16 *)p->dispsw_data)[attr_fgcol(p, c)];
+@@ -177,6 +193,11 @@
+     int rows, bytes = p->next_line;
+     u32 eorx, fgx, bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest0 = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p) * 2;
+     c = scr_readw(s);
+     fgx = ((u16 *)p->dispsw_data)[attr_fgcol(p, c)];
+@@ -233,6 +254,11 @@
+     u8 *dest;
+     int bytes = p->next_line, rows;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p)*2;
+     for (rows = fontheight(p); rows--; dest += bytes) {
+ 	switch (fontwidth(p)) {
+@@ -261,18 +287,31 @@
+     int bytes = p->next_line;
+     u32 bgx;
+ 
++#ifndef CONFIG_FBCON_SHIFT
+     unsigned int right_start = conp->vc_cols*fontwidth(p);
+     unsigned int bottom_start = conp->vc_rows*fontheight(p);
+     unsigned int right_width, bottom_width;
++#endif /* CONFIG_FBCON_SHIFT */
+ 
+     bgx = ((u16 *)p->dispsw_data)[attr_bgcol_ec(p, conp)];
+ 
++#ifndef CONFIG_FBCON_SHIFT
+     if (!bottom_only && (right_width = p->var.xres-right_start))
+ 	rectfill(p->screen_base+right_start*2, right_width,
+ 		 p->var.yres_virtual, bgx, bytes);
+     if ((bottom_width = p->var.yres-bottom_start))
+ 	rectfill(p->screen_base+(p->var.yoffset+bottom_start)*bytes,
+ 		 right_start, bottom_width, bgx, bytes);
++#else /* CONFIG_FBCON_SHIFT */
++    rectfill(p->screen_base, p->var.xres_virtual,
++	     p->shift_y*fontheight(p), bgx, bytes);
++    rectfill(p->screen_base, p->shift_x*fontwidth(p),
++	     p->var.yres_virtual, bgx, bytes);
++    rectfill(p->screen_base+(conp->vc_cols+p->shift_x)*fontwidth(p)*2, p->shift_x*fontwidth(p),
++	     p->var.yres_virtual, bgx, bytes);
++    rectfill(p->screen_base+(conp->vc_rows+p->shift_y)*fontheight(p)*bytes, p->var.xres_virtual,
++	     p->shift_y*fontheight(p), bgx, bytes);
++#endif /* CONFIG_FBCON_SHIFT */
+ }
+ 
+ 
+diff -Naur linux-2.4.22-pre9/drivers/video/fbcon-cfb8.c linux-2.4.22-pre9-dbox2/drivers/video/fbcon-cfb8.c
+--- linux-2.4.22-pre9/drivers/video/fbcon-cfb8.c	2001-10-15 22:47:13.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/drivers/video/fbcon-cfb8.c	2003-07-30 15:01:22.000000000 +0200
+@@ -51,6 +51,12 @@
+     int bytes = p->next_line, linesize = bytes * fontheight(p), rows;
+     u8 *src,*dst;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    width += p->shift_x;
++    dy += p->shift_y;
++    sy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     if (sx == 0 && dx == 0 && width * fontwidth(p) == bytes) {
+ 	fb_memmove(p->screen_base + dy * linesize,
+ 		  p->screen_base + sy * linesize,
+@@ -97,6 +103,11 @@
+     int bytes=p->next_line,lines=height * fontheight(p);
+     u8 bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    sx += p->shift_x;
++    sy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + sy * fontheight(p) * bytes + sx * fontwidth(p);
+ 
+     bgx=attr_bgcol_ec(p,conp);
+@@ -115,6 +126,11 @@
+     int bytes=p->next_line,rows;
+     u32 eorx,fgx,bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p);
+     if (fontwidth(p) <= 8)
+ 	cdat = p->fontdata + (c & p->charmask) * fontheight(p);
+@@ -162,6 +178,11 @@
+     int rows,bytes=p->next_line;
+     u32 eorx, fgx, bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest0 = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p);
+     c = scr_readw(s);
+     fgx = attr_fgcol(p, c);
+@@ -219,6 +240,11 @@
+     u8 *dest;
+     int bytes=p->next_line, rows;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p);
+     for (rows = fontheight(p) ; rows-- ; dest += bytes) {
+     	switch (fontwidth(p)) {
+@@ -237,18 +263,31 @@
+     int bytes=p->next_line;
+     u8 bgx;
+ 
++#ifndef CONFIG_FBCON_SHIFT
+     unsigned int right_start = conp->vc_cols*fontwidth(p);
+     unsigned int bottom_start = conp->vc_rows*fontheight(p);
+     unsigned int right_width, bottom_width;
++#endif /* CONFIG_FBCON_SHIFT */
+ 
+     bgx=attr_bgcol_ec(p,conp);
+ 
++#ifndef CONFIG_FBCON_SHIFT
+     if (!bottom_only && (right_width = p->var.xres-right_start))
+ 	rectfill(p->screen_base+right_start, right_width, p->var.yres_virtual,
+ 		 bgx, bytes);
+     if ((bottom_width = p->var.yres-bottom_start))
+ 	rectfill(p->screen_base+(p->var.yoffset+bottom_start)*bytes,
+ 		 right_start, bottom_width, bgx, bytes);
++#else /* CONFIG_FBCON_SHIFT */
++    rectfill(p->screen_base, p->var.xres_virtual,
++             p->shift_y*fontheight(p), bgx, bytes);
++    rectfill(p->screen_base, p->shift_x*fontwidth(p),
++             p->var.yres_virtual, bgx, bytes);
++    rectfill(p->screen_base+(conp->vc_cols+p->shift_x)*fontwidth(p), p->shift_x*fontwidth(p),
++             p->var.yres_virtual, bgx, bytes);
++    rectfill(p->screen_base+(conp->vc_rows+p->shift_y)*fontheight(p)*bytes, p->var.xres_virtual,
++             p->shift_y*fontheight(p), bgx, bytes);
++#endif /* CONFIG_FBCON_SHIFT */
+ }
+ 
+ 
+diff -Naur linux-2.4.22-pre9/drivers/video/radeon.h linux-2.4.22-pre9-dbox2/drivers/video/radeon.h
+--- linux-2.4.22-pre9/drivers/video/radeon.h	2003-07-13 17:46:09.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/drivers/video/radeon.h	2003-07-30 15:01:22.000000000 +0200
+@@ -418,7 +418,6 @@
+ #define MDLL_CKO                                   0x000f
+ #define MDLL_RDCKA                                 0x0010
+ #define MCLK_CNTL                                  0x0012
+-#define AGP_PLL_CNTL                               0x000b
+ #define PLL_TEST_CNTL                              0x0013
+ #define SCLK_MORE_CNTL				   0x0035
+ #define CLK_PWRMGT_CNTL                            0x0014
+diff -Naur linux-2.4.22-pre9/fs/Config.in linux-2.4.22-pre9-dbox2/fs/Config.in
+--- linux-2.4.22-pre9/fs/Config.in	2003-07-15 04:48:41.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/fs/Config.in	2003-07-30 15:01:22.000000000 +0200
+@@ -49,6 +49,7 @@
+ dep_tristate 'Journalling Flash File System v2 (JFFS2) support' CONFIG_JFFS2_FS $CONFIG_MTD
+ if [ "$CONFIG_JFFS2_FS" = "y" -o "$CONFIG_JFFS2_FS" = "m" ] ; then
+    int 'JFFS2 debugging verbosity (0 = quiet, 2 = noisy)' CONFIG_JFFS2_FS_DEBUG 0
++   bool 'Change JFFS2 garbage collector for small filesystems' CONFIG_JFFS2_FS_SMALL_FS 0
+ fi
+ tristate 'Compressed ROM file system support' CONFIG_CRAMFS
+ bool 'Virtual memory file system support (former shm fs)' CONFIG_TMPFS
+@@ -159,6 +160,15 @@
+ else
+    define_tristate CONFIG_ZISOFS_FS n
+ fi
++if [ "$CONFIG_CRAMFS" = "y" -o "$CONFIG_ZISOFS_FS" = "y" -o "$CONFIG_JFFS2_FS" = "y" ]; then
++   define_tristate CONFIG_ZLIB_FS_INFLATE y
++else
++  if [ "$CONFIG_CRAMFS" = "m" -o "$CONFIG_ZISOFS_FS" = "m" -o "$CONFIG_JFFS2_FS" = "m" ]; then
++     define_tristate CONFIG_ZLIB_FS_INFLATE m
++  else
++     define_tristate CONFIG_ZLIB_FS_INFLATE n
++  fi
++fi
+ 
+ mainmenu_option next_comment
+ comment 'Partition Types'
+diff -Naur linux-2.4.22-pre9/fs/jffs2/nodelist.h linux-2.4.22-pre9-dbox2/fs/jffs2/nodelist.h
+--- linux-2.4.22-pre9/fs/jffs2/nodelist.h	2003-06-13 16:51:37.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/fs/jffs2/nodelist.h	2003-07-30 15:01:22.000000000 +0200
+@@ -222,9 +222,15 @@
+ #define ALLOC_DELETION	1	/* Deletion node. Best to allow it */
+ #define ALLOC_GC	2	/* Space requested for GC. Give it or die */
+ 
++#ifndef CONFIG_JFFS2_FS_SMALL_FS
+ #define JFFS2_RESERVED_BLOCKS_BASE 3						/* Number of free blocks there must be before we... */
+ #define JFFS2_RESERVED_BLOCKS_WRITE (JFFS2_RESERVED_BLOCKS_BASE + 2)		/* ... allow a normal filesystem write */
+ #define JFFS2_RESERVED_BLOCKS_DELETION (JFFS2_RESERVED_BLOCKS_BASE + 1)		/* ... allow a normal filesystem deletion */
++#else
++#define JFFS2_RESERVED_BLOCKS_BASE 0						/* Number of free blocks there must be before we... */
++#define JFFS2_RESERVED_BLOCKS_WRITE 1						/* ... allow a normal filesystem write */
++#define JFFS2_RESERVED_BLOCKS_DELETION 0					/* ... allow a normal filesystem deletion */
++#endif
+ #define JFFS2_RESERVED_BLOCKS_GCTRIGGER (JFFS2_RESERVED_BLOCKS_BASE + 3)	/* ... wake up the GC thread */
+ #define JFFS2_RESERVED_BLOCKS_GCBAD (JFFS2_RESERVED_BLOCKS_BASE + 1)		/* ... pick a block from the bad_list to GC */
+ #define JFFS2_RESERVED_BLOCKS_GCMERGE (JFFS2_RESERVED_BLOCKS_BASE)		/* ... merge pages when garbage collecting */
+diff -Naur linux-2.4.22-pre9/include/asm-ppc/commproc.h linux-2.4.22-pre9-dbox2/include/asm-ppc/commproc.h
+--- linux-2.4.22-pre9/include/asm-ppc/commproc.h	2003-07-20 21:38:35.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/include/asm-ppc/commproc.h	2003-07-30 15:01:22.000000000 +0200
+@@ -466,6 +466,23 @@
+ #define SICR_ENET_CLKRT	((uint)0x0000003d)
+ #endif	/* CONFIG_RPXCLASSIC */
+ 
++/***  D-BOX2  ***********************************************/
++
++#ifdef CONFIG_DBOX2
++
++#define PA_ENET_RXD	((ushort)0x0004)
++#define PA_ENET_TXD	((ushort)0x0008)
++#define PA_ENET_RCLK	((ushort)0x0200)
++#define PA_ENET_TCLK	((ushort)0x0800)
++
++#define PC_ENET_TENA	((ushort)0x0002)
++#define PC_ENET_CLSN	((ushort)0x0040)
++#define PC_ENET_RENA	((ushort)0x0080)
++
++#define SICR_ENET_MASK	((uint)0x0000ff00)
++#define SICR_ENET_CLKRT	((uint)0x00003d00)
++#endif	/* CONFIG_DBOX2 */
++
+ /***  TQM823L, TQM850L  ***********************************************/
+ 
+ #if defined(CONFIG_TQM823L) || defined(CONFIG_TQM850L)
+diff -Naur linux-2.4.22-pre9/include/asm-ppc/mpc8xx.h linux-2.4.22-pre9-dbox2/include/asm-ppc/mpc8xx.h
+--- linux-2.4.22-pre9/include/asm-ppc/mpc8xx.h	2003-06-13 16:51:38.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/include/asm-ppc/mpc8xx.h	2003-07-30 15:01:22.000000000 +0200
+@@ -32,6 +32,10 @@
+ #include <platforms/rpxclassic.h>
+ #endif
+ 
++#ifdef CONFIG_DBOX2
++#include <platforms/dbox2.h>
++#endif
++
+ #if defined(CONFIG_TQM8xxL)
+ #include <platforms/tqm8xx.h>
+ #endif
+diff -Naur linux-2.4.22-pre9/include/linux/fb.h linux-2.4.22-pre9-dbox2/include/linux/fb.h
+--- linux-2.4.22-pre9/include/linux/fb.h	2003-07-25 16:13:28.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/include/linux/fb.h	2003-07-30 15:01:22.000000000 +0200
+@@ -108,6 +108,9 @@
+ #define FB_ACCEL_NEOMAGIC_NM2360 97	/* NeoMagic NM2360              */
+ #define FB_ACCEL_NEOMAGIC_NM2380 98	/* NeoMagic NM2380              */
+ 
++#define FB_ACCEL_CCUBE_AVIA_GTX	120	/* C-Cube AViA GTX		*/
++#define FB_ACCEL_CCUBE_AVIA_ENX	121	/* C-Cube AViA eNX		*/
++
+ 
+ struct fb_fix_screeninfo {
+ 	char id[16];			/* identification string eg "TT Builtin" */
+diff -Naur linux-2.4.22-pre9/include/video/fbcon.h linux-2.4.22-pre9-dbox2/include/video/fbcon.h
+--- linux-2.4.22-pre9/include/video/fbcon.h	2003-07-13 17:46:09.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/include/video/fbcon.h	2003-07-30 15:01:22.000000000 +0200
+@@ -95,6 +95,12 @@
+     short yscroll;                  /* Hardware scrolling */
+     unsigned char fgshift, bgshift;
+     unsigned short charmask;        /* 0xff or 0x1ff */
++
++#ifdef CONFIG_FBCON_SHIFT
++    int shift_x;
++    int shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+ };
+ 
+ /* drivers/video/fbcon.c */
+diff -Naur linux-2.4.22-pre9/Makefile linux-2.4.22-pre9-dbox2/Makefile
+--- linux-2.4.22-pre9/Makefile	2003-07-30 12:17:27.000000000 +0200
++++ linux-2.4.22-pre9-dbox2/Makefile	2003-07-30 15:02:30.000000000 +0200
+@@ -1,7 +1,7 @@
+ VERSION = 2
+ PATCHLEVEL = 4
+ SUBLEVEL = 22
+-EXTRAVERSION = -pre9
++EXTRAVERSION = -pre9-dbox2
+ 
+ KERNELRELEASE=$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
+ 
+@@ -469,7 +469,7 @@
+ 	cd .. && tar cf - linux/ | gzip -9 > backup.gz
+ 	sync
+ 
+-sgmldocs: 
++sgmldocs:
+ 	chmod 755 $(TOPDIR)/scripts/docgen
+ 	chmod 755 $(TOPDIR)/scripts/gen-all-syms
+ 	chmod 755 $(TOPDIR)/scripts/kernel-doc
