@@ -1,11 +1,10 @@
-diff -Naur libdvb-0.4.0.orig/Makefile libdvb-0.4.0/Makefile
---- libdvb-0.4.0.orig/Makefile	2003-05-09 18:43:00.000000000 +0200
-+++ libdvb-0.4.0/Makefile	2003-05-29 09:09:52.000000000 +0200
-@@ -19,7 +19,6 @@
- install: $(DVB_LIBS) $(HEADERS)
- 	install -m 644 $(DVB_LIBS) $(INST_DIR)/lib/
- 	install -m 644 $(HEADERS) $(INST_DIR)/include/
+--- libdvb-0.5.0/Makefile	2003-08-29 16:26:19.000000000 +0200
++++ libdvb-0.5.0new/Makefile	2003-09-08 13:12:45.000000000 +0200
+@@ -18,7 +18,6 @@
+ 	install -m 644 $(DVB_LIBS) $(PREFIX)/lib/
+ 	[ ! -d "$(PREFIX)/include" ] && mkdir -p $(PREFIX)/include
+ 	install -m 644 $(HEADERS) $(PREFIX)/include/
 -	make -C dvb-mpegtools install
  
  uninstall: 
- 	for i in $(DVB_LIBS); do rm -f $(INST_DIR)/lib/$$i;done
+ 	for i in $(DVB_LIBS); do rm -f $(PREFIX)/lib/$$i;done
