@@ -102,15 +102,15 @@ sub process_make_prepare (@)
     {
       if ( $_[1] =~ m#\.tar\.bz2$# )
       {
-	$output .= "bunzip2 -cd Archive/" . $_[1] . " | tar -x";
+	$output .= "bunzip2 -cd Archive/" . $_[1] . " | TAPE=- tar -x";
       }
       elsif ( $_[1] =~ m#\.tar\.gz$# )
       {
-	$output .= "gunzip -cd Archive/" . $_[1] . " | tar -x";
+	$output .= "gunzip -cd Archive/" . $_[1] . " | TAPE=- tar -x";
       }
       elsif ( $_[1] =~ m#\.tgz$# )
       {
-	$output .= "gunzip -cd Archive/" . $_[1] . " | tar -x";
+	$output .= "gunzip -cd Archive/" . $_[1] . " | TAPE=- tar -x";
       }
       elsif ( $_[1] =~ m#\.exe$# )
       {
