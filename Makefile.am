@@ -1289,11 +1289,11 @@ $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/ucodes
 	$(INSTALL) -d $(flashprefix)/root/tmp
 	$(MAKE) -C etc install targetprefix=$(flashprefix)/root
-	cp -a $(bootprefix)/kernel-cdk $(flashprefix)/root/vmlinuz
+	cp -pa $(bootprefix)/kernel-cdk $(flashprefix)/root/vmlinuz
 	echo "version=0106`date +%Y%m%d%H%M`" > $(flashprefix)/root/.version
 	echo "comment=Erstellt von `id -un`" >> $(flashprefix)/root/.version
 	$(INSTALL) $(targetprefix)/bin/busybox $(flashprefix)/root/bin
-	for i in `find $(targetprefix)/bin/ -lname "*busybox"` ; do cp -a $$i $(flashprefix)/root/bin/ ; done
+	for i in `find $(targetprefix)/bin/ -lname "*busybox"` ; do cp -ap $$i $(flashprefix)/root/bin/ ; done
 	$(INSTALL) $(targetprefix)/bin/switch $(flashprefix)/root/bin
 	if [ -e $(targetprefix)/bin/eraseall ] ; then \
 		$(INSTALL) $(targetprefix)/bin/eraseall $(flashprefix)/root/bin ; \
@@ -1302,19 +1302,17 @@ $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
 	sed -e 's/tmpfs/ramfs/' $(targetprefix)/etc/fstab > $(flashprefix)/root/etc/fstab
 	rm -f $(flashprefix)/root/etc/init.d/start_*
 	$(INSTALL) -d $(flashprefix)/root/lib/modules/$(KERNELVERSION)
-	cp -a $(targetprefix)/lib/modules/$(KERNELVERSION)/kernel $(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
+	cp -ap $(targetprefix)/lib/modules/$(KERNELVERSION)/kernel $(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
 		$(flashprefix)/root/lib/modules/$(KERNELVERSION)
-	for i in `find $(targetprefix)/sbin/ -lname "*busybox"` ; do cp -a $$i $(flashprefix)/root/sbin/ ; done
+	for i in `find $(targetprefix)/sbin/ -lname "*busybox"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
 	$(INSTALL) $(targetprefix)/sbin/insmod $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/depmod $(flashprefix)/root/sbin
-	for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -a $$i $(flashprefix)/root/sbin/ ; done
+	for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
 	ln -s ../../boot $(flashprefix)/root/var/tuxbox/boot
 	@touch $(flashprefix)/.flash
 
 $(flashprefix)/.part_network: $(flashprefix)/.flash .ifupdown .pump
 	$(INSTALL) -d $(flashprefix)/root/etc/network
-	sed -e 's/#//g' -e 's/192.168.0.2/10.10.10.100/' $(targetprefix)/etc/network/interfaces > \
-		$(flashprefix)/root/etc/network/interfaces
 	ln -sf /tmp/ifstate $(flashprefix)/root/etc/network/ifstate
 	$(INSTALL) $(targetprefix)/sbin/ifup $(targetprefix)/sbin/ifdown \
 		$(targetprefix)/sbin/pump $(flashprefix)/root/sbin
@@ -1340,8 +1338,8 @@ $(flashprefix)/.part_telnetd: $(flashprefix)/.flash $(flashprefix)/.part_inetd $
 
 $(flashprefix)/.part_tinylogin: $(flashprefix)/.flash .tinylogin
 	$(INSTALL) $(targetprefix)/bin/tinylogin $(flashprefix)/root/bin
-	for i in `find $(targetprefix)/bin/ -lname "*tinylogin"` ; do cp -a $$i $(flashprefix)/root/bin/ ; done
-	for i in `find $(targetprefix)/sbin/ -lname "*tinylogin"` ; do cp -a $$i $(flashprefix)/root/sbin/ ; done
+	for i in `find $(targetprefix)/bin/ -lname "*tinylogin"` ; do cp -pa $$i $(flashprefix)/root/bin/ ; done
+	for i in `find $(targetprefix)/sbin/ -lname "*tinylogin"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
 	@touch $(flashprefix)/.part_tinylogin
 
 flash-ssh: $(flashprefix)/.part_ssh
@@ -1350,7 +1348,7 @@ $(flashprefix)/.part_ssh: $(flashprefix)/.flash $(flashprefix)/.part_network .ss
 	$(INSTALL) -d $(flashprefix)/root/etc/ssh
 	$(INSTALL) $(targetprefix)/bin/ssh $(targetprefix)/bin/scp \
 		$(targetprefix)/bin/sftp $(flashprefix)/root/bin
-	cp -a $(targetprefix)/etc/ssh/ssh_config $(flashprefix)/root/etc/ssh
+	cp -ap $(targetprefix)/etc/ssh/ssh_config $(flashprefix)/root/etc/ssh
 	@touch $(flashprefix)/.part_ssh
 
 flash-sshd: $(flashprefix)/.part_sshd
@@ -1361,8 +1359,8 @@ $(flashprefix)/.part_sshd: $(flashprefix)/.flash $(flashprefix)/.part_network .s
 	$(INSTALL) -d $(flashprefix)/root/share/empty
 	$(INSTALL) $(targetprefix)/bin/ssh-keygen $(targetprefix)/bin/scp \
 		$(flashprefix)/root/bin
-	cp -a $(targetprefix)/etc/ssh/* $(flashprefix)/root/etc/ssh
-	cp -a $(targetprefix)/etc/init.d/start_sshd $(flashprefix)/root/etc/init.d/
+	cp -ap $(targetprefix)/etc/ssh/* $(flashprefix)/root/etc/ssh
+	cp -ap $(targetprefix)/etc/init.d/start_sshd $(flashprefix)/root/etc/init.d/
 	$(INSTALL) $(targetprefix)/libexec/sftp-server $(flashprefix)/root/libexec
 	$(INSTALL) $(targetprefix)/sbin/sshd $(flashprefix)/root/sbin
 	@touch $(flashprefix)/.part_sshd
@@ -1375,7 +1373,7 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino
 	$(INSTALL) $(targetprefix)/bin/controld $(targetprefix)/bin/lcdd $(targetprefix)/bin/neutrino \
 		$(targetprefix)/bin/nhttpd $(targetprefix)/bin/timerd \
 		$(flashprefix)/root/bin
-	cp -a $(targetprefix)/share/tuxbox/neutrino $(targetprefix)/share/tuxbox/lcdd \
+	cp -pa $(targetprefix)/share/tuxbox/neutrino $(targetprefix)/share/tuxbox/lcdd \
 		$(flashprefix)/root/share/tuxbox
 	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/sectionsd $(flashprefix)/root/bin
@@ -1384,19 +1382,19 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino
 		sed -e 's/neutrino/neutrino -su -flash/' $(targetprefix)/etc/init.d/start_neutrino > \
 			$(flashprefix)/root/etc/init.d/start_neutrino ; \
 	else \
-		cp -a $(targetprefix)/etc/init.d/start_neutrino $(flashprefix)/root/etc/init.d/ ; \
+		cp -pa $(targetprefix)/etc/init.d/start_neutrino $(flashprefix)/root/etc/init.d/ ; \
 	fi
-	cp -a $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
-	cp -a $(targetprefix)/var/tuxbox/config/zapit $(flashprefix)/root/var/tuxbox/config
+	cp -pa $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
+	cp -pa $(targetprefix)/var/tuxbox/config/zapit $(flashprefix)/root/var/tuxbox/config
 	@touch $(flashprefix)/.part_neutrino
 
 flash-enigma: $(flashprefix)/.part_enigma
 
 $(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
 	$(INSTALL) $(targetprefix)/bin/enigma $(flashprefix)/root/bin
-	cp -a $(targetprefix)/share/tuxbox/enigma $(flashprefix)/root/share/tuxbox
+	cp -pa $(targetprefix)/share/tuxbox/enigma $(flashprefix)/root/share/tuxbox
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
-	cp -a $(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/v5loxica*.ttf $(targetprefix)/share/fonts/unmrs.pfa \
+	cp -pa $(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/v5loxica*.ttf $(targetprefix)/share/fonts/unmrs.pfa \
 		$(flashprefix)/root/share/fonts
 	@touch $(flashprefix)/.part_enigma
 
@@ -1405,9 +1403,9 @@ flash-lcars: $(flashprefix)/.part_lcars
 $(flashprefix)/.part_lcars: $(flashprefix)/.flash .lcars
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	$(INSTALL) $(targetprefix)/bin/lcars $(flashprefix)/root/bin
-	cp -a $(targetprefix)/etc/init.d/start_lcars $(flashprefix)/root/etc/init.d/
-	cp -a $(targetprefix)/share/fonts/ds9.ttf $(flashprefix)/root/share/fonts
-	cp -a $(targetprefix)/var/tuxbox/config/lcars $(flashprefix)/root/var/tuxbox/config
+	cp -pa $(targetprefix)/etc/init.d/start_lcars $(flashprefix)/root/etc/init.d/
+	cp -pa $(targetprefix)/share/fonts/ds9.ttf $(flashprefix)/root/share/fonts
+	cp -pa $(targetprefix)/var/tuxbox/config/lcars $(flashprefix)/root/var/tuxbox/config
 	@touch $(flashprefix)/.part_lcars
 
 flash-plugins: $(flashprefix)/.part_plugins
@@ -1415,25 +1413,25 @@ flash-plugins: $(flashprefix)/.part_plugins
 $(flashprefix)/.part_plugins: $(flashprefix)/.flash .plugins
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/tuxtxt
-	cp -a $(targetprefix)/lib/tuxbox/plugins/* $(flashprefix)/root/lib/tuxbox/plugins/
-	cp -a $(targetprefix)/share/fonts/tuxtxt.fon $(flashprefix)/root/share/fonts/
-	cp -a $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/root/var/tuxbox/config/
-	cp -a $(targetprefix)/var/tuxbox/config/tuxtxt/tuxtxt.conf $(flashprefix)/root/var/tuxbox/config/tuxtxt/
+	cp -pa $(targetprefix)/lib/tuxbox/plugins/* $(flashprefix)/root/lib/tuxbox/plugins/
+	cp -pa $(targetprefix)/share/fonts/tuxtxt.fon $(flashprefix)/root/share/fonts/
+	cp -pa $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/root/var/tuxbox/config/
+	cp -pa $(targetprefix)/var/tuxbox/config/tuxtxt/tuxtxt.conf $(flashprefix)/root/var/tuxbox/config/tuxtxt/
 	@touch $(flashprefix)/.part_plugins
 
 flash-lcdmenu: $(flashprefix)/.part_lcdmenu
 
 $(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash .lcdmenu
 	$(INSTALL) $(targetprefix)/bin/lcdmenu $(flashprefix)/root/bin
-	cp -a $(targetprefix)/var/tuxbox/config/lcdmenu.conf $(flashprefix)/root/var/tuxbox/config
+	cp -pa $(targetprefix)/var/tuxbox/config/lcdmenu.conf $(flashprefix)/root/var/tuxbox/config
 	@touch $(flashprefix)/.part_lcdmenu
 
 flash-lib: $(flashprefix)/.lib
 
 $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_*)
 	@find $(flashprefix)/root/lib -maxdepth 1 -type f -o -type l | xargs rm -f
-	@cp -a $(targetprefix)/lib/libnss_dns-?.*.so $(flashprefix)/root/lib
-	@cp -a $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
+	@cp -pa $(targetprefix)/lib/libnss_dns-?.*.so $(flashprefix)/root/lib
+	@cp -pa $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
 	@$(PYTHON) mklibs.py --target $(target) --ldlib ld.so.1 --libc-extras-dir $(targetprefix)/lib/libc_pic \
 		-d $(flashprefix)/root/lib \
 		-L $(targetprefix)/lib \
@@ -1463,7 +1461,7 @@ flash-jffs2-image: $(flashprefix)/only-jffs2.img
 
 $(flashprefix)/root-cramfs.img: $(flashprefix)/.lib
 	@rm -fr $(flashprefix)/cramfs
-	@cp -a $(flashprefix)/root $(flashprefix)/cramfs
+	@cp -pa $(flashprefix)/root $(flashprefix)/cramfs
 	@rm -fr $(flashprefix)/cramfs/boot
 	@rm -fr $(flashprefix)/cramfs/var/*
 	@echo "/dev/mtdblock/3     /var     jffs2     defaults     0 0" >> $(flashprefix)/cramfs/etc/fstab
@@ -1490,23 +1488,23 @@ $(flashprefix)/root-cramfs.img: $(flashprefix)/.lib
 
 $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
 	@rm -rf $(flashprefix)/jffs2
-	@cp -a $(flashprefix)/root/var $(flashprefix)/jffs2
+	@cp -pa $(flashprefix)/root/var $(flashprefix)/jffs2
 	@rm -f $(flashprefix)/jffs2/tuxbox/boot
-	@cp -a $(flashprefix)/root/boot $(flashprefix)/jffs2/tuxbox/boot
+	@cp -pa $(flashprefix)/root/boot $(flashprefix)/jffs2/tuxbox/boot
 	@$(INSTALL) -d $(flashprefix)/jffs2/etc/init.d
 	@for i in `find $(flashprefix)/root/etc/init.d/ -name "start*"` ; do \
-		cp -a $$i $(flashprefix)/jffs2/etc/init.d/ ; \
+		cp -pa $$i $(flashprefix)/jffs2/etc/init.d/ ; \
 	done
-	@cp -a $(flashprefix)/root/etc/resolv.conf $(flashprefix)/jffs2/etc/resolv.conf
+	@cp -pa $(flashprefix)/root/etc/resolv.conf $(flashprefix)/jffs2/etc/resolv.conf
 	@if [ -d $(flashprefix)/root/etc/network ] ; then \
-		cp -a $(flashprefix)/root/etc/network $(flashprefix)/jffs2/etc/network ; \
+		cp -pa $(flashprefix)/root/etc/network $(flashprefix)/jffs2/etc/network ; \
 	fi
 	@if [ -d $(flashprefix)/root/etc/ssh ] ; then \
-		cp -a $(flashprefix)/root/etc/ssh $(flashprefix)/jffs2/etc/ssh ; \
+		cp -pa $(flashprefix)/root/etc/ssh $(flashprefix)/jffs2/etc/ssh ; \
 	fi
 	@if [ -e $(flashprefix)/root/bin/tinylogin ] ; then \
 		$(INSTALL) -d $(flashprefix)/jffs2/bin ; \
-		cp -a $(flashprefix)/root/bin/tinylogin $(flashprefix)/jffs2/bin/ ; \
+		cp -pa $(flashprefix)/root/bin/tinylogin $(flashprefix)/jffs2/bin/ ; \
 	fi
 	@$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/jffs2/ -o $(flashprefix)/var-jffs2.img
 	@rm -rf $(flashprefix)/jffs2
