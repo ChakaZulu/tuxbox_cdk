@@ -1021,29 +1021,20 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 #   own kernel and driver
 #
 
-boot: .ppcboot .linuxkernel .driver
+boot: .u-boot .linuxkernel .driver
 
-.ppcboot: .bootstrap $(bootdir)/ppcboot/Makefile
-if HOSTRULESET_CYGWIN
-	$(MAKE) -C $(bootdir)/ppcboot dbox2_config CYGWIN=1
-	$(MAKE) -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CYGWIN=1
-	$(INSTALL) Patches/cygwin/mkimage.exe $(hostprefix)/bin
-else
-	$(MAKE) -C $(bootdir)/ppcboot dbox2_config
-	$(MAKE) -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)-
-	$(INSTALL) $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
-endif
-	$(INSTALL) -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
+.u-boot: .bootstrap $(bootdir)/u-boot/Makefile
+	$(MAKE) -C $(bootdir)/u-boot dbox2_config
+	$(MAKE) -C $(bootdir)/u-boot CROSS_COMPILE=$(target)-
+	$(INSTALL) -m644 $(bootdir)/u-boot/u-boot $(bootprefix)
+	$(INSTALL) $(bootdir)/u-boot/tools/mkimage $(hostprefix)/bin
 if MAINTAINER_MODE
 else
-	$(MAKE) -C $(bootdir)/ppcboot distclean
+	$(MAKE) -C $(bootdir)/u-boot distclean
 endif
-	touch .ppcboot
+	touch .u-boot
 
-.linuxkernel: .bootstrap .linuxdir
-	@if [ ! -f $(hostprefix)/bin/mkimage ]; then \
-		$(MAKE) .ppcboot; \
-	fi
+.linuxkernel: .bootstrap .linuxdir .u-boot
 	$(MAKE) -C @DIR_linux@ zImage modules \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)-
