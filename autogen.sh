@@ -7,7 +7,7 @@ test -z "$srcdir" && srcdir=.
 
 cd "$srcdir"
 
-mkdir .deps >/null 2>&1
+mkdir .deps >/dev/null 2>&1
 
 echo "Generating configuration files for $package, please wait...."
 
