@@ -604,7 +604,7 @@ libs: \
 #   contrib apps
 #
 
-contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .php .thttpd
+contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thttpd
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
