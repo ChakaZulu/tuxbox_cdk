@@ -1,15 +1,24 @@
 #!/bin/sh
+
 PATH=/sbin:/bin
+
 rm -f /var/run/*.pid
+
 echo "Setting hostname"
 hostname -F /etc/hostname
+
 echo "Mounting anything"
 mount -a
+
 echo "Starting inetd"
 inetd
+
 echo "Loading modules"
-depmod -a
-modprobe -a rtc info
+depmod -ae
+
+modprobe rtc
+modprobe info
+
 . /etc/profile
 echo "mID: $mID"
 echo "feID: $feID"
@@ -19,11 +28,30 @@ echo "gtxID: $gtxID"
 echo "hwREV: $hwREV"
 echo "fpREV: $fpREV"
 echo "DEMOD: $DEMOD"
+
 test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
+
 ifconfig lo 127.0.0.1 up
-modprobe -a saa7126 input keybdev mousedev joydev evdev dvb_frontend dvb tuner graphic avia_oss lcd
+
+modprobe saa7126
+modprobe input
+modprobe keybdev
+modprobe mousedev
+modprobe joydev
+modprobe evdev
+modprobe dvb_frontend
+modprobe dvb
+modprobe tuner
+modprobe avia_gt
+modprobe avia_gt_fb
+modprobe avia_gt_oss
+modprobe avia_gt_napi
+modprobe avia_gt_vbi
+modprobe lcd
+
 lcdmenu
 RC="$?"
 test "$RC" -eq 0 && /etc/init.d/start_enigma
 test "$RC" -eq 1 && /etc/init.d/start_neutrino
 test "$RC" -eq 2 && /etc/init.d/start_lcars
+
