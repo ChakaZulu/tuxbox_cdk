@@ -5,9 +5,7 @@
 package="tuxbox-cdk"
 
 srcdir=`dirname $0`
-test -z "$srcdir" && srcdir=.
 
-cd "$srcdir"
 DIE=0
 
 ACLOCAL_FLAGS="-I ."

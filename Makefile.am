@@ -1,5 +1,3 @@
-TARGET = powerpc-tuxbox-linux-gnu
-
 PATH := $(hostprefix)/bin:$(PATH)
 
 all: core libs root apps boot devel
@@ -23,18 +21,17 @@ core: .gcc
 	install -d $(targetprefix)/root
 	install -d $(targetprefix)/sbin
 	install -d $(targetprefix)/tmp
-	install -d $(targetprefix)/usr
 	install -d $(targetprefix)/var
-	install -d $(targetprefix)/var/ucodes
-	install -d $(hostprefix)/$(TARGET)
+	install -d $(targetprefix)$(UCODEDIR)
+	install -d $(hostprefix)/$(target)
 	install -d $(bootprefix)
-	-rm $(hostprefix)/$(TARGET)/include
-	-rm $(hostprefix)/$(TARGET)/lib
-	ln -s $(targetprefix)/include $(hostprefix)/$(TARGET)/include
-	ln -s $(targetprefix)/lib $(hostprefix)/$(TARGET)/lib
-	install -d $(hostprefix)/$(TARGET)/sys-include
-	ln -s $(buildprefix)/linux-$(KERNELVERSION)/include/asm $(hostprefix)/$(TARGET)/include
-	ln -s $(buildprefix)/linux-$(KERNELVERSION)/include/linux $(hostprefix)/$(TARGET)/include
+	-rm $(hostprefix)/$(target)/include
+	-rm $(hostprefix)/$(target)/lib
+	ln -s $(targetprefix)/include $(hostprefix)/$(target)/include
+	ln -s $(targetprefix)/lib $(hostprefix)/$(target)/lib
+	install -d $(hostprefix)/$(target)/sys-include
+	ln -s $(buildprefix)/linux-$(KERNELVERSION)/include/asm $(hostprefix)/$(target)/include
+	ln -s $(buildprefix)/linux-$(KERNELVERSION)/include/linux $(hostprefix)/$(target)/include
 	touch .directories
 
 .linuxdir: .directories @DEPENDS_linux@
@@ -46,11 +43,13 @@ core: .gcc
 
 .binutils: .directories @DEPENDS_binutils@
 	@PREPARE_binutils@
-	cd @DIR_binutils@ && @CONFIGURE_binutils@ \
-		--target=$(TARGET) \
-		--prefix=$(hostprefix) \
-		--nfp
-	make -C @DIR_binutils@ all install
+	cd @DIR_binutils@ && \
+		CC=$(CC) CFLAGS="$(CFLAGS)" \
+		@CONFIGURE_binutils@ \
+			--target=$(target) \
+			--prefix=$(hostprefix) \
+			--nfp && \
+		make all install
 	@CLEANUP_binutils@
 	touch .binutils
 
@@ -59,10 +58,12 @@ core: .gcc
 #
 bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	@PREPARE_bootstrap_gcc@
-	cp -a $(buildprefix)/linux-$(KERNELVERSION)/include/asm $(hostprefix)/$(TARGET)/sys-include/
+	cp -a $(buildprefix)/linux-$(KERNELVERSION)/include/asm $(hostprefix)/$(target)/sys-include/
 	cd @DIR_bootstrap_gcc@ && \
+		CC=$(CC) CFLAGS="$(CFLAGS)" \
 		@CONFIGURE_bootstrap_gcc@ \
-			--target=$(TARGET) \
+			--build=$(build) \
+			--target=$(target) \
 			--prefix=$(hostprefix) \
 			--with-cpu=823 \
 			--enable-target-optspace \
@@ -71,19 +72,20 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 			--disable-nls \
 			--nfp && \
 		make all install
-	rm -rf $(hostprefix)/$(TARGET)/sys-include/asm
+	rm -rf $(hostprefix)/$(target)/sys-include/asm
 	@CLEANUP_bootstrap_gcc@
 
-.glibc: .binutils @DEPENDS_glibc@
-	if [ ! -f $(hostprefix)/$(TARGET)/lib/libc.so -a ! -f $(hostprefix)/bin/$(TARGET)-gcc ]; then \
+.glibc: .binutils .linuxdir @DEPENDS_glibc@
+	if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		make bootstrap_gcc; \
 	fi
 	@PREPARE_glibc@
 	cd @DIR_glibc@ && \
-		CC=$(TARGET)-gcc AR=$(TARGET)-ar RANLIB=$(TARGET)-ranlib CFLAGS="$(TARGET_CFLAGS)" \
+		CC=$(target)-gcc AR=$(target)-ar RANLIB=$(target)-ranlib \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		@CONFIGURE_glibc@ \
-			--build=$(BUILD) \
-			--host=$(TARGET) \
+			--build=$(build) \
+			--host=$(target) \
 			--prefix= \
 			--with-headers=$(buildprefix)/linux-$(KERNELVERSION)/include \
 			--enable-kernel=$(KERNELVERSION) \
@@ -101,10 +103,12 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 #
 .gcc: .glibc @DEPENDS_gcc@
 	@PREPARE_gcc@
-	cp -a $(hostprefix)/$(TARGET)/include/limits.h $(hostprefix)/$(TARGET)/sys-include/
+	cp -a $(hostprefix)/$(target)/include/limits.h $(hostprefix)/$(target)/sys-include/
 	cd @DIR_gcc@ && \
+		CC=$(CC) CFLAGS="$(CFLAGS)" \
 		@CONFIGURE_gcc@ \
-			--target=$(TARGET) \
+			--build=$(build) \
+			--target=$(target) \
 			--prefix=$(hostprefix) \
 			--with-cpu=823 \
 			--enable-target-optspace \
@@ -114,7 +118,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 			--disable-nls \
 			--nfp && \
 		make all install
-	rm -rf $(hostprefix)/$(TARGET)/sys-include/limits.h
+	rm -rf $(hostprefix)/$(target)/sys-include/limits.h
 	@CLEANUP_gcc@
 	touch .gcc
 
@@ -128,7 +132,7 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 .busybox: .gcc .etc @DEPENDS_busybox@
 	@PREPARE_busybox@
 	cd @DIR_busybox@ && \
-		make CROSS=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
+		make CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
 		@INSTALL_busybox@
 	@CLEANUP_busybox@
 	touch .busybox
@@ -136,7 +140,7 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 .tinylogin: .gcc .etc @DEPENDS_tinylogin@
 	@PREPARE_tinylogin@
 	cd @DIR_tinylogin@ && \
-		make CROSS=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
+		make CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
 		@INSTALL_tinylogin@
 	@CLEANUP_tinylogin@
 	touch .tinylogin
@@ -144,11 +148,12 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 .modutils: .gcc .etc @DEPENDS_modutils@
 	@PREPARE_modutils@
 	cd @DIR_modutils@ && \
-		CC=$(TARGET)-gcc CXX=$(TARGET)-g++ CFLAGS="$(TARGET_CFLAGS)" \
-		BUILDCC=gcc BUILDCFLAGS="-O2" \
+		CC=$(target)-gcc CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		BUILDCC=$(CC) BUILDCFLAGS="-O2" \
 		./configure \
-			--build=$(BUILD) \
-			--host=$(TARGET) \
+			--build=$(build) \
+			--host=$(target) \
 			--prefix=$(targetprefix) \
 			--disable-root-check \
 			--disable-strip && \
@@ -158,17 +163,15 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 	touch .modutils
 
 .etc:
-	cp -Rf ./etc $(targetprefix)
-	find $(targetprefix)/etc -type d -name "CVS" -exec rm -rf {} \; || /bin/true
-	chmod 755 $(targetprefix)/etc/init.d/*
+	make -C etc install
 	touch .etc
 
 .inetd: .gcc .etc @DEPENDS_inetd@
 	@PREPARE_inetd@
 	touch @DIR_inetd@/MCONFIG
 	cd @DIR_inetd@/inetd && \
-		CC=$(TARGET)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		make all && \
 		install -m755 inetd $(targetprefix)/sbin
 	@CLEANUP_inetd@
@@ -178,8 +181,8 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 	@PREPARE_telnetd@
 	touch @DIR_telnetd@/MCONFIG
 	cd @DIR_telnetd@/telnetd && \
-		CC=$(TARGET)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		LIBS=-lutil \
 		make all && \
 		install -m755 telnetd $(targetprefix)/sbin/in.telnetd
@@ -189,6 +192,7 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 .cabextract: .gcc @DEPENDS_cabextract@
 	@PREPARE_cabextract@
 	cd @DIR_cabextract@ && \
+		CC=$(CC) CFLAGS="$(CFLAGS)" \
 		./configure \
 			--prefix=$(hostprefix) && \
 		make all && \
@@ -198,24 +202,24 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 
 .msttf: .cabextract @DEPENDS_msttf@
 	@PREPARE_msttf@
-	install -d $(FONTDIR)
-	install -m 0644 @DIR_msttf@/AriBlk.TTF $(FONTDIR)/Arial_Black.ttf
-	install -m 0644 @DIR_msttf@/Arial.TTF $(FONTDIR)/Arial.ttf
-	install -m 0644 @DIR_msttf@/Arialbd.TTF $(FONTDIR)/Arial_Bold.ttf
-	install -m 0644 @DIR_msttf@/Arialbi.TTF $(FONTDIR)/Arial_Bold_Italic.ttf
-	install -m 0644 @DIR_msttf@/Ariali.TTF $(FONTDIR)/Arial_Italic.ttf
-	install -m 0644 @DIR_msttf@/cour.ttf $(FONTDIR)/Courier_New.ttf
-	install -m 0644 @DIR_msttf@/courbd.ttf $(FONTDIR)/Courier_New_Bold.ttf
-	install -m 0644 @DIR_msttf@/courbi.ttf $(FONTDIR)/Courier_New_Bold_Italic.ttf
-	install -m 0644 @DIR_msttf@/couri.ttf $(FONTDIR)/Courier_New_Italic.ttf
+	install -d $(targetprefix)$(FONTDIR)
+	install -m 0644 @DIR_msttf@/AriBlk.TTF $(targetprefix)$(FONTDIR)/Arial_Black.ttf
+	install -m 0644 @DIR_msttf@/Arial.TTF $(targetprefix)$(FONTDIR)/Arial.ttf
+	install -m 0644 @DIR_msttf@/Arialbd.TTF $(targetprefix)$(FONTDIR)/Arial_Bold.ttf
+	install -m 0644 @DIR_msttf@/Arialbi.TTF $(targetprefix)$(FONTDIR)/Arial_Bold_Italic.ttf
+	install -m 0644 @DIR_msttf@/Ariali.TTF $(targetprefix)$(FONTDIR)/Arial_Italic.ttf
+	install -m 0644 @DIR_msttf@/cour.ttf $(targetprefix)$(FONTDIR)/Courier_New.ttf
+	install -m 0644 @DIR_msttf@/courbd.ttf $(targetprefix)$(FONTDIR)/Courier_New_Bold.ttf
+	install -m 0644 @DIR_msttf@/courbi.ttf $(targetprefix)$(FONTDIR)/Courier_New_Bold_Italic.ttf
+	install -m 0644 @DIR_msttf@/couri.ttf $(targetprefix)$(FONTDIR)/Courier_New_Italic.ttf
 	@CLEANUP_msttf@
 	touch .msttf
 
 .nano: @DEPENDS_nano@
 	@PREPARE_nano@
 	cd @DIR_nano@ && \
-		CC=$(TARGET)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
 			--prefix=$(targetprefix) && \
 		make all && \
@@ -236,13 +240,14 @@ devel: .gdb .strace
 	@PREPARE_gdb@
 	cd @DIR_gdb@ && \
 		LD_LIBRARY_PATH=$(libdir) \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
-	                --build=`./config.guess` \
-	                --host=$(TARGET) \
-	                --target=$(TARGET) \
-	                --nfp \
-	                --disable-sim \
-	                --prefix=$(targetprefix) && \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--nfp \
+			--disable-sim \
+			--prefix=$(targetprefix) && \
 		make all && \
 		@INSTALL_gdb@
 	@CLEANUP_gdb@
@@ -251,12 +256,12 @@ devel: .gdb .strace
 .strace: .gcc @DEPENDS_strace@
 	@PREPARE_strace@
 	cd @DIR_strace@ && \
-		CC=$(TARGET)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
-			--build=$(BUILD) \
-			--host=$(TARGET) \
-			--target=$(TARGET) \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
 			--prefix=$(targetprefix) && \
 		make all && \
 		@INSTALL_strace@
@@ -274,9 +279,10 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 .libcurl: .gcc @DEPENDS_libcurl@
 	@PREPARE_libcurl@
 	cd @DIR_libcurl@ && \
-		CC=$(TARGET)-gcc CXX=$(TARGET)-g++ CFLAGS="$(TARGET_CFLAGS)" \
+		CC=$(target)-gcc CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
-			--host=$(TARGET) \
+			--host=$(target) \
 			--prefix=$(targetprefix) \
 			--with-random=no \
 			--with-ssl=no && \
@@ -289,8 +295,8 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	@PREPARE_libfreetype@
 	cd @DIR_libfreetype@ && \
 		make \
-			CC=$(TARGET)-gcc CFLAGS="$(TARGET_CFLAGS)" \
-			CFG="--host=${TARGET} --prefix=${targetprefix}" && \
+			CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS)" \
+			CFG="--host=${target} --prefix=${targetprefix}" && \
 		make all && \
 		@INSTALL_libfreetype@
 	@CLEANUP_libfreetype@
@@ -299,10 +305,12 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 .libncurses: .gcc @DEPENDS_libncurses@
 	@PREPARE_libncurses@
 	cd @DIR_libncurses@ && \
-		CC=$(TARGET)-gcc CXX=$(TARGET)-g++ CFLAGS="$(TARGET_CFLAGS)" BUILD_CC=gcc \
+		CC=$(target)-gcc CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		BUILD_CC=$(CC) \
 		./configure \
-			--build=$(BUILD) \
-			--host=$(TARGET) \
+			--build=$(build) \
+			--host=$(target) \
 			--prefix=$(targetprefix) \
 			--disable-big-core \
 			--without-debug \
@@ -320,9 +328,10 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 .libjpeg: .gcc @DEPENDS_libjpeg@
 	@PREPARE_libjpeg@
 	cd @DIR_libjpeg@ && \
-		CC=$(TARGET)-gcc CFLAGS="$(TARGET_CFLAGS)" \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
-			--host=$(TARGET) \
+			--host=$(target) \
 			--prefix=$(targetprefix) && \
 		make libjpeg.so.6 && \
 		@INSTALL_libjpeg@
@@ -333,7 +342,7 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	@PREPARE_libpng@
 	cd @DIR_libpng@ && \
 		cp scripts/makefile.linux Makefile && \
-		make all CC=$(TARGET)-gcc CFLAGS="$(TARGET_CFLAGS) -DPNG_DEBUG=0" && \
+		make all CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS) -DPNG_DEBUG=0" && \
 		@INSTALL_libpng@
 	@CLEANUP_libpng@
 	touch .libpng
@@ -362,9 +371,10 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 .libxml2: .gcc @DEPENDS_libxml2@
 	@PREPARE_libxml2@
 	cd @DIR_libxml2@ && \
-		CC=$(TARGET)-gcc CFLAGS="$(TARGET_CFLAGS)" \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
-			--host=$(TARGET) \
+			--host=$(target) \
 			--prefix=$(targetprefix) \
 			--without-html-dir --with-threads --without-ftp --without-http --without-html \
 			--without-catalog --without-docbook --without-xpath --without-xptr \
@@ -377,7 +387,8 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 .libz: .gcc @DEPENDS_libz@
 	@PREPARE_libz@
 	cd @DIR_libz@ && \
-		CC=$(TARGET)-gcc CFLAGS="$(TARGET_CFLAGS)" \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
 			--prefix=$(targetprefix) \
 			--shared && \
@@ -395,14 +406,14 @@ boot: .ppcboot .linuxkernel .driver
 
 .ppcboot: .gcc $(bootdir)/ppcboot/Makefile
 	make -C $(bootdir)/ppcboot dbox_config
-	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(TARGET)-
+	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)-
 	install -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
 	install $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
 	make -C $(bootdir)/ppcboot distclean
 	touch .ppcboot
 
 .linuxkernel: .linuxdir .gcc .ppcboot
-	make -C @DIR_linux@ dep zImage modules CROSS_COMPILE=$(TARGET)-
+	make -C @DIR_linux@ dep zImage modules CROSS_COMPILE=$(target)-
 	make -C @DIR_linux@ modules_install INSTALL_MOD_PATH=$(targetprefix)
 	$(hostprefix)/bin/mkimage \
 		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
@@ -417,7 +428,7 @@ boot: .ppcboot .linuxkernel .driver
 	install -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
 	make -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
-		CROSS_COMPILE=$(TARGET)-
+		CROSS_COMPILE=$(target)-
 	make -C $(driverdir) install \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		BIN_DEST=$(targetprefix)/bin \
@@ -434,20 +445,37 @@ boot: .ppcboot .linuxkernel .driver
 
 apps: .dvbsnoop .dvbstream .edvb .lcars .lcdmenu .neutrino .stream
 
+if MAINTAINER_MODE
+$(appsdir)/configure: $(appsdir)/configure.ac
+	cd $(appsdir) && \
+		./autogen.sh
+
+$(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2 $(appsdir)/configure $(appsdir)/Makefile.am
+	cd $(appsdir) && \
+		CC=$(target)-gcc CXX=$(target)-g++ \
+		./configure \
+			--host=$(host) \
+			--prefix=$(targetprefix) \
+			--with-driver=$(driverdir) \
+			--with-target=$(APPSTARGET) \
+			--enable-maintainer-mode
+else
 $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	cd $(appsdir) && \
-		./autogen.sh && \
-		CC=$(TARGET)-gcc CXX=$(TARGET)-g++ \
+		if [ ! -f configure ] ; then ./autogen.sh ; fi && \
+		CC=$(target)-gcc CXX=$(target)-g++ \
 		./configure \
+			--host=$(host) \
 			--prefix=$(targetprefix) \
 			--with-driver=$(driverdir) \
 			--with-target=$(APPSTARGET)
+endif
 
 .dvbsnoop: $(appsdir)/Makefile
 	make -C $(appsdir)/dvbsnoop all install
 	touch .dvbsnoop
 
-.edvb: $(appsdir)/Makefile .fx2 .tools
+.edvb: $(appsdir)/Makefile .fx2 .tools .msttf
 	make -C $(appsdir)/edvb all install
 	touch .edvb
 
@@ -459,11 +487,11 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	make -C $(appsdir)/lcars all install
 	touch .lcars
 
-.lcdmenu: $(appsdir)/Makefile .liblcddisplay
+.lcdmenu: $(appsdir)/Makefile .liblcddisplay .msttf
 	make -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
-.neutrino: $(appsdir)/Makefile .fx2 .sections .zapit .libmd5sum .libucodes .liblcddisplay
+.neutrino: $(appsdir)/Makefile .fx2 .sections .zapit .libmd5sum .libucodes .liblcddisplay .msttf
 	make -C $(appsdir)/mczap all install
 	touch .neutrino
 
@@ -516,7 +544,19 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 #   internal
 #
 
+clean-local:
+	-make -C etc clean
+	-make -C $(appsdir) clean
+	-make -C $(bootdir)/ppcboot distclean
+	-make -C $(driverdir) clean \
+		KERNEL_LOCATION=$(buildprefix)/linux
+	-rm -f linux
+	-rm -rf build
+	-@CLEANUP@
+
 distclean-local:
+	-make -C etc distclean
+	-make -C $(appsdir) distclean
 	-rm Makefile-archive
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .tinylogin .modutils .inetd .telnetd .cabextract .msttf
@@ -529,19 +569,16 @@ distclean-local:
 	-rm .liblcddisplay .libmd5sum .libucodes
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
-	-make -C $(appsdir) distclean
-	-make -C $(bootdir)/ppcboot distclean
-	-make -C $(driverdir) clean \
-		KERNEL_LOCATION=$(buildprefix)/linux
-	-rm -f linux
-	-rm -rf linux-$(KERNELVERSION)
 
-include Makefile-archive
+@ARCHIVE@
 
+if MAINTAINER_MODE
 Makefile-archive: $(top_srcdir)/rules-archive
 	$(top_srcdir)/rules-archive.pl $(top_srcdir)/rules-archive > Makefile-archive
 
 $(ACLOCAL_M4): $(top_srcdir)/tuxbox.m4
+endif
 
 EXTRA_DIST = rules-archive rules-archive.pl rules-install rules-install.pl rules-make rules-make.pl tuxbox.m4
-CONFIG_STATUS_DEPENDENCIES = rules-install rules-make
+
+CONFIG_STATUS_DEPENDENCIES = $(top_srcdir)/rules-install $(top_srcdir)/rules-install.pl $(top_srcdir)/rules-make $(top_srcdir)/rules-make.pl Makefile-archive

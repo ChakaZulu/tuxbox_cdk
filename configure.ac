@@ -1,8 +1,16 @@
 AC_INIT(Makefile.am)
 AM_INIT_AUTOMAKE(tuxbox-cdk, 0.0.1)
+AM_MAINTAINER_MODE
 
 AC_PROG_CC
-AC_CANONICAL_HOST
+
+AC_CANONICAL_BUILD
+AC_SUBST(build)
+if test "$target_alias" = "" ; then
+	target_alias="powerpc-tuxbox-linux-gnu"
+fi
+AC_CANONICAL_TARGET
+AC_SUBST(target)
 
 AC_ARG_WITH(hostruleset,
 	[  --with-hostruleset=NAME host ruleset [[standard,cygwin]]],
@@ -20,8 +28,6 @@ elif test "$hostruleset" = "cygwin"; then
 else
 	AC_MSG_ERROR([invalid hostruleset "$hostruleset", choose on from standard or cygwin]);
 fi
-
-AC_SUBST(BUILD,[$host])
 
 AC_ARG_WITH(targetruleset,
 	[  --with-targetruleset=NAME target ruleset [[standard,flash]]],
@@ -110,9 +116,29 @@ else
 	fi
 fi
 
+if test ! -f "$appsdir/configure.ac" ; then
+	AC_MSG_ERROR([can't find $appsdir/configure.ac])
+fi
+
+if test ! -f "$bootdir/ppcboot/include/config_dbox.h" ; then
+	AC_MSG_ERROR([can't find $bootdir/ppcboot/include/config_dbox.h])
+fi
+
+if test ! -f "$driverdir/Makefile" ; then
+	AC_MSG_ERROR([can't find $driverdir/Makefile])
+fi
+
 AC_SUBST(appsdir)
 AC_SUBST(bootdir)
 AC_SUBST(driverdir)
+
+FONTDIR="/share/fonts"
+AC_SUBST(FONTDIR)
+UCODEDIR="/var/tuxbox/ucodes"
+AC_SUBST(UCODEDIR)
+
+CLEANUP="rm -rf"
+AC_SUBST(CLEANUP)
 
 #
 # core
@@ -147,8 +173,6 @@ TUXBOX_RULES_MAKE(libz)
 #
 # msttf
 #
-FONTDIR="\${targetprefix}/share/fonts"
-AC_SUBST(FONTDIR)
 TUXBOX_RULES_MAKE(cabextract)
 TUXBOX_RULES_MAKE(msttf)
 
@@ -164,7 +188,9 @@ TUXBOX_RULES_MAKE(nano)
 #
 # internal
 #
-AC_CONFIG_COMMANDS_POST([
+AC_SUBST_FILE(ARCHIVE)
+ARCHIVE=Makefile-archive
+AC_CONFIG_COMMANDS_PRE([
 AC_MSG_NOTICE([creating Makefile-archive])
 ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 ])
@@ -189,4 +215,7 @@ AC_MSG_RESULT()
 
 AC_OUTPUT([
 Makefile
+etc/Makefile
+etc/init.d/Makefile
+etc/modules.conf
 ])
