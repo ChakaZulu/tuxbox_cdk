@@ -1133,7 +1133,7 @@ $(appsdir)/dvb/zapit/config.status: .bootstrap .misc_libs
 $(appsdir)/dvb/tools/config.status: .bootstrap .misc_libs
 	cd $(appsdir)/dvb/tools && $(CONFIGURE)
 
-.dvb_tools: $(appsdir)/dvb/tools/config.status .inetd
+.dvb_tools: $(appsdir)/dvb/tools/config.status
 	$(MAKE) -C $(appsdir)/dvb/tools all install
 	touch $@
 
@@ -1232,6 +1232,7 @@ $(appsdir)/tuxbox/tools/config.status: .bootstrap .plugins .tuxbox_libs
 #   flash
 #
 
+# TODO: fix the flash-* for the apps... they don't work anymore
 if TARGETRULESET_FLASH
 flash-all: flash-neutrino flash-enigma flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-ssh flash-sshd flash-lib
 
@@ -1298,13 +1299,13 @@ $(flashprefix)/.part_inetd: $(flashprefix)/.flash
 
 flash-telnetd: $(flashprefix)/.part_telnetd
 
-$(flashprefix)/.part_telnetd: $(flashprefix)/.flash $(flashprefix)/.part_inetd .netkit_telnet
-	$(INSTALL) $(targetprefix)/sbin/in.telnetd $(flashprefix)/root/sbin
+$(flashprefix)/.part_telnetd: $(flashprefix)/.flash $(flashprefix)/.part_inetd
+	$(INSTALL) $(targetprefix)/sbin/telnetd $(flashprefix)/root/sbin
 	@touch $@
 
 flash-ssh: $(flashprefix)/.part_ssh
 
-$(flashprefix)/.part_ssh: $(flashprefix)/.flash $(flashprefix)/.ssh
+$(flashprefix)/.part_ssh: $(flashprefix)/.flash .ssh
 	$(INSTALL) -d $(flashprefix)/root/etc/ssh
 	$(INSTALL) $(targetprefix)/bin/ssh $(targetprefix)/bin/scp \
 		$(targetprefix)/bin/sftp $(flashprefix)/root/bin
@@ -1313,7 +1314,7 @@ $(flashprefix)/.part_ssh: $(flashprefix)/.flash $(flashprefix)/.ssh
 
 flash-sshd: $(flashprefix)/.part_sshd
 
-$(flashprefix)/.part_sshd: $(flashprefix)/.flash $(flashprefix)/.ssh
+$(flashprefix)/.part_sshd: $(flashprefix)/.flash .ssh
 	$(INSTALL) -d $(flashprefix)/root/etc/ssh
 	$(INSTALL) -d $(flashprefix)/root/libexec
 	$(INSTALL) -d $(flashprefix)/root/share/empty
@@ -1355,7 +1356,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
 	cp -pa $(targetprefix)/share/tuxbox/enigma $(flashprefix)/root/share/tuxbox
 	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
-	cp -pa $(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/micron*.ttf $(targetprefix)/share/fonts/v5loxica*.ttf $(targetprefix)/share/fonts/unmrs.pfa \
+	cp -pa $(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/micron*.ttf $(targetprefix)/share/fonts/unmrs.pfa \
 		$(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/etc/init.d/start_enigma $(flashprefix)/root/etc/init.d
 	@touch $@
@@ -1391,21 +1392,21 @@ $(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash .lcdmenu
 flash-lib: $(flashprefix)/.lib
 
 $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 2>/dev/null)
-	@find $(flashprefix)/root/lib -maxdepth 1 -type f -o -type l | xargs rm -f
-	@cp -pa $(targetprefix)/lib/libnss_dns-?.*.so $(flashprefix)/root/lib
-	@cp -pa $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
-	@$(MKLIBS) --target $(target) --ldlib ld.so.1 --libc-extras-dir $(targetprefix)/lib/libc_pic \
+	find $(flashprefix)/root/lib -maxdepth 1 -type f -o -type l | xargs rm -f
+	cp -pa $(targetprefix)/lib/libnss_dns-?.*.so $(flashprefix)/root/lib
+	cp -pa $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
+	$(MKLIBS) --target $(target) --ldlib ld.so.1 --libc-extras-dir $(targetprefix)/lib/libc_pic \
 		-d $(flashprefix)/root/lib \
 		-D -L $(targetprefix)/lib \
 		`find $(flashprefix)/root/bin/ -path "*bin/?*"` \
 		`find $(flashprefix)/root/lib/ -name "libnss_*"` \
 		`find $(flashprefix)/root/lib/tuxbox/ -name "*.so" -type f` \
 		`find $(flashprefix)/root/sbin/ -path "*sbin/?*"`
-	@$(target)-strip --remove-section=.comment --remove-section=.note \
+	$(target)-strip --remove-section=.comment --remove-section=.note \
 		`find $(flashprefix)/root/bin/ -path "*bin/?*"` 2>/dev/null || /bin/true
-	@$(target)-strip --remove-section=.comment --remove-section=.note --strip-unneeded \
+	$(target)-strip --remove-section=.comment --remove-section=.note --strip-unneeded \
 		`find $(flashprefix)/root/lib/tuxbox -name "*.so"` 2>/dev/null || /bin/true
-	@chmod u+rwX,go+rX -R $(flashprefix)/root/
+	chmod u+rwX,go+rX -R $(flashprefix)/root/
 	@touch $@
 
 flash-cramfs: $(flashprefix)/root-cramfs.img
@@ -1419,61 +1420,61 @@ flash-cramfsimage: $(flashprefix)/cramfsjffs2.img
 flash-jffs2image: $(flashprefix)/jffs2only.img
 
 $(flashprefix)/root-cramfs.img: $(flashprefix)/.lib
-	@rm -fr $(flashprefix)/cramfs
-	@cp -pa $(flashprefix)/root $(flashprefix)/cramfs
-	@rm -fr $(flashprefix)/cramfs/boot
-	@rm -fr $(flashprefix)/cramfs/var/*
-	@echo "/dev/mtdblock/3     /var     jffs2     defaults     0 0" >> $(flashprefix)/cramfs/etc/fstab
-	@$(INSTALL) -d $(flashprefix)/jffs2/etc/init.d
-	@for i in `find $(flashprefix)/cramfs/etc/init.d/ -name "start*"` ; do \
+	rm -fr $(flashprefix)/cramfs
+	cp -pa $(flashprefix)/root $(flashprefix)/cramfs
+	rm -fr $(flashprefix)/cramfs/boot
+	rm -fr $(flashprefix)/cramfs/var/*
+	echo "/dev/mtdblock/3     /var     jffs2     defaults     0 0" >> $(flashprefix)/cramfs/etc/fstab
+	$(INSTALL) -d $(flashprefix)/jffs2/etc/init.d
+	for i in `find $(flashprefix)/cramfs/etc/init.d/ -name "start*"` ; do \
 		rm $$i ; ln -sf ../../var/etc/init.d/`basename $$i` $$i ; \
 	done
-	@rm -f $(flashprefix)/cramfs/etc/resolv.conf
-	@ln -sf ../var/etc/resolv.conf $(flashprefix)/cramfs/etc/resolv.conf
-	@if [ -d $(flashprefix)/cramfs/etc/network ] ; then \
+	rm -f $(flashprefix)/cramfs/etc/resolv.conf
+	ln -sf ../var/etc/resolv.conf $(flashprefix)/cramfs/etc/resolv.conf
+	if [ -d $(flashprefix)/cramfs/etc/network ] ; then \
 		rm -fr $(flashprefix)/cramfs/etc/network ; \
 		ln -sf ../var/etc/network $(flashprefix)/cramfs/etc/network ; \
 	fi
-	@if [ -d $(flashprefix)/cramfs/etc/ssh ] ; then \
+	if [ -d $(flashprefix)/cramfs/etc/ssh ] ; then \
 		rm -fr $(flashprefix)/cramfs/etc/ssh ; \
 		ln -sf ../var/etc/ssh $(flashprefix)/cramfs/etc/ssh ; \
 	fi
-	@$(FAKEROOT) $(MKCRAMFS) -p -n "0106`date +%Y%m%d%H%M`" $(flashprefix)/cramfs/ $(flashprefix)/root-cramfs.img
-	@rm -fr $(flashprefix)/cramfs
+	$(FAKEROOT) $(MKCRAMFS) -p -n "0106`date +%Y%m%d%H%M`" $(flashprefix)/cramfs/ $(flashprefix)/root-cramfs.img
+	rm -fr $(flashprefix)/cramfs
 
 $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
-	@rm -rf $(flashprefix)/jffs2
-	@cp -pa $(flashprefix)/root/var $(flashprefix)/jffs2
-	@rm -f $(flashprefix)/jffs2/tuxbox/boot
-	@cp -pa $(flashprefix)/root/boot $(flashprefix)/jffs2/tuxbox/boot
-	@$(INSTALL) -d $(flashprefix)/jffs2/etc/init.d
-	@for i in `find $(flashprefix)/root/etc/init.d/ -name "start*"` ; do \
+	rm -rf $(flashprefix)/jffs2
+	cp -pa $(flashprefix)/root/var $(flashprefix)/jffs2
+	rm -f $(flashprefix)/jffs2/tuxbox/boot
+	cp -pa $(flashprefix)/root/boot $(flashprefix)/jffs2/tuxbox/boot
+	$(INSTALL) -d $(flashprefix)/jffs2/etc/init.d
+	for i in `find $(flashprefix)/root/etc/init.d/ -name "start*"` ; do \
 		cp -pa $$i $(flashprefix)/jffs2/etc/init.d/ ; \
 	done
-	@cp -pa $(flashprefix)/root/etc/resolv.conf $(flashprefix)/jffs2/etc/resolv.conf
-	@if [ -d $(flashprefix)/root/etc/network ] ; then \
+	cp -pa $(flashprefix)/root/etc/resolv.conf $(flashprefix)/jffs2/etc/resolv.conf
+	if [ -d $(flashprefix)/root/etc/network ] ; then \
 		cp -pa $(flashprefix)/root/etc/network $(flashprefix)/jffs2/etc/network ; \
 	fi
-	@if [ -d $(flashprefix)/root/etc/ssh ] ; then \
+	if [ -d $(flashprefix)/root/etc/ssh ] ; then \
 		cp -pa $(flashprefix)/root/etc/ssh $(flashprefix)/jffs2/etc/ssh ; \
 	fi
-	@$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/jffs2/ -o $(flashprefix)/var-jffs2.img
-	@rm -rf $(flashprefix)/jffs2
+	$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/jffs2/ -o $(flashprefix)/var-jffs2.img
+	rm -rf $(flashprefix)/jffs2
 
 $(flashprefix)/cramfsjffs2.img: $(flashprefix)/root-cramfs.img $(flashprefix)/var-jffs2.img $(flashprefix)/cramfs-flfs.img
-	@$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/cramfsjffs2.img -o build \
+	$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/cramfsjffs2.img -o build \
 		--part ppcboot=$(flashprefix)/cramfs-flfs.img \
 		--part root=$(flashprefix)/root-cramfs.img \
 		--part var=$(flashprefix)/var-jffs2.img
 
 $(flashprefix)/root-jffs2.img: $(flashprefix)/.lib
-	@$(FAKEROOT) $(MKJFFS2) -b -e 0x20000 --pad=0x7c0000 -r $(flashprefix)/root/ -o $(flashprefix)/root-jffs2.img
+	$(FAKEROOT) $(MKJFFS2) -b -e 0x20000 --pad=0x7c0000 -r $(flashprefix)/root/ -o $(flashprefix)/root-jffs2.img
 
 $(flashprefix)/jffs2only.img: $(flashprefix)/.lib $(flashprefix)/jffs2-flfs.img
-	@$(FAKEROOT) $(MKJFFS2) -b -e 0x20000 --pad=0x7c0000 -r $(flashprefix)/root/ -o $(flashprefix)/root-jffs2.tmp
-	@cat $(flashprefix)/jffs2-flfs.img > $(flashprefix)/jffs2only.img
-	@cat $(flashprefix)/root-jffs2.tmp >> $(flashprefix)/jffs2only.img
-	@rm -f  $(flashprefix)/root-jffs2.tmp
+	$(FAKEROOT) $(MKJFFS2) -b -e 0x20000 --pad=0x7c0000 -r $(flashprefix)/root/ -o $(flashprefix)/root-jffs2.tmp
+	cat $(flashprefix)/jffs2-flfs.img > $(flashprefix)/jffs2only.img
+	cat $(flashprefix)/root-jffs2.tmp >> $(flashprefix)/jffs2only.img
+	rm -f  $(flashprefix)/root-jffs2.tmp
 endif
 
 #######################
