@@ -296,5 +296,7 @@ AC_OUTPUT([
 Makefile
 etc/Makefile
 etc/init.d/Makefile
+etc/fstab
 etc/modules.conf
+etc/init.d/rcS
 ])
