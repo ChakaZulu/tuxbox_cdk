@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.11 2003/02/20 10:58:46 obi Exp $
+# $Id: INSTALL.en,v 1.12 2003/03/24 22:36:24 obi Exp $
 #
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
@@ -13,14 +13,15 @@
 # A copy of the license is included in cdk/common-licenses/FDL-1.2
 #
 
+------------------------------------------------------------------------------
+I. Prerequistes:
+------------------------------------------------------------------------------
 
-Prerequistes:
---------------
  - cvs
  - autoconf >= 2.50
  - automake >= 1.4p5
  - libtool >= 1.4.2
- - gettext >= 0.10.38
+ - gettext >= 0.11.5
  - make >= 3.79
  - makeinfo (texinfo)
  - tar
@@ -35,8 +36,13 @@ Prerequistes:
  - bison
  - pkg-config
 
-1. Getting the sources:
------------------------
+ Ensure that you have these programs installed and accessible on your system.
+ Compare version numbers where applicable. Don't report any bugs before having
+ verified that you are using the correct versions.
+
+------------------------------------------------------------------------------
+II. Getting the sources:
+------------------------------------------------------------------------------
 
  - It is recommended to add a new user to your system, to prevent data loss.
    If you do not have sufficient rights to do so, remember that everything
@@ -56,12 +62,13 @@ Prerequistes:
    (if you prefer older maybe more stable versions)
    cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co -P -r rel_1_0_0 .
 
-   Note: Some people tend to become blind when it comes to viewing trailing dots.
-         There are dots at the end of the cvs command line because they belong to
-	 the command. Don't skip them!
+   Note: Some people tend to become blind when it comes to viewing trailing
+         dots. There are dots at the end of the cvs command line because they
+	 belong to the command. Don't skip them!
 
-2. Generating the Makefiles:
-----------------------------
+------------------------------------------------------------------------------
+III. Generating the Makefiles:
+------------------------------------------------------------------------------
 
  - Enter the following commands:
 
@@ -69,8 +76,9 @@ Prerequistes:
    ./autogen.sh
    ./configure --prefix=$HOME/dbox2 --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode
 
-3. Getting 3rd party sources (optional, not recommended):
----------------------------------------------------------
+------------------------------------------------------------------------------
+IV. Getting 3rd party sources (optional, not recommended):
+------------------------------------------------------------------------------
 
  - Enter the following command:
 
@@ -78,18 +86,20 @@ Prerequistes:
 
    Note: This will download more source packages than you will probably ever
          want to compile. This causes more ip traffic than skipping this step,
-	 but all downloads are done in one step, which might or might not reduce
-	 the amount of time spent online, depending on your internet connection.
+	 but all downloads are done in one step, which might or might not
+	 reduce the amount of time spent online, depending on your internet
+	 connection.
 
-4. Building the CDK:
---------------------
+------------------------------------------------------------------------------
+V. Building the CDK:
+------------------------------------------------------------------------------
 
  - Enter the following command (see Makefile.am for other make targets):
 
    make all
 
- - This step should always complete without errors. If it does not then
-   please report at http://tuxbox.berlios.de/forum/viewforum.php?f=7
+ - This step should always complete without errors. If it does not then please
+   report at https://tuxbox.berlios.de/forum/viewforum.php?f=7
 
  - If you want to try building additional programs which are usually not
    needed for using tuxbox applications, then enter
@@ -98,8 +108,10 @@ Prerequistes:
 
  - These programs are hardly maintained, so they might sometimes fail to
    build. If you encounter errors, then please report them to the address
-   mentioned above, but do not expect to get the problems fixed quickly if
-   you do not post the solution to the problem.
+   mentioned above, but do not expect to get the problems fixed quickly if you
+   do not post the solution to the problem.
 
- - Note that you can skip single make targets by typing touch .package_name
+ - Note that you can skip single make targets by typing
+   
+   touch .package_name
 
