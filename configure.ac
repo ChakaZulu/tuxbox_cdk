@@ -14,7 +14,7 @@ AC_CANONICAL_TARGET
 AC_SUBST(target)
 
 AC_ARG_ENABLE(libcrypto,
-	AC_HELP_STRING([--disable-libcrypto], [.libcrypto will not be build by 'make all' (reduces the size of some other libs]),
+	AC_HELP_STRING([--disable-libcrypto], [don't build libcrypto to reduce binary size]),
 	,[enable_libcrypto=yes])
 
 AM_CONDITIONAL(WITH_LIBCRYPTO,test "$enable_libcrypto" = "yes")
