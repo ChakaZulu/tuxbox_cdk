@@ -313,7 +313,6 @@ libs_optional: \
 .libcrypto: .bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
 	cd @DIR_libcrypto@ && \
-		autoconf && \
 		./Configure shared no-hw no-idea no-md2 no-md4 no-mdc2 no-rc2 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
 		$(MAKE) depend all && \
 		@INSTALL_libcrypto@
@@ -774,6 +773,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@PREPARE_ssh@
 	cd @DIR_ssh@ && \
 		$(BUILDENV) \
+		autoconf && \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
