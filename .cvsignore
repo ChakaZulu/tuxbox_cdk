@@ -7,7 +7,7 @@ autom4te.cache
 config.log
 config.status
 configure
-linux-2.4.20
+linux-2.4.22
 .binutils
 .bootstrap
 .busybox
@@ -36,6 +36,8 @@ linux-2.4.20
 .libdvbpsi
 .libexpat
 .libfreetype
+.libfribidi
+.libid3tag
 .libjpeg
 .libmad
 .libncurses
