@@ -1621,6 +1621,7 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash neutrino root
 	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/sectionsd $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/pzapit $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/satfind $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
 	sed -e 's/neutrino/neutrino -u -f/' $(targetprefix)/etc/init.d/start_neutrino > \
 		$(flashprefix)/root/etc/init.d/start_neutrino ;
