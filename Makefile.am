@@ -794,8 +794,7 @@ devel: .gdb .strace .nano
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
-			--prefix=$(targetprefix) \
-			--static && \
+			--prefix=$(targetprefix) && \
 		make all && \
 		@INSTALL_nano@
 	@CLEANUP_nano@
@@ -880,7 +879,7 @@ fun: .mad .scummvm
 			LDFLAGS="$(TAGET_LDFLAGS)" \
 			DEFINES="-DUNIX" && \
 		@INSTALL_scummvm@
-	#@CLEANUP_scummvm@
+	@CLEANUP_scummvm@
 	touch .scummvm
 
 #######################
