@@ -8,23 +8,13 @@ above i2c-core i2c-8xx
 
 if $DEMOD = "AT76C651"
 	alias tuner at76c651
-	options avs type=1 debug=0
-	options saa7126 board=2 debug=0
 elseif $DEMOD = "TDA8044H"
 	alias tuner tda8044h
-	options avs type=2 debug=0
-	options saa7126 board=1 debug=0
 elseif $DEMOD = "VES1820"
 	alias tuner ves1820
-	options avs type=0 debug=0
-	options saa7126 board=1 debug=0
 elseif $DEMOD = "VES1893"
 	alias tuner ves1893
-	options avs type=0 debug=0
-	options saa7126 board=1 debug=0
 elseif $DEMOD = "VES1993"
 	alias tuner ves1993
-	options avs type=2 debug=0
-	options saa7126 board=2 debug=0
 endif
 
