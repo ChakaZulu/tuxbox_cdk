@@ -122,6 +122,18 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 	touch .glibc
 
 #
+# uClibc
+# a minimalistic libc, won't currently work with libstdc++
+#
+.uclibc: @DEPENDS_uclibc@
+	@PREPARE_uclibc@
+	cd @DIR_uclibc@ && \
+		make all CROSS=$(target)- && \
+		@INSTALL_uclibc@
+	@CLEANUP_uclibc@
+	touch .uclibc
+
+#
 # gcc second stage with glibc
 #
 .gcc: @DEPENDS_gcc@

@@ -15,6 +15,7 @@ gcc-core-3.0.4.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.0.4
 gcc-g++-3.0.4.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.0.4
 glibc-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 glibc-linuxthreads-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
+uClibc-0.9.11.tar.bz2;
 
 #
 # minimal root
