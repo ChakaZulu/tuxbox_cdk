@@ -524,3 +524,17 @@ diff -Naur glibc-2.3.2/sysdeps/powerpc/powerpc32/memset.S glibc-2.3.2.patched/sy
 -	b		L(nondcbz)
 -		
 -END (BP_SYM (memset))
+--- glibc-2.2.5/stdio-common/sscanf.c.old       2003-05-24 20:17:45.000000000 +0
+200
++++ glibc-2.2.5/stdio-common/sscanf.c   2003-05-24 20:18:22.000000000 +0200
+@@ -27,9 +27,7 @@
+ /* Read formatted input from S, according to the format string FORMAT.  */
+ /* VARARGS2 */
+ int
+-sscanf (s, format)
+-     const char *s;
+-     const char *format;
++sscanf (const char *s, const char *format, ...)
+ {
+   va_list arg;
+   int done;
