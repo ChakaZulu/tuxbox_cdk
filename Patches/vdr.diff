@@ -1,0 +1,18 @@
+diff -Naur vdr-1.1.27.orig/Makefile vdr-1.1.27/Makefile
+--- vdr-1.1.27.orig/Makefile	2003-01-06 13:28:09.000000000 +0100
++++ vdr-1.1.27/Makefile	2003-04-16 00:58:59.000000000 +0200
+@@ -14,14 +14,10 @@
+ CXX      ?= g++
+ CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
+ 
+-DVBDIR   = ../DVB
+ DTVDIR   = ./libdtv
+-MANDIR   = /usr/local/man
+-BINDIR   = /usr/local/bin
+ 
+ PLUGINDIR= ./PLUGINS
+ 
+-VIDEODIR = /video
+ 
+ DOXYGEN  = /usr/bin/doxygen
+ DOXYFILE = Doxyfile

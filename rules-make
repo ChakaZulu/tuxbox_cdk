@@ -14,8 +14,8 @@
 #
 linux;2.4.20-dbox2;linux-2.4.20;linux-2.4.20.tar.bz2:linux-dbox2-2.4.20-2.diff.bz2:v4l2-api-2.4.20.diff:input-keys.diff:fusion-full-linux-2.4.20.diff;remove:linux;extract:linux-2.4.20.tar.bz2;patch:linux-dbox2-2.4.20-2.diff.bz2;patch:v4l2-api-2.4.20.diff;patch:input-keys.diff;patch:fusion-full-linux-2.4.20.diff;link:linux-2.4.20:linux
 binutils;2.13.90.0.16;binutils-2.13.90.0.16;binutils-2.13.90.0.16.tar.bz2:binutils.diff;extract:binutils-2.13.90.0.16.tar.bz2;patch:binutils.diff
-bootstrap_gcc;3.2.2;gcc-3.2.2;gcc-core-3.2.2.tar.gz:gcc-core.diff;extract:gcc-core-3.2.2.tar.gz;patch:gcc-core.diff
-gcc;3.2.2;gcc-3.2.2;gcc-core-3.2.2.tar.gz:gcc-g++-3.2.2.tar.gz;extract:gcc-core-3.2.2.tar.gz;extract:gcc-g++-3.2.2.tar.gz
+bootstrap_gcc;3.2.2;gcc-3.2.2;gcc-core-3.2.2.tar.bz2:gcc-core.diff;extract:gcc-core-3.2.2.tar.bz2;patch:gcc-core.diff
+gcc;3.2.2;gcc-3.2.2;gcc-core-3.2.2.tar.bz2:gcc-g++-3.2.2.tar.bz2;extract:gcc-core-3.2.2.tar.bz2;extract:gcc-g++-3.2.2.tar.bz2
 glibc;2.2.5;glibc-2.2.5;glibc-2.2.5.tar.bz2:glibc-linuxthreads-2.2.5.tar.bz2:glibc.diff;extract:glibc-2.2.5.tar.bz2;dirextract:glibc-linuxthreads-2.2.5.tar.bz2;patch:glibc.diff
 uclibc;0.9.11;uClibc-0.9.11;uClibc-0.9.11.tar.bz2:uclibc-0.9.11.diff;extract:uClibc-0.9.11.tar.bz2;patch:uclibc-0.9.11.diff
 watchdog;5.2;watchdog-5.2.orig;watchdog_5.2.orig.tar.gz:watchdog.diff;extract:watchdog_5.2.orig.tar.gz;patch:watchdog.diff
@@ -71,9 +71,7 @@ lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.d
 lsof;4.65;lsof_4.65_src;lsof_4.65_src.tar.bz2:lsof.diff;extract:lsof_4.65_src.tar.bz2;patch:lsof.diff
 ssh;3.5p1;openssh-3.5p1;openssh-3.5p1.tar.gz:ssh.diff;extract:openssh-3.5p1.tar.gz;patch:ssh.diff
 tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz:tcpdump.diff;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
-xrc;0.6.3;xrc-0.6.3;xrc-0.6.3.tar.gz:xrc.diff;extract:xrc-0.6.3.tar.gz;patch:xrc.diff
-thttpd;2.23beta1;thttpd-2.23beta1;thttpd-2.23beta1.tar.gz;extract:thttpd-2.23beta1.tar.gz;patch:thttpd.diff
-
+vdr;1.1.29;vdr-1.1.29;vdr-1.1.29.tar.bz2:vdr.diff;extract:vdr-1.1.29.tar.bz2;patch:vdr.diff
 
 #
 # msttf

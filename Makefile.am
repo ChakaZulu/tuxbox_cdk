@@ -770,6 +770,16 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@CLEANUP_tcpdump@
 	touch $@
 
+.vdr: .bootstrap @DEPENDS_vdr@
+	@PREPARE_vdr@
+	cd @DIR_vdr@ && \
+		$(BUILDENV) \
+		DVBDIR="$(driverdir)/dvb" \
+		$(MAKE) all && \
+		@INSTALL_vdr@
+	@CLEANUP_vdr@
+	touch .vdr
+
 
 #######################
 #

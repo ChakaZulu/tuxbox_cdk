@@ -66,8 +66,7 @@ lirc;make:install
 lsof;install:-m755:lsof:TARGET/sbin
 ssh;make:install:DESTDIR=TARGET
 tcpdump;make:install:DESTDIR=TARGET
-xrc;make:install
-thttpd;make:install
+vdr;make:install:BINDIR=TARGET/bin:MANDIR=TARGET/man:VIDEODIR=TARGET/video
 
 #
 # msttf
