@@ -309,9 +309,23 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 			--with-driver=$(driverdir) \
 			--with-target=$(APPSTARGET)
 
-.edvb: $(appsdir)/Makefile
+
+.libfx2: $(appsdir)/Makefile
+	make -C $(appsdir)/fx2/lib all install
+	touch .libfx2
+
+.fx2: $(appsdir)/Makefile .libfx2
+	make -C $(appsdir)/fx2 all install
+	touch .fx2
+
+.edvb: $(appsdir)/Makefile .fx2
 	make -C $(appsdir)/edvb all install
 	touch .edvb
+
+.neutrino: $(appsdir)/Makefile .fx2
+	make -C $(appsdir)/mczap all install
+	touch .neutrino
+
 
 #######################
 #
@@ -324,7 +338,7 @@ distclean-local:
 	-rm .busybox
 	-rm .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	-rm .ppcboot .linuxkernel
-	-rm .edvb
+	-rm .libfx2 .fx2 .edvb .neutrino
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 	-make -C $(appsdir) distclean
