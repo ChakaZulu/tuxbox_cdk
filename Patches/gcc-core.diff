@@ -1,6 +1,6 @@
-diff -Naur gcc-3.0.ori/gcc/config/rs6000/linux.h gcc-3.0/gcc/config/rs6000/linux.h
---- gcc-3.0.ori/gcc/config/rs6000/linux.h	Mon Jun 11 21:35:51 2001
-+++ gcc-3.0/gcc/config/rs6000/linux.h	Mon Jun 25 13:21:48 2001
+diff -Naur gcc-3.2.ori/gcc/config/rs6000/linux.h gcc-3.2/gcc/config/rs6000/linux.h
+--- gcc-3.2.ori/gcc/config/rs6000/linux.h	Mon Jun 11 21:35:51 2001
++++ gcc-3.2/gcc/config/rs6000/linux.h	Mon Jun 25 13:21:48 2001
 @@ -78,8 +78,7 @@
     state data appropriately.  See unwind-dw2.c for the structs.  */
  

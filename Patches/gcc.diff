@@ -1,7 +1,7 @@
-diff -urN gcc-3.0.3.orig/libstdc++-v3/src/Makefile.am gcc-3.0.3/libstdc++-v3/src/Makefile.am
---- gcc-3.0.3.orig/libstdc++-v3/src/Makefile.am	Mon Sep 10 22:11:06 2001
-+++ gcc-3.0.3/libstdc++-v3/src/Makefile.am	Sat Jan 12 13:23:31 2002
-@@ -137,3 +137,7 @@
+diff -urN gcc-3.2.orig/libstdc++-v3/src/Makefile.am gcc-3.2/libstdc++-v3/src/Makefile.am
+--- gcc-3.2.orig/libstdc++-v3/src/Makefile.am	Mon Sep 10 22:11:06 2001
++++ gcc-3.2/libstdc++-v3/src/Makefile.am	Sat Jan 12 13:23:31 2002
+@@ -151,3 +151,7 @@
  # compilation driver.
  CXXLINK = $(LIBTOOL) --tag CXX --mode=link $(CXX) \
  	  @OPT_LDFLAGS@ @SECTION_LDFLAGS@ $(AM_CXXFLAGS) $(LDFLAGS) -o $@
@@ -9,9 +9,9 @@ diff -urN gcc-3.0.3.orig/libstdc++-v3/src/Makefile.am gcc-3.0.3/libstdc++-v3/src
 +install-exec-local:
 +	$(AR) cru libstdc++_pic.a .libs/*.o ../libsupc++/*.o
 +
---- gcc-3.1/libstdc++-v3/src/Makefile.in.orig	Tue Apr  2 04:47:04 2002
-+++ gcc-3.1/libstdc++-v3/src/Makefile.in	Thu May 16 22:52:02 2002
-@@ -434,7 +434,7 @@
+--- gcc-3.2/libstdc++-v3/src/Makefile.in.orig	Tue Apr  2 04:47:04 2002
++++ gcc-3.2/libstdc++-v3/src/Makefile.in	Thu May 16 22:52:02 2002
+@@ -416,7 +416,7 @@
  installcheck: installcheck-am
  install-info-am: 
  install-info: install-info-am
@@ -20,7 +20,7 @@ diff -urN gcc-3.0.3.orig/libstdc++-v3/src/Makefile.am gcc-3.0.3/libstdc++-v3/src
  install-exec: install-exec-am
  
  install-data-am:
-@@ -498,15 +498,20 @@
+@@ -480,15 +480,20 @@
  clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
  distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
  dvi-am dvi check check-am installcheck-am installcheck install-info-am \
