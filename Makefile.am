@@ -231,7 +231,7 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libxml2
 .libcrypto: .bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
 	cd @DIR_libcrypto@ && \
-		./Configure shared no-cast no-idea no-md2 no-md4 no-mdc2 no-rc2 no-rc4 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
+		./Configure shared no-idea no-md2 no-md4 no-mdc2 no-rc2 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
 		make all && \
 		@INSTALL_libcrypto@
 	@CLEANUP_libcrypto@
@@ -423,6 +423,31 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libxml2
 		@INSTALL_libz@
 	@CLEANUP_libz@
 	touch .libz
+
+#######################
+#
+#   contrib apps
+#
+
+.ssh: .bootstrap .libcrypto .libz @DEPENDS_ssh@
+	@PREPARE_ssh@
+	cd @DIR_ssh@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--sysconfdir=/etc/ssh \
+			--without-shadow \
+			--with-4in6 \
+			--disable-suid-ssh \
+			--with-path="/sbin:/bin" && \
+		make && \
+		@INSTALL_ssh@
+	@CLEANUP_ssh@
+	touch .ssh
 
 #######################
 #

@@ -45,6 +45,11 @@ SDL-1.2.3.tar.gz;http://www.libsdl.org/release
 readline-4.2a.tar.gz;ftp://ftp.gnu.org/gnu/readline
 
 #
+# contrib apps
+#
+openssh-3.0.2p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
+
+#
 # msttf
 #
 cabextract-0.5.tar.gz;http://www.kyz.uklinux.net/downloads

@@ -182,6 +182,11 @@ TUXBOX_RULES_MAKE(libxml2)
 TUXBOX_RULES_MAKE(libz)
 
 #
+# contrib apps
+#
+TUXBOX_RULES_MAKE(ssh)
+
+#
 # msttf
 #
 TUXBOX_RULES_MAKE(cabextract)

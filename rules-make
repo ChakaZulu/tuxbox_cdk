@@ -46,6 +46,11 @@ libxml2;2.4.10;libxml2-2.4.10;libxml2-2.4.10.tar.gz;extract:libxml2-2.4.10.tar.g
 libz;1.1.3;zlib-1.1.3;zlib.tar.gz:zlib.diff;extract:zlib.tar.gz;patch:zlib.diff
 
 #
+# contrib apps
+#
+ssh;3.0.2p1;openssh-3.0.2p1;openssh-3.0.2p1.tar.gz:ssh.diff;extract:openssh-3.0.2p1.tar.gz;patch:ssh.diff
+
+#
 # msttf
 #
 cabextract;0.5;cabextract-0.5;cabextract-0.5.tar.gz;extract:cabextract-0.5.tar.gz

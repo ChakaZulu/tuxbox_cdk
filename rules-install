@@ -43,6 +43,11 @@ libxml2;make:install;link:TARGET/bin/xml2-config:HOST/bin/xml2-config
 libz;make:install
 
 #
+# contrib apps
+#
+ssh;make:install-nokeys:prefix=TARGET
+
+#
 # msttf
 #
 cabextract;make:install
