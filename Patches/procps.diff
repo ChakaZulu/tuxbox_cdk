@@ -1,6 +1,6 @@
-diff -urN procps-010114.old/Makefile procps-010114/Makefile
---- procps-010114.old/Makefile	2001-01-13 12:00:48.000000000 +0100
-+++ procps-010114/Makefile	2002-08-03 17:34:56.000000000 +0200
+diff -Naur procps-010114/Makefile procps-010114new/Makefile
+--- procps-010114/Makefile	2002-11-18 01:11:34.000000000 +0100
++++ procps-010114new/Makefile	2002-11-18 01:09:43.000000000 +0100
 @@ -31,17 +31,6 @@
  
  SUBDIRS    =  ps # sub-packages to build/install
@@ -19,9 +19,9 @@ diff -urN procps-010114.old/Makefile procps-010114/Makefile
  #LDFLAGS    =  -qmagic -s#		recommended for a.out systems
  #LDFLAGS    =  -Xlinker -qmagic -s#	older a.out systems may need this
  #LDFLAGS    =  -N -s#			still older a.out systems use this
-diff -urN procps-010114.old/proc/proc/compare.h procps-010114/proc/proc/compare.h
---- procps-010114.old/proc/proc/compare.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/compare.h	2002-08-03 17:34:43.000000000 +0200
+diff -Naur procps-010114/proc/proc/compare.h procps-010114new/proc/proc/compare.h
+--- procps-010114/proc/proc/compare.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114new/proc/proc/compare.h	2002-11-18 01:09:43.000000000 +0100
 @@ -0,0 +1,9 @@
 +typedef int (*cmp_t)(void*,void*);       /* for function pointer casts */
 +
@@ -32,9 +32,9 @@ diff -urN procps-010114.old/proc/proc/compare.h procps-010114/proc/proc/compare.
 +extern const char *parse_sort_opt(const char* opt);
 +extern const char *parse_long_sort(const char* opt);
 +
-diff -urN procps-010114.old/proc/proc/devname.h procps-010114/proc/proc/devname.h
---- procps-010114.old/proc/proc/devname.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/devname.h	2002-08-03 17:34:43.000000000 +0200
+diff -Naur procps-010114/proc/proc/devname.h procps-010114new/proc/proc/devname.h
+--- procps-010114/proc/proc/devname.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114new/proc/proc/devname.h	2002-11-18 01:09:43.000000000 +0100
 @@ -0,0 +1,7 @@
 +#define ABBREV_DEV  1     /* remove /dev/         */
 +#define ABBREV_TTY  2     /* remove tty           */
@@ -43,9 +43,9 @@ diff -urN procps-010114.old/proc/proc/devname.h procps-010114/proc/proc/devname.
 +int dev_to_tty(char *ret, int chop, int dev, int pid, unsigned int flags);
 +
 +int tty_to_dev(char *name);
-diff -urN procps-010114.old/proc/proc/procps.h procps-010114/proc/proc/procps.h
---- procps-010114.old/proc/proc/procps.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/procps.h	2002-08-03 17:34:43.000000000 +0200
+diff -Naur procps-010114/proc/proc/procps.h procps-010114new/proc/proc/procps.h
+--- procps-010114/proc/proc/procps.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114new/proc/proc/procps.h	2002-11-18 01:09:43.000000000 +0100
 @@ -0,0 +1,27 @@
 +/* The shadow of the original with only common prototypes now. */
 +#include <stdio.h>
@@ -74,9 +74,9 @@ diff -urN procps-010114.old/proc/proc/procps.h procps-010114/proc/proc/procps.h
 +
 +unsigned print_str    (FILE* file, char *s, unsigned max);
 +unsigned print_strlist(FILE* file, char **strs, char* sep, unsigned max);
-diff -urN procps-010114.old/proc/proc/readproc.h procps-010114/proc/proc/readproc.h
---- procps-010114.old/proc/proc/readproc.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/readproc.h	2002-08-03 17:34:43.000000000 +0200
+diff -Naur procps-010114/proc/proc/readproc.h procps-010114new/proc/proc/readproc.h
+--- procps-010114/proc/proc/readproc.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114new/proc/proc/readproc.h	2002-11-18 01:09:43.000000000 +0100
 @@ -0,0 +1,200 @@
 +#ifndef PROCPS_PROC_READPROC_H
 +#define PROCPS_PROC_READPROC_H
@@ -278,9 +278,9 @@ diff -urN procps-010114.old/proc/proc/readproc.h procps-010114/proc/proc/readpro
 +#define PROC_ANYTTY  0x1000  /* proc must have a controlling terminal */
 +
 +#endif
-diff -urN procps-010114.old/proc/proc/sig.h procps-010114/proc/proc/sig.h
---- procps-010114.old/proc/proc/sig.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/sig.h	2002-08-03 17:34:43.000000000 +0200
+diff -Naur procps-010114/proc/proc/sig.h procps-010114new/proc/proc/sig.h
+--- procps-010114/proc/proc/sig.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114new/proc/proc/sig.h	2002-11-18 01:09:43.000000000 +0100
 @@ -0,0 +1,19 @@
 +/*
 + * Copyright 1998 by Albert Cahalan; all rights resered.
@@ -301,17 +301,17 @@ diff -urN procps-010114.old/proc/proc/sig.h procps-010114/proc/proc/sig.h
 +extern void pretty_print_signals(void);
 +
 +extern void unix_print_signals(void);
-diff -urN procps-010114.old/proc/proc/status.h procps-010114/proc/proc/status.h
---- procps-010114.old/proc/proc/status.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/status.h	2002-08-03 17:34:43.000000000 +0200
+diff -Naur procps-010114/proc/proc/status.h procps-010114new/proc/proc/status.h
+--- procps-010114/proc/proc/status.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114new/proc/proc/status.h	2002-11-18 01:09:43.000000000 +0100
 @@ -0,0 +1,4 @@
 +#ifndef __PROC_STATUS_H
 +#define __PROC_STATUS_H
 +extern char *status(proc_t* task);
 +#endif
-diff -urN procps-010114.old/proc/proc/sysinfo.h procps-010114/proc/proc/sysinfo.h
---- procps-010114.old/proc/proc/sysinfo.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/sysinfo.h	2002-08-03 17:34:43.000000000 +0200
+diff -Naur procps-010114/proc/proc/sysinfo.h procps-010114new/proc/proc/sysinfo.h
+--- procps-010114/proc/proc/sysinfo.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114new/proc/proc/sysinfo.h	2002-11-18 01:09:43.000000000 +0100
 @@ -0,0 +1,40 @@
 +#ifndef SYSINFO_H
 +#define SYSINFO_H
@@ -353,9 +353,9 @@ diff -urN procps-010114.old/proc/proc/sysinfo.h procps-010114/proc/proc/sysinfo.
 +extern void meminfo(void);
 +
 +#endif /* SYSINFO_H */
-diff -urN procps-010114.old/proc/proc/tree.h procps-010114/proc/proc/tree.h
---- procps-010114.old/proc/proc/tree.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/tree.h	2002-08-03 17:34:43.000000000 +0200
+diff -Naur procps-010114/proc/proc/tree.h procps-010114new/proc/proc/tree.h
+--- procps-010114/proc/proc/tree.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114new/proc/proc/tree.h	2002-11-18 01:09:43.000000000 +0100
 @@ -0,0 +1,15 @@
 +/* for oldps.c and proc/compare.c */
 +struct tree_node {
@@ -372,9 +372,9 @@ diff -urN procps-010114.old/proc/proc/tree.h procps-010114/proc/proc/tree.h
 +    int have_parent;
 +};
 +
-diff -urN procps-010114.old/proc/proc/version.h procps-010114/proc/proc/version.h
---- procps-010114.old/proc/proc/version.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/version.h	2002-08-03 17:34:43.000000000 +0200
+diff -Naur procps-010114/proc/proc/version.h procps-010114new/proc/proc/version.h
+--- procps-010114/proc/proc/version.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114new/proc/proc/version.h	2002-11-18 01:09:43.000000000 +0100
 @@ -0,0 +1,23 @@
 +#ifndef PROC_VERSION_H
 +#define PROC_VERSION_H
@@ -399,9 +399,9 @@ diff -urN procps-010114.old/proc/proc/version.h procps-010114/proc/proc/version.
 +#define LINUX_VERSION_PATCH(x) ( (x)      & 0xFF)
 +
 +#endif	/* PROC_VERSION_H */
-diff -urN procps-010114.old/proc/proc/whattime.h procps-010114/proc/proc/whattime.h
---- procps-010114.old/proc/proc/whattime.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/whattime.h	2002-08-03 17:34:43.000000000 +0200
+diff -Naur procps-010114/proc/proc/whattime.h procps-010114new/proc/proc/whattime.h
+--- procps-010114/proc/proc/whattime.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114new/proc/proc/whattime.h	2002-11-18 01:09:43.000000000 +0100
 @@ -0,0 +1,9 @@
 +/* whattime.h --- see whattime.c for explanation */
 +
@@ -412,3 +412,15 @@ diff -urN procps-010114.old/proc/proc/whattime.h procps-010114/proc/proc/whattim
 +extern char *sprint_uptime(void);
 +
 +#endif
+diff -Naur procps-010114/top.c procps-010114new/top.c
+--- procps-010114/top.c	2001-01-14 11:40:14.000000000 +0100
++++ procps-010114new/top.c	2002-11-18 01:10:35.000000000 +0100
+@@ -92,7 +92,7 @@
+ #include <time.h>
+ #include <sys/ioctl.h>
+ #include <pwd.h>
+-#include <termcap.h>
++#include <ncurses/termcap.h>
+ #include <termios.h>
+ #include <signal.h>
+ #include <sys/time.h>
