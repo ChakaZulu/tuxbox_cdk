@@ -9,5 +9,5 @@ cd "$srcdir"
 
 echo "Generating configuration files for $package, please wait...."
 
-autoreconf
+autoreconf -fis
 
