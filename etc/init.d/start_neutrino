@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export INSMOD="/sbin/insmod"
+
 killall -9 startmenu
 
 echo "Lade sectionsd"
