@@ -1,0 +1,16 @@
+# install rules for cdk
+# ruleset: flash
+#
+# look at rules-install
+#
+
+#
+# core
+#
+glibc;make:install:install_root=TARGET;install:-m644:libc_pic.a:math/libm_pic.a:resolv/libresolv_pic.a:dlfcn/libdl_pic.a:linuxthreads/libpthread_pic.a:TARGET/lib;install:-d:TARGET/lib/libc_pic;install:-m644:elf/soinit.os:TARGET/lib/libc_pic/soinit.o;install:-m644:elf/sofini.os:TARGET/lib/libc_pic/sofini.o;install:-m644:libc.map:TARGET/lib/libc_pic.map;install:-m644:libpthread.map:TARGET/lib/libpthread_pic.map;install:-m644:libm.map:TARGET/lib/libm_pic.map;install:-m644:libdl.map:TARGET/lib/libdl_pic.map
+gcc;make:install;install:-m644:powerpc-tuxbox-linux-gnu/libstdc++-v3/src/libstdc++_pic.a:TARGET/lib
+
+#
+# include
+#
+>>>;rules-install
