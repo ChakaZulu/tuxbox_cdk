@@ -21,6 +21,7 @@ echo "hwREV: $hwREV"
 echo "fpREV: $fpREV"
 echo "DEMOD: $DEMOD"
 
+modprobe saa7126
 modprobe dvb
 modprobe tuner
 modprobe graphic
