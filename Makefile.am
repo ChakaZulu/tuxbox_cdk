@@ -1350,6 +1350,7 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino
 		$(flashprefix)/root/share/tuxbox
 	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/sectionsd $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/pzapit $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
 	if [ -e $(flashprefix)/root/bin/eraseall ] ; then \
 		sed -e 's/neutrino/neutrino -su -flash/' $(targetprefix)/etc/init.d/start_neutrino > \
@@ -1389,7 +1390,7 @@ $(flashprefix)/.part_plugins: $(flashprefix)/.flash .plugins
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/tuxtxt
 	cp -pa $(targetprefix)/lib/tuxbox/plugins/* $(flashprefix)/root/lib/tuxbox/plugins/
-	cp -pa $(targetprefix)/share/fonts/tuxtxt.fon $(flashprefix)/root/share/fonts/
+	cp -pa $(targetprefix)/share/fonts/tuxtxt?.fon $(flashprefix)/root/share/fonts/
 	cp -pa $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/root/var/tuxbox/config/
 	cp -pa $(targetprefix)/var/tuxbox/config/tuxtxt/tuxtxt.conf $(flashprefix)/root/var/tuxbox/config/tuxtxt/
 	@touch $@
