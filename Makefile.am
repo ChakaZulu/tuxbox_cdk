@@ -634,11 +634,11 @@ endif
 	make -C $(appsdir)/dvbsnoop all install
 	touch .dvbsnoop
 
-.edvb: $(appsdir)/Makefile .fx2 .tools .msttf
+.edvb: $(appsdir)/Makefile .tools .msttf
 	make -C $(appsdir)/edvb all install
 	touch .edvb
 
-.enigma: $(appsdir)/Makefile .fx2 .tools
+.enigma: $(appsdir)/Makefile .tools
 	make -C $(appsdir)/enigma all install
 	touch .enigma
 
@@ -646,7 +646,7 @@ endif
 	make -C $(appsdir)/fx2 all install
 	touch .fx2
 
-.lcars: $(appsdir)/Makefile .fx2
+.lcars: $(appsdir)/Makefile
 	make -C $(appsdir)/lcars all install
 	touch .lcars
 
@@ -654,7 +654,7 @@ endif
 	make -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
-.neutrino: $(appsdir)/Makefile .fx2 .liblcddisplay .libmd5sum .libnet .libucodes .msttf .sections .zapit
+.neutrino: $(appsdir)/Makefile .liblcddisplay .libmd5sum .libnet .libucodes .msttf .sections .zapit
 	make -C $(appsdir)/mczap all install
 	touch .neutrino
 
