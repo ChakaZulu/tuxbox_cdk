@@ -1593,7 +1593,7 @@ $(flashprefix)/.flash: procps busybox driver tuxbox_tools lirc
 	$(INSTALL) -d $(flashprefix)/root/tmp
 	$(MAKE) -C root install targetprefix=$(flashprefix)/root
 	cp -pa $(bootprefix)/kernel-cdk $(flashprefix)/root/vmlinuz
-	echo "version=0107`date +%Y%m%d%H%M`" > $(flashprefix)/root/.version
+	echo "version=0200`date +%Y%m%d%H%M`" > $(flashprefix)/root/.version
 	echo "comment=Erstellt von `id -un`" >> $(flashprefix)/root/.version
 	$(INSTALL) $(targetprefix)/bin/busybox $(flashprefix)/root/bin
 	for i in `find $(targetprefix)/bin/ -lname "*busybox"` ; do cp -ap $$i $(flashprefix)/root/bin/ ; done
