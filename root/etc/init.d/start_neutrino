@@ -6,3 +6,20 @@ zapit
 controld
 nhttpd
 neutrino
+
+pzapit -kill
+
+i=9
+while expr $i != 0 > /dev/null
+do
+if pidof controld > /dev/null; then echo "Waiting for controld (max. $i seconds)"
+elif pidof timerd > /dev/null; then echo "Waiting for timerd (max. $i seconds)"
+elif pidof zapit > /dev/null; then echo "Waiting for zapit (max. $i seconds)"
+else break;
+fi
+i=`expr $i - 1`
+sleep 1
+done
+
+echo "Going to halt system now ..."
+/sbin/halt
