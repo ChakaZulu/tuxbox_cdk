@@ -36,18 +36,15 @@ AC_ARG_WITH(targetruleset,
 	[  --with-targetruleset=NAME target ruleset [[standard,flash]]],
 	[targetruleset="$withval"],[targetruleset="standard"])
 
+TARGET_CFLAGS="-Os -mcpu=823 -pipe"
+TARGET_CXXFLAGS="-Os -mcpu=823 -pipe"
+
 if test "$targetruleset" = "standard"; then
-	TARGET_CFLAGS="-O2 -mcpu=823 -pipe"
-	TARGET_CXXFLAGS="-O2 -mcpu=823 -pipe"
-	TARGET_LDFLAGS="-s"
 	INSTALLRULESETFILE=""
-	APPSTARGET="dbox2"
+	TARGET_LDFLAGS=""
 elif test "$targetruleset" = "flash"; then
-	TARGET_CFLAGS="-Os -mcpu=823 -pipe"
-	TARGET_CXXFLAGS="-Os -mcpu=823 -pipe"
-	TARGET_LDFLAGS="-s"
 	INSTALLRULESETFILE="-flash"
-	APPSTARGET="dbox2flash"
+	TARGET_LDFLAGS="-s"
 else
 	AC_MSG_ERROR([invalid targetruleset "$targetruleset", choose on from standard or flash]);
 fi
@@ -138,7 +135,7 @@ else
 fi
 
 AC_MSG_CHECKING([for apps directory])
-if test ! -f "$appsdir/configure.ac" ; then
+if test ! -f "$appsdir/dvb/zapit/configure.ac" ; then
 	appsdir=no
 	AC_MSG_RESULT([no])
 else
@@ -148,7 +145,7 @@ fi
 AC_MSG_CHECKING([for boot directory])
 if test ! -f "$bootdir/ppcboot/Makefile" ; then
 	bootdir=no
-	AC_MSG_ERROR([no])
+	AC_MSG_RESULT([no])
 else
 	AC_MSG_RESULT([yes])
 fi
@@ -251,6 +248,7 @@ TUXBOX_RULES_MAKE(libdb2)
 TUXBOX_RULES_MAKE(libdvbpsi)
 TUXBOX_RULES_MAKE(libffi)
 TUXBOX_RULES_MAKE(libfreetype)
+TUXBOX_RULES_MAKE(libmad)
 TUXBOX_RULES_MAKE(libncurses)
 TUXBOX_RULES_MAKE(libnet)
 TUXBOX_RULES_MAKE(libnids)
@@ -307,7 +305,6 @@ TUXBOX_RULES_MAKE(kaffeh)
 # fun stuff
 #
 TUXBOX_RULES_MAKE(gnuboy)
-TUXBOX_RULES_MAKE(mad)
 TUXBOX_RULES_MAKE(scummvm)
 TUXBOX_RULES_MAKE(sdldoom)
 
@@ -333,19 +330,19 @@ ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 #
 # summary
 #
-AC_MSG_RESULT()
-AC_MSG_RESULT(Summary:)
-AC_MSG_RESULT([Hostruleset:	$hostruleset])
-AC_MSG_RESULT([Targetruleset:	$targetruleset])
-AC_MSG_RESULT([Targetprefix:	$targetprefix])
-AC_MSG_RESULT([Hostprefix:	$hostprefix])
-AC_MSG_RESULT([Bootprefix:	$bootprefix])
-AC_MSG_RESULT([Buildprefix:	$buildprefix])
-AC_MSG_RESULT([Appsdir:		$appsdir])
-AC_MSG_RESULT([Bootdir:		$bootdir])
-AC_MSG_RESULT([Driverdir:	$driverdir])
-AC_MSG_RESULT([Hostappsdir:	$hostappsdir])
-AC_MSG_RESULT()
+AC_MSG_RESULT([
+Summary:
+Hostruleset:	$hostruleset
+Targetruleset:	$targetruleset
+Targetprefix:	$targetprefix
+Hostprefix:	$hostprefix
+Bootprefix:	$bootprefix
+Buildprefix:	$buildprefix
+Appsdir:	$appsdir
+Bootdir:	$bootdir
+Driverdir:	$driverdir
+Hostappsdir:	$hostappsdir
+])
 
 AC_OUTPUT([
 Makefile
