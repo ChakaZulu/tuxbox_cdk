@@ -337,6 +337,15 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	make -C $(appsdir)/tools all install
 	touch .tools
 
+.sections: $(appsdir)/Makefile
+	make -C $(appsdir)/sections all install
+	touch .sections
+
+.zapit: $(appsdir)/Makefile
+	make -C $(appsdir)/zapit all install
+	touch .zapit
+
+
 #######################
 #
 #   internal
