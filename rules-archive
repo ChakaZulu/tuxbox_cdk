@@ -71,7 +71,7 @@ pump-0.8.11.tar.bz2;
 openssh-3.4p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 tcpdump-3.7.1.tar.gz;http://www.tcpdump.org/release
 xrc-0.6.3.tar.gz;http://belnet.dl.sourceforge.net/sourceforge/lirc
-thttpd-2.20c.tar.gz;http://www.acme.com/software/thttpd
+thttpd-2.23beta1.tar.gz;http://www.acme.com/software/thttpd
 lsof_4.64_src.tar.bz2;
 
 #

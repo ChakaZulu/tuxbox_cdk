@@ -73,7 +73,7 @@ pump;0.8.11;pump-0.8.11;pump-0.8.11.tar.bz2:pump.diff;extract:pump-0.8.11.tar.bz
 ssh;3.4p1;openssh-3.4p1;openssh-3.4p1.tar.gz:ssh.diff;extract:openssh-3.4p1.tar.gz;patch:ssh.diff
 tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
 xrc;0.6.3;xrc-0.6.3;xrc-0.6.3.tar.gz:xrc.diff;extract:xrc-0.6.3.tar.gz;patch:xrc.diff
-thttpd;2.20c;thttpd-2.20c;thttpd-2.20c.tar.gz;extract:thttpd-2.20c.tar.gz;patch:thttpd.diff
+thttpd;2.23beta1;thttpd-2.23beta1;thttpd-2.23beta1.tar.gz;extract:thttpd-2.23beta1.tar.gz;patch:thttpd.diff
 
 #
 # msttf

@@ -1,6 +1,7 @@
-diff -aur thttpd-2.20c.orig/Makefile.in thttpd-2.20c/Makefile.in
---- thttpd-2.20c.orig/Makefile.in	Tue Jul  4 18:21:32 2000
-+++ thttpd-2.20c/Makefile.in	Mon Aug 12 16:40:58 2002
+Only in thttpd-2.23beta1: Makefile
+diff -aur thttpd-2.23beta1.orig/Makefile.in thttpd-2.23beta1/Makefile.in
+--- thttpd-2.23beta1.orig/Makefile.in	Wed Apr  3 04:49:35 2002
++++ thttpd-2.23beta1/Makefile.in	Mon Sep  2 10:12:53 2002
 @@ -30,16 +30,16 @@
  prefix = @prefix@
  exec_prefix = @exec_prefix@
@@ -17,7 +18,7 @@ diff -aur thttpd-2.20c.orig/Makefile.in thttpd-2.20c/Makefile.in
  # the makeweb program can be installed set-group-id to that group, and make
  # subdirectories.  If you're not going to use makeweb, ignore this.
 -WEBGROUP =	www
-+WEBGROUP =	nogroup
++WEBGROUP =	root
  
  # CONFIGURE: Directory for CGI executables.
  CGIBINDIR =	$(WEBDIR)/cgi-bin
@@ -30,33 +31,41 @@ diff -aur thttpd-2.20c.orig/Makefile.in thttpd-2.20c/Makefile.in
  
  all:		this subdirs
  this:		$(ALL)
-@@ -111,10 +111,11 @@
- install:	installthis install-man installsubdirs
+@@ -110,11 +110,11 @@
  
  installthis:
+ 	-mkdir -p $(DESTDIR)$(BINDIR)
 -	$(INSTALL) -m 555 -o bin -g bin thttpd $(DESTDIR)$(BINDIR)
 +	$(INSTALL) -m 555 thttpd $(DESTDIR)$(BINDIR)
  
  install-man:
+ 	-mkdir -p $(DESTDIR)$(MANDIR)/man8
 -	$(INSTALL) -m 444 -o bin -g bin thttpd.8 $(DESTDIR)$(MANDIR)/man8
-+	$(INSTALL) -d $(DESTDIR)$(MANDIR)/man8
 +	$(INSTALL) -m 444 thttpd.8 $(DESTDIR)$(MANDIR)/man8
  
  installsubdirs:
  	for i in $(SUBDIRS) ; do ( \
-diff -aur thttpd-2.20c.orig/config.h thttpd-2.20c/config.h
---- thttpd-2.20c.orig/config.h	Tue Sep 26 23:31:16 2000
-+++ thttpd-2.20c/config.h	Mon Aug 12 16:40:58 2002
-@@ -68,7 +68,7 @@
- /* When virtual hosting, enable the central directory on every host: */
+Only in thttpd-2.23beta1/cgi-src: Makefile
+Only in thttpd-2.23beta1/cgi-src: phf
+Only in thttpd-2.23beta1/cgi-src: phf.o
+Only in thttpd-2.23beta1/cgi-src: redirect
+Only in thttpd-2.23beta1/cgi-src: redirect.o
+Only in thttpd-2.23beta1/cgi-src: ssi
+Only in thttpd-2.23beta1/cgi-src: ssi.o
+Only in thttpd-2.23beta1: config.cache
+diff -aur thttpd-2.23beta1.orig/config.h thttpd-2.23beta1/config.h
+--- thttpd-2.23beta1.orig/config.h	Tue Mar 19 00:07:29 2002
++++ thttpd-2.23beta1/config.h	Mon Sep  2 10:15:40 2002
+@@ -69,6 +69,8 @@
  #define CGI_PATTERN "/*/cgi-bin/*"
  #endif
--
+ 
 +#define CGI_PATTERN "/cgi-bin/*"
++
  /* CONFIGURE: How many seconds to allow CGI programs to run before killing
  ** them.  This is in case someone writes a CGI program that goes into an
  ** infinite loop, or does a massive database lookup that would take hours,
-@@ -157,13 +157,14 @@
+@@ -157,6 +159,8 @@
  ** In any case, if thttpd is started with the -h flag, that name always
  ** gets used.
  */
@@ -65,14 +74,7 @@ diff -aur thttpd-2.20c.orig/config.h thttpd-2.20c/config.h
  #ifdef notdef
  #define SERVER_NAME "your.hostname.here"
  #define SERVER_NAME_LIST \
-     "canonical.name.here/alternate.name.here", \
-     "canonical.name.two/alternate.name.two"
- #endif
--
- /* CONFIGURE: Define this if you want to always chroot(), without having
- ** to give the -r command line flag.  Some people like this as a security
- ** measure, to prevent inadvertant exposure by accidentally running without -r.
-@@ -210,7 +211,7 @@
+@@ -227,7 +231,7 @@
  ** initializing.  If this user (or the one specified by the -u flag) does
  ** not exist, the program will refuse to run.
  */
@@ -81,24 +83,21 @@ diff -aur thttpd-2.20c.orig/config.h thttpd-2.20c/config.h
  
  /* CONFIGURE: When started as root, the program can automatically chdir()
  ** to the home directory of the user specified by -u or DEFAULT_USER.
-@@ -249,12 +250,12 @@
+@@ -266,7 +270,7 @@
  
  /* CONFIGURE: $PATH to use for CGI programs.
  */
 -#define CGI_PATH "/usr/local/bin:/usr/ucb:/bin:/usr/bin"
-+#define CGI_PATH "/bin:/var:/lib"
++#define CGI_PATH "/bin:/var"
  
  /* CONFIGURE: If defined, $LD_LIBRARY_PATH to use for CGI programs.
  */
- #ifdef notdef
--#define CGI_LD_LIBRARY_PATH "/usr/local/lib:/usr/lib"
-+#define CGI_LD_LIBRARY_PATH "/bin:/sbin:/lib"
- #endif
- 
- /* CONFIGURE: How often to run the occasional cleanup job.
-diff -aur thttpd-2.20c.orig/extras/Makefile.in thttpd-2.20c/extras/Makefile.in
---- thttpd-2.20c.orig/extras/Makefile.in	Wed Sep 15 18:00:14 1999
-+++ thttpd-2.20c/extras/Makefile.in	Mon Aug 12 16:40:58 2002
+Only in thttpd-2.23beta1: config.log
+Only in thttpd-2.23beta1: config.status
+Only in thttpd-2.23beta1/extras: Makefile
+diff -aur thttpd-2.23beta1.orig/extras/Makefile.in thttpd-2.23beta1/extras/Makefile.in
+--- thttpd-2.23beta1.orig/extras/Makefile.in	Mon Nov 12 22:52:55 2001
++++ thttpd-2.23beta1/extras/Makefile.in	Mon Sep  2 10:17:31 2002
 @@ -68,8 +68,8 @@
  install:	all
  	rm -f $(BINDIR)/makeweb $(BINDIR)/htpasswd $(BINDIR)/syslogtocern
@@ -110,32 +109,15 @@ diff -aur thttpd-2.20c.orig/extras/Makefile.in thttpd-2.20c/extras/Makefile.in
  	cp htpasswd $(BINDIR)/htpasswd
  	cp syslogtocern $(BINDIR)/syslogtocern
  	rm -f $(MANDIR)/man1/makeweb.1
-diff -aur thttpd-2.20c.orig/extras/htpasswd.c thttpd-2.20c/extras/htpasswd.c
---- thttpd-2.20c.orig/extras/htpasswd.c	Thu May 28 23:23:48 1998
-+++ thttpd-2.20c/extras/htpasswd.c	Mon Aug 12 16:40:58 2002
-@@ -173,8 +173,8 @@
-         exit(0);
-     } else if(argc != 3) usage();
- 
--    tn = tmpnam(NULL);
--    if(!(tfp = fopen(tn,"w"))) {
-+//   tn = tmpnam(NULL);
-+    if(!(tfp = tmpfile())) {
-         fprintf(stderr,"Could not open temp file.\n");
-         exit(1);
-     }
-diff -aur thttpd-2.20c.orig/libhttpd.c thttpd-2.20c/libhttpd.c
---- thttpd-2.20c.orig/libhttpd.c	Thu Nov 22 07:06:23 2001
-+++ thttpd-2.20c/libhttpd.c	Mon Aug 12 17:12:09 2002
-@@ -35,6 +35,7 @@
- #include <sys/stat.h>
- #include <sys/time.h>
- 
-+#include <time.h>
- #include <ctype.h>
- #include <errno.h>
- #include <fcntl.h>
-@@ -3341,6 +3342,7 @@
+Only in thttpd-2.23beta1/extras: htpasswd
+Only in thttpd-2.23beta1/extras: htpasswd.o
+Only in thttpd-2.23beta1/extras: makeweb
+Only in thttpd-2.23beta1/extras: makeweb.o
+Only in thttpd-2.23beta1: fdwatch.o
+diff -aur thttpd-2.23beta1.orig/libhttpd.c thttpd-2.23beta1/libhttpd.c
+--- thttpd-2.23beta1.orig/libhttpd.c	Mon May 27 03:22:26 2002
++++ thttpd-2.23beta1/libhttpd.c	Mon Sep  2 10:20:33 2002
+@@ -3764,6 +3764,7 @@
      ** trying to either serve or run a non-CGI file as CGI.   Either case
      ** is prohibited.
      */
@@ -143,7 +125,7 @@ diff -aur thttpd-2.20c.orig/libhttpd.c thttpd-2.20c/libhttpd.c
      if ( hc->sb.st_mode & S_IXOTH )
  	{
  	syslog(
-@@ -3352,6 +3354,7 @@
+@@ -3775,6 +3776,7 @@
  	    hc->encodedurl );
  	return -1;
  	}
@@ -151,19 +133,25 @@ diff -aur thttpd-2.20c.orig/libhttpd.c thttpd-2.20c/libhttpd.c
      if ( hc->pathinfo[0] != '\0' )
  	{
  	syslog(
-diff -aur thttpd-2.20c.orig/thttpd.c thttpd-2.20c/thttpd.c
---- thttpd-2.20c.orig/thttpd.c	Wed Sep 27 21:31:48 2000
-+++ thttpd-2.20c/thttpd.c	Mon Aug 12 16:41:39 2002
-@@ -594,7 +594,7 @@
+Only in thttpd-2.23beta1: libhttpd.o
+Only in thttpd-2.23beta1: match.o
+Only in thttpd-2.23beta1: mime_encodings.h
+Only in thttpd-2.23beta1: mime_types.h
+Only in thttpd-2.23beta1: mmc.o
+Only in thttpd-2.23beta1: tdate_parse.o
+Only in thttpd-2.23beta1: thttpd
+diff -aur thttpd-2.23beta1.orig/thttpd.c thttpd-2.23beta1/thttpd.c
+--- thttpd-2.23beta1.orig/thttpd.c	Sat May 25 21:43:13 2002
++++ thttpd-2.23beta1/thttpd.c	Mon Sep  2 10:26:13 2002
+@@ -649,6 +649,7 @@
  parse_args( int argc, char** argv )
      {
      int argn;
--
 +	int conf_read = 0;
+ 
      debug = 0;
      port = DEFAULT_PORT;
-     dir = (char*) 0;
-@@ -632,6 +632,7 @@
+@@ -698,6 +699,7 @@
  	    {
  	    ++argn;
  	    read_config( argv[argn] );
@@ -171,24 +159,14 @@ diff -aur thttpd-2.20c.orig/thttpd.c thttpd-2.20c/thttpd.c
  	    }
  	else if ( strcmp( argv[argn], "-p" ) == 0 && argn + 1 < argc )
  	    {
-@@ -702,6 +703,8 @@
+@@ -784,6 +786,8 @@
  	}
      if ( argn != argc )
  	usage();
-+	if (!conf_read)
++	if(!conf_read)
 +		read_config("/etc/thttpd.conf");
      }
  
  
-diff -aur thttpd-2.20c.orig/timers.h thttpd-2.20c/timers.h
---- thttpd-2.20c.orig/timers.h	Thu Sep 14 23:10:43 2000
-+++ thttpd-2.20c/timers.h	Mon Aug 12 16:40:58 2002
-@@ -32,7 +32,7 @@
- 
- #ifndef INFTIM
- #define INFTIM -1
--#endif INFTIM
-+#endif /* INFTIM */
- 
- /* ClientData is a random value that tags along with a timer.  The client
- ** can use it for whatever, and it gets passed to the callback when the
+Only in thttpd-2.23beta1: thttpd.o
+Only in thttpd-2.23beta1: timers.o
