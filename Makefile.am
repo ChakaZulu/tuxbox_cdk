@@ -48,6 +48,7 @@ core: .gcc
 		@CONFIGURE_binutils@ \
 			--target=$(target) \
 			--prefix=$(hostprefix) \
+			--disable-nls \
 			--nfp && \
 		make all install
 	@CLEANUP_binutils@
@@ -63,6 +64,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
 		@CONFIGURE_bootstrap_gcc@ \
 			--build=$(build) \
+			--host=$(build) \
 			--target=$(target) \
 			--prefix=$(hostprefix) \
 			--with-cpu=823 \
@@ -108,6 +110,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
 		@CONFIGURE_gcc@ \
 			--build=$(build) \
+			--host=$(build) \
 			--target=$(target) \
 			--prefix=$(hostprefix) \
 			--with-cpu=823 \
