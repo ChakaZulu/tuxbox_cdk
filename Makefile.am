@@ -441,8 +441,6 @@ devel: .gdb .strace
 	@CLEANUP_kaffe@
 	touch .kaffe
 
-#			--enable-debug \
-#
 .nano: @DEPENDS_nano@
 	@PREPARE_nano@
 	cd @DIR_nano@ && \
