@@ -13,7 +13,7 @@
 # core
 #
 linux;2.4.20-dbox2;linux-2.4.20;linux-2.4.20.tar.bz2:linux-dbox2-2.4.20-2.diff.bz2:v4l2-api-2.4.20.diff:input-keys.diff:fusion-full-linux-2.4.20.diff;remove:linux;extract:linux-2.4.20.tar.bz2;patch:linux-dbox2-2.4.20-2.diff.bz2;patch:v4l2-api-2.4.20.diff;patch:input-keys.diff;patch:fusion-full-linux-2.4.20.diff;link:linux-2.4.20:linux
-binutils;2.13.90.0.16;binutils-2.13.90.0.16;binutils-2.13.90.0.16.tar.bz2;extract:binutils-2.13.90.0.16.tar.bz2
+binutils;2.13.90.0.16;binutils-2.13.90.0.16;binutils-2.13.90.0.16.tar.bz2:binutils.diff;extract:binutils-2.13.90.0.16.tar.bz2;patch:binutils.diff
 bootstrap_gcc;3.2.2;gcc-3.2.2;gcc-core-3.2.2.tar.gz:gcc-core.diff;extract:gcc-core-3.2.2.tar.gz;patch:gcc-core.diff
 gcc;3.2.2;gcc-3.2.2;gcc-core-3.2.2.tar.gz:gcc-g++-3.2.2.tar.gz;extract:gcc-core-3.2.2.tar.gz;extract:gcc-g++-3.2.2.tar.gz
 glibc;2.2.5;glibc-2.2.5;glibc-2.2.5.tar.bz2:glibc-linuxthreads-2.2.5.tar.bz2:glibc.diff;extract:glibc-2.2.5.tar.bz2;dirextract:glibc-linuxthreads-2.2.5.tar.bz2;patch:glibc.diff
