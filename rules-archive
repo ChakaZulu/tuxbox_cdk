@@ -76,3 +76,10 @@ kaffe-1.0.6.tar.gz;http://www.kaffe.org/ftp/pub/kaffe
 #
 scummvm-20020314.tar.bz2
 
+#
+# dvb apps
+#
+dvbstream-0.4pre2.tar.gz;http://www.linuxstb.org/dvbstream
+dvbtext-0.1.tar.gz;http://www.linuxstb.org/dvbtext
+dvbtune-0.3.tar.gz;http://www.linuxstb.org/dvbtune
+

@@ -598,6 +598,40 @@ java: .kaffeh .kaffe
 
 #######################
 #
+#  DVB apps
+#
+
+.dvbstream: @DEPENDS_dvbstream@
+	@PREPARE_dvbstream@
+	cd @DIR_dvbstream@ && \
+		make dvbstream \
+			INCS="-I$(driverdir)/include" \
+			CC=$(target)-gcc \
+			CFLAGS="$(TARGET_CFLAGS) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" && \
+		@INSTALL_dvbstream@
+	@CLEANUP_dvbstream@
+	touch .dvbstream
+
+.dvbtext: @DEPENDS_dvbtext@
+	@PREPARE_dvbtext@
+	cd @DIR_dvbtext@ && \
+		$(target)-gcc $(TARGET_CFLAGS) -I$(driverdir)/include -o dvbtext dvbtext.c && \
+		@INSTALL_dvbtext@
+	@CLEANUP_dvbtext@
+	touch .dvbtext
+
+.dvbtune: @DEPENDS_dvbtune@
+	@PREPARE_dvbtune@
+	cd @DIR_dvbtune@ && \
+		make \
+			CC=$(target)-gcc \
+			CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/include" && \
+		@INSTALL_dvbtune@
+	@CLEANUP_dvbtune@
+	touch .dvbtune
+
+#######################
+#
 #   own kernel and driver
 #
 
@@ -653,7 +687,7 @@ endif
 #   own applications
 #
 
-apps: .dvbsnoop .dvbstream .edvb .enigma .fx2 .lcars .lcdmenu .neutrino .stream .tuxtxt
+apps: .dvbsnoop .edvb .enigma .fx2 .lcars .lcdmenu .neutrino .stream .tuxtxt
 
 if MAINTAINER_MODE
 $(appsdir)/configure: $(appsdir)/configure.ac
@@ -748,15 +782,6 @@ endif
 .libucodes: $(appsdir)/Makefile
 	make -C $(appsdir)/libucodes all install
 	touch .libucodes
-
-#######################
-#
-#  3rd party apps
-#
-
-.dvbstream: $(appsdir)/Makefile
-	make -C $(appsdir)/dvbstream all install
-	touch .dvbstream
 
 
 #######################

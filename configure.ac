@@ -212,6 +212,13 @@ TUXBOX_RULES_MAKE(kaffeh)
 TUXBOX_RULES_MAKE(scummvm)
 
 #
+# dvb apps
+#
+TUXBOX_RULES_MAKE(dvbstream)
+TUXBOX_RULES_MAKE(dvbtext)
+TUXBOX_RULES_MAKE(dvbtune)
+
+#
 # internal
 #
 AC_SUBST_FILE(ARCHIVE)

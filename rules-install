@@ -70,5 +70,12 @@ kaffeh;make:install
 #
 # fun stuff
 #
-scummvm;install:scummvm:TARGET/bin
+scummvm;install:-m755:scummvm:TARGET/bin
+
+#
+# dvb apps
+#
+dvbstream;install:-m755:dvbstream:TARGET/bin
+dvbtext;install:-m755:dvbtext:TARGET/bin
+dvbtune;install:-m755:dvbtune:TARGET/bin
 
