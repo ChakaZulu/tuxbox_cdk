@@ -19,7 +19,7 @@ sub load
       elsif ( $_[0] eq $ARGV[1] )
       {
         close ( RULES );
-        return \@_;
+        return @_;
       }
     }
   }
@@ -28,7 +28,7 @@ sub load
   die "can't find package " . $ARGV[1];
 }
 
-@_ = @{ &load ( $ARGV[0] ) };
+@_ = &load ( $ARGV[0] );
 
 my $output;
 
