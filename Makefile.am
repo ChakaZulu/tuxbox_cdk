@@ -1549,6 +1549,8 @@ clean-local:
 distclean-local:
 	-$(MAKE) -C etc distclean
 	-$(MAKE) -C $(appsdir) distclean
+	-$(MAKE) -C $(bootdir)/u-boot distclean
+	-$(MAKE) -C $(driverdir) distclean KERNEL_LOCATION=$(buildprefix)/linux
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
