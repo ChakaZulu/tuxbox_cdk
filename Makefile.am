@@ -211,11 +211,12 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 #   root
 #
 
-root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
+root: \
+	.etc .busybox .ftpd .ifupdown .inetd .modutils \
+	.netkit_telnet .procps .tinylogin .watchdog
 
-.etc:
-	$(MAKE) -C etc install
-	touch .etc
+root_optional: \
+	.portmap
 
 .busybox: .bootstrap .etc @DEPENDS_busybox@
 	@PREPARE_busybox@
@@ -228,33 +229,19 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 	@CLEANUP_busybox@
 	touch .busybox
 
-.tinylogin: .bootstrap .busybox @DEPENDS_tinylogin@
-	@PREPARE_tinylogin@
-	cd @DIR_tinylogin@ && \
-		CFLAGS="" \
-		$(MAKE) \
-			CROSS=$(target)- \
-			CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
-		@INSTALL_tinylogin@
-	@CLEANUP_tinylogin@
-	touch .tinylogin
+.etc:
+	$(MAKE) -C etc install
+	touch .etc
 
-.modutils: .bootstrap @DEPENDS_modutils@
-	@PREPARE_modutils@
-	cd @DIR_modutils@ && \
-		CC=$(target)-gcc CXX=$(target)-g++ \
+.ftpd: .bootstrap .inetd @DEPENDS_ftpd@
+	@PREPARE_ftpd@
+	cd @DIR_ftpd@ && \
+		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		BUILDCC=$(CC) BUILDCFLAGS="-O2" \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix=$(targetprefix) \
-			--disable-root-check \
-			--disable-strip && \
 		$(MAKE) && \
-		@INSTALL_modutils@
-	@CLEANUP_modutils@
-	touch .modutils
+		@INSTALL_ftpd@
+	@CLEANUP_ftpd@
+	touch .ftpd
 
 .ifupdown: .bootstrap @DEPENDS_ifupdown@
 	@PREPARE_ifupdown@
@@ -277,15 +264,22 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 	@CLEANUP_inetd@
 	touch .inetd
 
-.ftpd: .bootstrap .inetd @DEPENDS_ftpd@
-	@PREPARE_ftpd@
-	cd @DIR_ftpd@ && \
-		CC=$(target)-gcc \
+.modutils: .bootstrap @DEPENDS_modutils@
+	@PREPARE_modutils@
+	cd @DIR_modutils@ && \
+		CC=$(target)-gcc CXX=$(target)-g++ \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		BUILDCC=$(CC) BUILDCFLAGS="-O2" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--disable-root-check \
+			--disable-strip && \
 		$(MAKE) && \
-		@INSTALL_ftpd@
-	@CLEANUP_ftpd@
-	touch .ftpd
+		@INSTALL_modutils@
+	@CLEANUP_modutils@
+	touch .modutils
 
 .netkit_telnet: .bootstrap .inetd .tinylogin .libncurses @DEPENDS_netkit_telnet@
 	@PREPARE_netkit_telnet@
@@ -323,6 +317,17 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 	@CLEANUP_procps@
 	touch .procps
 
+.tinylogin: .bootstrap .busybox @DEPENDS_tinylogin@
+	@PREPARE_tinylogin@
+	cd @DIR_tinylogin@ && \
+		CFLAGS="" \
+		$(MAKE) \
+			CROSS=$(target)- \
+			CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
+		@INSTALL_tinylogin@
+	@CLEANUP_tinylogin@
+	touch .tinylogin
+
 .watchdog: .bootstrap @DEPENDS_watchdog@
 	@PREPARE_watchdog@
 	cd @DIR_watchdog@ && \
@@ -346,8 +351,12 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 #
 
 libs: \
-	.libcrypto .libcurl .libffi .libfreetype .libjpeg \
-	.libncurses .libpng .libreadline .libsdl .libsigc .libz 
+	.libcrypto .libcurl .libdvbpsi .libffi .libfreetype .libjpeg \
+	.libmad .libncurses .libpng .libreadline .libsdl .libsigc .libz 
+
+libs_optional: \
+	.libcommoncplusplus .libdb2 .libnet .libnids .libpcap .libpopt \
+	.libqt .libxml2 .libxmlparse .libxmlwrapp
 
 .libcommoncplusplus: .bootstrap .libxml2 @DEPENDS_libcommoncplusplus@
 	@PREPARE_libcommoncplusplus@
@@ -459,6 +468,19 @@ libs: \
 	@CLEANUP_libfreetype@
 	touch .libfreetype
 
+.libjpeg: .bootstrap @DEPENDS_libjpeg@
+	@PREPARE_libjpeg@
+	cd @DIR_libjpeg@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		$(MAKE) libjpeg.so.6 && \
+		@INSTALL_libjpeg@
+	@CLEANUP_libjpeg@
+	touch .libjpeg
+
 .libmad: .bootstrap .libz @DEPENDS_libmad@
 	@PREPARE_libmad@
 	cd @DIR_libmad@ && \
@@ -492,7 +514,7 @@ libs: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--with-terminfo-dirs=/share/terminfo \
 			--disable-big-core \
 			--without-debug \
@@ -541,19 +563,6 @@ libs: \
 		@INSTALL_libnids@
 	@CLEANUP_libnids@
 	touch .libnids
-
-.libjpeg: .bootstrap @DEPENDS_libjpeg@
-	@PREPARE_libjpeg@
-	cd @DIR_libjpeg@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure \
-			--host=$(target) \
-			--prefix=$(targetprefix) && \
-		$(MAKE) libjpeg.so.6 && \
-		@INSTALL_libjpeg@
-	@CLEANUP_libjpeg@
-	touch .libjpeg
 
 .libpcap: .bootstrap @DEPENDS_libpcap@
 	@PREPARE_libpcap@
@@ -757,7 +766,8 @@ libs: \
 #   contrib apps
 #
 
-contrib_apps: .console_tools .fbset .lirc .ssh .tcpdump .xrc
+contrib_apps: .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump .xrc
+contrib_apps_optional: .dsniff .pump .thttpd
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -899,6 +909,21 @@ contrib_apps: .console_tools .fbset .lirc .ssh .tcpdump .xrc
 	@CLEANUP_tcpdump@
 	touch .tcpdump
 
+.thttpd: @DEPENDS_thttpd@
+	@PREPARE_thttpd@
+	cd @DIR_thttpd@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		$(MAKE) all && \
+		@INSTALL_thttpd@
+	@CLEANUP_thttpd@
+	touch .thttpd
+
 .xrc: .bootstrap .lirc @DEPENDS_xrc@
 	@PREPARE_xrc@
 	cd @DIR_xrc@ && \
@@ -915,21 +940,6 @@ contrib_apps: .console_tools .fbset .lirc .ssh .tcpdump .xrc
 		@INSTALL_xrc@
 	@CLEANUP_xrc@
 	touch .xrc
-
-.thttpd: @DEPENDS_thttpd@
-	@PREPARE_thttpd@
-	cd @DIR_thttpd@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix=$(targetprefix) && \
-		$(MAKE) all && \
-		@INSTALL_thttpd@
-	@CLEANUP_thttpd@
-	touch .thttpd
 
 
 #######################
@@ -963,7 +973,8 @@ contrib_apps: .console_tools .fbset .lirc .ssh .tcpdump .xrc
 #   development tools
 #
 
-devel: .gdb .ksymoops .strace .nano
+devel: .gdb .ltrace .strace .nano
+devel_optional: .gdb-remote .ksymoops
 
 .gdb: .bootstrap .libncurses @DEPENDS_gdb@
 	@PREPARE_gdb@
@@ -1095,7 +1106,7 @@ java: .kaffeh .kaffe
 #   fun stuff
 #
 
-fun: .mad .scummvm
+fun: .gnuboy .scummvm .sdldoom
 
 .gnuboy: .bootstrap @DEPENDS_gnuboy@
 	@PREPARE_gnuboy@
@@ -1145,7 +1156,7 @@ fun: .mad .scummvm
 #  DVB apps
 #
 
-dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune
+dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 
 .dvbdate: .bootstrap @DEPENDS_dvbdate@
 	@PREPARE_dvbdate@
