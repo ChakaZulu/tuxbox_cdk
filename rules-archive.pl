@@ -11,17 +11,18 @@ while ( <RULES> )
   if ( ! m/^#/ and ! m/^\s*$/ )
   {
     @_ = split ( /;/, $_ );
-    $output .= "Archive/" . $_[0] . ":\n\twget -c -P Archive http://tuxbox.berlios.de/pub/tuxbox/cdk/src/" . $_[0];
+    my $file = $_[0];
+    $output .= "Archive/" . $file . ":\n\twget -c -P Archive http://tuxbox.berlios.de/pub/tuxbox/cdk/src/" . $file;
     shift @_;
     foreach ( @_ )
     {
       if ( $_ =~ m#^ftp://# )
       {
-        $output .= " || \\\n\twget -c --passive-ftp -P Archive " . $_ . "/" . $_[0];
+        $output .= " || \\\n\twget -c --passive-ftp -P Archive " . $_ . "/" . $file;
       }
       elsif ( $_ =~ m#^http://# )
       {
-        $output .= " || \\\n\twget -c --passive-ftp -P Archive " . $_ . "/" . $_[0];
+        $output .= " || \\\n\twget -c --passive-ftp -P Archive " . $_ . "/" . $file;
       }
     }
     $output .= "\n\n";
