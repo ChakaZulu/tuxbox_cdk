@@ -58,7 +58,7 @@ core: .gcc
 #
 bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	@PREPARE_bootstrap_gcc@
-	cp -a $(buildprefix)/linux-$(KERNELVERSION)/include/asm $(hostprefix)/$(target)/sys-include/
+	cp -pR $(buildprefix)/linux-$(KERNELVERSION)/include/asm $(hostprefix)/$(target)/sys-include/
 	cd @DIR_bootstrap_gcc@ && \
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
 		@CONFIGURE_bootstrap_gcc@ \
@@ -103,7 +103,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 #
 .gcc: .glibc @DEPENDS_gcc@
 	@PREPARE_gcc@
-	cp -a $(hostprefix)/$(target)/include/limits.h $(hostprefix)/$(target)/sys-include/
+	cp -p $(hostprefix)/$(target)/include/limits.h $(hostprefix)/$(target)/sys-include/
 	cd @DIR_gcc@ && \
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
 		@CONFIGURE_gcc@ \
