@@ -13,7 +13,7 @@ gcc;make:install;install:-m644:TARGETNAME/libstdc++-v3/src/linker.map:TARGET/lib
 #
 # contrib libs
 #
-libcrypto;install:libcrypto.so.0.9.6:TARGET/lib;link:libcrypto.so.0.9.6:TARGET/lib/libcrypto.so.0;link:libcrypto.so.0:TARGET/lib/libcrypto.so;install:libssl.so.0.9.6:TARGET/lib;link:libssl.so.0.9.6:TARGET/lib/libssl.so.0;link:libssl.so.0:TARGET/lib/libssl.so;install:libcrypto.a:TARGET/lib/libcrypto_pic.a;install:libssl.a:TARGET/lib/libssl_pic.a;install:-d:TARGET/include/openssl;make:install_cdk:INSTALL_PREFIX=TARGET:INSTALLTOP=
+libcrypto;install:libcrypto.so.0.9.7:TARGET/lib;link:libcrypto.so.0.9.7:TARGET/lib/libcrypto.so.0;link:libcrypto.so.0:TARGET/lib/libcrypto.so;install:libssl.so.0.9.7:TARGET/lib;link:libssl.so.0.9.7:TARGET/lib/libssl.so.0;link:libssl.so.0:TARGET/lib/libssl.so;install:libcrypto.a:TARGET/lib/libcrypto_pic.a;install:libssl.a:TARGET/lib/libssl_pic.a;install:-d:TARGET/include/openssl;make:install_cdk:INSTALL_PREFIX=TARGET:INSTALLTOP=
 libfreetype;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARGET/bin:prefix=TARGET;archive:TARGET/lib/libfreetype_pic.a:objs/*.lo
 libncurses;make:install.libs:DESTDIR=TARGET;archive:TARGET/lib/libncurses_pic.a:obj_s/*.o
 libjpeg;make:install-lib:libdir=TARGET/lib:includedir=TARGET/include;archive:TARGET/lib/libjpeg_pic.a:*.o

@@ -1,19 +1,19 @@
-diff -Naur openssl-0.9.7.org/Configure openssl-0.9.7/Configure
---- openssl-0.9.7.org/Configure	2002-12-28 02:35:11.000000000 +0100
-+++ openssl-0.9.7/Configure	2002-12-31 17:13:04.000000000 +0100
+diff -Naur openssl-0.9.7.orig/Configure openssl-0.9.7/Configure
+--- openssl-0.9.7.orig/Configure	2002-12-28 02:35:11.000000000 +0100
++++ openssl-0.9.7/Configure	2003-01-01 17:04:36.000000000 +0100
 @@ -562,6 +562,9 @@
  ##### OS/2 EMX
  "OS2-EMX", "gcc::::::::",
  
-+##### TuxBox
-+"tuxbox","powerpc-tuxbox-linux-gnu-gcc:-DB_ENDIAN -DTERMIO -O3 -mcpu=823 -mmultiple -mstring -meabi -msoft-float -fomit-frame-pointer -Wall::-D_REENTRANT:-ldl:BN_LLONG DES_UNROLL DES_RISC2 DES_PTR MD2_CHAR RC4_INDEX::::::::::dlfcn:linux-shared:-fPIC",
++##### Tuxbox
++"tuxbox",    "powerpc-tuxbox-linux-gnu-gcc:-DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall -mcpu=823 -mmultiple -mstring -meabi -msoft-float::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_RISC1 DES_UNROLL::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +
  ##### VxWorks for various targets
  "vxworks-ppc405","ccppc:-g -msoft-float -mlongcall -DCPU=PPC405 -I\$(WIND_BASE)/target/h:::VXWORKS:-r:::::",
  "vxworks-ppc750","ccppc:-ansi -nostdinc -DPPC750 -D_REENTRANT -fvolatile -fno-builtin -fno-for-scope -fsigned-char -Wall -msoft-float -mlongcall -DCPU=PPC604 -I\$(WIND_BASE)/target/h \$(DEBUG_FLAG):::VXWORKS:-r:::::",
-diff -Naur openssl-0.9.7.org/Makefile.org openssl-0.9.7/Makefile.org
---- openssl-0.9.7.org/Makefile.org	2002-12-30 00:03:16.000000000 +0100
-+++ openssl-0.9.7/Makefile.org	2002-12-31 17:13:04.000000000 +0100
+diff -Naur openssl-0.9.7.orig/Makefile.org openssl-0.9.7/Makefile.org
+--- openssl-0.9.7.orig/Makefile.org	2002-12-30 00:03:16.000000000 +0100
++++ openssl-0.9.7/Makefile.org	2003-01-01 17:06:05.000000000 +0100
 @@ -271,10 +271,9 @@
  	libs='-L. ${SHLIBDEPS}'; for i in ${SHLIBDIRS}; do \
  	( set -x; ${CC} ${SHARED_LDFLAGS} \

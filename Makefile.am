@@ -348,7 +348,7 @@ libs_optional: \
 .libcrypto: .bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
 	cd @DIR_libcrypto@ && \
-		./Configure shared no-idea no-md2 no-md4 no-mdc2 no-rc2 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
+		./Configure shared no-idea no-md4 no-mdc2 no-rc2 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
 		$(MAKE) all && \
 		@INSTALL_libcrypto@
 	@CLEANUP_libcrypto@
