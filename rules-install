@@ -35,7 +35,7 @@ libboost;remove:TARGET/include/boost;move:boost:TARGET/include/boost
 libcrypto;install:libcrypto.so.0.9.7:TARGET/lib;link:libcrypto.so.0.9.7:TARGET/lib/libcrypto.so.0;link:libcrypto.so.0:TARGET/lib/libcrypto.so;install:libssl.so.0.9.7:TARGET/lib;link:libssl.so.0.9.7:TARGET/lib/libssl.so.0;link:libssl.so.0:TARGET/lib/libssl.so;install:-d:TARGET/include/openssl;make:install_cdk:INSTALL_PREFIX=TARGET:INSTALLTOP=
 libcurl;make:install:DESTDIR=TARGET
 libcommoncplusplus;make:install:DESTDIR=TARGET
-libdirectfb;rewrite-pkgconfig:directfb.pc;rewrite-pkgconfig:directfb-internal.pc;make:install:DESTDIR=TARGET
+libdirectfb;rewrite-pkgconfig:directfb.pc;rewrite-pkgconfig:directfb-internal.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libdirectfb.la
 libdirectfbpp;rewrite-pkgconfig:dfb++.pc;make:install:DESTDIR=TARGET
 libdvbpsi;make:install:DESTDIR=TARGET
 libffi;make:install:DESTDIR=TARGET
