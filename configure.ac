@@ -293,6 +293,7 @@ TUXBOX_RULES_MAKE(kaffeh)
 #
 TUXBOX_RULES_MAKE(mad)
 TUXBOX_RULES_MAKE(scummvm)
+TUXBOX_RULES_MAKE(sdldoom)
 
 #
 # dvb apps

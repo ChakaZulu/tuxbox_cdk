@@ -898,6 +898,21 @@ fun: .mad .scummvm
 	@CLEANUP_scummvm@
 	touch .scummvm
 
+.sdldoom: @DEPENDS_sdldoom@
+	@PREPARE_sdldoom@
+	cd @DIR_sdldoom@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_sdldoom@
+	#@CLEANUP_sdldoom@
+	touch .sdldoom
+
 #######################
 #
 #  DVB apps

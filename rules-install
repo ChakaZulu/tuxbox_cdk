@@ -88,6 +88,7 @@ kaffeh;make:install
 #
 mad;make:install
 scummvm;install:-m755:scummvm:TARGET/bin
+sdldoom;make:install
 
 #
 # dvb apps

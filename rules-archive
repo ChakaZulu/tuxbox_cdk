@@ -92,6 +92,8 @@ mad-0.14.2b.tar.gz;ftp://ftp.mars.org/pub/mpeg
 #scummvm-20020314.tar.bz2
 scummvm-20020609.tar.bz2;http://scummvm.sourceforge.net/daily
 scummvm-20020717.tar.bz2;http://scummvm.sourceforge.net/daily
+sdldoom-1.10.tar.gz;ftp://ftp2.3ddownloads.com/89958/doomworld/ports/sdldoom-1.10.tar.gz
+
 
 #
 # dvb apps
