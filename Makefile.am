@@ -1024,7 +1024,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 boot: .u-boot .linuxkernel .driver
 
 .u-boot: .bootstrap $(bootdir)/u-boot/Makefile
-	$(MAKE) -C $(bootdir)/u-boot dbox2_config
+	$(MAKE) -C $(bootdir)/u-boot $(HARDWARERULESET)_config
 	$(MAKE) -C $(bootdir)/u-boot CROSS_COMPILE=$(target)-
 	$(INSTALL) -m644 $(bootdir)/u-boot/u-boot $(bootprefix)
 	$(INSTALL) $(bootdir)/u-boot/tools/mkimage $(hostprefix)/bin
@@ -1062,12 +1062,12 @@ endif
 	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		CROSS_COMPILE=$(target)- \
-		dep modules
+		HARDWARE=$(HARDWARERULESET)
 	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		BIN_DEST=$(targetprefix)/bin \
 		INSTALL_MOD_PATH=$(targetprefix) \
-		modules_install
+		install
 if MAINTAINER_MODE
 else
 	$(MAKE) -C $(driverdir) \

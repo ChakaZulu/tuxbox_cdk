@@ -13,6 +13,22 @@ fi
 AC_CANONICAL_TARGET
 AC_SUBST(target)
 
+AC_ARG_WITH(hardwareruleset,
+	[  --with-hardwareruleset=NAME  hardware ruleset [[dbox2,dreambox]]],
+	[hardwareruleset="$withval"],[hardwareruleset="dbox2"])
+
+if test "$hardwareruleset" = "dbox2"; then
+	HARDWARERULESET=dbox2
+elif test "$hardwareruleset" = "dreambox"; then
+	HARDWARERULESET=dreambox
+else
+	AC_MSG_ERROR([invalid hardwareruleset "$hardwareruleset", choose on from dbox2 or dreambox]);
+fi
+
+AC_SUBST(HARDWARERULESET)
+AM_CONDITIONAL(HARDWARERULESET_DBOX2,test "$hardwareruleset" = "dbox2")
+AM_CONDITIONAL(HARDWARERULESET_DREAMBOX,test "$hardwareruleset" = "dreambox")
+
 AC_ARG_WITH(hostruleset,
 	[  --with-hostruleset=NAME host ruleset [[standard,cygwin]]],
 	[hostruleset="$withval"],[hostruleset="standard"])
@@ -30,6 +46,7 @@ else
 	AC_MSG_ERROR([invalid hostruleset "$hostruleset", choose on from standard or cygwin]);
 fi
 
+AM_CONDITIONAL(HOSTRULESET_STANDARD,test "$hostruleset" = "standard")
 AM_CONDITIONAL(HOSTRULESET_CYGWIN,test "$hostruleset" = "cygwin")
 
 AC_ARG_WITH(targetruleset,
@@ -43,6 +60,9 @@ elif test "$targetruleset" = "flash"; then
 else
 	AC_MSG_ERROR([invalid targetruleset "$targetruleset", choose on from standard or flash]);
 fi
+
+AM_CONDITIONAL(TARGETRULESET_STANDARD,test "$targetruleset" = "standard")
+AM_CONDITIONAL(TARGETRULESET_FLASH,test "$targetruleset" = "flash")
 
 if test -z "$CFLAGS" ; then
 	CFLAGS="-O2"
@@ -63,9 +83,6 @@ AC_SUBST(CFLAGS)
 AC_SUBST(TARGET_CFLAGS)
 AC_SUBST(TARGET_CXXFLAGS)
 AC_SUBST(TARGET_LDFLAGS)
-
-AM_CONDITIONAL(TARGETRULESET_STANDARD,test "$targetruleset" = "standard")
-AM_CONDITIONAL(TARGETRULESET_FLASH,test "$targetruleset" = "flash")
 
 AC_PREFIX_DEFAULT(/dbox2)
 
@@ -337,16 +354,17 @@ ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 #
 AC_MSG_RESULT([
 Summary:
-Hostruleset:	$hostruleset
-Targetruleset:	$targetruleset
-Targetprefix:	$targetprefix
-Hostprefix:	$hostprefix
-Bootprefix:	$bootprefix
-Buildprefix:	$buildprefix
-Appsdir:	$appsdir
-Bootdir:	$bootdir
-Driverdir:	$driverdir
-Hostappsdir:	$hostappsdir
+Hardwareruleset:	$hardwareruleset
+Hostruleset:		$hostruleset
+Targetruleset:		$targetruleset
+Targetprefix:		$targetprefix
+Hostprefix:		$hostprefix
+Bootprefix:		$bootprefix
+Buildprefix:		$buildprefix
+Appsdir:		$appsdir
+Bootdir:		$bootdir
+Driverdir:		$driverdir
+Hostappsdir:		$hostappsdir
 ])
 
 AC_OUTPUT([
