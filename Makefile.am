@@ -671,11 +671,12 @@ endif
 	install -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
 	make -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
-		CROSS_COMPILE=$(target)-
+		CROSS_COMPILE=$(target)- \
+		INSTALL_MOD_PATH=$(targetprefix)
 	make -C $(driverdir) install \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		BIN_DEST=$(targetprefix)/bin \
-		MODULE_DEST=$(targetprefix)/lib/modules/$(KERNELVERSION)/misc
+		INSTALL_MOD_PATH=$(targetprefix)
 if MAINTAINER_MODE
 else
 	make -C $(driverdir) clean \
