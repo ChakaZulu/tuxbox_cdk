@@ -5,5 +5,5 @@ iface lo inet loopback
 #iface eth0 inet static
 #address 10.0.0.42
 #gateway 10.0.0.1
-#netmask 24
+#netmask 255.255.255.0
 
