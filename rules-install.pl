@@ -40,47 +40,36 @@ if ( $#ARGV >= 1 )
   {
     local @_;
     @_ = split ( /:/, $_ );
+    $_ = shift ( @_ );
 
     if ( $output ne "" )
     {
       $output .= " && ";
     }
 
-    if ( $_[0] eq "make" )
+    if ( $_ eq "make" )
     {
-      $output .= "\$\(MAKE\)";
-      shift @_;
-
-      foreach ( @_ )
-      {
-        $output .= " " . $_;
-      }
+      $output .= "\$\(MAKE\) " . join " ", @_;
     }
-    elsif ( $_[0] eq "install" )
+    elsif ( $_ eq "install" )
     {
-      $output .= "\$\(INSTALL\)";
-      shift @_;
-
-      foreach ( @_ )
-      {
-        $output .= " " . $_;
-      }
+      $output .= "\$\(INSTALL\) " . join " ", @_;
     }
-    elsif ( $_[0] eq "move" )
+    elsif ( $_ eq "move" )
     {
-      $output .= "mv " . $_[1] . " " . $_[2];
+      $output .= "mv " . join " ", @_;
     }
-    elsif ( $_[0] eq "remove" )
+    elsif ( $_ eq "remove" )
     {
-      $output .= "rm -rf " . $_[1];
+      $output .= "rm -rf " . join " ", @_;
     }
-    elsif ( $_[0] eq "link" )
+    elsif ( $_ eq "link" )
     {
-      $output .= "ln -sf " . $_[1] . " " . $_[2];
+      $output .= "ln -sf " . join " ", @_;
     }
-    elsif ( $_[0] eq "archive" )
+    elsif ( $_ eq "archive" )
     {
-      $output .= "TARGETNAME-ar cru " . $_[1] . " " . $_[2];
+      $output .= "TARGETNAME-ar cru " . join " ", @_;
     }
     else
     {
