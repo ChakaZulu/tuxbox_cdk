@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.14 2003/05/29 10:08:06 obi Exp $
+# $Id: INSTALL.en,v 1.15 2003/06/13 00:56:35 obi Exp $
 #
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
@@ -57,10 +57,10 @@ II. Getting the sources:
    cd $HOME/tuxbox-cvs
 
    (if you prefer the latest unstable development versions)
-   cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co -P .
+   cvs -d:pserver:anonymous@cvs.tuxbox.org:/cvs/tuxbox -z3 co -P .
 
    (if you prefer older maybe more stable versions)
-   cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co -P -r rel_1_0_0 .
+   cvs -d:pserver:anonymous@cvs.tuxbox.org:/cvs/tuxbox -z3 co -P -r rel_1_0_0 .
 
    Note: Some people tend to become blind when it comes to viewing trailing
          dots. There are dots at the end of the cvs command line because they

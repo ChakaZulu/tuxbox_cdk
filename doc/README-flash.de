@@ -33,19 +33,18 @@ Prerequisiten:
 
 Hier die Kommandos zum Erstellen von Flash-Imgaes:
 --------------------------------------------------
-- Auschecken des CDKs weitestgehend nach INSTALL.de,
+- Auschecken des CDKs weitestgehend nach INSTALL.en,
   abweichend davon wird configure mit den Flashrules aufgerufen
 
 mkdir $HOME/tuxbox-cvs
 cd $HOME/tuxbox-cvs
-cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox login
-cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co .
+cvs -d:pserver:anonymous@cvs.tuxbox.org:/cvs/tuxbox -z3 co -P .
 cd cdk
 ./autogen.sh
 ./configure --prefix=/dbox2 --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode --with-targetruleset=flash
 
 
-- Danach kann man wie in INSTALL.de beschrieben die einzelnen oder
+- Danach kann man wie in INSTALL.en beschrieben die einzelnen oder
   alle Module vorab kompilieren, muss man aber nicht.
 
 
