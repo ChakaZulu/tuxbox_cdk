@@ -19,7 +19,7 @@ glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnu
 #
 # minimal root
 #
-busybox-0.60.1.tar.gz;ftp://busybox.net/busybox
+busybox-0.60.2.tar.gz;ftp://busybox.net/busybox
 tinylogin-0.80.tar.gz;ftp://oss.lineo.com/tinylogin
 modutils-2.4.9.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
 # netkibase includes inetd
