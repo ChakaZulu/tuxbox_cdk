@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.de,v 1.8 2002/07/11 11:43:20 TheDOC Exp $
+# $Id: INSTALL.de,v 1.9 2002/08/03 14:52:53 obi Exp $
 #
 # Urheber:
 # --------
@@ -18,33 +18,21 @@
 
 Prerequisiten:
 --------------
-(Kurze Anmerkung von TheDOC:
-Da das aktuelle CDK mal wieder nicht mit den aktuellen Versionen von
-dem automake/-conf etc. zusammenarbeitet, hier meine Versionen, mit
-denen es geht:
-
-autoconf: 2.52
-automake: 1.4-p4
-libtool: 1.4.2
-gettext: 0.10.40
-make: 3.79.1
-
-Viel Erfolg. Nun geht's weiter in der Anleitung von Herrn obi)
 
  - cvs
  - autoconf >= 2.50
  - automake >= 1.4p5
  - libtool >= 1.4
  - make >= 3.79
- - gettext = 0.10.40
- - makeinfo (aus texinfo)
+ - gettext >= 0.10.38
+ - makeinfo (texinfo)
  - tar
  - bunzip2
  - gunzip
  - patch
- - infocmp (aus ncurses bzw. ncurses-devel)
- - gcc >= 2.95, jedoch nicht 2.96
- - g++ >= 2.95, jedoch nicht 2.96
+ - infocmp (ncurses-bin)
+ - gcc 2.95 oder >= 3.0
+ - g++ 2.95 oder >= 3.0
  - yacc
  - flex
  - bison
@@ -66,7 +54,8 @@ cd cdk
 
 
  - Wer alle vorhandenen Source-Pakete auf einmal runterladen will, der kann
-   folgenden Befehl eingeben und anschliessend die Internetverbindung trennen:
+   folgenden Befehl eingeben und anschliessend die Internetverbindung trennen
+   (nicht empfohlen!):
 
 make download
 
