@@ -21,5 +21,3 @@ i=`expr $i - 1`
 sleep 1
 done
 
-echo "Going to halt system now ..."
-/sbin/halt
