@@ -1,9 +1,5 @@
 AC_INIT([tuxbox-cdk],[0])
 AC_PREREQ(2.57a)
-AM_INIT_AUTOMAKE([])
-AM_MAINTAINER_MODE
-
-AC_PROG_CC
 
 AC_CANONICAL_BUILD
 AC_SUBST(build)
@@ -12,6 +8,11 @@ if test "$target_alias" = "" ; then
 fi
 AC_CANONICAL_TARGET
 AC_SUBST(target)
+
+AM_INIT_AUTOMAKE([])
+AM_MAINTAINER_MODE
+
+AC_PROG_CC
 
 AC_ARG_ENABLE(libcrypto,
 	AS_HELP_STRING(--disable-libcrypto,don't build libcrypto to reduce binary size),
