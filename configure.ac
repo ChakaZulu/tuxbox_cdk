@@ -163,6 +163,7 @@ TUXBOX_RULES_MAKE(modutils)
 # contrib libs
 #
 TUXBOX_RULES_MAKE(libcurl)
+TUXBOX_RULES_MAKE(libffi)
 TUXBOX_RULES_MAKE(libfreetype)
 TUXBOX_RULES_MAKE(libncurses)
 TUXBOX_RULES_MAKE(libjpeg)
@@ -185,6 +186,12 @@ TUXBOX_RULES_MAKE(inetd)
 TUXBOX_RULES_MAKE(telnetd)
 TUXBOX_RULES_MAKE(strace)
 TUXBOX_RULES_MAKE(nano)
+
+#
+# java
+#
+TUXBOX_RULES_MAKE(kaffe)
+TUXBOX_RULES_MAKE(kaffeh)
 
 #
 # internal

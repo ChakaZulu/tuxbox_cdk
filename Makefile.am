@@ -210,6 +210,19 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
 	touch .libcurl
+
+.libffi: .gcc @DEPENDS_libffi@
+	@PREPARE_libffi@
+	cd @DIR_libffi@ && \
+		CC=$(target)-gcc CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+                ./configure \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_libffi@
+	@CLEANUP_libffi@
+	touch .libffi
 	
 .libfreetype: .gcc @DEPENDS_libfreetype@
 	@PREPARE_libfreetype@
@@ -392,6 +405,44 @@ devel: .gdb .strace
 # misc apps
 #
 
+# for x86
+.kaffeh: @DEPENDS_kaffeh@
+	@PREPARE_kaffeh@
+	cd @DIR_kaffeh@ && \
+		./configure \
+			--prefix=$(hostprefix) \
+			--disable-dependency-tracking \
+			--without-x \
+			--without-suncompat \
+			--disable-gcj && \
+		make all && \
+		@INSTALL_kaffeh@
+	@CLEANUP_kaffeh@
+	touch .kaffeh
+
+# for ppc
+.kaffe: .gcc .kaffeh @DEPENDS_kaffe@
+	@PREPARE_kaffe@
+	cd @DIR_kaffe@ && \
+		CC=$(target)-gcc CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--libexecdir=$(targetprefix)/bin \
+			--enable-feedback \
+			--with-stats \
+			--disable-dependency-tracking \
+			--without-x \
+			--without-suncompat \
+			--disable-gcj && \
+		make all && \
+		@INSTALL_kaffe@
+	@CLEANUP_kaffe@
+	touch .kaffe
+
+#			--enable-debug \
+#
 .nano: @DEPENDS_nano@
 	@PREPARE_nano@
 	cd @DIR_nano@ && \
@@ -570,10 +621,10 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .tinylogin .modutils .inetd .telnetd 
-	-rm .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
+	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	-rm .cabextract .msttf
 	-rm .gdb .strace
-	-rm .nano
+	-rm .kaffeh .kaffe .nano
 	-rm .ppcboot .linuxkernel
 	-rm .dvbsnoop .edvb .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .zapit
