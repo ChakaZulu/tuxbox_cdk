@@ -1,6 +1,6 @@
 diff -Nru a/Makefile b/Makefile
---- a/Makefile	2005-01-28 15:38:59 +01:00
-+++ b/Makefile	2005-01-28 15:38:59 +01:00
+--- a/Makefile	2005-01-28 21:12:39 +01:00
++++ b/Makefile	2005-01-28 21:12:39 +01:00
 @@ -1,7 +1,7 @@
  VERSION = 2
  PATCHLEVEL = 6
@@ -11,8 +11,8 @@ diff -Nru a/Makefile b/Makefile
  
  # *DOCUMENTATION*
 diff -Nru a/arch/ppc/Kconfig b/arch/ppc/Kconfig
---- a/arch/ppc/Kconfig	2005-01-28 15:38:59 +01:00
-+++ b/arch/ppc/Kconfig	2005-01-28 15:38:59 +01:00
+--- a/arch/ppc/Kconfig	2005-01-28 21:12:39 +01:00
++++ b/arch/ppc/Kconfig	2005-01-28 21:12:39 +01:00
 @@ -469,6 +469,9 @@
  	  MPC821 PowerPC, introduced in 1998 and designed to be used in
  	  thin-client machines.  Say Y to support it directly.
@@ -24,8 +24,8 @@ diff -Nru a/arch/ppc/Kconfig b/arch/ppc/Kconfig
  
  choice
 diff -Nru a/arch/ppc/platforms/Makefile b/arch/ppc/platforms/Makefile
---- a/arch/ppc/platforms/Makefile	2005-01-28 15:38:59 +01:00
-+++ b/arch/ppc/platforms/Makefile	2005-01-28 15:38:59 +01:00
+--- a/arch/ppc/platforms/Makefile	2005-01-28 21:12:39 +01:00
++++ b/arch/ppc/platforms/Makefile	2005-01-28 21:12:39 +01:00
 @@ -40,6 +40,7 @@
  obj-$(CONFIG_SBC82xx)		+= sbc82xx.o
  obj-$(CONFIG_SPRUCE)		+= spruce.o
@@ -36,7 +36,7 @@ diff -Nru a/arch/ppc/platforms/Makefile b/arch/ppc/platforms/Makefile
  obj-$(CONFIG_PPC_PMAC)		+= pmac_smp.o
 diff -Nru a/arch/ppc/platforms/dbox2.c b/arch/ppc/platforms/dbox2.c
 --- /dev/null	Wed Dec 31 16:00:00 196900
-+++ b/arch/ppc/platforms/dbox2.c	2005-01-28 15:38:59 +01:00
++++ b/arch/ppc/platforms/dbox2.c	2005-01-28 21:12:39 +01:00
 @@ -0,0 +1,206 @@
 +/*
 + * arch/ppc/platforms/dbox2.c
@@ -230,8 +230,8 @@ diff -Nru a/arch/ppc/platforms/dbox2.c b/arch/ppc/platforms/dbox2.c
 +	for (i=0; platform_bus_attrs[i]; i++){
 +		int ret = bus_create_file(&platform_bus_type, platform_bus_attrs[i]);
 +		if (ret<0){
-+			while (i>=0){
-+				bus_remove_file(&platform_bus_type, platform_bus_attrs[i--]);
++			while (--i>=0){
++				bus_remove_file(&platform_bus_type, platform_bus_attrs[i]);
 +			}
 +			printk(KERN_ERR "dbox2: error creating platform bus attributes: errno: %d\n",ret);
 +		}
@@ -246,7 +246,7 @@ diff -Nru a/arch/ppc/platforms/dbox2.c b/arch/ppc/platforms/dbox2.c
 +}
 diff -Nru a/arch/ppc/platforms/dbox2.h b/arch/ppc/platforms/dbox2.h
 --- /dev/null	Wed Dec 31 16:00:00 196900
-+++ b/arch/ppc/platforms/dbox2.h	2005-01-28 15:38:59 +01:00
++++ b/arch/ppc/platforms/dbox2.h	2005-01-28 21:12:39 +01:00
 @@ -0,0 +1,29 @@
 +/*
 + * arch/ppc/platforms/dbox2.h
@@ -278,8 +278,8 @@ diff -Nru a/arch/ppc/platforms/dbox2.h b/arch/ppc/platforms/dbox2.h
 +
 +#endif /* _PPC_PLATFORMS_DBOX2_H */
 diff -Nru a/drivers/video/Kconfig b/drivers/video/Kconfig
---- a/drivers/video/Kconfig	2005-01-28 15:38:59 +01:00
-+++ b/drivers/video/Kconfig	2005-01-28 15:38:59 +01:00
+--- a/drivers/video/Kconfig	2005-01-28 21:12:39 +01:00
++++ b/drivers/video/Kconfig	2005-01-28 21:12:39 +01:00
 @@ -221,6 +221,13 @@
  	  Say Y if you want support with Open Firmware for your graphics
  	  board.
@@ -295,8 +295,8 @@ diff -Nru a/drivers/video/Kconfig b/drivers/video/Kconfig
  	bool "Apple \"control\" display support"
  	depends on FB && PPC_PMAC
 diff -Nru a/drivers/video/Makefile b/drivers/video/Makefile
---- a/drivers/video/Makefile	2005-01-28 15:38:59 +01:00
-+++ b/drivers/video/Makefile	2005-01-28 15:38:59 +01:00
+--- a/drivers/video/Makefile	2005-01-28 21:12:39 +01:00
++++ b/drivers/video/Makefile	2005-01-28 21:12:39 +01:00
 @@ -96,6 +96,7 @@
  obj-$(CONFIG_FB_VGA16)            += vga16fb.o cfbfillrect.o cfbcopyarea.o \
  	                             cfbimgblt.o vgastate.o
@@ -306,8 +306,8 @@ diff -Nru a/drivers/video/Makefile b/drivers/video/Makefile
  # the test framebuffer is last
  obj-$(CONFIG_FB_VIRTUAL)          += vfb.o cfbfillrect.o cfbcopyarea.o cfbimgblt.o
 diff -Nru a/include/asm-ppc/mpc8xx.h b/include/asm-ppc/mpc8xx.h
---- a/include/asm-ppc/mpc8xx.h	2005-01-28 15:38:59 +01:00
-+++ b/include/asm-ppc/mpc8xx.h	2005-01-28 15:38:59 +01:00
+--- a/include/asm-ppc/mpc8xx.h	2005-01-28 21:12:39 +01:00
++++ b/include/asm-ppc/mpc8xx.h	2005-01-28 21:12:39 +01:00
 @@ -32,6 +32,10 @@
  #include <platforms/rpxclassic.h>
  #endif
