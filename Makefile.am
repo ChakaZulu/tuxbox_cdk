@@ -471,18 +471,19 @@ boot: .ppcboot .linuxkernel .driver
 .linuxkernel: .linuxdir .gcc .ppcboot
 	make -C @DIR_linux@ dep zImage modules CROSS_COMPILE=$(target)-
 	make -C @DIR_linux@ modules_install INSTALL_MOD_PATH=$(targetprefix)
-	test -f @DIR_linux@/arch/ppc/coffboot/vmlinux.gz && \
+	if [ -f @DIR_linux@/arch/ppc/coffboot/vmlinux.gz ]; then \
 		$(hostprefix)/bin/mkimage \
 			-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
 			-a 00000000 -e 00000000 \
 			-d @DIR_linux@/arch/ppc/coffboot/vmlinux.gz \
-			$(bootprefix)/kernel-cdk
-	test -f @DIR_linux@/arch/ppc/boot/images/vmlinux.gz && \
+			$(bootprefix)/kernel-cdk; \
+	else \
 		$(hostprefix)/bin/mkimage \
 			 -n 'dbox2' -A ppc -O linux -T kernel -C gzip \
 			 -a 00000000 -e 00000000 \
 			 -d @DIR_linux@/arch/ppc/boot/images/vmlinux.gz \
-			 $(bootprefix)/kernel-cdk
+			 $(bootprefix)/kernel-cdk; \
+	fi
 	make -C @DIR_linux@ clean
 	touch .linuxkernel
 
