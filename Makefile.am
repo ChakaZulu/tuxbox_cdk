@@ -1558,7 +1558,7 @@ $(flashprefix)/.flash: procps busybox driver tuxbox_tools lirc
 	for i in `find $(targetprefix)/sbin/ -lname "*busybox"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
 	$(INSTALL) $(targetprefix)/bin/switch $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/tuxinfo $(flashprefix)/root/bin
-	if [ -e $(DEPDIR)/.RykerImage ] ; then \
+	if [ -e $(DEPDIR)/RykerImage ] ; then \
 	$(INSTALL) $(targetprefix)/bin/top $(flashprefix)/root/bin ; \
 	$(INSTALL) $(targetprefix)/bin/rcsim $(flashprefix)/root/bin ; \
 	$(INSTALL) $(targetprefix)/bin/saa $(flashprefix)/root/bin ; \
@@ -1636,7 +1636,7 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash neutrino root
 	$(INSTALL) $(targetprefix)/bin/sectionsd $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/pzapit $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
-	if [ -e $(DEPDIR)/.RykerImage ] ; then \
+	if [ -e $(DEPDIR)/RykerImage ] ; then \
 	$(INSTALL) $(targetprefix)/bin/fbshot $(flashprefix)/root/bin ; \
 	$(INSTALL) $(targetprefix)/bin/etherwake $(flashprefix)/root/bin ; \
 	fi
