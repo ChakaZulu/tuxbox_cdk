@@ -400,7 +400,7 @@ libs: \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
-			--with-default-terminfo-dir=/share/terminfo \
+			--with-terminfo-dirs=/share/terminfo \
 			--disable-big-core \
 			--without-debug \
 			--without-progs \
