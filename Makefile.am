@@ -1379,6 +1379,15 @@ $(appsdir)/tuxbox/enigma/Makefile: .bootstrap .libfreetype .libmad .libpng .libs
 	$(MAKE) -C $(appsdir)/tuxbox/enigma all install
 	touch .enigma
 
+# tuxbox/funstuff
+
+$(appsdir)/tuxbox/funstuff/Makefile: .bootstrap
+	cd $(appsdir)/tuxbox/funstuff && $(CONFIGURE)
+
+.funstuff: $(appsdir)/tuxbox/funstuff/Makefile
+	$(MAKE) -C $(appsdir)/tuxbox/funstuff all install
+	touch .funstuff
+
 # tuxbox/lcars
 
 $(appsdir)/tuxbox/lcars/Makefile: .bootstrap .libcurl .libfreetype .plugins
