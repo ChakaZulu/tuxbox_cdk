@@ -1,28 +1,20 @@
 # /etc/modules.conf
 
 options avia firmware=@UCODEDIR@
-options avia_gt_napi ucode=@UCODEDIR@/ucode.bin
+options avia_gt ucode=@UCODEDIR@/ucode.bin
 options cam firmware=@UCODEDIR@/cam-alpha.bin
 below cam avia
 above i2c-core i2c-8xx
 
 if $DEMOD = "AT76C651"
-  alias tuner at76c651
+	alias tuner at76c651
 elseif $DEMOD = "TDA8044H"
-  alias tuner tda8044h
+	alias tuner tda8044h
 elseif $DEMOD = "VES1820"
-  alias tuner ves1820
+	alias tuner ves1820
 elseif $DEMOD = "VES1893"
-  alias tuner ves1893
+	alias tuner ves1893
 elseif $DEMOD = "VES1993"
-  alias tuner ves1993
-endif
-
-alias avia_gt_napi avia_gt_dmx
-
-if $mID = "01"
-  options avia_gt chip_type=1
-else
-  options avia_gt chip_type=0
+	alias tuner ves1993
 endif
 
