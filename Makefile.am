@@ -677,11 +677,11 @@ $(DEPDIR)/libsigc: bootstrap @DEPENDS_libsigc@
 	@CLEANUP_libsigc@
 	touch $@
 
-$(DEPDIR)/libvorbisidec: bootstrap @DEPENDS_libjpeg@
+$(DEPDIR)/libvorbisidec: bootstrap @DEPENDS_libvorbisidec@
 	@PREPARE_libvorbisidec@
 	cd @DIR_libvorbisidec@ && \
 		$(BUILDENV) \
-		./configure \
+		./autogen.sh \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= && \
@@ -1478,7 +1478,7 @@ $(DEPDIR)/libtuxbox: $(appsdir)/tuxbox/libtuxbox/config.status
 
 # tuxbox/neutrino
 
-$(appsdir)/tuxbox/neutrino/config.status: bootstrap libboost libcurl libfreetype libjpeg libmad libid3tag libpng libtuxbox misc_libs plugins tuxbox_libs zapit misc_tools
+$(appsdir)/tuxbox/neutrino/config.status: bootstrap libboost libcurl libfreetype libjpeg libmad libid3tag libvorbisidec libpng libtuxbox misc_libs plugins tuxbox_libs zapit misc_tools
 	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
 
 $(DEPDIR)/neutrino: $(appsdir)/tuxbox/neutrino/config.status

@@ -1,0 +1,14 @@
+--- tremor-20040525/vorbisidec.pc	1970-01-01 01:00:00.000000000 +0100
++++ tremor-20040525.new/vorbisidec.pc	2003-09-10 17:51:26.000000000 +0200
+@@ -0,0 +1,11 @@
++prefix=
++exec_prefix=${prefix}
++libdir=${exec_prefix}/lib
++includedir=${prefix}/include
++
++Name: vorbisidec
++Description: OGG Vorbis Audio Decoder
++Requires:
++Version: 20040525
++Libs: -L${libdir} -lvorbisidec
++Cflags: -I${includedir}

@@ -55,7 +55,7 @@ libpng;make:install-static:install-shared:install-config:prefix=TARGET;link:TARG
 libreadline;make:install:DESTDIR=TARGET
 libsdl;make:install:DESTDIR=TARGET
 libsigc;rewrite-pkgconfig:sigc++-1.2.pc;make:install:DESTDIR=TARGET
-libvorbisidec;make:install:DESTDIR=TARGET
+libvorbisidec;rewrite-pkgconfig:vorbisidec.pc;make:install:DESTDIR=TARGET;install:-m644:vorbisidec.pc:TARGET/lib/pkgconfig
 libxml2;rewrite-pkgconfig:libxml-2.0.pc;make:install:DESTDIR=TARGET
 libz;make:install:prefix=TARGET
 libglib;make:install
