@@ -1,5 +1,5 @@
 EXTRA_DIST = \
-	rcS start_enigma start_ezap start_lcars start_neutrino startpppd
+	rcS start_enigma start_ezap start_lcars start_neutrino
 
 install-data-local:
 	install -d $(targetprefix)/etc/init.d
