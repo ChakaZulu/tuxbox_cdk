@@ -1,6 +1,6 @@
-diff -Naur gnuboy-1.0.3.orig/Makefile.in gnuboy-1.0.3/Makefile.in
---- gnuboy-1.0.3.orig/Makefile.in	Tue Jul  3 18:31:18 2001
-+++ gnuboy-1.0.3/Makefile.in	Sat Aug 10 15:26:10 2002
+diff -Naur gnuboy-1.0.3/Makefile.in gnuboy-1.0.3new/Makefile.in
+--- gnuboy-1.0.3/Makefile.in	2001-07-03 18:31:18.000000000 +0200
++++ gnuboy-1.0.3new/Makefile.in	2002-10-30 02:17:21.000000000 +0100
 @@ -18,7 +18,7 @@
  
  SYS_DEFS = @DEFS@ @ENDIAN@ @ASM@ @SYS_DEFS@
@@ -28,124 +28,9 @@ diff -Naur gnuboy-1.0.3.orig/Makefile.in gnuboy-1.0.3/Makefile.in
  
  install: all
  	$(INSTALL) -d $(bindir)
-diff -Naur gnuboy-1.0.3.orig/configure.in gnuboy-1.0.3/configure.in
---- gnuboy-1.0.3.orig/configure.in	Mon Sep 24 03:09:31 2001
-+++ gnuboy-1.0.3/configure.in	Sat Aug 10 15:26:10 2002
-@@ -21,7 +21,6 @@
- 
- 
- 
--LIBS="$LIBS -L/usr/local/lib -L/usr/X11R6/lib"
- 
- 
- 
-@@ -38,22 +37,10 @@
- SOUND=""
- JOY=""
- 
--case `uname -s` in
--Linux)
- SYS_DEFS=-DIS_LINUX
- AC_CHECK_HEADERS(sys/soundcard.h, [SOUND=sys/oss/oss.o])
- AC_CHECK_HEADERS(linux/joystick.h, [JOY=sys/linux/joy.o])
- test "$with_fb" = "no" || AC_CHECK_HEADERS(linux/fb.h, [with_fb=linux])
--;;
--FreeBSD)
--SYS_DEFS=-DIS_FBSD
--AC_CHECK_HEADERS(machine/soundcard.h, [SOUND=sys/oss/oss.o])
--;;
--OpenBSD)
--SYS_DEFS=-DIS_OBSD
--AC_CHECK_HEADERS(soundcard.h, [SOUND=sys/oss/oss.o])
--;;
--esac
- 
- test "$SOUND" || SOUND=sys/dummy/nosound.o
- test "$JOY" || JOY=sys/dummy/nojoy.o
-@@ -94,17 +81,7 @@
- fi
- fi
- 
--AC_PATH_X
--
--if test "$no_x" != "yes" ; then
--with_x=yes
--AC_CHECK_LIB(Xext, XShmCreateImage)
--AC_CHECK_HEADERS(sys/ipc.h sys/shm.h X11/extensions/XShm.h)
--test "$x_includes" && XINCS="-I$x_includes"
--test "$x_libraries" && XLIBS="-L$x_libraries"
--else
- with_x=no
--fi
- 
- 
- 
-@@ -149,27 +126,7 @@
- CFLAGS="$CFLAGS -pg"
- fi
- 
--if test "$enable_arch" = yes ; then
--if test `uname -s` = Linux -a -f /proc/cpuinfo ; then
--case `grep "model name" /proc/cpuinfo` in
--*AMD-K6*) enable_arch=k6 ;;
--*Pentium*Pro*|*Pentium\ I*|*Klamath*) enable_arch=i686 ;;
--*Pentium*|*586*) enable_arch=i586 ;;
--*486*) enable_arch=i486 ;;
--*386*) enable_arch=i386 ;;
--*) enable_arch=no ;;
--esac
--else
- enable_arch=no
--#case `uname -m` in
--#i686) enable_arch=i686 ;;
--#i586) enable_arch=i586 ;;
--#i486) enable_arch=i486 ;;
--#i386) enable_arch=i386 ;;
--#*) enable_arch=no ;;
--#esac
--fi
--fi
- 
- 
- case `$CC --version` in
-@@ -201,9 +158,6 @@
- 
- CFLAGS="$CFLAGS -O3"
- 
--case `uname -m` in
--i?86) CFLAGS="$CFLAGS -DALLOW_UNALIGNED_IO" ;;
--esac
- 
- #case `$CC --version` in
- #2.9*|3.*)
-@@ -228,15 +182,6 @@
- 
- esac
- 
--if test "$enable_asm" = yes ; then
--case `uname -m` in
--i?86)
--AC_MSG_RESULT(using optimized i386 cores)
--ASM="-DUSE_ASM -I./asm/i386" ; ASM_OBJS="asm/i386/cpu.o asm/i386/lcd.o asm/i386/refresh.s" ;;
--*)
--AC_MSG_RESULT(no optimized asm core available for `uname -m`) ;;
--esac
--fi
- 
- 
- AC_SUBST(SYS_DEFS)
-@@ -249,8 +194,6 @@
- AC_SUBST(SDL_CFLAGS)
- AC_SUBST(SDL_LIBS)
- AC_SUBST(TARGETS)
--AC_SUBST(XINCS)
--AC_SUBST(XLIBS)
- 
- AC_CONFIG_HEADER(sys/nix/config.h)
- AC_OUTPUT(Makefile)
-diff -Naur gnuboy-1.0.3.orig/sys/linux/kb.c gnuboy-1.0.3/sys/linux/kb.c
---- gnuboy-1.0.3.orig/sys/linux/kb.c	Tue Apr  3 08:22:31 2001
-+++ gnuboy-1.0.3/sys/linux/kb.c	Sat Aug 10 15:26:10 2002
+diff -Naur gnuboy-1.0.3/sys/linux/kb.c gnuboy-1.0.3new/sys/linux/kb.c
+--- gnuboy-1.0.3/sys/linux/kb.c	2001-04-03 08:22:31.000000000 +0200
++++ gnuboy-1.0.3new/sys/linux/kb.c	2002-10-30 02:17:21.000000000 +0100
 @@ -12,6 +12,9 @@
  #include <sys/vt.h>
  #include <termios.h>
@@ -245,9 +130,9 @@ diff -Naur gnuboy-1.0.3.orig/sys/linux/kb.c gnuboy-1.0.3/sys/linux/kb.c
  		ev_postevent(&ev);
  	}
  }
-diff -Naur gnuboy-1.0.3.orig/sys/pc/keymap.c gnuboy-1.0.3/sys/pc/keymap.c
---- gnuboy-1.0.3.orig/sys/pc/keymap.c	Sat Feb 17 01:41:12 2001
-+++ gnuboy-1.0.3/sys/pc/keymap.c	Sat Aug 10 15:27:00 2002
+diff -Naur gnuboy-1.0.3/sys/pc/keymap.c gnuboy-1.0.3new/sys/pc/keymap.c
+--- gnuboy-1.0.3/sys/pc/keymap.c	2001-02-17 01:41:12.000000000 +0100
++++ gnuboy-1.0.3new/sys/pc/keymap.c	2002-10-30 02:17:21.000000000 +0100
 @@ -8,125 +8,27 @@
  
  int keymap[][2] =
@@ -395,3 +280,133 @@ diff -Naur gnuboy-1.0.3.orig/sys/pc/keymap.c gnuboy-1.0.3/sys/pc/keymap.c
  
  	{ 0, 0 }
  };
+--- gnuboy-1.0.3/configure.in	2001-09-24 03:09:31.000000000 +0200
++++ gnuboy-1.0.3new/configure.in	2002-10-31 19:03:37.000000000 +0100
+@@ -21,7 +21,6 @@
+ 
+ 
+ 
+-LIBS="$LIBS -L/usr/local/lib -L/usr/X11R6/lib"
+ 
+ 
+ 
+@@ -38,22 +37,10 @@
+ SOUND=""
+ JOY=""
+ 
+-case `uname -s` in
+-Linux)
+ SYS_DEFS=-DIS_LINUX
+ AC_CHECK_HEADERS(sys/soundcard.h, [SOUND=sys/oss/oss.o])
+ AC_CHECK_HEADERS(linux/joystick.h, [JOY=sys/linux/joy.o])
+ test "$with_fb" = "no" || AC_CHECK_HEADERS(linux/fb.h, [with_fb=linux])
+-;;
+-FreeBSD)
+-SYS_DEFS=-DIS_FBSD
+-AC_CHECK_HEADERS(machine/soundcard.h, [SOUND=sys/oss/oss.o])
+-;;
+-OpenBSD)
+-SYS_DEFS=-DIS_OBSD
+-AC_CHECK_HEADERS(soundcard.h, [SOUND=sys/oss/oss.o])
+-;;
+-esac
+ 
+ test "$SOUND" || SOUND=sys/dummy/nosound.o
+ test "$JOY" || JOY=sys/dummy/nojoy.o
+@@ -94,17 +81,7 @@
+ fi
+ fi
+ 
+-AC_PATH_X
+-
+-if test "$no_x" != "yes" ; then
+-with_x=yes
+-AC_CHECK_LIB(Xext, XShmCreateImage)
+-AC_CHECK_HEADERS(sys/ipc.h sys/shm.h X11/extensions/XShm.h)
+-test "$x_includes" && XINCS="-I$x_includes"
+-test "$x_libraries" && XLIBS="-L$x_libraries"
+-else
+ with_x=no
+-fi
+ 
+ 
+ 
+@@ -149,27 +126,7 @@
+ CFLAGS="$CFLAGS -pg"
+ fi
+ 
+-if test "$enable_arch" = yes ; then
+-if test `uname -s` = Linux -a -f /proc/cpuinfo ; then
+-case `grep "model name" /proc/cpuinfo` in
+-*AMD-K6*) enable_arch=k6 ;;
+-*Pentium*Pro*|*Pentium\ I*|*Klamath*) enable_arch=i686 ;;
+-*Pentium*|*586*) enable_arch=i586 ;;
+-*486*) enable_arch=i486 ;;
+-*386*) enable_arch=i386 ;;
+-*) enable_arch=no ;;
+-esac
+-else
+ enable_arch=no
+-#case `uname -m` in
+-#i686) enable_arch=i686 ;;
+-#i586) enable_arch=i586 ;;
+-#i486) enable_arch=i486 ;;
+-#i386) enable_arch=i386 ;;
+-#*) enable_arch=no ;;
+-#esac
+-fi
+-fi
+ 
+ 
+ case `$CC --version` in
+@@ -199,17 +156,14 @@
+ yes|full)
+ AC_MSG_RESULT(producing heavily optimized code)
+ 
+-CFLAGS="$CFLAGS -O3"
++CFLAGS="$CFLAGS"
+ 
+-case `uname -m` in
+-i?86) CFLAGS="$CFLAGS -DALLOW_UNALIGNED_IO" ;;
+-esac
+ 
+ #case `$CC --version` in
+ #2.9*|3.*)
+ CFLAGS="$CFLAGS -fstrength-reduce -fthread-jumps \
+- -fcse-follow-jumps -fcse-skip-blocks -frerun-cse-after-loop \
+- -fexpensive-optimizations -fforce-mem -fforce-addr"
++-fcse-follow-jumps -fcse-skip-blocks -frerun-cse-after-loop \
++-fexpensive-optimizations -fforce-mem -foptimize-sibling-calls"
+ #;;
+ #*)
+ #AC_MSG_WARN(your compiler is too old for fancy optimizations)
+@@ -224,19 +178,10 @@
+ low)
+ 
+ AC_MSG_RESULT(using minimal optimizations)
+-CFLAGS="$CFLAGS -O3" ;;
++CFLAGS="$CFLAGS" ;;
+ 
+ esac
+ 
+-if test "$enable_asm" = yes ; then
+-case `uname -m` in
+-i?86)
+-AC_MSG_RESULT(using optimized i386 cores)
+-ASM="-DUSE_ASM -I./asm/i386" ; ASM_OBJS="asm/i386/cpu.o asm/i386/lcd.o asm/i386/refresh.s" ;;
+-*)
+-AC_MSG_RESULT(no optimized asm core available for `uname -m`) ;;
+-esac
+-fi
+ 
+ 
+ AC_SUBST(SYS_DEFS)
+@@ -249,8 +194,6 @@
+ AC_SUBST(SDL_CFLAGS)
+ AC_SUBST(SDL_LIBS)
+ AC_SUBST(TARGETS)
+-AC_SUBST(XINCS)
+-AC_SUBST(XLIBS)
+ 
+ AC_CONFIG_HEADER(sys/nix/config.h)
+ AC_OUTPUT(Makefile)
