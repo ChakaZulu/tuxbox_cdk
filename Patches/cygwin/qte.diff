@@ -1,0 +1,36 @@
+diff -Naur qt-2.3.0.lnx/src/Makefile.in qt-2.3.0.cyg/src/Makefile.in
+--- qt-2.3.0.lnx/src/Makefile.in	Fri Jan  4 09:48:48 2002
++++ qt-2.3.0.cyg/src/Makefile.in	Fri Jan  4 10:23:15 2002
+@@ -6,9 +6,9 @@
+ CXXFLAGS=	$(SYSCONF_CXXFLAGS_QT) $(SYSCONF_CXXFLAGS_X11) $(SYSCONF_CXXFLAGS) $(SYSCONF_CXXFLAGS_LIB) $(QT_CXXFLAGS_OPT)
+ CC	=	$(SYSCONF_CC) $(QT_C_MT)
+ CFLAGS	=	$(SYSCONF_CFLAGS) $(SYSCONF_CFLAGS_LIB) $(QT_CFLAGS_OPT)
+-INCPATH =	-I3rdparty/libpng $(shell freetype-config --cflags)
++INCPATH =	-I3rdparty/libpng
+ LFLAGS	=	$(SYSCONF_LFLAGS) $(QT_LFLAGS_MT)
+-LIBS	=	$(SUBLIBS) -lm $(shell freetype-config --libs) $(SYSCONF_LIBS_QTLIB)
++LIBS	=	$(SUBLIBS) -lm -lfreetype $(SYSCONF_LIBS_QTLIB)
+ MOC	=	$(SYSCONF_MOC)
+ UIC	=	$(SYSCONF_UIC)
+ 
+@@ -625,7 +625,7 @@
+ 	echo '#include "kernel/qt.h"' >allmoc.cpp
+ 	$(CXX) -E -DQT_MOC_CPP $(CXXFLAGS) $(INCPATH) >allmoc.h allmoc.cpp
+ 	$(MOC) -o allmoc.cpp allmoc.h
+-	perl -pi -e 's{"allmoc.h"}{"kernel/qt.h"}' allmoc.cpp
++	perl -pip -e 's{"allmoc.h"}{"kernel/qt.h"}' allmoc.cpp
+ 	rm allmoc.h
+ 
+ 
+diff -Naur qt-2.3.0.lnx/src/tools/qglobal.h qt-2.3.0.cyg/src/tools/qglobal.h
+--- qt-2.3.0.lnx/src/tools/qglobal.h	Sat Mar  3 15:34:25 2001
++++ qt-2.3.0.cyg/src/tools/qglobal.h	Fri Jan  4 10:27:25 2002
+@@ -132,7 +132,7 @@
+ #elif defined(_SEQUENT_)
+ #define _OS_DYNIX_
+ #else
+-#error "Qt has not been ported to this OS - talk to qt-bugs@trolltech.com"
++#define _OS_LINUX_
+ #endif
+ 
+ #if defined(_OS_MAC_) || defined(_OS_MSDOS_) || defined(_OS_OS2_) || defined(_OS_WIN32_)
