@@ -27,6 +27,7 @@ modutils-2.4.16.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
+portmap-5.tar.bz2;
 procps-010114.tar.gz;http://www.cs.uml.edu/~acahalan/procps/
 tinylogin-0.80.tar.gz;ftp://oss.lineo.com/tinylogin
 vsftpd-1.0.1.tar.gz;ftp://ferret.lmh.ox.ac.uk/pub/linux/

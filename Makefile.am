@@ -284,10 +284,19 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 	@CLEANUP_netkit_telnet@
 	touch .netkit_telnet
 
+.portmap: .bootstrap @DEPENDS_portmap@
+	@PREPARE_portmap@
+	cd @DIR_portmap@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		make && \
+		@INSTALL_portmap@
+	@CLEANUP_portmap@
+	touch .portmap
+
 .procps: .bootstrap .libncurses @DEPENDS_procps@
 	@PREPARE_procps@
 	cd @DIR_procps@ && \
-		patch -p1 < ../Patches/procps-010114.diff && \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		make top ps && \
