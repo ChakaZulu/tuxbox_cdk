@@ -354,13 +354,14 @@ libs_optional: \
 	@PREPARE_libdirectfb@
 	cd @DIR_libdirectfb@ && \
 		@BUILDENV_libdirectfb@ \
+		LDFLAGS=-L$(targetprefix)/lib \
 		CPPFLAGS="-I$(buildprefix)/linux/arch/ppc" \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
 			--enable-linux-input \
-			--disable-jpeg \
+			--enable-jpeg \
 			--disable-sdl && \
 		$(MAKE) all && \
 		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb-config > $(hostprefix)/bin/directfb-config && \
