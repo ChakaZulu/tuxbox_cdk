@@ -1,4 +1,15 @@
 PATH := $(hostprefix)/bin:$(PATH)
+BUILDENV := \
+	AR=$(target)-ar \
+	AS=$(target)-as \
+	CC=$(target)-gcc \
+	CXX=$(target)-g++ \
+	NM=$(target)-nm \
+	RANLIB=$(target)-ranlib \
+	CFLAGS="$(TARGET_CFLAGS)" \
+	CXXFLAGS="$(TARGET_CFLAGS)" \
+	LDFLAGS="$(TARGET_LDFLAGS)" \
+	PKG_CONFIG_PATH=$(targetprefix)/lib/pkgconfig
 
 all: core libs root boot apps devel
 extra: java contrib_apps fun dvb_apps
@@ -228,7 +239,7 @@ root_optional: \
 .modutils: .bootstrap @DEPENDS_modutils@
 	@PREPARE_modutils@
 	cd @DIR_modutils@ && \
-		@BUILDENV_modutils@ \
+		$(BUILDENV) \
 		BUILDCC=$(CC) BUILDCFLAGS="-O2" \
 		./configure \
 			--build=$(build) \
@@ -245,10 +256,10 @@ root_optional: \
 	@PREPARE_netkit_telnet@
 	touch @DIR_netkit_telnet@/MCONFIG
 	cd @DIR_netkit_telnet@ && \
-		@BUILDENV_netkit_telnet@ \
+		$(BUILDENV) \
 		LIBS="-lncurses" \
 		$(MAKE) -C telnet && \
-		@BUILDENV_netkit_telnet@ \
+		$(BUILDENV) \
 		LIBS="-lutil" \
 		$(MAKE) -C telnetd && \
 		@INSTALL_netkit_telnet@
@@ -258,7 +269,7 @@ root_optional: \
 .portmap: .bootstrap @DEPENDS_portmap@
 	@PREPARE_portmap@
 	cd @DIR_portmap@ && \
-		@BUILDENV_portmap@ \
+		$(BUILDENV) \
 		$(MAKE) && \
 		@INSTALL_portmap@
 	@CLEANUP_portmap@
@@ -267,7 +278,7 @@ root_optional: \
 .procps: .bootstrap .libncurses @DEPENDS_procps@
 	@PREPARE_procps@
 	cd @DIR_procps@ && \
-		@BUILDENV_procps@ \
+		$(BUILDENV) \
 		$(MAKE) top ps && \
 		@INSTALL_procps@
 	@CLEANUP_procps@
@@ -276,7 +287,7 @@ root_optional: \
 .watchdog: .bootstrap @DEPENDS_watchdog@
 	@PREPARE_watchdog@
 	cd @DIR_watchdog@ && \
-		@BUILDENV_watchdog@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -312,7 +323,7 @@ libs_optional: \
 .libcommoncplusplus: .bootstrap .libxml2 @DEPENDS_libcommoncplusplus@
 	@PREPARE_libcommoncplusplus@
 	cd @DIR_libcommoncplusplus@ && \
-		@BUILDENV_libcommoncplusplus@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -337,7 +348,7 @@ libs_optional: \
 .libcurl: .bootstrap @DEPENDS_libcurl@
 	@PREPARE_libcurl@
 	cd @DIR_libcurl@ && \
-		@BUILDENV_libcurl@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -354,7 +365,7 @@ libs_optional: \
 .libdirectfb: .bootstrap .libfreetype .libjpeg .libpng .libz @DEPENDS_libdirectfb@
 	@PREPARE_libdirectfb@
 	cd @DIR_libdirectfb@ && \
-		@BUILDENV_libdirectfb@ \
+		$(BUILDENV) \
 		LDFLAGS=-L$(targetprefix)/lib \
 		CPPFLAGS="-I$(buildprefix)/linux/arch/ppc" \
 		./configure \
@@ -374,7 +385,7 @@ libs_optional: \
 .libdirectfbpp: .bootstrap .libdirectfb @DEPENDS_libdirectfbpp@
 	@PREPARE_libdirectfbpp@
 	cd @DIR_libdirectfbpp@ && \
-		@BUILDENV_libdirectfbpp@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -387,7 +398,7 @@ libs_optional: \
 .libdvbpsi: .bootstrap @DEPENDS_libdvbpsi@
 	@PREPARE_libdvbpsi@
 	cd @DIR_libdvbpsi@ && \
-		@BUILDENV_libdvbpsi@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -400,7 +411,7 @@ libs_optional: \
 .libffi: .bootstrap @DEPENDS_libffi@
 	@PREPARE_libffi@
 	cd @DIR_libffi@ && \
-		@BUILDENV_libffi@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -413,7 +424,7 @@ libs_optional: \
 .libfreetype: .bootstrap @DEPENDS_libfreetype@
 	@PREPARE_libfreetype@
 	cd @DIR_libfreetype@ && \
-		@BUILDENV_libfreetype@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -429,7 +440,7 @@ libs_optional: \
 .libfribidi: .bootstrap @DEPENDS_libfribidi@
 	@PREPARE_libfribidi@
 	cd @DIR_libfribidi@ && \
-		@BUILDENV_libfribidi@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -443,7 +454,7 @@ libs_optional: \
 .libjpeg: .bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libjpeg@
 	cd @DIR_libjpeg@ && \
-		@BUILDENV_libjpeg@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -456,7 +467,7 @@ libs_optional: \
 .libmad: .bootstrap .libz @DEPENDS_libmad@
 	@PREPARE_libmad@
 	cd @DIR_libmad@ && \
-		@BUILDENV_libmad@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -475,7 +486,7 @@ libs_optional: \
 .libncurses: .bootstrap @DEPENDS_libncurses@
 	@PREPARE_libncurses@
 	cd @DIR_libncurses@ && \
-		@BUILDENV_libncurses@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -501,7 +512,7 @@ libs_optional: \
 .libpcap: .bootstrap @DEPENDS_libpcap@
 	@PREPARE_libpcap@
 	cd @DIR_libpcap@ && \
-		@BUILDENV_libpcap@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -516,7 +527,7 @@ libs_optional: \
 	@PREPARE_libpng@
 	cd @DIR_libpng@ && \
 		$(MAKE) libpng.a libpng12.so libpng.pc libpng-config \
-	 		@BUILDENV_libpng@ \
+	 		$(BUILDENV) \
 			CPPFLAGS="-DPNG_DEBUG=0" \
 			prefix=$(targetprefix) && \
 		@INSTALL_libpng@
@@ -527,7 +538,7 @@ libs_optional: \
 	@PREPARE_libreadline@
 	cd @DIR_libreadline@ && \
 		autoconf && \
-		@BUILDENV_libreadline@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -540,7 +551,7 @@ libs_optional: \
 .libsdl: .bootstrap .libdirectfb @DEPENDS_libsdl@
 	@PREPARE_libsdl@
 	cd @DIR_libsdl@ && \
-		@BUILDENV_libsdl@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -578,7 +589,7 @@ libs_optional: \
 .libsigc: .bootstrap @DEPENDS_libsigc@
 	@PREPARE_libsigc@
 	cd @DIR_libsigc@ && \
-		@BUILDENV_libsigc@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -592,7 +603,7 @@ libs_optional: \
 .libvorbisidec: .bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libvorbisidec@
 	cd @DIR_libvorbisidec@ && \
-		@BUILDENV_libvorbisidec@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -605,7 +616,7 @@ libs_optional: \
 .libxml2: .bootstrap @DEPENDS_libxml2@
 	@PREPARE_libxml2@
 	cd @DIR_libxml2@ && \
-		@BUILDENV_libxml2@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -632,7 +643,7 @@ libs_optional: \
 .libz: .bootstrap @DEPENDS_libz@
 	@PREPARE_libz@
 	cd @DIR_libz@ && \
-		@BUILDENV_libz@ \
+		$(BUILDENV) \
 		./configure \
 			--prefix= \
 			--shared && \
@@ -661,7 +672,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
 	cd @DIR_console_data@ && \
-		@BUILDENV_console_data@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -674,7 +685,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 .console_tools: .bootstrap .console_data @DEPENDS_console_tools@
 	@PREPARE_console_tools@
 	cd @DIR_console_tools@ && \
-		@BUILDENV_console_tools@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -687,7 +698,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 .directfb_examples: .bootstrap .libdirectfb @DEPENDS_directfb_examples@
 	@PREPARE_directfb_examples@
 	cd @DIR_directfb_examples@ && \
-		@BUILDENV_directfb_examples@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -701,7 +712,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@PREPARE_fbset@
 	cd @DIR_fbset@ && \
 		$(MAKE) \
-			@BUILDENV_fbset@ && \
+			$(BUILDENV) && \
 		@INSTALL_fbset@
 	@CLEANUP_fbset@
 	touch .fbset
@@ -709,7 +720,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 .lirc: .bootstrap @DEPENDS_lirc@
 	@PREPARE_lirc@
 	cd @DIR_lirc@ && \
-		@BUILDENV_lirc@ \
+		$(BUILDENV) \
 		mknod=/bin/true \
 		./configure \
 			--build=$(build) \
@@ -741,7 +752,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 .ssh: .bootstrap .libcrypto .libz @DEPENDS_ssh@
 	@PREPARE_ssh@
 	cd @DIR_ssh@ && \
-		@BUILDENV_ssh@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -761,7 +772,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 .tcpdump: .bootstrap .libpcap @DEPENDS_tcpdump@
 	@PREPARE_tcpdump@
 	cd @DIR_tcpdump@ && \
-		@BUILDENV_tcpdump@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -786,7 +797,7 @@ devel_optional: .gdb-remote .ksymoops
 .gdb: .bootstrap .libncurses @DEPENDS_gdb@
 	@PREPARE_gdb@
 	cd @DIR_gdb@ && \
-		@BUILDENV_gdb@ \
+		$(BUILDENV) \
 		LD_LIBRARY_PATH=$(libdir) \
 		./configure \
 			--build=$(build) \
@@ -827,7 +838,7 @@ devel_optional: .gdb-remote .ksymoops
 .ltrace: .bootstrap @DEPENDS_ltrace@
 	@PREPARE_ltrace@
 	cd @DIR_ltrace@ && \
-		@BUILDENV_ltrace@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -840,7 +851,7 @@ devel_optional: .gdb-remote .ksymoops
 .strace: .bootstrap @DEPENDS_strace@
 	@PREPARE_strace@
 	cd @DIR_strace@ && \
-		@BUILDENV_strace@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -853,7 +864,7 @@ devel_optional: .gdb-remote .ksymoops
 .nano: .bootstrap @DEPENDS_nano@
 	@PREPARE_nano@
 	cd @DIR_nano@ && \
-		@BUILDENV_nano@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -890,7 +901,7 @@ java: .kaffeh .kaffe
 .kaffe: .bootstrap .kaffeh .libffi @DEPENDS_kaffe@
 	@PREPARE_kaffe@
 	cd @DIR_kaffe@ && \
-		@BUILDENV_kaffe@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -915,7 +926,7 @@ fun: .gnuboy .scummvm .sdldoom
 	@PREPARE_gnuboy@
 	cd @DIR_gnuboy@ && \
 		autoconf && \
-		@BUILDENV_gnuboy@ \
+		$(BUILDENV) \
 		CPPFLAGS="-I$(driverdir)/include" \
 		./configure \
 			--build=$(build) \
@@ -930,7 +941,7 @@ fun: .gnuboy .scummvm .sdldoom
 	@PREPARE_scummvm@
 	cd @DIR_scummvm@ && \
 		$(MAKE) \
-			@BUILDENV_scummvm@ \
+			$(BUILDENV) \
 			DEFINES="-DUNIX" && \
 		@INSTALL_scummvm@
 	@CLEANUP_scummvm@
@@ -939,7 +950,7 @@ fun: .gnuboy .scummvm .sdldoom
 .sdldoom: .bootstrap .libsdl @DEPENDS_sdldoom@
 	@PREPARE_sdldoom@
 	cd @DIR_sdldoom@ && \
-		@BUILDENV_sdldoom@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -960,7 +971,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@PREPARE_dvbdate@
 	cd @DIR_dvbdate@ && \
 		$(MAKE) dvbdate \
-			@BUILDENV_dvbdate@ \
+			$(BUILDENV) \
 			CPPFLAGS="-I$(driverdir)/dvb/include" && \
 		@INSTALL_dvbdate@
 	@CLEANUP_dvbdate@
@@ -989,7 +1000,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@PREPARE_dvbtune@
 	cd @DIR_dvbtune@ && \
 		$(MAKE) \
-			@BUILDENV_dvbtune@ \
+			$(BUILDENV) \
 			CPPFLAGS="-I$(driverdir)/dvb/include -DNEWSTRUCT" && \
 		@INSTALL_dvbtune@
 	@CLEANUP_dvbtune@
@@ -998,7 +1009,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 .vls: .bootstrap .libdvbpsi @DEPENDS_vls@
 	@PREPARE_vls@
 	cd @DIR_vls@ && \
-		@BUILDENV_vls@ \
+		$(BUILDENV) \
 		CCFLAGS="-mcpu=823 -O3 -mmultiple -mstring -pipe" \
 		./configure \
 			--build=$(build) \
@@ -1081,7 +1092,7 @@ driver-clean:
 
 $(driverdir)/directfb/Makefile: .bootstrap .libdirectfb
 	cd $(driverdir)/directfb && \
-	@BUILDENV_libdirectfb@ \
+	$(BUILDENV) \
 	./autogen.sh \
 		--build=$(build) \
 		--host=$(target) \
