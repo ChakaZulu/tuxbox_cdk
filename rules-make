@@ -23,11 +23,11 @@ gcc;3.2;gcc-3.2;gcc-core-3.2.tar.gz:gcc-g++-3.2.tar.gz;extract:gcc-core-3.2.tar.
 #
 # root
 #
-busybox;0.60.3;busybox-0.60.3;busybox-0.60.3.tar.bz2:busybox.diff;extract:busybox-0.60.3.tar.bz2;patch:busybox.diff
+busybox;0.60.4;busybox-0.60.4;busybox-0.60.4.tar.bz2:busybox.diff;extract:busybox-0.60.4.tar.bz2;patch:busybox.diff
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
 ifupdown;0.6.4;ifupdown-0.6.4-tuxbox.1;ifupdown-0.6.4-tuxbox.1.tar.bz2;extract:ifupdown-0.6.4-tuxbox.1.tar.bz2
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
-modutils;2.4.19;modutils-2.4.19;modutils-2.4.19.tar.bz2;extract:modutils-2.4.19.tar.bz2
+modutils;2.4.20;modutils-2.4.20;modutils-2.4.20.tar.bz2;extract:modutils-2.4.20.tar.bz2
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
 portmap;5;portmap-5;portmap-5.tar.bz2:portmap-5.diff;extract:portmap-5.tar.bz2;patch:portmap-5.diff
 procps;010114;procps-010114;procps-010114.tar.gz:procps-010114.diff;extract:procps-010114.tar.gz;patch:procps-010114.diff
@@ -39,7 +39,7 @@ tinylogin;0.80;tinylogin-0.80;tinylogin-0.80.tar.gz:tinylogin.diff;extract:tinyl
 #
 libcommoncplusplus;0.99.7;commoncpp2-0.99.7;commoncpp2-0.99.7.tar.gz;extract:commoncpp2-0.99.7.tar.gz
 libcrypto;0.9.6g;openssl-0.9.6g;openssl-0.9.6g.tar.gz:libcrypto.diff;extract:openssl-0.9.6g.tar.gz;patch:libcrypto.diff
-libcurl;7.9.1;curl-7.9.1;curl-7.9.1.tar.bz2:libcurl.diff;extract:curl-7.9.1.tar.bz2;patch:libcurl.diff
+libcurl;7.9.8;curl-7.9.8;curl-7.9.8.tar.bz2:libcurl.diff;extract:curl-7.9.8.tar.bz2;patch:libcurl.diff
 libdb2;2.7.7;db-2.7.7;db-2.7.7.tar.gz:libdb2.diff;extract:db-2.7.7.tar.gz;patch:libdb2.diff
 libdvbpsi;0.1.1;libdvbpsi-0.1.1;libdvbpsi-0.1.1.tar.gz;extract:libdvbpsi-0.1.1.tar.gz
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff

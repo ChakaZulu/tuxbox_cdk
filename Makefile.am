@@ -917,7 +917,7 @@ contrib_apps: .console_tools .fbset .lirc .ssh .tcpdump .xrc
 #   development tools
 #
 
-devel: .gdb .strace .nano
+devel: .gdb .ksymoops .strace .nano
 
 .gdb: .bootstrap .libncurses @DEPENDS_gdb@
 	@PREPARE_gdb@
@@ -950,6 +950,14 @@ devel: .gdb .strace .nano
 		@INSTALL_gdb@
 	@CLEANUP_gdb@
 	touch .gdb-remote
+
+.ksymoops: .bootstrap @DEPENDS_ksymoops@
+	@PREPARE_ksymoops@
+	cd @DIR_ksymoops@ && \
+	$(MAKE) CC=$(target)-gcc DEF_MAP="\\\"/boot/System.map-*r\\\"" DEF_VMLINUX="\\\"/boot/vmlinux-*r\\\"" &&\
+	@INSTALL_ksymoops@
+	@CLEANUP_ksymoops@
+	touch .ksymoops
 
 .ltrace: .bootstrap @DEPENDS_ltrace@
 	@PREPARE_ltrace@
@@ -1614,7 +1622,7 @@ distclean-local:
 	-rm .libncurses .libjpeg .libnet .libnids .libpcap .libpng .libpopt
 	-rm .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
 	-rm .cabextract .msttf
-	-rm .gdb .ltrace .strace .nano
+	-rm .gdb .ksymoops .ltrace .strace .nano
 	-rm .kaffeh .kaffe
 	-rm .mad .scummvm
 	-rm .ppcboot .linuxkernel .driver
