@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.de,v 1.10 2002/08/15 07:44:16 obi Exp $
+# $Id: INSTALL.de,v 1.11 2002/10/16 19:33:32 dirch Exp $
 #
 # Urheber:
 # --------
@@ -70,7 +70,7 @@ mkdir /dbox2
 chown tuxbox /dbox2
 
 
- - Um alles zu bauen, was das Makefile hergibt:
+ - Um alles zu bauen, was das Makefile hergibt: (wieder als normaler Benutzer)
 
 make all
 make extra
