@@ -1386,7 +1386,7 @@ flash-neutrino: $(flashprefix)/.part_neutrino
 $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/lirc
-	$(INSTALL) $(targetprefix)/bin/controld $(targetprefix)/bin/lcdd $(targetprefix)/bin/neutrino \
+	$(INSTALL) $(targetprefix)/bin/controld $(targetprefix)/bin/neutrino \
 		$(targetprefix)/bin/nhttpd $(targetprefix)/bin/timerd \
 		$(flashprefix)/root/bin
 	cp -pa $(targetprefix)/share/tuxbox/neutrino $(targetprefix)/share/tuxbox/lcdd \
