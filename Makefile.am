@@ -758,6 +758,20 @@ devel: .gdb .strace .nano
 	@CLEANUP_gdb@
 	touch .gdb
 
+.gdb-remote: .bootstrap @DEPENDS_gdb@
+	@PREPARE_gdb@
+	cd @DIR_gdb@ && \
+		LD_LIBRARY_PATH=$(libdir) \
+		./configure \
+			--build=$(build) \
+			--host=$(build) \
+			--target=$(target) \
+			--prefix=$(hostprefix) && \
+		make all && \
+		@INSTALL_gdb@
+	@CLEANUP_gdb@
+	touch .gdb-remote
+
 .ltrace: .bootstrap @DEPENDS_ltrace@
 	@PREPARE_ltrace@
 	cd @DIR_ltrace@ && \
@@ -1022,6 +1036,10 @@ $(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng .libsigc
 			--with-target=$(APPSTARGET)
 endif
 
+.camd: $(appsdir)/Makefile
+	make -C $(appsdir)/camd all install
+	touch .camd
+
 .dvbsnoop: $(appsdir)/Makefile
 	make -C $(appsdir)/dvbsnoop all install
 	touch .dvbsnoop
@@ -1066,7 +1084,7 @@ endif
 	make -C $(appsdir)/tuxtxt all install
 	touch .tuxtxt
 
-.zapit: $(appsdir)/Makefile
+.zapit: $(appsdir)/Makefile .camd
 	make -C $(appsdir)/zapit all install
 	touch .zapit
 
