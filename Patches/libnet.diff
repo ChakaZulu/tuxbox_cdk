@@ -1,0 +1,263 @@
+diff -Naur Libnet-latest.orig/configure Libnet-latest/configure
+--- Libnet-latest.orig/configure	Tue Aug  6 00:26:03 2002
++++ Libnet-latest/configure	Mon Aug 12 22:30:54 2002
+@@ -1473,147 +1473,17 @@
+ 
+ 
+ 
+-echo $ac_n "checking machine endianess""... $ac_c" 1>&6
+-echo "configure:1478: checking machine endianess" >&5
+-
+-    cat > conftest.c << EOF
+-#       include <stdio.h>
+-#       include <stdlib.h>
+-
+-        int main()
+-        {
+-            union
+-            {
+-                short s;
+-                char c[sizeof(short)];
+-            } un;
+-
+-            un.s = 0x0102;
+-            if (sizeof (short) == 2)
+-            {
+-                if (un.c [0] == 1 && un.c [1] == 2)
+-                {
+-                    printf("B\n");
+-                }
+-                else
+-                {
+-                    if (un.c [0] == 2 && un.c [1] == 1)
+-                    {
+-                        printf("L\n");
+-                    }
+-                }
+-            }
+-            else
+-            {
+-                printf("?\n");
+-            }
+-            return (EXIT_SUCCESS);
+-        }
+-EOF
+-        ${CC-cc} -o conftest $CFLAGS $CPPFLAGS $LDFLAGS conftest.c $LIBS > /dev/null 2>&1
+-        # Oopz 4.3 BSD doesn't have this.  Sorry.
+-        if test ! -x conftest ; then
+-            ac_cv_libnet_endianess=unknown
+-        else
+-            ./conftest > conftest.out
+-            result=`cat conftest.out`
+-            if test $result = "B"; then
+-                ac_cv_libnet_endianess=big
+-            elif test $result = "L"; then
+-                ac_cv_libnet_endianess=lil
+-            else
+-                ac_cv_libnet_endianess=unknown
+-            fi                                
+-        fi
+-        rm -f conftest* core core.conftest
+-
+-        echo "$ac_t""$ac_cv_libnet_endianess" 1>&6
+-
+-        if test $ac_cv_libnet_endianess = big ; then
+-            cat >> confdefs.h <<\EOF
++cat >> confdefs.h <<\EOF
+ #define LIBNET_BIG_ENDIAN 1
+ EOF
+ 
+-            ENDIANESS="LIBNET_BIG_ENDIAN"
+-            LIBNET_CONFIG_DEFINES="$LIBNET_CONFIG_DEFINES -DLIBNET_BIG_ENDIAN"
+-        elif test $ac_cv_libnet_endianess = lil ; then
+-            cat >> confdefs.h <<\EOF
+-#define LIBNET_LIL_ENDIAN 1
+-EOF
+-
+-            ENDIANESS="LIBNET_LIL_ENDIAN"
+-            LIBNET_CONFIG_DEFINES="$LIBNET_CONFIG_DEFINES -DLIBNET_LIL_ENDIAN"
+-        fi
+-    
+-echo $ac_n "checking if unaligned accesses fail""... $ac_c" 1>&6
+-echo "configure:1550: checking if unaligned accesses fail" >&5
+-    if eval "test \"`echo '$''{'ac_cv_lbl_unaligned_fail'+set}'`\" = set"; then
+-  echo $ac_n "(cached) $ac_c" 1>&6
+-else
+-  case "$target_cpu" in
+-
+-        alpha|hp*|mips|sparc)
+-                ac_cv_lbl_unaligned_fail=yes
+-                ;;
+-
+-        *)
+-                cat >conftest.c <<EOF
+-#                   include <sys/types.h>
+-#                   include <sys/wait.h>
+-#                   include <stdio.h>
+-                    unsigned char a[5] = { 1, 2, 3, 4, 5 };
+-                    main()
+-                    {
+-                        unsigned int i;
+-                        pid_t pid;
+-                        int status;
+-                        /* avoid "core dumped" message */
+-                        pid = fork();
+-                        if (pid <  0)
+-                        {
+-                            exit(2);
+-                        }
+-                        if (pid > 0)
+-                        {
+-                            /* parent */
+-                            pid = waitpid(pid, &status, 0);
+-                            if (pid < 0)
+-                            {
+-                                exit(3);
+-                            }
+-                            exit(!WIFEXITED(status));
+-                        }
+-                        /* child */
+-                        i = *(unsigned int *)&a[1];
+-                        printf("%d\n", i);
+-                        exit(0);
+-                    }
+-EOF
+-                ${CC-cc} -o conftest $CFLAGS $CPPFLAGS $LDFLAGS \
+-                    conftest.c $LIBS > /dev/null 2>&1
+-                # Oopz 4.3 BSD doesn't have this.  Sorry.
+-                if test ! -x conftest ; then
+-                                                ac_cv_lbl_unaligned_fail=yes
+-                else
+-                        ./conftest > conftest.out
+-                        if test ! -s conftest.out ; then
+-                                ac_cv_lbl_unaligned_fail=yes
+-                        else
+-                                ac_cv_lbl_unaligned_fail=no
+-                        fi
+-                fi
+-                rm -f conftest* core core.conftest
+-                ;;
+-        esac
+-fi
+-
+-    echo "$ac_t""$ac_cv_lbl_unaligned_fail" 1>&6
+-    if test $ac_cv_lbl_unaligned_fail = yes ; then
+-            cat >> confdefs.h <<\EOF
++ENDIANESS="LIBNET_BIG_ENDIAN"
++LIBNET_CONFIG_DEFINES="$LIBNET_CONFIG_DEFINES -DLIBNET_BIG_ENDIAN"
++ 
++cat >> confdefs.h <<\EOF
+ #define LBL_ALIGN 1
+ EOF
+ 
+-    fi
+ 
+ 
+ 
+@@ -1763,105 +1633,13 @@
+     LIBOBJS="$LIBOBJS libnet_link_linux.o"
+     echo "$ac_t""found linux primitives" 1>&6
+     
+-    echo $ac_n "checking for packet socet (PF_SOCKET)""... $ac_c" 1>&6
+-echo "configure:1768: checking for packet socet (PF_SOCKET)" >&5
+-    if eval "test \"`echo '$''{'ac_libnet_have_packet_socket'+set}'`\" = set"; then
+-  echo $ac_n "(cached) $ac_c" 1>&6
+-else
+-  case "$target_os" in
+-
+-        linux)
+-                ac_libnet_have_packet_socket = no
+-                ;;
+-        *)
+-
+-    cat > pf_packet-test.c << EOF
+-#include <stdio.h>
+-#include <errno.h>
+-#include <stdlib.h>
+-#include <netinet/in.h>
+-#include <sys/socket.h>
+-#include <features.h>    /* for the glibc version number */
+-#if __GLIBC__ >= 2 && __GLIBC_MINOR >= 1
+-#include <netpacket/packet.h>
+-#include <net/ethernet.h>     /* the L2 protocols */
+-#else
+-#include <asm/types.h>
+-#include <linux/if_packet.h>
+-#include <linux/if_ether.h>   /* The L2 protocols */
+-#endif
+- 
+-#ifndef SOL_PACKET
+-#define SOL_PACKET 263
+-#endif  /* SOL_PACKET */
+- 
+-int
+-main(int argc, char **argv)
+-{
+-    int fd;
+- 
+-    fd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+-    if (fd == -1)
+-    {
+-        if (errno == EPERM)
+-        {
+-            /* user's UID != 0 */
+-            printf("probably");
+-            exit (EXIT_FAILURE);
+-        }
+-        printf("no");
+-        exit (EXIT_FAILURE);
+-    }
+-    printf("yes");
+-    exit (EXIT_SUCCESS);
+-}
+-EOF
+-    ${CC-cc} -o pf_packet-test $CFLAGS pf_packet-test.c >/dev/null 2>&1
+-
+-    # Oopz 4.3 BSD doesn't have this.  Sorry.
+-    if test ! -x ./pf_packet-test ; then
+-        ac_libnet_have_packet_socket=choked
+-    else
+-        ac_libnet_have_packet_socket=`./pf_packet-test`;
+-    fi
+-    if test $ac_libnet_have_packet_socket = choked; then
+-        echo "$ac_t""test program compile choked... assuming no" 1>&6
+-    elif test $ac_libnet_have_packet_socket = yes; then
+-        echo "$ac_t""yes" 1>&6
+-        cat >> confdefs.h <<\EOF
+-#define HAVE_PACKET_SOCKET 1
+-EOF
+-
+-    elif test $ac_libnet_have_packet_socket = probably; then
+-        echo "$ac_t""test program got EPERM... assuming yes" 1>&6
+-        cat >> confdefs.h <<\EOF
++cat >> confdefs.h <<\EOF
+ #define HAVE_PACKET_SOCKET 1
+ EOF
+ 
+-    elif test $ac_libnet_have_packet_socket = no; then
+-        echo "$ac_t""no" 1>&6
+-    fi
+-
+-    rm -f pf_packet-test* core core.pf_packet-test
+-    ;;
+-    esac
+ fi
+ 
+ 
+-elif test -c /dev/bpf0 ; then           # check again in case not readable
+-    LIBOBJS="$LIBOBJS libnet_link_bpf.o"
+-    echo "$ac_t""found bpf" 1>&6
+-elif test -c /dev/nit ; then            # check again in case not readable
+-    LIBOBJS="$LIBOBJS libnet_link_snit.o"
+-    echo "$ac_t""found snit" 1>&6
+-elif test "$target_os" = "cygwin" ; then
+-     LIBOBJS="$LIBOBJS libnet_link_win32.o"
+-     echo "$ac_t""found win32 wpcap" 1>&6
+-else
+-    LIBOBJS="$LIBOBJS libnet_link_none.o"
+-    echo "configure: warning: could not find a link-layer packet interface" 1>&2
+-    echo "configure: warning: link-layer packet injection will not be available" 1>&2
+-fi
+ 
+ echo -n "scanning available packet construction modules: "
+ for dir in src/*build*c ; do

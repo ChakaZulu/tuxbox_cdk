@@ -45,6 +45,7 @@ libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.g
 libfreetype;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2;extract:freetype-2.0.9.tar.bz2
 libncurses;5.2;ncurses-5.2;ncurses-5.2.tar.gz:ncurses.diff;extract:ncurses-5.2.tar.gz;patch:ncurses.diff
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff
+libnet;1.1.0;Libnet-latest;libnet-1.1.0.tar.gz:libnet.diff;extract:libnet-1.1.0.tar.gz;patch:libnet.diff
 libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;patch:libpcap.diff
 libpng;1.0.14;libpng-1.0.14;libpng-1.0.14.tar.gz:libpng.diff;extract:libpng-1.0.14.tar.gz;patch:libpng.diff
 libpopt;1.6.4;popt-1.6.4;popt-1.6.4.tar.gz;extract:popt-1.6.4.tar.gz

@@ -41,6 +41,7 @@ libdvbpsi;make:install
 libffi;make:install
 libfreetype;make:install;link:TARGET/bin/freetype-config:HOST/bin/freetype-config
 libncurses;make:install.libs:install.includes
+libnet;make:install
 libjpeg;make:install-lib:install-headers
 libpcap;make:install
 libpopt;make:install

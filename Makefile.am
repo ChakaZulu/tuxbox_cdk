@@ -414,6 +414,22 @@ libs: \
 	@CLEANUP_libncurses@
 	touch .libncurses
 
+.libnet: .bootstrap @DEPENDS_libnet@
+	@PREPARE_libnet@
+	cd @DIR_libnet@ && \
+		CC=$(target)-gcc \
+		RANLIB=$(target)-ranlib \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_libnet@
+	@CLEANUP_libnet@
+	touch .libnet
+
 .libjpeg: .bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libjpeg@
 	cd @DIR_libjpeg@ && \
@@ -1181,7 +1197,7 @@ endif
 	make -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
-.neutrino: $(appsdir)/Makefile .libcramfs .libconfigfile .liblcddisplay .libmd5sum .libnet .libucodes .sections .zapit
+.neutrino: $(appsdir)/Makefile .libcramfs .libconfigfile .liblcddisplay .libmd5sum .libdboxnet .libucodes .sections .zapit
 	make -C $(appsdir)/mczap all install
 	touch .neutrino
 
@@ -1227,15 +1243,12 @@ endif
 	touch .libmd5sum
 
 .libmpegtools: $(appsdir)/Makefile
-	make -C $(appsdir)/libmpegtools all install
-if TARGETRULESET_FLASH
-	$(target)-ar cru $(targetprefix)/lib/libmpegtools_pic.a $(appsdir)/libmpegtools/*.o
-endif
+	make -C $(appsdir)/libmpegtools all
 	touch .libmpegtools
 
-.libnet: $(appsdir)/Makefile
-	make -C $(appsdir)/libnet all install
-	touch .libnet
+.libdboxnet: $(appsdir)/Makefile
+	make -C $(appsdir)/libnet all
+	touch .libdboxnet
 
 .libucodes: $(appsdir)/Makefile
 	make -C $(appsdir)/libucodes all install
@@ -1475,7 +1488,7 @@ distclean-local:
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
-	-rm .libcommoncplusplus .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg
+	-rm .libcommoncplusplus .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg .libnet
 	-rm .libpcap .libpng .libpopt .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
 	-rm .cabextract .msttf
 	-rm .gdb .ltrace .strace .nano
@@ -1485,7 +1498,7 @@ distclean-local:
 	-rm .camd .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .tools .tuxtxt .zapit
 	-rm .libconfigfile .libcramfs
-	-rm .liblcddisplay .libmd5sum .libmpegtools .libnet .libucodes
+	-rm .liblcddisplay .libmd5sum .libmpegtools .libdboxnet .libucodes
 	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
 	-rm .dvbstream .dvbtext .dvbtune
 	-rm -rf $(targetprefix)
