@@ -771,6 +771,9 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 .lsof: .bootstrap @DEPENDS_lsof@
 	@PREPARE_lsof@
 	cd @DIR_lsof@ && \
+	tar xvf @DIR_lsof@_src.tar && \
+	cd @DIR_lsof@_src && \
+	patch -p1 < ../../Patches/lsof.diff && \
 		CROSS_COMPILE=$(target)- \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
