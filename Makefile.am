@@ -339,6 +339,30 @@ boot: .ppcboot .linuxkernel .driver
 
 #######################
 #
+#  msttf
+#
+.msttf:
+	mkdir msttf
+	cd msttf && tar xzf ../Archive/cabextract-0.5.tar.gz || exit 1
+	cd msttf/cabextract-0.5 && ./configure || exit 0
+	make -C msttf/cabextract-0.5
+	cd msttf && cabextract-0.5/cabextract ../Archive/arialb32.exe
+	cd msttf && cabextract-0.5/cabextract ../Archive/arial32.exe
+	cd msttf && cabextract-0.5/cabextract ../Archive/courie32.exe
+	install -d $(FONTDIR)
+	install -m 0644 msttf/AriBlk.TTF $(FONTDIR)/Arial_Black.ttf
+	install -m 0644 msttf/Arial.TTF $(FONTDIR)/Arial.ttf
+	install -m 0644 msttf/Arialbd.TTF $(FONTDIR)/Arial_Bold.ttf
+	install -m 0644 msttf/Arialbi.TTF $(FONTDIR)/Arial_Bold_Italic.ttf
+	install -m 0644 msttf/Ariali.TTF $(FONTDIR)/Arial_Italic.ttf
+	install -m 0644 msttf/cour.ttf $(FONTDIR)/Courier_New.ttf
+	install -m 0644 msttf/courbd.ttf $(FONTDIR)/Courier_New_Bold.ttf
+	install -m 0644 msttf/courbi.ttf $(FONTDIR)/Courier_New_Bold_Italic.ttf
+	install -m 0644 msttf/couri.ttf $(FONTDIR)/Courier_New_Italic.ttf
+	touch .msttf
+
+#######################
+#
 #   own applications
 #
 
@@ -401,6 +425,7 @@ distclean-local:
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .tinylogin .modutils
 	-rm .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
+	-rm .msttf
 	-rm .ppcboot .linuxkernel
 	-rm .fx2 .edvb .neutrino .lcdmenu .stream .tools .zapit
 	-rm -rf $(targetprefix)

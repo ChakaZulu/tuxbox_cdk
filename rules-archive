@@ -22,6 +22,7 @@ glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnu
 busybox-0.60.1.tar.gz;ftp://busybox.net/busybox/
 tinylogin-0.80.tar.gz;ftp://oss.lineo.com/tinylogin/
 modutils-2.4.9.tar.bz2
+netkit-rsh-0.17.tar.gz
 
 #
 # contrib libs
@@ -36,11 +37,14 @@ libxml2-2.4.10.tar.gz
 zlib.tar.gz
 
 #
+# msttf
+#
+cabextract-0.5.tar.gz
+arialb32.exe
+arial32.exe
+courie32.exe
+
+#
 # additional
 #
 gdb-5.0.tar.gz;ftp://ftp.freenet.de/pub/ftp.gnu.org/gnu/gdb/
-
-
-
-
-

@@ -24,6 +24,7 @@ gcc;3.0.2;gcc-3.0.2;gcc-core-3.0.2.tar.gz:gcc-g++-3.0.2.tar.gz;extract:gcc-core-
 busybox;0.60.1;busybox-0.60.1;busybox-0.60.1.tar.gz:busybox.diff;extract:busybox-0.60.1.tar.gz;patch:busybox.diff
 tinylogin;0.80;tinylogin-0.80;tinylogin-0.80.tar.gz:tinylogin.diff;extract:tinylogin-0.80.tar.gz;patch:tinylogin.diff
 modutils;2.4.9;modutils-2.4.9;modutils-2.4.9.tar.bz2;extract:modutils-2.4.9.tar.bz2
+rsh;0.17;netkit-rsh-0.17;netkit-rsh-0.17.tar.gz;extract:netkit-rsh-0.17.tar.gz
 
 #
 # contrib libs
@@ -36,6 +37,11 @@ libpng;1.0.12;libpng-1.0.12;libpng-1.0.12.tar.gz;extract:libpng-1.0.12.tar.gz
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff
 libxml2;2.4.10;libxml2-2.4.10;libxml2-2.4.10.tar.gz;extract:libxml2-2.4.10.tar.gz
 libz;1.1.3;zlib-1.1.3;zlib.tar.gz:zlib.diff;extract:zlib.tar.gz;patch:zlib.diff
+
+#
+#msttf
+#
+
 
 #
 # additional

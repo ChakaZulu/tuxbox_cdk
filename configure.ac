@@ -145,6 +145,13 @@ TUXBOX_RULES_MAKE(libxml2)
 TUXBOX_RULES_MAKE(libz)
 
 #
+# msttf
+#
+FONTDIR="\${datadir}/fonts"
+AC_SUBST(FONTDIR)
+AC_DEFINE_UNQUOTED(FONTDIR,"${_targetdatadir}/fonts",[where to find the fonts])
+
+#
 # additional
 #
 TUXBOX_RULES_MAKE(gdb)

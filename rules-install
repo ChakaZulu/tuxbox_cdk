@@ -21,6 +21,7 @@ gcc
 busybox;make:install:PREFIX=TARGET
 tinylogin;make:install:PREFIX=TARGET
 modutils;make:install-bin
+rsh;make:install:PREFIX=TARGET
 
 #
 # contrib libs
