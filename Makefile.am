@@ -996,8 +996,11 @@ boot: .u-boot .linuxkernel .driver
 .u-boot: .bootstrap $(bootdir)/u-boot/Makefile
 	$(MAKE) -C $(bootdir)/u-boot $(HARDWARERULESET)_config
 	$(MAKE) -C $(bootdir)/u-boot CROSS_COMPILE=$(target)-
+
 	$(INSTALL) -m644 $(bootdir)/u-boot/u-boot $(bootprefix)
+	$(target)-strip $(bootprefix)/u-boot
 	$(INSTALL) $(bootdir)/u-boot/tools/mkimage $(hostprefix)/bin
+
 if MAINTAINER_MODE
 else
 	$(MAKE) -C $(bootdir)/u-boot distclean
@@ -1157,7 +1160,7 @@ $(appsdir)/misc/tools/config.status: .bootstrap
 
 # tuxbox/enigma
 
-$(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libmad .libpng .libsigc .misc_libs .tuxbox_libs .plugins
+$(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libmad .libpng .libsigc .libtuxbox .misc_libs .plugins
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE)
 
 .enigma: $(appsdir)/tuxbox/enigma/config.status .tuxbox_tools .config
@@ -1200,9 +1203,18 @@ $(appsdir)/tuxbox/libs/config.status: .bootstrap .libfreetype
 	$(MAKE) -C $(appsdir)/tuxbox/libs all install
 	touch $@
 
+# tuxbox/libtuxbox
+
+$(appsdir)/tuxbox/libtuxbox/config.status: .bootstrap
+	cd $(appsdir)/tuxbox/libtuxbox && $(CONFIGURE)
+
+.libtuxbox: $(appsdir)/tuxbox/libtuxbox/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/libtuxbox all install
+	touch $@
+
 # tuxbox/neutrino
 
-$(appsdir)/tuxbox/neutrino/config.status: .bootstrap .libboost .libcurl .libfreetype .libjpeg .libmad .libpng .misc_libs .plugins .tuxbox_libs .zapit .misc_tools
+$(appsdir)/tuxbox/neutrino/config.status: .bootstrap .libboost .libcurl .libfreetype .libjpeg .libmad .libpng .libtuxbox .misc_libs .plugins .tuxbox_libs .zapit .misc_tools
 	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
 
 .neutrino: $(appsdir)/tuxbox/neutrino/config.status
@@ -1220,7 +1232,7 @@ $(appsdir)/tuxbox/plugins/config.status: .bootstrap .libcurl
 
 # tuxbox/tools
 
-$(appsdir)/tuxbox/tools/config.status: .bootstrap .plugins .tuxbox_libs
+$(appsdir)/tuxbox/tools/config.status: .bootstrap .plugins .libtuxbox
 	cd $(appsdir)/tuxbox/tools && $(CONFIGURE)
 
 .tuxbox_tools: $(appsdir)/tuxbox/tools/config.status
@@ -1510,7 +1522,7 @@ distclean-local:
 	-rm .dvbsnoop .config .enigma .lcars .lcdmenu .neutrino .dvb_tools .zapit
 	-rm .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
-	-rm .misc_libs .misc_tools .plugins .tuxbox_libs .tuxbox_tools
+	-rm .misc_libs .misc_tools .plugins .libtuxbox .tuxbox_libs .tuxbox_tools
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 if TARGETRULESET_FLASH
