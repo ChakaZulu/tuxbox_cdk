@@ -323,6 +323,22 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 	@CLEANUP_procps@
 	touch .procps
 
+.watchdog: .bootstrap @DEPENDS_watchdog@
+	@PREPARE_watchdog@
+	cd @DIR_watchdog@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--cache-file=/dev/null && \
+		$(MAKE) all && \
+		@INSTALL_watchdog@
+	@CLEANUP_watchdog@
+	touch .watchdog
+
 
 #######################
 #

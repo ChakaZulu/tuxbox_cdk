@@ -18,6 +18,7 @@ gcc-g++-3.2.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.2
 glibc-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 glibc-linuxthreads-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 uClibc-0.9.11.tar.bz2;
+watchdog_5.2.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/w/watchdog
 
 #
 # root
