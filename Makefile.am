@@ -1532,7 +1532,7 @@ rebuild-flash:
 	-rm -f $(flashprefix)/.flash
 	$(MAKE) flash-lib
 
-$(flashprefix)/.flash: busybox driver modutils tuxbox_tools lirc procps
+$(flashprefix)/.flash: procps busybox driver modutils tuxbox_tools lirc
 	if [ -d $(flashprefix)/root ]; then \
 		echo "directory $(flashprefix)/root already exists. please remove manually." && false; \
 	fi
