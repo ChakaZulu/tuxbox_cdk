@@ -1286,11 +1286,11 @@ endif
 	$(MAKE) -C $(appsdir)/dvbsnoop all install
 	touch .dvbsnoop
 
-.edvb: .libqt .msttf .tools
+.edvb: .msttf .tools
 	$(MAKE) -C $(appsdir)/edvb all install
 	touch .edvb
 
-.enigma: .mad .tools
+.enigma: .mad .tools .libxmltree
 	$(MAKE) -C $(appsdir)/enigma all install
 	touch .enigma
 
@@ -1326,7 +1326,7 @@ endif
 	$(MAKE) -C $(appsdir)/tuxtxt all install
 	touch .tuxtxt
 
-.zapit: .camd
+.zapit: .camd .libxmltree
 	$(MAKE) -C $(appsdir)/zapit all install
 	touch .zapit
 
@@ -1362,6 +1362,10 @@ endif
 .libucodes: $(appsdir)/Makefile
 	$(MAKE) -C $(appsdir)/libucodes all install
 	touch .libucodes
+
+.libxmltree: $(appsdir)/Makefile
+	$(MAKE) -C $(appsdir)/libxmltree install
+	touch .libxmltree
 
 #######################
 #
@@ -1607,7 +1611,7 @@ distclean-local:
 	-rm .ppcboot .linuxkernel .driver
 	-rm .camd .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .tools .tuxtxt .zapit
-	-rm .libconfigfile .libcramfs
+	-rm .libconfigfile .libcramfs .libxmltree
 	-rm .liblcddisplay .libmd5sum .libmpegtools .libdboxnet .libucodes
 	-rm .console_data .console_tools .dsniff .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
 	-rm .dvbstream .dvbtext .dvbtune
