@@ -52,11 +52,11 @@ echo "Setting up loopback device"
 export TZ=CET-01CEST-02,J84,J302
 
 
-#$INSMOD $MODDIR/misc/lcd.o
-#$INSMOD $MODDIR/misc/lcd.o
-#/bin/lcdmenu
-#export startmenu="$?"
-#/etc/init.d/start$startmenu
-
+$INSMOD $MODDIR/misc/lcd.o
+/bin/lcdmenu
+RC="$?"
+/usr/bin/test "$RC" -eq 0 && /etc/init.d/start_ezap
+/usr/bin/test "$RC" -eq 1 && /etc/init.d/start_neutrino
+/usr/bin/test "$RC" -eq 2 && /etc/init.d/start_lcars
 
 exit 0
