@@ -103,35 +103,6 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_bootstrap_gcc@
 
-#
-# gcc first stage without glibc (2.95)
-#
-bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
-	@if [ ! -d $(hostprefix)/$(target)/bin/as ]; then \
-		$(MAKE) .binutils; \
-	fi
-	@PREPARE_bootstrap_gcc_2_95@
-	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
-	ln -sf $(buildprefix)/@DIR_linux@/include/asm $(hostprefix)/$(target)/sys-include/
-	cd @DIR_bootstrap_gcc_2_95@ && \
-		CC=$(CC) CFLAGS="$(CFLAGS)" \
-		@CONFIGURE_bootstrap_gcc_2_95@ \
-			--build=$(build) \
-			--host=$(build) \
-			--target=$(target) \
-			--prefix=$(hostprefix) \
-			--with-newlib \
-			--with-cpu=823 \
-			--enable-target-optspace \
-			--enable-languages="c" \
-			--disable-shared \
-			--disable-nls \
-			--nfp && \
-		$(MAKE) all && \
-		@INSTALL_bootstrap_gcc_2_95@
-	rm -rf $(hostprefix)/$(target)/sys-include
-	@CLEANUP_bootstrap_gcc_2_95@
-
 .glibc: @DEPENDS_glibc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		$(MAKE) bootstrap_gcc; \
@@ -855,7 +826,8 @@ devel_optional: .gdb-remote .ksymoops
 			--host=$(build) \
 			--target=$(target) \
 			--prefix=$(hostprefix) && \
-		$(MAKE) all-gdb install-gdb \
+		$(MAKE) all-gdb && \
+		$(MAKE) install-gdb
 	@CLEANUP_gdb@
 	touch .gdb-remote
 
@@ -1264,7 +1236,7 @@ $(appsdir)/tuxbox/neutrino/Makefile: .bootstrap .libcurl .libfreetype .libmad .m
 
 # tuxbox/plugins
 
-$(appsdir)/tuxbox/plugins/Makefile: .bootstrap
+$(appsdir)/tuxbox/plugins/Makefile: .bootstrap .libcurl
 	cd $(appsdir)/tuxbox/plugins && $(CONFIGURE)
 
 .plugins: $(appsdir)/tuxbox/plugins/Makefile
