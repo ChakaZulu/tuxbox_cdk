@@ -364,7 +364,7 @@ diff -Naur gnuboy-1.0.3/sys/pc/keymap.c gnuboy-1.0.3new/sys/pc/keymap.c
  AC_MSG_RESULT(producing heavily optimized code)
  
 -CFLAGS="$CFLAGS -O3"
-+CFLAGS="$CFLAGS"
++CFLAGS="$CFLAGS $CPPFLAGS"
  
 -case `uname -m` in
 -i?86) CFLAGS="$CFLAGS -DALLOW_UNALIGNED_IO" ;;
