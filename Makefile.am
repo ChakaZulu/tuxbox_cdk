@@ -1243,7 +1243,7 @@ endif
 	make -C $(appsdir)/edvb all install
 	touch .edvb
 
-.enigma: $(appsdir)/Makefile .tools
+.enigma: $(appsdir)/Makefile .tools .mad
 	make -C $(appsdir)/enigma all install
 	touch .enigma
 
