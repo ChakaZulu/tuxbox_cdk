@@ -527,7 +527,7 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .xrc
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
-			--with-devdir=$(targetprefix)/dev \
+			--with-devdir=/dev \
 			--with-driver=serial \
 			--with-kerneldir=$(buildprefix)/linux-$(KERNELVERSION) \
 			--with-moduledir=$(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
