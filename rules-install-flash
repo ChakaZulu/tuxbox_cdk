@@ -8,7 +8,7 @@
 # core
 #
 glibc;make:install:install_root=TARGET;install:-m644:libc_pic.a:math/libm_pic.a:resolv/libresolv_pic.a:dlfcn/libdl_pic.a:TARGET/lib;install:-d:TARGET/lib/libc_pic;install:-m644:elf/soinit.os:TARGET/lib/libc_pic/soinit.o;install:-m644:elf/sofini.os:TARGET/lib/libc_pic/sofini.o;install:-m644:libc.map:TARGET/lib/libc_pic.map;install:-m644:libm.map:TARGET/lib/libm_pic.map;install:-m644:libdl.map:TARGET/lib/libdl_pic.map
-gcc;make:install;install:-m644:powerpc-tuxbox-linux-gnu/libstdc++-v3/src/libstdc++_pic.a:TARGET/lib
+gcc;make:install;install:-m644:TARGETNAME/libstdc++-v3/src/libstdc++_pic.a:TARGET/lib;install:-m644:TARGETNAME/libstdc++-v3/src/linker.map:TARGET/lib/libstdc++_pic.map
 
 #
 # contrib libs
