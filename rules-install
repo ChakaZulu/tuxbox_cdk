@@ -67,7 +67,7 @@ lirc;make:install
 lsof;install:-m755:lsof:TARGET/sbin
 ssh;make:install:DESTDIR=TARGET
 tcpdump;make:install:DESTDIR=TARGET
-vdr;make:install:BINDIR=TARGET/bin:MANDIR=TARGET/man:VIDEODIR=TARGET/video:PLUGINDIR=TARGET/lib/vdr/plugins
+vdr;make:install:BINDIR=TARGET/bin:MANDIR=TARGET/man:VIDEODIR=TARGET/video:PLUGINIDIR=TARGET/lib/vdr/plugins
 
 #
 # msttf
