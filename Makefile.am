@@ -901,7 +901,7 @@ $(DEPDIR)/vdr: bootstrap @DEPENDS_vdr@
 #   development tools
 #
 
-devel: gdb ltrace strace nano
+devel: gdb ltrace strace nano joe
 devel_optional: gdb-remote insight
 
 $(DEPDIR)/gdb: bootstrap libncurses @DEPENDS_gdb@
@@ -989,6 +989,20 @@ $(DEPDIR)/nano: bootstrap libncurses @DEPENDS_nano@
 		$(MAKE) all && \
 		@INSTALL_nano@
 	@CLEANUP_nano@
+	touch $@
+
+$(DEPDIR)/joe: bootstrap libncurses @DEPENDS_joe@ 
+	@PREPARE_joe@
+	cd @DIR_joe@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=  \
+			--includedir=$(targetprefix)/include && \
+		$(MAKE) all && \
+		@INSTALL_joe@
+	@CLEANUP_joe@
 	touch $@
 
 $(DEPDIR)/mc: bootstrap libglib libncurses @DEPENDS_mc@

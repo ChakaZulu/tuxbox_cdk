@@ -92,6 +92,7 @@ ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz;extract:ltrace_0.3.26.tar.gz;pa
 strace;4.4.98;strace-4.4.98;strace-4.4.98.tar.bz2;extract:strace-4.4.98.tar.bz2
 nano;1.2.2;nano-1.2.2;nano-1.2.2.tar.gz:nano.diff;extract:nano-1.2.2.tar.gz;patch:nano.diff
 mc;4.6.1-pre1;mc-4.6.1-pre1;mc-4.6.1-pre1.tar.gz:mc-4.6.1.diff;extract:mc-4.6.1-pre1.tar.gz;patch:mc-4.6.1.diff
+joe;3.1;joe-3.1;joe-3.1.tar.gz;extract:joe-3.1.tar.gz
 
 #
 # java

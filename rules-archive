@@ -91,6 +91,7 @@ ltrace_0.3.26.tar.gz;ftp://ftp.debian.org/debian/pool/main/l/ltrace
 strace-4.4.98.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/strace
 nano-1.2.2.tar.gz;http://www.nano-editor.org/dist/v1.2
 mc-4.6.1-pre1.tar.gz;http://www.ibiblio.org/pub/Linux/utils/file/managers/mc
+joe-3.1.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/joe-editor
 
 #
 # java
