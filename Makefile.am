@@ -37,6 +37,7 @@ core: .directories .binutils .linuxdir .glibc .gcc
 	$(INSTALL) -d $(targetprefix)/include
 	$(INSTALL) -d $(targetprefix)/mnt
 	$(INSTALL) -d $(targetprefix)/lib
+	$(INSTALL) -d $(targetprefix)/lib/pkgconfig
 	$(INSTALL) -d $(targetprefix)/proc
 	$(INSTALL) -d $(targetprefix)/root
 	$(INSTALL) -d $(targetprefix)/sbin
