@@ -94,6 +94,7 @@ strace;4.4.98;strace-4.4.98;strace-4.4.98.tar.bz2;extract:strace-4.4.98.tar.bz2
 nano;1.2.4;nano-1.2.4;nano-1.2.4.tar.gz:nano.diff;extract:nano-1.2.4.tar.gz;patch:nano.diff
 mc;4.6.1-pre1;mc-4.6.1-pre1;mc-4.6.1-pre1.tar.gz:mc-4.6.1.diff;extract:mc-4.6.1-pre1.tar.gz;patch:mc-4.6.1.diff
 joe;3.1;joe-3.1;joe-3.1.tar.gz;extract:joe-3.1.tar.gz
+bash;3.0;bash-3.0;bash-3.0.tar.gz;extract:bash-3.0.tar.gz
 
 #
 # java

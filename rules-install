@@ -90,6 +90,8 @@ strace;make:install:prefix=TARGET
 nano;make:install:DESTDIR=TARGET
 mc;make:install:prefix=TARGET
 joe;make:install:prefix=TARGET
+bash;make:install:prefix=TARGET
+
 
 #
 # java
