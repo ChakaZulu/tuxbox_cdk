@@ -24,6 +24,7 @@ linux-2.4.22
 .gdb-remote
 .glibc
 .lcars
+.lcd
 .lcdmenu
 .libboost
 .libcommoncplusplus
@@ -37,6 +38,7 @@ linux-2.4.22
 .libexpat
 .libfreetype
 .libfribidi
+.libgmp
 .libid3tag
 .libjpeg
 .libmad
