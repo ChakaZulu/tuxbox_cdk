@@ -143,6 +143,11 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	@CLEANUP_modutils@
 	touch .modutils
 
+.etc: .busybox .tinylogin .modutils
+        patch -p1 $(targetprefix)/etc < ./Patches/etc.diff
+        touch .etc
+
+		
 #######################
 #
 #   contrib libs
@@ -325,7 +330,11 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	make -C $(appsdir)/fx2 all install
 	touch .fx2
 
-.neutrino: $(appsdir)/Makefile .fx2
+.zapit: $(appsdir)/Makefile
+	make -C $(appsdir)/zapit all install
+	touch .zapit
+
+.neutrino: $(appsdir)/Makefile .fx2 .zapit
 	make -C $(appsdir)/mczap all install
 	touch .neutrino
 
@@ -349,10 +358,6 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	make -C $(appsdir)/sections all install
 	touch .sections
 
-.zapit: $(appsdir)/Makefile
-	make -C $(appsdir)/zapit all install
-	touch .zapit
-
 
 #######################
 #
@@ -362,10 +367,10 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 distclean-local:
 	-rm Makefile-archive
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .busybox .tinylogin
+	-rm .etc .busybox .tinylogin .modutils
 	-rm .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	-rm .ppcboot .linuxkernel
-	-rm .libfx2 .fx2 .edvb .neutrino .lcdmenu .stream .tools
+	-rm .fx2 .edvb .neutrino .lcdmenu .stream .tools .zapit
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 	-make -C $(appsdir) distclean
@@ -384,4 +389,3 @@ $(ACLOCAL_M4): $(top_srcdir)/tuxbox.m4
 
 EXTRA_DIST = rules-archive rules-archive.pl rules-install rules-install.pl rules-make rules-make.pl tuxbox.m4
 CONFIG_STATUS_DEPENDENCIES = rules-install rules-make
-
