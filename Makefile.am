@@ -353,7 +353,7 @@ libs: \
 	@PREPARE_libpcap@
 	cd @DIR_libpcap@ && \
 		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_CFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
@@ -500,7 +500,7 @@ libs: \
 #   contrib apps
 #
 
-contrib_apps: .console_data .console_tools .fbset .lirc .ssh .xrc
+contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -583,15 +583,15 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .xrc
 	@CLEANUP_ssh@
 	touch .ssh
 
-.tcpdump: .bootstrap @DEPENDS_tcpdump@
+.tcpdump: .bootstrap .libpcap @DEPENDS_tcpdump@
 	@PREPARE_tcpdump@
 	cd @DIR_tcpdump@ && \
 		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_CFLAGS)" \
-		LIBS="-lpcap" \
+		CFLAGS="$(TARGET_CFLAGS) -I$(targetprefix)/include -L$(targetprefix)/lib" LDFLAGS="$(TARGET_LDFLAGS) -L$(targetprefix)/lib"  \
 		./configure \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
+			--libdir=$(targetprefix)/lib \
 			--build=$(build) && \
 		make && \
 		@INSTALL_tcpdump@
@@ -1149,7 +1149,7 @@ distclean-local:
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 	-rm .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg
-	-rm .libpng .libqt .libreadline .libsdl .libsigc .libxml2 .libz .libpcap
+	-rm .libpcap .libpng .libqt .libreadline .libsdl .libsigc .libxml2 .libz
 	-rm .cabextract .msttf
 	-rm .gdb .strace .nano
 	-rm .kaffeh .kaffe

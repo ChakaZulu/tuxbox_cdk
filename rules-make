@@ -57,7 +57,7 @@ console_tools;0.2.3;console-tools-0.2.3;console-tools-0.2.3.tar.gz:console-tools
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.6.5;lirc-0.6.5;lirc-0.6.5.tar.bz2;extract:lirc-0.6.5.tar.bz2
 ssh;3.0.2p1;openssh-3.0.2p1;openssh-3.0.2p1.tar.gz:ssh.diff;extract:openssh-3.0.2p1.tar.gz;patch:ssh.diff
-libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz
+tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
 xrc;0.6.3;xrc-0.6.3;xrc-0.6.3.tar.gz:xrc.diff;extract:xrc-0.6.3.tar.gz;patch:xrc.diff
 
 #
