@@ -39,7 +39,7 @@ jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
 libpng-1.0.12.tar.gz;http://www.libpng.org/pub/png/src
 qt-embedded-2.3.0.tar.gz;ftp://ftp.trolltech.com/qt/source
 libxml2-2.4.10.tar.gz;ftp://xmlsoft.org
-zlib.tar.gz;http://www.gzip.org/zlib.tar.gz
+zlib-1.1.4.tar.bz2;ftp://ftp.info-zip.org/pub/infozip/zlib
 libffi-1.20.tar.gz;ftp://sourceware.cygnus.com/pub/libffi
 SDL-1.2.3.tar.gz;http://www.libsdl.org/release
 readline-4.2a.tar.gz;ftp://ftp.gnu.org/gnu/readline

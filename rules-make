@@ -43,7 +43,7 @@ libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0
 libreadline;4.2a;readline-4.2a;readline-4.2a.tar.gz;extract:readline-4.2a.tar.gz
 libsdl;1.2.3;SDL-1.2.3;SDL-1.2.3.tar.gz:sdl.diff;extract:SDL-1.2.3.tar.gz;patch:sdl.diff
 libxml2;2.4.10;libxml2-2.4.10;libxml2-2.4.10.tar.gz;extract:libxml2-2.4.10.tar.gz
-libz;1.1.3;zlib-1.1.3;zlib.tar.gz:zlib.diff;extract:zlib.tar.gz;patch:zlib.diff
+libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff;extract:zlib-1.1.4.tar.bz2;patch:zlib.diff
 
 #
 # contrib apps
