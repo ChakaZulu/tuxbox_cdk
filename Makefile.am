@@ -120,6 +120,10 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_bootstrap_gcc@
 
+if TARGETRULESET_FLASH
+GLIBC_EXTRA_FLAGS="--enable-kernel=$(KERNELVERSION)"
+endif
+
 .glibc: @DEPENDS_glibc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		$(MAKE) bootstrap_gcc; \
@@ -128,21 +132,17 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 	fi
 	@PREPARE_glibc@
 	cd @DIR_glibc@ && \
-		CC=$(target)-gcc \
-		AR=$(target)-ar \
-		RANLIB=$(target)-ranlib \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		$(BUILDENV) \
 		@CONFIGURE_glibc@ \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
 			--with-headers=$(buildprefix)/linux/include \
-			--enable-kernel=$(KERNELVERSION) \
 			--disable-profile \
 			--enable-shared \
 			--enable-add-ons=linuxthreads \
-			--without-fp && \
+			--without-fp \
+			$(GLIBC_EXTRA_FLAGS) && \
 		$(MAKE) all && \
 		@INSTALL_glibc@
 	@CLEANUP_glibc@
