@@ -1341,10 +1341,10 @@ $(flashprefix)/.part_sshd: $(flashprefix)/.flash .ssh
 flash-dvb-tools: $(flashprefix)/.part_dvb_tools
 
 $(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash .dvb_tools
-        $(INSTALL) $(targetprefix)/sbin/streampes $(flashprefix)/root/sbin
-        $(INSTALL) $(targetprefix)/sbin/streamsec $(flashprefix)/root/sbin
-        $(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
-        @touch $@
+	$(INSTALL) $(targetprefix)/sbin/streampes $(flashprefix)/root/sbin
+	$(INSTALL) $(targetprefix)/sbin/streamsec $(flashprefix)/root/sbin
+	$(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
+	@touch $@
 
 flash-neutrino: $(flashprefix)/.part_neutrino
 
