@@ -46,7 +46,7 @@ libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;pa
 libpng;1.0.12;libpng-1.0.12;libpng-1.0.12.tar.gz:libpng-1.0.12.diff;extract:libpng-1.0.12.tar.gz;patch:libpng-1.0.12.diff
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff
 libreadline;4.2a;readline-4.2a;readline-4.2a.tar.gz;extract:readline-4.2a.tar.gz
-libsdl;1.2.3;SDL-1.2.3;SDL-1.2.3.tar.gz:sdl.diff;extract:SDL-1.2.3.tar.gz;patch:sdl.diff
+libsdl;1.2.4;SDL-1.2.4;SDL-1.2.4.tar.gz:sdl.diff;extract:SDL-1.2.4.tar.gz;patch:sdl.diff
 libsigc;1.0.4;libsigc++-1.0.4;libsigc++-1.0.4.tar.gz:libsigc.diff;extract:libsigc++-1.0.4.tar.gz;patch:libsigc.diff
 libxml2;2.4.19;libxml2-2.4.19;libxml2-2.4.19.tar.gz;extract:libxml2-2.4.19.tar.gz
 libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff;extract:zlib-1.1.4.tar.bz2;patch:zlib.diff
@@ -87,8 +87,7 @@ kaffeh;1.0.6;kaffe-1.0.6;kaffe-1.0.6.tar.gz:kaffeh.diff;extract:kaffe-1.0.6.tar.
 # fun stuff
 #
 mad;0.14.2b;mad-0.14.2b;mad-0.14.2b.tar.gz;extract:mad-0.14.2b.tar.gz
-scummvm;20020314;scummvm;scummvm-20020314.tar.bz2:scummvm.diff;extract:scummvm-20020314.tar.bz2;patch:scummvm.diff
-
+scummvm;20020609;scummvm;scummvm-20020609.tar.bz2:scummvm.diff;extract:scummvm-20020609.tar.bz2
 #
 # dvb apps
 #

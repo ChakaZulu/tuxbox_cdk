@@ -44,7 +44,7 @@ qt-embedded-2.3.0.tar.gz;ftp://ftp.trolltech.com/qt/source
 libxml2-2.4.19.tar.gz;ftp://xmlsoft.org
 zlib-1.1.4.tar.bz2;ftp://ftp.info-zip.org/pub/infozip/zlib
 libffi-1.20.tar.gz;ftp://sourceware.cygnus.com/pub/libffi
-SDL-1.2.3.tar.gz;http://www.libsdl.org/release
+SDL-1.2.4.tar.gz;http://www.libsdl.org/release
 readline-4.2a.tar.gz;ftp://ftp.gnu.org/gnu/readline
 libsigc++-1.0.4.tar.gz;ftp://download.sourceforge.net/pub/sourceforge/libsigc
 libpcap-0.7.1.tar.gz;http://www.tcpdump.org/release
@@ -84,7 +84,8 @@ kaffe-1.0.6.tar.gz;http://www.kaffe.org/ftp/pub/kaffe
 # fun
 #
 mad-0.14.2b.tar.gz;ftp://ftp.mars.org/pub/mpeg
-scummvm-20020314.tar.bz2
+#scummvm-20020314.tar.bz2
+scummvm-20020609.tar.bz2;http://scummvm.sourceforge.net/daily
 
 #
 # dvb apps
