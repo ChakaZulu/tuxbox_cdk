@@ -1,7 +1,7 @@
 SUBDIRS = init.d
 
 EXTRA_DIST = \
-	fstab group host.conf hostname hosts inetd.conf inittab issue.net \
+	fstab.in group host.conf hostname hosts inetd.conf inittab issue.net \
 	mime.types modules.conf.in nsswitch.conf passwd profile protocols \
 	resolv.conf services termcap
 
