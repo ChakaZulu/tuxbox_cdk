@@ -1256,7 +1256,7 @@ $(appsdir)/tuxbox/plugins/config.status: .bootstrap .libcurl
 
 # tuxbox/tools
 
-$(appsdir)/tuxbox/tools/config.status: .bootstrap .tuxbox_libs
+$(appsdir)/tuxbox/tools/config.status: .bootstrap .plugins .tuxbox_libs
 	cd $(appsdir)/tuxbox/tools && $(CONFIGURE)
 
 .tuxbox_tools: $(appsdir)/tuxbox/tools/config.status
