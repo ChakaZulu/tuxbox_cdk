@@ -17,7 +17,7 @@ AC_ARG_WITH(hostruleset,
 	[  --with-hostruleset=NAME host ruleset [[standard,cygwin]]],
 	[hostruleset="$withval"],[hostruleset="standard"])
 
-if test "$host_os" = "cygwin" -a "$hostruleset" == "standard"; then
+if test "$host_os" = "cygwin" -a "$hostruleset" = "standard"; then
 	AC_MSG_WARN([overriding standard ruleset])
 	hostruleset="cygwin"
 fi
