@@ -643,7 +643,7 @@ endif
 #   own applications
 #
 
-apps: .dvbsnoop .dvbstream .edvb .enigma .fx2 .lcars .lcdmenu .neutrino .stream 
+apps: .dvbsnoop .dvbstream .edvb .enigma .fx2 .lcars .lcdmenu .neutrino .stream .tuxtxt
 
 if MAINTAINER_MODE
 $(appsdir)/configure: $(appsdir)/configure.ac
@@ -710,6 +710,10 @@ endif
 	make -C $(appsdir)/tools all install
 	touch .tools
 
+.tuxtxt: $(appsdir)/Makefile
+	make -C $(appsdir)/tuxtxt all install
+	touch .tuxtxt
+
 .zapit: $(appsdir)/Makefile
 	make -C $(appsdir)/zapit all install
 	touch .zapit
@@ -774,7 +778,7 @@ distclean-local:
 	-rm .scummvm
 	-rm .ppcboot .linuxkernel .driver
 	-rm .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
-	-rm .fx2 .sections .tools .zapit
+	-rm .fx2 .sections .tools .tuxtxt .zapit
 	-rm .liblcddisplay .libmd5sum .libnet .libucodes
 	-rm .dvbstream
 	-rm -rf $(targetprefix)
