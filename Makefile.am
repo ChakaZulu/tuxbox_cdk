@@ -920,7 +920,7 @@ fun: .mad .scummvm
 	@CLEANUP_scummvm@
 	touch .scummvm
 
-.sdldoom: @DEPENDS_sdldoom@
+.sdldoom: .bootstrap @DEPENDS_sdldoom@
 	@PREPARE_sdldoom@
 	cd @DIR_sdldoom@ && \
 		CC=$(target)-gcc \
@@ -942,7 +942,7 @@ fun: .mad .scummvm
 
 dvb_apps: .dvbstream .dvbtext .dvbtune
 
-.dvbstream: @DEPENDS_dvbstream@
+.dvbstream: .bootstrap @DEPENDS_dvbstream@
 	@PREPARE_dvbstream@
 	cd @DIR_dvbstream@ && \
 		make dvbstream \
@@ -953,7 +953,7 @@ dvb_apps: .dvbstream .dvbtext .dvbtune
 	@CLEANUP_dvbstream@
 	touch .dvbstream
 
-.dvbtext: @DEPENDS_dvbtext@
+.dvbtext: .bootstrap @DEPENDS_dvbtext@
 	@PREPARE_dvbtext@
 	cd @DIR_dvbtext@ && \
 		$(target)-gcc $(TARGET_CFLAGS) -I$(driverdir)/include -o dvbtext dvbtext.c && \
@@ -961,7 +961,7 @@ dvb_apps: .dvbstream .dvbtext .dvbtune
 	@CLEANUP_dvbtext@
 	touch .dvbtext
 
-.dvbtune: @DEPENDS_dvbtune@
+.dvbtune: .bootstrap @DEPENDS_dvbtune@
 	@PREPARE_dvbtune@
 	cd @DIR_dvbtune@ && \
 		make \
@@ -970,6 +970,24 @@ dvb_apps: .dvbstream .dvbtext .dvbtune
 		@INSTALL_dvbtune@
 	@CLEANUP_dvbtune@
 	touch .dvbtune
+
+.vls: .bootstrap .libdvbpsi @DEPENDS_vls@
+	@PREPARE_vls@
+	cd @DIR_vls@ && \
+		CC=$(target)-gcc \
+		CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--disable-dvd \
+			--with-dvb=$(driverdir)/include && \
+		make all && \
+		@INSTALL_vls@
+	@CLEANUP_vls@
+	touch .vls
 
 #######################
 #

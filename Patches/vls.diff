@@ -1,0 +1,181 @@
+diff -Naur vls-0.3.3.orig/Makefile.opts.in vls-0.3.3/Makefile.opts.in
+--- vls-0.3.3.orig/Makefile.opts.in	Mon May 13 03:23:00 2002
++++ vls-0.3.3/Makefile.opts.in	Sun Jul 28 08:55:58 2002
+@@ -74,7 +74,7 @@
+ #
+ # Specific flags
+ #
+-CCFLAGS+=-DCONFIG_PATH='"$(sysconfdir)/videolan/vls"'
++CCFLAGS+=-DCONFIG_PATH='"/etc/videolan/vls"'
+ 
+ VLS_LCFLAGS		= @VLS_LCFLAGS@
+ VLS_LIB			= @VLS_LIB@
+diff -Naur vls-0.3.3.orig/configure vls-0.3.3/configure
+--- vls-0.3.3.orig/configure	Mon May 13 03:23:00 2002
++++ vls-0.3.3/configure	Sun Jul 28 08:55:58 2002
+@@ -3126,47 +3126,7 @@
+ 
+ if test ${NEEDSRC_mpegmux} = 1
+ then
+-  ac_safe=`echo "dvbpsi/dvbpsi.h" | sed 'y%./+-%__p_%'`
+-echo $ac_n "checking for dvbpsi/dvbpsi.h""... $ac_c" 1>&6
+-echo "configure:3132: checking for dvbpsi/dvbpsi.h" >&5
+-if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
+-  echo $ac_n "(cached) $ac_c" 1>&6
+-else
+-  cat > conftest.$ac_ext <<EOF
+-#line 3137 "configure"
+-#include "confdefs.h"
+-#include <dvbpsi/dvbpsi.h>
+-EOF
+-ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+-{ (eval echo configure:3142: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+-ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+-if test -z "$ac_err"; then
+-  rm -rf conftest*
+-  eval "ac_cv_header_$ac_safe=yes"
+-else
+-  echo "$ac_err" >&5
+-  echo "configure: failed program was:" >&5
+-  cat conftest.$ac_ext >&5
+-  rm -rf conftest*
+-  eval "ac_cv_header_$ac_safe=no"
+-fi
+-rm -f conftest*
+-fi
+-if eval "test \"`echo '$ac_cv_header_'$ac_safe`\" = yes"; then
+-  echo "$ac_t""yes" 1>&6
+-  HAVE_LIBDVBPSI=1
+-else
+-  echo "$ac_t""no" 1>&6
+-HAVE_LIBDVBPSI=0
+-fi
+-
+-  if test ${HAVE_LIBDVBPSI} = 1
+-  then
+     VLS_LIB="${VLS_LIB} -ldvbpsi"
+-  else
+-    { echo "configure: error: The development package for libdvbpsi is not installed.
+-Please install it and try again." 1>&2; exit 1; }
+-  fi
+ fi
+ 
+ 
+diff -Naur vls-0.3.3.orig/src/modules/dvbinput/dvbinput.cpp vls-0.3.3/src/modules/dvbinput/dvbinput.cpp
+--- vls-0.3.3.orig/src/modules/dvbinput/dvbinput.cpp	Mon May 13 03:22:59 2002
++++ vls-0.3.3/src/modules/dvbinput/dvbinput.cpp	Sun Jul 28 08:57:12 2002
+@@ -125,7 +125,7 @@
+   C_Application* pApp = C_Application::GetApp();
+   ASSERT(pApp);
+ 
+-  C_String strNumber = pApp->GetSetting(GetName() + "DeviceNumber", "");
++  C_String strNumber = pApp->GetSetting(GetName() + "DeviceNumber", "0");
+ 
+   m_strSec      = "/dev/ost/sec" + strNumber;
+   m_strFrontend = "/dev/ost/frontend" + strNumber;
+diff -Naur vls-0.3.3.orig/src/server/config.h.in vls-0.3.3/src/server/config.h.in
+--- vls-0.3.3.orig/src/server/config.h.in	Mon May 13 03:22:59 2002
++++ vls-0.3.3/src/server/config.h.in	Sun Jul 28 08:55:58 2002
+@@ -36,7 +36,7 @@
+ #define PGRM_INFO       "VideoLAN Server v @VLS_VERSION@ (" __DATE__ ") " \
+                         "- (c)1999-2001 VideoLAN\n"
+ 
+-#define PLUGIN_PATH     "@prefix@/lib/videolan/vls"
++#define PLUGIN_PATH     "/lib/videolan/vls"
+ 
+ 
+ #else
+diff -Naur vls-0.3.3.orig/vls.cfg vls-0.3.3/vls.cfg
+--- vls-0.3.3.orig/vls.cfg	Mon May 13 03:23:00 2002
++++ vls-0.3.3/vls.cfg	Sun Jul 28 08:55:58 2002
+@@ -39,40 +39,40 @@
+ # --- Format:
+ # InputName     = "Type"
+ # --- Example:
+-  local1       = "local"                # Local input example
++#  local1       = "local"                # Local input example
+ #  kfir		= "video"               # Video input example (mpeg encoder)
+-#  dvb		= "dvb"			# Video input example (DVB card)
++  dvb		= "dvb"			# Video input example (DVB card)
+ END
+ 
+ # Inputs configuration
+-BEGIN "local1"
++#BEGIN "local1"
+ # --- Format:
+ #  ConfigPath    = "/path"
+ # --- Example:
+ # The configuration file is /usr/local/etc/videolan/vls/input.cfg
+-  ConfigPath    = "/usr/local/etc/videolan/vls"
+-END
++#  ConfigPath    = "/etc/videolan/vls"
++#END
+ 
+ # Video input configuration
+-BEGIN "kfir"
++#BEGIN "kfir"
+ # --- Example:
+ # Device	= "/dev/video"     # Video4linux device (default is "/dev/video")
+ # Type		= "Mpeg2-PS"       # Stream type (default is "Mpeg2-PS")
+-END
++#END
+ 
+ # Video input (DVB) configuration
+ BEGIN "dvb"
+ # --- Example:
+-#  DeviceNumber	= "0"			# /dev/ost/dvr<i>
++  DeviceNumber	= "0"			# /dev/ost/dvr<i>
+ 
+-#  Frequency	= "12553000"		# Frequency in kHz of the transponder
+-#  Polarization	= "0"			# 0 or 1
+-#  SymbolRate	= "27500000"		# Symbol rate
+-
+-#  DiSEqC	= "0"			# DiSEqC address of the used LNB
+-#  LNB_Lof1	= "9750000"		# Local frequency of lower LNB band
+-#  LNB_Lof2	= "10600000"		# Local frequency of upper LNB band
+-#  LNB_SLof	= "11700000"		# Switch frequency of LNB
++  Frequency	= "12553000"		# Frequency in kHz of the transponder
++  Polarization	= "0"			# 0 or 1
++  SymbolRate	= "27500000"		# Symbol rate
++
++  DiSEqC	= "0"			# DiSEqC address of the used LNB
++  LNB_Lof1	= "9750000"		# Local frequency of lower LNB band
++  LNB_Lof2	= "10600000"		# Local frequency of upper LNB band
++  LNB_SLof	= "11700000"		# Switch frequency of LNB
+ END
+ 
+ # Channel (outputs) declaration
+@@ -80,23 +80,23 @@
+ # --- Format:
+ # ChannelName   = "Type"
+ # --- Example:
+-  localhost     = "network"
+-#  client1       = "network"
++#  localhost     = "network"
++  client       = "network"
+ #  client2       = "network"
+ #  multicast     = "network"  
+ #  localfile     = "file"
+ END
+ 
+ # Channels configuration
+-BEGIN "localhost"         # The client is on the same host as the server
+-  DstHost = "localhost"
+-  DstPort = "1234"
+-END
+-
+-#BEGIN "client1"                          # unicast example
+-#  DstHost = "192.168.1.2"                # destination host
+-#  DstPort = "1234"                       # destination port
++#BEGIN "localhost"         # The client is on the same host as the server
++#  DstHost = "localhost"
++#  DstPort = "1234"
+ #END
++
++BEGIN "client"                          # unicast example
++  DstHost = "192.168.2.8"                # destination host
++  DstPort = "1234"                       # destination port
++END
+ 
+ #BEGIN "client2"                          # unicast with IPv6 example
+ #  Domain  = "inet6"

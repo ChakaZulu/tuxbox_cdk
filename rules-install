@@ -98,4 +98,5 @@ sdldoom;make:install
 dvbstream;install:-m755:dvbstream:TARGET/bin
 dvbtext;install:-m755:dvbtext:TARGET/bin
 dvbtune;install:-m755:dvbtune:TARGET/bin
+vls;make:install
 

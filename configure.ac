@@ -303,6 +303,7 @@ TUXBOX_RULES_MAKE(sdldoom)
 TUXBOX_RULES_MAKE(dvbstream)
 TUXBOX_RULES_MAKE(dvbtext)
 TUXBOX_RULES_MAKE(dvbtune)
+TUXBOX_RULES_MAKE(vls)
 
 #
 # internal
