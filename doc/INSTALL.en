@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.25 2004/05/14 23:01:55 waldi Exp $
+# $Id: INSTALL.en,v 1.26 2004/11/11 16:24:00 carjay Exp $
 #
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
@@ -39,6 +39,7 @@ I. Prerequistes:
  - bison
  - pkg-config
  - wget
+ - libpng2 or libpng3 (DirectFB)
 
  Ensure that you have these programs installed and accessible on your system.
  Compare version numbers where applicable. Don't report any bugs before having
