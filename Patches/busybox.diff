@@ -1,6 +1,6 @@
-diff -Naur busybox-1.00-pre7/init/init.c busybox-1.00-pre7-dbox2/init/init.c
---- busybox-1.00-pre7/init/init.c	2003-09-26 12:45:55.000000000 +0200
-+++ busybox-1.00-pre7-dbox2/init/init.c	2004-02-22 16:13:00.000000000 +0100
+diff -Naur busybox/init/init.c busybox_patch/init/init.c
+--- busybox/init/init.c	2004-03-15 09:28:40.000000000 +0100
++++ busybox_patch/init/init.c	2004-04-13 19:04:58.000000000 +0200
 @@ -376,7 +376,7 @@
  	while ((fd = open(console, O_RDONLY | O_NONBLOCK)) < 0 && tried < 2) {
  		/* Can't open selected console -- try
@@ -30,9 +30,9 @@ diff -Naur busybox-1.00-pre7/init/init.c busybox-1.00-pre7-dbox2/init/init.c
  	}
  	return wpid;
  }
-diff -Naur busybox-1.00-pre7/libbb/messages.c busybox-1.00-pre7-dbox2/libbb/messages.c
---- busybox-1.00-pre7/libbb/messages.c	2003-09-02 04:36:11.000000000 +0200
-+++ busybox-1.00-pre7-dbox2/libbb/messages.c	2004-02-22 16:11:11.000000000 +0100
+diff -Naur busybox/libbb/messages.c busybox_patch/libbb/messages.c
+--- busybox/libbb/messages.c	2004-03-15 09:28:42.000000000 +0100
++++ busybox_patch/libbb/messages.c	2004-04-13 19:04:58.000000000 +0200
 @@ -56,27 +56,47 @@
  #endif
  
@@ -86,9 +86,9 @@ diff -Naur busybox-1.00-pre7/libbb/messages.c busybox-1.00-pre7-dbox2/libbb/mess
  const char * const bb_path_nologin_file = NOLOGIN_FILE;
  #endif
  
-diff -Naur busybox-1.00-pre7/networking/ifupdown.c busybox-1.00-pre7-dbox2/networking/ifupdown.c
---- busybox-1.00-pre7/networking/ifupdown.c	2003-12-19 11:46:00.000000000 +0100
-+++ busybox-1.00-pre7-dbox2/networking/ifupdown.c	2004-02-22 16:11:11.000000000 +0100
+diff -Naur busybox/networking/ifupdown.c busybox_patch/networking/ifupdown.c
+--- busybox/networking/ifupdown.c	2004-03-15 09:28:48.000000000 +0100
++++ busybox_patch/networking/ifupdown.c	2004-04-13 19:29:22.000000000 +0200
 @@ -1022,7 +1022,7 @@
  
  static int execute_all(struct interface_defn_t *ifd, execfn *exec, const char *opt)
@@ -98,14 +98,13 @@ diff -Naur busybox-1.00-pre7/networking/ifupdown.c busybox-1.00-pre7-dbox2/netwo
  	char *buf;
  	for (i = 0; i < ifd->n_options; i++) {
  		if (strcmp(ifd->option[i].name, opt) == 0) {
-@@ -1031,9 +1031,13 @@
+@@ -1031,9 +1031,12 @@
  			}
  		}
  	}
--	
+-
 -	bb_xasprintf(&buf, "run-parts /etc/network/if-%s.d", opt);
 -	(*exec)(buf);
-+
 +	bb_xasprintf(&buf, "/etc/network/if-%s.d", opt);
 +	if ((fd = open(buf, O_RDONLY)) >= 0) {
 +		close(fd);
@@ -115,9 +114,9 @@ diff -Naur busybox-1.00-pre7/networking/ifupdown.c busybox-1.00-pre7-dbox2/netwo
  
  	return (1);
  }
-diff -Naur busybox-1.00-pre7/sysdeps/linux/Config.in busybox-1.00-pre7-dbox2/sysdeps/linux/Config.in
---- busybox-1.00-pre7/sysdeps/linux/Config.in	2003-10-22 11:58:50.000000000 +0200
-+++ busybox-1.00-pre7-dbox2/sysdeps/linux/Config.in	2004-02-22 16:11:11.000000000 +0100
+diff -Naur busybox/sysdeps/linux/Config.in busybox_patch/sysdeps/linux/Config.in
+--- busybox/sysdeps/linux/Config.in	2004-03-15 09:29:15.000000000 +0100
++++ busybox_patch/sysdeps/linux/Config.in	2004-04-13 19:04:58.000000000 +0200
 @@ -195,6 +195,14 @@
  	  if you want to add some simple compiler switches (like -march=i686),
  	  or check for warnings using -Werror, just those options here.
