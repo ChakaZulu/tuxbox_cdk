@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.15 2003/06/13 00:56:35 obi Exp $
+# $Id: INSTALL.en,v 1.16 2003/07/11 00:23:04 obi Exp $
 #
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
@@ -77,21 +77,7 @@ III. Generating the Makefiles:
    ./configure --prefix=$HOME/dbox2 --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode
 
 ------------------------------------------------------------------------------
-IV. Getting 3rd party sources (optional, not recommended):
-------------------------------------------------------------------------------
-
- - Enter the following command:
-
-   make download
-
-   Note: This will download more source packages than you will probably ever
-         want to compile. This causes more ip traffic than skipping this step,
-	 but all downloads are done in one step, which might or might not
-	 reduce the amount of time spent online, depending on your internet
-	 connection.
-
-------------------------------------------------------------------------------
-V. Building the CDK:
+IV. Building the CDK:
 ------------------------------------------------------------------------------
 
  - Enter the following command (see Makefile.am for other make targets):
