@@ -174,7 +174,7 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 	@CLEANUP_inetd@
 	touch .inetd
 
-.telnetd: .gcc .inetd @DEPENDS_telnetd@
+.telnetd: .gcc .inetd .libncurses @DEPENDS_telnetd@
 	@PREPARE_telnetd@
 	touch @DIR_telnetd@/MCONFIG
 	cd @DIR_telnetd@/telnetd && \
