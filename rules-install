@@ -36,7 +36,7 @@ tinylogin;make:install:PREFIX=TARGET
 #
 libcrypto;install:libcrypto.so.0.9.6:TARGET/lib;link:libcrypto.so.0.9.6:TARGET/lib/libcrypto.so.0;link:libcrypto.so.0:TARGET/lib/libcrypto.so;install:libssl.so.0.9.6:TARGET/lib;link:libssl.so.0.9.6:TARGET/lib/libssl.so.0;link:libssl.so.0:TARGET/lib/libssl.so;install:-d:TARGET/include/openssl;make:install_cdk:INSTALL_PREFIX=TARGET:INSTALLTOP=
 libcurl;make:install;link:TARGET/bin/curl-config:HOST/bin
-libcommoncplusplus;make:install
+libcommoncplusplus;make:install;link:TARGET/bin/ccgnu2-config:HOST/bin/ccgnu2-config
 libdb2;make:install:DESTDIR=TARGET
 libdvbpsi;make:install
 libffi;make:install

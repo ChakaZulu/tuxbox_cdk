@@ -318,9 +318,9 @@ libs: \
 	.libcrypto .libcurl .libffi .libfreetype .libjpeg \
 	.libncurses .libpng .libreadline .libsdl .libsigc .libz 
 
-.libcommoncplusplus: .bootstrap @DEPENDS_libcommoncplusplus@
+.libcommoncplusplus: .bootstrap .libxml2 @DEPENDS_libcommoncplusplus@
 	@PREPARE_libcommoncplusplus@
-	cd @DIR_libcommoncplusplus@ && autoconf2.50 &&\
+	cd @DIR_libcommoncplusplus@ && &&\
 		CC=$(target)-gcc CXX=$(target)-g++ \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
