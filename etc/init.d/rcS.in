@@ -4,8 +4,8 @@ PATH=/sbin:/bin
 
 hostname -F /etc/hostname
 mount -a
-
-ifconfig lo 127.0.0.1 up
+echo -n >/etc/network/ifstate
+ifup -a
 
 @TARGETRULESET_FLASH_TRUE@if test -d /share/tuxbox/image/var ; then
 @TARGETRULESET_FLASH_TRUE@for i in `cd /share/tuxbox/image/var ; find . -type d` ; do test -d /var/$i || mkdir -p /var/$i ; done
