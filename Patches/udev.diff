@@ -1,0 +1,11 @@
+diff -Naur udev-030.orig/Makefile udev-030/Makefile
+--- udev-030.orig/Makefile	2004-07-09 19:59:09.000000000 +0200
++++ udev-030/Makefile	2004-07-28 18:25:02.000000000 +0200
+@@ -78,7 +78,6 @@
+ # If you are running a cross compiler, you may want to set this
+ # to something more interesting, like "arm-linux-".  If you want
+ # to compile vs uClibc, that can be done here as well.
+-CROSS = #/usr/i386-linux-uclibc/usr/bin/i386-uclibc-
+ CC = $(CROSS)gcc
+ LD = $(CROSS)gcc
+ AR = $(CROSS)ar

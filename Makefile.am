@@ -300,6 +300,16 @@ $(DEPDIR)/procps: bootstrap libncurses @DEPENDS_procps@
 	@CLEANUP_procps@
 	touch $@
 
+$(DEPDIR)/udev: bootstrap @DEPENDS_udev@
+	@PREPARE_udev@
+	cd @DIR_udev@ && \
+		$(BUILDENV) \
+		CROSS=$(target)- \
+		$(MAKE) && \
+		@INSTALL_udev@
+	@CLEANUP_udev@
+	touch $@
+
 $(DEPDIR)/watchdog: bootstrap @DEPENDS_watchdog@
 	@PREPARE_watchdog@
 	cd @DIR_watchdog@ && \
