@@ -825,7 +825,7 @@ devel_optional: .gdb-remote
 	@CLEANUP_strace@
 	touch $@
 
-.nano: .bootstrap @DEPENDS_nano@
+.nano: .bootstrap .libncurses @DEPENDS_nano@
 	@PREPARE_nano@
 	cd @DIR_nano@ && \
 		$(BUILDENV) \
