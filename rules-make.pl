@@ -60,6 +60,10 @@ if ( $#ARGV >= 2 )
       {
         $output .= "Archive/" . $_ . " ";
       }
+      elsif ( $_ =~ m#\.tgz$# )
+      {
+        $output .= "Archive/" . $_ . " ";
+      }
       else
       {
         die "can't recognize type of archive " . $_;
@@ -93,6 +97,10 @@ if ( $#ARGV >= 2 )
           $output .= "bunzip2 -cd Archive/" . $_[1] . " | tar -x";
         }
         elsif ( $_[1] =~ m#\.tar\.gz$# )
+        {
+          $output .= "gunzip -cd Archive/" . $_[1] . " | tar -x";
+        }
+        elsif ( $_[1] =~ m#\.tgz$# )
         {
           $output .= "gunzip -cd Archive/" . $_[1] . " | tar -x";
         }
