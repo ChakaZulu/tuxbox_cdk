@@ -43,7 +43,7 @@ mrouted_3.9-beta3.orig.tar.gz;ftp://ftp.debian.org/debian/pool/non-free/m/mroute
 #
 openssl-0.9.7d.tar.gz;http://www.openssl.org/source
 curl-7.10.1.tar.bz2;http://curl.siamu.ac.th/download
-freetype-2.1.9.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/freetype
+freetype-2.1.4.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.3.tar.gz;ftp://$(gnuserver)/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
 libpng-1.2.7.tar.bz2;ftp://swrinde.nde.swri.edu/pub/png/src
