@@ -1238,7 +1238,7 @@ $(appsdir)/tuxbox/libs/config.status: .bootstrap .libfreetype
 
 # tuxbox/neutrino
 
-$(appsdir)/tuxbox/neutrino/config.status: .bootstrap .libboost .libcurl .libfreetype .libjpeg .libmad .libpng .misc_libs .plugins .tuxbox_libs .zapit
+$(appsdir)/tuxbox/neutrino/config.status: .bootstrap .libboost .libcurl .libfreetype .libjpeg .libmad .libpng .misc_libs .plugins .tuxbox_libs .zapit .misc_tools
 	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
 
 .neutrino: $(appsdir)/tuxbox/neutrino/config.status
