@@ -12,8 +12,6 @@ if test -x /sbin/sshd ; then
 	/etc/init.d/start_sshd &
 fi
 
-@TARGETRULESET_FLASH_TRUE@test -d /var/lib/modules/`uname -r` || mkdir -p /var/lib/modules/`uname -r`
-@TARGETRULESET_FLASH_TRUE@test -f /var/lib/modules/`uname -r`/modules.dep || \
 touch /etc/modules.conf
 depmod -ae
 
@@ -113,7 +111,7 @@ elif [ $MODEL_ID -eq 2 ]; then
 
 fi
 
-@TARGETRULESET_FLASH_FALSE@echo "$VENDOR $MODEL - Kernel %r (%t)." > /etc/issue.net
+echo "$VENDOR $MODEL - Kernel %r (%t)." > /etc/issue.net
 
 # compatibility links
 ln -sf demux0 /dev/dvb/adapter0/demux1
