@@ -11,7 +11,9 @@ extra: java contrib_apps fun dvb_apps
 core: .directories .binutils .linuxdir .glibc .gcc
 
 .bootstrap:
-	@if [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
+	@if [ ! -f .glibc ]; then \
+		$(MAKE) .glibc .gcc; \
+	elif [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		$(MAKE) .gcc; \
 	fi
 	touch .bootstrap
@@ -428,11 +430,32 @@ libs: \
 		$(MAKE) \
 			CC=$(target)-gcc \
 			CFLAGS="$(TARGET_CFLAGS)" \
-			CFG="--host=${target} --prefix=${targetprefix}" && \
+			CFG="--build=${build} --host=${target} --prefix=${targetprefix}" && \
 		$(MAKE) all && \
 		@INSTALL_libfreetype@
 	@CLEANUP_libfreetype@
 	touch .libfreetype
+
+.libmad: .bootstrap .libz @DEPENDS_libmad@
+	@PREPARE_libmad@
+	cd @DIR_libmad@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--enable-shared=yes \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--disable-nls \
+			--without-esd \
+			--enable-speed \
+			--enable-fpm=ppc \
+			--enable-sso && \
+		$(MAKE) all && \
+		@INSTALL_libmad@
+	@CLEANUP_libmad@
+	touch .libmad
 
 .libncurses: .bootstrap @DEPENDS_libncurses@
 	@PREPARE_libncurses@
@@ -1067,27 +1090,6 @@ fun: .mad .scummvm
 	@CLEANUP_gnuboy@
 	touch .gnuboy
 
-.mad: .bootstrap .libz @DEPENDS_mad@
-	@PREPARE_mad@
-	cd @DIR_mad@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure \
-			--enable-shared=yes \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix=$(targetprefix) \
-			--disable-nls \
-			--without-esd \
-			--enable-speed \
-			--enable-fpm=ppc \
-			--enable-sso && \
-		$(MAKE) all && \
-		@INSTALL_mad@
-	@CLEANUP_mad@
-	touch .mad
-
 .scummvm: .bootstrap .libreadline .libsdl @DEPENDS_scummvm@
 	@PREPARE_scummvm@
 	cd @DIR_scummvm@ && \
@@ -1266,123 +1268,115 @@ driver-clean:
 
 apps: .dvbsnoop .enigma .fx2 .lcars .lcdmenu .neutrino .stream .tuxtxt
 
-if MAINTAINER_MODE
-$(appsdir)/configure: $(appsdir)/configure.ac
-	cd $(appsdir) && \
-		./autogen.sh
+CONFIGURE_OPTS = \
+	--build=$(build) \
+	--host=$(target) \
+	--prefix=$(targetprefix) \
+	--with-driver=$(driverdir) \
+	--with-dvbincludes=$(driverdir)/include \
+	--with-target=cdk
 
-$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng .libsigc $(appsdir)/configure $(appsdir)/Makefile.am
-	cd $(appsdir) && \
-		CC=$(target)-gcc CXX=$(target)-g++ CFLAGS="" CXXFLAGS=""\
-		./configure \
-			--host=$(host) \
-			--prefix=$(targetprefix) \
-			--with-driver=$(driverdir) \
-			--with-target=$(APPSTARGET) \
-			--enable-maintainer-mode
-else
-$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng .libsigc
-	cd $(appsdir) && \
-		CC=$(target)-gcc CXX=$(target)-g++ \
-		./configure \
-			--host=$(host) \
-			--prefix=$(targetprefix) \
-			--with-driver=$(driverdir) \
-			--with-target=$(APPSTARGET)
+if MAINTAINER_MODE
+CONFIGURE_OPTS_MAINTAINER = \
+	--enable-maintainer-mode
 endif
 
-.apps: .libqt .libxml2 .mad .msttf .thttpd $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir) all install
-	touch .apps
+if TARGETRULESET_FLASH
+CONFIGURE_OPTS_DEBUG = \
+	--without-debug
+endif
 
-.camd: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/camd all install
-	touch .camd
+CONFIGURE = \
+	./autogen.sh && \
+	CC=$(target)-gcc CXX=$(target)-g++ CFLAGS="" CXXFLAGS="" \
+	./configure $(CONFIGURE_OPTS) $(CONFIGURE_OPTS_MAINTAINER) $(CONFIGURE_OPTS_DEBUG)
 
-.dvbsnoop: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/dvbsnoop all install
+# dvb/svbsnoop
+
+$(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
+	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE)
+
+.dvbsnoop: $(appsdir)/dvb/dvbsnoop/Makefile
+	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
 	touch .dvbsnoop
 
-.edvb: .libqt .msttf .tools
-	$(MAKE) -C $(appsdir)/edvb all install
-	touch .edvb
+$(appsdir)/dvb/zapit/Makefile: .bootstrap
+	cd $(appsdir)/dvb/zapit && $(CONFIGURE)
 
-.enigma: .mad .tools .libxmltree
-	$(MAKE) -C $(appsdir)/enigma all install
-	touch .enigma
+.zapit: .camd .libxmltree
+	$(MAKE) -C $(appsdir)/dvb/zapit all install
+	touch .zapit
 
-.fx2: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/fx2 all install
-	touch .fx2
+# dvb/tools
 
-.lcars: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/lcars all install
-	touch .lcars
+$(appsdir)/dvb/tools/Makefile: .bootstrap .libmpegtools
+	cd $(appsdir)/dvb/tools && $(CONFIGURE)
 
-.lcdmenu: $(appsdir)/Makefile .liblcddisplay
-	$(MAKE) -C $(appsdir)/lcdmenu all install
-	touch .lcdmenu
-
-.neutrino: .libconfigfile .libcramfs .libdboxnet .liblcddisplay .libmd5sum .libucodes .sections .zapit
-	$(MAKE) -C $(appsdir)/mczap all install
-	touch .neutrino
-
-.sections: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/sections all install
-	touch .sections
-
-.stream: .inetd .libmpegtools
-	$(MAKE) -C $(appsdir)/stream all install
+.stream: $(appsdir)/dvb/tools/Makefile .inetd
+	$(MAKE) -C $(appsdir)/dvb/tools/stream all install
 	touch .stream
 
-.tools: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/tools all install
-	touch .tools
+# misc/libs
+
+$(appsdir)/misc/libs/Makefile: .bootstrap
+	cd $(appsdir)/misc/libs && $(CONFIGURE)
+
+.misc_libs: $(appsdir)/misc/libs/Makefile
+	$(MAKE) -C $(appsdir)/misc/libs all install
+	touch .misc_libs
+
+# tuxbox/enigma
+
+$(appsdir)/tuxbox/enigma/Makefile: .bootstrap .libfreetype .libmad .libpng .libsigc .misc_libs
+	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE)
+
+.enigma: $(appsdir)/tuxbox/enigma/Makefile .tuxbox_tools
+	$(MAKE) -C $(appsdir)/tuxbox/enigma all install
+	touch .enigma
+
+# tuxbox/lcars
+
+$(appsdir)/tuxbox/lcars/Makefile: .bootstrap .libcurl .libfreetype
+	cd $(appsdir)/tuxbox/lcars && $(CONFIGURE)
+
+.lcars: $(appsdir)/tuxbox/lcars/Makefile
+	$(MAKE) -C $(appsdir)/tuxbox/lcars all install
+	touch .lcars
+
+# tuxbox/lcd
+
+$(appsdir)/tuxbox/lcd/Makefile: .bootstrap .libfreetype .misc_libs
+	cd $(appsdir)/tuxbox/lcd && $(CONFIGURE)
+
+.lcdmenu: $(appsdir)/tuxbox/lcd/Makefile
+	$(MAKE) -C $(appsdir)/tuxbox/lcd/lcdmenu all install
+	touch .lcdmenu
+
+# tuxbox/neutrino
+
+$(appsdir)/tuxbox/neutrino/Makefile: .bootstrap .libcurl .libfreetype .misc_libs .tuxbox_libs
+	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
+
+.neutrino: $(appsdir)/tuxbox/neutrino/Makefile
+	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install
+	touch .neutrino
+
+# tuxbox/tools
+
+$(appsdir)/tuxbox/tools/Makefile: .bootstrap
+	cd $(appsdir)/tuxbox/tools && $(CONFIGURE)
+
+.camd: $(appsdir)/tuxbox/tools/Makefile
+	$(MAKE) -C $(appsdir)/tuxbox/tools/camd all install
+	touch .camd
+
+.tuxbox_tools: $(appsdir)/tuxbox/tools/Makefile
+	$(MAKE) -C $(appsdir)/tuxbox/tools/misc all install
+	touch .tuxbox_tools
 
 .tuxtxt: $(appsdir)/Makefile
 	$(MAKE) -C $(appsdir)/tuxtxt all install
 	touch .tuxtxt
-
-.zapit: .camd .libxmltree
-	$(MAKE) -C $(appsdir)/zapit all install
-	touch .zapit
-
-#######################
-#
-#  own libs
-#
-
-.libconfigfile: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/libconfigfile all install
-	touch .libconfigfile
-
-.libcramfs: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/libcramfs all install
-	touch .libcramfs
-
-.libdboxnet: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/libnet all
-	touch .libdboxnet
-
-.liblcddisplay: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/liblcddisplay all install
-	touch .liblcddisplay
-
-.libmd5sum: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/libmd5sum all install
-	touch .libmd5sum
-
-.libmpegtools: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/libmpegtools all
-	touch .libmpegtools
-
-.libucodes: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/libucodes all install
-	touch .libucodes
-
-.libxmltree: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/libxmltree install
-	touch .libxmltree
 
 #######################
 #
@@ -1643,8 +1637,6 @@ endif
 if MAINTAINER_MODE
 Makefile-archive: $(top_srcdir)/rules-archive
 	$(top_srcdir)/rules-archive.pl $(top_srcdir)/rules-archive > Makefile-archive
-
-$(ACLOCAL_M4): $(top_srcdir)/tuxbox.m4
 endif
 
 if TARGETRULESET_FLASH
