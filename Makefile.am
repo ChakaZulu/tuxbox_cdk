@@ -1266,7 +1266,7 @@ endif
 	$(MAKE) -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
-.neutrino: .thttpd .libconfigfile .libcramfs .libdboxnet .liblcddisplay .libmd5sum .libucodes .sections .zapit .thttpd
+.neutrino: .thttpd .libconfigfile .libcramfs .libdboxnet .liblcddisplay .libmd5sum .libucodes .sections .zapit
 	$(MAKE) -C $(appsdir)/mczap all install
 	touch .neutrino
 
