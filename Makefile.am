@@ -371,6 +371,8 @@ libs_optional: \
 		mv directfb.pc.tmp directfb.pc && \
 		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb-internal.pc > directfb-internal.pc.tmp && \
 		mv directfb-internal.pc.tmp directfb-internal.pc && \
+		sed -e "s,^libdir='/lib',libdir='$(targetprefix)/lib'," <  src/.libs/libdirectfb.la > libdirectfb.la.tmp && \
+		mv libdirectfb.la.tmp src/.libs/libdirectfb.la && \
 		@INSTALL_libdirectfb@
 	@CLEANUP_libdirectfb@
 	touch .libdirectfb

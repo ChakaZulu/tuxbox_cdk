@@ -38,7 +38,7 @@ libboost;1.29.0;boost_1_29_0;boost_1_29_0.tar.gz;extract:boost_1_29_0.tar.gz
 libcommoncplusplus;1.0.8;commoncpp2-1.0.8;commoncpp2-1.0.8.tar.gz:libcommoncplusplus.diff;extract:commoncpp2-1.0.8.tar.gz;patch:libcommoncplusplus.diff
 libcrypto;0.9.7a;openssl-0.9.7a;openssl-0.9.7a.tar.gz:libcrypto.diff;extract:openssl-0.9.7a.tar.gz;patch:libcrypto.diff
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.bz2:libcurl.diff;extract:curl-7.10.1.tar.bz2;patch:libcurl.diff
-libdirectfb;0.9.16;DirectFB-0.9.16;DirectFB-0.9.16.tar.gz;extract:DirectFB-0.9.16.tar.gz
+libdirectfb;0.9.16;DirectFB-0.9.16;DirectFB-0.9.16.tar.gz:directfb-0.9.16.diff;extract:DirectFB-0.9.16.tar.gz;patch:directfb-0.9.16.diff
 libdirectfbpp;0.9.15;DFB++-0.9.15;DFB++-0.9.15.tar.gz;extract:DFB++-0.9.15.tar.gz
 libdvbpsi;0.1.2;libdvbpsi-0.1.2;libdvbpsi-0.1.2.tar.gz;extract:libdvbpsi-0.1.2.tar.gz
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
