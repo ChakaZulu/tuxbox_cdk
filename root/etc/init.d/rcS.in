@@ -43,25 +43,38 @@ echo "DEMOD: $DEMOD"
 
 test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
 
-modprobe saa7126
-modprobe avs
 modprobe input
 modprobe keybdev
 modprobe mousedev
 modprobe joydev
 modprobe evdev
-modprobe dvb_frontend
+
+modprobe avs
 modprobe dbox2_fp
-modprobe dvb
+modprobe saa7126
+
+modprobe dvb_copy
+modprove dvbdev
+modprobe dmxdev
+modprobe dvb_demux
+modprobe dvb_frontend
+modprobe dvb_i2c
+modprobe dvb_net
 modprobe tuner
+modprobe cam
+modprobe cam_napi
+modprobe avia_av
+modprobe avia_av_napi
 modprobe avia_gt
 modprobe avia_gt_fb
 modprobe avia_gt_oss
 modprobe avia_gt_napi
-modprobe dvb_net
+modprobe avia_napi
+
 modprobe lcd
 
-mkdir /dev/ost
-for i in audio ca demux dvr frontend net sec video; do ln -sf ../dvb/card0/${i}0 /dev/ost/${i}; ln -sf ../dvb/card0/${i}0 /dev/ost/${i}0; done
-for i in demux dvr; do ln -sf ${i}0 /dev/dvb/card0/${i}1; ln -sf ../dvb/card0/${i}1 /dev/ost/${i}1; done
+# compatibility links
+ln -sf demux0 /dev/dvb/adapter0/demux1
+ln -sf dvr0 /dev/dvb/adapter0/dvr1
+ln -sf fb/0 /dev/fb0
 

@@ -4,8 +4,6 @@ options avia_av firmware=@UCODEDIR@
 options avia_gt ucode=@UCODEDIR@/ucode.bin
 options avia_gt_fb console_transparent=0
 options cam firmware=@UCODEDIR@/cam-alpha.bin
-below cam avia_av
-above i2c-core i2c-8xx
 
 if $DEMOD = "AT76C651"
 	alias tuner at76c651
@@ -14,9 +12,14 @@ elseif $DEMOD = "TDA8044H"
 elseif $DEMOD = "VES1820"
 	alias tuner ves1820
 elseif $DEMOD = "VES1893"
-	alias tuner ves1893
-elseif $DEMOD = "VES1993"
-	alias tuner ves1993
+	alias tuner ves1x93
+	options ves1x93 board_type=2
+elseif $mID = "01"
+	alias tuner ves1x93
+	options ves1x93 board_type=3
+elseif $mID = "03"
+	alias tuner ves1x93
+	options ves1x93 board_type=4
 endif
 
 @TARGETRULESET_FLASH_TRUE@depfile=/var/lib/modules/`uname -r`/modules.dep
