@@ -441,8 +441,9 @@ $(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz @DEPENDS_libdir
 			--host=$(target) \
 			--prefix= \
 			--disable-debug \
-			--enable-linux-input \
+			--with-inputdrivers=linuxinput \
 			--disable-sdl \
+			--disable-multi \
 			--without-tools \
 			--with-gfxdrivers=none && \
 		$(MAKE) all && \

@@ -41,8 +41,8 @@ libboost;1.30.2;boost-1.30.2;boost-1.30.2.tar.bz2;extract:boost-1.30.2.tar.bz2
 libcommoncplusplus;1.0.13;commoncpp2-1.0.13;commoncpp2-1.0.13.tar.gz:libcommoncplusplus.diff;extract:commoncpp2-1.0.13.tar.gz;patch:libcommoncplusplus.diff
 libcrypto;0.9.7d;openssl-0.9.7d;openssl-0.9.7d.tar.gz:libcrypto.diff;extract:openssl-0.9.7d.tar.gz;patch:libcrypto.diff
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.bz2:libcurl.diff;extract:curl-7.10.1.tar.bz2;patch:libcurl.diff
-libdirectfb;0.9.21;DirectFB;DirectFB-0.9.21-cvs20041212.tar.gz;extract:DirectFB-0.9.21-cvs20041212.tar.gz
-libdirectfbpp;0.9.21;DFB++-0.9.21;DFB++-0.9.21-cvs20041212.tar.gz;extract:DFB++-0.9.21-cvs20041212.tar.gz
+libdirectfb;0.9.21;DirectFB;DirectFB-0.9.21-cvs20041229.tar.gz;extract:DirectFB-0.9.21-cvs20041229.tar.gz
+libdirectfbpp;0.9.21;DFB++-0.9.21;DFB++-0.9.21-cvs20041229.tar.gz;extract:DFB++-0.9.21-cvs20041229.tar.gz
 libdvb;0.5.3;libdvb-0.5.3;libdvb-0.5.3.tar.gz:libdvb.diff;extract:libdvb-0.5.3.tar.gz;patch:libdvb.diff
 libdvbpsi;0.1.3;libdvbpsi-0.1.3;libdvbpsi-0.1.3.tar.bz2;extract:libdvbpsi-0.1.3.tar.bz2
 libexpat;1.95.6;expat-1.95.6;expat-1.95.6.tar.gz:libexpat.diff;extract:expat-1.95.6.tar.gz;patch:libexpat.diff
