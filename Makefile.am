@@ -384,7 +384,7 @@ $(DEPDIR)/libcrypto: bootstrap @DEPENDS_libcrypto@
 		$(MAKE) depend all && \
 		@INSTALL_libcrypto@
 	rm -f $(targetprefix)/lib/pkgconfig/openssl.pc && \
-	sed -e "s,^prefix=,prefix=$(targetprefix)," <openssl.pc > $(targetprefix)/lib/pkgconfig/ && \
+	sed -e "s,^prefix=,prefix=$(targetprefix)," <openssl.pc > $(targetprefix)/lib/pkgconfig/openssl.pc && \
 	@CLEANUP_libcrypto@
 	touch $@
 
