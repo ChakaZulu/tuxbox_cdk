@@ -19,6 +19,7 @@ gcc;3.2.1;gcc-3.2.1;gcc-core-3.2.1.tar.gz:gcc-g++-3.2.1.tar.gz;extract:gcc-core-
 glibc;2.2.5;glibc-2.2.5;glibc-2.2.5.tar.bz2:glibc-linuxthreads-2.2.5.tar.bz2:glibc.diff;extract:glibc-2.2.5.tar.bz2;dirextract:glibc-linuxthreads-2.2.5.tar.bz2;patch:glibc.diff
 uclibc;0.9.11;uClibc-0.9.11;uClibc-0.9.11.tar.bz2:uclibc-0.9.11.diff;extract:uClibc-0.9.11.tar.bz2;patch:uclibc-0.9.11.diff
 watchdog;5.2;watchdog-5.2.orig;watchdog_5.2.orig.tar.gz:watchdog.diff;extract:watchdog_5.2.orig.tar.gz;patch:watchdog.diff
+videodevX;20020330;videodevX;videodevX-20020330.tar.gz:videodevX.diff;extract:videodevX-20020330.tar.gz;patch:videodevX.diff
 
 #
 # root
@@ -85,7 +86,7 @@ msttf;0.0;msttf;arial32.exe:arialb32.exe;dircreate;dirextract:arial32.exe;dirext
 #
 # development tools
 #
-gdb;20021118;gdb+dejagnu-20021118;gdb+dejagnu-20021118.tar.bz2;extract:gdb+dejagnu-20021118.tar.bz2;patch:gdb.diff
+gdb;5.3;gdb-5.3;gdb-5.3.tar.bz2;extract:gdb-5.3.tar.bz2
 ksymoops;2.4.6;ksymoops-2.4.6;ksymoops-2.4.6.tar.bz2;extract:ksymoops-2.4.6.tar.bz2
 ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz;extract:ltrace_0.3.26.tar.gz;patch:ltrace.diff
 strace;4.4;strace-4.4;strace_4.4-1.tar.gz:strace.diff;extract:strace_4.4-1.tar.gz;patch:strace.diff
@@ -103,7 +104,7 @@ kaffeh;1.0.6;kaffe-1.0.6;kaffe-1.0.6.tar.gz:kaffeh.diff;extract:kaffe-1.0.6.tar.
 # fun stuff
 #
 gnuboy;1.0.3;gnuboy-1.0.3;gnuboy-1.0.3.tar.gz:gnuboy.diff;extract:gnuboy-1.0.3.tar.gz;patch:gnuboy.diff
-scummvm;20020717;scummvm;scummvm-20020717.tar.bz2:scummvm.diff;extract:scummvm-20020717.tar.bz2;patch:scummvm.diff
+scummvm;0.3.0b;scummvm-0.3.0;scummvm_0.3.0b-src.tar.bz2:scummvm.diff;extract:scummvm_0.3.0b-src.tar.bz2
 sdldoom;1.10;sdldoom-1.10;sdldoom-1.10.tar.gz;extract:sdldoom-1.10.tar.gz;patch:sdldoom.diff
 
 #
@@ -115,3 +116,4 @@ dvbtext;0.1;dvbtext-0.1;dvbtext-0.1.tar.gz;extract:dvbtext-0.1.tar.gz
 dvbtune;20021029;dvbtune;dvbtune-20021029.tar.bz2;extract:dvbtune-20021029.tar.bz2
 vls;0.4.0;vls-0.4.0;vls-0.4.0.tar.bz2:vls.diff;extract:vls-0.4.0.tar.bz2;patch:vls.diff
 
+>>>;rules-make-local

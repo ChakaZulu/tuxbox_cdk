@@ -1090,6 +1090,17 @@ else
 endif
 	touch .linuxkernel
 
+.videodevX: .bootstrap .linuxkernel @DEPENDS_dvbtune@
+	@PREPARE_videodevX@
+	cd @DIR_videodevX@ && sed -e "s,^RUNNING.*$$,RUNNING := $(targetprefix)/lib/modules/$(KERNELVERSION)/build," \
+	-e "s,^KERNEL_DIR.*$$,KERNEL_DIR := $(buildprefix)/linux," \
+	-e "s,^INSTALL_MOD_PATH.*$$,INSTALL_MOD_PATH := $(targetprefix)," \
+	< Makefile > Makefile.tmp && mv Makefile.tmp Makefile && \
+	$(MAKE) && \
+	@INSTALL_videodevX@
+	touch .videdevX
+	
+
 .driver: .bootstrap .linuxkernel
 	$(INSTALL) -d $(targetprefix)/bin
 	$(INSTALL) -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
@@ -1594,3 +1605,4 @@ CONFIG_STATUS_DEPENDENCIES = \
 	$(top_srcdir)/rules-make $(top_srcdir)/rules-make-cygwin $(top_srcdir)/rules-make.pl \
 	Makefile-archive
 
+include ./Makefile.am.local
