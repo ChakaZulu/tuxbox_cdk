@@ -1,15 +1,17 @@
+AC_PREREQ(2.50)
 AC_INIT(Makefile.am)
+AC_CANONICAL_BUILD
+AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(tuxbox-cdk, 0.0.1)
 AM_MAINTAINER_MODE
 
 AC_PROG_CC
+AC_PROG_RANLIB
 
-AC_CANONICAL_BUILD
 AC_SUBST(build)
 if test "$target_alias" = "" ; then
 	target_alias="powerpc-tuxbox-linux-gnu"
 fi
-AC_CANONICAL_TARGET
 AC_SUBST(target)
 
 AC_ARG_WITH(hostruleset,
