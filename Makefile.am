@@ -170,7 +170,7 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 		CC=$(TARGET)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		make all && \
-		install -m644 inetd $(targetprefix)/sbin
+		install -m755 inetd $(targetprefix)/sbin
 	@CLEANUP_inetd@
 	touch .inetd
 
@@ -182,7 +182,7 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LIBS=-lutil \
 		make all && \
-		install -m644 telnetd $(targetprefix)/sbin/in.telnetd
+		install -m755 telnetd $(targetprefix)/sbin/in.telnetd
 	@CLEANUP_telnetd@
 	touch .telnetd
 
