@@ -1,7 +1,129 @@
-diff -Naur SDL-1.2.3.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.3/src/video/fbcon/SDL_fbvideo.c
---- SDL-1.2.3.orig/src/video/fbcon/SDL_fbvideo.c	Tue Jul 31 22:08:51 2001
-+++ SDL-1.2.3/src/video/fbcon/SDL_fbvideo.c	Tue Feb 26 04:49:09 2002
-@@ -159,7 +159,7 @@
+diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.4/src/video/fbcon/SDL_fbevents.c
+--- Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c	2002-03-06 12:23:03.000000000 +0100
++++ SDL-1.2.4/src/video/fbcon/SDL_fbevents.c	2002-08-19 05:25:25.000000000 +0200
+@@ -240,11 +240,15 @@
+ 			close(keyboard_fd);
+ 		}
+ 	}
++	if (rc_fd >= 0)
++		close(rc_fd);
++	rc_fd = -1;
+ 	keyboard_fd = -1;
+ }
+ 
+ int FB_OpenKeyboard(_THIS)
+ {
++	rc_fd = open("/dev/dbox/rc0", O_RDONLY);
+ 	/* Open only if not already opened */
+  	if ( keyboard_fd < 0 ) {
+ 		static const char * const tty0[] = { "/dev/tty0", "/dev/vc/0", NULL };
+@@ -883,14 +887,47 @@
+ 	SDL_mutexV(hw_lock);
+ }
+ 
+-static void handle_keyboard(_THIS)
++static void handle_keyboard(_THIS, int what)
+ {
+ 	unsigned char keybuf[BUFSIZ];
+ 	int i, nread;
+ 	int pressed;
+ 	int scancode;
+ 	SDL_keysym keysym;
++	unsigned short read_code = 0;
+ 
++	if (what == 1)
++	{
++		read(rc_fd, &read_code, 2);
++		if ((read_code & 0xff00) != 0x5c00) // we have a new remote control with cyclic codes
++			read_code %= 0x40;
++		keysym.sym = 27;
++		if (read_code == 24) // dbox
++			keysym.sym = 27; // escape
++		else if (read_code == 14) // ok
++                        keysym.sym = 13; // enter
++		else if (read_code == 12) // up
++                        keysym.sym = 273; //
++		else if (read_code == 13) // down
++                        keysym.sym = 274; //
++		else if (read_code == 11) // left
++                        keysym.sym = 276; //
++		else if (read_code == 10) // right
++                        keysym.sym = 275; //
++		else if (read_code == 19) // red
++                        keysym.sym = 306; // strg
++		pressed = SDL_PRESSED;
++		keysym.scancode = K(KT_ASCII,13);
++	  
++	        keysym.mod = KMOD_NONE;
++	        keysym.unicode = 0;
++		posted += SDL_PrivateKeyboard(pressed, &keysym);
++		pressed = SDL_RELEASED;
++		posted += SDL_PrivateKeyboard(pressed, &keysym);
++	}
++	else if (what == 0)
++	{
++	
+ 	nread = read(keyboard_fd, keybuf, BUFSIZ);
+ 	for ( i=0; i<nread; ++i ) {
+ 		scancode = keybuf[i] & 0x7F;
+@@ -900,7 +937,7 @@
+ 			pressed = SDL_PRESSED;
+ 		}
+ 		TranslateKey(scancode, &keysym);
+-		/* Handle Alt-FN for vt switch */
++		// Handle Alt-FN for vt switch 
+ 		switch (keysym.sym) {
+ 		    case SDLK_F1:
+ 		    case SDLK_F2:
+@@ -920,12 +957,14 @@
+ 				}
+ 				break;
+ 			}
+-			/* Fall through to normal processing */
++			// Fall through to normal processing
+ 		    default:
++			printf("Key: %d\n", keysym.sym);
+ 			posted += SDL_PrivateKeyboard(pressed, &keysym);
+ 			break;
+ 		}
+ 	}
++	}
+ }
+ 
+ void FB_PumpEvents(_THIS)
+@@ -945,6 +984,12 @@
+ 				max_fd = keyboard_fd;
+ 			}
+ 		}
++		if ( rc_fd >= 0 ) {
++                        FD_SET(rc_fd, &fdset);
++                        if ( max_fd < rc_fd ) {
++                                max_fd = rc_fd;
++                        }
++                }
+ 		if ( mouse_fd >= 0 ) {
+ 			FD_SET(mouse_fd, &fdset);
+ 			if ( max_fd < mouse_fd ) {
+@@ -954,9 +999,14 @@
+ 		if ( select(max_fd+1, &fdset, NULL, NULL, &zero) > 0 ) {
+ 			if ( keyboard_fd >= 0 ) {
+ 				if ( FD_ISSET(keyboard_fd, &fdset) ) {
+-					handle_keyboard(this);
++					handle_keyboard(this, 0);
+ 				}
+ 			}
++			if ( rc_fd >= 0 ) {
++                                if ( FD_ISSET(rc_fd, &fdset) ) {
++                                        handle_keyboard(this, 1);
++                                }
++                        }
+ 			if ( mouse_fd >= 0 ) {
+ 				if ( FD_ISSET(mouse_fd, &fdset) ) {
+ 					handle_mouse(this);
+diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.4/src/video/fbcon/SDL_fbvideo.c
+--- Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.c	2002-04-03 23:45:25.000000000 +0200
++++ SDL-1.2.4/src/video/fbcon/SDL_fbvideo.c	2002-08-19 05:25:32.000000000 +0200
+@@ -161,7 +161,7 @@
  
  	SDL_fbdev = getenv("SDL_FBDEV");
  	if ( SDL_fbdev == NULL ) {
@@ -10,7 +132,7 @@ diff -Naur SDL-1.2.3.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.3/src/video/fbco
  	}
  	console = open(SDL_fbdev, O_RDWR, 0);
  	if ( console >= 0 ) {
-@@ -334,7 +334,7 @@
+@@ -336,7 +336,7 @@
  	/* Initialize the library */
  	SDL_fbdev = getenv("SDL_FBDEV");
  	if ( SDL_fbdev == NULL ) {
@@ -19,3 +141,60 @@ diff -Naur SDL-1.2.3.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.3/src/video/fbco
  	}
  	console_fd = open(SDL_fbdev, O_RDWR, 0);
  	if ( console_fd < 0 ) {
+diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.c.rej SDL-1.2.4/src/video/fbcon/SDL_fbvideo.c.rej
+--- Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.c.rej	1970-01-01 01:00:00.000000000 +0100
++++ SDL-1.2.4/src/video/fbcon/SDL_fbvideo.c.rej	2002-08-19 05:26:28.000000000 +0200
+@@ -0,0 +1,34 @@
++***************
++*** 161,167 ****
++  
++  	SDL_fbdev = getenv("SDL_FBDEV");
++  	if ( SDL_fbdev == NULL ) {
++- 		SDL_fbdev = "/dev/fb0";
++  	}
++  	console = open(SDL_fbdev, O_RDWR, 0);
++  	if ( console >= 0 ) {
++--- 161,167 ----
++  
++  	SDL_fbdev = getenv("SDL_FBDEV");
++  	if ( SDL_fbdev == NULL ) {
+++ 		SDL_fbdev = "/dev/fb/0";
++  	}
++  	console = open(SDL_fbdev, O_RDWR, 0);
++  	if ( console >= 0 ) {
++***************
++*** 336,342 ****
++  	/* Initialize the library */
++  	SDL_fbdev = getenv("SDL_FBDEV");
++  	if ( SDL_fbdev == NULL ) {
++- 		SDL_fbdev = "/dev/fb0";
++  	}
++  	console_fd = open(SDL_fbdev, O_RDWR, 0);
++  	if ( console_fd < 0 ) {
++--- 336,342 ----
++  	/* Initialize the library */
++  	SDL_fbdev = getenv("SDL_FBDEV");
++  	if ( SDL_fbdev == NULL ) {
+++ 		SDL_fbdev = "/dev/fb/0";
++  	}
++  	console_fd = open(SDL_fbdev, O_RDWR, 0);
++  	if ( console_fd < 0 ) {
+diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.h SDL-1.2.4/src/video/fbcon/SDL_fbvideo.h
+--- Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.h	2002-03-06 12:23:04.000000000 +0100
++++ SDL-1.2.4/src/video/fbcon/SDL_fbvideo.h	2002-08-19 05:25:36.000000000 +0200
+@@ -61,6 +61,7 @@
+ 	int current_vt;
+ 	int saved_vt;
+ 	int keyboard_fd;
++	int rc_fd;
+ 	int saved_kbd_mode;
+ 	struct termios saved_kbd_termios;
+ 
+@@ -92,6 +93,7 @@
+ #define current_vt		(this->hidden->current_vt)
+ #define saved_vt		(this->hidden->saved_vt)
+ #define keyboard_fd		(this->hidden->keyboard_fd)
++#define rc_fd             (this->hidden->rc_fd)
+ #define saved_kbd_mode		(this->hidden->saved_kbd_mode)
+ #define saved_kbd_termios	(this->hidden->saved_kbd_termios)
+ #define mouse_fd		(this->hidden->mouse_fd)
