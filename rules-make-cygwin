@@ -7,6 +7,7 @@
 #
 # core
 #
+uboot;1.1.1;u-boot-1.1.1;u-boot-1.1.1.tar.bz2:u-boot-1.1.1.diff;extract:u-boot-1.1.1.tar.bz2;patch:u-boot-1.1.1.diff;patch:cygwin/u-boot-1.1.1.diff
 linux;2.4.27-dbox2;linux-2.4.27;linux-2.4.27.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.27-dbox2-mtd.diff.bz2;remove:linux;extract:linux-2.4.27.tar.bz2;patch:linux-2.4.27-dbox2.diff;patch:linux-2.4.27-dbox2-shift.diff;patch:linux-2.4.27-dbox2-keyboard.diff;patch:linux-2.4.27-dbox2-v4l2.diff;patch:linux-2.4.27-dbox2-cramfs.diff;patch:linux-2.4.27-dbox2-mtd.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.27/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs1.3r3-patch;link:linux-2.4.27:linux
 glibc;2.3.2;glibc-2.3.2;glibc-2.3.2.tar.bz2:glibc-linuxthreads-2.3.2.tar.bz2:glibc-2.3.2.diff;extract:glibc-2.3.2.tar.bz2;dirextract:glibc-linuxthreads-2.3.2.tar.bz2;patch:glibc-2.3.2.diff;patch:cygwin/glibc.diff
 

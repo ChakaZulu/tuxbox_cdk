@@ -1,0 +1,44 @@
+diff -Naur u-boot-1.1.1.orig/Makefile u-boot-1.1.1/Makefile
+--- u-boot-1.1.1.orig/Makefile	2004-05-01 17:00:26.000000000 +0200
++++ u-boot-1.1.1/Makefile	2004-05-02 23:28:03.000000000 +0200
+@@ -39,7 +39,7 @@
+ 
+ #########################################################################
+ 
+-TOPDIR	:= $(shell if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
++TOPDIR	:= $(shell pwd;)
+ export	TOPDIR
+ 
+ ifeq (include/config.mk,$(wildcard include/config.mk))
+diff -Naur u-boot-1.1.1.orig/tools/mkimage.c u-boot-1.1.1/tools/mkimage.c
+--- u-boot-1.1.1.orig/include/mkimage.c	2004-05-16 10:16:29.153148800 +0200
++++ u-boot-1.1.1/tools/mkimage.c	2004-05-16 10:16:54.800027200 +0200
+@@ -46,9 +46,9 @@
+ 		(((__u32)(x) & (__u32)0x0000ff00UL) <<  8) | \
+ 		(((__u32)(x) & (__u32)0x00ff0000UL) >>  8) | \
+ 		(((__u32)(x) & (__u32)0xff000000UL) >> 24) ))
+-typedef		unsigned char	uint8_t;
+-typedef		unsigned short	uint16_t;
+-typedef		unsigned int	uint32_t;
++/*typedef		unsigned char	uint8_t;*/
++/*typedef		unsigned short	uint16_t;*/
++/*typedef		unsigned int	uint32_t;*/
+ 
+ #define     ntohl(a)	SWAP_LONG(a)
+ #define     htonl(a)	SWAP_LONG(a)
+diff -Naur u-boot-1.1.1.orig/include/elf.h u-boot-1.1.1/include/elf.h
+--- u-boot-1.1.1.orig/include/elf.h	2003-10-30 22:49:38.000000000 +0100
++++ u-boot-1.1.1/include/elf.h	2004-05-16 10:16:00.612108800 +0200
+@@ -43,9 +43,9 @@
+ #include <stdint.h>
+ #elif defined(__WIN32__)
+ #include <unistd.h>
+-typedef 	 unsigned char	 uint8_t;
+-typedef 	 unsigned short  uint16_t;
+-typedef 	 unsigned int	 uint32_t;
++/*typedef 	 unsigned char	 uint8_t;*/
++/*typedef 	 unsigned short  uint16_t;*/
++/*typedef 	 unsigned int	 uint32_t;*/
+ #endif
+ 
+ /*
