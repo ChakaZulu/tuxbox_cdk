@@ -24,7 +24,7 @@ while ( <RULES> )
       }
       elsif ( $_ =~ m#^http://# )
       {
-        $output .= " || \\\n\twget -c --passive-ftp -P Archive " . $_ . "/" . $file;
+        $output .= " || \\\n\twget -c -P Archive " . $_ . "/" . $file;
       }
     }
     $output .= " || \\\n\twget -c -P Archive http://tuxbox.berlios.de/pub/tuxbox/cdk/src/" . $file;
