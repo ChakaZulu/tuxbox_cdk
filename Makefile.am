@@ -511,7 +511,6 @@ libs_optional: \
 	@PREPARE_libncurses@
 	cd @DIR_libncurses@ && \
 		@BUILDENV_libncurses@ \
-		BUILD_CC=$(CC) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -526,7 +525,10 @@ libs_optional: \
 			--disable-rpath \
 			--without-cxx-binding \
 			--with-fallbacks='linux vt100 xterm' && \
-		$(MAKE) libs && \
+		$(MAKE) libs \
+			HOSTCC=$(CC) \
+			HOSTCCFLAGS="$(CFLAGS) -DHAVE_CONFIG_H -I../ncurses -DNDEBUG -D_GNU_SOURCE -I../include" \
+			HOSTLDFLAGS="$(LDFLAGS)" && \
 		@INSTALL_libncurses@
 	@CLEANUP_libncurses@
 	touch .libncurses
