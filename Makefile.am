@@ -1042,7 +1042,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 #   own kernel and driver
 #
 
-boot: .ppcboot .linuxkernel .driver
+boot: .ppcboot .linuxkernel .videodevX .driver
 
 KERNELGCC = `if [ -f $(hostprefix)/bin/$(target)-gcc-2.95 ]; then echo $(target)-gcc-2.95; else echo $(target)-gcc; fi`
 
