@@ -2,7 +2,7 @@ TARGET = powerpc-tuxbox-linux-gnu
 
 PATH := $(hostprefix)/bin:$(PATH)
 
-all: .lcars .etc .linuxkernel .driver
+all: core libs root apps boot
 
 bootstrap: .gcc
 
@@ -10,6 +10,8 @@ bootstrap: .gcc
 #
 #   core
 #
+
+core: .directories .linuxdir .binutils .glibc .gcc
 
 .directories:
 	install -d $(targetprefix)/dev
@@ -113,6 +115,8 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 #   minimal root
 #
 
+root: .busybox .tinylogin .modutils .etc
+
 .busybox: .gcc @DEPENDS_busybox@
 	@PREPARE_busybox@
 	cd @DIR_busybox@ && \
@@ -156,6 +160,8 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 #
 #   contrib libs
 #
+
+libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 
 .libcurl: .gcc @DEPENDS_libcurl@
 	@PREPARE_libcurl@
@@ -278,6 +284,8 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 #   own kernel and driver
 #
 
+boot: .ppcboot .linuxkernel .driver
+
 .ppcboot: .gcc $(bootdir)/ppcboot/Makefile
 	make -C $(bootdir)/ppcboot dbox_config
 	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(TARGET)-
@@ -315,6 +323,8 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 #
 #   own applications
 #
+
+apps: .edvb .fx2 .zapit .neutrino .lcars .lcdmenu .stream .tools .sections
 
 $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	cd $(appsdir) && \
