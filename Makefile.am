@@ -353,8 +353,8 @@ libs: \
 	.libreadline .libsdl .libsigc .libz
 
 libs_optional: \
-	.libcommoncplusplus .libdb2 .libffi .libnet \
-	.libnids .libpcap .libpopt .libxml2
+	.libcommoncplusplus .libffi \
+	.libpcap .libpopt .libxml2
 
 .libcommoncplusplus: .bootstrap .libxml2 @DEPENDS_libcommoncplusplus@
 	@PREPARE_libcommoncplusplus@
@@ -397,24 +397,6 @@ libs_optional: \
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
 	touch .libcurl
-
-.libdb2: .bootstrap @DEPENDS_libdb2@
-	@PREPARE_libdb2@
-	cd @DIR_libdb2@/dist && \
-		chmod 755 configure && \
-		autoconf && \
-		@BUILDENV_libdb2@ \
-		CROSS_COMPILE=$(target)- \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix= \
-			--enable-compat185 \
-			--enable-cxx && \
-		$(MAKE) all && \
-		@INSTALL_libdb2@
-	@CLEANUP_libdb2@
-	touch .libdb2
 
 .libdirectfb: .bootstrap .libfreetype .libjpeg .libpng .libz @DEPENDS_libdirectfb@
 	@PREPARE_libdirectfb@
@@ -536,34 +518,6 @@ libs_optional: \
 		@INSTALL_libncurses@
 	@CLEANUP_libncurses@
 	touch .libncurses
-
-.libnet: .bootstrap @DEPENDS_libnet@
-	@PREPARE_libnet@
-	cd @DIR_libnet@ && \
-		@BUILDENV_libnet@ \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix=$(targetprefix) \
-			--with-pf_packet=yes \
-			--with-fast_x86_check=no && \
-		$(MAKE) all && \
-		@INSTALL_libnet@
-	@CLEANUP_libnet@
-	touch .libnet
-
-.libnids: .bootstrap .libnet @DEPENDS_libnids@
-	@PREPARE_libnids@
-	cd @DIR_libnids@ && \
-		@BUILDENV_libnids@ \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix= && \
-		$(MAKE) -C src all && \
-		@INSTALL_libnids@
-	@CLEANUP_libnids@
-	touch .libnids
 
 .libpcap: .bootstrap @DEPENDS_libpcap@
 	@PREPARE_libpcap@
@@ -723,7 +677,7 @@ libs_optional: \
 #
 
 contrib_apps: .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump .xrc
-contrib_apps_optional: .dsniff .pump .thttpd
+contrib_apps_optional: .pump .thttpd
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -763,20 +717,6 @@ contrib_apps_optional: .dsniff .pump .thttpd
 		@INSTALL_directfb_examples@
 	@CLEANUP_directfb_examples@
 	touch .directfb_examples
-
-.dsniff: .bootstrap .libnet .libnids .libdb2 .rpcgen @DEPENDS_dsniff@
-	@PREPARE_dsniff@
-	cd @DIR_dsniff@ && \
-		@BUILDENV_dsniff@ \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix= \
-			--without-x && \
-		$(MAKE) all && \
-		@INSTALL_dsniff@
-	@CLEANUP_dsniff@
-	touch .dsniff
 
 .fbset: .bootstrap @DEPENDS_fbset@
 	@PREPARE_fbset@
@@ -1585,15 +1525,15 @@ distclean-local:
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc .rpcgen
 	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
-	-rm .libcommoncplusplus .libcrypto .libcurl .libdb2 .libdvbpsi .libffi .libfreetype
-	-rm .libncurses .libjpeg .libmad .libnet .libnids .libpcap .libpng .libpopt
+	-rm .libcommoncplusplus .libcrypto .libcurl .libdvbpsi .libffi .libfreetype
+	-rm .libncurses .libjpeg .libmad .libpcap .libpng .libpopt
 	-rm .libreadline .libsdl .libsigc .libxml2 .libz
 	-rm .gdb .ksymoops .ltrace .strace .nano
 	-rm .kaffeh .kaffe
 	-rm .gnuboy .scummvm .sdldoom
 	-rm .ppcboot .linuxkernel .driver
 	-rm .camd .dvbsnoop .enigma .lcars .lcdmenu .neutrino .stream .zapit
-	-rm .console_data .console_tools .dsniff .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
+	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	-rm .misc_libs .misc_tools .plugins .tuxbox_libs .tuxbox_tools
 	-rm -rf $(targetprefix)

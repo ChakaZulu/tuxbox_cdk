@@ -38,7 +38,6 @@ tinylogin;make:install:PREFIX=TARGET
 libcrypto;install:libcrypto.so.0.9.6:TARGET/lib;link:libcrypto.so.0.9.6:TARGET/lib/libcrypto.so.0;link:libcrypto.so.0:TARGET/lib/libcrypto.so;install:libssl.so.0.9.6:TARGET/lib;link:libssl.so.0.9.6:TARGET/lib/libssl.so.0;link:libssl.so.0:TARGET/lib/libssl.so;install:-d:TARGET/include/openssl;make:install_cdk:INSTALL_PREFIX=TARGET:INSTALLTOP=
 libcurl;make:install:DESTDIR=TARGET
 libcommoncplusplus;make:install:DESTDIR=TARGET
-libdb2;make:install:DESTDIR=TARGET
 libdirectfb;make:install:DESTDIR=TARGET
 libdvbpsi;make:install:DESTDIR=TARGET
 libffi;make:install:DESTDIR=TARGET
@@ -46,8 +45,6 @@ libfreetype;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARG
 libjpeg;make:install-lib:libdir=TARGET/lib:includedir=TARGET/include
 libmad;make:install:DESTDIR=TARGET
 libncurses;make:install.libs:DESTDIR=TARGET
-libnet;make:install;install:-m755:libnet-config:TARGET/bin/libnet-config;link:TARGET/bin/libnet-config:HOST/bin/libnet-config
-libnids;make:install:install_prefix=TARGET
 libpcap;make:install:DESTDIR=TARGET
 libpng;make:install-static:install-shared:install-config:prefix=TARGET;link:TARGET/bin/libpng-config:HOST/bin/libpng-config
 libpopt;make:install:DESTDIR=TARGET
@@ -63,7 +60,6 @@ libz;make:install:prefix=TARGET
 console_data;make:install
 console_tools;make:install
 directfb_examples;make:install:DESTDIR=TARGET
-dsniff;make:install:install_prefix=TARGET
 fbset;install:-m755:fbset:TARGET/bin
 lirc;make:install
 lsof;install:-m755:lsof:TARGET/sbin

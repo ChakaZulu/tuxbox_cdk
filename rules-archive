@@ -53,9 +53,6 @@ libsigc++-1.1.13.tar.gz;http://switch.dl.sourceforge.net/sourceforge/libsigc
 libpcap-0.7.1.tar.gz;http://www.tcpdump.org/release
 commoncpp2-0.99.7.tar.gz;ftp://ftp.gnu.org/gnu/commonc++
 libdvbpsi-0.1.2.tar.gz;http://www.videolan.org/pub/videolan/libdvbpsi/0.1.2
-libnet-1.0.2a.tar.gz;http://www.packetfactory.net/libnet/dist/deprecated
-libnids-1.16.tar.gz;http://www.packetfactory.net/Projects/Libnids/dist
-db-2.7.7.tar.gz;http://www.sleepycat.com/update/snapshot
 DirectFB-20021024.tar.bz2
 
 #
@@ -63,7 +60,6 @@ DirectFB-20021024.tar.bz2
 #
 console-data_1999.08.29.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/c/console-data
 console-tools-0.2.3.tar.gz;http://switch.dl.sourceforge.net/sourceforge/lct
-dsniff-2.4b1.tar.gz;http://monkey.org/~dugsong/dsniff/beta
 fbset-2.1.tar.gz;http://home.tvd.be/cr26864/Linux/fbdev
 lirc-0.6.6.tar.bz2;http://mars.wiwi.uni-halle.de/lirc/software
 pump-0.8.11.tar.bz2
