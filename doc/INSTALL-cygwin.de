@@ -1,20 +1,27 @@
 #
-# $Id: INSTALL-cygwin.de,v 1.4 2002/05/02 10:22:57 waldi Exp $
+# $Id: INSTALL-cygwin.de,v 1.5 2002/05/15 16:34:20 field Exp $
 #
 
 HOWTO
 -----
 
 Erstmal danke an +tbn!
-Aktuelle(re) Versionen dieses cygwin-Patches sind unter Umständen unter
-http://tbn-world.tripod.com/files/tuxbox-cygwin.zip 
-zu finden. 
-
 
 Folgende Packages sind zu installieren:
  - autoconf-2.52
  - automake-1.4-p5
  - libtool-1.4.2
+
+
+BEI MIR HAT ES NUR MIT DIESEN VERSIONEN FUNKTIONIERT!
+
+Ihr müsst euch die diese Versionen eventuell von
+ ftp.gnu.org/pub/gnu/autoconf
+ ftp.gnu.org/pub/gnu/automake
+ ftp.gnu.org/pub/gnu/libtool
+holen und selber compilieren / installieren.
+
+Ausserdem muss gettext (zB 0.10.40) installiert sein, und die *.m4 Dateien aus \usr\share\aclocal müssen nach \usr\local\share\aclocal kopiert werden.
 
 Folgende Packages sind *nicht* zu installieren:
  - zlib
@@ -22,7 +29,5 @@ Folgende Packages sind *nicht* zu installieren:
 
 ansonsten weiter wie in INSTALL.de
 
-Viel Erfolg
-+tbn
 
-Updated: 5.3.02 field
+Updated: 15.5.02 field
