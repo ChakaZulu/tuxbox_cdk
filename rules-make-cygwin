@@ -7,8 +7,8 @@
 #
 # core
 #
-linux;2.4.25-dbox2;linux-2.4.25;linux-2.4.25.tar.bz2:linux-2.4.25-cifs24.103.diff.bz2:linux-2.4.25-dbox2-mtd.diff.bz2;remove:linux;extract:linux-2.4.25.tar.bz2;patch:linux-2.4.25-dbox2.diff;patch:linux-2.4.25-dbox2-shift.diff;patch:linux-2.4.25-dbox2-keyboard.diff;patch:linux-2.4.25-dbox2-v4l2.diff;patch:linux-2.4.25-dbox2-cramfs.diff;patch:linux-2.4.25-dbox2-mtd.diff.bz2;patch:linux-2.4.25-cifs24.103.diff.bz2;patch:fb_accel_id.diff;patch:cygwin/linux.diff;link:linux-2.4.25:linux
-glibc;2.2.5;glibc-2.2.5;glibc-2.2.5.tar.bz2:glibc-linuxthreads-2.2.5.tar.bz2:glibc.diff;extract:glibc-2.2.5.tar.bz2;dirextract:glibc-linuxthreads-2.2.5.tar.bz2;patch:glibc.diff;patch:cygwin/glibc.diff
+linux;2.4.27-dbox2;linux-2.4.27;linux-2.4.27.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.27-dbox2-mtd.diff.bz2;remove:linux;extract:linux-2.4.27.tar.bz2;patch:linux-2.4.27-dbox2.diff;patch:linux-2.4.27-dbox2-shift.diff;patch:linux-2.4.27-dbox2-keyboard.diff;patch:linux-2.4.27-dbox2-v4l2.diff;patch:linux-2.4.27-dbox2-cramfs.diff;patch:linux-2.4.27-dbox2-mtd.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.27/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs1.3r3-patch;link:linux-2.4.27:linux
+glibc;2.3.2;glibc-2.3.2;glibc-2.3.2.tar.bz2:glibc-linuxthreads-2.3.2.tar.bz2:glibc-2.3.2.diff;extract:glibc-2.3.2.tar.bz2;dirextract:glibc-linuxthreads-2.3.2.tar.bz2;patch:glibc-2.3.2.diff;patch:cygwin/glibc.diff
 
 #
 # contrib libs

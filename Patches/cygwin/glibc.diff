@@ -1,7 +1,7 @@
 diff -Naur glibc-2.2.5.org/Makeconfig glibc-2.2.5/Makeconfig
 --- glibc-2.2.5.org/Makeconfig	Wed Sep 12 18:49:45 2001
 +++ glibc-2.2.5/Makeconfig	Sun Mar  3 00:11:44 2002
-@@ -439,13 +439,13 @@
+@@ -433,13 +433,13 @@
  # run the linked programs.
  link-libc = -Wl,-rpath-link=$(rpath-link) \
  	    $(common-objpfx)libc.so$(libc.so-version) \
@@ -10,14 +10,14 @@ diff -Naur glibc-2.2.5.org/Makeconfig glibc-2.2.5/Makeconfig
  # This is how to find at build-time things that will be installed there.
  rpath-dirs = math elf dlfcn nss nis rt resolv crypt
  else
- ifneq (,$(findstring aix,$(config-os)))
+ ifneq (,$(filter aix aix%,$(config-os)))
  link-libc = $(common-objpfx)libc.a \
 -	    $(common-objpfx)$(patsubst %,$(libtype.oS),c) $(gnulib)
 +	    $(common-objpfx)$(patsubst %,$(libtype.ot),c) $(gnulib)
  rpath-dirs = math dlfcn nss nis rt resolv crypt
  endif
  endif
-@@ -649,7 +649,7 @@
+@@ -652,7 +652,7 @@
  # The compilation rules use $(CPPFLAGS-${SUFFIX}) and $(CFLAGS-${SUFFIX})
  # to pass different flags for each flavor.
  libtypes = $(foreach o,$(object-suffixes-for-libc),$(libtype$o))
@@ -26,7 +26,7 @@ diff -Naur glibc-2.2.5.org/Makeconfig glibc-2.2.5/Makeconfig
  object-suffixes :=
  CPPFLAGS-.o = $(pic-default)
  CFLAGS-.o = $(filter %frame-pointer,$(+cflags))
-@@ -703,14 +703,14 @@
+@@ -706,14 +706,14 @@
  
  ifeq (yes,$(build-shared))
  # Build special library that contains the static-only routines for libc.
@@ -37,10 +37,10 @@ diff -Naur glibc-2.2.5.org/Makeconfig glibc-2.2.5/Makeconfig
  # shared objects.  We don't want to use CFLAGS-os because users may, for
  # example, make that processor-specific.
 -CFLAGS-.oS = $(CFLAGS-.o) $(pic-ccflag)
--CPPFLAGS-.oS = $(CPPFLAGS-.o) -DPIC
+-CPPFLAGS-.oS = $(CPPFLAGS-.o) -DPIC -DLIBC_NONSHARED=1
 -libtype.oS = lib%_nonshared.a
 +CFLAGS-.ot = $(CFLAGS-.o) $(pic-ccflag)
-+CPPFLAGS-.ot = $(CPPFLAGS-.o) -DPIC
++CPPFLAGS-.ot = $(CPPFLAGS-.o) -DPIC -DLIBC_NONSHARED=1
 +libtype.ot = lib%_nonshared.a
  endif
  
@@ -48,7 +48,7 @@ diff -Naur glibc-2.2.5.org/Makeconfig glibc-2.2.5/Makeconfig
 diff -Naur glibc-2.2.5.org/Makerules glibc-2.2.5/Makerules
 --- glibc-2.2.5.org/Makerules	Sun Mar  3 00:08:12 2002
 +++ glibc-2.2.5/Makerules	Sun Mar  3 00:12:40 2002
-@@ -361,7 +361,7 @@
+@@ -446,7 +446,7 @@
  # Bounded pointer thunks are only built for *.ob
  elide-bp-thunks = $(addprefix $(bppfx),$(bp-thunks))
  
@@ -57,10 +57,10 @@ diff -Naur glibc-2.2.5.org/Makerules glibc-2.2.5/Makerules
  				  $(routines) $(aux) $(sysdep_routines)) \
  		     $(elide-bp-thunks)
  elide-routines.os += $(static-only-routines) $(elide-bp-thunks)
-@@ -842,14 +842,14 @@
- # of the files are taken by the linker.
+@@ -958,15 +958,15 @@
  install: $(inst_libdir)/libc.so
- $(inst_libdir)/libc.so: $(common-objpfx)libc.so$(libc.so-version) \
+ $(inst_libdir)/libc.so: $(common-objpfx)format.lds \
+ 			$(common-objpfx)libc.so$(libc.so-version) \
 -			$(inst_libdir)/$(patsubst %,$(libtype.oS),\
 +			$(inst_libdir)/$(patsubst %,$(libtype.ot),\
  						  $(libprefix)$(libc-name)) \
@@ -68,19 +68,19 @@ diff -Naur glibc-2.2.5.org/Makerules glibc-2.2.5/Makerules
  	(echo '/* GNU ld script';\
  	 echo '   Use the shared library, but some functions are only in';\
  	 echo '   the static library, so try that secondarily.  */';\
+ 	 cat $<; \
  	 echo 'GROUP ( $(inst_libdir)/libc.so$(libc.so-version)' \
--	      '$(inst_libdir)/$(patsubst %,$(libtype.oS),$(libprefix)$(libc-name)) '\
-+	      '$(inst_libdir)/$(patsubst %,$(libtype.ot),$(libprefix)$(libc-name)) '\
+-	      '$(inst_libdir)/$(patsubst %,$(libtype.oS),$(libprefix)$(libc-name))'\
++	      '$(inst_libdir)/$(patsubst %,$(libtype.ot),$(libprefix)$(libc-name))'\
  	      ')' \
  	) > $@.new
  	mv -f $@.new $@
 diff -Naur glibc-2.2.5.org/sysdeps/sparc/sparc32/sparcv9/Makefile glibc-2.2.5/sysdeps/sparc/sparc32/sparcv9/Makefile
 --- glibc-2.2.5.org/sysdeps/sparc/sparc32/sparcv9/Makefile	Tue Apr 10 00:11:57 2001
 +++ glibc-2.2.5/sysdeps/sparc/sparc32/sparcv9/Makefile	Sun Mar  3 00:13:42 2002
-@@ -10,5 +10,5 @@
+@@ -10,4 +10,4 @@
  ASFLAGS-.op += -Wa,-Av9a
  ASFLAGS-.og += -Wa,-Av9a
  ASFLAGS-.ob += -Wa,-Av9a
 -ASFLAGS-.oS += -Wa,-Av9a
 +ASFLAGS-.ot += -Wa,-Av9a
- endif

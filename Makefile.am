@@ -30,9 +30,14 @@ archivecheck:
 
 core: directories binutils linuxdir glibc gcc
 
+DEPDIR = .deps
+	
 VPATH = $(DEPDIR)
 
 DEP_FILES = $(DEPDIR)/dummy
+
+$(DEPDIR):
+	$(INSTALL) -d $(DEPDIR)
 
 $(DEPDIR)/bootstrap:
 	@if [ ! -f glibc ]; then \
