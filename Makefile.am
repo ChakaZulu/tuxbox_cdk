@@ -604,7 +604,7 @@ libs: \
 #   contrib apps
 #
 
-contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc
+contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .php .thttpd
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -731,6 +731,22 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc
 		@INSTALL_xrc@
 	@CLEANUP_xrc@
 	touch .xrc
+
+.thttpd: @DEPENDS_thttpd@
+	@PREPARE_thttpd@
+	cd @DIR_thttpd@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_thttpd@
+	@CLEANUP_thttpd@
+	touch .thttpd
+
 
 #######################
 #

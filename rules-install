@@ -64,6 +64,7 @@ pump;make:install:DEST=TARGET
 ssh;make:install:DESTDIR=TARGET
 tcpdump;make:install
 xrc;make:install
+thttpd;make:install
 
 #
 # msttf
