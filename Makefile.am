@@ -27,7 +27,7 @@ core: .directories .binutils .linuxdir .glibc .gcc
 	elif [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		$(MAKE) .gcc; \
 	fi
-	touch .bootstrap
+	touch $@
 
 .directories:
 	$(INSTALL) -d $(targetprefix)/bin
@@ -55,7 +55,7 @@ core: .directories .binutils .linuxdir .glibc .gcc
 if TARGETRULESET_FLASH
 	$(INSTALL) -d $(flashprefix)
 endif
-	touch .directories
+	touch $@
 
 .linuxdir: @DEPENDS_linux@
 	@if [ ! -d $(targetprefix)/bin ]; then \
@@ -67,7 +67,7 @@ endif
 		ARCH=ppc
 	$(MAKE) -C @DIR_linux@ include/linux/version.h \
 		ARCH=ppc
-	touch .linuxdir
+	touch $@
 
 .binutils: @DEPENDS_binutils@
 	@if [ ! -h linux ]; then \
@@ -85,7 +85,7 @@ endif
 		$(MAKE) all all-gprof && \
 		@INSTALL_binutils@
 	@CLEANUP_binutils@
-	touch .binutils
+	touch $@
 
 #
 # gcc first stage without glibc
@@ -142,7 +142,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 		$(MAKE) all && \
 		@INSTALL_glibc@
 	@CLEANUP_glibc@
-	touch .glibc
+	touch $@
 
 #
 # uClibc
@@ -154,7 +154,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 		$(MAKE) all CROSS=$(target)- && \
 		@INSTALL_uclibc@
 	@CLEANUP_uclibc@
-	touch .uclibc
+	touch $@
 
 #
 # gcc second stage with glibc
@@ -184,7 +184,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 		@INSTALL_gcc@
 	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_gcc@
-	touch .gcc
+	touch $@
 
 #######################
 #
@@ -207,11 +207,11 @@ root_optional: \
 			CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
 		@INSTALL_busybox@
 	@CLEANUP_busybox@
-	touch .busybox
+	touch $@
 
 .root:
 	$(MAKE) -C root install
-	touch .root
+	touch $@
 
 .ftpd: .bootstrap @DEPENDS_ftpd@
 	@PREPARE_ftpd@
@@ -222,7 +222,7 @@ root_optional: \
 		$(MAKE) && \
 		@INSTALL_ftpd@
 	@CLEANUP_ftpd@
-	touch .ftpd
+	touch $@
 
 .modutils: .bootstrap @DEPENDS_modutils@
 	@PREPARE_modutils@
@@ -238,7 +238,7 @@ root_optional: \
 		$(MAKE) && \
 		@INSTALL_modutils@
 	@CLEANUP_modutils@
-	touch .modutils
+	touch $@
 
 .portmap: .bootstrap @DEPENDS_portmap@
 	@PREPARE_portmap@
@@ -247,7 +247,7 @@ root_optional: \
 		$(MAKE) && \
 		@INSTALL_portmap@
 	@CLEANUP_portmap@
-	touch .portmap
+	touch $@
 
 .procps: .bootstrap .libncurses @DEPENDS_procps@
 	@PREPARE_procps@
@@ -256,7 +256,7 @@ root_optional: \
 		$(MAKE) top ps && \
 		@INSTALL_procps@
 	@CLEANUP_procps@
-	touch .procps
+	touch $@
 
 .watchdog: .bootstrap @DEPENDS_watchdog@
 	@PREPARE_watchdog@
@@ -270,7 +270,7 @@ root_optional: \
 		$(MAKE) all && \
 		@INSTALL_watchdog@
 	@CLEANUP_watchdog@
-	touch .watchdog
+	touch $@
 
 
 #######################
@@ -292,7 +292,7 @@ libs_optional: \
 	cd @DIR_libboost@ && \
 		@INSTALL_libboost@
 	@CLEANUP_libboost@
-	touch .libboost
+	touch $@
 
 .libcommoncplusplus: .bootstrap .libxml2 @DEPENDS_libcommoncplusplus@
 	@PREPARE_libcommoncplusplus@
@@ -308,7 +308,7 @@ libs_optional: \
 		chmod 755 $(hostprefix)/bin/ccgnu2-config && \
 		@INSTALL_libcommoncplusplus@
 	@CLEANUP_libcommoncplusplus@
-	touch .libcommoncplusplus
+	touch $@
 
 .libcrypto: .bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
@@ -317,7 +317,7 @@ libs_optional: \
 		$(MAKE) all && \
 		@INSTALL_libcrypto@
 	@CLEANUP_libcrypto@
-	touch .libcrypto
+	touch $@
 
 .libcurl: .bootstrap @DEPENDS_libcurl@
 	@PREPARE_libcurl@
@@ -334,7 +334,7 @@ libs_optional: \
 		chmod 755 $(hostprefix)/bin/curl-config && \
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
-	touch .libcurl
+	touch $@
 
 .libdirectfb: .bootstrap .libfreetype .libjpeg .libpng .libz @DEPENDS_libdirectfb@
 	@PREPARE_libdirectfb@
@@ -354,7 +354,7 @@ libs_optional: \
 		mv libdirectfb.la.tmp src/.libs/libdirectfb.la && \
 		@INSTALL_libdirectfb@
 	@CLEANUP_libdirectfb@
-	touch .libdirectfb
+	touch $@
 
 .libdirectfbpp: .bootstrap .libdirectfb @DEPENDS_libdirectfbpp@
 	@PREPARE_libdirectfbpp@
@@ -367,7 +367,7 @@ libs_optional: \
 		$(MAKE) all && \
 		@INSTALL_libdirectfbpp@
 	@CLEANUP_libdirectfbpp@
-	touch .libdirectfbpp
+	touch $@
 
 .libdvbpsi: .bootstrap @DEPENDS_libdvbpsi@
 	@PREPARE_libdvbpsi@
@@ -380,7 +380,7 @@ libs_optional: \
 		$(MAKE) all && \
 		@INSTALL_libdvbpsi@
 	@CLEANUP_libdvbpsi@
-	touch .libdvbpsi
+	touch $@
 
 .libffi: .bootstrap @DEPENDS_libffi@
 	@PREPARE_libffi@
@@ -393,7 +393,7 @@ libs_optional: \
 		$(MAKE) all && \
 		@INSTALL_libffi@
 	@CLEANUP_libffi@
-	touch .libffi
+	touch $@
 
 .libfreetype: .bootstrap @DEPENDS_libfreetype@
 	@PREPARE_libfreetype@
@@ -409,7 +409,7 @@ libs_optional: \
 		chmod 755 $(hostprefix)/bin/freetype-config && \
 		@INSTALL_libfreetype@
 	@CLEANUP_libfreetype@
-	touch .libfreetype
+	touch $@
 
 .libfribidi: .bootstrap @DEPENDS_libfribidi@
 	@PREPARE_libfribidi@
@@ -423,7 +423,7 @@ libs_optional: \
 		$(MAKE) all && \
 		@INSTALL_libfribidi@
 	@CLEANUP_libfribidi@
-	touch .libfribidi
+	touch $@
 
 .libjpeg: .bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libjpeg@
@@ -436,7 +436,7 @@ libs_optional: \
 		$(MAKE) libjpeg.so.6 && \
 		@INSTALL_libjpeg@
 	@CLEANUP_libjpeg@
-	touch .libjpeg
+	touch $@
 
 .libmad: .bootstrap .libz @DEPENDS_libmad@
 	@PREPARE_libmad@
@@ -455,7 +455,7 @@ libs_optional: \
 		$(MAKE) all && \
 		@INSTALL_libmad@
 	@CLEANUP_libmad@
-	touch .libmad
+	touch $@
 
 .libncurses: .bootstrap @DEPENDS_libncurses@
 	@PREPARE_libncurses@
@@ -481,7 +481,7 @@ libs_optional: \
 			HOSTLDFLAGS="$(LDFLAGS)" && \
 		@INSTALL_libncurses@
 	@CLEANUP_libncurses@
-	touch .libncurses
+	touch $@
 
 .libpcap: .bootstrap @DEPENDS_libpcap@
 	@PREPARE_libpcap@
@@ -495,7 +495,7 @@ libs_optional: \
 		$(MAKE) all && \
 		@INSTALL_libpcap@
 	@CLEANUP_libpcap@
-	touch .libpcap
+	touch $@
 
 .libpng: .bootstrap .libz @DEPENDS_libpng@
 	@PREPARE_libpng@
@@ -506,7 +506,7 @@ libs_optional: \
 			prefix=$(targetprefix) && \
 		@INSTALL_libpng@
 	@CLEANUP_libpng@
-	touch .libpng
+	touch $@
 
 .libreadline: .bootstrap @DEPENDS_libreadline@
 	@PREPARE_libreadline@
@@ -520,7 +520,7 @@ libs_optional: \
 		$(MAKE) all && \
 		@INSTALL_libreadline@
 	@CLEANUP_libreadline@
-	touch .libreadline
+	touch $@
 
 .libsdl: .bootstrap .libdirectfb @DEPENDS_libsdl@
 	@PREPARE_libsdl@
@@ -558,7 +558,7 @@ libs_optional: \
 		chmod 755 $(hostprefix)/bin/sdl-config && \
 		@INSTALL_libsdl@
 	@CLEANUP_libsdl@
-	touch .libsdl
+	touch $@
 
 .libsigc: .bootstrap @DEPENDS_libsigc@
 	@PREPARE_libsigc@
@@ -572,7 +572,7 @@ libs_optional: \
 		$(MAKE) all && \
 		@INSTALL_libsigc@
 	@CLEANUP_libsigc@
-	touch .libsigc
+	touch $@
 
 .libvorbisidec: .bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libvorbisidec@
@@ -585,7 +585,7 @@ libs_optional: \
 		$(MAKE) && \
 		@INSTALL_libvorbisidec@
 	@CLEANUP_libvorbisidec@
-	touch .libvorbisidec
+	touch $@
 
 .libxml2: .bootstrap @DEPENDS_libxml2@
 	@PREPARE_libxml2@
@@ -612,7 +612,7 @@ libs_optional: \
 		$(MAKE) all && \
 		@INSTALL_libxml2@
 	@CLEANUP_libxml2@
-	touch .libxml2
+	touch $@
 
 .libz: .bootstrap @DEPENDS_libz@
 	@PREPARE_libz@
@@ -624,7 +624,7 @@ libs_optional: \
 		$(MAKE) all && \
 		@INSTALL_libz@
 	@CLEANUP_libz@
-	touch .libz
+	touch $@
 
 #######################
 #
@@ -641,7 +641,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 		$(MAKE) all && \
 		@INSTALL_bzip2@
 	@CLEANUP_bzip2@
-	touch .bzip2
+	touch $@
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -654,7 +654,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 			--with-main_compressor=gzip && \
 		@INSTALL_console_data@
 	@CLEANUP_console_data@
-	touch .console_data
+	touch $@
 
 .console_tools: .bootstrap .console_data @DEPENDS_console_tools@
 	@PREPARE_console_tools@
@@ -667,7 +667,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 			--disable-nls && \
 		@INSTALL_console_tools@
 	@CLEANUP_console_tools@
-	touch .console_tools
+	touch $@
 
 .directfb_examples: .bootstrap .libdirectfb @DEPENDS_directfb_examples@
 	@PREPARE_directfb_examples@
@@ -680,7 +680,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 		$(MAKE) all && \
 		@INSTALL_directfb_examples@
 	@CLEANUP_directfb_examples@
-	touch .directfb_examples
+	touch $@
 
 .fbset: .bootstrap @DEPENDS_fbset@
 	@PREPARE_fbset@
@@ -689,7 +689,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 			$(BUILDENV) && \
 		@INSTALL_fbset@
 	@CLEANUP_fbset@
-	touch .fbset
+	touch $@
 
 .lirc: .bootstrap @DEPENDS_lirc@
 	@PREPARE_lirc@
@@ -707,7 +707,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 			--without-x && \
 		@INSTALL_lirc@
 	@CLEANUP_lirc@
-	touch .lirc
+	touch $@
 
 .lsof: .bootstrap @DEPENDS_lsof@
 	@PREPARE_lsof@
@@ -721,7 +721,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 		$(MAKE) all && \
 		@INSTALL_lsof@
 	@CLEANUP_lsof@
-	touch .lsof
+	touch $@
 
 .ssh: .bootstrap .libcrypto .libz @DEPENDS_ssh@
 	@PREPARE_ssh@
@@ -741,7 +741,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 		$(MAKE) all && \
 		@INSTALL_ssh@
 	@CLEANUP_ssh@
-	touch .ssh
+	touch $@
 
 .tcpdump: .bootstrap .libpcap @DEPENDS_tcpdump@
 	@PREPARE_tcpdump@
@@ -757,7 +757,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 		$(MAKE) all && \
 		@INSTALL_tcpdump@
 	@CLEANUP_tcpdump@
-	touch .tcpdump
+	touch $@
 
 
 #######################
@@ -766,7 +766,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 #
 
 devel: .gdb .ltrace .strace .nano
-devel_optional: .gdb-remote .ksymoops
+devel_optional: .gdb-remote
 
 .gdb: .bootstrap .libncurses @DEPENDS_gdb@
 	@PREPARE_gdb@
@@ -785,7 +785,7 @@ devel_optional: .gdb-remote .ksymoops
 		$(MAKE) all-gdb && \
 		@INSTALL_gdb@
 	@CLEANUP_gdb@
-	touch .gdb
+	touch $@
 
 .gdb-remote: .bootstrap @DEPENDS_gdb@
 	@PREPARE_gdb@
@@ -799,15 +799,7 @@ devel_optional: .gdb-remote .ksymoops
 		$(MAKE) all-gdb && \
 		$(MAKE) install-gdb
 	@CLEANUP_gdb@
-	touch .gdb-remote
-
-.ksymoops: .bootstrap @DEPENDS_ksymoops@
-	@PREPARE_ksymoops@
-	cd @DIR_ksymoops@ && \
-		$(MAKE) CC=$(target)-gcc DEF_MAP="\\\"/boot/System.map-*r\\\"" DEF_VMLINUX="\\\"/boot/vmlinux-*r\\\"" && \
-		@INSTALL_ksymoops@
-	@CLEANUP_ksymoops@
-	touch .ksymoops
+	touch $@
 
 .ltrace: .bootstrap @DEPENDS_ltrace@
 	@PREPARE_ltrace@
@@ -820,7 +812,7 @@ devel_optional: .gdb-remote .ksymoops
 		$(MAKE) clean all LD=$(target)-ld && \
 		@INSTALL_ltrace@
 	@CLEANUP_ltrace@
-	touch .ltrace
+	touch $@
 
 .strace: .bootstrap @DEPENDS_strace@
 	@PREPARE_strace@
@@ -833,7 +825,7 @@ devel_optional: .gdb-remote .ksymoops
 		$(MAKE) all && \
 		@INSTALL_strace@
 	@CLEANUP_strace@
-	touch .strace
+	touch $@
 
 .nano: .bootstrap @DEPENDS_nano@
 	@PREPARE_nano@
@@ -846,7 +838,7 @@ devel_optional: .gdb-remote .ksymoops
 		$(MAKE) all && \
 		@INSTALL_nano@
 	@CLEANUP_nano@
-	touch .nano
+	touch $@
 
 #######################
 #
@@ -869,7 +861,7 @@ java: .kaffeh .kaffe
 		$(MAKE) all && \
 		@INSTALL_kaffeh@
 	@CLEANUP_kaffeh@
-	touch .kaffeh
+	touch $@
 
 # for ppc
 .kaffe: .bootstrap .kaffeh .libffi @DEPENDS_kaffe@
@@ -887,7 +879,7 @@ java: .kaffeh .kaffe
 		$(MAKE) all && \
 		@INSTALL_kaffe@
 	@CLEANUP_kaffe@
-	touch .kaffe
+	touch $@
 
 #######################
 #
@@ -909,7 +901,7 @@ fun: .gnuboy .scummvm .sdldoom
 		$(MAKE) all && \
 		@INSTALL_gnuboy@
 	@CLEANUP_gnuboy@
-	touch .gnuboy
+	touch $@
 
 .scummvm: .bootstrap .libreadline .libsdl @DEPENDS_scummvm@
 	@PREPARE_scummvm@
@@ -919,7 +911,7 @@ fun: .gnuboy .scummvm .sdldoom
 			DEFINES="-DUNIX" && \
 		@INSTALL_scummvm@
 	@CLEANUP_scummvm@
-	touch .scummvm
+	touch $@
 
 .sdldoom: .bootstrap .libsdl @DEPENDS_sdldoom@
 	@PREPARE_sdldoom@
@@ -932,7 +924,7 @@ fun: .gnuboy .scummvm .sdldoom
 		$(MAKE) all && \
 		@INSTALL_sdldoom@
 	@CLEANUP_sdldoom@
-	touch .sdldoom
+	touch $@
 
 #######################
 #
@@ -949,7 +941,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 			CPPFLAGS="-I$(driverdir)/dvb/include" && \
 		@INSTALL_dvbdate@
 	@CLEANUP_dvbdate@
-	touch .dvbdate
+	touch $@
 
 .dvbstream: .bootstrap @DEPENDS_dvbstream@
 	@PREPARE_dvbstream@
@@ -960,7 +952,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 			CFLAGS="$(TARGET_CFLAGS) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" && \
 		@INSTALL_dvbstream@
 	@CLEANUP_dvbstream@
-	touch .dvbstream
+	touch $@
 
 .dvbtext: .bootstrap @DEPENDS_dvbtext@
 	@PREPARE_dvbtext@
@@ -968,7 +960,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 		$(target)-gcc $(TARGET_CFLAGS) -I$(driverdir)/include -o dvbtext dvbtext.c && \
 		@INSTALL_dvbtext@
 	@CLEANUP_dvbtext@
-	touch .dvbtext
+	touch $@
 
 .dvbtune: .bootstrap @DEPENDS_dvbtune@
 	@PREPARE_dvbtune@
@@ -978,7 +970,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 			CPPFLAGS="-I$(driverdir)/dvb/include -DNEWSTRUCT" && \
 		@INSTALL_dvbtune@
 	@CLEANUP_dvbtune@
-	touch .dvbtune
+	touch $@
 
 .vls: .bootstrap .libdvbpsi @DEPENDS_vls@
 	@PREPARE_vls@
@@ -994,7 +986,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 		$(MAKE) all && \
 		@INSTALL_vls@
 	@CLEANUP_vls@
-	touch .vls
+	touch $@
 
 #######################
 #
@@ -1012,7 +1004,7 @@ if MAINTAINER_MODE
 else
 	$(MAKE) -C $(bootdir)/u-boot distclean
 endif
-	touch .u-boot
+	touch $@
 
 .linuxkernel: .bootstrap .linuxdir .u-boot
 	$(MAKE) -C @DIR_linux@ zImage modules \
@@ -1036,7 +1028,7 @@ if MAINTAINER_MODE
 else
 	$(MAKE) -C @DIR_linux@ clean
 endif
-	touch .linuxkernel
+	touch $@
 
 .driver: .bootstrap .linuxkernel
 	$(MAKE) -C $(driverdir) \
@@ -1056,7 +1048,7 @@ else
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		distclean
 endif
-	touch .driver
+	touch $@
 
 driver-clean:
 	$(MAKE) -C $(driverdir) \
@@ -1076,7 +1068,7 @@ $(driverdir)/directfb/Makefile: .bootstrap .libdirectfb
 
 .directfb_gtx: $(driverdir)/directfb/Makefile
 	$(MAKE) -C $(driverdir)/directfb all install DESTDIR=$(targetprefix)
-	touch .directfb_gtx
+	touch $@
 
 #######################
 #
@@ -1118,7 +1110,7 @@ $(appsdir)/dvb/config/config.status:
 
 .config: $(appsdir)/dvb/config/config.status
 	$(MAKE) -C $(appsdir)/dvb/config all install
-	touch .config
+	touch $@
 
 # dvb/dvbsnoop
 
@@ -1127,7 +1119,7 @@ $(appsdir)/dvb/dvbsnoop/config.status: .bootstrap
 
 .dvbsnoop: $(appsdir)/dvb/dvbsnoop/config.status
 	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
-	touch .dvbsnoop
+	touch $@
 
 # dvb/zapit
 
@@ -1136,7 +1128,7 @@ $(appsdir)/dvb/zapit/config.status: .bootstrap .misc_libs
 
 .zapit: $(appsdir)/dvb/zapit/config.status .config
 	$(MAKE) -C $(appsdir)/dvb/zapit all install
-	touch .zapit
+	touch $@
 
 # dvb/tools
 
@@ -1145,7 +1137,7 @@ $(appsdir)/dvb/tools/config.status: .bootstrap .misc_libs
 
 .dvb_tools: $(appsdir)/dvb/tools/config.status .inetd
 	$(MAKE) -C $(appsdir)/dvb/tools all install
-	touch .dvb_tools
+	touch $@
 
 # misc/libs
 
@@ -1154,7 +1146,7 @@ $(appsdir)/misc/libs/config.status: .bootstrap .libz
 
 .misc_libs: $(appsdir)/misc/libs/config.status
 	$(MAKE) -C $(appsdir)/misc/libs all install
-	touch .misc_libs
+	touch $@
 
 # misc/tools
 
@@ -1163,7 +1155,7 @@ $(appsdir)/misc/tools/config.status: .bootstrap
 
 .misc_tools: $(appsdir)/misc/tools/config.status
 	$(MAKE) -C $(appsdir)/misc/tools all install
-	touch .misc_tools
+	touch $@
 
 # tuxbox/enigma
 
@@ -1172,7 +1164,7 @@ $(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libmad .libpng 
 
 .enigma: $(appsdir)/tuxbox/enigma/config.status .tuxbox_tools .config
 	$(MAKE) -C $(appsdir)/tuxbox/enigma all install
-	touch .enigma
+	touch $@
 
 # tuxbox/funstuff
 
@@ -1181,7 +1173,7 @@ $(appsdir)/tuxbox/funstuff/config.status: .bootstrap
 
 .funstuff: $(appsdir)/tuxbox/funstuff/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/funstuff all install
-	touch .funstuff
+	touch $@
 
 # tuxbox/lcars
 
@@ -1190,7 +1182,7 @@ $(appsdir)/tuxbox/lcars/config.status: .bootstrap .libcurl .libfreetype .plugins
 
 .lcars: $(appsdir)/tuxbox/lcars/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/lcars all install
-	touch .lcars
+	touch $@
 
 # tuxbox/lcd
 
@@ -1199,7 +1191,7 @@ $(appsdir)/tuxbox/lcd/config.status: .bootstrap .libfreetype .misc_libs .tuxbox_
 
 .lcdmenu: $(appsdir)/tuxbox/lcd/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/lcd/lcdmenu all install
-	touch .lcdmenu
+	touch $@
 
 # tuxbox/libs
 
@@ -1208,7 +1200,7 @@ $(appsdir)/tuxbox/libs/config.status: .bootstrap .libfreetype
 
 .tuxbox_libs: $(appsdir)/tuxbox/libs/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/libs all install
-	touch .tuxbox_libs
+	touch $@
 
 # tuxbox/neutrino
 
@@ -1217,7 +1209,7 @@ $(appsdir)/tuxbox/neutrino/config.status: .bootstrap .libboost .libcurl .libfree
 
 .neutrino: $(appsdir)/tuxbox/neutrino/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install
-	touch .neutrino
+	touch $@
 
 # tuxbox/plugins
 
@@ -1226,7 +1218,7 @@ $(appsdir)/tuxbox/plugins/config.status: .bootstrap .libcurl
 
 .plugins: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins all install
-	touch .plugins
+	touch $@
 
 # tuxbox/tools
 
@@ -1235,7 +1227,7 @@ $(appsdir)/tuxbox/tools/config.status: .bootstrap .plugins .tuxbox_libs
 
 .tuxbox_tools: $(appsdir)/tuxbox/tools/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/tools all install
-	touch .tuxbox_tools
+	touch $@
 
 #######################
 #
@@ -1292,7 +1284,7 @@ $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
 	$(INSTALL) $(targetprefix)/sbin/depmod $(flashprefix)/root/sbin
 	for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
 	ln -s /tmp $(flashprefix)/root/var/run
-	@touch $(flashprefix)/.flash
+	@touch $@
 
 flash-ftpd: $(flashprefix)/.part_ftpd
 
@@ -1300,17 +1292,17 @@ $(flashprefix)/.part_ftpd: $(flashprefix)/.flash $(flashprefix)/.part_inetd .ftp
 	$(INSTALL) -d $(flashprefix)/root/share/empty
 	$(INSTALL) $(targetprefix)/etc/vsftpd.conf $(flashprefix)/root/etc
 	$(INSTALL) $(targetprefix)/sbin/in.ftpd $(flashprefix)/root/sbin
-	@touch $(flashprefix)/.part_ftpd
+	@touch $@
 
 $(flashprefix)/.part_inetd: $(flashprefix)/.flash
 	$(INSTALL) $(targetprefix)/sbin/inetd $(flashprefix)/root/sbin
-	@touch $(flashprefix)/.part_inetd
+	@touch $@
 
 flash-telnetd: $(flashprefix)/.part_telnetd
 
 $(flashprefix)/.part_telnetd: $(flashprefix)/.flash $(flashprefix)/.part_inetd .netkit_telnet
 	$(INSTALL) $(targetprefix)/sbin/in.telnetd $(flashprefix)/root/sbin
-	@touch $(flashprefix)/.part_telnetd
+	@touch $@
 
 flash-ssh: $(flashprefix)/.part_ssh
 
@@ -1319,7 +1311,7 @@ $(flashprefix)/.part_ssh: $(flashprefix)/.flash $(flashprefix)/.ssh
 	$(INSTALL) $(targetprefix)/bin/ssh $(targetprefix)/bin/scp \
 		$(targetprefix)/bin/sftp $(flashprefix)/root/bin
 	cp -ap $(targetprefix)/etc/ssh/ssh_config $(flashprefix)/root/etc/ssh
-	@touch $(flashprefix)/.part_ssh
+	@touch $@
 
 flash-sshd: $(flashprefix)/.part_sshd
 
@@ -1333,7 +1325,7 @@ $(flashprefix)/.part_sshd: $(flashprefix)/.flash $(flashprefix)/.ssh
 	cp -ap $(targetprefix)/etc/init.d/start_sshd $(flashprefix)/root/etc/init.d/
 	$(INSTALL) $(targetprefix)/libexec/sftp-server $(flashprefix)/root/libexec
 	$(INSTALL) $(targetprefix)/sbin/sshd $(flashprefix)/root/sbin
-	@touch $(flashprefix)/.part_sshd
+	@touch $@
 
 flash-neutrino: $(flashprefix)/.part_neutrino
 
@@ -1356,7 +1348,7 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino
 	fi
 	cp -pa $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/var/tuxbox/config/zapit $(flashprefix)/root/var/tuxbox/config
-	@touch $(flashprefix)/.part_neutrino
+	@touch $@
 
 flash-enigma: $(flashprefix)/.part_enigma
 
@@ -1368,7 +1360,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
 	cp -pa $(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/micron*.ttf $(targetprefix)/share/fonts/v5loxica*.ttf $(targetprefix)/share/fonts/unmrs.pfa \
 		$(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/etc/init.d/start_enigma $(flashprefix)/root/etc/init.d
-	@touch $(flashprefix)/.part_enigma
+	@touch $@
 
 flash-lcars: $(flashprefix)/.part_lcars
 
@@ -1378,7 +1370,7 @@ $(flashprefix)/.part_lcars: $(flashprefix)/.flash .lcars
 	cp -pa $(targetprefix)/etc/init.d/start_lcars $(flashprefix)/root/etc/init.d/
 	cp -pa $(targetprefix)/share/fonts/ds9.ttf $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/var/tuxbox/config/lcars $(flashprefix)/root/var/tuxbox/config
-	@touch $(flashprefix)/.part_lcars
+	@touch $@
 
 flash-plugins: $(flashprefix)/.part_plugins
 
@@ -1389,14 +1381,14 @@ $(flashprefix)/.part_plugins: $(flashprefix)/.flash .plugins
 	cp -pa $(targetprefix)/share/fonts/tuxtxt.fon $(flashprefix)/root/share/fonts/
 	cp -pa $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/root/var/tuxbox/config/
 	cp -pa $(targetprefix)/var/tuxbox/config/tuxtxt/tuxtxt.conf $(flashprefix)/root/var/tuxbox/config/tuxtxt/
-	@touch $(flashprefix)/.part_plugins
+	@touch $@
 
 flash-lcdmenu: $(flashprefix)/.part_lcdmenu
 
 $(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash .lcdmenu
 	$(INSTALL) $(targetprefix)/bin/lcdmenu $(flashprefix)/root/bin
 	cp -pa $(targetprefix)/var/tuxbox/config/lcdmenu.conf $(flashprefix)/root/var/tuxbox/config
-	@touch $(flashprefix)/.part_lcdmenu
+	@touch $@
 
 flash-lib: $(flashprefix)/.lib
 
@@ -1416,7 +1408,7 @@ $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 
 	@$(target)-strip --remove-section=.comment --remove-section=.note --strip-unneeded \
 		`find $(flashprefix)/root/lib/tuxbox -name "*.so"` 2>/dev/null || /bin/true
 	@chmod u+rwX,go+rX -R $(flashprefix)/root/
-	@touch $(flashprefix)/.lib
+	@touch $@
 
 flash-cramfs: $(flashprefix)/root-cramfs.img
 
