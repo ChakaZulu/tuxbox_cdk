@@ -71,6 +71,12 @@ if ( $#ARGV >= 1 )
     {
       $output .= "TARGETNAME-ar cru " . join " ", @_;
     }
+    elsif ( $_ =~ m/^rewrite-(libtool|pkgconfig)/ )
+    {
+      $output .= "sed -e \"s,^libdir=,libdir='TARGET/lib',\" <  $_[0] > $_[0].tmp && " if $1 eq "libtool";
+      $output .= "sed -e \"s,^prefix=,prefix=TARGET,\" < $_[0] > $_[0].tmp && " if $1 eq "pkgconfig";
+      $output .= "mv $_[0].tmp $_[0]";
+    }
     else
     {
       die "can't recognise @_";

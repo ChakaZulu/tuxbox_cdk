@@ -365,12 +365,6 @@ libs_optional: \
 			--enable-jpeg \
 			--disable-sdl && \
 		$(MAKE) all && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb-config > $(hostprefix)/bin/directfb-config && \
-		chmod 755 $(hostprefix)/bin/directfb-config && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb.pc > directfb.pc.tmp && \
-		mv directfb.pc.tmp directfb.pc && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb-internal.pc > directfb-internal.pc.tmp && \
-		mv directfb-internal.pc.tmp directfb-internal.pc && \
 		sed -e "s,^libdir='/lib',libdir='$(targetprefix)/lib'," <  src/.libs/libdirectfb.la > libdirectfb.la.tmp && \
 		mv libdirectfb.la.tmp src/.libs/libdirectfb.la && \
 		@INSTALL_libdirectfb@
@@ -386,10 +380,6 @@ libs_optional: \
 			--host=$(target) \
 			--prefix= && \
 		$(MAKE) all && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < dfb++-config > $(hostprefix)/bin/dfb++-config && \
-		chmod 755 $(hostprefix)/bin/dfb++-config && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < dfb++.pc > dfb++.pc.tmp && \
-		mv dfb++.pc.tmp dfb++.pc && \
 		@INSTALL_libdirectfbpp@
 	@CLEANUP_libdirectfbpp@
 	touch .libdirectfbpp
@@ -446,8 +436,6 @@ libs_optional: \
 			--prefix= \
 			--enable-memopt && \
 		$(MAKE) all && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < fribidi.pc > fribidi.pc.tmp && \
-		mv fribidi.pc.tmp fribidi.pc && \
 		@INSTALL_libfribidi@
 	@CLEANUP_libfribidi@
 	touch .libfribidi
@@ -480,10 +468,6 @@ libs_optional: \
 			--enable-fpm=ppc \
 			--enable-sso && \
 		$(MAKE) all && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < libid3tag/id3tag.pc > libid3tag/id3tag.pc.tmp && \
-		mv libid3tag/id3tag.pc.tmp libid3tag/id3tag.pc && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < libmad/mad.pc > libmad/mad.pc.tmp && \
-		mv libmad/mad.pc.tmp libmad/mad.pc && \
 		@INSTALL_libmad@
 	@CLEANUP_libmad@
 	touch .libmad
@@ -601,8 +585,6 @@ libs_optional: \
 			--prefix= \
 			--disable-checks && \
 		$(MAKE) all && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < sigc++-1.2.pc > sigc++-1.2.pc.tmp && \
-		mv sigc++-1.2.pc.tmp sigc++-1.2.pc && \
 		@INSTALL_libsigc@
 	@CLEANUP_libsigc@
 	touch .libsigc
@@ -643,11 +625,6 @@ libs_optional: \
 			--without-mem-debug \
 			--without-python && \
 		$(MAKE) all && \
-		rm -f $(hostprefix)/bin/xml2-config && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < xml2-config > $(hostprefix)/bin/xml2-config && \
-		chmod 755 $(hostprefix)/bin/xml2-config && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < libxml-2.0.pc > libxml-2.0.pc.tmp && \
-		mv libxml-2.0.pc.tmp libxml-2.0.pc && \
 		@INSTALL_libxml2@
 	@CLEANUP_libxml2@
 	touch .libxml2
