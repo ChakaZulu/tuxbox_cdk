@@ -1,0 +1,21 @@
+diff -Naur SDL-1.2.3.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.3/src/video/fbcon/SDL_fbvideo.c
+--- SDL-1.2.3.orig/src/video/fbcon/SDL_fbvideo.c	Tue Jul 31 22:08:51 2001
++++ SDL-1.2.3/src/video/fbcon/SDL_fbvideo.c	Tue Feb 26 04:49:09 2002
+@@ -159,7 +159,7 @@
+ 
+ 	SDL_fbdev = getenv("SDL_FBDEV");
+ 	if ( SDL_fbdev == NULL ) {
+-		SDL_fbdev = "/dev/fb0";
++		SDL_fbdev = "/dev/fb/0";
+ 	}
+ 	console = open(SDL_fbdev, O_RDWR, 0);
+ 	if ( console >= 0 ) {
+@@ -334,7 +334,7 @@
+ 	/* Initialize the library */
+ 	SDL_fbdev = getenv("SDL_FBDEV");
+ 	if ( SDL_fbdev == NULL ) {
+-		SDL_fbdev = "/dev/fb0";
++		SDL_fbdev = "/dev/fb/0";
+ 	}
+ 	console_fd = open(SDL_fbdev, O_RDWR, 0);
+ 	if ( console_fd < 0 ) {
