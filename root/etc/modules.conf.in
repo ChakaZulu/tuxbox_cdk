@@ -2,6 +2,7 @@
 
 options avia firmware=@UCODEDIR@
 options avia_gt ucode=@UCODEDIR@/ucode.bin
+options avia_gt_fb console_transparent=0
 options cam firmware=@UCODEDIR@/cam-alpha.bin
 below cam avia
 above i2c-core i2c-8xx
