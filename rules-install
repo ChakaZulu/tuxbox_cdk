@@ -65,6 +65,7 @@ console_tools;make:install
 dsniff;make:install:install_prefix=TARGET
 fbset;install:-m755:fbset:TARGET/bin
 lirc;make:install
+lsof;install:-m755:lsof:TARGET/sbin
 pump;make:install:DEST=TARGET
 ssh;make:install:DESTDIR=TARGET
 tcpdump;make:install

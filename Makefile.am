@@ -773,6 +773,20 @@ contrib_apps: .console_tools .fbset .lirc .ssh .tcpdump .xrc
 	@CLEANUP_lirc@
 	touch .lirc
 
+.lsof: .bootstrap @DEPENDS_lsof@
+	@PREPARE_lsof@
+	cd @DIR_lsof@ && \
+		CROSS_COMPILE=$(target)- \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		LSOF_VSTR=$(KERNELVERSION) \
+		LINUX_CLIB="-DGLIBCV=202" \
+		./Configure -n linux && \
+		$(MAKE) all && \
+		@INSTALL_lsof@
+	@CLEANUP_lsof@
+	touch .lsof
+
 .pump: .bootstrap .libpopt @DEPENDS_pump@
 	@PREPARE_pump@
 	cd @DIR_pump@ && \
