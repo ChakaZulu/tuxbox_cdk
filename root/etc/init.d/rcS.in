@@ -19,50 +19,78 @@ fi
 @TARGETRULESET_FLASH_TRUE@test -f /var/lib/modules/`uname -r`/modules.dep || \
 depmod -ae
 
-modprobe dbox2_i2c
-modprobe info
-
-if [ -e /tmp/dbox.sh ]; then
-        rm -f /tmp/dbox.sh
-fi
+modprobe tuxbox
 
 . /etc/profile
-echo "mID: $mID"
-echo "feID: $feID"
-echo "fpID: $fpID"
-echo "enxID: $enxID"
-echo "gtxID: $gtxID"
-echo "hwREV: $hwREV"
-echo "fpREV: $fpREV"
-echo "DEMOD: $DEMOD"
-
-test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
-
-modprobe avs
-modprobe dbox2_fp
-modprobe dbox2_fp_input
-modprobe saa7126
 
 modprobe dvb-core
 
-modprobe cam
-modprobe avia_gt
-modprobe avia_gt_fb
-modprobe avia_gt_oss
-modprobe avia_av
+# D-BOX2
+if [ $TUXBOX_MODEL -eq 1]; then
 
-modprobe avia_napi
-modprobe dbox2_i2c_napi
-modprobe dbox2_fp_napi
-modprobe tuner
-modprobe cam_napi
-modprobe avia_av_napi
-modprobe avia_gt_napi
+	# I2C core
+	modprobe dbox2_i2c
 
-modprobe lcd
+	# Frontprozessor
+	modprobe dbox2_fp
+	modprobe dbox2_fp_input
+
+	# Frontends
+	# Nokia
+	if [ $TUXBOX_MANUFACTURER -eq 1 ]; then
+		modprobe ves1820
+		modprobe ves1x93 board_type=2
+		modprobe ves1x93 board_type=3
+	# Sagem
+	elif [ $TUXBOX_MANUFACTURER -eq 2 ]; then
+		modprobe at76c651
+		modprobe ves1x93 board_type=4
+	# Philips
+	elif [ $TUXBOX_MANUFACTURER -eq 3 ]; then
+		modprobe tda8044h
+	fi
+
+	# Misc IO
+	modprobe avs
+	modprobe saa7126
+	modprobe cam
+
+	# A/V
+	modprobe avia_gt
+	modprobe avia_gt_fb
+	modprobe avia_gt_oss
+	modprobe avia_av
+
+	modprobe avia_napi
+	modprobe dbox2_i2c_napi
+	modprobe dbox2_fp_napi
+	modprobe cam_napi
+	modprobe avia_av_napi
+	modprobe avia_gt_napi
+
+	modprobe lcd
+
+# Dreambox DM 7000
+elif [ $TUXBOX_MODEL -eq 2 ]; then
+
+	# I2C core
+
+	# Frontprozessor
+
+	# Frontends
+	modprobe alps_bsru6
+	modprobe alps_tdme7
+	modprobe philips_1216
+	
+	# Misc IO
+
+	# A/V
+
+fi
 
 # compatibility links
 ln -sf demux0 /dev/dvb/adapter0/demux1
 ln -sf dvr0 /dev/dvb/adapter0/dvr1
 ln -sf fb/0 /dev/fb0
 
+test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
