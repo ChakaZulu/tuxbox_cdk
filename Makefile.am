@@ -324,12 +324,14 @@ libs: \
 .libcommoncplusplus: .bootstrap .libxml2 @DEPENDS_libcommoncplusplus@
 	@PREPARE_libcommoncplusplus@
 	cd @DIR_libcommoncplusplus@ &&\
-		CC=$(target)-gcc CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		CC=$(target)-gcc \
+		CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--target=$(target) \
 			--prefix=$(targetprefix) && \
 		$(MAKE) all && \
 		@INSTALL_libcommoncplusplus@
@@ -348,9 +350,13 @@ libs: \
 .libcurl: .bootstrap .libcrypto @DEPENDS_libcurl@
 	@PREPARE_libcurl@
 	cd @DIR_libcurl@ && \
-		CC=$(target)-gcc CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		CC=$(target)-gcc \
+		CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
+			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
 			--with-random \
@@ -398,9 +404,13 @@ libs: \
 .libffi: .bootstrap @DEPENDS_libffi@
 	@PREPARE_libffi@
 	cd @DIR_libffi@ && \
-		CC=$(target)-gcc CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		CC=$(target)-gcc \
+		CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
+			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) && \
 		$(MAKE) all && \
@@ -412,7 +422,8 @@ libs: \
 	@PREPARE_libfreetype@
 	cd @DIR_libfreetype@ && \
 		$(MAKE) \
-			CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS)" \
+			CC=$(target)-gcc \
+			CFLAGS="$(TARGET_CFLAGS)" \
 			CFG="--host=${target} --prefix=${targetprefix}" && \
 		$(MAKE) all && \
 		@INSTALL_libfreetype@
@@ -422,8 +433,11 @@ libs: \
 .libncurses: .bootstrap @DEPENDS_libncurses@
 	@PREPARE_libncurses@
 	cd @DIR_libncurses@ && \
-		CC=$(target)-gcc CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		CC=$(target)-gcc \
+		CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		BUILD_CC=$(CC) \
 		./configure \
 			--build=$(build) \

@@ -39,11 +39,11 @@ tinylogin;0.80;tinylogin-0.80;tinylogin-0.80.tar.gz:tinylogin.diff;extract:tinyl
 #
 libcommoncplusplus;0.99.7;commoncpp2-0.99.7;commoncpp2-0.99.7.tar.gz;extract:commoncpp2-0.99.7.tar.gz
 libcrypto;0.9.6g;openssl-0.9.6g;openssl-0.9.6g.tar.gz:libcrypto.diff;extract:openssl-0.9.6g.tar.gz;patch:libcrypto.diff
-libcurl;7.9.1;curl-7.9.1;curl-7.9.1.tar.bz2;extract:curl-7.9.1.tar.bz2
+libcurl;7.9.1;curl-7.9.1;curl-7.9.1.tar.bz2;libcurl.diff;extract:curl-7.9.1.tar.bz2;patch:libcurl.diff
 libdb2;2.7.7;db-2.7.7;db-2.7.7.tar.gz:libdb2.diff;extract:db-2.7.7.tar.gz;patch:libdb2.diff
 libdvbpsi;0.1.1;libdvbpsi-0.1.1;libdvbpsi-0.1.1.tar.gz;extract:libdvbpsi-0.1.1.tar.gz
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
-libfreetype;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2;extract:freetype-2.0.9.tar.bz2
+libfreetype;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2;extract:freetype-2.0.9.tar.bz2;patch:libfreetype.diff
 libncurses;5.2;ncurses-5.2;ncurses-5.2.tar.gz:ncurses.diff;extract:ncurses-5.2.tar.gz;patch:ncurses.diff
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff
 libnet;1.0.2a;Libnet-1.0.2a;libnet-1.0.2a.tar.gz:libnet.diff;extract:libnet-1.0.2a.tar.gz;patch:libnet.diff
