@@ -1,3 +1,0 @@
-tmpfs	/dev/shm	tmpfs   defaults	0 0
-ramfs	/tmp		ramfs	defaults	0 0
-proc	/proc		proc	defaults	0 0

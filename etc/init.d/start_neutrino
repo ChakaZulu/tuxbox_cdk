@@ -1,8 +1,0 @@
-#!/bin/sh
-sectionsd
-timerd
-camd2
-zapit
-controld
-nhttpd
-neutrino
