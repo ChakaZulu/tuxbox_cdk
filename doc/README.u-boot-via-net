@@ -1,0 +1,30 @@
+A small example dhcpd.conf for using u-boot to boot via network:
+The data used:
+dbox is in net 192.168.0.0
+dbox has ip 192.168.0.2
+dbox-mac is xx:xx:xx:xx:xx:xx
+server has ip 192.168.0.1
+Hostpath for the cdkroot is /dbox2/cdkroot, which is exported via nfs
+(/etc/exports).
+Tftprootpath is exported via tftp (/etc/inetd.conf).
+
+In debian, you need the "dhcp3-server" package.
+
+---------- dhcpd.conf --------------
+subnet 192.168.0.0 netmask 255.255.255.0
+{
+}
+
+host dbox {
+        fixed-address 192.168.0.2;
+        hardware ethernet xx:xx:xx:xx:xx:xx;
+        allow bootp;
+        server-name "192.168.0.1";
+        option root-path "/dbox2/cdkroot";
+        if exists vendor-class-identifier {
+                filename "kernel-cdk";
+        } else {
+                filename "u-boot";
+        }
+}
+------------------------
