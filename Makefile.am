@@ -739,11 +739,12 @@ dvb_apps: .dvbstream .dvbtext .dvbtune
 boot: .ppcboot .linuxkernel .driver
 
 .ppcboot: .bootstrap $(bootdir)/ppcboot/Makefile
-	make -C $(bootdir)/ppcboot dbox_config
 if HOSTRULESET_CYGWIN
+	make -C $(bootdir)/ppcboot dbox_config CYGWIN=1
 	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CYGWIN=1
 	install Patches/cygwin/mkimage.exe $(hostprefix)/bin
 else
+	make -C $(bootdir)/ppcboot dbox_config
 	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)-
 	install $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
 endif
