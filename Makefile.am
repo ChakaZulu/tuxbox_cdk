@@ -1486,7 +1486,7 @@ distclean-local:
 	-rm .fx2 .sections .tools .tuxtxt .zapit
 	-rm .libconfigfile .libcramfs
 	-rm .liblcddisplay .libmd5sum .libmpegtools .libnet .libucodes
-	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump .xrc
+	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
 	-rm .dvbstream .dvbtext .dvbtune
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
