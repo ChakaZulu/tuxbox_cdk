@@ -51,7 +51,8 @@ readline-4.3.tar.gz;ftp://ftp.gnu.org/gnu/readline
 libsigc++-1.0.4.tar.gz;ftp://download.sourceforge.net/pub/sourceforge/libsigc
 libpcap-0.7.1.tar.gz;http://www.tcpdump.org/release
 xmlwrapp-0.2.1.tar.gz;http://pmade.org/pjones/software/xmlwrapp/download
-CommonC++-1.9.7.tar.gz;http://unc.dl.sourceforge.net/sourceforge/cplusplus/CommonC++-1.9.7.tar.gz
+CommonC++-1.9.7.tar.gz;http://unc.dl.sourceforge.net/sourceforge/cplusplus
+libdvbpsi-0.1.1.tar.gz;http://www.videolan.org/pub/videolan/libdvbpsi/0.1.1
 
 #
 # contrib apps

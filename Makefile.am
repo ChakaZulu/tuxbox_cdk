@@ -353,6 +353,19 @@ libs: \
 	@CLEANUP_libcurl@
 	touch .libcurl
 
+.libdvbpsi: .bootstrap @DEPENDS_libdvbpsi@
+	@PREPARE_libdvbpsi@
+	cd @DIR_libdvbpsi@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_libdvbpsi@
+	@CLEANUP_libdvbpsi@
+	touch .libdvbpsi
+
 .libffi: .bootstrap @DEPENDS_libffi@
 	@PREPARE_libffi@
 	cd @DIR_libffi@ && \
