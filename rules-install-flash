@@ -14,6 +14,10 @@ gcc;make:install;install:-m644:TARGETNAME/libstdc++-v3/src/libstdc++_pic.a:TARGE
 # contrib libs
 #
 libcrypto;install:libcrypto.so.0.9.6:TARGET/lib;link:libcrypto.so.0.9.6:TARGET/lib/libcrypto.so.0;link:libcrypto.so.0:TARGET/lib/libcrypto.so;install:libssl.so.0.9.6:TARGET/lib;link:libssl.so.0.9.6:TARGET/lib/libssl.so.0;link:libssl.so.0:TARGET/lib/libssl.so;install:libcrypto.a:TARGET/lib/libcrypto_pic.a;install:libssl.a:TARGET/lib/libssl_pic.a;install:-d:TARGET/include/openssl;make:install_cdk:INSTALL_PREFIX=TARGET:INSTALLTOP=
+libfreetype;make:install;link:TARGET/bin/freetype-config:HOST/bin/freetype-config;archive:TARGET/lib/libfreetype_pic.a:objs/*.lo
+libncurses;make:install.libs:install.includes;archive:TARGET/lib/libncurses_pic.a:obj_s/*.o
+libpng;make:install:prefix=TARGET;archive:TARGET/lib/libpng_pic.a:*.o
+libz;make:install;archive:TARGET/lib/libz_pic.a:*.o
 
 #
 # include
