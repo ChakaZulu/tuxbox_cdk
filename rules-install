@@ -43,6 +43,7 @@ libexpat;make:install:prefix=TARGET
 libffi;make:install:DESTDIR=TARGET
 libfreetype;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARGET/bin:prefix=TARGET
 libfribidi;rewrite-pkgconfig:fribidi.pc;make:install:DESTDIR=TARGET
+libgmp;make:install:DESTDIR=TARGET
 libjpeg;make:install-lib:libdir=TARGET/lib:includedir=TARGET/include
 libmad;rewrite-pkgconfig:libid3tag/id3tag.pc;rewrite-pkgconfig:libmad/mad.pc;make:install:DESTDIR=TARGET
 libncurses;make:install.libs:DESTDIR=TARGET

@@ -46,7 +46,7 @@ libexpat;1.95.6;expat-1.95.6;expat-1.95.6.tar.gz:libexpat.diff;extract:expat-1.9
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
 libfreetype;2.1.4;freetype-2.1.4;freetype-2.1.4.tar.bz2;extract:freetype-2.1.4.tar.bz2;patch:libfreetype.diff
 libfribidi;0.10.4;fribidi-0.10.4;fribidi-0.10.4.tar.bz2;extract:fribidi-0.10.4.tar.bz2
-libvorbisidec;20030128;tremor-20030128;tremor-20030128.tar.bz2;extract:tremor-20030128.tar.bz2
+libgmp;4.1.2;gmp-4.1.2;gmp-4.1.2.tar.gz;extract:gmp-4.1.2.tar.gz
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff
 libmad;0.14.2b.tuxbox.1;mad-0.14.2b.tuxbox.1;mad-0.14.2b.tuxbox.1.tar.bz2;extract:mad-0.14.2b.tuxbox.1.tar.bz2
 libncurses;5.3;ncurses-5.3;ncurses-5.3.tar.gz;extract:ncurses-5.3.tar.gz
@@ -55,6 +55,7 @@ libpng;1.2.5;libpng-1.2.5;libpng-1.2.5.tar.gz:libpng.diff;extract:libpng-1.2.5.t
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.5;SDL-1.2.5;SDL-1.2.5.tar.gz:sdl.diff;extract:SDL-1.2.5.tar.gz;patch:sdl.diff
 libsigc;1.2.5;libsigc++-1.2.5;libsigc++-1.2.5.tar.gz;extract:libsigc++-1.2.5.tar.gz
+libvorbisidec;20030128;tremor-20030128;tremor-20030128.tar.bz2;extract:tremor-20030128.tar.bz2
 libxml2;2.4.30;libxml2-2.4.30;libxml2-2.4.30.tar.gz;extract:libxml2-2.4.30.tar.gz
 libxmlparse;0.9.3;xmlparse-0.9.3;xmlparse_0.9.3.tar.bz2:xmlparse.diff;extract:xmlparse_0.9.3.tar.bz2;patch:xmlparse.diff
 libxmlwrapp;0.2.1;xmlwrapp-0.2.1;xmlwrapp-0.2.1.tar.gz;extract:xmlwrapp-0.2.1.tar.gz

@@ -446,6 +446,19 @@ libs_optional: \
 	@CLEANUP_libfribidi@
 	touch $@
 
+.libgmp: .bootstrap @DEPENDS_libgmp@
+	@PREPARE_libgmp@
+	cd @DIR_libgmp@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
+		$(MAKE) all && \
+		@INSTALL_libgmp@
+	@CLEANUP_libgmp@
+	touch $@
+
 .libjpeg: .bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libjpeg@
 	cd @DIR_libjpeg@ && \
@@ -1202,7 +1215,7 @@ $(appsdir)/misc/tools/config.status: .bootstrap
 
 # tuxbox/enigma
 
-$(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libmad .libpng .libsigc .libtuxbox .misc_libs .plugins
+$(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libfribidi .libmad .libpng .libsigc .libtuxbox .misc_libs .plugins
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE)
 
 .enigma: $(appsdir)/tuxbox/enigma/config.status .tuxbox_tools .config
@@ -1571,7 +1584,7 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .root .busybox .ftpd .inetd .modutils .netkit_telnet .procps .watchdog
+	-rm .root .busybox .ftpd .inetd .modutils .procps .watchdog
 	-rm .libboost .libcommoncplusplus .libcrypto .libcurl
 	-rm .libdirectfb .libdirectfbpp .libdvb .libdvbpsi .libexpat .libffi .libfreetype
 	-rm .libncurses .libjpeg .libmad .libpcap .libpng
