@@ -1535,7 +1535,7 @@ rebuild-flash:
 	-rm -f $(flashprefix)/.flash
 	$(MAKE) flash-lib
 
-$(flashprefix)/.flash: procps busybox driver modutils tuxbox_tools lirc
+$(flashprefix)/.flash: procps busybox driver tuxbox_tools lirc
 	if [ -d $(flashprefix)/root ]; then \
 		echo "directory $(flashprefix)/root already exists. please remove manually." && false; \
 	fi
@@ -1555,11 +1555,11 @@ $(flashprefix)/.flash: procps busybox driver modutils tuxbox_tools lirc
 	echo "comment=Erstellt von `id -un`" >> $(flashprefix)/root/.version
 	$(INSTALL) $(targetprefix)/bin/busybox $(flashprefix)/root/bin
 	for i in `find $(targetprefix)/bin/ -lname "*busybox"` ; do cp -ap $$i $(flashprefix)/root/bin/ ; done
+	for i in `find $(targetprefix)/sbin/ -lname "*busybox"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
 	$(INSTALL) $(targetprefix)/bin/switch $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/tuxinfo $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/top $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/rcsim $(flashprefix)/root/bin
-	$(INSTALL) $(targetprefix)/bin/tuxmaild $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/saa $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/sbin/lircd $(flashprefix)/root/sbin
 	if [ -e $(targetprefix)/bin/eraseall ] ; then \
@@ -1569,10 +1569,6 @@ $(flashprefix)/.flash: procps busybox driver modutils tuxbox_tools lirc
 	$(INSTALL) -d $(flashprefix)/root/lib/modules/$(KERNELVERSION)
 	cp -ap $(targetprefix)/lib/modules/$(KERNELVERSION)/kernel $(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
 		$(flashprefix)/root/lib/modules/$(KERNELVERSION)
-	for i in `find $(targetprefix)/sbin/ -lname "*busybox"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
-	$(INSTALL) $(targetprefix)/sbin/insmod $(flashprefix)/root/sbin
-	$(INSTALL) $(targetprefix)/sbin/depmod $(flashprefix)/root/sbin
-	for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
 	ln -s /tmp $(flashprefix)/root/var/run
 	ln -s /var $(flashprefix)/root/root
 	@touch $@
@@ -1682,6 +1678,7 @@ flash-plugins: $(flashprefix)/.part_plugins
 $(flashprefix)/.part_plugins: $(flashprefix)/.flash plugins
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/tuxtxt
+	$(INSTALL) $(targetprefix)/bin/tuxmaild $(flashprefix)/root/bin
 	cp -pa $(targetprefix)/lib/tuxbox/plugins/*.cfg $(flashprefix)/root/lib/tuxbox/plugins/
 	cp -pa $(targetprefix)/lib/tuxbox/plugins/*.so $(flashprefix)/root/lib/tuxbox/plugins/
 	cp -pa $(targetprefix)/share/fonts/tuxtxt?.fon $(flashprefix)/root/share/fonts/
