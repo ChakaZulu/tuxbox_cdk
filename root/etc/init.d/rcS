@@ -48,20 +48,20 @@ if [ $MODEL_ID -eq 1 ]; then
 	if [ $VENDOR_ID -eq 1 ]; then
 		modprobe ves1820
 		modprobe ves1x93 board_type=1
-	# Sagem
+	# Philips
 	elif [ $VENDOR_ID -eq 2 ]; then
+		modprobe tda8044h
+	# Sagem
+	elif [ $VENDOR_ID -eq 3 ]; then
 		modprobe at76c651
 		modprobe ves1x93 board_type=2
-	# Philips
-	elif [ $VENDOR_ID -eq 3 ]; then
-		modprobe tda8044h
 	fi
 
 	# Misc IO
 	modprobe avs
 	modprobe saa7126
 	# Philips
-	if [ $VENDOR_ID -eq 3 ]; then
+	if [ $VENDOR_ID -eq 2 ]; then
 		modprobe cam mio=0xC040000
 	else
 		modprobe cam mio=0xC000000
