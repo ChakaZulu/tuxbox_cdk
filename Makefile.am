@@ -1632,6 +1632,7 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash neutrino root
 	cp -pa $(targetprefix)/share/fonts/15B.pcf.gz $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/share/iso-codes/iso-639.tab $(flashprefix)/root/share/iso-codes
 	cp -pa $(targetprefix)/var/tuxbox/config/zapit $(flashprefix)/root/var/tuxbox/config
+include $(top_srcdir)/Makefile.am.extra.neutrino.flash 
 	@touch $@
 
 flash-enigma: $(flashprefix)/.part_enigma
@@ -1648,6 +1649,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma
 	$(INSTALL) $(targetprefix)/etc/timezone.xml $(flashprefix)/root/etc
 	cp -pa $(targetprefix)/share/zoneinfo $(flashprefix)/root/share
 	ln -sf /var/etc/localtime $(flashprefix)/root/etc 
+include $(top_srcdir)/Makefile.am.extra.enigma.flash 
 	@touch $@
 
 flash-lcars: $(flashprefix)/.part_lcars
