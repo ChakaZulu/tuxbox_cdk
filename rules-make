@@ -28,7 +28,7 @@ busybox;0.60.5;busybox-0.60.5;busybox-0.60.5.tar.bz2:busybox.diff;extract:busybo
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
 ifupdown;0.6.4;ifupdown-0.6.4-tuxbox.1;ifupdown-0.6.4-tuxbox.1.tar.bz2;extract:ifupdown-0.6.4-tuxbox.1.tar.bz2
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
-modutils;2.4.20;modutils-2.4.20;modutils-2.4.20.tar.bz2;extract:modutils-2.4.20.tar.bz2
+modutils;2.4.21;modutils-2.4.21;modutils-2.4.21.tar.bz2;extract:modutils-2.4.21.tar.bz2
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
 portmap;5;portmap-5;portmap-5.tar.bz2:portmap-5.diff;extract:portmap-5.tar.bz2;patch:portmap-5.diff
 procps;010114;procps-010114;procps-010114.tar.gz:procps.diff;extract:procps-010114.tar.gz;patch:procps.diff
@@ -55,7 +55,7 @@ libpopt;1.6.4;popt-1.6.4;popt-1.6.4.tar.gz;extract:popt-1.6.4.tar.gz
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.5;SDL-1.2.5;SDL-1.2.5.tar.gz:sdl.diff;extract:SDL-1.2.5.tar.gz;patch:sdl.diff
-libsigc;1.1.13;libsigc++-1.1.13;libsigc++-1.1.13.tar.gz;extract:libsigc++-1.1.13.tar.gz
+libsigc;1.2.1;libsigc++-1.2.1;libsigc++-1.2.1.tar.gz;extract:libsigc++-1.2.1.tar.gz
 libxml2;2.4.22;libxml2-2.4.22;libxml2-2.4.22.tar.bz2;extract:libxml2-2.4.22.tar.bz2
 libxmlparse;0.9.3;xmlparse-0.9.3;xmlparse_0.9.3.tar.bz2:xmlparse.diff;extract:xmlparse_0.9.3.tar.bz2;patch:xmlparse.diff
 libxmlwrapp;0.2.1;xmlwrapp-0.2.1;xmlwrapp-0.2.1.tar.gz;extract:xmlwrapp-0.2.1.tar.gz
@@ -85,7 +85,7 @@ msttf;0.0;msttf;arial32.exe:arialb32.exe;dircreate;dirextract:arial32.exe;dirext
 #
 # development tools
 #
-gdb;5.2.1;gdb-5.2.1;gdb-5.2.1.tar.gz:gdb.diff;extract:gdb-5.2.1.tar.gz;patch:gdb.diff
+gdb;20021116;gdb+dejagnu-20021116;gdb+dejagnu-20021116.tar.bz2;extract:gdb+dejagnu-20021116.tar.bz2;patch:gdb.diff
 ksymoops;2.4.6;ksymoops-2.4.6;ksymoops-2.4.6.tar.bz2;extract:ksymoops-2.4.6.tar.bz2
 ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz;extract:ltrace_0.3.26.tar.gz;patch:ltrace.diff
 strace;4.4;strace-4.4;strace_4.4-1.tar.gz:strace.diff;extract:strace_4.4-1.tar.gz;patch:strace.diff

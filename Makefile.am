@@ -837,8 +837,11 @@ devel_optional: .gdb-remote .ksymoops
 			--host=$(target) \
 			--nfp \
 			--disable-sim \
+			--without-sim \
+			--without-expect \
+			--disable-expect \
 			--prefix= && \
-		$(MAKE) all && \
+		$(MAKE) all-gdb && \
 		@INSTALL_gdb@
 	@CLEANUP_gdb@
 	touch .gdb
@@ -852,7 +855,7 @@ devel_optional: .gdb-remote .ksymoops
 			--host=$(build) \
 			--target=$(target) \
 			--prefix=$(hostprefix) && \
-		$(MAKE) all && \
+		$(MAKE) all-gdb && \
 		@INSTALL_gdb@
 	@CLEANUP_gdb@
 	touch .gdb-remote
