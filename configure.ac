@@ -1,12 +1,22 @@
-AC_PREREQ(2.50)
 AC_INIT(Makefile.am)
+AC_PREREQ(2.50)
 AC_CANONICAL_BUILD
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(tuxbox-cdk, 0.0.1)
 AM_MAINTAINER_MODE
 
 AC_PROG_CC
-AC_PROG_RANLIB
+AC_PROG_YACC
+
+AC_CHECK_TOOL(AR,ar,"")
+if test "$AR" = "" ; then
+	AC_MSG_ERROR([can't find ar. are binutils correctly installed?])
+fi
+
+AC_CHECK_TOOL(RANLIB,ranlib,"")
+if test "$RANLIB" = "" ; then
+	AC_MSG_ERROR([can't find ranlib. are binutils correctly installed?])
+fi
 
 AC_SUBST(build)
 if test "$target_alias" = "" ; then
