@@ -1,22 +1,21 @@
-diff -Naur freetype/src/smooth/ftsmooth.c freetype-2.0.4/src/smooth/ftsmooth.c
---- freetype/src/smooth/ftsmooth.c	Wed Jun  6 19:30:37 2001
-+++ freetype-2.0.4/src/smooth/ftsmooth.c	Thu Jul  5 05:47:24 2001
-@@ -147,7 +147,8 @@
+diff -Naur freetype-2.0.8/src/smooth/ftsmooth.c freetype-2.0.8new/src/smooth/ftsmooth.c
+--- freetype-2.0.8/src/smooth/ftsmooth.c	Wed Dec  5 18:24:34 2001
++++ freetype-2.0.8new/src/smooth/ftsmooth.c	Sat Feb 23 19:36:53 2002
+@@ -147,7 +147,7 @@
      }
  
      /* allocate new one, depends on pixel format */
 -    pitch = width;
-+//    pitch = width;
 +    pitch = (width+3)&-3;
      bitmap->pixel_mode = ft_pixel_mode_grays;
      bitmap->num_grays  = 256;
      bitmap->width      = width;
-@@ -157,6 +158,8 @@
+@@ -156,6 +156,8 @@
+ 
      if ( ALLOC( bitmap->buffer, (FT_ULong)pitch * height ) )
        goto Exit;
- 
++
 +    memset(bitmap->buffer, 0, (FT_ULong)pitch * height);
-+    
+ 
      slot->flags |= ft_glyph_own_bitmap;
  
-     /* translate outline to render it into the bitmap */
