@@ -1617,6 +1617,9 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash neutrino root
 		$(flashprefix)/root/etc/init.d/start_neutrino ;
 	chmod 755 $(flashprefix)/root/etc/init.d/start_neutrino ;
 	cp -pa $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
+	cp -pa $(targetprefix)/share/fonts/12.pcf.gz $(flashprefix)/root/share/fonts
+	cp -pa $(targetprefix)/share/fonts/14B.pcf.gz $(flashprefix)/root/share/fonts
+	cp -pa $(targetprefix)/share/fonts/15B.pcf.gz $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/share/iso-codes/iso-639.tab $(flashprefix)/root/share/iso-codes
 	cp -pa $(targetprefix)/var/tuxbox/config/zapit $(flashprefix)/root/var/tuxbox/config
 	@touch $@
