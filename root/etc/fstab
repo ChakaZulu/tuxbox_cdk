@@ -1,2 +1,2 @@
 proc	/proc		proc	defaults	0 0
-tmpfs	/tmp		tmpfs	defaults	0 0
+tmpfs	/tmp		ramfs	defaults	0 0
