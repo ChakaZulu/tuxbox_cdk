@@ -1,15 +1,13 @@
 PATH := $(hostprefix)/bin:$(PATH)
 
-all: core libs root apps boot devel
+all: core libs root apps boot devel java
 
 #######################
 #
 #   core
 #
 
-bootstrap: .gcc
-
-core: .gcc
+core: .directories .binutils .linuxdir .glibc .gcc
 
 .directories:
 	install -d $(targetprefix)/bin
@@ -34,14 +32,14 @@ core: .gcc
 	ln -s $(buildprefix)/linux-$(KERNELVERSION)/include/linux $(hostprefix)/$(target)/include
 	touch .directories
 
-.linuxdir: .directories @DEPENDS_linux@
+.linuxdir: @DEPENDS_linux@
 	@PREPARE_linux@
 	cat Patches/linux-$(KERNELVERSION).dbox.config > linux-$(KERNELVERSION)/.config
 	make -C linux-$(KERNELVERSION) oldconfig
 	make -C linux-$(KERNELVERSION) include/linux/version.h
 	touch .linuxdir
 
-.binutils: .directories @DEPENDS_binutils@
+.binutils: @DEPENDS_binutils@
 	@PREPARE_binutils@
 	cd @DIR_binutils@ && \
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
@@ -57,7 +55,7 @@ core: .gcc
 #
 # gcc first stage without glibc
 #
-bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
+bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 	@PREPARE_bootstrap_gcc@
 	cp -pR $(buildprefix)/linux-$(KERNELVERSION)/include/asm $(hostprefix)/$(target)/sys-include/
 	cd @DIR_bootstrap_gcc@ && \
@@ -77,7 +75,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	rm -rf $(hostprefix)/$(target)/sys-include/asm
 	@CLEANUP_bootstrap_gcc@
 
-.glibc: .binutils .linuxdir @DEPENDS_glibc@
+.glibc: @DEPENDS_glibc@
 	if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		make bootstrap_gcc; \
 	fi
@@ -103,7 +101,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 #
 # gcc second stage with glibc
 #
-.gcc: .glibc @DEPENDS_gcc@
+.gcc: @DEPENDS_gcc@
 	@PREPARE_gcc@
 	cp -p $(hostprefix)/$(target)/include/limits.h $(hostprefix)/$(target)/sys-include/
 	cd @DIR_gcc@ && \
@@ -130,9 +128,13 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 #   minimal root
 #
 
-root: .busybox .tinylogin .modutils .telnetd .msttf
+root: .etc .busybox .tinylogin .modutils .telnetd .msttf
 
-.busybox: .gcc .etc @DEPENDS_busybox@
+.etc:
+	make -C etc install
+	touch .etc
+
+.busybox: @DEPENDS_busybox@
 	@PREPARE_busybox@
 	cd @DIR_busybox@ && \
 		make CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
@@ -140,7 +142,7 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 	@CLEANUP_busybox@
 	touch .busybox
 
-.tinylogin: .gcc .etc @DEPENDS_tinylogin@
+.tinylogin: @DEPENDS_tinylogin@
 	@PREPARE_tinylogin@
 	cd @DIR_tinylogin@ && \
 		make CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
@@ -148,7 +150,7 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 	@CLEANUP_tinylogin@
 	touch .tinylogin
 	
-.modutils: .gcc .etc @DEPENDS_modutils@
+.modutils: @DEPENDS_modutils@
 	@PREPARE_modutils@
 	cd @DIR_modutils@ && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
@@ -165,11 +167,7 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 	@CLEANUP_modutils@
 	touch .modutils
 
-.etc:
-	make -C etc install
-	touch .etc
-
-.inetd: .gcc .etc @DEPENDS_inetd@
+.inetd: @DEPENDS_inetd@
 	@PREPARE_inetd@
 	touch @DIR_inetd@/MCONFIG
 	cd @DIR_inetd@/inetd && \
@@ -180,7 +178,7 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 	@CLEANUP_inetd@
 	touch .inetd
 
-.telnetd: .gcc .inetd .libncurses @DEPENDS_telnetd@
+.telnetd: .inetd .libncurses @DEPENDS_telnetd@
 	@PREPARE_telnetd@
 	touch @DIR_telnetd@/MCONFIG
 	cd @DIR_telnetd@/telnetd && \
@@ -197,9 +195,9 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 #   contrib libs
 #
 
-libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
+libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libxml2 .libz
 
-.libcurl: .gcc @DEPENDS_libcurl@
+.libcurl: @DEPENDS_libcurl@
 	@PREPARE_libcurl@
 	cd @DIR_libcurl@ && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
@@ -214,7 +212,7 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	@CLEANUP_libcurl@
 	touch .libcurl
 
-.libffi: .gcc @DEPENDS_libffi@
+.libffi: @DEPENDS_libffi@
 	@PREPARE_libffi@
 	cd @DIR_libffi@ && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
@@ -227,7 +225,7 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	@CLEANUP_libffi@
 	touch .libffi
 	
-.libfreetype: .gcc @DEPENDS_libfreetype@
+.libfreetype: @DEPENDS_libfreetype@
 	@PREPARE_libfreetype@
 	cd @DIR_libfreetype@ && \
 		make \
@@ -238,7 +236,7 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	@CLEANUP_libfreetype@
 	touch .libfreetype
 
-.libncurses: .gcc @DEPENDS_libncurses@
+.libncurses: @DEPENDS_libncurses@
 	@PREPARE_libncurses@
 	cd @DIR_libncurses@ && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
@@ -261,7 +259,7 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	@CLEANUP_libncurses@
 	touch .libncurses
 
-.libjpeg: .gcc @DEPENDS_libjpeg@
+.libjpeg: @DEPENDS_libjpeg@
 	@PREPARE_libjpeg@
 	cd @DIR_libjpeg@ && \
 		CC=$(target)-gcc \
@@ -274,7 +272,7 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	@CLEANUP_libjpeg@
 	touch .libjpeg
 
-.libpng: .gcc .libz @DEPENDS_libpng@
+.libpng: .libz @DEPENDS_libpng@
 	@PREPARE_libpng@
 	cd @DIR_libpng@ && \
 		cp scripts/makefile.linux Makefile && \
@@ -286,7 +284,7 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 #
 # qt embedded (current only moc)
 #
-.libqt: .gcc .libfreetype .libjpeg .libpng .libz @DEPENDS_libqt@
+.libqt: .libfreetype .libjpeg .libpng .libz @DEPENDS_libqt@
 	@PREPARE_libqt@
 	cd @DIR_libqt@ && \
 		QTDIR=`pwd` \
@@ -304,7 +302,7 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	@CLEANUP_libqt@
 	touch .libqt
 
-.libxml2: .gcc @DEPENDS_libxml2@
+.libxml2: @DEPENDS_libxml2@
 	@PREPARE_libxml2@
 	cd @DIR_libxml2@ && \
 		CC=$(target)-gcc \
@@ -320,7 +318,7 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	@CLEANUP_libxml2@
 	touch .libxml2
 
-.libz: .gcc @DEPENDS_libz@
+.libz: @DEPENDS_libz@
 	@PREPARE_libz@
 	cd @DIR_libz@ && \
 		CC=$(target)-gcc \
@@ -338,7 +336,7 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 # msttf
 #
 
-.cabextract: .gcc @DEPENDS_cabextract@
+.cabextract: @DEPENDS_cabextract@
 	@PREPARE_cabextract@
 	cd @DIR_cabextract@ && \
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
@@ -369,9 +367,9 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 #   development tools
 #
 
-devel: .gdb .strace
+devel: .gdb .strace .nano
 
-.gdb: .gcc .libncurses @DEPENDS_gdb@
+.gdb: .libncurses @DEPENDS_gdb@
 	@PREPARE_gdb@
 	cd @DIR_gdb@ && \
 		LD_LIBRARY_PATH=$(libdir) \
@@ -388,7 +386,7 @@ devel: .gdb .strace
 	@CLEANUP_gdb@
 	touch .gdb
 
-.strace: .gcc @DEPENDS_strace@
+.strace: @DEPENDS_strace@
 	@PREPARE_strace@
 	cd @DIR_strace@ && \
 		CC=$(target)-gcc \
@@ -403,10 +401,24 @@ devel: .gdb .strace
 	@CLEANUP_strace@
 	touch .strace
 
+.nano: @DEPENDS_nano@
+	@PREPARE_nano@
+	cd @DIR_nano@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_nano@
+	@CLEANUP_nano@
+	touch .nano
+
 #######################
 #
-# misc apps
+# java stuff
 #
+
+java: .kaffeh .kaffe
 
 # for x86
 .kaffeh: @DEPENDS_kaffeh@
@@ -424,7 +436,7 @@ devel: .gdb .strace
 	touch .kaffeh
 
 # for ppc
-.kaffe: .gcc .kaffeh .libffi @DEPENDS_kaffe@
+.kaffe: .kaffeh .libffi @DEPENDS_kaffe@
 	@PREPARE_kaffe@
 	cd @DIR_kaffe@ && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
@@ -444,18 +456,6 @@ devel: .gdb .strace
 	@CLEANUP_kaffe@
 	touch .kaffe
 
-.nano: @DEPENDS_nano@
-	@PREPARE_nano@
-	cd @DIR_nano@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure \
-			--prefix=$(targetprefix) && \
-		make all && \
-		@INSTALL_nano@
-	@CLEANUP_nano@
-	touch .nano
-
 #######################
 #
 #   own kernel and driver
@@ -463,15 +463,42 @@ devel: .gdb .strace
 
 boot: .ppcboot .linuxkernel .driver
 
-.ppcboot: .gcc $(bootdir)/ppcboot/Makefile
+if MAINTAINER_MODE
+.ppcboot: $(bootdir)/ppcboot/Makefile
+	make -C $(bootdir)/ppcboot dbox_config
+	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)-
+	install -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
+	install $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
+	touch .ppcboot
+else
+.ppcboot: $(bootdir)/ppcboot/Makefile
 	make -C $(bootdir)/ppcboot dbox_config
 	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)-
 	install -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
 	install $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
 	make -C $(bootdir)/ppcboot distclean
 	touch .ppcboot
+endif
 
-.linuxkernel: .linuxdir .gcc .ppcboot
+if MAINTAINER_MODE
+.linuxkernel:
+	make -C @DIR_linux@ dep zImage modules CROSS_COMPILE=$(target)-
+	make -C @DIR_linux@ modules_install INSTALL_MOD_PATH=$(targetprefix)
+	if [ -f @DIR_linux@/arch/ppc/coffboot/vmlinux.gz ]; then \
+		$(hostprefix)/bin/mkimage \
+			-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
+			-a 00000000 -e 00000000 \
+			-d @DIR_linux@/arch/ppc/coffboot/vmlinux.gz \
+			$(bootprefix)/kernel-cdk; \
+	else \
+		$(hostprefix)/bin/mkimage \
+			 -n 'dbox2' -A ppc -O linux -T kernel -C gzip \
+			 -a 00000000 -e 00000000 \
+			 -d @DIR_linux@/arch/ppc/boot/images/vmlinux.gz \
+			 $(bootprefix)/kernel-cdk; \
+	fi
+	touch .linuxkernel
+else
 	make -C @DIR_linux@ dep zImage modules CROSS_COMPILE=$(target)-
 	make -C @DIR_linux@ modules_install INSTALL_MOD_PATH=$(targetprefix)
 	if [ -f @DIR_linux@/arch/ppc/coffboot/vmlinux.gz ]; then \
@@ -489,8 +516,22 @@ boot: .ppcboot .linuxkernel .driver
 	fi
 	make -C @DIR_linux@ clean
 	touch .linuxkernel
+endif
 
-.driver: .gcc .linuxkernel
+if MAINTAINER_MODE
+.driver:
+	install -d $(targetprefix)/bin
+	install -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
+	make -C $(driverdir) \
+		KERNEL_LOCATION=$(buildprefix)/linux \
+		CROSS_COMPILE=$(target)-
+	make -C $(driverdir) install \
+		KERNEL_LOCATION=$(buildprefix)/linux \
+		BIN_DEST=$(targetprefix)/bin \
+		MODULE_DEST=$(targetprefix)/lib/modules/$(KERNELVERSION)/misc
+	touch .driver
+else
+.driver:
 	install -d $(targetprefix)/bin
 	install -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
 	make -C $(driverdir) \
@@ -503,7 +544,7 @@ boot: .ppcboot .linuxkernel .driver
 	make -C $(driverdir) clean \
 		KERNEL_LOCATION=$(buildprefix)/linux
 	touch .driver
-
+endif
 
 #######################
 #
@@ -545,6 +586,10 @@ endif
 .edvb: $(appsdir)/Makefile .fx2 .tools .msttf
 	make -C $(appsdir)/edvb all install
 	touch .edvb
+
+.enigma: $(appsdir)/Makefile .fx2 .tools
+	make -C $(appsdir)/enigma all install
+	touch .enigma
 
 .fx2: $(appsdir)/Makefile
 	make -C $(appsdir)/fx2 all install
@@ -632,14 +677,13 @@ distclean-local:
 	-rm .etc .busybox .tinylogin .modutils .inetd .telnetd 
 	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	-rm .cabextract .msttf
-	-rm .gdb .strace
-	-rm .kaffeh .kaffe .nano
-	-rm .ppcboot .linuxkernel
+	-rm .gdb .strace .nano
+	-rm .kaffeh .kaffe
+	-rm .ppcboot .linuxkernel .driver
 	-rm .dvbsnoop .edvb .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .zapit
 	-rm .liblcddisplay .libmd5sum .libnet .libucodes
 	-rm .dvbstream
-	-rm .driver
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 
