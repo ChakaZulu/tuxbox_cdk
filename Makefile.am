@@ -304,23 +304,18 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 		./autogen.sh && \
 		CC=$(TARGET)-gcc CXX=$(TARGET)-g++ \
 		./configure \
-			--build=$(BUILD) \
 			--prefix=$(targetprefix) \
 			--with-driver=$(driverdir) \
 			--with-target=$(APPSTARGET)
 
 
-.libfx2: $(appsdir)/Makefile
-	make -C $(appsdir)/fx2/lib all install
-	touch .libfx2
-
-.fx2: $(appsdir)/Makefile .libfx2
-	make -C $(appsdir)/fx2 all install
-	touch .fx2
-
 .edvb: $(appsdir)/Makefile .fx2
 	make -C $(appsdir)/edvb all install
 	touch .edvb
+
+.fx2: $(appsdir)/Makefile
+	make -C $(appsdir)/fx2 all install
+	touch .fx2
 
 .neutrino: $(appsdir)/Makefile .fx2
 	make -C $(appsdir)/mczap all install
