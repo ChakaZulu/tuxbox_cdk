@@ -1286,7 +1286,7 @@ endif
 	$(MAKE) -C $(appsdir)/dvbsnoop all install
 	touch .dvbsnoop
 
-.edvb: .msttf .tools
+.edvb: .libqt .msttf .tools
 	$(MAKE) -C $(appsdir)/edvb all install
 	touch .edvb
 
