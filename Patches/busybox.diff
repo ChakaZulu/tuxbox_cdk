@@ -611,3 +611,15 @@ diff -urN busybox-0.60.3.orig/applets.h busybox-0.60.3/applets.h
  #endif
  #ifdef BB_GUNZIP
  	APPLET(zcat, gunzip_main, _BB_DIR_BIN)
+diff -Naur Archive/busybox-0.60.3/Makefile busybox-0.60.3/Makefile
+--- Archive/busybox-0.60.3/Makefile     2002-04-27 10:43:00.000000000 +0200
++++ busybox-0.60.3/Makefile     2002-08-18 15:13:03.000000000 +0200
+@@ -30,6 +30,7 @@
+ # If you want to add some simple compiler switches (like -march=i686),
+ # especially from the command line, use this instead of CFLAGS directly.
+ # For optimization overrides, it's better still to set OPTIMIZATION.
++CFLAGS =
+ CFLAGS_EXTRA =
+
+ # If you want a static binary, turn this on.
+
