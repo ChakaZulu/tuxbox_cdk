@@ -78,9 +78,9 @@ lsof_4.64_src.tar.bz2;
 # msttf
 #
 cabextract-0.5.tar.gz;http://www.kyz.uklinux.net/downloads
-arialb32.exe;http://www.microsoft.com/typography/downloads
-arial32.exe;http://www.microsoft.com/typography/downloads
-courie32.exe;http://www.microsoft.com/typography/downloads
+arialb32.exe;http://nuoriso.hel.fi/__files/ms_truetype_core_fonts_for_the_web/Win95-98-NT
+arial32.exe;http://nuoriso.hel.fi/__files/ms_truetype_core_fonts_for_the_web/Win95-98-NT
+courie32.exe;http://nuoriso.hel.fi/__files/ms_truetype_core_fonts_for_the_web/Win95-98-NT
 
 #
 # development tools
