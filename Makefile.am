@@ -648,7 +648,7 @@ libs: \
 		CC=$(target)-gcc \
 		CXX=$(target)-g++ \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CFLAGS) -I$(buildprefix)/linux-2.4.19/include" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
 			--build=$(build) \
@@ -1303,7 +1303,7 @@ $(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
 	touch .dvbsnoop
 
 $(appsdir)/dvb/zapit/Makefile: .bootstrap
-	cd $(appsdir)/dvb/zapit && $(CONFIGURE)
+	cd $(appsdir)/dvb/zapit && $(CONFIGURE) --with-neutrino-source=$(appsdir)/tuxbox/neutrino
 
 .zapit: $(appsdir)/dvb/zapit/Makefile .camd .misc_libs
 	$(MAKE) -C $(appsdir)/dvb/zapit all install
