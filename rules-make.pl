@@ -52,7 +52,7 @@ if ( $#ARGV >= 2 )
       {
         $output .= "Archive/" . $_ . " ";
       }
-      elsif ( $_ =~ m#\.diff$# )
+      elsif ( $_ =~ m#\.(config|diff)$# )
       {
         $output .= "Patches/" . $_ . " ";
       }

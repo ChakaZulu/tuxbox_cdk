@@ -180,16 +180,16 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 
 root: \
 	.etc .busybox .ftpd .ifupdown .inetd .modutils \
-	.netkit_telnet .procps .tinylogin .watchdog
+	.netkit_telnet .procps .watchdog
 
 root_optional: \
 	.portmap
 
 .busybox: .bootstrap @DEPENDS_busybox@
 	@PREPARE_busybox@
+	cat Patches/busybox.config > @DIR_busybox@/.config
 	cd @DIR_busybox@ && \
-		CFLAGS="" \
-		$(MAKE) \
+		$(MAKE) dep all \
 			CROSS=$(target)- \
 			CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
 		@INSTALL_busybox@
@@ -250,7 +250,7 @@ root_optional: \
 	@CLEANUP_modutils@
 	touch .modutils
 
-.netkit_telnet: .bootstrap .inetd .tinylogin .libncurses @DEPENDS_netkit_telnet@
+.netkit_telnet: .bootstrap .inetd .busybox .libncurses @DEPENDS_netkit_telnet@
 	@PREPARE_netkit_telnet@
 	touch @DIR_netkit_telnet@/MCONFIG
 	cd @DIR_netkit_telnet@ && \
@@ -281,17 +281,6 @@ root_optional: \
 		@INSTALL_procps@
 	@CLEANUP_procps@
 	touch .procps
-
-.tinylogin: .bootstrap .busybox @DEPENDS_tinylogin@
-	@PREPARE_tinylogin@
-	cd @DIR_tinylogin@ && \
-		CFLAGS="" \
-		$(MAKE) \
-			CROSS=$(target)- \
-			CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
-		@INSTALL_tinylogin@
-	@CLEANUP_tinylogin@
-	touch .tinylogin
 
 .watchdog: .bootstrap @DEPENDS_watchdog@
 	@PREPARE_watchdog@
@@ -1207,7 +1196,7 @@ $(appsdir)/misc/tools/config.status: .bootstrap
 
 # tuxbox/enigma
 
-$(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libmad .libpng .libsigc .misc_libs .plugins
+$(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libmad .libpng .libsigc .misc_libs .tuxbox_libs .plugins
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE)
 
 .enigma: $(appsdir)/tuxbox/enigma/config.status .tuxbox_tools
