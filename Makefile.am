@@ -302,7 +302,7 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 
 libs: \
 	.libcrypto .libcurl .libffi .libfreetype .libjpeg .libncurses \
-	.libpng .libqt .libreadline .libsdl .libsigc .libz
+	.libpng .libreadline .libsdl .libsigc .libz
 
 .libcrypto: .bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
@@ -955,7 +955,7 @@ $(appsdir)/configure: $(appsdir)/configure.ac
 	cd $(appsdir) && \
 		./autogen.sh
 
-$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng .libqt .libsigc $(appsdir)/configure $(appsdir)/Makefile.am
+$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng .libsigc $(appsdir)/configure $(appsdir)/Makefile.am
 	cd $(appsdir) && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
 		./configure \
@@ -965,7 +965,7 @@ $(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng .libqt .libsigc $(
 			--with-target=$(APPSTARGET) \
 			--enable-maintainer-mode
 else
-$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng .libqt .libsigc
+$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng .libsigc
 	cd $(appsdir) && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
 		./configure \
