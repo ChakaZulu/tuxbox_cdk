@@ -38,17 +38,20 @@ if test "$targetruleset" = "standard"; then
 	TARGET_CFLAGS="-O2 -mcpu=823"
 	TARGET_CXXFLAGS="-O2 -mcpu=823"
 	TARGET_LDFLAGS="-s"
-	INSTALLRULESFILE=""
+	INSTALLRULESETFILE=""
 	APPSTARGET="dbox2"
 elif test "$targetruleset" = "flash"; then
 	TARGET_CFLAGS="-Os -mcpu=823"
 	TARGET_CXXFLAGS="-Os -mcpu=823"
 	TARGET_LDFLAGS="-s"
-	INSTALLRULESFILE="-flash"
+	INSTALLRULESETFILE="-flash"
 	APPSTARGET="dbox2flash"
 else
 	AC_MSG_ERROR([invalid targetruleset "$targetruleset", choose on from standard or flash]);
 fi
+
+AM_CONDITIONAL(TARGETRULESET_STANDARD,test "$targetruleset" = "standard")
+AM_CONDITIONAL(TARGETRULESET_FLASH,test "$targetruleset" = "flash")
 
 AC_SUBST(TARGET_CFLAGS)
 AC_SUBST(TARGET_CXXFLAGS)
@@ -144,7 +147,7 @@ AC_SUBST(CLEANUP)
 #
 # core
 #
-KERNELVERSION=`${srcdir}/rules-make.pl ${srcdir}/rules-make${RULESETFILE} linux version`
+KERNELVERSION=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} linux version`
 AC_SUBST(KERNELVERSION)
 TUXBOX_RULES_MAKE(linux)
 TUXBOX_RULES_MAKE_EXDIR(binutils)
@@ -158,6 +161,9 @@ TUXBOX_RULES_MAKE_EXDIR(gcc)
 TUXBOX_RULES_MAKE(busybox)
 TUXBOX_RULES_MAKE(tinylogin)
 TUXBOX_RULES_MAKE(modutils)
+TUXBOX_RULES_MAKE(inetd)
+TUXBOX_RULES_MAKE(ftpd)
+TUXBOX_RULES_MAKE(telnetd)
 
 #
 # contrib libs
@@ -184,8 +190,6 @@ TUXBOX_RULES_MAKE(msttf)
 # additional
 #
 TUXBOX_RULES_MAKE(gdb)
-TUXBOX_RULES_MAKE(inetd)
-TUXBOX_RULES_MAKE(telnetd)
 TUXBOX_RULES_MAKE(strace)
 TUXBOX_RULES_MAKE(nano)
 
