@@ -22,16 +22,17 @@ sub load ($$$)
     if ( ! m/^#/ )
     {
       chomp;
-      @_ = split ( /;/, $_ );
+      my @rule = split ( /;/, $_ );
 
-      next if not defined $_[0];
-      return @_ if $_[0] eq $package;
+      print "get: $_\n";
+      next if not defined $rule[0];
+      return @rule if $rule[0] eq $package;
 
-      next if not defined $_[1];
-      local $_;
-      $_ = load ( $_[1], $package, 0 ) if $_[0] eq ">>>";
-      $_ = load ( $_[1], $package, 1 ) if $_[0] eq ">>?";
-      return if $_;
+      next if not defined $rule[1];
+      my @ret;
+      @ret = load ( $rule[1], $package, 0 ) if $rule[0] eq ">>>";
+      @ret = load ( $rule[1], $package, 1 ) if $rule[0] eq ">>?";
+      return @ret if @ret;
     }
   }
 
