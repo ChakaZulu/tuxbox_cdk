@@ -10811,7 +10811,7 @@ diff -Naur u-boot-1.0.0/common/cmd_flash.c u-boot-1.0.0-tuxbox/common/cmd_flash.
 diff -Naur u-boot-1.0.0/common/cmd_fs.c u-boot-1.0.0-tuxbox/common/cmd_fs.c
 --- u-boot-1.0.0-orig/common/cmd_fs.c	1970-01-01 01:00:00.000000000 +0100
 +++ u-boot-1.0.0-tuxbox/common/cmd_fs.c	2004-02-19 10:09:44.000000000 +0100
-@@ -0,0 +1,290 @@
+@@ -0,0 +1,291 @@
 +/*
 + * (C) Copyright 2002
 + * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -10842,6 +10842,7 @@ diff -Naur u-boot-1.0.0/common/cmd_fs.c u-boot-1.0.0-tuxbox/common/cmd_fs.c
 + */
 +#include <common.h>
 +#include <command.h>
++#include <cmd_fs.h>
 +#include <s_record.h>
 +#include <net.h>
 +
@@ -12031,6 +12032,52 @@ diff -Naur u-boot-1.0.0/include/cmd_confdefs.h u-boot-1.0.0-tuxbox/include/cmd_c
 +#endif
  
  #endif	/* _CMD_CONFIG_H */
+diff -Naur u-boot-1.0.0/include/cmd_fs.h u-boot-1.0.0.dbox2/include/cmd_fs.h
+--- u-boot-1.0.0-orig/include/cmd_fs.h		1970-01-01 01:00:00.000000000 +0100
++++ u-boot-1.0.0-tuxbox/include/cmd_fs.h	2004-02-22 14:34:48.000000000 +0100
+@@ -0,0 +1,42 @@
++/*
++ * (C) Copyright 2000
++ * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++ *
++ * Copyright (C) 2002 Bastian Blank <waldi@tuxbox.org>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++/*
++ * fs support
++ */
++#ifndef	_CMD_FS_H
++#define	_CMD_FS_H
++
++typedef struct part_info
++{
++	int type;
++	unsigned int offset;
++	unsigned int size;
++	void *jffs2_priv;
++} part_info_t;
++
++int fs_fsload (unsigned long offset, char *filename);
++
++#endif	/* _CMD_FS_H */
 diff -Naur u-boot-1.0.0/include/commproc.h u-boot-1.0.0-tuxbox/include/commproc.h
 --- u-boot-1.0.0-orig/include/commproc.h	2003-08-05 19:43:33.000000000 +0200
 +++ u-boot-1.0.0-tuxbox/include/commproc.h	2004-02-19 09:36:04.000000000 +0100
@@ -12065,7 +12112,7 @@ diff -Naur u-boot-1.0.0/include/commproc.h u-boot-1.0.0-tuxbox/include/commproc.
 diff -Naur u-boot-1.0.0/include/cramfs.h u-boot-1.0.0-tuxbox/include/cramfs.h
 --- u-boot-1.0.0-orig/include/cramfs.h	1970-01-01 01:00:00.000000000 +0100
 +++ u-boot-1.0.0-tuxbox/include/cramfs.h	2004-02-19 10:09:58.000000000 +0100
-@@ -0,0 +1,38 @@
+@@ -0,0 +1,30 @@
 +/*
 + * cramfs.h
 + *
@@ -12090,14 +12137,6 @@ diff -Naur u-boot-1.0.0/include/cramfs.h u-boot-1.0.0-tuxbox/include/cramfs.h
 +
 +#ifndef CRAMFS_H
 +#define CRAMFS_H
-+
-+typedef struct part_info
-+{
-+	int type;
-+	unsigned int offset;
-+	unsigned int size;
-+	void *jffs2_priv;
-+} part_info_t; 
 +
 +int cramfs_load (char *loadoffset, struct part_info *info, char *filename);
 +int cramfs_ls (struct part_info *info, char *filename);
