@@ -1847,7 +1847,6 @@ distclean-local:
 	-$(MAKE) -C $(appsdir)/tuxbox/tools distclean
 	-$(MAKE) -C $(driverdir) distclean KERNEL_LOCATION=$(buildprefix)/linux
 	-rm Makefile-archive
-	-rm rules-archive.pl
 	-rm rules-downcheck.pl
 	-rm $(DEPDIR) -rf
 	-rm -rf $(targetprefix)
@@ -1870,7 +1869,7 @@ else
 endif
 
 EXTRA_DIST = \
-	rules.pl rules-archive.pl.in rules-downcheck.pl.in \
+	rules.pl rules-archive.pl rules-downcheck.pl.in \
 	rules-archive \
 	rules-install rules-install-flash \
 	rules-make rules-make-cygwin

@@ -416,11 +416,9 @@ root/etc/init.d/Makefile
 root/etc/network/Makefile
 root/share/Makefile
 root/share/udhcpc/Makefile
-rules-archive.pl
 rules-downcheck.pl
 ])
 
-AC_CONFIG_COMMANDS([rules-archive-chmod],[chmod +x rules-archive.pl])
 AC_CONFIG_COMMANDS([rules-downcheck-chmod],[chmod +x rules-downcheck.pl])
 
 AC_OUTPUT

@@ -27,7 +27,7 @@ while ( <RULES> )
         $output .= " || \\\n\twget -c -P Archive " . $_ . "/" . $file;
       }
     }
-    $output .= " || \\\n\twget -c -P Archive http://@defaultserver@/pub/tuxbox/cdk/src/" . $file;
+    $output .= " || \\\n\twget -c -P Archive http://tuxbox.berlios.de/pub/tuxbox/cdk/src/" . $file;
     $output .= "\n\n";
   }
 }

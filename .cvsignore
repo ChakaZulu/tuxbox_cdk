@@ -8,5 +8,4 @@ config.log
 config.status
 configure
 linux-*
-rules-archive.pl
 rules-downcheck.pl
