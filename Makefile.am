@@ -1303,7 +1303,7 @@ $(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
 $(appsdir)/dvb/zapit/Makefile: .bootstrap
 	cd $(appsdir)/dvb/zapit && $(CONFIGURE)
 
-.zapit: .camd .misc_libs
+.zapit: $(appsdir)/dvb/zapit/Makefile .camd .misc_libs
 	$(MAKE) -C $(appsdir)/dvb/zapit all install
 	touch .zapit
 
