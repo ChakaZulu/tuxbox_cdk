@@ -381,6 +381,7 @@ libs_optional: \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
+			--enable-linux-input \
 			--disable-avifile \
 			--disable-jpeg \
 			--disable-sdl && \
