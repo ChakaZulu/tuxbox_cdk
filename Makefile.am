@@ -108,12 +108,12 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 			--host=$(build) \
 			--target=$(target) \
 			--prefix=$(hostprefix) \
-			--with-cpu=823 \
+			--with-cpu=$(CPU_MODEL) \
 			--enable-target-optspace \
 			--enable-languages="c" \
 			--disable-shared \
-			--disable-nls \
 			--disable-threads \
+			--disable-nls \
 			--nfp && \
 		$(MAKE) all && \
 		@INSTALL_bootstrap_gcc@
@@ -177,7 +177,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 			--host=$(build) \
 			--target=$(target) \
 			--prefix=$(hostprefix) \
-			--with-cpu=823 \
+			--with-cpu=$(CPU_MODEL) \
 			--enable-target-optspace \
 			--enable-languages="c,c++" \
 			--enable-shared \
@@ -1059,7 +1059,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@PREPARE_vls@
 	cd @DIR_vls@ && \
 		$(BUILDENV) \
-		CCFLAGS="-mcpu=823 -O3 -mmultiple -mstring -pipe" \
+		CCFLAGS="$(TARGET_CFLAGS)" \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -1079,7 +1079,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 boot: .u-boot .linuxkernel .driver
 
 .u-boot: .bootstrap $(bootdir)/u-boot/Makefile
-	$(MAKE) -C $(bootdir)/u-boot $(HARDWARERULESET)_config
+	$(MAKE) -C $(bootdir)/u-boot dbox2_config
 	$(MAKE) -C $(bootdir)/u-boot CROSS_COMPILE=$(target)- u-boot.stripped
 
 	$(INSTALL) -m644 $(bootdir)/u-boot/u-boot.stripped $(bootprefix)/u-boot
@@ -1118,13 +1118,11 @@ endif
 .driver: .bootstrap .linuxkernel
 	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
-		CROSS_COMPILE=$(target)- \
-		HARDWARE=$(HARDWARERULESET)
+		CROSS_COMPILE=$(target)-
 	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		BIN_DEST=$(targetprefix)/bin \
 		INSTALL_MOD_PATH=$(targetprefix) \
-		HARDWARE=$(HARDWARERULESET) \
 		install
 
 if MAINTAINER_MODE

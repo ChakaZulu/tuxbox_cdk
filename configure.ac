@@ -19,21 +19,11 @@ AC_ARG_ENABLE(libcrypto,
 
 AM_CONDITIONAL(WITH_LIBCRYPTO,test "$enable_libcrypto" = "yes")
 
-AC_ARG_WITH(hardwareruleset,
-	[  --with-hardwareruleset=NAME  hardware ruleset [[dbox2,dreambox]]],
-	[HARDWARERULESET="$withval"],[HARDWARERULESET="dbox2"])
+AC_ARG_WITH(cpu,
+	[  --with-cpu=MODEL        cpu model [[823,405]]],
+	[CPU_MODEL="$withval"],[CPU_MODEL="823"])
 
-if test "$HARDWARERULESET" = "dbox2"; then
-	true
-elif test "$HARDWARERULESET" = "dreambox"; then
-	true
-else
-	AC_MSG_ERROR([invalid hardwareruleset "$hardwareruleset", choose on from dbox2 or dreambox]);
-fi
-
-AC_SUBST(HARDWARERULESET)
-AM_CONDITIONAL(HARDWARERULESET_DBOX2,test "$HARDWARERULESET" = "dbox2")
-AM_CONDITIONAL(HARDWARERULESET_DREAMBOX,test "$HARDWARERULESET" = "dreambox")
+AC_SUBST(CPU_MODEL)
 
 AC_ARG_WITH(hostruleset,
 	[  --with-hostruleset=NAME host ruleset [[standard,cygwin]]],
@@ -80,17 +70,12 @@ if test -z "$CFLAGS" ; then
 fi
 
 if test -z "$TARGET_CFLAGS" -o -z "$TARGET_CXXFLAGS"; then
-	if test "$HARDWARERULESET" = "dbox2"; then
-		TARGET_CFLAGS="-mcpu=823"
-	elif test "$HARDWARERULESET" = "dreambox"; then
-		TARGET_CFLAGS="-mcpu=403 -Wa,-m405"
-	fi
-	TARGET_CFLAGS="$TARGET_CFLAGS -mmultiple -mstring -meabi"
+	TARGET_CFLAGS="-mcpu=$CPU_MODEL -mmultiple -mstring -meabi -pipe"
 	if test "$TARGETRULESET" = "standard"; then
-		TARGET_CFLAGS="$TARGET_CFLAGS -O3 -g -pipe"
+		TARGET_CFLAGS="$TARGET_CFLAGS -O2 -g3 -gdwarf-2"
 		TARGET_LDFLAGS=""
 	elif test "$TARGETRULESET" = "flash"; then
-		TARGET_CFLAGS="$TARGET_CFLAGS -Os -pipe"
+		TARGET_CFLAGS="$TARGET_CFLAGS -Os"
 		TARGET_LDFLAGS="-s"
 	fi
 	TARGET_CXXFLAGS="$TARGET_CFLAGS"
@@ -383,19 +368,20 @@ ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 # summary
 #
 AC_MSG_RESULT([
-Summary:
-Hardwareruleset:	$HARDWARERULESET
-Hostruleset:		$HOSTRULESET
-Targetruleset:		$TARGETRULESET
-Targetprefix:		$targetprefix
-Hostprefix:		$hostprefix
-Bootprefix:		$bootprefix
-Buildprefix:		$buildprefix
-Appsdir:		$appsdir
-Bootdir:		$bootdir
-Driverdir:		$driverdir
-Hostappsdir:		$hostappsdir
-GNU-Server:		$gnuserver
+summary:
+----------------------------------------
+target cpu:		$CPU_MODEL
+host rule set:		$HOSTRULESET
+target rule set:	$TARGETRULESET
+target prefix:		$targetprefix
+host prefix:		$hostprefix
+boot prefix:		$bootprefix
+build prefix:		$buildprefix
+target apps directory:	$appsdir
+boot directory:		$bootdir
+driver directory:	$driverdir
+host apps directory:	$hostappsdir
+GNU server:		$gnuserver
 ])
 
 AC_OUTPUT([
