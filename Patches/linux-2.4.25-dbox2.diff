@@ -1,6 +1,18 @@
+diff -Naur linux-2.4.25/Makefile linux-2.4.25-dbox2/Makefile
+--- linux-2.4.25/Makefile	2004-02-18 14:36:32.000000000 +0100
++++ linux-2.4.25-dbox2/Makefile	2004-02-19 21:03:34.000000000 +0100
+@@ -1,7 +1,7 @@
+ VERSION = 2
+ PATCHLEVEL = 4
+ SUBLEVEL = 25
+-EXTRAVERSION =
++EXTRAVERSION = -dbox2
+ 
+ KERNELRELEASE=$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
+ 
 diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_io/enet.c
 --- linux-2.4.25/arch/ppc/8xx_io/enet.c	2003-11-28 19:26:19.000000000 +0100
-+++ linux-2.4.25-dbox2/arch/ppc/8xx_io/enet.c	2004-02-18 15:53:01.000000000 +0100
++++ linux-2.4.25-dbox2/arch/ppc/8xx_io/enet.c	2004-02-19 21:08:57.000000000 +0100
 @@ -14,13 +14,6 @@
   * Buffer descriptors are kept in the CPM dual port RAM, and the frame
   * buffers are in the host memory.
@@ -78,7 +90,116 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  		return 1;
  	}
  #endif
-@@ -272,24 +256,24 @@
+@@ -267,29 +251,133 @@
+ 	return 0;
+ }
+ 
++/*
++ * Transmits up to 3 memory locations. This 3 locations must be cache-flushed
++ * before this function is invoked. The memory won't be freed after
++ * transmission. The function takes physical addresses!
++ */
++
++int scc_enet_multiple_xmit(struct net_device *dev,unsigned count, unsigned first,
++	unsigned first_len, unsigned second, unsigned second_len, unsigned third,
++	unsigned third_len)
++{
++	struct scc_enet_private *cep = (struct scc_enet_private *)dev->priv;
++	volatile cbd_t	*bdp,*first_bdp;
++	unsigned pad = 0;
++
++	/* nothing to send ? */
++	if (!count)
++		return 0;
++
++	spin_lock_irq(&cep->lock);
++
++	/* not enough free descriptors? */
++	if (cep->tx_free < count)
++	{
++		spin_unlock_irq(&cep->lock);
++		return 1;
++	}
++
++	bdp = cep->cur_tx;
++	first_bdp = bdp;
++
++	if (first_len + second_len + third_len < ETH_ZLEN)
++	{
++		pad = BD_ENET_TX_PAD;
++	}
++
++	/* setup first descriptor */
++
++	cep->tx_skbuff[cep->skb_cur] = NULL;
++	bdp->cbd_datlen = first_len;
++	bdp->cbd_bufaddr = first;
++	cep->tx_free--;
++	cep->skb_cur = (cep->skb_cur + 1) & TX_RING_MOD_MASK;
++
++	/* setup second descriptor */
++	if (count > 1)
++	{
++		if (bdp->cbd_sc & BD_ENET_TX_WRAP)
++		{
++			bdp = cep->tx_bd_base;
++		}
++		else
++		{
++			bdp++;
++		}
++		cep->tx_skbuff[cep->skb_cur] = NULL;
++		bdp->cbd_datlen = second_len;
++		bdp->cbd_bufaddr = second;
++		cep->tx_free--;
++		cep->skb_cur = (cep->skb_cur + 1) & TX_RING_MOD_MASK;
++
++		if (count > 2)
++		{
++			bdp->cbd_sc = (bdp->cbd_sc & BD_ENET_TX_WRAP) | BD_ENET_TX_READY;
++			if (bdp->cbd_sc & BD_ENET_TX_WRAP)
++			{
++				bdp = cep->tx_bd_base;
++			}
++			else
++			{
++				bdp++;
++			}
++			cep->tx_skbuff[cep->skb_cur] = NULL;
++			bdp->cbd_datlen = third_len;
++			bdp->cbd_bufaddr = third;
++			cep->tx_free--;
++			cep->skb_cur = (cep->skb_cur + 1) & TX_RING_MOD_MASK;
++		}
++	}
++	bdp->cbd_sc = (bdp->cbd_sc & BD_ENET_TX_WRAP) | BD_ENET_TX_READY |
++	BD_ENET_TX_INTR | BD_ENET_TX_LAST | BD_ENET_TX_TC | pad;
++	if (count > 1)
++	{
++		first_bdp->cbd_sc = (first_bdp->cbd_sc & BD_ENET_TX_WRAP) | BD_ENET_TX_READY;
++	}
++
++	if (bdp->cbd_sc & BD_ENET_TX_WRAP)
++	{
++		bdp = cep->tx_bd_base;
++	}
++	else
++	{
++		bdp++;
++	}
++
++	if (!cep->tx_free)
++		netif_stop_queue(dev);
++
++	cep->cur_tx = (cbd_t *) bdp;
++
++	spin_unlock_irq(&cep->lock);
++
++	return 0;
++}
++
+ static void
+ scc_enet_timeout(struct net_device *dev)
  {
  	struct scc_enet_private *cep = (struct scc_enet_private *)dev->priv;
  
@@ -107,7 +228,17 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  			       bdp->cbd_sc,
  			       bdp->cbd_datlen,
  			       bdp->cbd_bufaddr);
-@@ -439,8 +423,9 @@
+@@ -373,7 +461,8 @@
+ 
+ 		/* Free the sk buffer associated with this last transmit.
+ 		*/
+-		dev_kfree_skb_irq(cep->tx_skbuff[cep->skb_dirty]);
++		if (cep->tx_skbuff[cep->skb_dirty])
++			dev_kfree_skb_irq(cep->tx_skbuff[cep->skb_dirty]);
+ 		cep->skb_dirty = (cep->skb_dirty + 1) & TX_RING_MOD_MASK;
+ 
+ 		/* Update pointer to next buffer descriptor to be transmitted.
+@@ -439,8 +528,9 @@
  {
  	struct	scc_enet_private *cep;
  	volatile cbd_t	*bdp;
@@ -118,7 +249,7 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  
  	cep = (struct scc_enet_private *)dev->priv;
  
-@@ -448,6 +433,7 @@
+@@ -448,6 +538,7 @@
  	 * These get messed up if we get called due to a busy condition.
  	 */
  	bdp = cep->cur_rx;
@@ -126,7 +257,7 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  
  for (;;) {
  	if (bdp->cbd_sc & BD_ENET_RX_EMPTY)
-@@ -459,7 +445,7 @@
+@@ -459,7 +550,7 @@
  	 */
  	if ((bdp->cbd_sc & (BD_ENET_RX_FIRST | BD_ENET_RX_LAST)) !=
  		(BD_ENET_RX_FIRST | BD_ENET_RX_LAST))
@@ -135,7 +266,7 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  #endif
  
  	/* Frame too long or too short.
-@@ -486,47 +472,53 @@
+@@ -486,47 +577,53 @@
  		*/
  		cep->stats.rx_packets++;
  		pkt_len = bdp->cbd_datlen;
@@ -187,12 +318,12 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  	}
  
 -	/* Clear the status flags for this buffer.
-+	/* Clear the status flags for this buffer and mark the buffer empty.
- 	*/
+-	*/
 -	bdp->cbd_sc &= ~BD_ENET_RX_STATS;
 -
 -	/* Mark the buffer empty.
--	*/
++	/* Clear the status flags for this buffer and mark the buffer empty.
+ 	*/
 -	bdp->cbd_sc |= BD_ENET_RX_EMPTY;
 +	bdp->cbd_sc = (bdp->cbd_sc & ~BD_ENET_RX_STATS) | BD_ENET_RX_EMPTY;
  
@@ -215,7 +346,7 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  
  	return 0;
  }
-@@ -574,7 +566,7 @@
+@@ -574,7 +671,7 @@
  	if (dev->flags&IFF_PROMISC) {
  
  		/* Log any net taps. */
@@ -224,7 +355,7 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  		cep->sccp->scc_pmsr |= SCC_PMSR_PRO;
  	} else {
  
-@@ -637,9 +629,8 @@
+@@ -637,9 +734,8 @@
  {
  	struct net_device *dev;
  	struct scc_enet_private *cep;
@@ -236,7 +367,7 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  	bd_t		*bd;
  	volatile	cbd_t		*bdp;
  	volatile	cpm8xx_t	*cp;
-@@ -749,6 +740,7 @@
+@@ -749,6 +845,7 @@
  	cep->dirty_tx = cep->cur_tx = cep->tx_bd_base;
  	cep->tx_free = TX_RING_SIZE;
  	cep->cur_rx = cep->rx_bd_base;
@@ -244,7 +375,7 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  
  	/* Issue init Rx BD command for SCC.
  	 * Manual says to perform an Init Rx parameters here.  We have
-@@ -829,24 +821,21 @@
+@@ -829,24 +926,21 @@
  	bdp--;
  	bdp->cbd_sc |= BD_SC_WRAP;
  
@@ -282,7 +413,7 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  	}
  
  	/* Set the last buffer to wrap.
-@@ -954,7 +943,7 @@
+@@ -954,7 +1048,7 @@
  	*/
  	sccp->scc_gsmrl |= (SCC_GSMRL_ENR | SCC_GSMRL_ENT);
  
@@ -293,7 +424,7 @@ diff -Naur linux-2.4.25/arch/ppc/8xx_io/enet.c linux-2.4.25-dbox2/arch/ppc/8xx_i
  	printk("%02x\n", dev->dev_addr[5]);
 diff -Naur linux-2.4.25/arch/ppc/kernel/m8xx_setup.c linux-2.4.25-dbox2/arch/ppc/kernel/m8xx_setup.c
 --- linux-2.4.25/arch/ppc/kernel/m8xx_setup.c	2004-02-18 14:36:30.000000000 +0100
-+++ linux-2.4.25-dbox2/arch/ppc/kernel/m8xx_setup.c	2004-02-18 15:53:01.000000000 +0100
++++ linux-2.4.25-dbox2/arch/ppc/kernel/m8xx_setup.c	2004-02-19 21:03:34.000000000 +0100
 @@ -134,6 +134,17 @@
  	/* Force all 8xx processors to use divide by 16 processor clock. */
  	((volatile immap_t *)IMAP_ADDR)->im_clkrst.car_sccr |= 0x02000000;
@@ -312,9 +443,22 @@ diff -Naur linux-2.4.25/arch/ppc/kernel/m8xx_setup.c linux-2.4.25-dbox2/arch/ppc
  	/* Processor frequency is MHz.
  	 * The value 'fp' is the number of decrementer ticks per second.
  	 */
+diff -Naur linux-2.4.25/arch/ppc/kernel/ppc_ksyms.c linux-2.4.25-dbox2/arch/ppc/kernel/ppc_ksyms.c
+--- linux-2.4.25/arch/ppc/kernel/ppc_ksyms.c	2004-02-18 14:36:30.000000000 +0100
++++ linux-2.4.25-dbox2/arch/ppc/kernel/ppc_ksyms.c	2004-02-19 21:03:34.000000000 +0100
+@@ -357,6 +357,9 @@
+ EXPORT_SYMBOL(cpm_free_handler);
+ EXPORT_SYMBOL(m8xx_cpm_hostalloc);
+ EXPORT_SYMBOL(m8xx_cpm_dpalloc);
++extern int scc_enet_multiple_xmit(struct net_device, unsigned, unsigned,
++	unsigned, unsigned, unsigned, unsigned, unsigned);
++EXPORT_SYMBOL(scc_enet_multiple_xmit);
+ #ifdef CONFIG_8xx_WDT
+ extern int m8xx_wdt_get_timeout(void);
+ extern void m8xx_wdt_reset(void);
 diff -Naur linux-2.4.25/arch/ppc/kernel/time.c linux-2.4.25-dbox2/arch/ppc/kernel/time.c
 --- linux-2.4.25/arch/ppc/kernel/time.c	2003-08-25 13:44:40.000000000 +0200
-+++ linux-2.4.25-dbox2/arch/ppc/kernel/time.c	2004-02-18 15:55:07.000000000 +0100
++++ linux-2.4.25-dbox2/arch/ppc/kernel/time.c	2004-02-19 21:03:34.000000000 +0100
 @@ -70,6 +70,9 @@
  unsigned long disarm_decr[NR_CPUS];
  
@@ -338,7 +482,7 @@ diff -Naur linux-2.4.25/arch/ppc/kernel/time.c linux-2.4.25-dbox2/arch/ppc/kerne
  			stamp = get_native_tbl();
 diff -Naur linux-2.4.25/drivers/char/console.c linux-2.4.25-dbox2/drivers/char/console.c
 --- linux-2.4.25/drivers/char/console.c	2003-11-28 19:26:20.000000000 +0100
-+++ linux-2.4.25-dbox2/drivers/char/console.c	2004-02-18 15:53:01.000000000 +0100
++++ linux-2.4.25-dbox2/drivers/char/console.c	2004-02-19 21:03:34.000000000 +0100
 @@ -110,7 +110,11 @@
  #include "console_macros.h"
  
@@ -354,7 +498,7 @@ diff -Naur linux-2.4.25/drivers/char/console.c linux-2.4.25-dbox2/drivers/char/c
  
 diff -Naur linux-2.4.25/drivers/char/vt.c linux-2.4.25-dbox2/drivers/char/vt.c
 --- linux-2.4.25/drivers/char/vt.c	2002-11-29 00:53:12.000000000 +0100
-+++ linux-2.4.25-dbox2/drivers/char/vt.c	2004-02-18 15:53:01.000000000 +0100
++++ linux-2.4.25-dbox2/drivers/char/vt.c	2004-02-19 21:03:34.000000000 +0100
 @@ -93,7 +93,8 @@
  #if defined(__i386__) || defined(__alpha__) || defined(CONFIG_PPC_ISATIMER) \
      || (defined(__mips__) && defined(CONFIG_ISA)) \
@@ -367,7 +511,7 @@ diff -Naur linux-2.4.25/drivers/char/vt.c linux-2.4.25-dbox2/drivers/char/vt.c
  kd_nosound(unsigned long ignored)
 diff -Naur linux-2.4.25/drivers/input/keybdev.c linux-2.4.25-dbox2/drivers/input/keybdev.c
 --- linux-2.4.25/drivers/input/keybdev.c	2004-02-18 14:36:31.000000000 +0100
-+++ linux-2.4.25-dbox2/drivers/input/keybdev.c	2004-02-18 15:53:01.000000000 +0100
++++ linux-2.4.25-dbox2/drivers/input/keybdev.c	2004-02-19 21:03:34.000000000 +0100
 @@ -108,7 +108,11 @@
  #endif	/* CONFIG_MAC_ADBKEYCODES || CONFIG_ADB_KEYBOARD */
  
@@ -382,7 +526,7 @@ diff -Naur linux-2.4.25/drivers/input/keybdev.c linux-2.4.25-dbox2/drivers/input
  		handle_scancode(0xe1, 1);
 diff -Naur linux-2.4.25/drivers/video/fbcmap.c linux-2.4.25-dbox2/drivers/video/fbcmap.c
 --- linux-2.4.25/drivers/video/fbcmap.c	2003-11-28 19:26:21.000000000 +0100
-+++ linux-2.4.25-dbox2/drivers/video/fbcmap.c	2004-02-18 15:53:02.000000000 +0100
++++ linux-2.4.25-dbox2/drivers/video/fbcmap.c	2004-02-19 21:03:34.000000000 +0100
 @@ -271,7 +271,7 @@
  	    hred = *red;
  	    hgreen = *green;
@@ -403,7 +547,7 @@ diff -Naur linux-2.4.25/drivers/video/fbcmap.c linux-2.4.25-dbox2/drivers/video/
  	green++;
 diff -Naur linux-2.4.25/include/linux/input.h linux-2.4.25-dbox2/include/linux/input.h
 --- linux-2.4.25/include/linux/input.h	2004-02-18 14:36:32.000000000 +0100
-+++ linux-2.4.25-dbox2/include/linux/input.h	2004-02-18 15:53:02.000000000 +0100
++++ linux-2.4.25-dbox2/include/linux/input.h	2004-02-19 21:03:34.000000000 +0100
 @@ -310,6 +310,77 @@
  #define KEY_BRIGHTNESSDOWN	224
  #define KEY_BRIGHTNESSUP	225
@@ -482,15 +626,3 @@ diff -Naur linux-2.4.25/include/linux/input.h linux-2.4.25-dbox2/include/linux/i
  #define BTN_MISC		0x100
  #define BTN_0			0x100
  #define BTN_1			0x101
-diff -Naur linux-2.4.25/Makefile linux-2.4.25-dbox2/Makefile
---- linux-2.4.25/Makefile	2004-02-18 14:36:32.000000000 +0100
-+++ linux-2.4.25-dbox2/Makefile	2004-02-18 15:53:42.000000000 +0100
-@@ -1,7 +1,7 @@
- VERSION = 2
- PATCHLEVEL = 4
- SUBLEVEL = 25
--EXTRAVERSION =
-+EXTRAVERSION = -dbox2
- 
- KERNELRELEASE=$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
- 
