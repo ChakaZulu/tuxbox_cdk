@@ -1476,7 +1476,6 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino .root
 	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
 	sed -e 's/neutrino/neutrino -su -flash/' $(targetprefix)/etc/init.d/start_neutrino > \
 		$(flashprefix)/root/etc/init.d/start_neutrino ;
-	cp -pa $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/var/tuxbox/config/zapit $(flashprefix)/root/var/tuxbox/config
 	@touch $@
 
@@ -1487,7 +1486,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
 	cp -pa $(targetprefix)/share/tuxbox/enigma $(flashprefix)/root/share/tuxbox
 	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
-	cp -pa $(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/micron*.ttf $(targetprefix)/share/fonts/unmrs.pfa \
+	cp -pa $(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/unmrs.pfa \
 		$(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/etc/init.d/start_enigma $(flashprefix)/root/etc/init.d
 	@touch $@
