@@ -306,8 +306,7 @@ root_optional: \
 	@PREPARE_procps@
 	cd @DIR_procps@ && \
 		@BUILDENV_procps@ \
-		CURSES="-I$(targetprefix) -lncurses" \
-		$(MAKE) && \
+		$(MAKE) top ps && \
 		@INSTALL_procps@
 	@CLEANUP_procps@
 	touch .procps
