@@ -1,6 +1,17 @@
 #
-#  $Id: README,v 1.8 2001/12/18 01:02:33 obi Exp $
+#  $Id: README,v 1.9 2002/04/04 10:13:10 obi Exp $
 #
 
-See INSTALL.de for questions about installation in German.
+german readers might want to read the following:
+------------------------------------------------
+doc/INSTALL.de for	- installation instructions
+doc/README.3rdpary.de	- 3rd party code handling guidelines
+
+non-german readers have the following choices:
+----------------------------------------------
+- ask someone to translate the documents. let us know if someone translates
+  them into any language.
+- learn how to read german texts.
+- wait until someone translates the documents into your language.
+- figure out how thinks work by using them.
 
