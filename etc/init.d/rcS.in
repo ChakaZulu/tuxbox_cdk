@@ -49,6 +49,7 @@ modprobe mousedev
 modprobe joydev
 modprobe evdev
 modprobe dvb_frontend
+modprobe dbox2_fp
 modprobe dvb
 modprobe tuner
 modprobe avia_gt
