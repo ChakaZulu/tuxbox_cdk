@@ -55,7 +55,6 @@ modprobe avia_gt
 modprobe avia_gt_fb
 modprobe avia_gt_oss
 modprobe avia_gt_napi
-modprobe avia_gt_vbi
 modprobe dvb_net
 modprobe lcd
 
