@@ -72,7 +72,7 @@ lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.d
 lsof;4.65;lsof_4.65_src;lsof_4.65_src.tar.bz2:lsof.diff;extract:lsof_4.65_src.tar.bz2;patch:lsof.diff
 ssh;3.5p1;openssh-3.5p1;openssh-3.5p1.tar.gz:ssh.diff;extract:openssh-3.5p1.tar.gz;patch:ssh.diff
 tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz:tcpdump.diff;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
-vdr;1.1.29;vdr-1.1.29;vdr-1.1.29.tar.bz2:vdr.diff;extract:vdr-1.1.29.tar.bz2;patch:vdr.diff
+vdr;1.2.0;vdr-1.2.0;vdr-1.2.0.tar.bz2:vdr.diff;extract:vdr-1.2.0.tar.bz2;patch:vdr.diff
 
 #
 # msttf

@@ -1,0 +1,3 @@
+#!/bin/sh
+camd2
+vdr -L /lib/vdr/plugins -Premote -D 0 -Pdbox2 -E-

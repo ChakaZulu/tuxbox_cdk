@@ -69,7 +69,7 @@ openssh-3.5p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;
 tcpdump-3.7.1.tar.gz;http://www.tcpdump.org/release
 lsof_4.65_src.tar.bz2
 DirectFB-examples-0.9.17.tar.gz;http://www.directfb.org/download/DirectFB
-vdr-1.1.29.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr/Developer
+vdr-1.2.0.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 
 #
 # development tools
