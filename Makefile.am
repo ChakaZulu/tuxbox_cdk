@@ -1164,118 +1164,118 @@ CONFIGURE = \
 
 # dvb/dvbsnoop
 
-$(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
+$(appsdir)/dvb/dvbsnoop/config.status: .bootstrap
 	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE)
 
-.dvbsnoop: $(appsdir)/dvb/dvbsnoop/Makefile
+.dvbsnoop: $(appsdir)/dvb/dvbsnoop/config.status
 	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
 	touch .dvbsnoop
 
 # dvb/zapit
 
-$(appsdir)/dvb/zapit/Makefile: .bootstrap .tuxbox_tools .misc_libs
+$(appsdir)/dvb/zapit/config.status: .bootstrap .tuxbox_tools .misc_libs
 	cd $(appsdir)/dvb/zapit && $(CONFIGURE)
 
-.zapit: $(appsdir)/dvb/zapit/Makefile
+.zapit: $(appsdir)/dvb/zapit/config.status
 	$(MAKE) -C $(appsdir)/dvb/zapit all install
 	touch .zapit
 
 # dvb/tools
 
-$(appsdir)/dvb/tools/Makefile: .bootstrap .misc_libs
+$(appsdir)/dvb/tools/config.status: .bootstrap .misc_libs
 	cd $(appsdir)/dvb/tools && $(CONFIGURE)
 
-.dvb_tools: $(appsdir)/dvb/tools/Makefile .inetd
+.dvb_tools: $(appsdir)/dvb/tools/config.status .inetd
 	$(MAKE) -C $(appsdir)/dvb/tools all install
 	touch .dvb_tools
 
 # misc/libs
 
-$(appsdir)/misc/libs/Makefile: .bootstrap .libz
+$(appsdir)/misc/libs/config.status: .bootstrap .libz
 	cd $(appsdir)/misc/libs && $(CONFIGURE)
 
-.misc_libs: $(appsdir)/misc/libs/Makefile
+.misc_libs: $(appsdir)/misc/libs/config.status
 	$(MAKE) -C $(appsdir)/misc/libs all install
 	touch .misc_libs
 
 # misc/tools
 
-$(appsdir)/misc/tools/Makefile: .bootstrap
+$(appsdir)/misc/tools/config.status: .bootstrap
 	cd $(appsdir)/misc/tools && $(CONFIGURE)
 
-.misc_tools: $(appsdir)/misc/tools/Makefile
+.misc_tools: $(appsdir)/misc/tools/config.status
 	$(MAKE) -C $(appsdir)/misc/tools all install
 	touch .misc_tools
 
 # tuxbox/enigma
 
-$(appsdir)/tuxbox/enigma/Makefile: .bootstrap .libfreetype .libmad .libpng .libsigc .misc_libs .plugins
+$(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libmad .libpng .libsigc .misc_libs .plugins
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE)
 
-.enigma: $(appsdir)/tuxbox/enigma/Makefile .tuxbox_tools
+.enigma: $(appsdir)/tuxbox/enigma/config.status .tuxbox_tools
 	$(MAKE) -C $(appsdir)/tuxbox/enigma all install
 	touch .enigma
 
 # tuxbox/funstuff
 
-$(appsdir)/tuxbox/funstuff/Makefile: .bootstrap
+$(appsdir)/tuxbox/funstuff/config.status: .bootstrap
 	cd $(appsdir)/tuxbox/funstuff && $(CONFIGURE)
 
-.funstuff: $(appsdir)/tuxbox/funstuff/Makefile
+.funstuff: $(appsdir)/tuxbox/funstuff/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/funstuff all install
 	touch .funstuff
 
 # tuxbox/lcars
 
-$(appsdir)/tuxbox/lcars/Makefile: .bootstrap .libcurl .libfreetype .plugins
+$(appsdir)/tuxbox/lcars/config.status: .bootstrap .libcurl .libfreetype .plugins
 	cd $(appsdir)/tuxbox/lcars && $(CONFIGURE)
 
-.lcars: $(appsdir)/tuxbox/lcars/Makefile
+.lcars: $(appsdir)/tuxbox/lcars/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/lcars all install
 	touch .lcars
 
 # tuxbox/lcd
 
-$(appsdir)/tuxbox/lcd/Makefile: .bootstrap .libfreetype .misc_libs .tuxbox_libs
+$(appsdir)/tuxbox/lcd/config.status: .bootstrap .libfreetype .misc_libs .tuxbox_libs
 	cd $(appsdir)/tuxbox/lcd && $(CONFIGURE)
 
-.lcdmenu: $(appsdir)/tuxbox/lcd/Makefile
+.lcdmenu: $(appsdir)/tuxbox/lcd/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/lcd/lcdmenu all install
 	touch .lcdmenu
 
 # tuxbox/libs
 
-$(appsdir)/tuxbox/libs/Makefile: .bootstrap .libfreetype
+$(appsdir)/tuxbox/libs/config.status: .bootstrap .libfreetype
 	cd $(appsdir)/tuxbox/libs && $(CONFIGURE)
 
-.tuxbox_libs: $(appsdir)/tuxbox/libs/Makefile
+.tuxbox_libs: $(appsdir)/tuxbox/libs/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/libs all install
 	touch .tuxbox_libs
 
 # tuxbox/neutrino
 
-$(appsdir)/tuxbox/neutrino/Makefile: .bootstrap .libboost .libcurl .libfreetype .libmad .libpng .misc_libs .plugins .tuxbox_libs .zapit
+$(appsdir)/tuxbox/neutrino/config.status: .bootstrap .libboost .libcurl .libfreetype .libmad .libpng .misc_libs .plugins .tuxbox_libs .zapit
 	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
 
-.neutrino: $(appsdir)/tuxbox/neutrino/Makefile
+.neutrino: $(appsdir)/tuxbox/neutrino/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install
 	touch .neutrino
 
 # tuxbox/plugins
 
-$(appsdir)/tuxbox/plugins/Makefile: .bootstrap .libcurl
+$(appsdir)/tuxbox/plugins/config.status: .bootstrap .libcurl
 	cd $(appsdir)/tuxbox/plugins && $(CONFIGURE)
 
-.plugins: $(appsdir)/tuxbox/plugins/Makefile
+.plugins: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins all install
 	touch .plugins
 
 # tuxbox/tools
 
-$(appsdir)/tuxbox/tools/Makefile: .bootstrap
+$(appsdir)/tuxbox/tools/config.status: .bootstrap
 	cd $(appsdir)/tuxbox/tools && $(CONFIGURE)
 
-.tuxbox_tools: $(appsdir)/tuxbox/tools/Makefile
+.tuxbox_tools: $(appsdir)/tuxbox/tools/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/tools all install
 	touch .tuxbox_tools
 
