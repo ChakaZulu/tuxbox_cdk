@@ -48,15 +48,15 @@ if ( $#ARGV >= 2 )
 
     foreach ( @_ )
     {
-      if ( $_ =~ m#\.tar\.(bz2|gz)# )
+      if ( $_ =~ m#\.(diff|tar)\.(bz2|gz)$# )
       {
         $output .= "Archive/" . $_ . " ";
       }
-      elsif ( $_ =~ m#\.diff# )
+      elsif ( $_ =~ m#\.diff$# )
       {
         $output .= "Patches/" . $_ . " ";
       }
-      elsif ( $_ =~ m#\.exe# )
+      elsif ( $_ =~ m#\.exe$# )
       {
         $output .= "Archive/" . $_ . " ";
       }
@@ -88,15 +88,15 @@ if ( $#ARGV >= 2 )
 
       if ( $_[0] eq "extract" )
       {
-        if ( $_[1] =~ m#\.tar\.bz2# )
+        if ( $_[1] =~ m#\.tar\.bz2$# )
         {
           $output .= "bunzip2 -cd Archive/" . $_[1] . " | tar -x";
         }
-        elsif ( $_[1] =~ m#\.tar\.gz# )
+        elsif ( $_[1] =~ m#\.tar\.gz$# )
         {
           $output .= "gunzip -cd Archive/" . $_[1] . " | tar -x";
         }
-        elsif ( $_[1] =~ m#\.exe# )
+        elsif ( $_[1] =~ m#\.exe$# )
         {
           $output .= "cabextract Archive/" . $_[1];
         }
@@ -109,15 +109,15 @@ if ( $#ARGV >= 2 )
       {
         $output .= "( cd " . $dir . "; ";
 
-        if ( $_[1] =~ m#\.tar\.bz2# )
+        if ( $_[1] =~ m#\.tar\.bz2$# )
         {
           $output .= "bunzip2 -cd ../Archive/" . $_[1] . " | tar -x";
         }
-        elsif ( $_[1] =~ m#\.tar\.gz# )
+        elsif ( $_[1] =~ m#\.tar\.gz$# )
         {
           $output .= "gunzip -cd ../Archive/" . $_[1] . " | tar -x";
         }
-        elsif ( $_[1] =~ m#\.exe# )
+        elsif ( $_[1] =~ m#\.exe$# )
         {
           $output .= "cabextract ../Archive/" . $_[1];
         }
@@ -130,7 +130,18 @@ if ( $#ARGV >= 2 )
       }
       elsif ( $_[0] eq "patch" )
       {
-        $output .= "( cd " . $dir . "; patch -p1 < ../Patches/" . $_[1] . " )";
+        if ( $_[1] =~ m#\.bz2$# )
+        {
+          $output .= "( cd " . $dir . "; bunzip2 -cd ../Archive/" . $_[1] . " | patch -p1 )";
+        }
+        elsif ( $_[1] =~ m#\.gz$# )
+        {
+          $output .= "( cd " . $dir . "; gunzip -cd ../Archive/" . $_[1] . " | patch -p1 )";
+        }
+        else
+        {
+          $output .= "( cd " . $dir . "; patch -p1 < ../Patches/" . $_[1] . " )";
+        }
       }
       elsif ( $_[0] eq "move" )
       {

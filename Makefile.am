@@ -47,7 +47,7 @@ endif
 		make .directories; \
 	fi
 	@PREPARE_linux@
-	cat Patches/linux-$(KERNELVERSION).dbox.config > @DIR_linux@/.config
+	cat Patches/linux-dbox2-$(KERNELVERSION).config > @DIR_linux@/.config
 	make -C @DIR_linux@ oldconfig \
 		ARCH=ppc
 	make -C @DIR_linux@ include/linux/version.h \
@@ -1472,6 +1472,8 @@ EXTRA_DIST = \
 	rules-install rules-install-flash rules-install.pl \
 	rules-make rules-make-cygwin rules-make.pl \
 	tuxbox.m4
+
+ACLOCAL_AMFLAGS = -I .
 
 CONFIG_STATUS_DEPENDENCIES = \
 	$(top_srcdir)/rules-install $(top_srcdir)/rules-install-flash $(top_srcdir)/rules-install.pl \
