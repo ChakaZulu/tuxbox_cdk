@@ -84,11 +84,11 @@ if ( $#ARGV >= 2 )
       {
         if ( $_[1] =~ m#\.tar\.bz2# )
         {
-          $output .= "tar --bzip2 -xf Archive/" . $_[1];
+          $output .= "bunzip2 -cd Archive/" . $_[1] . " | tar -x";
         }
         elsif ( $_[1] =~ m#\.tar\.gz# )
         {
-          $output .= "tar -xzf Archive/" . $_[1];
+          $output .= "gunzip -cd Archive/" . $_[1] . " | tar -x";
         }
         else
         {
@@ -101,11 +101,11 @@ if ( $#ARGV >= 2 )
 
         if ( $_[1] =~ m#\.tar\.bz2# )
         {
-          $output .= "tar --bzip2 -xf ../Archive/" . $_[1];
+          $output .= "bunzip2 -cd ../Archive/" . $_[1] . " | tar -x";
         }
         elsif ( $_[1] =~ m#\.tar\.gz# )
         {
-          $output .= "tar -xzf ../Archive/" . $_[1];
+          $output .= "gunzip -cd ../Archive/" . $_[1] . " | tar -x";
         }
         else
         {
