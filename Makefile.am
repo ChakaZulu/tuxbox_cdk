@@ -1200,7 +1200,7 @@ $(appsdir)/tuxbox/funstuff/config.status: .bootstrap
 
 # tuxbox/lcars
 
-$(appsdir)/tuxbox/lcars/config.status: .bootstrap .libcurl .libfreetype .plugins
+$(appsdir)/tuxbox/lcars/config.status: .bootstrap .libcurl .libfreetype .plugins .libcommoncplusplus
 	cd $(appsdir)/tuxbox/lcars && $(CONFIGURE)
 
 .lcars: $(appsdir)/tuxbox/lcars/config.status
