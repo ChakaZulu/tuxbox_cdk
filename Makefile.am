@@ -1183,7 +1183,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--disable-dvd \
 			--with-dvb=$(driverdir)/include \
 			--with-dvbpsi=$(targetprefix) && \
