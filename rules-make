@@ -63,6 +63,7 @@ libvorbisidec;20040525;tremor-20040525;tremor-20040525.tar.bz2;extract:tremor-20
 libxml2;2.4.30;libxml2-2.4.30;libxml2-2.4.30.tar.gz;extract:libxml2-2.4.30.tar.gz
 libz;1.2.2;zlib-1.2.2;zlib-1.2.2.tar.bz2;extract:zlib-1.2.2.tar.bz2
 libglib;2.0.7;glib-2.0.7;glib-2.0.7.tar.gz:glib-2.0.7.diff;extract:glib-2.0.7.tar.gz;patch:glib-2.0.7.diff
+giflib;4.1.3;giflib-4.1.3;giflib-4.1.3.tar.gz;extract:giflib-4.1.3.tar.gz
 
 #
 # contrib apps
