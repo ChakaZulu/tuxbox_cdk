@@ -7,7 +7,7 @@
 #
 # core
 #
-linux;2.4.20-dbox2;linux-2.4.20;linux-2.4.20.tar.bz2:linux-dbox2-2.4.20-2.diff.bz2:v4l2-api-2.4.20.diff:input-keys.diff:fusion-full-linux-2.4.20.diff:kernel-headers-kheaders-ppc-syscalls.diff:linux-dbox2-keyboard.diff:linux-2.4.20-_gcc33.patch;remove:linux;extract:linux-2.4.20.tar.bz2;patch:linux-dbox2-2.4.20-2.diff.bz2;patch:v4l2-api-2.4.20.diff;patch:input-keys.diff;patch:fusion-full-linux-2.4.20.diff;patch:cygwin/linux.diff;patch:kernel-headers-kheaders-ppc-syscalls.diff;patch:linux-dbox2-keyboard.diff;patch:linux-2.4.20-_gcc33.patch;link:linux-2.4.20:linux
+linux;2.4.20-dbox2;linux-2.4.20;linux-2.4.20.tar.bz2:linux-dbox2-2.4.20-2.diff.bz2:v4l2-api-2.4.20.diff:input-keys.diff:fusion-full-linux-2.4.20.diff:linux-dbox2-keyboard.diff;remove:linux;extract:linux-2.4.20.tar.bz2;patch:linux-dbox2-2.4.20-2.diff.bz2;patch:v4l2-api-2.4.20.diff;patch:input-keys.diff;patch:fusion-full-linux-2.4.20.diff;patch:kernel-headers-kheaders-ppc-syscalls.diff;patch:linux-dbox2-keyboard.diff;patch:linux-2.4.20-_gcc33.patch;patch:linux-2.4.20-dbox2-flash.diff;patch:cygwin/linux.diff;link:linux-2.4.20:linux
 bootstrap_gcc;3.2.3;gcc-3.2.3;gcc-core-3.2.3.tar.bz2:gcc-core.diff;extract:gcc-core-3.2.3.tar.bz2;patch:gcc-core.diff;patch:cygwin/gcc.diff
 glibc;2.2.5;glibc-2.2.5;glibc-2.2.5.tar.bz2:glibc-linuxthreads-2.2.5.tar.bz2:glibc.diff;extract:glibc-2.2.5.tar.bz2;dirextract:glibc-linuxthreads-2.2.5.tar.bz2;patch:glibc.diff;patch:cygwin/glibc.diff
 gcc;3.2.3;gcc-3.2.3;gcc-core-3.2.3.tar.bz2:gcc-g++-3.2.3.tar.bz2;extract:gcc-core-3.2.3.tar.bz2;extract:gcc-g++-3.2.3.tar.bz2;patch:cygwin/gcc.diff
