@@ -1,2 +1,2 @@
 #!/bin/sh
-lcars 0 repeat=on old=on
+lcars > /dev/null
