@@ -21765,7 +21765,7 @@ diff -Naur linux-2.4.2.orig/arch/ppc/kernel/m8xx_setup.c linux-2.4.2/arch/ppc/ke
 +#endif
 +	((volatile immap_t *)IMAP_ADDR)->im_sit.sit_rtcsc |=
 +				((mk_int_int_mask(RTC_IRQ) << 8) |
-+					(RTCSC_RTF | RTCSC_RTE));
++					(RTCSC_RTE));
 +			
 +
  	((volatile immap_t *)IMAP_ADDR)->im_sitk.sitk_rtcsck = ~KAPWR_KEY;
