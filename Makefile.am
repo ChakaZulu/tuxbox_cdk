@@ -1553,7 +1553,7 @@ distclean-local:
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .root .busybox .ftpd .inetd .modutils .netkit_telnet .procps .watchdog
 	-rm .libboost .libcommoncplusplus .libcrypto .libcurl
-	-rm .libdirectfb .libdirectfbpp .libdvbpsi .libffi .libfreetype
+	-rm .libdirectfb .libdirectfbpp .libdvb .libdvbpsi .libexpat .libffi .libfreetype
 	-rm .libncurses .libjpeg .libmad .libpcap .libpng
 	-rm .libreadline .libsdl .libsigc .libxml2 .libz
 	-rm .gdb .gdb-remote .ltrace .strace .nano
