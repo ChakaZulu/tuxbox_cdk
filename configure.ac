@@ -345,10 +345,12 @@ Hostappsdir:	$hostappsdir
 
 AC_OUTPUT([
 Makefile
-etc/Makefile
-etc/init.d/Makefile
-etc/fstab
-etc/modules.conf
-etc/init.d/rcS
-etc/init.d/start_sshd
+root/Makefile
+root/etc/Makefile
+root/etc/init.d/Makefile
+root/etc/network/Makefile
+root/etc/fstab
+root/etc/modules.conf
+root/etc/init.d/rcS
+root/etc/init.d/start_sshd
 ])

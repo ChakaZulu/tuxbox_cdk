@@ -30,6 +30,7 @@ core: .directories .binutils .linuxdir .glibc .gcc
 	$(INSTALL) -d $(targetprefix)/sbin
 	$(INSTALL) -d $(targetprefix)/tmp
 	$(INSTALL) -d $(targetprefix)/var
+	$(INSTALL) -d $(targetprefix)/var/run
 	$(INSTALL) -d $(targetprefix)$(UCODEDIR)
 	$(INSTALL) -d $(hostprefix)/$(target)
 	$(INSTALL) -d $(bootprefix)

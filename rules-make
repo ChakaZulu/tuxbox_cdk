@@ -23,7 +23,7 @@ watchdog;5.2;watchdog-5.2.orig;watchdog_5.2.orig.tar.gz:watchdog.diff;extract:wa
 #
 # root
 #
-busybox;0.60.99.cvs20030114;busybox-cvs-0.60.99.cvs20030114.orig;busybox-cvs_0.60.99.cvs20030114.orig.tar.gz:busybox.config:busybox.diff;extract:busybox-cvs_0.60.99.cvs20030114.orig.tar.gz;patch:busybox.diff
+busybox;0.60.99.cvs20030114;busybox-cvs-0.60.99.cvs20030114.orig;busybox-cvs_0.60.99.cvs20030114.orig.tar.gz:busybox.config:busybox.diff;extract:busybox-cvs_0.60.99.cvs20030114.orig.tar.gz;patch-0:busybox.diff
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
 modutils;2.4.21;modutils-2.4.21;modutils-2.4.21.tar.bz2;extract:modutils-2.4.21.tar.bz2

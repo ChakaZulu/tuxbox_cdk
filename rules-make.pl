@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 use strict;
+use warnings;
 
 sub load
 {
@@ -11,15 +12,18 @@ sub load
     {
       chomp;
       @_ = split ( /;/, $_ );
-      if ( $_[0] eq ">>>" )
+      if ( defined $_[0] )
       {
-        close ( RULES );
-        return load ( $_[1] );
-      }
-      elsif ( $_[0] eq $ARGV[1] )
-      {
-        close ( RULES );
-        return @_;
+	if ( $_[0] eq ">>>" )
+	{
+	  close ( RULES );
+	  return load ( $_[1] );
+	}
+	elsif ( $_[0] eq $ARGV[1] )
+	{
+	  close ( RULES );
+	  return @_;
+	}
       }
     }
   }
@@ -136,10 +140,11 @@ if ( $#ARGV >= 2 )
 
         $output .= " )";
       }
-      elsif ( $_[0] eq "patch" or $_[0] eq "patchtime" )
+      elsif ( $_[0] =~ m/patch(time)?(-(\d+))?/ )
       {
         $_ = "-p1 ";
-        $_ .= "-Z " if $_[0] eq "patchtime";
+        $_ = "-p$3 " if defined $3;
+        $_ .= "-Z " if defined $1;
         if ( $_[1] =~ m#\.bz2$# )
         {
           $output .= "( cd " . $dir . "; bunzip2 -cd ../Archive/" . $_[1] . " | patch $_ )";
