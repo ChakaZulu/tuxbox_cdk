@@ -59,18 +59,11 @@
 #undef	CONFIG_BOOTARGS
 
 #define	CONFIG_BOOTCOMMAND							\
-	"tftp \"kernel-yadd\"; "						\
-	"protect off 10020000 107fffff; "					\
-        "setenv bootargs root=/dev/nfs rw "					\
+        "setenv bootargs console=$(console) root=/dev/nfs rw "			\
         "nfsroot=$(serverip):$(rootpath)/yaddroot/ "				\
-	"ip=$(ipaddr):$(serverip):$(gatewayip):$(netmask):$(hostname)::off "	\
-	"console=$(console); "							\
-	"bootm"
-/*
-#define	CONFIG_BOOTCOMMAND							\
-	"protect off 10020000 107fffff; fsload; setenv bootargs root=/dev/mtdblock2 console=$(console); bootm"
-	"fsload; setenv bootargs root=/dev/mtdblock2 console=$(console); bootm"
-*/
+	"ip=$(ipaddr):$(serverip):$(gatewayip):$(netmask):$(hostname)::off; "	\
+	"tftp \"kernel-yadd\"; protect off 10020000 107fffff; bootm"
+
 #define	CONFIG_EXTRA_ENV_SETTINGS 						\
 	"console=ttyS0\0"
 
@@ -82,32 +75,19 @@
 #define	CONFIG_BOOTP_MASK	( CONFIG_BOOTP_DEFAULT | CONFIG_BOOTP_VENDOREX )
 
 #define	CONFIG_COMMANDS		( CONFIG_CMD_DFL | CFG_CMD_FS )
-/*
-#define	CONFIG_FS		( CFG_FS_CRAMFS | CFG_FS_JFFS2 )
 
-#define	CFG_FS_PART0_TYPE	CFG_FS_CRAMFS
-#define	CFG_FS_PART0_OFFSET	0x10040000
-#define	CFG_FS_PART0_SIZE	0x6e0000
-#define	CFG_FS_PART1_TYPE	CFG_FS_JFFS2
-#define	CFG_FS_PART1_OFFSET	0x10720000
-#define	CFG_FS_PART1_SIZE	0xe0000
-
-#define	CONFIG_DBOX2_ENV_READ_FS		"1:tuxbox/boot/boot.conf"
-*/
 #define	CONFIG_TUXBOX_NETWORK			1
 #define	CONFIG_TUXBOX_BOOTMANAGER		1
 
 #ifdef	CONFIG_LCD_BOARD
 #define	CONFIG_DBOX2_LCD_INFO			1
 #define	CONFIG_DBOX2_LCD_LOGO			1
-//#define	CONFIG_DBOX2_LCD_LOGO_FS		"1:tuxbox/boot/logo-lcd"
 #define	CONFIG_DBOX2_LCD_LOGO_TFTP		"logo-lcd"
 #define	CONFIG_DBOX2_LCD_LOGO_RESERVE		2
 #undef	CONFIG_DBOX2_LCD_FONT8x16
 #endif	/* CONFIG_LCD_BOARD */
 #ifdef	CONFIG_DBOX2_FB
 #define	CONFIG_DBOX2_FB_LOGO			1
-//#define	CONFIG_DBOX2_FB_LOGO_FS			"1:tuxbox/boot/logo-fb"
 #define	CONFIG_DBOX2_FB_LOGO_TFTP		"logo-fb"
 #endif	/* CONFIG_DBOX2_FB */
 

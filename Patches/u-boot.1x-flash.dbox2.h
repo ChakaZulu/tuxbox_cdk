@@ -57,18 +57,8 @@
 #endif
 
 #undef	CONFIG_BOOTARGS
-/*
 #define	CONFIG_BOOTCOMMAND							\
-	"bootp; tftp \"kernel-cdk\"; "						\
-	"protect off 10020000 107fffff; "					\
-        "setenv bootargs root=/dev/nfs rw nfsroot=$(serverip):$(rootpath) "	\
-	"ip=$(ipaddr):$(serverip):$(gatewayip):$(netmask):$(hostname)::off "	\
-	"console=$(console); "							\
-	"bootm"
-*/
-#define	CONFIG_BOOTCOMMAND							\
-	"fsload; setenv bootargs root=/dev/mtdblock2 console=$(console); bootm"
-//	"protect off 10020000 107fffff; fsload; setenv bootargs root=/dev/mtdblock2 console=$(console); bootm"
+	"setenv bootargs console=$(console) root=/dev/mtdblock2; fsload; bootm"
 
 #define	CONFIG_EXTRA_ENV_SETTINGS 						\
 	"console=ttyS0\0"
@@ -99,14 +89,12 @@
 #define	CONFIG_DBOX2_LCD_INFO			1
 #define	CONFIG_DBOX2_LCD_LOGO			1
 #define	CONFIG_DBOX2_LCD_LOGO_FS		"1:tuxbox/boot/logo-lcd"
-//#define	CONFIG_DBOX2_LCD_LOGO_TFTP		"logo-lcd"
 #define	CONFIG_DBOX2_LCD_LOGO_RESERVE		2
 #undef	CONFIG_DBOX2_LCD_FONT8x16
 #endif	/* CONFIG_LCD_BOARD */
 #ifdef	CONFIG_DBOX2_FB
 #define	CONFIG_DBOX2_FB_LOGO			1
 #define	CONFIG_DBOX2_FB_LOGO_FS			"1:tuxbox/boot/logo-fb"
-//#define	CONFIG_DBOX2_FB_LOGO_TFTP		"logo-fb"
 #endif	/* CONFIG_DBOX2_FB */
 
 #define	CONFIG_AUTOBOOT_SELECT			1
