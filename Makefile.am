@@ -526,7 +526,7 @@ libs_optional: \
 			--disable-rpath \
 			--without-cxx-binding \
 			--with-fallbacks='linux vt100 xterm' && \
-		$(MAKE) all && \
+		$(MAKE) libs && \
 		@INSTALL_libncurses@
 	@CLEANUP_libncurses@
 	touch .libncurses
