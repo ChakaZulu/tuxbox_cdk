@@ -1183,7 +1183,7 @@ $(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
 	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
 	touch .dvbsnoop
 
-$(appsdir)/dvb/zapit/Makefile: .bootstrap .camd .misc_libs
+$(appsdir)/dvb/zapit/Makefile: .bootstrap .tuxbox_tools .misc_libs
 	cd $(appsdir)/dvb/zapit && $(CONFIGURE_NEW) --with-neutrino-source=$(appsdir)/tuxbox/neutrino
 
 .zapit: $(appsdir)/dvb/zapit/Makefile
@@ -1283,14 +1283,10 @@ $(appsdir)/tuxbox/plugins/Makefile: .bootstrap
 # tuxbox/tools
 
 $(appsdir)/tuxbox/tools/Makefile: .bootstrap
-	cd $(appsdir)/tuxbox/tools && $(CONFIGURE)
-
-.camd: $(appsdir)/tuxbox/tools/Makefile
-	$(MAKE) -C $(appsdir)/tuxbox/tools/camd all install
-	touch .camd
+	cd $(appsdir)/tuxbox/tools && $(CONFIGURE_NEW)
 
 .tuxbox_tools: $(appsdir)/tuxbox/tools/Makefile
-	$(MAKE) -C $(appsdir)/tuxbox/tools/misc all install
+	$(MAKE) -C $(appsdir)/tuxbox/tools all install
 	touch .tuxbox_tools
 
 #######################
@@ -1533,7 +1529,7 @@ distclean-local:
 	-rm .kaffeh .kaffe
 	-rm .gnuboy .scummvm .sdldoom
 	-rm .ppcboot .linuxkernel .driver
-	-rm .camd .dvbsnoop .enigma .lcars .lcdmenu .neutrino .stream .zapit
+	-rm .dvbsnoop .enigma .lcars .lcdmenu .neutrino .stream .zapit
 	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	-rm .misc_libs .misc_tools .plugins .tuxbox_libs .tuxbox_tools
