@@ -1,1583 +1,7 @@
-diff -Naur vdr-1.2.0.orig/device.c vdr-1.2.0/device.c
---- vdr-1.2.0.orig/device.c	2003-05-25 12:57:59.000000000 +0200
-+++ vdr-1.2.0/device.c	2003-06-08 15:50:29.000000000 +0200
-@@ -295,6 +295,11 @@
-   return false;
- }
- 
-+void cDevice::vtxtPid( bool onoff )
-+{
-+	SetPid( &pidHandles[ptTeletext], ptTeletext, onoff );
-+}
-+
- bool cDevice::ProvidesSource(int Source) const
- {
-   return false;
-diff -Naur vdr-1.2.0.orig/device.h vdr-1.2.0/device.h
---- vdr-1.2.0.orig/device.h	2003-05-11 10:50:04.000000000 +0200
-+++ vdr-1.2.0/device.h	2003-06-08 15:51:53.000000000 +0200
-@@ -194,6 +194,7 @@
-   bool active;
-   virtual void Action(void);
- protected:
-+  public:
-   enum ePidType { ptAudio, ptVideo, ptPcr, ptTeletext, ptDolby, ptOther };
-   class cPidHandle {
-   public:
-@@ -217,6 +218,8 @@
-          ///< Handle->used indicated how many receivers are using this PID.
-          ///< Type indicates some special types of PIDs, which the device may
-          ///< need to set in a specific way.
-+  public:
-+  	void vtxtPid( bool onoff );
- 
- // Common Interface facilities:
- 
-diff -Naur vdr-1.2.0.orig/dvbdevice.c vdr-1.2.0/dvbdevice.c
---- vdr-1.2.0.orig/dvbdevice.c	2003-05-24 15:23:51.000000000 +0200
-+++ vdr-1.2.0/dvbdevice.c	2003-06-13 16:18:23.000000000 +0200
-@@ -70,7 +70,7 @@
-   int fd_frontend;
-   int cardIndex;
-   fe_type_t frontendType;
--  cCiHandler *ciHandler;
-+  /*cCiHandler *ciHandler;*/
-   cChannel channel;
-   const char *diseqcCommands;
-   bool active;
-@@ -80,20 +80,22 @@
-   cCondVar newSet;
-   bool SetFrontend(void);
-   virtual void Action(void);
-+  void SetVoltage(const fe_sec_voltage voltage, const uint32_t ms);
-+  void SetTone(const fe_sec_tone_mode_t toneMode, const uint32_t ms);
- public:
--  cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler);
-+  cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType/*, cCiHandler *CiHandler*/);
-   virtual ~cDvbTuner();
-   bool IsTunedTo(const cChannel *Channel) const;
-   void Set(const cChannel *Channel, bool Tune);
-   bool Locked(void) { return tunerStatus == tsLocked; }
-   };
- 
--cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler)
-+cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType/*, cCiHandler *CiHandler*/)
- {
-   fd_frontend = Fd_Frontend;
-   cardIndex = CardIndex;
-   frontendType = FrontendType;
--  ciHandler = CiHandler;
-+  /*ciHandler = CiHandler;*/
-   diseqcCommands = NULL;
-   active = false;
-   tunerStatus = tsIdle;
-@@ -135,6 +137,20 @@
-   return f;
- }
- 
-+void cDvbTuner::SetVoltage(const fe_sec_voltage voltage, const uint32_t ms)
-+{
-+	if (ioctl( fd_frontend,FE_SET_VOLTAGE, voltage) == 0) {
-+		usleep(1000 * ms);
-+	}
-+}
-+
-+void cDvbTuner::SetTone(const fe_sec_tone_mode_t toneMode, const uint32_t ms)
-+{
-+	if (ioctl(fd_frontend,FE_SET_TONE,toneMode) == 0) {
-+		usleep(1000 * ms);
-+	}
-+}
-+
- bool cDvbTuner::SetFrontend(void)
- {
-   dvb_frontend_parameters Frontend;
-@@ -154,10 +170,10 @@
-                   for (char *CurrentAction = NULL; (da = diseqc->Execute(&CurrentAction)) != cDiseqc::daNone; ) {
-                       switch (da) {
-                         case cDiseqc::daNone:      break;
--                        case cDiseqc::daToneOff:   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF)); break;
--                        case cDiseqc::daToneOn:    CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_ON)); break;
--                        case cDiseqc::daVoltage13: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); break;
--                        case cDiseqc::daVoltage18: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_18)); break;
-+                        case cDiseqc::daToneOff:   SetTone(SEC_TONE_OFF,15); break;
-+                        case cDiseqc::daToneOn:    SetTone(SEC_TONE_ON,15); break;
-+                        case cDiseqc::daVoltage13: SetVoltage(SEC_VOLTAGE_13,15); break;
-+                        case cDiseqc::daVoltage18: SetVoltage(SEC_VOLTAGE_18,15); break;
-                         case cDiseqc::daMiniA:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_A)); break;
-                         case cDiseqc::daMiniB:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_B)); break;
-                         case cDiseqc::daCodes: {
-@@ -194,8 +210,8 @@
-                tone = SEC_TONE_ON;
-                }
-             int volt = (channel.Polarization() == 'v' || channel.Polarization() == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
--            CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, volt));
--            CHECK(ioctl(fd_frontend, FE_SET_TONE, tone));
-+	    SetVoltage(fe_sec_voltage(volt),15);
-+	    SetTone(fe_sec_tone_mode(tone),15);
-             }
- 
-          frequency = abs(frequency); // Allow for C-band, where the frequency is less than the LOF
-@@ -235,6 +251,12 @@
-          esyslog("ERROR: attempt to set channel with unknown DVB frontend type");
-          return false;
-     }
-+
-+  struct dvb_frontend_event event;
-+  if (errno !=0)
-+    errno = 0;
-+  while ((errno == 0) || (errno == EOVERFLOW))
-+    ioctl(fd_frontend,FE_GET_EVENT, &event);
-   if (ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend) < 0) {
-      esyslog("ERROR: frontend %d: %m", cardIndex);
-      return false;
-@@ -265,8 +287,9 @@
-                  continue;
-                  }
-               }
--           if (tunerStatus >= tsLocked) {
--              if (ciHandler) {
-+	     if (tunerStatus >= tsLocked) tunerStatus = tsLocked;
-+           /*if (tunerStatus >= tsLocked) {
-+             if (ciHandler) {
-                  if (ciHandler->Process()) {
-                     if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
-                        for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
-@@ -294,10 +317,10 @@
-                  else
-                     tunerStatus = tsLocked;
-                  }
--              }
-+              }*/
-            }
-         // in the beginning we loop more often to let the CAM connection start up fast
--        newSet.TimedWait(mutex, (ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
-+       newSet.TimedWait(mutex,   (time(NULL) - startTime < 20) ? 100 : 1000);
-         }
-   dsyslog("tuner thread ended on device %d (pid=%d)", cardIndex + 1, getpid());
- }
-@@ -337,8 +360,8 @@
-      siProcessor = new cSIProcessor(DvbName(DEV_DVB_DEMUX, n));
-      if (ioctl(fd_frontend, FE_GET_INFO, &feinfo) >= 0) {
-         frontendType = feinfo.type;
--        ciHandler = cCiHandler::CreateCiHandler(DvbName(DEV_DVB_CA, n));
--        dvbTuner = new cDvbTuner(fd_frontend, CardIndex(), frontendType, ciHandler);
-+        /*ciHandler = cCiHandler::CreateCiHandler(DvbName(DEV_DVB_CA, n));*/
-+        dvbTuner = new cDvbTuner(fd_frontend, CardIndex(), frontendType/*, ciHandler*/);
-         }
-      else
-         LOG_ERROR;
-@@ -375,6 +398,8 @@
-   return false;
- }
- 
-+cDvbDevice *cDvbDevice::mpDvbDevice = NULL;
-+
- bool cDvbDevice::Initialize(void)
- {
-   int found = 0;
-@@ -382,7 +407,10 @@
-   for (i = 0; i < MAXDVBDEVICES; i++) {
-       if (UseDevice(NextCardIndex())) {
-          if (Probe(DvbName(DEV_DVB_FRONTEND, i))) {
--            new cDvbDevice(i);
-+			 if ( i == 0 )
-+				mpDvbDevice = new cDvbDevice(i);
-+			 else
-+            	new cDvbDevice(i);
-             found++;
-             }
-          else
-@@ -399,10 +427,37 @@
-   return found > 0;
- }
- 
-+cDvbDevice *cDvbDevice::getInstance( void )
-+{
-+	if ( mpDvbDevice != NULL )
-+			return mpDvbDevice;
-+	return NULL;
-+}
-+
-+void cDvbDevice::SiP( bool onoff )
-+{
-+	if ( siProcessor != NULL )
-+		{
-+			if ( onoff )				
-+				{
-+					cChannel *Channel = Channels.GetByNumber( currentChannel );
-+     				siProcessor->SetCurrentTransponder(Channel->Source(), Channel->Frequency());
-+					siProcessor->SetStatus( true );
-+					siProcessor->StartStopThread( true );
-+				}
-+			else
-+				{
-+					siProcessor->SetCurrentTransponder(0, 0);
-+					siProcessor->SetStatus( false );
-+					siProcessor->StartStopThread( false );
-+				}
-+		}
-+}
-+
- void cDvbDevice::MakePrimaryDevice(bool On)
- {
--  if (HasDecoder())
--     cDvbOsd::SetDvbDevice(On ? this : NULL);
-+  //if (HasDecoder())
-+    // cDvbOsd::SetDvbDevice(On ? this : NULL);
- }
- 
- bool cDvbDevice::HasDecoder(void) const
-@@ -541,29 +596,32 @@
-            }
-         pesFilterParams.pid     = Handle->pid;
-         pesFilterParams.input   = DMX_IN_FRONTEND;
--        pesFilterParams.output  = (Type <= ptTeletext && Handle->used <= 1) ? DMX_OUT_DECODER : DMX_OUT_TS_TAP;
--        pesFilterParams.pes_type= PesTypes[Type < ptOther ? Type : ptOther];
--        pesFilterParams.flags   = DMX_IMMEDIATE_START;
-+        pesFilterParams.output  = DMX_OUT_DECODER;//(Type <= ptTeletext && Handle->used <= 1) ? DMX_OUT_DECODER : DMX_OUT_TS_TAP;
-+       	pesFilterParams.pes_type= PesTypes[Type]; //PesTypes[Type < ptOther ? Type : ptOther];
-+	pesFilterParams.flags = DMX_IMMEDIATE_START;
-         if (ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
-            LOG_ERROR;
-            return false;
-            }
-         }
--     else if (!Handle->used) {
--        CHECK(ioctl(Handle->handle, DMX_STOP));
--        if (Type <= ptTeletext) {
--           pesFilterParams.pid     = 0x1FFF;
-+     else
-+     	{
-+		CHECK(ioctl(Handle->handle,DMX_STOP));
-+		 if (!Handle->used) {
-+        /*if (Type <= ptTeletext) {
-+          /* pesFilterParams.pid     = 0x1FFF;
-            pesFilterParams.input   = DMX_IN_FRONTEND;
-            pesFilterParams.output  = DMX_OUT_DECODER;
-            pesFilterParams.pes_type= PesTypes[Type];
--           pesFilterParams.flags   = DMX_IMMEDIATE_START;
-+	   pesFilterParams.flags   = DMX_IMMEDIATE_START;
-            CHECK(ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams));
--           if (PesTypes[Type] == DMX_PES_VIDEO) // let's only do this once
--              SetPlayMode(pmNone); // necessary to switch a PID from DMX_PES_VIDEO/AUDIO to DMX_PES_OTHER
--           }
-+        //   if (PesTypes[Type] == DMX_PES_VIDEO) // let's only do this once
-+          //    SetPlayMode(pmNone); // necessary to switch a PID from DMX_PES_VIDEO/AUDIO to DMX_PES_OTHER
-+           }*/
-         close(Handle->handle);
-         Handle->handle = -1;
-         }
-+	}
-      }
-   return true;
- }
-@@ -573,17 +631,16 @@
-   // Avoid noise while switching:
- 
-   CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
--  CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
--  CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
--  CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
-+  CHECK(ioctl(fd_video,VIDEO_SET_BLANK));
-+  CHECK(ioctl(fd_audio,AUDIO_STOP));
-+  CHECK(ioctl(fd_video,VIDEO_STOP));
- 
-   // Turn off live PIDs:
--
--  DelPid(pidHandles[ptAudio].pid);
--  DelPid(pidHandles[ptVideo].pid);
--  DelPid(pidHandles[ptPcr].pid, ptPcr);
--  DelPid(pidHandles[ptTeletext].pid);
--  DelPid(pidHandles[ptDolby].pid);
-+  		DelPid(pidHandles[ptTeletext].pid);
-+  		DelPid(pidHandles[ptVideo].pid);
-+  		DelPid(pidHandles[ptAudio].pid);
-+  		DelPid(pidHandles[ptPcr].pid, ptPcr);
-+  		DelPid(pidHandles[ptDolby].pid);
- }
- 
- bool cDvbDevice::ProvidesSource(int Source) const
-@@ -610,8 +667,9 @@
-            if (!HasPid(Channel->Vpid())) {
- #ifdef DO_MULTIPLE_RECORDINGS
-               if (Channel->Ca() > CACONFBASE)
--                 needsDetachReceivers = !ciHandler // only LL-firmware can do non-live CA channels
--                                        || Ca() != Channel->Ca();
-+                 /*needsDetachReceivers = !ciHandler // only LL-firmware can do non-live CA channels
-+                                        || Ca() != Channel->Ca();*/
-+		needsDetachReceivers = Ca()!=Channel->Ca();
-               else if (!IsPrimaryDevice())
-                  result = true;
- #ifdef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
-@@ -632,7 +690,7 @@
- 
- bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
- {
--  bool IsEncrypted = Channel->Ca() > CACONFBASE && !ciHandler; // only LL-firmware can do non-live CA channels
-+  bool IsEncrypted = Channel->Ca() > CACONFBASE; //==101;// 101 = Premiere // > CACONFBASE && !ciHandler; // only LL-firmware can do non-live CA channels
- 
-   bool DoTune = !dvbTuner->IsTunedTo(Channel);
- 
-@@ -678,19 +736,58 @@
- 
-   dvbTuner->Set(Channel, DoTune);
- 
-+  // this is needed for the dbox2...
-+  // otherwise we don't get a picture sometimes or the tv picture looks like
-+  // a replay :)
-+  // not really perfect, but it works better than without it. If you switch to fast
-+  // tv picture still gets stuck...
-+  #define LOCKWAITTIME 10000
-+  #define MAXCOUNT 20000
-+  int lcounter = 0;
-+  do
-+  	{
-+		lcounter++;
-+		usleep(LOCKWAITTIME);
-+	}
-+  while ((!dvbTuner->Locked()) && (lcounter < MAXCOUNT));
-+
-+  usleep(LOCKWAITTIME);
-+
-   // PID settings:
- 
-   if (TurnOnLivePIDs) {
-      aPid1 = Channel->Apid1();
-      aPid2 = Channel->Apid2();
-      int pPid = Channel->Ppid() ? Channel->Ppid() : Channel->Vpid();
--     if (!(AddPid(pPid, ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
-+    /* if (!(AddPid(pPid, ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
-         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
-         return false;
-         }
-      if (IsPrimaryDevice())
--        AddPid(Channel->Tpid(), ptTeletext);
-+        AddPid(Channel->Tpid(), ptTeletext);*/
-+
-+	if (pPid!=0)
-+		{
-+			AddPid(pPid,ptPcr);
-+		}
-+	if (Channel->Apid1()!=0)
-+		{
-+			AddPid(Channel->Apid1(),ptAudio);
-+		}
-+	if (Channel->Vpid()!=0)
-+		{
-+			AddPid(Channel->Vpid(),ptVideo);
-+		}
-+	if (Channel->Tpid()!=0)
-+		{
-+			AddPid(Channel->Tpid(),ptTeletext);
-+		}
-+     CHECK(ioctl(fd_video,VIDEO_SELECT_SOURCE,VIDEO_SOURCE_DEMUX));
-+     CHECK(ioctl(fd_video,VIDEO_PLAY));
-+     CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE,AUDIO_SOURCE_DEMUX));
-      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE,false));
-+     CHECK(ioctl(fd_audio, AUDIO_PLAY));
-      }
-   else if (StartTransferMode)
-      cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));
-@@ -751,7 +848,7 @@
-   if (Receiving())
-      return false;
- #endif
--  return cDevice::CanReplay() && (Ca() <= MAXDEVICES || ciHandler); // with non-LL-firmware we can only replay if there is no CA recording going on
-+  return cDevice::CanReplay() && (Ca() <= MAXDEVICES);// || ciHandler); // with non-LL-firmware we can only replay if there is no CA recording going on
- }
- 
- bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
-@@ -766,18 +863,14 @@
-   switch (PlayMode) {
-     case pmNone:
-          // special handling to return from PCM replay:
--         CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
--         CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
--         CHECK(ioctl(fd_video, VIDEO_PLAY));
--
--         CHECK(ioctl(fd_video, VIDEO_STOP, true));
--         CHECK(ioctl(fd_audio, AUDIO_STOP, true));
--         CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
--         CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
-+	 CHECK(ioctl(fd_video,VIDEO_STOP));
-+	 CHECK(ioctl(fd_audio,AUDIO_STOP));
-          CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_DEMUX));
-+	 CHECK(ioctl(fd_video,VIDEO_PLAY));
-          CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_DEMUX));
-          CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-          CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
-+	 CHECK(ioctl(fd_audio,AUDIO_PLAY));
-          if (siProcessor)
-             siProcessor->SetStatus(true);
-          break;
-diff -Naur vdr-1.2.0.orig/dvbdevice.h vdr-1.2.0/dvbdevice.h
---- vdr-1.2.0.orig/dvbdevice.h	2003-05-02 14:21:51.000000000 +0200
-+++ vdr-1.2.0/dvbdevice.h	2003-06-12 19:47:50.000000000 +0200
-@@ -36,6 +36,9 @@
-          ///< Initializes the DVB devices.
-          ///< Must be called before accessing any DVB functions.
-          ///< \return True if any devices are available.
-+	static cDvbDevice *mpDvbDevice;
-+	static cDvbDevice *getInstance( void );
-+	void SiP( bool onoff );
- private:
-   fe_type_t frontendType;
-   int fd_osd, fd_audio, fd_video, fd_dvr;
-diff -Naur vdr-1.2.0.orig/dvbosd.c vdr-1.2.0/dvbosd.c
---- vdr-1.2.0.orig/dvbosd.c	2003-04-12 14:10:12.000000000 +0200
-+++ vdr-1.2.0/dvbosd.c	2003-06-02 21:38:10.000000000 +0200
-@@ -13,14 +13,18 @@
- #include <sys/unistd.h>
- #include "tools.h"
- 
--const cDvbDevice *cDvbOsd::dvbDevice = NULL;
-+//const cDvbDevice *cDvbOsd::dvbDevice = NULL;
- 
- cDvbOsd::cDvbOsd(int x, int y)
- :cOsdBase(x, y)
- {
--  osdDev = dvbDevice ? dvbDevice->OsdDeviceHandle() : -1;
--  if (dvbDevice && osdDev < 0)
--     esyslog("ERROR: illegal OSD device handle (%d)!", osdDev);
-+  // framebuffer wrapper class, singleton
-+  pFBOsd = cFBOsd::getInstance();
-+  if (!pFBOsd)
-+  	esyslog("ERROR: can't create framebuffer OSD!");
-+  //osdDev = dvbDevice ? dvbDevice->OsdDeviceHandle() : -1;
-+  //if (dvbDevice && osdDev < 0)
-+    // esyslog("ERROR: illegal OSD device handle (%d)!", osdDev);
- }
- 
- cDvbOsd::~cDvbOsd()
-@@ -29,10 +33,10 @@
-       CloseWindow(GetWindowNr(i));
- }
- 
--void cDvbOsd::SetDvbDevice(const cDvbDevice *DvbDevice)
--{
--  dvbDevice = DvbDevice;
--}
-+//void cDvbOsd::SetDvbDevice(const cDvbDevice *DvbDevice)
-+//{
-+//  dvbDevice = DvbDevice;
-+//}
- 
- bool cDvbOsd::SetWindow(cWindow *Window)
- {
-@@ -51,7 +55,7 @@
- 
- void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, const void *data)
- {
--  if (osdDev >= 0) {
-+ // if (osdDev >= 0) {
-      osd_cmd_t dc;
-      dc.cmd   = cmd;
-      dc.color = color;
-@@ -60,8 +64,11 @@
-      dc.x1    = x1;
-      dc.y1    = y1;
-      dc.data  = (void *)data;
--     ioctl(osdDev, OSD_SEND_CMD, &dc);
--     }
-+
-+    // no driver, no ioctl, instead use the wrapper class cFBOsd
-+    // ioctl(osdDev, OSD_SEND_CMD, &dc);
-+      pFBOsd->Cmd(&dc);
-+   //  }
- }
- 
- bool cDvbOsd::OpenWindow(cWindow *Window)
-diff -Naur vdr-1.2.0.orig/dvbosd.h vdr-1.2.0/dvbosd.h
---- vdr-1.2.0.orig/dvbosd.h	2002-11-01 11:05:47.000000000 +0100
-+++ vdr-1.2.0/dvbosd.h	2003-06-01 16:05:20.000000000 +0200
-@@ -11,13 +11,16 @@
- #define __DVBOSD_H
- 
- #include <linux/dvb/osd.h>
--#include "dvbdevice.h"
-+//#include "dvbdevice.h"
- #include "osdbase.h"
-+#include "fbosd.h"
- 
- class cDvbOsd : public cOsdBase {
- private:
--  static const cDvbDevice *dvbDevice;
--  int osdDev;
-+  //static const cDvbDevice *dvbDevice;
-+  // cFBOsd: framebuffer OSD for DBox
-+  cFBOsd* pFBOsd;
-+  //int osdDev;
-   bool SetWindow(cWindow *Window);
-   void Cmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, int x1 = 0, int y1 = 0, const void *data = NULL);
- protected:
-@@ -30,7 +33,7 @@
- public:
-   cDvbOsd(int x, int y);
-   virtual ~cDvbOsd();
--  static void SetDvbDevice(const cDvbDevice *DvbDevice);
-+  //static void SetDvbDevice(const cDvbDevice *DvbDevice);
-   };
- 
- #endif //__DVBOSD_H
-diff -Naur vdr-1.2.0.orig/eit.c vdr-1.2.0/eit.c
---- vdr-1.2.0.orig/eit.c	2003-05-29 17:04:10.000000000 +0200
-+++ vdr-1.2.0/eit.c	2003-06-13 16:15:57.000000000 +0200
-@@ -38,6 +38,8 @@
- #include "libdtv/libdtv.h"
- #include "videodir.h"
- 
-+cCaSystemIds* cCaSystemIds::pCaSystemIds = NULL;
-+
- // --- cMJD ------------------------------------------------------------------
- 
- class cMJD {
-@@ -1084,6 +1086,7 @@
-    pmtIndex = 0;
-    pmtPid = 0;
-    filters = NULL;
-+
-    if (!numSIProcessors++) { // the first one creates them
-       schedules = new cSchedules;
-       }
-@@ -1456,12 +1459,15 @@
-             return;
-          }
-      caDescriptors.Add(new cCaDescriptor(currentSource, currentTransponder, ServiceId, cd->CA_type, cd->ProviderID, cd->CA_PID, cd->DataLength, cd->Data));
-+     cCaSystemIds::getInstance()->AddCaSystemId(cd->CA_type);
-      //XXX update???
-      }
- }
- 
- int cSIProcessor::GetCaDescriptors(int Source, int Transponder, int ServiceId, const unsigned short *CaSystemIds, int BufSize, uchar *Data)
- {
-+  CaSystemIds = NULL;
-+  CaSystemIds = cCaSystemIds::getInstance()->GetCaSystemIds();
-   if (!CaSystemIds || !*CaSystemIds)
-      return 0;
-   if (BufSize > 0 && Data) {
-@@ -1486,3 +1492,44 @@
-      }
-   return -1;
- }
-+
-+void cSIProcessor::StartStopThread( bool onoff )
-+{
-+	if ( onoff )
-+		{
-+			active = true;
-+			Start();
-+		}
-+	else
-+		{
-+			active = false;
-+			Cancel( 3 );
-+		}
-+}
-+
-+
-+
-+cCaSystemIds* cCaSystemIds::getInstance( void )
-+{
-+	if ( pCaSystemIds == NULL )
-+		pCaSystemIds = new cCaSystemIds;
-+	return pCaSystemIds;
-+}
-+
-+cCaSystemIds::cCaSystemIds( void )
-+{
-+	caSystemIds[ numCaSystemIds = 0 ] = 0;
-+}
-+
-+void cCaSystemIds::AddCaSystemId( int id )
-+{
-+	for (int i = 0; i < numCaSystemIds; i++ )
-+		if ( id == caSystemIds[i] ) return;
-+
-+	caSystemIds[ numCaSystemIds++ ] = id;
-+}
-+
-+const unsigned short * cCaSystemIds::GetCaSystemIds( void )
-+{
-+	return caSystemIds;
-+}
-diff -Naur vdr-1.2.0.orig/eit.h vdr-1.2.0/eit.h
---- vdr-1.2.0.orig/eit.h	2003-05-17 11:15:56.000000000 +0200
-+++ vdr-1.2.0/eit.h	2003-06-13 16:12:09.000000000 +0200
-@@ -134,6 +134,23 @@
- 
- }SIP_FILTER;
- 
-+#define MAXCASYSTEMIDS 16
-+
-+class cCaSystemIds {
-+	public:
-+		cCaSystemIds( void );
-+		void AddCaSystemId( int id );
-+		const unsigned short *GetCaSystemIds( void );
-+
-+	public:
-+		static cCaSystemIds *getInstance( void );
-+		static cCaSystemIds *pCaSystemIds;
-+
-+	private:
-+		int numCaSystemIds;
-+  		unsigned short caSystemIds[MAXCASYSTEMIDS + 1];
-+};
-+
- class cCaDescriptor;
- 
- class cSIProcessor : public cThread {
-@@ -179,6 +196,9 @@
-   static void Clear(void);
-   void SetStatus(bool On);
-   void SetCurrentTransponder(int CurrentSource, int CurrentTransponder);
-+
-+	void StartStopThread( bool onoff );
-+
-   static bool SetCurrentChannelID(tChannelID channelid);
-   static void TriggerDump(void);
-   };
-diff -Naur vdr-1.2.0.orig/fbosd.c vdr-1.2.0/fbosd.c
---- vdr-1.2.0.orig/fbosd.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/fbosd.c	2003-06-12 13:56:04.000000000 +0200
-@@ -0,0 +1,305 @@
-+/*
-+ * fbosd.c replaces hardware osd driver
-+ *
-+ * (C) 2003 Alexander Olk <xenomorph2@onlinehome.de>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+ *
-+ */
-+
-+#include "fbosd.h"
-+#include "tools.h"
-+
-+cFBOsd* cFBOsd::mpFBOsd = NULL;
-+
-+CFBWindow::CFBWindow( const int _x, const int _y, const int _dx, const int _dy, int ibpp )
-+{
-+	x  = _x ;
-+	y  = _y ;
-+	dx = _dx;
-+	dy = _dy;
-+	bpp = ibpp;
-+	showhide = false;
-+	Block = NULL;
-+	frameBuffer = NULL;
-+	palette = NULL;
-+	frameBuffer = CFrameBuffer::getInstance();
-+
-+	Block = new unsigned char [_dx * _dy];
-+
-+	// create a new palette for the window
-+	// bpp = 2, palette size 4
-+	// bpp = 4, palette size 16
-+	// bpp = 8, palette size 256
-+	palette = new unsigned char [1 << bpp];
-+
-+	for ( int i = 0 ; i < (1 << bpp) ; i++ )
-+		palette[i] = i;
-+}
-+
-+CFBWindow::~CFBWindow( void )
-+{
-+	if ( Block != NULL )
-+	{
-+		if ( frameBuffer != NULL )
-+			{
-+				frameBuffer->paintBackgroundBoxRel( x, y, dx, dy );
-+				frameBuffer = NULL;
-+			}
-+		delete Block;
-+		Block = NULL;
-+	}
-+	if ( palette != NULL )
-+		{
-+			delete palette;
-+			palette = NULL;
-+		}
-+}
-+
-+void CFBWindow::ShowHide( bool sh )
-+{
-+	if ( !sh && showhide )
-+		if ( frameBuffer != NULL )
-+			frameBuffer->paintBackgroundBoxRel( x, y, dx, dy );
-+	if ( sh && !showhide )
-+		Show();
-+	showhide = sh;
-+
-+}
-+
-+void CFBWindow::Show()
-+{
-+	if ( showhide )
-+		if ( ( Block != NULL ) && ( frameBuffer != NULL ) )
-+			frameBuffer->RestoreScreen( x, y, dx, dy, Block );
-+}
-+
-+void CFBWindow::MoveWindow( int nx, int ny )
-+{
-+	showhide = true;
-+	if ( ( nx != x ) || ( ny != y ) )
-+		{
-+			if ( frameBuffer != NULL )
-+				frameBuffer->paintBackgroundBoxRel( x, y, dx, dy );
-+			x = nx;
-+			y = ny;
-+		}
-+	Show();
-+}
-+
-+void CFBWindow::paletteSetColor( int nr, int acol )
-+{
-+	if ( palette != NULL )
-+		palette[nr] = acol;
-+}
-+
-+void CFBWindow::paletteSet()
-+{
-+	if ( Block != NULL )
-+		{
-+			unsigned char colfill = 0;
-+			if ( palette != NULL )
-+				colfill = ( palette[0] == 0 ) ? 0 : 1;
-+			memset( Block, colfill, dx * dy );
-+		}
-+}
-+
-+int CFBWindow::SetBlock( osd_cmd_t *dc )
-+{
-+	if ( Block != NULL )
-+		{
-+       		uint w, h;
-+
-+		    w = dc->x1 - dc->x0 + 1; h = dc->y1 - dc->y0 + 1;
-+        	if ( dc->color <= 0 )
-+            	dc->color = w;
-+        	if ( w <= 0 || w > 720 || h <= 0 || h > 576 )
-+            	return -1;  // out of range...
-+
-+			unsigned char *pout = ( Block != NULL ) ? Block : NULL;
-+
-+			if ( pout == NULL ) return 0;
-+	
-+			//far from perfect ;) but it works...
-+
-+			for ( int _y = 0; _y < h; _y++ )
-+				for ( int _x = 0; _x < w; _x++ )
-+						pout[( _x + dc->x0 ) + dx* ( _y + dc->y0 )] = palette[( (unsigned char *) dc->data ) [_y * dc->color + _x]];
-+
-+			if ( showhide ) ShowBlock( dc, w, h );
-+		}
-+	return 1;
-+}
-+
-+void CFBWindow::ShowBlock( osd_cmd_t *dc, uint w, uint h )
-+{
-+	if ( frameBuffer == NULL ) return;
-+
-+	unsigned int stride = frameBuffer != NULL ? frameBuffer->getStride() : 0;
-+	unsigned char *fbpos = frameBuffer->getFrameBufferPointer() + x + dc->x0 + stride * ( y + dc->y0 );
-+	unsigned char *pin = Block + dc->x0 + dx * dc->y0;
-+
-+	for ( int i = 0; i < h ; i++ )
-+		{
-+			memcpy( fbpos, pin, w - 1 );
-+			fbpos += stride;
-+			pin += dx;
-+		}
-+}
-+
-+//=========================================================================0
-+
-+cFBOsd::cFBOsd()
-+{
-+	frameBuffer = CFrameBuffer::getInstance();
-+	// setup framebuffer - from neutrino src
-+
-+	frameBuffer->init();
-+	if ( frameBuffer->setMode( 720, 576, 8 ) )
-+		{
-+			esyslog("Error while setting framebuffer mode");
-+			exit( -1 );
-+		}
-+
-+	// set the framebuffer palette with the colours of vdr
-+
-+	frameBuffer->ClearFrameBuffer();
-+}
-+
-+cFBOsd::~cFBOsd()
-+{
-+	if ( frameBuffer != NULL )
-+		{
-+			for(int x=0;x<256;x++)
-+				frameBuffer->paletteSetColor(x, 0x000000, 0xffff);
-+
-+			frameBuffer->paletteSet();
-+
-+			delete frameBuffer;
-+		}
-+
-+	for ( int i = 0 ; i <= MAXNUMWINDOWS; i++ )
-+		if ( win[i] != NULL ) delete win[i];
-+}
-+
-+cFBOsd *cFBOsd::getInstance()
-+{
-+	if ( !mpFBOsd )
-+		{
-+			mpFBOsd = new cFBOsd();
-+		}
-+	return mpFBOsd;
-+}
-+
-+void cFBOsd::Cmd( osd_cmd_t *dc )
-+{
-+	switch ( dc->cmd )
-+		{
-+			case OSD_Close:
-+				//closes window "whandle"
-+				if ( win[whandle] != NULL )
-+					delete win[whandle];
-+				win[whandle] = NULL;
-+				return;
-+			case OSD_Open:
-+				// create a new window without showing it
-+				win[whandle] = new CFBWindow (dc->x0, dc->y0, dc->x1, dc->y1, dc->color );
-+				return;
-+			case OSD_Show:
-+				// set Show
-+				if ( win[whandle] != NULL )
-+					win[whandle]->ShowHide( true );
-+				return;
-+			case OSD_Hide:
-+				// set Hide
-+				if ( win[whandle] != NULL )
-+					win[whandle]->ShowHide( false );
-+				return;
-+			case OSD_SetPalette:
-+				// convert vdr cWindow palette to framebuffer palette
-+				int len;
-+				len = dc->x0 - dc->color + 1;
-+				__u32 *colors;
-+				int acol;
-+				colors = ( __u32 * ) dc->data;
-+				for ( int i = 0; i<len; i++ )
-+					{
-+						switch ( colors[i] )
-+							{
-+								case 0x00000000:
-+									acol = 0;
-+									break;
-+								case 0x0000007F:
-+								case 0x7F000000:
-+									acol = 1;
-+									break;
-+								case 0x000000FF:
-+								case 0xFF000000:
-+									acol = 2;
-+									break;
-+								case 0xFC1414FF:
-+								case 0xFF1414FC:
-+									acol = 3;
-+									break;
-+								case 0x24FC24FF:
-+								case 0xFF24FC24:
-+									acol = 4;
-+									break;
-+								case 0xFCC024FF:
-+								case 0xFF24C0FC:
-+									acol = 5;
-+									break;
-+								case 0xB000FCFF:
-+								case 0xFFFC00B0:
-+									acol = 6;
-+									break;
-+								case 0x0000FCFF:
-+								case 0xFFFC0000:
-+									acol = 7;
-+									break;
-+								case 0x00FCFCFF:
-+								case 0xFFFCFC00:
-+									acol = 8;
-+									break;
-+								case 0xFCFCFCFF:
-+								case 0xFFFCFCFC:
-+									acol = 9;
-+									break;
-+							}
-+						if ( win[whandle] != NULL )
-+							win[whandle]->paletteSetColor( i, acol );
-+					}
-+				if ( win[whandle] != NULL )
-+					win[whandle]->paletteSet();
-+				return;
-+			case OSD_MoveWindow:
-+				// Move OSD window to new position and show it
-+				if ( win[whandle] != NULL )
-+					win[whandle]->MoveWindow( dc->x0, dc->y0 );
-+				return;
-+			case OSD_SetBlock:
-+				// fills CFBWindow Block with vdr cWindow data (dc->data)
-+				// dc->x0,y0,x1,y1 are the coordinates where dc->data will be written inside Block
-+				if ( win[whandle] != NULL )
-+					win[whandle]->SetBlock( dc );
-+				return;
-+			case OSD_SetWindow:
-+				if ( dc->x0 < 1 || dc->x0 > 7 ) return;
-+				whandle = dc->x0;
-+				return;
-+			default:
-+				return;
-+		}
-+};
-diff -Naur vdr-1.2.0.orig/fbosd.h vdr-1.2.0/fbosd.h
---- vdr-1.2.0.orig/fbosd.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/fbosd.h	2003-06-02 15:08:16.000000000 +0200
-@@ -0,0 +1,86 @@
-+/*
-+ * fbosd.h
-+ *
-+ * (C) 2003 Alexander Olk <xenomorph2@onlinehome.de>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+ *
-+ */
-+
-+#ifndef __FBOSD_H
-+#define __FBOSD_H
-+
-+#include <linux/dvb/osd.h>
-+#include "osdbase.h"
-+#include "framebuffer.h"
-+
-+// CFBWindow class, taken from neutrino fbwindow source and modified a little bit :)
-+class CFBWindow {
-+
-+ private:
-+	int bpp; 				// bits per pixel, needed for palette
-+	unsigned char *palette;	// holds the palette for the window
-+						// global framebuffer palette is set in cFBOsd class
-+	bool showhide;			// show or hide the window...
-+	unsigned char *Block;		// holds data being sent from osd/osdbase
-+	CFrameBuffer *frameBuffer;
-+
-+ public:
-+	int x, y;   /* upper left corner */
-+	int dx, dy; /* dimension         */
-+
-+	CFBWindow( const int _x, const int _y, const int _dx, const int _dy, int ibpp );
-+	~CFBWindow();
-+
-+	// set showhide
-+	void ShowHide( bool sh );
-+	// moves window to a new position and shows it
-+	void MoveWindow( int nx, int ny );
-+	// fill Block with data from vdr cWindow
-+	// dc has x0,y0,x1,y1 positions where dc->data should be put in Block
-+	int SetBlock( osd_cmd_t *dc );
-+	// set entry nr in window palette to colour acol
-+	void paletteSetColor( int nr, int acol );
-+	// fills Block with background colour according to first palette entry
-+	// if palette[0]=1, background will be clrBackground (50%gray), else clrTransparent
-+	void paletteSet();
-+
-+ private:
-+ 	// writes (restores) contents of Block to framebuffer, called from MoveWindow
-+ 	void Show();
-+	// special for SetBlock, paints only updated area...
-+	void ShowBlock( osd_cmd_t *dc, uint w, uint h );
-+};
-+
-+// singleton...
-+class cFBOsd {
-+public:
-+	cFBOsd();
-+	~cFBOsd();
-+
-+	static cFBOsd* mpFBOsd;
-+	static cFBOsd *getInstance();
-+	// Cmd replaces ioctl of a real hardware driver
-+	void Cmd( osd_cmd_t *dc );
-+private:
-+	CFrameBuffer		*frameBuffer;
-+	int whandle; // handle which window ??
-+	CFBWindow *win[MAXNUMWINDOWS];
-+};
-+
-+
-+#endif
-+
-+
-diff -Naur vdr-1.2.0.orig/framebuffer.c vdr-1.2.0/framebuffer.c
---- vdr-1.2.0.orig/framebuffer.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/framebuffer.c	2003-06-05 14:46:32.000000000 +0200
-@@ -0,0 +1,414 @@
-+/*
-+	Neutrino-GUI  -   DBoxII-Project
-+
-+	Copyright (C) 2001 Steffen Hehn 'McClean'
-+                      2003 thegoodguy
-+		      changes for vdr Alexander Olk
-+
-+	License: GPL
-+
-+	This program is free software; you can redistribute it and/or modify
-+	it under the terms of the GNU General Public License as published by
-+	the Free Software Foundation; either version 2 of the License, or
-+	(at your option) any later version.
-+
-+	This program is distributed in the hope that it will be useful,
-+	but WITHOUT ANY WARRANTY; without even the implied warranty of
-+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+	GNU General Public License for more details.
-+
-+	You should have received a copy of the GNU General Public License
-+	along with this program; if not, write to the Free Software
-+	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+*/
-+
-+
-+#ifdef HAVE_CONFIG_H
-+#include <config.h>
-+#endif
-+
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <signal.h>
-+#include <sys/ioctl.h>
-+#include <unistd.h>
-+#include <sys/mman.h>
-+#include <memory.h>
-+
-+#include <linux/kd.h>
-+
-+#include <stdint.h>
-+#include <dbox/fb.h>
-+#include "tools.h"
-+
-+#include "framebuffer.h"
-+
-+#define BACKGROUNDIMAGEWIDTH 720
-+
-+#define COL_BACKGROUND 		255
-+
-+static uint8_t * virtual_fb = NULL;
-+
-+CFrameBuffer::CFrameBuffer()
-+: active ( true )
-+{
-+	available  = 0;
-+	cmap.start = 0;
-+	cmap.len = 256;
-+	cmap.red = red;
-+	cmap.green = green;
-+	cmap.blue  = blue;
-+	cmap.transp = trans;
-+	backgroundColor = 0;
-+	fd  = 0;
-+	tty = 0;
-+}
-+
-+CFrameBuffer* CFrameBuffer::getInstance()
-+{
-+	static CFrameBuffer* frameBuffer = NULL;
-+
-+	if(!frameBuffer)
-+		{
-+			frameBuffer = new CFrameBuffer();
-+			isyslog("frameBuffer Instance created");
-+		}
-+	return frameBuffer;
-+}
-+
-+void CFrameBuffer::init(std::string fbDevice)
-+{
-+	fd=open(fbDevice.c_str(), O_RDWR);
-+	if (fd<0)
-+	{
-+		perror(fbDevice.c_str());
-+		goto nolfb;
-+	}
-+
-+	if (ioctl(fd, FBIOGET_VSCREENINFO, &screeninfo)<0)
-+	{
-+		perror("FBIOGET_VSCREENINFO");
-+		goto nolfb;
-+	}
-+
-+	memcpy(&oldscreen, &screeninfo, sizeof(screeninfo));
-+
-+	fb_fix_screeninfo fix;
-+	if (ioctl(fd, FBIOGET_FSCREENINFO, &fix)<0)
-+	{
-+		perror("FBIOGET_FSCREENINFO");
-+		goto nolfb;
-+	}
-+
-+	available=fix.smem_len;
-+	isyslog("%dk video mem\n", available/1024);
-+	lfb=(unsigned char*)mmap(0, available, PROT_WRITE|PROT_READ, MAP_SHARED, fd, 0);
-+
-+	if (!lfb)
-+	{
-+		perror("mmap");
-+		goto nolfb;
-+	}
-+
-+	if ((tty=open("/dev/vc/0", O_RDWR))<0)
-+	{
-+		perror("open (tty)");
-+		goto nolfb;
-+	}
-+
-+	struct sigaction act;
-+
-+	memset(&act,0,sizeof(act));
-+	act.sa_handler  = switch_signal;
-+	sigemptyset(&act.sa_mask);
-+	sigaction(SIGUSR1,&act,NULL);
-+	sigaction(SIGUSR2,&act,NULL);
-+
-+	struct vt_mode mode;
-+
-+	if (-1 == ioctl(tty,KDGETMODE, &kd_mode)) {
-+		perror("ioctl KDGETMODE");
-+		goto nolfb;
-+	}
-+
-+	if (-1 == ioctl(tty,VT_GETMODE, &vt_mode)) {
-+      		perror("ioctl VT_GETMODE");
-+		goto nolfb;
-+	}
-+
-+	if (-1 == ioctl(tty,VT_GETMODE, &mode)) {
-+      		perror("ioctl VT_GETMODE");
-+		goto nolfb;
-+	}
-+
-+	mode.mode   = VT_PROCESS;
-+	mode.waitv  = 0;
-+	mode.relsig = SIGUSR1;
-+	mode.acqsig = SIGUSR2;
-+
-+	if (-1 == ioctl(tty,VT_SETMODE, &mode)) {
-+		perror("ioctl VT_SETMODE");
-+		goto nolfb;
-+	}
-+
-+	if (-1 == ioctl(tty,KDSETMODE, KD_GRAPHICS)) {
-+		perror("ioctl KDSETMODE");
-+		goto nolfb;
-+	}
-+
-+	return;
-+
-+nolfb:
-+	esyslog("framebuffer not available.\n");
-+	lfb=0;
-+}
-+
-+
-+CFrameBuffer::~CFrameBuffer()
-+{
-+#ifdef RETURN_FROM_GRAPHICS_MODE
-+	if (-1 == ioctl(tty,KDSETMODE, kd_mode))
-+		perror("ioctl KDSETMODE");
-+#endif
-+
-+	if (-1 == ioctl(tty,VT_SETMODE, &vt_mode))
-+		perror("ioctl VT_SETMODE");
-+
-+	/*
-+	if (available)
-+		ioctl(fd, FBIOPUT_VSCREENINFO, &oldscreen);
-+	if (lfb)
-+		munmap(lfb, available);
-+		*/
-+
-+	if (virtual_fb == NULL)
-+		delete[] virtual_fb;
-+}
-+
-+int CFrameBuffer::getFileHandle()
-+{
-+	return fd;
-+}
-+
-+unsigned int CFrameBuffer::getStride()
-+{
-+	return stride;
-+}
-+
-+unsigned char* CFrameBuffer::getFrameBufferPointer()
-+{
-+	if (active || (virtual_fb == NULL))
-+		return lfb;
-+	else
-+		return virtual_fb;
-+}
-+
-+bool CFrameBuffer::getActive()
-+{
-+	return (active || (virtual_fb != NULL));
-+}
-+
-+t_fb_var_screeninfo *CFrameBuffer::getScreenInfo()
-+{
-+	return &screeninfo;
-+}
-+
-+int CFrameBuffer::setMode(unsigned int nxRes, unsigned int nyRes, unsigned int nbpp)
-+{
-+	if (!available&&!active)
-+		return -1;
-+
-+	screeninfo.xres_virtual=screeninfo.xres=nxRes;
-+	screeninfo.yres_virtual=screeninfo.yres=nyRes;
-+	screeninfo.bits_per_pixel=nbpp;
-+
-+	if (ioctl(fd, FBIOPUT_VSCREENINFO, &screeninfo)<0)
-+	{
-+		perror("FBIOPUT_VSCREENINFO");
-+		return -1;
-+	}
-+
-+	if ((screeninfo.xres!=nxRes) && (screeninfo.yres!=nyRes) && (screeninfo.bits_per_pixel!=nbpp))
-+	{
-+		esyslog("SetMode failed: wanted: %dx%dx%d, got %dx%dx%d\n",
-+		       nxRes, nyRes, nbpp,
-+		       screeninfo.xres, screeninfo.yres, screeninfo.bits_per_pixel);
-+		return -1;
-+	}
-+
-+	xRes = screeninfo.xres;
-+	yRes = screeninfo.yres;
-+	bpp  = screeninfo.bits_per_pixel;
-+	fb_fix_screeninfo fix;
-+
-+	if (ioctl(fd, FBIOGET_FSCREENINFO, &fix)<0)
-+	{
-+		perror("FBIOGET_FSCREENINFO");
-+		return -1;
-+	}
-+
-+	stride=fix.line_length;
-+	memset(getFrameBufferPointer(), 0, stride*yRes);
-+	return 0;
-+}
-+
-+
-+void CFrameBuffer::paletteFade(int i, __u32 rgb1, __u32 rgb2, int level)
-+{
-+	__u16 *r = cmap.red+i;
-+	__u16 *g = cmap.green+i;
-+	__u16 *b = cmap.blue+i;
-+	*r= ((rgb2&0xFF0000)>>16)*level;
-+	*g= ((rgb2&0x00FF00)>>8 )*level;
-+	*b= ((rgb2&0x0000FF)    )*level;
-+	*r+=((rgb1&0xFF0000)>>16)*(255-level);
-+	*g+=((rgb1&0x00FF00)>>8 )*(255-level);
-+	*b+=((rgb1&0x0000FF)    )*(255-level);
-+}
-+
-+void CFrameBuffer::setTransparency( int tr )
-+{
-+	if (!active)
-+		return;
-+
-+	if (tr> 8)
-+		tr= 8;
-+
-+	int val = (tr << 8) | tr;
-+	if (ioctl(fd, AVIA_GT_GV_SET_BLEV, val ))
-+		perror("AVIA_GT_GV_SET_BLEV");
-+}
-+
-+void CFrameBuffer::setAlphaFade(int in, int num, int tr)
-+{
-+	for (int i=0; i<num; i++)
-+	{
-+		cmap.transp[in+i]=tr;
-+		//tr++;
-+	}
-+}
-+
-+void CFrameBuffer::paletteGenFade(int in, __u32 rgb1, __u32 rgb2, int num, int tr)
-+{
-+	for (int i=0; i<num; i++)
-+	{
-+		paletteFade(in+i, rgb1, rgb2, i*(255/(num-1)));
-+		cmap.transp[in+i]=tr;
-+		tr++;
-+	}
-+}
-+
-+void CFrameBuffer::paletteSetColor(int i, __u32 rgb, int tr)
-+{
-+	cmap.red[i]    =(rgb&0xFF0000)>>8;
-+	cmap.green[i]  =(rgb&0x00FF00)   ;
-+	cmap.blue[i]   =(rgb&0x0000FF)<<8;
-+	cmap.transp[i] =tr;
-+}
-+
-+void CFrameBuffer::paletteSet(struct fb_cmap *map)
-+{
-+	if (!active)
-+		return;
-+	
-+	if(map == NULL)
-+		map = &cmap;
-+
-+	ioctl(fd, FBIOPUTCMAP, map);
-+}
-+
-+
-+void CFrameBuffer::paintBoxRel(int x, int y, int dx, int dy, unsigned char col)
-+{
-+	if (!getActive())
-+		return;
-+
-+	unsigned char* pos = getFrameBufferPointer() + x + stride*y;
-+	for(int count=0;count<dy;count++)
-+	{
-+		memset(pos, col, dx);
-+		pos += stride;
-+	}
-+}
-+
-+void CFrameBuffer::setBackgroundColor(int color)
-+{
-+	backgroundColor = color;
-+}
-+
-+void CFrameBuffer::paintBackgroundBoxRel(int x, int y, int dx, int dy)
-+{
-+	if (!getActive())
-+		return;
-+	paintBoxRel(x, y, dx, dy, backgroundColor);
-+}
-+
-+void CFrameBuffer::RestoreScreen(int x, int y, int dx, int dy, unsigned char* memp)
-+{
-+	if (!getActive())
-+		return;
-+
-+	unsigned char *fbpos = getFrameBufferPointer() + x + stride*y;
-+	unsigned char *bkpos = memp;
-+	for(int count=0;count<dy;count++)
-+	{
-+		memcpy(fbpos, bkpos, dx);
-+		fbpos += stride;
-+		bkpos += dx;
-+	}
-+}
-+
-+void CFrameBuffer::switch_signal (int signal)
-+{
-+	CFrameBuffer * thiz = CFrameBuffer::getInstance();
-+	if (signal == SIGUSR1) {
-+		if (virtual_fb == NULL)
-+			delete[] virtual_fb;
-+		virtual_fb = new uint8_t[thiz->stride * thiz->yRes];
-+		thiz->active = false;
-+		if (virtual_fb != NULL)
-+			memcpy(virtual_fb, thiz->lfb, thiz->stride * thiz->yRes);
-+		ioctl(thiz->tty, VT_RELDISP, 1);
-+		isyslog ("release display\n");
-+	}
-+	else if (signal == SIGUSR2) {
-+		ioctl(thiz->tty, VT_RELDISP, VT_ACKACQ);
-+		thiz->active = true;
-+		isyslog ("acquire display\n");
-+		thiz->paletteSet(NULL);
-+		if (virtual_fb != NULL)
-+			memcpy(thiz->lfb, virtual_fb, thiz->stride * thiz->yRes);
-+		else
-+			memset(thiz->lfb, 0, thiz->stride*thiz->yRes);
-+	}
-+}
-+
-+void CFrameBuffer::ClearFrameBuffer()
-+{
-+	setBackgroundColor(COL_BACKGROUND);
-+
-+	//background
-+	paletteSetColor(COL_BACKGROUND, 0x000000, 0xffff);
-+
-+	// vdr colors
-+	paletteSetColor(0,0x00000000,0xffff);
-+	paletteSetColor(1,0x7F000000,0x7fff);
-+	paletteSetColor(2,0xFF000000,0);
-+	paletteSetColor(3,0xFF1414FC,0);
-+	paletteSetColor(4,0xFF24FC24,0);
-+	paletteSetColor(5,0xFF24C0FC,0);
-+	paletteSetColor(6,0xFFFC00B0,0);
-+	paletteSetColor(7,0xFFFC0000,0);
-+	paletteSetColor(8,0xFFFCFC00,0);
-+	paletteSetColor(9,0xFFFCFCFC,0);
-+
-+	paletteSetColor(10, 0x000000, 0);
-+	paletteSetColor(11, 0x000000, 0);
-+	paletteSetColor(12, 0x000000, 0);
-+	paletteSetColor(13, 0x000000, 0);
-+	paletteSetColor(14, 0x000000, 0);
-+	paletteSetColor(15, 0x000000, 0);
-+	paletteSetColor(16, 0x000000, 0);
-+
-+	paletteSet();
-+}
-diff -Naur vdr-1.2.0.orig/framebuffer.h vdr-1.2.0/framebuffer.h
---- vdr-1.2.0.orig/framebuffer.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/framebuffer.h	2003-06-02 11:35:09.000000000 +0200
-@@ -0,0 +1,114 @@
-+/*
-+	Neutrino-GUI  -   DBoxII-Project
-+
-+	Copyright (C) 2001 Steffen Hehn 'McClean'
-+	Homepage: http://dbox.cyberphoria.org/
-+
-+	License: GPL
-+
-+	This program is free software; you can redistribute it and/or modify
-+	it under the terms of the GNU General Public License as published by
-+	the Free Software Foundation; either version 2 of the License, or
-+	(at your option) any later version.
-+
-+	This program is distributed in the hope that it will be useful,
-+	but WITHOUT ANY WARRANTY; without even the implied warranty of
-+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+	GNU General Public License for more details.
-+
-+	You should have received a copy of the GNU General Public License
-+	along with this program; if not, write to the Free Software
-+	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+*/
-+
-+
-+#ifndef __framebuffer__
-+#define __framebuffer__
-+
-+
-+#include <linux/fb.h>
-+#include <linux/vt.h>
-+
-+#include <stdint.h>
-+#include <string>
-+
-+typedef struct fb_var_screeninfo t_fb_var_screeninfo;
-+
-+/** Ausführung als Singleton */
-+class CFrameBuffer
-+{
-+	private:
-+
-+		CFrameBuffer();
-+
-+		struct rgbData
-+		{
-+			uint8_t r;
-+			uint8_t g;
-+			uint8_t b;
-+		} __attribute__ ((packed));
-+
-+		struct rawHeader
-+		{
-+			uint8_t width_lo;
-+			uint8_t width_hi;
-+			uint8_t height_lo;
-+			uint8_t height_hi;
-+			uint8_t transp;
-+		} __attribute__ ((packed));
-+
-+		int             fd, tty;
-+		unsigned char * lfb;
-+		int		available;
-+		int             backgroundColor;
-+		unsigned int	xRes, yRes, stride, bpp;
-+		t_fb_var_screeninfo screeninfo, oldscreen;
-+		fb_cmap cmap;
-+		__u16 red[256], green[256], blue[256], trans[256];
-+
-+		void paletteFade(int i, __u32 rgb1, __u32 rgb2, int level);
-+
-+		int 	kd_mode;
-+		struct	vt_mode vt_mode;
-+		bool	active;
-+		static	void switch_signal (int);
-+
-+	public:
-+
-+		~CFrameBuffer();
-+
-+		static CFrameBuffer* getInstance();
-+
-+		void init(std::string fbDevice="/dev/fb/0");
-+		int setMode(unsigned int xRes, unsigned int yRes, unsigned int bpp);
-+
-+
-+		int getFileHandle(); //only used for plugins (games) !!
-+		t_fb_var_screeninfo *getScreenInfo();
-+
-+		unsigned char* getFrameBufferPointer(); //pointer to framebuffer
-+		unsigned int getStride(); //stride (anzahl bytes die eine Zeile im Framebuffer belegt)
-+		bool getActive(); //is framebuffer active
-+
-+		void setTransparency( int tr = 0 );
-+
-+		//Palette stuff
-+		void setAlphaFade(int in, int num, int tr);
-+		void paletteGenFade(int in, __u32 rgb1, __u32 rgb2, int num, int tr=0);
-+		void paletteSetColor(int i, __u32 rgb, int tr);
-+		void paletteSet(struct fb_cmap *map = NULL);
-+
-+		void paintBoxRel(int x, int y, int dx, int dy, unsigned char col);
-+
-+		int getBackgroundColor() { return backgroundColor;}
-+		void setBackgroundColor(int color);
-+		void paintBackgroundBoxRel(int x, int y, int dx, int dy);
-+
-+		void RestoreScreen(int x, int y, int dx, int dy, unsigned char* memp);
-+
-+		void ClearFrameBuffer();
-+
-+};
-+
-+
-+#endif
-diff -Naur vdr-1.2.0.orig/Makefile vdr-1.2.0/Makefile
---- vdr-1.2.0.orig/Makefile	2003-01-06 13:28:09.000000000 +0100
-+++ vdr-1.2.0/Makefile	2003-06-12 20:15:36.000000000 +0200
-@@ -14,33 +14,34 @@
+diff -Nur vdr-1.2.6.orig/Makefile vdr-1.2.6/Makefile
+--- vdr-1.2.6.orig/Makefile	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/Makefile	2004-02-17 16:52:52.000000000 +0100
+@@ -14,10 +14,7 @@
  CXX      ?= g++
  CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
  
@@ -1587,11 +11,8 @@ diff -Naur vdr-1.2.0.orig/Makefile vdr-1.2.0/Makefile
 -BINDIR   = /usr/local/bin
  
  PLUGINDIR= ./PLUGINS
- 
--VIDEODIR = /video
- 
- DOXYGEN  = /usr/bin/doxygen
- DOXYFILE = Doxyfile
+ PLUGINLIBDIR= $(PLUGINDIR)/lib
+@@ -29,19 +26,24 @@
  
  -include Make.config
  
@@ -1607,18 +28,18 @@ diff -Naur vdr-1.2.0.orig/Makefile vdr-1.2.0/Makefile
         lirc.o menu.o menuitems.o osdbase.o osd.o player.o plugin.o rcu.o\
         receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sources.o\
 -       spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o
-+       spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o fbosd.o\
-+       framebuffer.o
++       spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o \
++       fbosd.o framebuffer.o
  
  OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
  FIXFONT = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
  
-+NO_KBD = 1
++NO_KBD=1
 +
  ifndef NO_KBD
  DEFINES += -DREMOTE_KBD
  endif
-@@ -108,7 +109,8 @@
+@@ -112,7 +114,8 @@
  # Plugins:
  
  plugins: include-dir
@@ -1628,259 +49,25 @@ diff -Naur vdr-1.2.0.orig/Makefile vdr-1.2.0/Makefile
  
  plugins-clean:
  	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
-@@ -124,6 +126,11 @@
+@@ -128,6 +131,10 @@
              mkdir $(VIDEODIR);\
              cp *.conf $(VIDEODIR);\
              fi
 +	@if [ ! -d $(PLUGINIDIR) ]; then\
 +		 mkdir -p $(PLUGINIDIR);\
 +		 fi
-+	cp $(PLUGINDIR)/lib/libvdr-remote.so.* $(PLUGINIDIR)
-+	cp $(PLUGINDIR)/lib/libvdr-dbox2.so* $(PLUGINIDIR);
++	cp $(PLUGINDIR)/lib/libvdr* $(PLUGINIDIR)
  
  # Source documentation:
  
-@@ -143,4 +150,3 @@
+@@ -147,4 +154,3 @@
  fontclean:
  	-rm -f fontfix.c fontosd.c
  CLEAN: clean fontclean
 -
-diff -Naur vdr-1.2.0.orig/plugin.c vdr-1.2.0/plugin.c
---- vdr-1.2.0.orig/plugin.c	2003-05-09 17:01:26.000000000 +0200
-+++ vdr-1.2.0/plugin.c	2003-06-08 14:09:57.000000000 +0200
-@@ -112,6 +112,11 @@
-   return MakeDirs(buffer, true) ? buffer : NULL;
- }
- 
-+void * cPlugin::GetSetData( int what )
-+{
-+	return NULL;
-+}
-+
- // --- cDll ------------------------------------------------------------------
- 
- cDll::cDll(const char *FileName, const char *Args)
-diff -Naur vdr-1.2.0.orig/plugin.h vdr-1.2.0/plugin.h
---- vdr-1.2.0.orig/plugin.h	2003-05-09 16:57:55.000000000 +0200
-+++ vdr-1.2.0/plugin.h	2003-06-08 14:09:30.000000000 +0200
-@@ -47,6 +47,8 @@
- 
-   void RegisterI18n(const tI18nPhrase * const Phrases);
- 
-+  virtual void *GetSetData( int what );
-+
-   static void SetConfigDirectory(const char *Dir);
-   static const char *ConfigDirectory(const char *PluginName = NULL);
-   };
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/ccam.c vdr-1.2.0/PLUGINS/src/dbox2/ccam.c
---- vdr-1.2.0.orig/PLUGINS/src/dbox2/ccam.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/dbox2/ccam.c	2003-06-12 14:16:44.000000000 +0200
-@@ -0,0 +1,172 @@
-+/*
-+ * ccam.c: A plugin for the Video Disk Recorder
-+ *
-+ * See the README file for copyright information and how to reach the author.
-+ *
-+ * $Id$
-+ */
-+
-+#include "ccam.h"
-+#include <vdr/channels.h>
-+#include <vdr/eit.h>
-+#include <vdr/ci.h>
-+#include <connection/basicclient.h>
-+#include <vdr/tools.h>
-+
-+#define CAMD_UDS_NAME  "/tmp/camd.socket"
-+
-+class CCaPmt : public CBasicClient 
-+{
-+	private:
-+		int 		length;
-+		int 		esInfoLengthPos;
-+		uint8_t 	capmt[2048];
-+	protected:
-+		virtual const unsigned char   	getVersion   () const { return 0x9F; };
-+		virtual const          char * 		getSocketName() const { return CAMD_UDS_NAME; };
-+	public:
-+		CCaPmt( int ProgramNumber );
-+		void 		AddPid( int Pid );
-+		void 		AddCaDescriptor( int Length, uint8_t *Data );
-+		bool 		sendData();
-+
-+};
-+
-+#define CPCI_OK_DESCRAMBLING  	0x01
-+#define CPLM_ONLY				0x03
-+#define CPLM_TS					0x04
-+
-+CCaPmt::CCaPmt( int ProgramNumber )
-+{
-+	length = 0;
-+  	capmt[length++] = CPLM_ONLY; // FIXME: Do we need Transponderchange -> 0x04
-+  	capmt[length++] = ( ProgramNumber >> 8 ) & 0xFF;
-+  	capmt[length++] =  ProgramNumber & 0xFF;
-+  	capmt[length++] = 0x01; // version_number, current_next_indicator - apparently vn doesn't matter, but cni must be 1
-+  	esInfoLengthPos = length;
-+  	capmt[length++] = 0x00; // program_info_length H (at program level)
-+  	capmt[length++] = 0x00; // program_info_length L
-+}
-+
-+void CCaPmt::AddPid( int Pid )
-+{
-+  	capmt[length++] = 0x00; //XXX stream_type (apparently doesn't matter)
-+  	capmt[length++] = ( Pid >> 8 ) & 0xFF;
-+  	capmt[length++] = Pid & 0xFF;
-+  	esInfoLengthPos = length;
-+  	capmt[length++] = 0x00; // ES_info_length H (at ES level)
-+  	capmt[length++] = 0x00; // ES_info_length L
-+}
-+
-+void CCaPmt::AddCaDescriptor( int Length, uint8_t *Data )
-+{
-+  	if ( esInfoLengthPos )
-+		{
-+     			if ( length + Length < int ( sizeof( capmt ) ) )
-+					{
-+        				capmt[length++] = CPCI_OK_DESCRAMBLING;
-+        				memcpy( capmt + length, Data, Length );
-+        				length += Length;
-+        				int l = length - esInfoLengthPos - 2;
-+        				capmt[esInfoLengthPos]     = ( l >> 8 ) & 0xFF;
-+        				capmt[esInfoLengthPos + 1] =  l & 0xFF;
-+        			}
-+     			else
-+        			esyslog( "ERROR: buffer overflow in CA descriptor" );
-+
-+     			esInfoLengthPos = 0;
-+     		}
-+  	else
-+     		esyslog( "ERROR: adding CA descriptor without Pid!" );
-+}
-+
-+#define SIZE_INDICATOR 0x80
-+
-+static uint8_t *SetLength( uint8_t *Data, int Length )
-+{
-+  	uint8_t *p = Data;
-+	
-+  	if ( Length < 128 )
-+		*p++ = Length;
-+  	else
-+		{
-+     			int n = sizeof( Length );
-+     			for ( int i = n - 1; i >= 0; i-- )
-+					{
-+         				int b = ( Length >> ( 8 * i ) ) & 0xFF;
-+         				if ( p != Data || b )
-+            				*++p = b;
-+         			}
-+     			*Data = ( p - Data ) | SIZE_INDICATOR;
-+     			p++;
-+     		}
-+  return p;
-+}
-+
-+bool CCaPmt::sendData()
-+{
-+	if ( !open_connection() )
-+		return false;
-+	
-+	uint8_t buffer[2048];
-+	uint8_t *p = buffer;
-+	
-+	*p++ = 0x9F;
-+	*p++ = 0x80;
-+  	*p++ = 0x32;
-+
-+	p = SetLength( p,length );
-+
-+	if ( p - buffer + length < int ( sizeof( buffer ) ) )
-+		{
-+			memcpy( p, capmt, length );
-+			p += length;
-+		}
-+	bool return_value = send_data( (const char*)buffer, p-buffer );
-+
-+	close_connection();
-+	return return_value;
-+}
-+
-+
-+CCam::CCam(void)
-+{
-+ 	channel=NULL;
-+}
-+
-+void CCam::setCaPmt(cChannel *channel)
-+{
-+	uchar buffer[2048];
-+	int length = 0;
-+	int count = 0;
-+
-+	// we need this...
-+	// vdr needs some time to filter the ca descriptors
-+	// the routine tries MAXCACOUNT times (my Nokia Sat box needs about 50-70 tries)
-+	// FIXME: if you switch to a Premiere channel, you do not have subsribed, switching takes to long,
-+	// because the routine then tries MAXCACOUNT times
-+	// hmm, need to find a better way...
-+	#define MAXCACOUNT	100
-+	#define TIMETOWAIT	10000
-+	do
-+		{
-+			count++;
-+			usleep( TIMETOWAIT );
-+			length = cSIProcessor::GetCaDescriptors( channel->Source(), channel->Frequency(), channel->Sid(), NULL, sizeof( buffer ), buffer );
-+		} while ( ( length == 0 ) && ( count<MAXCACOUNT ) );
-+
-+	if ( length > 0 )
-+		{
-+			CCaPmt CaPmt( channel->Sid() );
-+			CaPmt.AddCaDescriptor( length, buffer );
-+			if ( channel->Vpid() )
-+				CaPmt.AddPid( channel->Vpid() );
-+			if ( channel->Apid1() )
-+				CaPmt.AddPid( channel->Apid1() );
-+			if ( channel->Apid2() )
-+				CaPmt.AddPid( channel->Apid2() );
-+			if ( channel->Dpid1() )
-+				CaPmt.AddPid( channel->Dpid1() );
-+			CaPmt.sendData();
-+		}
-+}
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/ccam.h vdr-1.2.0/PLUGINS/src/dbox2/ccam.h
---- vdr-1.2.0.orig/PLUGINS/src/dbox2/ccam.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/dbox2/ccam.h	2003-06-12 14:16:59.000000000 +0200
-@@ -0,0 +1,26 @@
-+/*
-+ * ccam.h: A plugin for the Video Disk Recorder
-+ *
-+ * See the README file for copyright information and how to reach the author.
-+ *
-+ * $Id$
-+ */
-+
-+#ifndef _CCAM_H_
-+#define _CCAM_H_
-+
-+#include <vdr/channels.h>
-+
-+#define CAMD_UDS_NAME  "/tmp/camd.socket"
-+
-+class CCam 
-+{
-+	public:
-+		CCam( void );
-+		void 		setCaPmt( cChannel *inchannel );
-+
-+	private:
-+		cChannel 	*channel;
-+};
-+
-+#endif
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/COPYING vdr-1.2.0/PLUGINS/src/dbox2/COPYING
---- vdr-1.2.0.orig/PLUGINS/src/dbox2/COPYING	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/dbox2/COPYING	2003-05-16 21:01:33.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/dbox2/COPYING vdr-1.2.6/PLUGINS/src/dbox2/COPYING
+--- vdr-1.2.6.orig/PLUGINS/src/dbox2/COPYING	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/dbox2/COPYING	2004-02-11 15:19:49.000000000 +0100
 @@ -0,0 +1,340 @@
 +		    GNU GENERAL PUBLIC LICENSE
 +		       Version 2, June 1991
@@ -2222,9 +409,329 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/COPYING vdr-1.2.0/PLUGINS/src/dbox2/
 +consider it more useful to permit linking proprietary applications with the
 +library.  If this is what you want to do, use the GNU Library General
 +Public License instead of this License.
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/dbox2.c vdr-1.2.0/PLUGINS/src/dbox2/dbox2.c
---- vdr-1.2.0.orig/PLUGINS/src/dbox2/dbox2.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/dbox2/dbox2.c	2003-06-12 14:20:17.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/dbox2/HISTORY vdr-1.2.6/PLUGINS/src/dbox2/HISTORY
+--- vdr-1.2.6.orig/PLUGINS/src/dbox2/HISTORY	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/dbox2/HISTORY	2004-02-11 15:19:49.000000000 +0100
+@@ -0,0 +1,6 @@
++VDR Plugin 'dbox2' Revision History
++------------------------------------
++
++2003-05-16: Version 0.0.1
++
++- Initial revision.
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/dbox2/Makefile vdr-1.2.6/PLUGINS/src/dbox2/Makefile
+--- vdr-1.2.6.orig/PLUGINS/src/dbox2/Makefile	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/dbox2/Makefile	2004-02-11 15:24:09.000000000 +0100
+@@ -0,0 +1,85 @@
++#
++# Makefile for a Video Disk Recorder plugin
++#
++# $Id$
++
++# The official name of this plugin.
++# This name will be used in the '-P...' option of VDR to load the plugin.
++# By default the main source file also carries this name.
++#
++PLUGIN = dbox2
++
++LCDLIB = -L$(PPREFIX)/cdkroot/lib -llcddisplay -lfreetype
++CONLIB = $(PPREFIX)/cdkroot/lib/libtuxbox-connection.a
++
++### The version number of this plugin (taken from the main source file):
++
++VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ print $$6 }' | sed -e 's/[";]//g')
++
++### The C++ compiler and options:
++
++CXX      = powerpc-tuxbox-linux-gnu-g++
++CXXFLAGS ?= -mcpu=823  -msoft-float -mmultiple -mstring -meabi -O3 -g -D_GNU_SOURCE
++
++### The directory environment:
++
++DVBDIR = ../../../../DVB
++VDRDIR = ../../..
++LIBDIR = ../../lib
++TMPDIR = /tmp
++
++### Allow user defined options to overwrite defaults:
++
++-include $(VDRDIR)/Make.config
++
++### The version number of VDR (taken from VDR's "config.h"):
++
++VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
++
++### The name of the distribution archive:
++
++ARCHIVE = $(PLUGIN)-$(VERSION)
++PACKAGE = vdr-$(ARCHIVE)
++
++### Includes and Defines (add further entries here):
++
++INCLUDES += -I$(VDRDIR)/include -I$(PPREFIX)/cdkroot/include/tuxbox -I$(DDIR)/include -I$(DDIR)/dvb/include
++
++DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"' -DPREFIX='"$(PPREFIX)"'
++
++### The object files (add further files here):
++
++OBJS = $(PLUGIN).o ccam.o lcddisplay.o plugins.o 
++
++### Implicit rules:
++
++%.o: %.c
++	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
++
++# Dependencies:
++
++MAKEDEP = $(CXX) -MM -MG
++DEPFILE = .dependencies
++$(DEPFILE): Makefile
++	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
++
++-include $(DEPFILE)
++
++### Targets:
++
++all: libvdr-$(PLUGIN).so
++
++libvdr-$(PLUGIN).so: $(OBJS)
++	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LCDLIB) $(CONLIB) -lpng -lz -o $@
++	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
++
++dist: clean
++	@-rm -rf $(TMPDIR)/$(ARCHIVE)
++	@mkdir $(TMPDIR)/$(ARCHIVE)
++	@cp -a * $(TMPDIR)/$(ARCHIVE)
++	@tar czf $(PACKAGE).tgz -C $(TMPDIR) $(ARCHIVE)
++	@-rm -rf $(TMPDIR)/$(ARCHIVE)
++	@echo Distribution package created as $(PACKAGE).tgz
++
++clean:
++	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/dbox2/README vdr-1.2.6/PLUGINS/src/dbox2/README
+--- vdr-1.2.6.orig/PLUGINS/src/dbox2/README	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/dbox2/README	2004-02-11 15:19:50.000000000 +0100
+@@ -0,0 +1,11 @@
++This is a "plugin" for the Video Disk Recorder (VDR).
++
++Written by:                  Alexander Olk <xenomorph2l@onlinehome.de>
++
++Project's homepage:          -n/a-
++
++Latest version available at: -n/a-
++
++See the file COPYING for license information.
++
++Description: Dbox2 plugin
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/dbox2/ccam.c vdr-1.2.6/PLUGINS/src/dbox2/ccam.c
+--- vdr-1.2.6.orig/PLUGINS/src/dbox2/ccam.c	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/dbox2/ccam.c	2004-02-11 15:19:49.000000000 +0100
+@@ -0,0 +1,172 @@
++/*
++ * ccam.c: A plugin for the Video Disk Recorder
++ *
++ * See the README file for copyright information and how to reach the author.
++ *
++ * $Id$
++ */
++
++#include "ccam.h"
++#include <vdr/channels.h>
++#include <vdr/eit.h>
++#include <vdr/ci.h>
++#include <connection/basicclient.h>
++#include <vdr/tools.h>
++
++#define CAMD_UDS_NAME  "/tmp/camd.socket"
++
++class CCaPmt : public CBasicClient 
++{
++	private:
++		int 		length;
++		int 		esInfoLengthPos;
++		uint8_t 	capmt[2048];
++	protected:
++		virtual const unsigned char   	getVersion   () const { return 0x9F; };
++		virtual const          char * 		getSocketName() const { return CAMD_UDS_NAME; };
++	public:
++		CCaPmt( int ProgramNumber );
++		void 		AddPid( int Pid );
++		void 		AddCaDescriptor( int Length, uint8_t *Data );
++		bool 		sendData();
++
++};
++
++#define CPCI_OK_DESCRAMBLING  	0x01
++#define CPLM_ONLY				0x03
++#define CPLM_TS					0x04
++
++CCaPmt::CCaPmt( int ProgramNumber )
++{
++	length = 0;
++  	capmt[length++] = CPLM_ONLY; // FIXME: Do we need Transponderchange -> 0x04
++  	capmt[length++] = ( ProgramNumber >> 8 ) & 0xFF;
++  	capmt[length++] =  ProgramNumber & 0xFF;
++  	capmt[length++] = 0x01; // version_number, current_next_indicator - apparently vn doesn't matter, but cni must be 1
++  	esInfoLengthPos = length;
++  	capmt[length++] = 0x00; // program_info_length H (at program level)
++  	capmt[length++] = 0x00; // program_info_length L
++}
++
++void CCaPmt::AddPid( int Pid )
++{
++  	capmt[length++] = 0x00; //XXX stream_type (apparently doesn't matter)
++  	capmt[length++] = ( Pid >> 8 ) & 0xFF;
++  	capmt[length++] = Pid & 0xFF;
++  	esInfoLengthPos = length;
++  	capmt[length++] = 0x00; // ES_info_length H (at ES level)
++  	capmt[length++] = 0x00; // ES_info_length L
++}
++
++void CCaPmt::AddCaDescriptor( int Length, uint8_t *Data )
++{
++  	if ( esInfoLengthPos )
++		{
++     			if ( length + Length < int ( sizeof( capmt ) ) )
++					{
++        				capmt[length++] = CPCI_OK_DESCRAMBLING;
++        				memcpy( capmt + length, Data, Length );
++        				length += Length;
++        				int l = length - esInfoLengthPos - 2;
++        				capmt[esInfoLengthPos]     = ( l >> 8 ) & 0xFF;
++        				capmt[esInfoLengthPos + 1] =  l & 0xFF;
++        			}
++     			else
++        			esyslog( "ERROR: buffer overflow in CA descriptor" );
++
++     			esInfoLengthPos = 0;
++     		}
++  	else
++     		esyslog( "ERROR: adding CA descriptor without Pid!" );
++}
++
++#define SIZE_INDICATOR 0x80
++
++static uint8_t *SetLength( uint8_t *Data, int Length )
++{
++  	uint8_t *p = Data;
++	
++  	if ( Length < 128 )
++		*p++ = Length;
++  	else
++		{
++     			int n = sizeof( Length );
++     			for ( int i = n - 1; i >= 0; i-- )
++					{
++         				int b = ( Length >> ( 8 * i ) ) & 0xFF;
++         				if ( p != Data || b )
++            				*++p = b;
++         			}
++     			*Data = ( p - Data ) | SIZE_INDICATOR;
++     			p++;
++     		}
++  return p;
++}
++
++bool CCaPmt::sendData()
++{
++	if ( !open_connection() )
++		return false;
++	
++	uint8_t buffer[2048];
++	uint8_t *p = buffer;
++	
++	*p++ = 0x9F;
++	*p++ = 0x80;
++  	*p++ = 0x32;
++
++	p = SetLength( p,length );
++
++	if ( p - buffer + length < int ( sizeof( buffer ) ) )
++		{
++			memcpy( p, capmt, length );
++			p += length;
++		}
++	bool return_value = send_data( (const char*)buffer, p-buffer );
++
++	close_connection();
++	return return_value;
++}
++
++
++CCam::CCam(void)
++{
++ 	channel=NULL;
++}
++
++void CCam::setCaPmt(cChannel *channel)
++{
++	uchar buffer[2048];
++	int length = 0;
++	int count = 0;
++
++	// we need this...
++	// vdr needs some time to filter the ca descriptors
++	// the routine tries MAXCACOUNT times (my Nokia Sat box needs about 50-70 tries)
++	// FIXME: if you switch to a Premiere channel, you do not have subsribed, switching takes to long,
++	// because the routine then tries MAXCACOUNT times
++	// hmm, need to find a better way...
++	#define MAXCACOUNT	100
++	#define TIMETOWAIT	10000
++	do
++		{
++			count++;
++			usleep( TIMETOWAIT );
++			length = cSIProcessor::GetCaDescriptors( channel->Source(), channel->Frequency(), channel->Sid(), NULL, sizeof( buffer ), buffer );
++		} while ( ( length == 0 ) && ( count<MAXCACOUNT ) );
++
++	if ( length > 0 )
++		{
++			CCaPmt CaPmt( channel->Sid() );
++			CaPmt.AddCaDescriptor( length, buffer );
++			if ( channel->Vpid() )
++				CaPmt.AddPid( channel->Vpid() );
++			if ( channel->Apid1() )
++				CaPmt.AddPid( channel->Apid1() );
++			if ( channel->Apid2() )
++				CaPmt.AddPid( channel->Apid2() );
++			if ( channel->Dpid1() )
++				CaPmt.AddPid( channel->Dpid1() );
++			CaPmt.sendData();
++		}
++}
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/dbox2/ccam.h vdr-1.2.6/PLUGINS/src/dbox2/ccam.h
+--- vdr-1.2.6.orig/PLUGINS/src/dbox2/ccam.h	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/dbox2/ccam.h	2004-02-11 15:19:49.000000000 +0100
+@@ -0,0 +1,26 @@
++/*
++ * ccam.h: A plugin for the Video Disk Recorder
++ *
++ * See the README file for copyright information and how to reach the author.
++ *
++ * $Id$
++ */
++
++#ifndef _CCAM_H_
++#define _CCAM_H_
++
++#include <vdr/channels.h>
++
++#define CAMD_UDS_NAME  "/tmp/camd.socket"
++
++class CCam 
++{
++	public:
++		CCam( void );
++		void 		setCaPmt( cChannel *inchannel );
++
++	private:
++		cChannel 	*channel;
++};
++
++#endif
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/dbox2/dbox2.c vdr-1.2.6/PLUGINS/src/dbox2/dbox2.c
+--- vdr-1.2.6.orig/PLUGINS/src/dbox2/dbox2.c	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/dbox2/dbox2.c	2004-02-11 15:19:49.000000000 +0100
 @@ -0,0 +1,147 @@
 +/*
 + * dbox2.c: A plugin for the Video Disk Recorder
@@ -2373,19 +880,9 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/dbox2.c vdr-1.2.0/PLUGINS/src/dbox2/
 +}
 +
 +VDRPLUGINCREATOR( cPluginDbox2 ); // Don't touch this!
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/HISTORY vdr-1.2.0/PLUGINS/src/dbox2/HISTORY
---- vdr-1.2.0.orig/PLUGINS/src/dbox2/HISTORY	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/dbox2/HISTORY	2003-05-30 19:49:55.000000000 +0200
-@@ -0,0 +1,6 @@
-+VDR Plugin 'dbox2' Revision History
-+------------------------------------
-+
-+2003-05-16: Version 0.0.1
-+
-+- Initial revision.
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/lcddisplay.c vdr-1.2.0/PLUGINS/src/dbox2/lcddisplay.c
---- vdr-1.2.0.orig/PLUGINS/src/dbox2/lcddisplay.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/dbox2/lcddisplay.c	2003-06-02 14:51:30.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/dbox2/lcddisplay.c vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.c
+--- vdr-1.2.6.orig/PLUGINS/src/dbox2/lcddisplay.c	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.c	2004-02-11 15:19:49.000000000 +0100
 @@ -0,0 +1,80 @@
 +/*
 + * lcddisplay.h: A plugin for the Video Disk Recorder
@@ -2467,9 +964,9 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/lcddisplay.c vdr-1.2.0/PLUGINS/src/d
 +}
 +
 +
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/lcddisplay.h vdr-1.2.0/PLUGINS/src/dbox2/lcddisplay.h
---- vdr-1.2.0.orig/PLUGINS/src/dbox2/lcddisplay.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/dbox2/lcddisplay.h	2003-06-12 14:20:50.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/dbox2/lcddisplay.h vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.h
+--- vdr-1.2.6.orig/PLUGINS/src/dbox2/lcddisplay.h	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.h	2004-02-11 15:19:49.000000000 +0100
 @@ -0,0 +1,32 @@
 +/*
 + * lcddisplay.c: A plugin for the Video Disk Recorder
@@ -2503,98 +1000,9 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/lcddisplay.h vdr-1.2.0/PLUGINS/src/d
 +};
 +
 +#endif
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/Makefile vdr-1.2.0/PLUGINS/src/dbox2/Makefile
---- vdr-1.2.0.orig/PLUGINS/src/dbox2/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/dbox2/Makefile	2003-06-12 20:17:19.000000000 +0200
-@@ -0,0 +1,85 @@
-+#
-+# Makefile for a Video Disk Recorder plugin
-+#
-+# $Id$
-+
-+# The official name of this plugin.
-+# This name will be used in the '-P...' option of VDR to load the plugin.
-+# By default the main source file also carries this name.
-+#
-+PLUGIN = dbox2
-+
-+LCDLIB = -L$(PPREFIX)/cdkroot/lib -llcddisplay -lfreetype
-+CONLIB = $(PPREFIX)/cdkroot/lib/libtuxbox-connection.a
-+
-+### The version number of this plugin (taken from the main source file):
-+
-+VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ print $$6 }' | sed -e 's/[";]//g')
-+
-+### The C++ compiler and options:
-+
-+CXX      = powerpc-tuxbox-linux-gnu-g++
-+CXXFLAGS ?= -mcpu=823  -msoft-float -mmultiple -mstring -meabi -O3 -g -D_GNU_SOURCE
-+
-+### The directory environment:
-+
-+DVBDIR = ../../../../DVB
-+VDRDIR = ../../..
-+LIBDIR = ../../lib
-+TMPDIR = /tmp
-+
-+### Allow user defined options to overwrite defaults:
-+
-+-include $(VDRDIR)/Make.config
-+
-+### The version number of VDR (taken from VDR's "config.h"):
-+
-+VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
-+
-+### The name of the distribution archive:
-+
-+ARCHIVE = $(PLUGIN)-$(VERSION)
-+PACKAGE = vdr-$(ARCHIVE)
-+
-+### Includes and Defines (add further entries here):
-+
-+INCLUDES += -I$(VDRDIR)/include -I$(PPREFIX)/cdkroot/include/tuxbox -I$(DDIR)/include -I$(DDIR)/dvb/include
-+
-+DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"' -DPREFIX='"$(PPREFIX)"'
-+
-+### The object files (add further files here):
-+
-+OBJS = $(PLUGIN).o ccam.o lcddisplay.o plugins.o 
-+
-+### Implicit rules:
-+
-+%.o: %.c
-+	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
-+
-+# Dependencies:
-+
-+MAKEDEP = $(CXX) -MM -MG
-+DEPFILE = .dependencies
-+$(DEPFILE): Makefile
-+	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
-+
-+-include $(DEPFILE)
-+
-+### Targets:
-+
-+all: libvdr-$(PLUGIN).so
-+
-+libvdr-$(PLUGIN).so: $(OBJS)
-+	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LCDLIB) $(CONLIB) -o $@
-+	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
-+
-+dist: clean
-+	@-rm -rf $(TMPDIR)/$(ARCHIVE)
-+	@mkdir $(TMPDIR)/$(ARCHIVE)
-+	@cp -a * $(TMPDIR)/$(ARCHIVE)
-+	@tar czf $(PACKAGE).tgz -C $(TMPDIR) $(ARCHIVE)
-+	@-rm -rf $(TMPDIR)/$(ARCHIVE)
-+	@echo Distribution package created as $(PACKAGE).tgz
-+
-+clean:
-+	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/plugins.c vdr-1.2.0/PLUGINS/src/dbox2/plugins.c
---- vdr-1.2.0.orig/PLUGINS/src/dbox2/plugins.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/dbox2/plugins.c	2003-06-13 17:05:10.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/dbox2/plugins.c vdr-1.2.6/PLUGINS/src/dbox2/plugins.c
+--- vdr-1.2.6.orig/PLUGINS/src/dbox2/plugins.c	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/dbox2/plugins.c	2004-02-11 15:19:50.000000000 +0100
 @@ -0,0 +1,415 @@
 +/*
 + * plugins.c: for dbox2 plugin
@@ -3011,9 +1419,9 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/plugins.c vdr-1.2.0/PLUGINS/src/dbox
 +{
 +	addParm( P_ID_VTXTPID, fd );
 +}
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/plugins.h vdr-1.2.0/PLUGINS/src/dbox2/plugins.h
---- vdr-1.2.0.orig/PLUGINS/src/dbox2/plugins.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/dbox2/plugins.h	2003-06-08 14:27:58.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/dbox2/plugins.h vdr-1.2.6/PLUGINS/src/dbox2/plugins.h
+--- vdr-1.2.6.orig/PLUGINS/src/dbox2/plugins.h	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/dbox2/plugins.h	2004-02-11 15:19:50.000000000 +0100
 @@ -0,0 +1,76 @@
 +/*
 + * plugins.h: for dbox2 plugin
@@ -3091,24 +1499,9 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/plugins.h vdr-1.2.0/PLUGINS/src/dbox
 +
 +
 +
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/dbox2/README vdr-1.2.0/PLUGINS/src/dbox2/README
---- vdr-1.2.0.orig/PLUGINS/src/dbox2/README	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/dbox2/README	2003-05-30 19:47:01.000000000 +0200
-@@ -0,0 +1,11 @@
-+This is a "plugin" for the Video Disk Recorder (VDR).
-+
-+Written by:                  Alexander Olk <xenomorph2l@onlinehome.de>
-+
-+Project's homepage:          -n/a-
-+
-+Latest version available at: -n/a-
-+
-+See the file COPYING for license information.
-+
-+Description: Dbox2 plugin
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/hello/Makefile vdr-1.2.0/PLUGINS/src/hello/Makefile
---- vdr-1.2.0.orig/PLUGINS/src/hello/Makefile	2002-12-13 15:54:14.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/hello/Makefile	1970-01-01 01:00:00.000000000 +0100
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/hello/Makefile vdr-1.2.6/PLUGINS/src/hello/Makefile
+--- vdr-1.2.6.orig/PLUGINS/src/hello/Makefile	2002-12-13 15:54:14.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/hello/Makefile	1970-01-01 01:00:00.000000000 +0100
 @@ -1,82 +0,0 @@
 -#
 -# Makefile for a Video Disk Recorder plugin
@@ -3192,9 +1585,9 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/hello/Makefile vdr-1.2.0/PLUGINS/src/hello
 -
 -clean:
 -	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/COPYING vdr-1.2.0/PLUGINS/src/remote/COPYING
---- vdr-1.2.0.orig/PLUGINS/src/remote/COPYING	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/remote/COPYING	2002-10-11 00:31:25.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/remote/COPYING vdr-1.2.6/PLUGINS/src/remote/COPYING
+--- vdr-1.2.6.orig/PLUGINS/src/remote/COPYING	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/remote/COPYING	2004-02-11 15:19:50.000000000 +0100
 @@ -0,0 +1,340 @@
 +		    GNU GENERAL PUBLIC LICENSE
 +		       Version 2, June 1991
@@ -3536,9 +1929,9 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/COPYING vdr-1.2.0/PLUGINS/src/remot
 +consider it more useful to permit linking proprietary applications with the
 +library.  If this is what you want to do, use the GNU Library General
 +Public License instead of this License.
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/FAQ vdr-1.2.0/PLUGINS/src/remote/FAQ
---- vdr-1.2.0.orig/PLUGINS/src/remote/FAQ	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/remote/FAQ	2003-03-31 01:11:22.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/remote/FAQ vdr-1.2.6/PLUGINS/src/remote/FAQ
+--- vdr-1.2.6.orig/PLUGINS/src/remote/FAQ	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/remote/FAQ	2004-02-11 15:19:50.000000000 +0100
 @@ -0,0 +1,111 @@
 +Remote Control Mini-FAQ (En, 2003-03-31)
 +========================================
@@ -3651,10 +2044,10 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/FAQ vdr-1.2.0/PLUGINS/src/remote/FA
 +
 +Q: How do I have to modify 'runvdr' to load the keymap?
 +A: Take a look at the script 'runvdr.remote' in sub-directory 'misc'.
-\ Kein Zeilenumbruch am Dateiende.
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/HISTORY vdr-1.2.0/PLUGINS/src/remote/HISTORY
---- vdr-1.2.0.orig/PLUGINS/src/remote/HISTORY	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/remote/HISTORY	2003-03-30 23:16:55.000000000 +0200
+\ No newline at end of file
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/remote/HISTORY vdr-1.2.6/PLUGINS/src/remote/HISTORY
+--- vdr-1.2.6.orig/PLUGINS/src/remote/HISTORY	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/remote/HISTORY	2004-02-11 15:19:50.000000000 +0100
 @@ -0,0 +1,13 @@
 +VDR Plugin 'remote' Revision History
 +------------------------------------
@@ -3669,9 +2062,9 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/HISTORY vdr-1.2.0/PLUGINS/src/remot
 +- Support autorepeat on /dev/input/eventX with following API-3 drivers:
 +  o DVB HEAD (2003-03-31 and later)
 +  o dvb kernel (2003-03-31 and later)
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/Makefile vdr-1.2.0/PLUGINS/src/remote/Makefile
---- vdr-1.2.0.orig/PLUGINS/src/remote/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/remote/Makefile	2003-06-09 14:26:44.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/remote/Makefile vdr-1.2.6/PLUGINS/src/remote/Makefile
+--- vdr-1.2.6.orig/PLUGINS/src/remote/Makefile	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/remote/Makefile	2004-02-11 15:19:50.000000000 +0100
 @@ -0,0 +1,80 @@
 +#
 +# Makefile for a Video Disk Recorder plugin
@@ -3753,9 +2146,9 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/Makefile vdr-1.2.0/PLUGINS/src/remo
 +
 +clean:
 +	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/README vdr-1.2.0/PLUGINS/src/remote/README
---- vdr-1.2.0.orig/PLUGINS/src/remote/README	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/remote/README	2003-03-30 23:03:13.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/remote/README vdr-1.2.6/PLUGINS/src/remote/README
+--- vdr-1.2.6.orig/PLUGINS/src/remote/README	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/remote/README	2004-02-11 15:19:50.000000000 +0100
 @@ -0,0 +1,113 @@
 +remote - a remote control plugin for the Video Disk Recorder (VDR)
 +==================================================================
@@ -3870,9 +2263,9 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/README vdr-1.2.0/PLUGINS/src/remote
 +Have fun,
 +
 +Oliver
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/remote.c vdr-1.2.0/PLUGINS/src/remote/remote.c
---- vdr-1.2.0.orig/PLUGINS/src/remote/remote.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/remote/remote.c	2003-06-13 17:10:04.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/remote/remote.c vdr-1.2.6/PLUGINS/src/remote/remote.c
+--- vdr-1.2.6.orig/PLUGINS/src/remote/remote.c	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/remote/remote.c	2004-02-11 15:19:50.000000000 +0100
 @@ -0,0 +1,426 @@
 +/*
 + * remote.c: Remote Control plugin for the Video Disk Recorder
@@ -4300,9 +2693,9 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/remote.c vdr-1.2.0/PLUGINS/src/remo
 +//------------------------------------------------------------------------------
 +
 +VDRPLUGINCREATOR(cPluginRemote); // Don't touch this!
-diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/remote.h vdr-1.2.0/PLUGINS/src/remote/remote.h
---- vdr-1.2.0.orig/PLUGINS/src/remote/remote.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.0/PLUGINS/src/remote/remote.h	2003-06-09 15:31:09.000000000 +0200
+diff -Nur vdr-1.2.6.orig/PLUGINS/src/remote/remote.h vdr-1.2.6/PLUGINS/src/remote/remote.h
+--- vdr-1.2.6.orig/PLUGINS/src/remote/remote.h	2004-02-19 08:34:46.000000000 +0100
++++ vdr-1.2.6/PLUGINS/src/remote/remote.h	2004-02-11 15:19:50.000000000 +0100
 @@ -0,0 +1,71 @@
 +#ifndef __REMOTE_H__
 +#define __REMOTE_H__
@@ -4375,11 +2768,1931 @@ diff -Naur vdr-1.2.0.orig/PLUGINS/src/remote/remote.h vdr-1.2.0/PLUGINS/src/remo
 +
 +
 +
-diff -Naur vdr-1.2.0.orig/thread.c vdr-1.2.0/thread.c
---- vdr-1.2.0.orig/thread.c	2003-05-18 14:45:13.000000000 +0200
-+++ vdr-1.2.0/thread.c	2003-06-12 19:42:31.000000000 +0200
+diff -Nur vdr-1.2.6.orig/config.c vdr-1.2.6/config.c
+--- vdr-1.2.6.orig/config.c	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/config.c	2004-02-17 13:59:48.000000000 +0100
+@@ -272,6 +272,7 @@
+   UseSubtitle = 1;
+   RecordingDirs = 1;
+   VideoFormat = 0;
++  VideoOutput = 0;
+   RecordDolbyDigital = 1;
+   ChannelInfoPos = 0;
+   OSDwidth = 52;
+@@ -424,6 +425,7 @@
+   else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
+   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
+   else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
++  else if (!strcasecmp(Name, "VideoOutput"))         VideoOutput        = atoi(Value);
+   else if (!strcasecmp(Name, "RecordDolbyDigital"))  RecordDolbyDigital = atoi(Value);
+   else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
+   else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
+@@ -474,6 +476,7 @@
+   Store("UseSubtitle",        UseSubtitle);
+   Store("RecordingDirs",      RecordingDirs);
+   Store("VideoFormat",        VideoFormat);
++  Store("VideoOutput",        VideoOutput);
+   Store("RecordDolbyDigital", RecordDolbyDigital);
+   Store("ChannelInfoPos",     ChannelInfoPos);
+   Store("OSDwidth",           OSDwidth);
+diff -Nur vdr-1.2.6.orig/config.h vdr-1.2.6/config.h
+--- vdr-1.2.6.orig/config.h	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/config.h	2004-02-17 13:58:10.000000000 +0100
+@@ -227,6 +227,7 @@
+   int UseSubtitle;
+   int RecordingDirs;
+   int VideoFormat;
++  int VideoOutput;
+   int RecordDolbyDigital;
+   int ChannelInfoPos;
+   int OSDwidth, OSDheight;
+diff -Nur vdr-1.2.6.orig/device.c vdr-1.2.6/device.c
+--- vdr-1.2.6.orig/device.c	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/device.c	2004-02-17 13:57:46.000000000 +0100
+@@ -37,6 +37,7 @@
+   cardIndex = nextCardIndex++;
+ 
+   SetVideoFormat(Setup.VideoFormat);
++  SetVideoOutput(Setup.VideoOutput);
+ 
+   active = false;
+ 
+@@ -216,6 +217,10 @@
+ {
+ }
+ 
++void cDevice::SetVideoOutput(int VideoOutput)
++{
++}
++
+ eVideoSystem cDevice::GetVideoSystem(void)
+ {
+   return vsPAL;
+@@ -311,6 +316,11 @@
+   return false;
+ }
+ 
++void cDevice::vtxtPid( bool onoff )
++{
++	SetPid( &pidHandles[ptTeletext], ptTeletext, onoff );
++}
++
+ bool cDevice::ProvidesSource(int Source) const
+ {
+   return false;
+diff -Nur vdr-1.2.6.orig/device.h vdr-1.2.6/device.h
+--- vdr-1.2.6.orig/device.h	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/device.h	2004-02-17 13:56:52.000000000 +0100
+@@ -198,6 +198,7 @@
+   bool active;
+   virtual void Action(void);
+ protected:
++  public:
+   enum ePidType { ptAudio, ptVideo, ptPcr, ptTeletext, ptDolby, ptOther };
+   class cPidHandle {
+   public:
+@@ -221,6 +222,8 @@
+          ///< Handle->used indicated how many receivers are using this PID.
+          ///< Type indicates some special types of PIDs, which the device may
+          ///< need to set in a specific way.
++  public:
++  	void vtxtPid( bool onoff );
+ 
+ // Common Interface facilities:
+ 
+@@ -252,6 +255,7 @@
+   virtual void SetVideoFormat(bool VideoFormat16_9);
+          ///< Sets the output video format to either 16:9 or 4:3 (only useful
+          ///< if this device has an MPEG decoder).
++  virtual void SetVideoOutput(int VideoOutput);
+   virtual eVideoSystem GetVideoSystem(void);
+          ///< Returns the video system of the currently displayed material
+          ///< (default is PAL).
+diff -Nur vdr-1.2.6.orig/dvbdevice.c vdr-1.2.6/dvbdevice.c
+--- vdr-1.2.6.orig/dvbdevice.c	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/dvbdevice.c	2004-02-17 15:11:23.000000000 +0100
+@@ -22,6 +22,8 @@
+ #include <linux/dvb/dmx.h>
+ #include <linux/dvb/frontend.h>
+ #include <linux/dvb/video.h>
++#include <dbox/avs_core.h>
++#include <dbox/saa7126_core.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include "channels.h"
+@@ -70,7 +72,7 @@
+   int fd_frontend;
+   int cardIndex;
+   fe_type_t frontendType;
+-  cCiHandler *ciHandler;
++  /*cCiHandler *ciHandler;*/
+   cChannel channel;
+   const char *diseqcCommands;
+   bool active;
+@@ -81,20 +83,21 @@
+   cCondVar newSet;
+   bool SetFrontend(void);
+   virtual void Action(void);
++  void SetVoltage(const fe_sec_voltage voltage, const uint32_t ms);
++  void SetTone(const fe_sec_tone_mode_t toneMode, const uint32_t ms);
+ public:
+-  cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler);
++  cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType/*, cCiHandler *CiHandler*/);
+   virtual ~cDvbTuner();
+   bool IsTunedTo(const cChannel *Channel) const;
+   void Set(const cChannel *Channel, bool Tune, bool UseCa);
+   bool Locked(void) { return tunerStatus == tsLocked; }
+   };
+ 
+-cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler)
++cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType/*, cCiHandler *CiHandler*/)
+ {
+   fd_frontend = Fd_Frontend;
+   cardIndex = CardIndex;
+   frontendType = FrontendType;
+-  ciHandler = CiHandler;
+   diseqcCommands = NULL;
+   active = false;
+   useCa = false;
+@@ -138,6 +141,20 @@
+   return f;
+ }
+ 
++void cDvbTuner::SetVoltage(const fe_sec_voltage voltage, const uint32_t ms)
++{
++	if (ioctl( fd_frontend,FE_SET_VOLTAGE, voltage) == 0) {
++		usleep(1000 * ms);
++	}
++}
++
++void cDvbTuner::SetTone(const fe_sec_tone_mode_t toneMode, const uint32_t ms)
++{
++	if (ioctl(fd_frontend,FE_SET_TONE,toneMode) == 0) {
++		usleep(1000 * ms);
++	}
++}
++
+ bool cDvbTuner::SetFrontend(void)
+ {
+   dvb_frontend_parameters Frontend;
+@@ -157,10 +174,10 @@
+                   for (char *CurrentAction = NULL; (da = diseqc->Execute(&CurrentAction)) != cDiseqc::daNone; ) {
+                       switch (da) {
+                         case cDiseqc::daNone:      break;
+-                        case cDiseqc::daToneOff:   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF)); break;
+-                        case cDiseqc::daToneOn:    CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_ON)); break;
+-                        case cDiseqc::daVoltage13: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); break;
+-                        case cDiseqc::daVoltage18: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_18)); break;
++                        case cDiseqc::daToneOff:   SetTone(SEC_TONE_OFF,15); break;
++                        case cDiseqc::daToneOn:    SetTone(SEC_TONE_ON,15); break;
++                        case cDiseqc::daVoltage13: SetVoltage(SEC_VOLTAGE_13,15); break;
++                        case cDiseqc::daVoltage18: SetVoltage(SEC_VOLTAGE_18,15); break;
+                         case cDiseqc::daMiniA:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_A)); break;
+                         case cDiseqc::daMiniB:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_B)); break;
+                         case cDiseqc::daCodes: {
+@@ -197,8 +214,8 @@
+                tone = SEC_TONE_ON;
+                }
+             int volt = (channel.Polarization() == 'v' || channel.Polarization() == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
+-            CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, volt));
+-            CHECK(ioctl(fd_frontend, FE_SET_TONE, tone));
++	    SetVoltage(fe_sec_voltage(volt),15);
++	    SetTone(fe_sec_tone_mode(tone),15);
+             }
+ 
+          frequency = abs(frequency); // Allow for C-band, where the frequency is less than the LOF
+@@ -238,6 +255,12 @@
+          esyslog("ERROR: attempt to set channel with unknown DVB frontend type");
+          return false;
+     }
++
++  struct dvb_frontend_event event;
++  if (errno !=0)
++    errno = 0;
++  while ((errno == 0) || (errno == EOVERFLOW))
++    ioctl(fd_frontend,FE_GET_EVENT, &event);
+   if (ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend) < 0) {
+      esyslog("ERROR: frontend %d: %m", cardIndex);
+      return false;
+@@ -268,8 +291,9 @@
+                  continue;
+                  }
+               }
+-           if (tunerStatus >= tsLocked) {
+-              if (ciHandler) {
++            if (tunerStatus >= tsLocked) tunerStatus = tsLocked;
++           /*if (tunerStatus >= tsLocked) {
++             if (ciHandler) {
+                  if (ciHandler->Process() && useCa) {
+                     if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
+                        for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
+@@ -297,10 +321,10 @@
+                  else
+                     tunerStatus = tsLocked;
+                  }
+-              }
++              }*/
+            }
+         // in the beginning we loop more often to let the CAM connection start up fast
+-        newSet.TimedWait(mutex, (ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
++       newSet.TimedWait(mutex,   (time(NULL) - startTime < 20) ? 100 : 1000);
+         }
+   dsyslog("tuner thread ended on device %d (pid=%d)", cardIndex + 1, getpid());
+ }
+@@ -364,6 +388,10 @@
+   // Video format:
+ 
+   SetVideoFormat(Setup.VideoFormat ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3);
++  
++  
++  // Video output:
++  SetVideoOutput(Setup.VideoOutput);
+ 
+   // We only check the devices that must be present - the others will be checked before accessing them://XXX
+ 
+@@ -372,8 +400,8 @@
+      siProcessor = new cSIProcessor(DvbName(DEV_DVB_DEMUX, n));
+      if (ioctl(fd_frontend, FE_GET_INFO, &feinfo) >= 0) {
+         frontendType = feinfo.type;
+-        ciHandler = cCiHandler::CreateCiHandler(DvbName(DEV_DVB_CA, n));
+-        dvbTuner = new cDvbTuner(fd_frontend, CardIndex(), frontendType, ciHandler);
++        /*ciHandler = cCiHandler::CreateCiHandler(DvbName(DEV_DVB_CA, n));*/
++        dvbTuner = new cDvbTuner(fd_frontend, CardIndex(), frontendType/*, ciHandler*/);
+         }
+      else
+         LOG_ERROR;
+@@ -410,6 +438,8 @@
+   return false;
+ }
+ 
++cDvbDevice *cDvbDevice::mpDvbDevice = NULL;
++
+ bool cDvbDevice::Initialize(void)
+ {
+   int found = 0;
+@@ -417,7 +447,10 @@
+   for (i = 0; i < MAXDVBDEVICES; i++) {
+       if (UseDevice(NextCardIndex())) {
+          if (Probe(DvbName(DEV_DVB_FRONTEND, i))) {
+-            new cDvbDevice(i);
++			 if ( i == 0 )
++				mpDvbDevice = new cDvbDevice(i);
++			 else
++            	new cDvbDevice(i);
+             found++;
+             }
+          else
+@@ -434,10 +467,37 @@
+   return found > 0;
+ }
+ 
++cDvbDevice *cDvbDevice::getInstance( void )
++{
++	if ( mpDvbDevice != NULL )
++			return mpDvbDevice;
++	return NULL;
++}
++
++void cDvbDevice::SiP( bool onoff )
++{
++	if ( siProcessor != NULL )
++		{
++			if ( onoff )				
++				{
++					cChannel *Channel = Channels.GetByNumber( currentChannel );
++     				siProcessor->SetCurrentTransponder(Channel->Source(), Channel->Frequency());
++					siProcessor->SetStatus( true );
++					siProcessor->StartStopThread( true );
++				}
++			else
++				{
++					siProcessor->SetCurrentTransponder(0, 0);
++					siProcessor->SetStatus( false );
++					siProcessor->StartStopThread( false );
++				}
++		}
++}
++
+ void cDvbDevice::MakePrimaryDevice(bool On)
+ {
+-  if (HasDecoder())
+-     cDvbOsd::SetDvbDevice(On ? this : NULL);
++  //if (HasDecoder())
++    // cDvbOsd::SetDvbDevice(On ? this : NULL);
+ }
+ 
+ bool cDvbDevice::HasDecoder(void) const
+@@ -562,6 +622,39 @@
+      CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, VideoFormat16_9 ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3));
+ }
+ 
++
++#define AVS_DEVICE     "/dev/dbox/avs0"
++#define SAA7126_DEVICE "/dev/dbox/saa0"
++
++void cDvbDevice::SetVideoOutput(int VideoOutput)
++{
++   const int avs_fd = open(AVS_DEVICE, O_RDWR);
++   if (avs_fd < 0)
++   {
++      LOG_ERROR_STR("SetVideoOutput open AVS device");
++      return;
++   }
++   int avs_arg = 0;
++   int saa_arg = SAA_MODE_FBAS;
++   switch (VideoOutput)
++   {
++      case 1: saa_arg = SAA_MODE_RGB;    avs_arg = 1; break;
++      case 2: saa_arg = SAA_MODE_SVIDEO;              break;
++      case 3: saa_arg = SAA_MODE_YUV_V;  avs_arg = 1; break;
++      case 4: saa_arg = SAA_MODE_YUV_C;  avs_arg = 1; break;
++   }
++   CHECK(ioctl(avs_fd, AVSIOSFBLK, &avs_arg));
++   close(avs_fd);
++   const int saa_fd = open(SAA7126_DEVICE, O_RDWR|O_NONBLOCK);
++   if (open(SAA7126_DEVICE, O_RDWR|O_NONBLOCK) < 0)
++   {
++      LOG_ERROR_STR("SetVideoOutput open SAA7126 device");
++      return;
++   }
++   CHECK(ioctl(saa_fd, SAAIOSMODE, &saa_arg));
++   close(saa_fd);
++}
++
+ eVideoSystem cDvbDevice::GetVideoSystem(void)
+ {
+   eVideoSystem VideoSytem = vsPAL;
+@@ -591,29 +684,32 @@
+            }
+         pesFilterParams.pid     = Handle->pid;
+         pesFilterParams.input   = DMX_IN_FRONTEND;
+-        pesFilterParams.output  = (Type <= ptTeletext && Handle->used <= 1) ? DMX_OUT_DECODER : DMX_OUT_TS_TAP;
+-        pesFilterParams.pes_type= PesTypes[Type < ptOther ? Type : ptOther];
+-        pesFilterParams.flags   = DMX_IMMEDIATE_START;
++        pesFilterParams.output  = DMX_OUT_DECODER;//(Type <= ptTeletext && Handle->used <= 1) ? DMX_OUT_DECODER : DMX_OUT_TS_TAP;
++       	pesFilterParams.pes_type= PesTypes[Type]; //PesTypes[Type < ptOther ? Type : ptOther];
++	pesFilterParams.flags = DMX_IMMEDIATE_START;
+         if (ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
+            LOG_ERROR;
+            return false;
+            }
+         }
+-     else if (!Handle->used) {
+-        CHECK(ioctl(Handle->handle, DMX_STOP));
+-        if (Type <= ptTeletext) {
+-           pesFilterParams.pid     = 0x1FFF;
++     else
++     	{
++		CHECK(ioctl(Handle->handle,DMX_STOP));
++		 if (!Handle->used) {
++        /*if (Type <= ptTeletext) {
++          /* pesFilterParams.pid     = 0x1FFF;
+            pesFilterParams.input   = DMX_IN_FRONTEND;
+            pesFilterParams.output  = DMX_OUT_DECODER;
+            pesFilterParams.pes_type= PesTypes[Type];
+-           pesFilterParams.flags   = DMX_IMMEDIATE_START;
++	   pesFilterParams.flags   = DMX_IMMEDIATE_START;
+            CHECK(ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams));
+-           if (PesTypes[Type] == DMX_PES_VIDEO) // let's only do this once
+-              SetPlayMode(pmNone); // necessary to switch a PID from DMX_PES_VIDEO/AUDIO to DMX_PES_OTHER
+-           }
++        //   if (PesTypes[Type] == DMX_PES_VIDEO) // let's only do this once
++          //    SetPlayMode(pmNone); // necessary to switch a PID from DMX_PES_VIDEO/AUDIO to DMX_PES_OTHER
++           }*/
+         close(Handle->handle);
+         Handle->handle = -1;
+         }
++	}
+      }
+   return true;
+ }
+@@ -623,17 +719,16 @@
+   // Avoid noise while switching:
+ 
+   CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
+-  CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+-  CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+-  CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
++  CHECK(ioctl(fd_video,VIDEO_SET_BLANK));
++  CHECK(ioctl(fd_audio,AUDIO_STOP));
++  CHECK(ioctl(fd_video,VIDEO_STOP));
+ 
+   // Turn off live PIDs:
+-
+-  DelPid(pidHandles[ptAudio].pid);
+-  DelPid(pidHandles[ptVideo].pid);
+-  DelPid(pidHandles[ptPcr].pid, ptPcr);
+-  DelPid(pidHandles[ptTeletext].pid);
+-  DelPid(pidHandles[ptDolby].pid);
++  		DelPid(pidHandles[ptTeletext].pid);
++  		DelPid(pidHandles[ptVideo].pid);
++  		DelPid(pidHandles[ptAudio].pid);
++  		DelPid(pidHandles[ptPcr].pid, ptPcr);
++  		DelPid(pidHandles[ptDolby].pid);
+ }
+ 
+ bool cDvbDevice::ProvidesSource(int Source) const
+@@ -659,8 +754,9 @@
+            if (!HasPid(Channel->Vpid())) {
+ #ifdef DO_MULTIPLE_RECORDINGS
+               if (Channel->Ca() > CACONFBASE)
+-                 needsDetachReceivers = !ciHandler // only LL-firmware can do non-live CA channels
+-                                        || Ca() != Channel->Ca();
++                 /*needsDetachReceivers = !ciHandler // only LL-firmware can do non-live CA channels
++                                        || Ca() != Channel->Ca();*/
++		needsDetachReceivers = Ca()!=Channel->Ca();
+               else if (!IsPrimaryDevice())
+                  result = true;
+ #ifdef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
+@@ -683,7 +779,7 @@
+ 
+ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
+ {
+-  bool IsEncrypted = Channel->Ca() > CACONFBASE && !ciHandler; // only LL-firmware can do non-live CA channels
++  bool IsEncrypted = Channel->Ca() > CACONFBASE; //==101;// 101 = Premiere // > CACONFBASE && !ciHandler; // only LL-firmware can do non-live CA channels
+ 
+   bool DoTune = !dvbTuner->IsTunedTo(Channel);
+ 
+@@ -730,19 +826,58 @@
+ 
+   dvbTuner->Set(Channel, DoTune, !EITScanner.UsesDevice(this)); //XXX 1.3: this is an ugly hack - find a cleaner solution
+ 
++  // this is needed for the dbox2...
++  // otherwise we don't get a picture sometimes or the tv picture looks like
++  // a replay :)
++  // not really perfect, but it works better than without it. If you switch to fast
++  // tv picture still gets stuck...
++  #define LOCKWAITTIME 10000
++  #define MAXCOUNT 20000
++  int lcounter = 0;
++  do
++  	{
++		lcounter++;
++		usleep(LOCKWAITTIME);
++	}
++  while ((!dvbTuner->Locked()) && (lcounter < MAXCOUNT));
++
++  usleep(LOCKWAITTIME);
++
+   // PID settings:
+ 
+   if (TurnOnLivePIDs) {
+      aPid1 = Channel->Apid1();
+      aPid2 = Channel->Apid2();
+      int pPid = Channel->Ppid() ? Channel->Ppid() : Channel->Vpid();
+-     if (!(AddPid(pPid, ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
++    /* if (!(AddPid(pPid, ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
+         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
+         return false;
+         }
+      if (IsPrimaryDevice())
+-        AddPid(Channel->Tpid(), ptTeletext);
++        AddPid(Channel->Tpid(), ptTeletext);*/
++
++	if (pPid!=0)
++		{
++			AddPid(pPid,ptPcr);
++		}
++	if (Channel->Apid1()!=0)
++		{
++			AddPid(Channel->Apid1(),ptAudio);
++		}
++	if (Channel->Vpid()!=0)
++		{
++			AddPid(Channel->Vpid(),ptVideo);
++		}
++	if (Channel->Tpid()!=0)
++		{
++			AddPid(Channel->Tpid(),ptTeletext);
++		}
++     CHECK(ioctl(fd_video,VIDEO_SELECT_SOURCE,VIDEO_SOURCE_DEMUX));
++     CHECK(ioctl(fd_video,VIDEO_PLAY));
++     CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE,AUDIO_SOURCE_DEMUX));
+      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
++     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE,false));
++     CHECK(ioctl(fd_audio, AUDIO_PLAY));
+      }
+   else if (StartTransferMode)
+      cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));
+@@ -803,7 +938,7 @@
+   if (Receiving())
+      return false;
+ #endif
+-  return cDevice::CanReplay() && (Ca() <= MAXDEVICES || ciHandler); // with non-LL-firmware we can only replay if there is no CA recording going on
++  return cDevice::CanReplay() && (Ca() <= MAXDEVICES);// || ciHandler); // with non-LL-firmware we can only replay if there is no CA recording going on
+ }
+ 
+ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
+@@ -818,18 +953,14 @@
+   switch (PlayMode) {
+     case pmNone:
+          // special handling to return from PCM replay:
+-         CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+-         CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
+-         CHECK(ioctl(fd_video, VIDEO_PLAY));
+-
+-         CHECK(ioctl(fd_video, VIDEO_STOP, true));
+-         CHECK(ioctl(fd_audio, AUDIO_STOP, true));
+-         CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+-         CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
++	 CHECK(ioctl(fd_video,VIDEO_STOP));
++	 CHECK(ioctl(fd_audio,AUDIO_STOP));
+          CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_DEMUX));
++	 CHECK(ioctl(fd_video,VIDEO_PLAY));
+          CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_DEMUX));
+          CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+          CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
++	 CHECK(ioctl(fd_audio,AUDIO_PLAY));
+          if (siProcessor)
+             siProcessor->SetStatus(true);
+          break;
+@@ -907,7 +1038,10 @@
+      }
+   else {
+      if (fd_audio >= 0)
++     {
+         CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
++        CHECK(ioctl(fd_audio, AUDIO_CONTINUE));
++     }
+      if (fd_video >= 0)
+         CHECK(ioctl(fd_video, VIDEO_CONTINUE));
+      }
+@@ -922,7 +1056,10 @@
+      }
+   else {
+      if (fd_audio >= 0)
++     {
+         CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, false));
++        CHECK(ioctl(fd_audio, AUDIO_PAUSE));
++     }
+      if (fd_video >= 0)
+         CHECK(ioctl(fd_video, VIDEO_FREEZE));
+      }
+@@ -1044,10 +1181,56 @@
+ 
+ int cDvbDevice::PlayVideo(const uchar *Data, int Length)
+ {
+-  int fd = (playMode == pmAudioOnly || playMode == pmAudioOnlyBlack) ? fd_audio : fd_video;
+-  if (fd >= 0)
+-     return write(fd, Data, Length);
+-  return -1;
++   for (int i = 0; i < Length - 6; i++)
++      if (Data[i] == 0x00 && Data[i + 1] == 0x00 && Data[i + 2] == 0x01)
++      {
++         const int packet_length = Data[i + 4] * 256 + Data[i + 5] + 6;
++         if (i + packet_length > Length)
++         {
++            esyslog("ERROR: bad packet length %d at %d of %d.", packet_length, i, Length);
++            return -1;
++         }
++         const uchar packet_id = Data[i + 3];
++         int fd;
++         switch (packet_id) 
++         {
++            case 0xBD: // dolby
++            case 0xC0 ... 0xC1: // audio
++               fd = fd_audio;
++            break;
++            case 0xE0 ... 0xEF: // video
++               fd = fd_video;
++            break;
++            default:
++               esyslog("ERROR: unexpected packet id %02X.", packet_id);
++               fd = -1;
++         }
++         if (fd != -1)
++         {
++            int bytes_written = 0;
++            while (bytes_written < packet_length)
++            {
++               int l = write(fd, Data + bytes_written + i, packet_length - bytes_written);
++               if (l > 0) 
++                  bytes_written += l;
++               else if (l == -1)
++               {
++                  if (errno == EAGAIN)
++                     usleep(1);
++                  else
++                  {
++                     LOG_ERROR_STR("PlayVideo write");
++                     return -1;
++                  }
++               }
++            }
++            i += packet_length - 1; // the loop increments, too!
++         }
++      }
++      else
++         esyslog("ERROR: bad packet header %02X %02X %02X.", Data[i], Data[i + 1], Data[i + 2]);
++
++   return Length;
+ }
+ 
+ void cDvbDevice::PlayAudio(const uchar *Data, int Length)
+diff -Nur vdr-1.2.6.orig/dvbdevice.h vdr-1.2.6/dvbdevice.h
+--- vdr-1.2.6.orig/dvbdevice.h	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/dvbdevice.h	2004-02-17 13:14:56.000000000 +0100
+@@ -36,6 +36,9 @@
+          ///< Initializes the DVB devices.
+          ///< Must be called before accessing any DVB functions.
+          ///< \return True if any devices are available.
++	static cDvbDevice *mpDvbDevice;
++	static cDvbDevice *getInstance( void );
++	void SiP( bool onoff );
+ private:
+   fe_type_t frontendType;
+   int fd_osd, fd_audio, fd_video, fd_dvr, fd_stc;
+@@ -83,6 +86,7 @@
+ 
+ public:
+   virtual void SetVideoFormat(bool VideoFormat16_9);
++  virtual void SetVideoOutput(int VideoOutput);
+   virtual eVideoSystem GetVideoSystem(void);
+ 
+ // Audio facilities
+diff -Nur vdr-1.2.6.orig/dvbosd.c vdr-1.2.6/dvbosd.c
+--- vdr-1.2.6.orig/dvbosd.c	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/dvbosd.c	2004-02-11 15:19:48.000000000 +0100
+@@ -13,14 +13,18 @@
+ #include <sys/unistd.h>
+ #include "tools.h"
+ 
+-const cDvbDevice *cDvbOsd::dvbDevice = NULL;
++//const cDvbDevice *cDvbOsd::dvbDevice = NULL;
+ 
+ cDvbOsd::cDvbOsd(int x, int y)
+ :cOsdBase(x, y)
+ {
+-  osdDev = dvbDevice ? dvbDevice->OsdDeviceHandle() : -1;
+-  if (dvbDevice && osdDev < 0)
+-     esyslog("ERROR: illegal OSD device handle (%d)!", osdDev);
++  // framebuffer wrapper class, singleton
++  pFBOsd = cFBOsd::getInstance();
++  if (!pFBOsd)
++  	esyslog("ERROR: can't create framebuffer OSD!");
++  //osdDev = dvbDevice ? dvbDevice->OsdDeviceHandle() : -1;
++  //if (dvbDevice && osdDev < 0)
++    // esyslog("ERROR: illegal OSD device handle (%d)!", osdDev);
+ }
+ 
+ cDvbOsd::~cDvbOsd()
+@@ -29,10 +33,10 @@
+       CloseWindow(GetWindowNr(i));
+ }
+ 
+-void cDvbOsd::SetDvbDevice(const cDvbDevice *DvbDevice)
+-{
+-  dvbDevice = DvbDevice;
+-}
++//void cDvbOsd::SetDvbDevice(const cDvbDevice *DvbDevice)
++//{
++//  dvbDevice = DvbDevice;
++//}
+ 
+ bool cDvbOsd::SetWindow(cWindow *Window)
+ {
+@@ -51,7 +55,7 @@
+ 
+ void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, const void *data)
+ {
+-  if (osdDev >= 0) {
++ // if (osdDev >= 0) {
+      osd_cmd_t dc;
+      dc.cmd   = cmd;
+      dc.color = color;
+@@ -60,8 +64,11 @@
+      dc.x1    = x1;
+      dc.y1    = y1;
+      dc.data  = (void *)data;
+-     ioctl(osdDev, OSD_SEND_CMD, &dc);
+-     }
++
++    // no driver, no ioctl, instead use the wrapper class cFBOsd
++    // ioctl(osdDev, OSD_SEND_CMD, &dc);
++      pFBOsd->Cmd(&dc);
++   //  }
+ }
+ 
+ bool cDvbOsd::OpenWindow(cWindow *Window)
+diff -Nur vdr-1.2.6.orig/dvbosd.h vdr-1.2.6/dvbosd.h
+--- vdr-1.2.6.orig/dvbosd.h	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/dvbosd.h	2004-02-11 15:19:48.000000000 +0100
+@@ -11,13 +11,16 @@
+ #define __DVBOSD_H
+ 
+ #include <linux/dvb/osd.h>
+-#include "dvbdevice.h"
++//#include "dvbdevice.h"
+ #include "osdbase.h"
++#include "fbosd.h"
+ 
+ class cDvbOsd : public cOsdBase {
+ private:
+-  static const cDvbDevice *dvbDevice;
+-  int osdDev;
++  //static const cDvbDevice *dvbDevice;
++  // cFBOsd: framebuffer OSD for DBox
++  cFBOsd* pFBOsd;
++  //int osdDev;
+   bool SetWindow(cWindow *Window);
+   void Cmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, int x1 = 0, int y1 = 0, const void *data = NULL);
+ protected:
+@@ -30,7 +33,7 @@
+ public:
+   cDvbOsd(int x, int y);
+   virtual ~cDvbOsd();
+-  static void SetDvbDevice(const cDvbDevice *DvbDevice);
++  //static void SetDvbDevice(const cDvbDevice *DvbDevice);
+   };
+ 
+ #endif //__DVBOSD_H
+diff -Nur vdr-1.2.6.orig/eit.c vdr-1.2.6/eit.c
+--- vdr-1.2.6.orig/eit.c	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/eit.c	2004-02-17 18:34:55.000000000 +0100
+@@ -38,6 +38,8 @@
+ #include "libdtv/libdtv.h"
+ #include "videodir.h"
+ 
++cCaSystemIds* cCaSystemIds::pCaSystemIds = NULL;
++
+ // --- cMJD ------------------------------------------------------------------
+ 
+ class cMJD {
+@@ -1084,6 +1086,7 @@
+    pmtIndex = 0;
+    pmtPid = 0;
+    filters = NULL;
++
+    if (!numSIProcessors++) { // the first one creates them
+       schedules = new cSchedules;
+       }
+@@ -1294,7 +1297,8 @@
+                         case 0x14:
+                            if (buf[0] == 0x70)
+                            {
+-                              if (Setup.SetSystemTime && Setup.TimeTransponder && ISTRANSPONDER(currentTransponder, Setup.TimeTransponder))
++                              if ((time(NULL) < 365*24*60*60) || // if the system time is not set at all, set it even if not configured
++                                  (Setup.SetSystemTime && Setup.TimeTransponder && ISTRANSPONDER(currentTransponder, Setup.TimeTransponder)))
+                               {
+                                  cTDT ctdt((tdt_t *)buf);
+                                  ctdt.SetSystemTime();
+@@ -1451,12 +1455,15 @@
+             return;
+          }
+      caDescriptors.Add(new cCaDescriptor(currentSource, currentTransponder, ServiceId, cd->CA_type, cd->ProviderID, cd->CA_PID, cd->DataLength, cd->Data));
++     cCaSystemIds::getInstance()->AddCaSystemId(cd->CA_type);
+      //XXX update???
+      }
+ }
+ 
+ int cSIProcessor::GetCaDescriptors(int Source, int Transponder, int ServiceId, const unsigned short *CaSystemIds, int BufSize, uchar *Data)
+ {
++  CaSystemIds = NULL;
++  CaSystemIds = cCaSystemIds::getInstance()->GetCaSystemIds();
+   if (!CaSystemIds || !*CaSystemIds)
+      return 0;
+   if (BufSize > 0 && Data) {
+@@ -1481,3 +1488,44 @@
+      }
+   return -1;
+ }
++
++void cSIProcessor::StartStopThread( bool onoff )
++{
++	if ( onoff )
++		{
++			active = true;
++			Start();
++		}
++	else
++		{
++			active = false;
++			Cancel( 3 );
++		}
++}
++
++
++
++cCaSystemIds* cCaSystemIds::getInstance( void )
++{
++	if ( pCaSystemIds == NULL )
++		pCaSystemIds = new cCaSystemIds;
++	return pCaSystemIds;
++}
++
++cCaSystemIds::cCaSystemIds( void )
++{
++	caSystemIds[ numCaSystemIds = 0 ] = 0;
++}
++
++void cCaSystemIds::AddCaSystemId( int id )
++{
++	for (int i = 0; i < numCaSystemIds; i++ )
++		if ( id == caSystemIds[i] ) return;
++
++	caSystemIds[ numCaSystemIds++ ] = id;
++}
++
++const unsigned short * cCaSystemIds::GetCaSystemIds( void )
++{
++	return caSystemIds;
++}
+diff -Nur vdr-1.2.6.orig/eit.h vdr-1.2.6/eit.h
+--- vdr-1.2.6.orig/eit.h	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/eit.h	2004-02-11 15:19:49.000000000 +0100
+@@ -134,6 +134,23 @@
+ 
+ }SIP_FILTER;
+ 
++#define MAXCASYSTEMIDS 16
++
++class cCaSystemIds {
++	public:
++		cCaSystemIds( void );
++		void AddCaSystemId( int id );
++		const unsigned short *GetCaSystemIds( void );
++
++	public:
++		static cCaSystemIds *getInstance( void );
++		static cCaSystemIds *pCaSystemIds;
++
++	private:
++		int numCaSystemIds;
++  		unsigned short caSystemIds[MAXCASYSTEMIDS + 1];
++};
++
+ class cCaDescriptor;
+ 
+ class cSIProcessor : public cThread {
+@@ -179,6 +196,9 @@
+   static void Clear(void);
+   void SetStatus(bool On);
+   void SetCurrentTransponder(int CurrentSource, int CurrentTransponder);
++
++	void StartStopThread( bool onoff );
++
+   static bool SetCurrentChannelID(tChannelID channelid);
+   static void TriggerDump(void);
+   };
+diff -Nur vdr-1.2.6.orig/fbosd.c vdr-1.2.6/fbosd.c
+--- vdr-1.2.6.orig/fbosd.c	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/fbosd.c	2004-02-11 15:19:49.000000000 +0100
+@@ -0,0 +1,305 @@
++/*
++ * fbosd.c replaces hardware osd driver
++ *
++ * (C) 2003 Alexander Olk <xenomorph2@onlinehome.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ */
++
++#include "fbosd.h"
++#include "tools.h"
++
++cFBOsd* cFBOsd::mpFBOsd = NULL;
++
++CFBWindow::CFBWindow( const int _x, const int _y, const int _dx, const int _dy, int ibpp )
++{
++	x  = _x ;
++	y  = _y ;
++	dx = _dx;
++	dy = _dy;
++	bpp = ibpp;
++	showhide = false;
++	Block = NULL;
++	frameBuffer = NULL;
++	palette = NULL;
++	frameBuffer = CFrameBuffer::getInstance();
++
++	Block = new unsigned char [_dx * _dy];
++
++	// create a new palette for the window
++	// bpp = 2, palette size 4
++	// bpp = 4, palette size 16
++	// bpp = 8, palette size 256
++	palette = new unsigned char [1 << bpp];
++
++	for ( int i = 0 ; i < (1 << bpp) ; i++ )
++		palette[i] = i;
++}
++
++CFBWindow::~CFBWindow( void )
++{
++	if ( Block != NULL )
++	{
++		if ( frameBuffer != NULL )
++			{
++				frameBuffer->paintBackgroundBoxRel( x, y, dx, dy );
++				frameBuffer = NULL;
++			}
++		delete Block;
++		Block = NULL;
++	}
++	if ( palette != NULL )
++		{
++			delete palette;
++			palette = NULL;
++		}
++}
++
++void CFBWindow::ShowHide( bool sh )
++{
++	if ( !sh && showhide )
++		if ( frameBuffer != NULL )
++			frameBuffer->paintBackgroundBoxRel( x, y, dx, dy );
++	if ( sh && !showhide )
++		Show();
++	showhide = sh;
++
++}
++
++void CFBWindow::Show()
++{
++	if ( showhide )
++		if ( ( Block != NULL ) && ( frameBuffer != NULL ) )
++			frameBuffer->RestoreScreen( x, y, dx, dy, Block );
++}
++
++void CFBWindow::MoveWindow( int nx, int ny )
++{
++	showhide = true;
++	if ( ( nx != x ) || ( ny != y ) )
++		{
++			if ( frameBuffer != NULL )
++				frameBuffer->paintBackgroundBoxRel( x, y, dx, dy );
++			x = nx;
++			y = ny;
++		}
++	Show();
++}
++
++void CFBWindow::paletteSetColor( int nr, int acol )
++{
++	if ( palette != NULL )
++		palette[nr] = acol;
++}
++
++void CFBWindow::paletteSet()
++{
++	if ( Block != NULL )
++		{
++			unsigned char colfill = 0;
++			if ( palette != NULL )
++				colfill = ( palette[0] == 0 ) ? 0 : 1;
++			memset( Block, colfill, dx * dy );
++		}
++}
++
++int CFBWindow::SetBlock( osd_cmd_t *dc )
++{
++	if ( Block != NULL )
++		{
++       		uint w, h;
++
++		    w = dc->x1 - dc->x0 + 1; h = dc->y1 - dc->y0 + 1;
++        	if ( dc->color <= 0 )
++            	dc->color = w;
++        	if ( w <= 0 || w > 720 || h <= 0 || h > 576 )
++            	return -1;  // out of range...
++
++			unsigned char *pout = ( Block != NULL ) ? Block : NULL;
++
++			if ( pout == NULL ) return 0;
++	
++			//far from perfect ;) but it works...
++
++			for ( int _y = 0; _y < h; _y++ )
++				for ( int _x = 0; _x < w; _x++ )
++						pout[( _x + dc->x0 ) + dx* ( _y + dc->y0 )] = palette[( (unsigned char *) dc->data ) [_y * dc->color + _x]];
++
++			if ( showhide ) ShowBlock( dc, w, h );
++		}
++	return 1;
++}
++
++void CFBWindow::ShowBlock( osd_cmd_t *dc, uint w, uint h )
++{
++	if ( frameBuffer == NULL ) return;
++
++	unsigned int stride = frameBuffer != NULL ? frameBuffer->getStride() : 0;
++	unsigned char *fbpos = frameBuffer->getFrameBufferPointer() + x + dc->x0 + stride * ( y + dc->y0 );
++	unsigned char *pin = Block + dc->x0 + dx * dc->y0;
++
++	for ( int i = 0; i < h ; i++ )
++		{
++			memcpy( fbpos, pin, w - 1 );
++			fbpos += stride;
++			pin += dx;
++		}
++}
++
++//=========================================================================0
++
++cFBOsd::cFBOsd()
++{
++	frameBuffer = CFrameBuffer::getInstance();
++	// setup framebuffer - from neutrino src
++
++	frameBuffer->init();
++	if ( frameBuffer->setMode( 720, 576, 8 ) )
++		{
++			esyslog("Error while setting framebuffer mode");
++			exit( -1 );
++		}
++
++	// set the framebuffer palette with the colours of vdr
++
++	frameBuffer->ClearFrameBuffer();
++}
++
++cFBOsd::~cFBOsd()
++{
++	if ( frameBuffer != NULL )
++		{
++			for(int x=0;x<256;x++)
++				frameBuffer->paletteSetColor(x, 0x000000, 0xffff);
++
++			frameBuffer->paletteSet();
++
++			delete frameBuffer;
++		}
++
++	for ( int i = 0 ; i <= MAXNUMWINDOWS; i++ )
++		if ( win[i] != NULL ) delete win[i];
++}
++
++cFBOsd *cFBOsd::getInstance()
++{
++	if ( !mpFBOsd )
++		{
++			mpFBOsd = new cFBOsd();
++		}
++	return mpFBOsd;
++}
++
++void cFBOsd::Cmd( osd_cmd_t *dc )
++{
++	switch ( dc->cmd )
++		{
++			case OSD_Close:
++				//closes window "whandle"
++				if ( win[whandle] != NULL )
++					delete win[whandle];
++				win[whandle] = NULL;
++				return;
++			case OSD_Open:
++				// create a new window without showing it
++				win[whandle] = new CFBWindow (dc->x0, dc->y0, dc->x1, dc->y1, dc->color );
++				return;
++			case OSD_Show:
++				// set Show
++				if ( win[whandle] != NULL )
++					win[whandle]->ShowHide( true );
++				return;
++			case OSD_Hide:
++				// set Hide
++				if ( win[whandle] != NULL )
++					win[whandle]->ShowHide( false );
++				return;
++			case OSD_SetPalette:
++				// convert vdr cWindow palette to framebuffer palette
++				int len;
++				len = dc->x0 - dc->color + 1;
++				__u32 *colors;
++				int acol;
++				colors = ( __u32 * ) dc->data;
++				for ( int i = 0; i<len; i++ )
++					{
++						switch ( colors[i] )
++							{
++								case 0x00000000:
++									acol = 0;
++									break;
++								case 0x0000007F:
++								case 0x7F000000:
++									acol = 1;
++									break;
++								case 0x000000FF:
++								case 0xFF000000:
++									acol = 2;
++									break;
++								case 0xFC1414FF:
++								case 0xFF1414FC:
++									acol = 3;
++									break;
++								case 0x24FC24FF:
++								case 0xFF24FC24:
++									acol = 4;
++									break;
++								case 0xFCC024FF:
++								case 0xFF24C0FC:
++									acol = 5;
++									break;
++								case 0xB000FCFF:
++								case 0xFFFC00B0:
++									acol = 6;
++									break;
++								case 0x0000FCFF:
++								case 0xFFFC0000:
++									acol = 7;
++									break;
++								case 0x00FCFCFF:
++								case 0xFFFCFC00:
++									acol = 8;
++									break;
++								case 0xFCFCFCFF:
++								case 0xFFFCFCFC:
++									acol = 9;
++									break;
++							}
++						if ( win[whandle] != NULL )
++							win[whandle]->paletteSetColor( i, acol );
++					}
++				if ( win[whandle] != NULL )
++					win[whandle]->paletteSet();
++				return;
++			case OSD_MoveWindow:
++				// Move OSD window to new position and show it
++				if ( win[whandle] != NULL )
++					win[whandle]->MoveWindow( dc->x0, dc->y0 );
++				return;
++			case OSD_SetBlock:
++				// fills CFBWindow Block with vdr cWindow data (dc->data)
++				// dc->x0,y0,x1,y1 are the coordinates where dc->data will be written inside Block
++				if ( win[whandle] != NULL )
++					win[whandle]->SetBlock( dc );
++				return;
++			case OSD_SetWindow:
++				if ( dc->x0 < 1 || dc->x0 > 7 ) return;
++				whandle = dc->x0;
++				return;
++			default:
++				return;
++		}
++};
+diff -Nur vdr-1.2.6.orig/fbosd.h vdr-1.2.6/fbosd.h
+--- vdr-1.2.6.orig/fbosd.h	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/fbosd.h	2004-02-11 15:19:49.000000000 +0100
+@@ -0,0 +1,86 @@
++/*
++ * fbosd.h
++ *
++ * (C) 2003 Alexander Olk <xenomorph2@onlinehome.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ */
++
++#ifndef __FBOSD_H
++#define __FBOSD_H
++
++#include <linux/dvb/osd.h>
++#include "osdbase.h"
++#include "framebuffer.h"
++
++// CFBWindow class, taken from neutrino fbwindow source and modified a little bit :)
++class CFBWindow {
++
++ private:
++	int bpp; 				// bits per pixel, needed for palette
++	unsigned char *palette;	// holds the palette for the window
++						// global framebuffer palette is set in cFBOsd class
++	bool showhide;			// show or hide the window...
++	unsigned char *Block;		// holds data being sent from osd/osdbase
++	CFrameBuffer *frameBuffer;
++
++ public:
++	int x, y;   /* upper left corner */
++	int dx, dy; /* dimension         */
++
++	CFBWindow( const int _x, const int _y, const int _dx, const int _dy, int ibpp );
++	~CFBWindow();
++
++	// set showhide
++	void ShowHide( bool sh );
++	// moves window to a new position and shows it
++	void MoveWindow( int nx, int ny );
++	// fill Block with data from vdr cWindow
++	// dc has x0,y0,x1,y1 positions where dc->data should be put in Block
++	int SetBlock( osd_cmd_t *dc );
++	// set entry nr in window palette to colour acol
++	void paletteSetColor( int nr, int acol );
++	// fills Block with background colour according to first palette entry
++	// if palette[0]=1, background will be clrBackground (50%gray), else clrTransparent
++	void paletteSet();
++
++ private:
++ 	// writes (restores) contents of Block to framebuffer, called from MoveWindow
++ 	void Show();
++	// special for SetBlock, paints only updated area...
++	void ShowBlock( osd_cmd_t *dc, uint w, uint h );
++};
++
++// singleton...
++class cFBOsd {
++public:
++	cFBOsd();
++	~cFBOsd();
++
++	static cFBOsd* mpFBOsd;
++	static cFBOsd *getInstance();
++	// Cmd replaces ioctl of a real hardware driver
++	void Cmd( osd_cmd_t *dc );
++private:
++	CFrameBuffer		*frameBuffer;
++	int whandle; // handle which window ??
++	CFBWindow *win[MAXNUMWINDOWS];
++};
++
++
++#endif
++
++
+diff -Nur vdr-1.2.6.orig/framebuffer.c vdr-1.2.6/framebuffer.c
+--- vdr-1.2.6.orig/framebuffer.c	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/framebuffer.c	2004-02-11 15:19:49.000000000 +0100
+@@ -0,0 +1,414 @@
++/*
++	Neutrino-GUI  -   DBoxII-Project
++
++	Copyright (C) 2001 Steffen Hehn 'McClean'
++                      2003 thegoodguy
++		      changes for vdr Alexander Olk
++
++	License: GPL
++
++	This program is free software; you can redistribute it and/or modify
++	it under the terms of the GNU General Public License as published by
++	the Free Software Foundation; either version 2 of the License, or
++	(at your option) any later version.
++
++	This program is distributed in the hope that it will be useful,
++	but WITHOUT ANY WARRANTY; without even the implied warranty of
++	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++	GNU General Public License for more details.
++
++	You should have received a copy of the GNU General Public License
++	along with this program; if not, write to the Free Software
++	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++*/
++
++
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++
++#include <stdio.h>
++#include <fcntl.h>
++#include <signal.h>
++#include <sys/ioctl.h>
++#include <unistd.h>
++#include <sys/mman.h>
++#include <memory.h>
++
++#include <linux/kd.h>
++
++#include <stdint.h>
++#include <dbox/fb.h>
++#include "tools.h"
++
++#include "framebuffer.h"
++
++#define BACKGROUNDIMAGEWIDTH 720
++
++#define COL_BACKGROUND 		255
++
++static uint8_t * virtual_fb = NULL;
++
++CFrameBuffer::CFrameBuffer()
++: active ( true )
++{
++	available  = 0;
++	cmap.start = 0;
++	cmap.len = 256;
++	cmap.red = red;
++	cmap.green = green;
++	cmap.blue  = blue;
++	cmap.transp = trans;
++	backgroundColor = 0;
++	fd  = 0;
++	tty = 0;
++}
++
++CFrameBuffer* CFrameBuffer::getInstance()
++{
++	static CFrameBuffer* frameBuffer = NULL;
++
++	if(!frameBuffer)
++		{
++			frameBuffer = new CFrameBuffer();
++			isyslog("frameBuffer Instance created");
++		}
++	return frameBuffer;
++}
++
++void CFrameBuffer::init(std::string fbDevice)
++{
++	fd=open(fbDevice.c_str(), O_RDWR);
++	if (fd<0)
++	{
++		perror(fbDevice.c_str());
++		goto nolfb;
++	}
++
++	if (ioctl(fd, FBIOGET_VSCREENINFO, &screeninfo)<0)
++	{
++		perror("FBIOGET_VSCREENINFO");
++		goto nolfb;
++	}
++
++	memcpy(&oldscreen, &screeninfo, sizeof(screeninfo));
++
++	fb_fix_screeninfo fix;
++	if (ioctl(fd, FBIOGET_FSCREENINFO, &fix)<0)
++	{
++		perror("FBIOGET_FSCREENINFO");
++		goto nolfb;
++	}
++
++	available=fix.smem_len;
++	isyslog("%dk video mem\n", available/1024);
++	lfb=(unsigned char*)mmap(0, available, PROT_WRITE|PROT_READ, MAP_SHARED, fd, 0);
++
++	if (!lfb)
++	{
++		perror("mmap");
++		goto nolfb;
++	}
++
++	if ((tty=open("/dev/vc/0", O_RDWR))<0)
++	{
++		perror("open (tty)");
++		goto nolfb;
++	}
++
++	struct sigaction act;
++
++	memset(&act,0,sizeof(act));
++	act.sa_handler  = switch_signal;
++	sigemptyset(&act.sa_mask);
++	sigaction(SIGUSR1,&act,NULL);
++	sigaction(SIGUSR2,&act,NULL);
++
++	struct vt_mode mode;
++
++	if (-1 == ioctl(tty,KDGETMODE, &kd_mode)) {
++		perror("ioctl KDGETMODE");
++		goto nolfb;
++	}
++
++	if (-1 == ioctl(tty,VT_GETMODE, &vt_mode)) {
++      		perror("ioctl VT_GETMODE");
++		goto nolfb;
++	}
++
++	if (-1 == ioctl(tty,VT_GETMODE, &mode)) {
++      		perror("ioctl VT_GETMODE");
++		goto nolfb;
++	}
++
++	mode.mode   = VT_PROCESS;
++	mode.waitv  = 0;
++	mode.relsig = SIGUSR1;
++	mode.acqsig = SIGUSR2;
++
++	if (-1 == ioctl(tty,VT_SETMODE, &mode)) {
++		perror("ioctl VT_SETMODE");
++		goto nolfb;
++	}
++
++	if (-1 == ioctl(tty,KDSETMODE, KD_GRAPHICS)) {
++		perror("ioctl KDSETMODE");
++		goto nolfb;
++	}
++
++	return;
++
++nolfb:
++	esyslog("framebuffer not available.\n");
++	lfb=0;
++}
++
++
++CFrameBuffer::~CFrameBuffer()
++{
++#ifdef RETURN_FROM_GRAPHICS_MODE
++	if (-1 == ioctl(tty,KDSETMODE, kd_mode))
++		perror("ioctl KDSETMODE");
++#endif
++
++	if (-1 == ioctl(tty,VT_SETMODE, &vt_mode))
++		perror("ioctl VT_SETMODE");
++
++	/*
++	if (available)
++		ioctl(fd, FBIOPUT_VSCREENINFO, &oldscreen);
++	if (lfb)
++		munmap(lfb, available);
++		*/
++
++	if (virtual_fb == NULL)
++		delete[] virtual_fb;
++}
++
++int CFrameBuffer::getFileHandle()
++{
++	return fd;
++}
++
++unsigned int CFrameBuffer::getStride()
++{
++	return stride;
++}
++
++unsigned char* CFrameBuffer::getFrameBufferPointer()
++{
++	if (active || (virtual_fb == NULL))
++		return lfb;
++	else
++		return virtual_fb;
++}
++
++bool CFrameBuffer::getActive()
++{
++	return (active || (virtual_fb != NULL));
++}
++
++t_fb_var_screeninfo *CFrameBuffer::getScreenInfo()
++{
++	return &screeninfo;
++}
++
++int CFrameBuffer::setMode(unsigned int nxRes, unsigned int nyRes, unsigned int nbpp)
++{
++	if (!available&&!active)
++		return -1;
++
++	screeninfo.xres_virtual=screeninfo.xres=nxRes;
++	screeninfo.yres_virtual=screeninfo.yres=nyRes;
++	screeninfo.bits_per_pixel=nbpp;
++
++	if (ioctl(fd, FBIOPUT_VSCREENINFO, &screeninfo)<0)
++	{
++		perror("FBIOPUT_VSCREENINFO");
++		return -1;
++	}
++
++	if ((screeninfo.xres!=nxRes) && (screeninfo.yres!=nyRes) && (screeninfo.bits_per_pixel!=nbpp))
++	{
++		esyslog("SetMode failed: wanted: %dx%dx%d, got %dx%dx%d\n",
++		       nxRes, nyRes, nbpp,
++		       screeninfo.xres, screeninfo.yres, screeninfo.bits_per_pixel);
++		return -1;
++	}
++
++	xRes = screeninfo.xres;
++	yRes = screeninfo.yres;
++	bpp  = screeninfo.bits_per_pixel;
++	fb_fix_screeninfo fix;
++
++	if (ioctl(fd, FBIOGET_FSCREENINFO, &fix)<0)
++	{
++		perror("FBIOGET_FSCREENINFO");
++		return -1;
++	}
++
++	stride=fix.line_length;
++	memset(getFrameBufferPointer(), 0, stride*yRes);
++	return 0;
++}
++
++
++void CFrameBuffer::paletteFade(int i, __u32 rgb1, __u32 rgb2, int level)
++{
++	__u16 *r = cmap.red+i;
++	__u16 *g = cmap.green+i;
++	__u16 *b = cmap.blue+i;
++	*r= ((rgb2&0xFF0000)>>16)*level;
++	*g= ((rgb2&0x00FF00)>>8 )*level;
++	*b= ((rgb2&0x0000FF)    )*level;
++	*r+=((rgb1&0xFF0000)>>16)*(255-level);
++	*g+=((rgb1&0x00FF00)>>8 )*(255-level);
++	*b+=((rgb1&0x0000FF)    )*(255-level);
++}
++
++void CFrameBuffer::setTransparency( int tr )
++{
++	if (!active)
++		return;
++
++	if (tr> 8)
++		tr= 8;
++
++	int val = (tr << 8) | tr;
++	if (ioctl(fd, AVIA_GT_GV_SET_BLEV, val ))
++		perror("AVIA_GT_GV_SET_BLEV");
++}
++
++void CFrameBuffer::setAlphaFade(int in, int num, int tr)
++{
++	for (int i=0; i<num; i++)
++	{
++		cmap.transp[in+i]=tr;
++		//tr++;
++	}
++}
++
++void CFrameBuffer::paletteGenFade(int in, __u32 rgb1, __u32 rgb2, int num, int tr)
++{
++	for (int i=0; i<num; i++)
++	{
++		paletteFade(in+i, rgb1, rgb2, i*(255/(num-1)));
++		cmap.transp[in+i]=tr;
++		tr++;
++	}
++}
++
++void CFrameBuffer::paletteSetColor(int i, __u32 rgb, int tr)
++{
++	cmap.red[i]    =(rgb&0xFF0000)>>8;
++	cmap.green[i]  =(rgb&0x00FF00)   ;
++	cmap.blue[i]   =(rgb&0x0000FF)<<8;
++	cmap.transp[i] =tr;
++}
++
++void CFrameBuffer::paletteSet(struct fb_cmap *map)
++{
++	if (!active)
++		return;
++	
++	if(map == NULL)
++		map = &cmap;
++
++	ioctl(fd, FBIOPUTCMAP, map);
++}
++
++
++void CFrameBuffer::paintBoxRel(int x, int y, int dx, int dy, unsigned char col)
++{
++	if (!getActive())
++		return;
++
++	unsigned char* pos = getFrameBufferPointer() + x + stride*y;
++	for(int count=0;count<dy;count++)
++	{
++		memset(pos, col, dx);
++		pos += stride;
++	}
++}
++
++void CFrameBuffer::setBackgroundColor(int color)
++{
++	backgroundColor = color;
++}
++
++void CFrameBuffer::paintBackgroundBoxRel(int x, int y, int dx, int dy)
++{
++	if (!getActive())
++		return;
++	paintBoxRel(x, y, dx, dy, backgroundColor);
++}
++
++void CFrameBuffer::RestoreScreen(int x, int y, int dx, int dy, unsigned char* memp)
++{
++	if (!getActive())
++		return;
++
++	unsigned char *fbpos = getFrameBufferPointer() + x + stride*y;
++	unsigned char *bkpos = memp;
++	for(int count=0;count<dy;count++)
++	{
++		memcpy(fbpos, bkpos, dx);
++		fbpos += stride;
++		bkpos += dx;
++	}
++}
++
++void CFrameBuffer::switch_signal (int signal)
++{
++	CFrameBuffer * thiz = CFrameBuffer::getInstance();
++	if (signal == SIGUSR1) {
++		if (virtual_fb == NULL)
++			delete[] virtual_fb;
++		virtual_fb = new uint8_t[thiz->stride * thiz->yRes];
++		thiz->active = false;
++		if (virtual_fb != NULL)
++			memcpy(virtual_fb, thiz->lfb, thiz->stride * thiz->yRes);
++		ioctl(thiz->tty, VT_RELDISP, 1);
++		isyslog ("release display\n");
++	}
++	else if (signal == SIGUSR2) {
++		ioctl(thiz->tty, VT_RELDISP, VT_ACKACQ);
++		thiz->active = true;
++		isyslog ("acquire display\n");
++		thiz->paletteSet(NULL);
++		if (virtual_fb != NULL)
++			memcpy(thiz->lfb, virtual_fb, thiz->stride * thiz->yRes);
++		else
++			memset(thiz->lfb, 0, thiz->stride*thiz->yRes);
++	}
++}
++
++void CFrameBuffer::ClearFrameBuffer()
++{
++	setBackgroundColor(COL_BACKGROUND);
++
++	//background
++	paletteSetColor(COL_BACKGROUND, 0x000000, 0xffff);
++
++	// vdr colors
++	paletteSetColor(0,0x00000000,0xffff);
++	paletteSetColor(1,0x7F000000,0x7fff);
++	paletteSetColor(2,0xFF000000,0);
++	paletteSetColor(3,0xFF1414FC,0);
++	paletteSetColor(4,0xFF24FC24,0);
++	paletteSetColor(5,0xFF24C0FC,0);
++	paletteSetColor(6,0xFFFC00B0,0);
++	paletteSetColor(7,0xFFFC0000,0);
++	paletteSetColor(8,0xFFFCFC00,0);
++	paletteSetColor(9,0xFFFCFCFC,0);
++
++	paletteSetColor(10, 0x000000, 0);
++	paletteSetColor(11, 0x000000, 0);
++	paletteSetColor(12, 0x000000, 0);
++	paletteSetColor(13, 0x000000, 0);
++	paletteSetColor(14, 0x000000, 0);
++	paletteSetColor(15, 0x000000, 0);
++	paletteSetColor(16, 0x000000, 0);
++
++	paletteSet();
++}
+diff -Nur vdr-1.2.6.orig/framebuffer.h vdr-1.2.6/framebuffer.h
+--- vdr-1.2.6.orig/framebuffer.h	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/framebuffer.h	2004-02-11 15:19:49.000000000 +0100
+@@ -0,0 +1,114 @@
++/*
++	Neutrino-GUI  -   DBoxII-Project
++
++	Copyright (C) 2001 Steffen Hehn 'McClean'
++	Homepage: http://dbox.cyberphoria.org/
++
++	License: GPL
++
++	This program is free software; you can redistribute it and/or modify
++	it under the terms of the GNU General Public License as published by
++	the Free Software Foundation; either version 2 of the License, or
++	(at your option) any later version.
++
++	This program is distributed in the hope that it will be useful,
++	but WITHOUT ANY WARRANTY; without even the implied warranty of
++	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++	GNU General Public License for more details.
++
++	You should have received a copy of the GNU General Public License
++	along with this program; if not, write to the Free Software
++	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++*/
++
++
++#ifndef __framebuffer__
++#define __framebuffer__
++
++
++#include <linux/fb.h>
++#include <linux/vt.h>
++
++#include <stdint.h>
++#include <string>
++
++typedef struct fb_var_screeninfo t_fb_var_screeninfo;
++
++/** Ausführung als Singleton */
++class CFrameBuffer
++{
++	private:
++
++		CFrameBuffer();
++
++		struct rgbData
++		{
++			uint8_t r;
++			uint8_t g;
++			uint8_t b;
++		} __attribute__ ((packed));
++
++		struct rawHeader
++		{
++			uint8_t width_lo;
++			uint8_t width_hi;
++			uint8_t height_lo;
++			uint8_t height_hi;
++			uint8_t transp;
++		} __attribute__ ((packed));
++
++		int             fd, tty;
++		unsigned char * lfb;
++		int		available;
++		int             backgroundColor;
++		unsigned int	xRes, yRes, stride, bpp;
++		t_fb_var_screeninfo screeninfo, oldscreen;
++		fb_cmap cmap;
++		__u16 red[256], green[256], blue[256], trans[256];
++
++		void paletteFade(int i, __u32 rgb1, __u32 rgb2, int level);
++
++		int 	kd_mode;
++		struct	vt_mode vt_mode;
++		bool	active;
++		static	void switch_signal (int);
++
++	public:
++
++		~CFrameBuffer();
++
++		static CFrameBuffer* getInstance();
++
++		void init(std::string fbDevice="/dev/fb/0");
++		int setMode(unsigned int xRes, unsigned int yRes, unsigned int bpp);
++
++
++		int getFileHandle(); //only used for plugins (games) !!
++		t_fb_var_screeninfo *getScreenInfo();
++
++		unsigned char* getFrameBufferPointer(); //pointer to framebuffer
++		unsigned int getStride(); //stride (anzahl bytes die eine Zeile im Framebuffer belegt)
++		bool getActive(); //is framebuffer active
++
++		void setTransparency( int tr = 0 );
++
++		//Palette stuff
++		void setAlphaFade(int in, int num, int tr);
++		void paletteGenFade(int in, __u32 rgb1, __u32 rgb2, int num, int tr=0);
++		void paletteSetColor(int i, __u32 rgb, int tr);
++		void paletteSet(struct fb_cmap *map = NULL);
++
++		void paintBoxRel(int x, int y, int dx, int dy, unsigned char col);
++
++		int getBackgroundColor() { return backgroundColor;}
++		void setBackgroundColor(int color);
++		void paintBackgroundBoxRel(int x, int y, int dx, int dy);
++
++		void RestoreScreen(int x, int y, int dx, int dy, unsigned char* memp);
++
++		void ClearFrameBuffer();
++
++};
++
++
++#endif
+diff -Nur vdr-1.2.6.orig/menu.c vdr-1.2.6/menu.c
+--- vdr-1.2.6.orig/menu.c	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/menu.c	2004-02-17 13:18:55.000000000 +0100
+@@ -2044,15 +2044,18 @@
+ 
+ cMenuSetupDVB::cMenuSetupDVB(void)
+ {
++  static const char * const VideoOutputTexts[] = {"CVBS", "RGB", "S-VIDEO", "YUV_V", "YUV_C"};
+   SetSection(tr("DVB"));
+   Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDevice::NumDevices()));
+   Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
++  Add(new cMenuEditStraItem(tr("Setup.DVB$Video output"),          &data.VideoOutput, sizeof(VideoOutputTexts)/sizeof(char *), VideoOutputTexts));
+ }
+ 
+ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
+ {
+   int oldPrimaryDVB = Setup.PrimaryDVB;
+   bool oldVideoFormat = Setup.VideoFormat;
++  int  oldVideoOutput = Setup.VideoOutput;
+   eOSState state = cMenuSetupBase::ProcessKey(Key);
+ 
+   if (state == osBack && Key == kOk) {
+@@ -2060,6 +2063,8 @@
+         state = osSwitchDvb;
+      if (Setup.VideoFormat != oldVideoFormat)
+         cDevice::PrimaryDevice()->SetVideoFormat(Setup.VideoFormat);
++     if (Setup.VideoOutput != oldVideoOutput)
++        cDevice::PrimaryDevice()->SetVideoOutput(Setup.VideoOutput);
+      }
+   return state;
+ }
+diff -Nur vdr-1.2.6.orig/plugin.c vdr-1.2.6/plugin.c
+--- vdr-1.2.6.orig/plugin.c	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/plugin.c	2004-02-11 15:19:49.000000000 +0100
+@@ -112,6 +112,11 @@
+   return MakeDirs(buffer, true) ? buffer : NULL;
+ }
+ 
++void * cPlugin::GetSetData( int what )
++{
++	return NULL;
++}
++
+ // --- cDll ------------------------------------------------------------------
+ 
+ cDll::cDll(const char *FileName, const char *Args)
+diff -Nur vdr-1.2.6.orig/plugin.h vdr-1.2.6/plugin.h
+--- vdr-1.2.6.orig/plugin.h	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/plugin.h	2004-02-11 15:19:49.000000000 +0100
+@@ -47,6 +47,8 @@
+ 
+   void RegisterI18n(const tI18nPhrase * const Phrases);
+ 
++  virtual void *GetSetData( int what );
++
+   static void SetConfigDirectory(const char *Dir);
+   static const char *ConfigDirectory(const char *PluginName = NULL);
+   };
+diff -Nur vdr-1.2.6.orig/recording.c vdr-1.2.6/recording.c
+--- vdr-1.2.6.orig/recording.c	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/recording.c	2004-02-16 21:36:59.000000000 +0100
+@@ -784,6 +784,14 @@
+ // The minimum age of an index file for considering it no longer to be written:
+ #define MININDEXAGE    3600 // seconds
+ 
++inline int swap32(int x)
++
++{
++   return
++     ((((x) & 0xff000000) >> 24) | (((x) & 0x00ff0000) >>  8) |
++      (((x) & 0x0000ff00) <<  8) | (((x) & 0x000000ff) << 24));
++}
++
+ cIndexFile::cIndexFile(const char *FileName, bool Record)
+ :resumeFile(FileName)
+ {
+@@ -821,6 +829,8 @@
+                           close(f);
+                           f = -1;
+                           }
++                          else for (int i = 0; i < size; i++)
++                             index[i].offset = swap32(index[i].offset);
+                        // we don't close f here, see CatchUp()!
+                        }
+                     else
+@@ -916,7 +926,7 @@
+ bool cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
+ {
+   if (f >= 0) {
+-     tIndex i = { FileOffset, PictureType, FileNumber, 0 };
++     tIndex i = { swap32(FileOffset), PictureType, FileNumber, 0 };
+      if (safe_write(f, &i, sizeof(i)) < 0) {
+         LOG_ERROR_STR(fileName);
+         close(f);
+diff -Nur vdr-1.2.6.orig/thread.c vdr-1.2.6/thread.c
+--- vdr-1.2.6.orig/thread.c	2004-02-19 08:34:47.000000000 +0100
++++ vdr-1.2.6/thread.c	2004-02-11 15:19:50.000000000 +0100
 @@ -391,4 +391,3 @@
       _exit(0);
       }
  }
 -
+diff -Nur vdr-1.2.6.orig/vdr.c vdr-1.2.6/vdr.c
+--- vdr-1.2.6.orig/vdr.c	2004-02-19 08:34:48.000000000 +0100
++++ vdr-1.2.6/vdr.c	2004-02-17 17:04:29.000000000 +0100
+@@ -69,6 +69,12 @@
+   signal(signum, SignalHandler);
+ }
+ 
++static void HandleSegv(int signum)
++{
++  esyslog("Process %d received signal %d. Sleeping.", getpid(), signum);
++  sleep(3600);
++}
++
+ static void Watchdog(int signum)
+ {
+   // Something terrible must have happened that prevented the 'alarm()' from
+@@ -446,6 +452,8 @@
+   if (signal(SIGPIPE, SignalHandler) == SIG_IGN) signal(SIGPIPE, SIG_IGN);
+   if (WatchdogTimeout > 0)
+      if (signal(SIGALRM, Watchdog)   == SIG_IGN) signal(SIGALRM, SIG_IGN);
++  
++  signal(SIGSEGV, HandleSegv);
+ 
+   // Watchdog:
+ 
