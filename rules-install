@@ -28,7 +28,7 @@ inetd;install:-m755:inetd:TARGET/sbin
 modutils;make:install-bin
 netkit_telnet;install:-m755:telnet/telnet:TARGET/bin/telnet;install:-m755:telnetd/telnetd:TARGET/sbin/in.telnetd
 portmap;make:install:BASEDIR=TARGET
-procps;remove:TARGET/bin/ps;install:-m755:top:ps/ps:TARGET/bin
+procps;remove:TARGET/bin/ps;install:-m755:top:ps/ps:TARGET/bin;install:-m755:proc/libproc.so.3.0.5:TARGET/lib
 rsh;make:install:PREFIX=TARGET
 tinylogin;make:install:PREFIX=TARGET
 
@@ -111,5 +111,9 @@ dvbdate;install:-m755:dvbdate:TARGET/bin
 dvbstream;install:-m755:dvbstream:rtpfeed:TARGET/bin
 dvbtext;install:-m755:dvbtext:TARGET/bin
 dvbtune;install:-m755:dvbtune:TARGET/bin
+<<<<<<< rules-install
+vls;make:install
+=======
 vls;make:install:DESTDIR=TARGET
 
+>>>>>>> 1.69
