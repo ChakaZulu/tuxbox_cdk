@@ -192,8 +192,8 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 #
 
 root: \
-	.root .busybox .ftpd .inetd .modutils \
-	.netkit_telnet .procps .watchdog
+	.root .busybox .ftpd .modutils \
+	.procps .watchdog
 
 root_optional: \
 	.portmap
@@ -213,7 +213,7 @@ root_optional: \
 	$(MAKE) -C root install
 	touch .root
 
-.ftpd: .bootstrap .inetd @DEPENDS_ftpd@
+.ftpd: .bootstrap @DEPENDS_ftpd@
 	@PREPARE_ftpd@
 	cd @DIR_ftpd@ && \
 		CC=$(target)-gcc \
@@ -223,18 +223,6 @@ root_optional: \
 		@INSTALL_ftpd@
 	@CLEANUP_ftpd@
 	touch .ftpd
-
-.inetd: .bootstrap @DEPENDS_inetd@
-	@PREPARE_inetd@
-	touch @DIR_inetd@/MCONFIG
-	cd @DIR_inetd@/inetd && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
-		$(MAKE) all && \
-		@INSTALL_inetd@
-	@CLEANUP_inetd@
-	touch .inetd
 
 .modutils: .bootstrap @DEPENDS_modutils@
 	@PREPARE_modutils@
@@ -251,20 +239,6 @@ root_optional: \
 		@INSTALL_modutils@
 	@CLEANUP_modutils@
 	touch .modutils
-
-.netkit_telnet: .bootstrap .inetd .busybox .libncurses @DEPENDS_netkit_telnet@
-	@PREPARE_netkit_telnet@
-	touch @DIR_netkit_telnet@/MCONFIG
-	cd @DIR_netkit_telnet@ && \
-		$(BUILDENV) \
-		LIBS="-lncurses" \
-		$(MAKE) -C telnet && \
-		$(BUILDENV) \
-		LIBS="-lutil" \
-		$(MAKE) -C telnetd && \
-		@INSTALL_netkit_telnet@
-	@CLEANUP_netkit_telnet@
-	touch .netkit_telnet
 
 .portmap: .bootstrap @DEPENDS_portmap@
 	@PREPARE_portmap@
