@@ -1,20 +1,18 @@
 #
-# $Id: INSTALL.en,v 1.9 2003/01/20 22:25:38 obi Exp $
+# $Id: INSTALL.en,v 1.10 2003/02/14 15:17:29 obi Exp $
 #
-# Author:
-# --------
-# (C) 2002 by Andreas Oberritter <obi@tuxbox.org>
+# Copyright (c) 2002-2003 Andreas Oberritter <obi@tuxbox.org>
 #
-# License:
-# --------
-# This document my neither by sold nor be spread on
-# any non-free media.
-# 
-# Content:
-# --------
+# Permission is granted to copy, distribute and/or modify this document
+# under the terms of the GNU Free Documentation License, Version 1.2
+# or any later version published by the Free Software Foundation;
+# with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+# A copy of the license is included in cdk/common-licenses/FDL-1.2
+#
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
 #
+
 
 Prerequistes:
 --------------

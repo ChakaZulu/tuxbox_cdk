@@ -1,17 +1,14 @@
 #
-# $Id: README.3rdparty.de,v 1.1 2002/04/04 10:13:10 obi Exp $
+# $Id: README.3rdparty.de,v 1.2 2003/02/14 15:17:29 obi Exp $
 #
-# Urheber:
-# --------
-# (C) 2002 by Andreas Oberritter <obi@tuxbox.org>
+# Copyright (c)  YEAR  YOUR NAME.
 #
-# Lizenz:
-# -------
-# Dieses Dokument darf weder verkauft werden noch darf es auf
-# kostenpflichtigen Datentraegern weiterverbreitet werden.
-#
-# Inhalt:
-# -------
+# Permission is granted to copy, distribute and/or modify this document
+# under the terms of the GNU Free Documentation License, Version 1.2
+# or any later version published by the Free Software Foundation;
+# with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+# A copy of the license is included in cdk/common-licenses/FDL-1.2
+# 
 # Inhalt dieses Dokuments sind die noetigen Schritte zum hinzufuegen
 # von 3rd party programmen zum CDK.
 #
@@ -93,11 +90,14 @@ Falls die Installation von Hand im Makefile.am geregelt wird, reicht es, hier
 den Bezeichner in eine eigene Zeile zu schreiben. Ansonsten nimmt man in der
 Regel folgenden Eintrag:
 
-paket;make:install
+paket;make:install:DESTDIR=TARGET
 
 Es koennen mehrere Befehle angegeben werden, diese sind per Semikolon von
 einander zu trennen. Befehle und zugehoerige Parameter werden durch Doppelpunkt
 getrennt.
+DESTDIR=TARGET wird benutzt, um make den Pfad des cdkroots mitzuteilen. Einige Pakete
+benutzen davon abweichende Variablennamen oder koennen ausschliesslich ueber --prefix
+zur configure-zeit den Zielpfad mitgeteilt bekommen.
 
 configure.ac:
 -------------
@@ -138,20 +138,24 @@ bereits gebaut wurde.
 
 Beispiel fuer eine Regel:
 
-.paket: @DEPENDS_paket@
+.paket: .bootstrap @DEPENDS_paket@
 	@PREPARE_paket@
 	cd @DIR_paket@ && \
-		CC=$(TARGET)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
+		@BUILDENV_paket@ \
 		./configure \
-			--build=$(BUILD) \
-			--host=$(TARGET) \
-			--target=$(TARGET) \
-			--prefix=$(targetprefix) && \
-		make all && \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
+		$(MAKE) all && \
 		@INSTALL_paket@
 	@CLEANUP_paket@
 	touch .paket
+
+@BUILDENV_paket@ ist ein Makro, das eine Menge an oft gebrauchten Umgebungs-
+variablen enthaelt, wie z.b. CC, CFLAGS usw.
+Ab und zu kann es vorkommen, dass ein Paket andere oder zusaetzliche Variablen
+braucht. Diese koennen unterhalb von BUILDENV angegeben werden. Beispiele dazu
+findet man im Makefile.am.
 
 Weiterhin gibt es in Makefile.am Regeln, die verschiedene Regeln gruppieren
 und letztendlich zu einer globalen Regel ("all") zusammengefasst werden.
