@@ -159,6 +159,7 @@ TUXBOX_RULES_MAKE(gdb)
 TUXBOX_RULES_MAKE(inetd)
 TUXBOX_RULES_MAKE(telnetd)
 TUXBOX_RULES_MAKE(strace)
+TUXBOX_RULES_MAKE(nano)
 
 #
 # internal

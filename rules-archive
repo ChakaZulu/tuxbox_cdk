@@ -51,3 +51,9 @@ courie32.exe;http://www.microsoft.com/typography/downloads
 #
 gdb-5.0.tar.gz;ftp://ftp.freenet.de/pub/ftp.gnu.org/gnu/gdb
 strace-4.2.tar.gz;http://prdownloads.sourceforge.net/strace
+
+#
+# misc apps
+#
+nano-1.0.7.tar.gz;http://www.nano-editor.org/dist/v1.0
+

@@ -211,6 +211,19 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 	@CLEANUP_msttf@
 	touch .msttf
 
+.nano: @DEPENDS_nano@
+	@PREPARE_nano@
+	cd @DIR_nano@ && \
+		CC=$(TARGET)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		./configure \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_nano@
+	@CLEANUP_nano@
+	touch .nano
+
+	
 
 #######################
 #
@@ -507,6 +520,7 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .tinylogin .modutils .inetd .telnetd .cabextract .msttf
+	-rm .nano
 	-rm .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	-rm .ppcboot .linuxkernel
 	-rm .gdb .strace
