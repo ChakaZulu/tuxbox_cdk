@@ -9,7 +9,7 @@ $INSMOD $MODDIR/misc/avs.o type=0 debug=0
 #modprobe avs
 
 echo "Lade saa7126"
-$INSMOD $MODDIR/misc/saa7126.o board=0 debug=0
+$INSMOD $MODDIR/misc/saa7126.o board=1 debug=0
 #modprobe saa7126
 
 echo "Lade event"
