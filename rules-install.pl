@@ -78,6 +78,10 @@ if ( $#ARGV >= 1 )
     {
       $output .= "ln -sf " . $_[1] . " " . $_[2];
     }
+    elsif ( $_[0] eq "archive" )
+    {
+      $output .= "TARGETNAME-ar cru " . $_[1] . " " . $_[2];
+    }
     else
     {
       die "can't recognise @_";

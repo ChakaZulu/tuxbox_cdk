@@ -2,7 +2,7 @@
 #
 # fields (separated by ';')
 #   name
-#   rules ('make', 'install', 'link') and arguments
+#   rules ('make', 'install', 'link', 'archive') and arguments
 #   ...
 #
 
