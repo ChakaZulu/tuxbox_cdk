@@ -34,3 +34,13 @@ libpng-1.0.12.tar.gz
 qt-embedded-2.3.0.tar.gz
 libxml2-2.4.10.tar.gz
 zlib.tar.gz
+
+#
+# additional
+#
+gdb-5.0.tar.gz;ftp://ftp.freenet.de/pub/ftp.gnu.org/gnu/gdb/
+
+
+
+
+

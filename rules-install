@@ -33,3 +33,8 @@ libpng;make:install:prefix=TARGET
 libqt;install:src/moc/moc:HOST/bin
 libxml2;make:install;link:TARGET/bin/xml2-config:HOST/bin/xml2-config
 libz;make:install
+
+#
+# additional
+#
+gdb;make;install

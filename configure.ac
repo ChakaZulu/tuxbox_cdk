@@ -145,6 +145,11 @@ TUXBOX_RULES_MAKE(libxml2)
 TUXBOX_RULES_MAKE(libz)
 
 #
+# additional
+#
+TUXBOX_RULES_MAKE(gdb)
+
+#
 # internal
 #
 AC_CONFIG_COMMANDS_POST([

@@ -1,0 +1,33 @@
+diff -Naur gdb/gdb/ppc-linux-nat.c gdb-5.0/gdb/ppc-linux-nat.c
+--- gdb/gdb/ppc-linux-nat.c	Tue Feb 22 19:47:41 2000
++++ gdb-5.0/gdb/ppc-linux-nat.c	Wed Jun 27 02:56:21 2001
+@@ -48,17 +48,17 @@
+  PT_FPR0 + 48, PT_FPR0 + 50, PT_FPR0 + 52, PT_FPR0 + 54, PT_FPR0 + 56, PT_FPR0 + 58, PT_FPR0 + 60, PT_FPR0 + 62,
+  PT_NIP, PT_MSR, PT_CCR, PT_LNK, PT_CTR, PT_XER, PT_MQ};
+ 
+-int 
++int
+ ppc_register_u_addr (int ustart, int regnum)
+ {
+   return (ustart + 4 * regmap[regnum]);
+ }
+ 
+ void
+-supply_gregset (gregset_t * gregsetp)
++supply_gregset (elf_gregset_t * gregsetp)
+ {
+   int regi;
+-  register greg_t *regp = (greg_t *) gregsetp;
++  register elf_greg_t *regp = (elf_greg_t *) gregsetp;
+ 
+   for (regi = 0; regi < 32; regi++)
+     supply_register (regi, (char *) (regp + regi));
+@@ -68,7 +68,7 @@
+ }
+ 
+ void
+-supply_fpregset (fpregset_t * fpregsetp)
++supply_fpregset (elf_fpregset_t * fpregsetp)
+ {
+   int regi;
+   for (regi = 0; regi < 32; regi++)

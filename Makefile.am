@@ -155,7 +155,26 @@ root: .busybox .tinylogin .modutils .etc
 	chmod 755 $(targetprefix)/etc/init.d/*
 	touch .etc
 
-		
+
+#######################
+#
+#   support tools
+#
+ 
+.gdb: .gcc .libncurses @DEPENDS_gdb@
+	@PREPARE_gdb@
+	cd @DIR_gdb@ && \
+		LD_LIBRARY_PATH=$(libdir) ./configure \
+                        --build=`./config.guess` \
+                        --host=$(TARGET) \
+                        --target=$(TARGET) \
+                        --nfp \
+                        --disable-sim \
+                        --prefix=$(targetprefix) && \
+		@INSTALL_gdb@
+		touch .gdb
+
+
 #######################
 #
 #   contrib libs
@@ -205,7 +224,6 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 			--disable-rpath \
 			--without-cxx-binding \
 			--with-fallbacks='linux vt100 xterm' && \
-		make libs includes && \
 		@INSTALL_libncurses@
 	@CLEANUP_libncurses@
 	touch .libncurses

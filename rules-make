@@ -36,3 +36,8 @@ libpng;1.0.12;libpng-1.0.12;libpng-1.0.12.tar.gz;extract:libpng-1.0.12.tar.gz
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff
 libxml2;2.4.10;libxml2-2.4.10;libxml2-2.4.10.tar.gz;extract:libxml2-2.4.10.tar.gz
 libz;1.1.3;zlib-1.1.3;zlib.tar.gz:zlib.diff;extract:zlib.tar.gz;patch:zlib.diff
+
+#
+# additional
+#
+gdb;5.0;gdb-5.0;gdb-5.0.tar.gz:gdb.diff;extract:gdb-5.0.tar.gz;patch:gdb.diff
