@@ -1,6 +1,6 @@
 PATH := $(hostprefix)/bin:$(PATH)
 
-all: core libs root apps boot devel
+all: core libs root boot apps devel
 extra: java contrib_apps fun dvb_apps
 
 #######################
