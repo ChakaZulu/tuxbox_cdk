@@ -74,6 +74,8 @@ if ( $#ARGV >= 2 )
 
     shift @_;
 
+    $output .= "( rm -rf " . $dir . " || /bin/true )";
+
     foreach ( @_ )
     {
       local @_;
