@@ -85,7 +85,7 @@ vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 #
 # development tools
 #
-gdb-6.1.1.tar.bz2;ftp://sources.redhat.com/pub/gdb/old-releases
+gdb-6.3.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
 insight-6.1.tar.bz2;ftp://sources.redhat.com/pub/gdb/old-releases
 ltrace_0.3.26.tar.gz;ftp://ftp.debian.org/debian/pool/main/l/ltrace
 strace-4.4.98.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/strace
