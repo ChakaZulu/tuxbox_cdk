@@ -1,86 +1,81 @@
-diff -Naur busybox-0.60.3.org/Config.h busybox-0.60.3/Config.h
---- busybox-0.60.3.org/Config.h	Sat Apr  6 06:22:15 2002
-+++ busybox-0.60.3/Config.h	Mon Jul 22 19:31:26 2002
-@@ -7,8 +7,8 @@
- //
- //
- // BusyBox Applications
--//#define BB_ADJTIMEX
--//#define BB_AR
-+#define BB_ADJTIMEX
-+#define BB_AR
+diff -urN busybox-0.60.3.orig/Config.h busybox-0.60.3/Config.h
+--- busybox-0.60.3.orig/Config.h	Sat Apr  6 06:22:15 2002
++++ busybox-0.60.3/Config.h	Sat Jul 27 11:55:07 2002
+@@ -10,24 +10,24 @@
+ //#define BB_ADJTIMEX
+ //#define BB_AR
  #define BB_ASH
- #define BB_BASENAME
+-#define BB_BASENAME
++//#define BB_BASENAME
  #define BB_CAT
-@@ -20,16 +20,16 @@
+ #define BB_CHGRP
+ #define BB_CHMOD
+ #define BB_CHOWN
+-#define BB_CHROOT
+-#define BB_CHVT
++//#define BB_CHROOT
++//#define BB_CHVT
  #define BB_CLEAR
  //#define BB_CMP
  #define BB_CP
--//#define BB_CPIO
-+#define BB_CPIO
- #define BB_CUT
+ //#define BB_CPIO
+-#define BB_CUT
++//#define BB_CUT
  #define BB_DATE
  //#define BB_DC
  #define BB_DD
--//#define BB_DEALLOCVT
-+#define BB_DEALLOCVT
+ //#define BB_DEALLOCVT
  #define BB_DF
- #define BB_DIRNAME
+-#define BB_DIRNAME
++//#define BB_DIRNAME
  #define BB_DMESG
--//#define BB_DOS2UNIX
-+#define BB_DOS2UNIX
+ //#define BB_DOS2UNIX
  //#define BB_DPKG
- //#define BB_DPKG_DEB
- //#define BB_DUTMP
-@@ -39,22 +39,22 @@
- #define BB_ENV
- //#define BB_EXPR
+@@ -41,7 +41,7 @@
  //#define BB_FBSET
--//#define BB_FDFLUSH
-+#define BB_FDFLUSH
+ //#define BB_FDFLUSH
  #define BB_FIND
- #define BB_FREE
+-#define BB_FREE
++//#define BB_FREE
  //#define BB_FREERAMDISK
  //#define BB_FSCK_MINIX
--//#define BB_GETOPT
-+#define BB_GETOPT
- #define BB_GREP
+ //#define BB_GETOPT
+@@ -49,12 +49,12 @@
  #define BB_GUNZIP
  #define BB_GZIP
  #define BB_HALT
- #define BB_HEAD
--//#define BB_HOSTID
+-#define BB_HEAD
++//#define BB_HEAD
+ //#define BB_HOSTID
 -//#define BB_HOSTNAME
-+#define BB_HOSTID
 +#define BB_HOSTNAME
  //#define BB_HUSH
- #define BB_ID
+-#define BB_ID
 -//#define BB_IFCONFIG
++//#define BB_ID
 +#define BB_IFCONFIG
  #define BB_INIT
  //#define BB_INSMOD
  #define BB_KILL
-@@ -64,45 +64,45 @@
- //#define BB_LENGTH
- #define BB_LN
+@@ -66,29 +66,29 @@
  //#define BB_LOADACM
--//#define BB_LOADFONT
-+#define BB_LOADFONT
+ //#define BB_LOADFONT
  //#define BB_LOADKMAP
- #define BB_LOGGER
+-#define BB_LOGGER
++//#define BB_LOGGER
  //#define BB_LOGNAME
  //#define BB_LOSETUP
  #define BB_LS
- #define BB_LSMOD
--//#define BB_MAKEDEVS
-+#define BB_MAKEDEVS
+-#define BB_LSMOD
++//#define BB_LSMOD
+ //#define BB_MAKEDEVS
  //#define BB_MD5SUM
  #define BB_MKDIR
--//#define BB_MKFIFO
-+#define BB_MKFIFO
+ //#define BB_MKFIFO
  //#define BB_MKFS_MINIX
  #define BB_MKNOD
- #define BB_MKSWAP
+-#define BB_MKSWAP
++//#define BB_MKSWAP
  //#define BB_MKTEMP
 -#define BB_MODPROBE
 +//#define BB_MODPROBE
@@ -89,25 +84,16 @@ diff -Naur busybox-0.60.3.org/Config.h busybox-0.60.3/Config.h
  //#define BB_MSH
  //#define BB_MT
  #define BB_MV
--//#define BB_NC
+ //#define BB_NC
 -//#define BB_NSLOOKUP
-+#define BB_NC
 +#define BB_NSLOOKUP
  #define BB_PIDOF
 -//#define BB_PING
 +#define BB_PING
  //#define BB_PIVOT_ROOT
  #define BB_POWEROFF
--//#define BB_PRINTF
-+#define BB_PRINTF
- #define BB_PS
- #define BB_PWD
- //#define BB_RDATE
- //#define BB_READLINK
- #define BB_REBOOT
--//#define BB_RENICE
-+#define BB_RENICE
- #define BB_RESET
+ //#define BB_PRINTF
+@@ -102,14 +102,14 @@
  #define BB_RM
  #define BB_RMDIR
  //#define BB_RMMOD
@@ -116,65 +102,63 @@ diff -Naur busybox-0.60.3.org/Config.h busybox-0.60.3/Config.h
  //#define BB_RPM2CPIO
  #define BB_SED
  //#define BB_SETKEYCODES
-@@ -114,19 +114,19 @@
+ #define BB_SLEEP
+ #define BB_SORT
+ //#define BB_STTY
+-#define BB_SWAPONOFF
++//#define BB_SWAPONOFF
+ #define BB_SYNC
  #define BB_SYSLOGD
  #define BB_TAIL
- #define BB_TAR
--//#define BB_TEE
--//#define BB_TEST
-+#define BB_TEE
-+#define BB_TEST
- //#define BB_TELNET
--//#define BB_TFTP
--//#define BB_TIME
-+#define BB_TFTP
-+#define BB_TIME
- #define BB_TOUCH
--//#define BB_TR
--//#define BB_TRACEROUTE
-+#define BB_TR
-+#define BB_TRACEROUTE
- #define BB_TRUE_FALSE
- #define BB_TTY
--//#define BB_UNIX2DOS
--//#define BB_UUENCODE
--//#define BB_UUDECODE
-+#define BB_UNIX2DOS
-+#define BB_UUENCODE
-+#define BB_UUDECODE
- #define BB_UMOUNT
- #define BB_UNIQ
- #define BB_UNAME
-@@ -184,7 +184,7 @@
- #define BB_FEATURE_VERBOSE_USAGE
+@@ -133,10 +133,10 @@
+ //#define BB_UPDATE
+ #define BB_UPTIME
+ //#define BB_USLEEP
+-//#define BB_VI
++#define BB_VI
+ //#define BB_WATCHDOG
+ #define BB_WC
+-//#define BB_WGET
++#define BB_WGET
+ #define BB_WHICH
+ #define BB_WHOAMI
+ #define BB_XARGS
+@@ -162,7 +162,7 @@
+ // size for the call to xmalloc.  You can use the following feature to have
+ // them put on the stack.  For some very small machines with limited stack
+ // space, this can be deadly.  For most folks, this works just fine...
+-//#define BB_FEATURE_BUFFERS_GO_ON_STACK
++#define BB_FEATURE_BUFFERS_GO_ON_STACK
+ // The third alternative for buffer allocation is to use BSS.  This works
+ // beautifully for computers with a real MMU (and OS support), but wastes
+ // runtime RAM for uCLinux.  This behavior was the only one available for
+@@ -217,7 +217,7 @@
+ #define BB_FEATURE_USE_INITTAB
  //
- // Use termios to manipulate the screen ('more' is prettier with this on)
--//#define BB_FEATURE_USE_TERMIOS
-+#define BB_FEATURE_USE_TERMIOS
+ //Enable init being called as /linuxrc
+-#define BB_FEATURE_LINUXRC
++//#define BB_FEATURE_LINUXRC
  //
- // calculate terminal & column widths (for more, ls, and telnet)
- #define BB_FEATURE_AUTOWIDTH
-@@ -229,17 +229,17 @@
- #define BB_FEATURE_REMOTE_LOG
+ //Have init enable core dumping for child processes (for debugging only) 
+ //#define BB_FEATURE_INIT_COREDUMPS
+@@ -226,7 +226,7 @@
+ //#define BB_FEATURE_EXTRA_QUIET
+ //
+ // enable syslogd -R remotehost
+-#define BB_FEATURE_REMOTE_LOG
++//#define BB_FEATURE_REMOTE_LOG
  //
  // enable syslogd -C
--//#define BB_FEATURE_IPC_SYSLOG
-+#define BB_FEATURE_IPC_SYSLOG
- //
- //Disable for a simple tail implementation (2.34k vs 3k for the full one).
- //Both provide 'tail -f', but this cuts out -c, -q, -s, and -v. 
+ //#define BB_FEATURE_IPC_SYSLOG
+@@ -236,7 +236,7 @@
  #define BB_FEATURE_FANCY_TAIL
  //
  // Enable support for loop devices in mount
 -#define BB_FEATURE_MOUNT_LOOP
-+// #define BB_FEATURE_MOUNT_LOOP
++//#define BB_FEATURE_MOUNT_LOOP
  //
  // Enable support for a real /etc/mtab file instead of /proc/mounts
--//#define BB_FEATURE_MTAB_SUPPORT
-+#define BB_FEATURE_MTAB_SUPPORT
- //
- // Enable support for mounting remote NFS volumes. 
- // You may need to mount with "-o nolock" if you are
+ //#define BB_FEATURE_MTAB_SUPPORT
 @@ -247,7 +247,7 @@
  //
  // If you are using uClibc, be sure that you've already compiled
@@ -184,25 +168,20 @@ diff -Naur busybox-0.60.3.org/Config.h busybox-0.60.3/Config.h
  //
  // Enable support forced filesystem unmounting 
  // (i.e., in case of an unreachable NFS system).
-@@ -269,15 +269,14 @@
- #define BB_FEATURE_SORT_UNIQUE
+@@ -263,10 +263,10 @@
+ #define BB_FEATURE_TAR_GZIP 
+ //
+ // Enable reverse sort
+-#define BB_FEATURE_SORT_REVERSE
++//#define BB_FEATURE_SORT_REVERSE
+ //
+ // Enable uniqe sort
+-#define BB_FEATURE_SORT_UNIQUE
++//#define BB_FEATURE_SORT_UNIQUE
  //
  // Enable command line editing in the shell.  
--// Only relevant if a shell is enabled. On by default.
--#define BB_FEATURE_COMMAND_EDITING
-+// Only relevant if a shell is enabled. On by default.#define BB_FEATURE_COMMAND_EDITING
- //
- // Enable tab completion in the shell.  This is now working quite nicely.
- // This feature adds a bit over 4k. Only relevant if a shell is enabled.
- #define BB_FEATURE_COMMAND_TAB_COMPLETION
- //
- // Attempts to match usernames in a ~-prefixed path
--//#define BB_FEATURE_COMMAND_USERNAME_COMPLETION
-+#define BB_FEATURE_COMMAND_USERNAME_COMPLETION
- //
- //Allow the shell to invoke all the compiled in BusyBox applets as if they
- //were shell builtins.  Nice for staticly linking an emergency rescue shell,
-@@ -298,7 +297,7 @@
+ // Only relevant if a shell is enabled. On by default.
+@@ -298,7 +298,7 @@
  // current username and hostname.  On systems that don't have usernames
  // or hostnames, this can look hideous.
  // Only relevant if a shell is enabled.
@@ -211,7 +190,7 @@ diff -Naur busybox-0.60.3.org/Config.h busybox-0.60.3/Config.h
  //
  // Uncomment this option to disable job control.  Job control lets you 
  // run jobs in the background (which completely useless for is all you 
-@@ -332,20 +331,20 @@
+@@ -332,7 +332,7 @@
  //#define BB_FEATURE_MINIX2
  //
  // Enable ifconfig status reporting output -- this feature adds 7k.
@@ -219,39 +198,17 @@ diff -Naur busybox-0.60.3.org/Config.h busybox-0.60.3/Config.h
 +#define BB_FEATURE_IFCONFIG_STATUS
  //
  // Enable ifconfig slip-specific options "keepalive" and "outfill"
--//#define BB_FEATURE_IFCONFIG_SLIP
-+#define BB_FEATURE_IFCONFIG_SLIP
+ //#define BB_FEATURE_IFCONFIG_SLIP
+@@ -400,13 +400,13 @@
+ #define BB_FEATURE_VI_WIN_RESIZE	// handle window resize
  //
- // Enable ifconfig options "mem_start", "io_addr", and "irq".
--//#define BB_FEATURE_IFCONFIG_MEMSTART_IOADDR_IRQ
-+#define BB_FEATURE_IFCONFIG_MEMSTART_IOADDR_IRQ
+ // Enable a if you system have setuped locale
+-//#define BB_LOCALE_SUPPORT
++#define BB_LOCALE_SUPPORT
  //
- // Enable ifconfig option "hw".  Currently works for only with "ether".
--//#define BB_FEATURE_IFCONFIG_HW
-+#define BB_FEATURE_IFCONFIG_HW
- //
- // Allows "broadcast +" to set broadcast automatically based on hostaddr
- // and netmask, at a cost of about 100 bytes of code (i386).
--//#define BB_FEATURE_IFCONFIG_BROADCAST_PLUS
-+#define BB_FEATURE_IFCONFIG_BROADCAST_PLUS
- //
- // Enable busybox --install [-s]
- // to create links (or symlinks) for all the commands that are 
-@@ -379,10 +378,10 @@
- #define BB_FEATURE_FIND_NEWER
- //
- // Support for the -A -B and -C context flags in grep
--//#define BB_FEATURE_GREP_CONTEXT
-+#define BB_FEATURE_GREP_CONTEXT
- //
- // Support for the EGREP applet (alias to the grep applet)
--//#define BB_FEATURE_GREP_EGREP_ALIAS
-+#define BB_FEATURE_GREP_EGREP_ALIAS
- //
- // Tell tftp what commands that should be supported.
- #define BB_FEATURE_TFTP_PUT
-@@ -406,7 +405,7 @@
- #define BB_FEATURE_TELNET_TTYPE
+ // Support for TELNET to pass TERM type to remote host.  Adds 384 bytes.
+-#define BB_FEATURE_TELNET_TTYPE
++//#define BB_FEATURE_TELNET_TTYPE
  //
  // Support for devfs.
 -//#define BB_FEATURE_DEVFS
@@ -259,9 +216,9 @@ diff -Naur busybox-0.60.3.org/Config.h busybox-0.60.3/Config.h
  //
  // End of Features List
  //
-diff -Naur busybox-0.60.3.org/applets.h busybox-0.60.3/applets.h
---- busybox-0.60.3.org/applets.h	Wed Mar 20 03:10:21 2002
-+++ busybox-0.60.3/applets.h	Mon Jul 22 19:36:54 2002
+diff -urN busybox-0.60.3.orig/applets.h busybox-0.60.3/applets.h
+--- busybox-0.60.3.orig/applets.h	Wed Mar 20 03:10:21 2002
++++ busybox-0.60.3/applets.h	Sat Jul 27 23:09:21 2002
 @@ -44,19 +44,19 @@
  
  
