@@ -1098,6 +1098,7 @@ endif
 	< Makefile > Makefile.tmp && mv Makefile.tmp Makefile && \
 	$(MAKE) && \
 	@INSTALL_videodevX@
+	@CLEANUP_videodevX@
 	touch .videdevX
 	
 
