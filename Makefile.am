@@ -1264,7 +1264,7 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
+	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
 	-rm .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg
 	-rm .libpcap .libpng .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
 	-rm .cabextract .msttf
@@ -1276,7 +1276,7 @@ distclean-local:
 	-rm .fx2 .sections .tools .tuxtxt .zapit
 	-rm .libconfigfile .libcramfs
 	-rm .liblcddisplay .libmd5sum .libmpegtools .libnet .libucodes
-	-rm .console_data .console_tools .fbset .ssh
+	-rm .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc
 	-rm .dvbstream .dvbtext .dvbtune
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
