@@ -37,6 +37,7 @@ libffi;make:install
 libfreetype;make:install;link:TARGET/bin/freetype-config:HOST/bin/freetype-config
 libncurses;make:install.libs:install.includes
 libjpeg;make:install-lib:install-headers
+libpcap;make:install
 libpng;make:install:prefix=TARGET
 libqt;install:src/moc/moc:HOST/bin
 libreadline;make:install
@@ -44,7 +45,6 @@ libsdl;make:install;link:TARGET/bin/sdl-config:HOST/bin/sdl-config
 libsigc;make:install;link:TARGET/bin/sigc-config:HOST/bin/sigc-config
 libxml2;make:install;link:TARGET/bin/xml2-config:HOST/bin/xml2-config
 libz;make:install
-libpcap
  
 #
 # contrib apps
@@ -54,6 +54,7 @@ console_tools;make:install
 fbset;install:-m755:fbset:TARGET/bin
 lirc;make:install
 ssh;make:install-nokeys:prefix=TARGET:sysconfdir=TARGET/etc/ssh
+tcpdump;make:install
 xrc;make:install
 
 #

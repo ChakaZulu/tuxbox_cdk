@@ -349,15 +349,6 @@ libs: \
 	@CLEANUP_libjpeg@
 	touch .libjpeg
 
-.libpng: .bootstrap .libz @DEPENDS_libpng@
-	@PREPARE_libpng@
-	cd @DIR_libpng@ && \
-		cp scripts/makefile.linux Makefile && \
-		make all CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS) -DPNG_DEBUG=0" && \
-		@INSTALL_libpng@
-	@CLEANUP_libpng@
-	touch .libpng
-
 .libpcap: .bootstrap @DEPENDS_libpcap@
 	@PREPARE_libpcap@
 	cd @DIR_libpcap@ && \
@@ -369,10 +360,19 @@ libs: \
 			--with-pcap=linux \
 			--build=$(build) && \
 		make && \
-		make install
 		@INSTALL_libpcap@
 	@CLEANUP_libpcap@
 	touch .libpcap
+
+.libpng: .bootstrap .libz @DEPENDS_libpng@
+	@PREPARE_libpng@
+	cd @DIR_libpng@ && \
+		cp scripts/makefile.linux Makefile && \
+		make all CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS) -DPNG_DEBUG=0" && \
+		@INSTALL_libpng@
+	@CLEANUP_libpng@
+	touch .libpng
+
 #
 # qt embedded (current only moc)
 #
@@ -583,6 +583,21 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .xrc
 	@CLEANUP_ssh@
 	touch .ssh
 
+.tcpdump: .bootstrap @DEPENDS_tcpdump@
+	@PREPARE_tcpdump@
+	cd @DIR_tcpdump@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_CFLAGS)" \
+		LIBS="-lpcap" \
+		./configure \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--build=$(build) && \
+		make && \
+		@INSTALL_tcpdump@
+	@CLEANUP_tcpdump@
+	touch .tcpdump
+
 .xrc: .bootstrap .lirc @DEPENDS_xrc@
 	@PREPARE_xrc@
 	cd @DIR_xrc@ && \
@@ -599,23 +614,6 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .xrc
 		@INSTALL_xrc@
 	@CLEANUP_xrc@
 	touch .xrc
-
-.tcpdump: .bootstrap @DEPENDS_tcpdump@
-	@PREPARE_tcpdump@
-	cd @DIR_tcpdump@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_CFLAGS)" \
-		LIBS="-lpcap" \
-		./configure \
-			--host=$(target) \
-			--prefix=$(targetprefix) \
-			--build=$(build) && \
-		make && \
-		make install
-		@INSTALL_tcpdump@
-	@CLEANUP_tcpdump@
-	touch .tcpdump
-
 
 #######################
 #

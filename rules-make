@@ -40,6 +40,7 @@ libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.g
 libfreetype;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2;extract:freetype-2.0.9.tar.bz2
 libncurses;5.2;ncurses-5.2;ncurses-5.2.tar.gz:ncurses.diff;extract:ncurses-5.2.tar.gz;patch:ncurses.diff
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff
+libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;patch:libpcap.diff
 libpng;1.0.12;libpng-1.0.12;libpng-1.0.12.tar.gz;extract:libpng-1.0.12.tar.gz
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff
 libreadline;4.2a;readline-4.2a;readline-4.2a.tar.gz;extract:readline-4.2a.tar.gz
@@ -47,16 +48,16 @@ libsdl;1.2.3;SDL-1.2.3;SDL-1.2.3.tar.gz:sdl.diff;extract:SDL-1.2.3.tar.gz;patch:
 libsigc;1.0.4;libsigc++-1.0.4;libsigc++-1.0.4.tar.gz:libsigc.diff;extract:libsigc++-1.0.4.tar.gz;patch:libsigc.diff
 libxml2;2.4.19;libxml2-2.4.19;libxml2-2.4.19.tar.gz;extract:libxml2-2.4.19.tar.gz
 libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff;extract:zlib-1.1.4.tar.bz2;patch:zlib.diff
-libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;patch:libpcap.diff
+
 #
-# contrib
-apps
+# contrib apps
 #
 console_data;1999.08.29;console-data-1999.08.29;console-data_1999.08.29.orig.tar.gz;extract:console-data_1999.08.29.orig.tar.gz
 console_tools;0.2.3;console-tools-0.2.3;console-tools-0.2.3.tar.gz:console-tools.diff;extract:console-tools-0.2.3.tar.gz;patch:console-tools.diff
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.6.5;lirc-0.6.5;lirc-0.6.5.tar.bz2;extract:lirc-0.6.5.tar.bz2
 ssh;3.0.2p1;openssh-3.0.2p1;openssh-3.0.2p1.tar.gz:ssh.diff;extract:openssh-3.0.2p1.tar.gz;patch:ssh.diff
+libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz
 xrc;0.6.3;xrc-0.6.3;xrc-0.6.3.tar.gz:xrc.diff;extract:xrc-0.6.3.tar.gz;patch:xrc.diff
 
 #
