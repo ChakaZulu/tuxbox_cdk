@@ -84,7 +84,7 @@ if ( $#ARGV >= 2 )
       {
         if ( $_[1] =~ m#\.tar\.bz2# )
         {
-          $output .= "tar -xjf Archive/" . $_[1];
+          $output .= "tar --bzip2 -xf Archive/" . $_[1];
         }
         elsif ( $_[1] =~ m#\.tar\.gz# )
         {
@@ -101,7 +101,7 @@ if ( $#ARGV >= 2 )
 
         if ( $_[1] =~ m#\.tar\.bz2# )
         {
-          $output .= "tar -xjf ../Archive/" . $_[1];
+          $output .= "tar --bzip2 -xf ../Archive/" . $_[1];
         }
         elsif ( $_[1] =~ m#\.tar\.gz# )
         {
