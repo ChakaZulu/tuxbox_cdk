@@ -1,5 +1,5 @@
 #
-# $Id: README.3rdparty.de,v 1.2 2003/02/14 15:17:29 obi Exp $
+# $Id: README.3rdparty.de,v 1.3 2003/04/17 18:02:39 obi Exp $
 #
 # Copyright (c)  YEAR  YOUR NAME.
 #
@@ -141,7 +141,7 @@ Beispiel fuer eine Regel:
 .paket: .bootstrap @DEPENDS_paket@
 	@PREPARE_paket@
 	cd @DIR_paket@ && \
-		@BUILDENV_paket@ \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -149,7 +149,7 @@ Beispiel fuer eine Regel:
 		$(MAKE) all && \
 		@INSTALL_paket@
 	@CLEANUP_paket@
-	touch .paket
+	touch $@
 
 @BUILDENV_paket@ ist ein Makro, das eine Menge an oft gebrauchten Umgebungs-
 variablen enthaelt, wie z.b. CC, CFLAGS usw.
