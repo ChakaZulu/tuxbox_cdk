@@ -157,7 +157,7 @@ else
 fi
 
 AC_MSG_CHECKING([for boot directory])
-if test ! -f "$bootdir/ppcboot/Makefile" ; then
+if test ! -f "$bootdir/u-boot/Makefile" ; then
 	bootdir=no
 	AC_MSG_RESULT([no])
 else
