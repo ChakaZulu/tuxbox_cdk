@@ -1,3 +1,2 @@
-@TARGETRULESET_FLASH_TRUE@/dev/mtdblock/3	/var	jffs2	defaults	0 0
 none		/tmp	tmpfs	defaults	0 0
 proc		/proc	proc	defaults	0 0
