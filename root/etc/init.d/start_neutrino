@@ -1,4 +1,5 @@
 #!/bin/sh
+timerd
 sectionsd
 zapit
 lcdd
