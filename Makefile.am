@@ -1339,15 +1339,9 @@ $(flashprefix)/.part_inetd: $(flashprefix)/.flash $(flashprefix)/.part_network .
 
 flash-telnetd: $(flashprefix)/.part_telnetd
 
-$(flashprefix)/.part_telnetd: $(flashprefix)/.flash $(flashprefix)/.part_inetd $(flashprefix)/.part_tinylogin .netkit_telnet
+$(flashprefix)/.part_telnetd: $(flashprefix)/.flash $(flashprefix)/.part_inetd .netkit_telnet
 	$(INSTALL) $(targetprefix)/sbin/in.telnetd $(flashprefix)/root/sbin
 	@touch $(flashprefix)/.part_telnetd
-
-$(flashprefix)/.part_tinylogin: $(flashprefix)/.flash .tinylogin
-	$(INSTALL) $(targetprefix)/bin/tinylogin $(flashprefix)/root/bin
-	for i in `find $(targetprefix)/bin/ -lname "*tinylogin"` ; do cp -pa $$i $(flashprefix)/root/bin/ ; done
-	for i in `find $(targetprefix)/sbin/ -lname "*tinylogin"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
-	@touch $(flashprefix)/.part_tinylogin
 
 flash-ssh: $(flashprefix)/.part_ssh
 
@@ -1483,10 +1477,6 @@ $(flashprefix)/root-cramfs.img: $(flashprefix)/.lib
 		rm -fr $(flashprefix)/cramfs/etc/ssh ; \
 		ln -sf ../var/etc/ssh $(flashprefix)/cramfs/etc/ssh ; \
 	fi
-	@if [ -e $(flashprefix)/cramfs/bin/tinylogin ] ; then \
-		rm $(flashprefix)/cramfs/bin/tinylogin ; \
-		ln -sf ../var/bin/tinylogin $(flashprefix)/cramfs/bin/tinylogin ; \
-	fi
 	@$(FAKEROOT) $(MKCRAMFS) -p -n "0106`date +%Y%m%d%H%M`" $(flashprefix)/cramfs/ $(flashprefix)/root-cramfs.img
 	@rm -fr $(flashprefix)/cramfs
 
@@ -1505,10 +1495,6 @@ $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
 	fi
 	@if [ -d $(flashprefix)/root/etc/ssh ] ; then \
 		cp -pa $(flashprefix)/root/etc/ssh $(flashprefix)/jffs2/etc/ssh ; \
-	fi
-	@if [ -e $(flashprefix)/root/bin/tinylogin ] ; then \
-		$(INSTALL) -d $(flashprefix)/jffs2/bin ; \
-		cp -pa $(flashprefix)/root/bin/tinylogin $(flashprefix)/jffs2/bin/ ; \
 	fi
 	@$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/jffs2/ -o $(flashprefix)/var-jffs2.img
 	@rm -rf $(flashprefix)/jffs2
@@ -1550,7 +1536,7 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin .watchdog
+	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .watchdog
 	-rm .libboost .libcommoncplusplus .libcrypto .libcurl
 	-rm .libdirectfb .libdirectfbpp .libdvbpsi .libffi .libfreetype
 	-rm .libncurses .libjpeg .libmad .libpcap .libpng .libpopt

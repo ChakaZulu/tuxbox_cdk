@@ -28,7 +28,6 @@ modutils;make:install-bin:sbindir=TARGET/sbin
 netkit_telnet;install:-m755:telnet/telnet:TARGET/bin/telnet;install:-m755:telnetd/telnetd:TARGET/sbin/in.telnetd
 portmap;make:install:BASEDIR=TARGET
 procps;remove:TARGET/bin/ps;install:-m755:top:ps/ps:TARGET/bin
-tinylogin;make:install:PREFIX=TARGET
 
 #
 # contrib libs
