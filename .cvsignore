@@ -23,6 +23,7 @@ linux-2.4.22
 .gdb
 .gdb-remote
 .glibc
+.insight
 .lcars
 .lcd
 .lcdmenu
