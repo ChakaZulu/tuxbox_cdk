@@ -22,6 +22,8 @@ AC_SUBST(DEPENDS_$1)dnl
 PREPARE_$1="`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 prepare` && ( rm -rf build || /bin/true ) && mkdir build"
 AC_SUBST(PREPARE_$1)dnl
 DIR_$1="build"
+AC_SUBST(SOURCEDIR_$1)dnl
+SOURCEDIR_$1=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`
 AC_SUBST(DIR_$1)dnl
 CONFIGURE_$1="../`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`/configure"
 AC_SUBST(CONFIGURE_$1)dnl
@@ -33,4 +35,3 @@ CLEANUP_$1="rm -rf `${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFIL
 AC_SUBST(CLEANUP_$1)dnl
 CLEANUP="$CLEANUP `${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`"
 ])
-
