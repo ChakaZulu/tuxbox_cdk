@@ -221,6 +221,7 @@ TUXBOX_RULES_MAKE(console_tools)
 TUXBOX_RULES_MAKE(fbset)
 TUXBOX_RULES_MAKE(lirc)
 TUXBOX_RULES_MAKE(ssh)
+TUXBOX_RULES_MAKE(xrc)
 
 #
 # msttf

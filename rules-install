@@ -52,6 +52,7 @@ console_tools;make:install
 fbset;install:-m755:fbset:TARGET/bin
 lirc;make:install
 ssh;make:install-nokeys:prefix=TARGET:sysconfdir=TARGET/etc/ssh
+xrc;make:install
 
 #
 # msttf

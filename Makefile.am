@@ -473,7 +473,7 @@ libs: \
 #   contrib apps
 #
 
-contrib_apps: .console_data .console_tools .fbset .lirc .ssh
+contrib_apps: .console_data .console_tools .fbset .lirc .ssh .xrc
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -550,11 +550,28 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh
 			--without-shadow \
 			--with-4in6 \
 			--disable-suid-ssh \
-			--with-path="/sbin:/bin" && \
+			--with-path="/bin:/sbin" && \
 		make && \
 		@INSTALL_ssh@
 	@CLEANUP_ssh@
 	touch .ssh
+
+.xrc: .bootstrap .lirc @DEPENDS_xrc@
+	@PREPARE_xrc@
+	cd @DIR_xrc@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--disable-qpe \
+			--disable-qt-embedded \
+			--without-x && \
+		@INSTALL_xrc@
+	@CLEANUP_xrc@
+	touch .xrc
 
 #######################
 #
