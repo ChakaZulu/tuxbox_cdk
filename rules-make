@@ -14,9 +14,9 @@
 #
 linux;2.4.2;linux-2.4.2;linux-2.4.2.tar.bz2:linux-2.4.2.dbox.diff;remove:linux;extract:linux-2.4.2.tar.bz2;move:linux:linux-2.4.2;patch:linux-2.4.2.dbox.diff;link:linux-2.4.2:linux
 binutils;2.11.92.0.10;binutils-2.11.92.0.10;binutils-2.11.92.0.10.tar.bz2;extract:binutils-2.11.92.0.10.tar.bz2
-bootstrap_gcc;3.0.2;gcc-3.0.2;gcc-core-3.0.2.tar.gz:gcc-core.diff;extract:gcc-core-3.0.2.tar.gz;patch:gcc-core.diff
+bootstrap_gcc;3.0.3;gcc-3.0.3;gcc-core-3.0.3.tar.gz:gcc-core.diff;extract:gcc-core-3.0.3.tar.gz;patch:gcc-core.diff
 glibc;2.2.3;glibc-2.2.3;glibc-2.2.3.tar.bz2:glibc-linuxthreads-2.2.3.tar.bz2:glibc.diff;extract:glibc-2.2.3.tar.bz2;dirextract:glibc-linuxthreads-2.2.3.tar.bz2;patch:glibc.diff
-gcc;3.0.2;gcc-3.0.2;gcc-core-3.0.2.tar.gz:gcc-g++-3.0.2.tar.gz;extract:gcc-core-3.0.2.tar.gz;extract:gcc-g++-3.0.2.tar.gz
+gcc;3.0.3;gcc-3.0.3;gcc-core-3.0.3.tar.gz:gcc-g++-3.0.3.tar.gz;extract:gcc-core-3.0.3.tar.gz;extract:gcc-g++-3.0.3.tar.gz
 
 #
 # minimal root
@@ -48,7 +48,7 @@ cabextract;0.5;cabextract-0.5;cabextract-0.5.tar.gz;extract:cabextract-0.5.tar.g
 msttf;0.0;msttf;arial32.exe:arialb32.exe:courie32.exe;dircreate;dirextract:arial32.exe;dirextract:arialb32.exe;dirextract:courie32.exe
 
 #
-# development
+# development tools
 #
 gdb;5.0;gdb-5.0;gdb-5.0.tar.gz:gdb.diff;extract:gdb-5.0.tar.gz;patch:gdb.diff
 strace;4.2;strace-4.2;strace-4.2.tar.gz:strace.diff;extract:strace-4.2.tar.gz;patch:strace.diff
@@ -57,4 +57,3 @@ strace;4.2;strace-4.2;strace-4.2.tar.gz:strace.diff;extract:strace-4.2.tar.gz;pa
 # misc apps
 #
 nano;1.0.7;nano-1.0.7;nano-1.0.7.tar.gz;extract:nano-1.0.7.tar.gz
-

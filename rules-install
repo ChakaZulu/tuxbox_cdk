@@ -21,7 +21,9 @@ gcc
 busybox;make:install:PREFIX=TARGET
 tinylogin;make:install:PREFIX=TARGET
 modutils;make:install-bin
+inetd
 rsh;make:install:PREFIX=TARGET
+telnetd
 
 #
 # contrib libs
@@ -42,11 +44,11 @@ cabextract;make:install
 msttf
 
 #
-# additional
+# development tools
 #
 gdb;make:install
-inetd
-telnetd
 strace;make:install
-nano;make:install
 
+
+
+nano;make:install

@@ -11,8 +11,8 @@
 #
 linux-2.4.2.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
 binutils-2.11.92.0.10.tar.bz2;ftp://ftp.kernel.org/pub/linux/devel/binutils
-gcc-core-3.0.2.tar.gz;ftp://ftp.fu-berlin.de/unix/languages/egcs/releases/gcc-3.0.2
-gcc-g++-3.0.2.tar.gz;ftp://ftp.fu-berlin.de/unix/languages/egcs/releases/gcc-3.0.2
+gcc-core-3.0.3.tar.gz;ftp://ftp.fu-berlin.de/unix/languages/egcs/releases/gcc-3.0.2
+gcc-g++-3.0.3.tar.gz;ftp://ftp.fu-berlin.de/unix/languages/egcs/releases/gcc-3.0.2
 glibc-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 
@@ -22,6 +22,7 @@ glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnu
 busybox-0.60.1.tar.gz;ftp://busybox.net/busybox
 tinylogin-0.80.tar.gz;ftp://oss.lineo.com/tinylogin
 modutils-2.4.9.tar.bz2
+# netkibase includes inetd
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
@@ -47,7 +48,7 @@ arial32.exe;http://www.microsoft.com/typography/downloads
 courie32.exe;http://www.microsoft.com/typography/downloads
 
 #
-# development
+# development tools
 #
 gdb-5.0.tar.gz;ftp://ftp.freenet.de/pub/ftp.gnu.org/gnu/gdb
 strace-4.2.tar.gz;http://prdownloads.sourceforge.net/strace
@@ -56,4 +57,3 @@ strace-4.2.tar.gz;http://prdownloads.sourceforge.net/strace
 # misc apps
 #
 nano-1.0.7.tar.gz;http://www.nano-editor.org/dist/v1.0
-
