@@ -1,6 +1,6 @@
-diff -Naur libsigc++-1.0.4.orig/ac_thread.sh libsigc++-1.0.4/ac_thread.sh
---- libsigc++-1.0.4.orig/ac_thread.sh	Thu Jan  1 01:00:00 1970
-+++ libsigc++-1.0.4/ac_thread.sh	Sun Apr  7 03:01:21 2002
+diff -ruN libsigc++-1.0.4.old/ac_thread.sh libsigc++-1.0.4/ac_thread.sh
+--- libsigc++-1.0.4.old/ac_thread.sh	Thu Jan  1 01:00:00 1970
++++ libsigc++-1.0.4/ac_thread.sh	Mon Apr  8 21:58:59 2002
 @@ -0,0 +1,7 @@
 +ac_thread_cond_attr_size=4
 +ac_thread_cond_impl_size=12
@@ -9,26 +9,15 @@ diff -Naur libsigc++-1.0.4.orig/ac_thread.sh libsigc++-1.0.4/ac_thread.sh
 +ac_thread_thread_attr_size=4
 +ac_thread_thread_impl_size=4
 +ac_thread_key_impl_size=4
-diff -Naur libsigc++-1.0.4.orig/configure libsigc++-1.0.4/configure
---- libsigc++-1.0.4.orig/configure	Tue Oct 23 13:39:48 2001
-+++ libsigc++-1.0.4/configure	Sun Apr  7 03:01:21 2002
-@@ -2830,7 +2830,7 @@
- if test "$cross_compiling" = yes; then
-   
- echo "$ac_t""cross" 1>&6
+diff -ruN libsigc++-1.0.4.old/configure.in libsigc++-1.0.4/configure.in
+--- libsigc++-1.0.4.old/configure.in	Mon Oct 22 04:02:46 2001
++++ libsigc++-1.0.4/configure.in	Mon Apr  8 21:59:12 2002
+@@ -585,7 +585,7 @@
+ ],
+ [
+ AC_MSG_RESULT(cross)
 -  if test ! -f ac_thread.h; then
 +  if test ! -f ac_thread.sh; then
      echo '
  ac_thread_cond_attr_size=
  ac_thread_cond_impl_size=
-diff -Naur libsigc++-1.0.4.orig/sigc++/signal_system.h libsigc++-1.0.4/sigc++/signal_system.h
---- libsigc++-1.0.4.orig/sigc++/signal_system.h	Sat May 22 05:26:08 1999
-+++ libsigc++-1.0.4/sigc++/signal_system.h	Sun Apr  7 03:00:12 2002
-@@ -25,6 +25,7 @@
- #ifndef SIGCXX_SIGNAL_SYSTEM_H
- #define SIGCXX_SIGNAL_SYSTEM_H
- 
-+#define CONNECT(SENDER,EMPFAENGER) SENDER.connect(slot(*this,&EMPFAENGER))
- #include <sigc++/slot.h>
- #include <sigc++/object_slot.h>
- #include <sigc++/func_slot.h>
