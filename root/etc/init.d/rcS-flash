@@ -14,7 +14,7 @@ fi
 
 test -d /var/lib/modules/`uname -r` || mkdir -p /var/lib/modules/`uname -r`
 depmod -ae
-
+sleep 1
 modprobe tuxbox
 
 . /etc/profile

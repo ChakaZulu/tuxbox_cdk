@@ -14,7 +14,7 @@ fi
 
 touch /etc/modules.conf
 depmod -ae
-
+sleep 1
 modprobe tuxbox
 
 . /etc/profile
