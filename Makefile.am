@@ -4,13 +4,6 @@ PATH := $(hostprefix)/bin:$(PATH)
 
 bootstrap: .gcc
 
-$(hostprefix)/bin/$(TARGET)-gcc:
-	if [ -f $(hostprefix)/$(TARGET)/lib/libc.so ]; then \
-		make .gcc; \
-	else \
-		make bootstrap_gcc; \
-	fi
-
 #######################
 #
 #   core
@@ -25,8 +18,8 @@ $(hostprefix)/bin/$(TARGET)-gcc:
 	-rm $(hostprefix)/$(TARGET)/include
 	-rm $(hostprefix)/$(TARGET)/lib
 	ln -s $(targetprefix)/include $(hostprefix)/$(TARGET)/include
-	install -d $(hostprefix)/$(TARGET)/sys-include
 	ln -s $(targetprefix)/lib $(hostprefix)/$(TARGET)/lib
+	install -d $(hostprefix)/$(TARGET)/sys-include
 	ln -s $(buildprefix)/linux-$(KERNELVERSION)/include/asm $(hostprefix)/$(TARGET)/include
 	ln -s $(buildprefix)/linux-$(KERNELVERSION)/include/linux $(hostprefix)/$(TARGET)/include
 	touch .directories
@@ -67,7 +60,10 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	rm -rf $(hostprefix)/$(TARGET)/sys-include/asm
 	@CLEANUP_bootstrap_gcc@
 
-.glibc: $(hostprefix)/bin/$(TARGET)-gcc @DEPENDS_glibc@
+.glibc: @DEPENDS_glibc@
+	if [ ! -f $(hostprefix)/$(TARGET)/lib/libc.so -a ! -f $(hostprefix)/bin/$(TARGET)-gcc ]; then \
+		make bootstrap_gcc; \
+	fi
 	@PREPARE_glibc@
 	cd @DIR_glibc@ && \
 	CC=$(TARGET)-gcc AR=$(TARGET)-ar RANLIB=$(TARGET)-ranlib CFLAGS="$(TARGET_CFLAGS)" \
@@ -240,15 +236,16 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 #   own applications
 #
 
-apps/Makefile: .libxml2 .freetype .libqte .curl
-	cd apps && ./autogen.sh && \
+$(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
+	cd $(appsdir) && ./autogen.sh && \
+	CC=$(TARGET)-gcc CXX=$(TARGET)-g++ \
 	./configure \
 		--prefix=$(targetprefix) \
-		--with-driver=$(buildprefix)/driver \
-		--with-target=$(TARGET)
+		--with-driver=$(driverdir) \
+		--with-target=@TARGET@
 
-.edvb: apps/Makefile
-	make -C apps/edvb all install
+.edvb: $(appsdir)/Makefile
+	make -C $(appsdir)/edvb all install
 	touch .edvb
 
 #######################
@@ -261,10 +258,12 @@ distclean-local:
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .busybox
 	-rm .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
+	-rm .edvb
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 	-rm -f linux
 	-rm -rf linux-$(KERNELVERSION)
+	cd $(appsdir) && make distclean
 
 include Makefile-archive
 
