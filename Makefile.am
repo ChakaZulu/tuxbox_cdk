@@ -1,6 +1,7 @@
 PATH := $(hostprefix)/bin:$(PATH)
 
-all: core libs root apps boot devel java
+all: core libs root apps boot devel
+extra: java contrib_apps fun dvb_apps
 
 #######################
 #
@@ -242,7 +243,7 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 #   contrib libs
 #
 
-libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz
+libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz .libcrypto .libreadline .libsdl .libxml2
 
 .libcrypto: .bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
@@ -445,6 +446,8 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz
 #   contrib apps
 #
 
+contrib_apps: .console_data .console_tools .fbset .ssh
+
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
 	cd @DIR_console_data@ && \
@@ -631,6 +634,28 @@ java: .kaffeh .kaffe
 #   fun stuff
 #
 
+fun: .mad .scummvm
+
+.mad: .bootstrap .libz @DEPENDS_mad@
+	@PREPARE_mad@
+	cd @DIR_mad@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--disable-nls \
+			--without-esd \
+			--enable-speed \
+			--enable-fpm=ppc \
+			--enable-sso && \
+		make all && \
+		@INSTALL_mad@
+	@CLEANUP_mad@
+	touch .mad
+
 .scummvm: .bootstrap .libreadline .libsdl @DEPENDS_scummvm@
 	@PREPARE_scummvm@
 	cd @DIR_scummvm@ && \
@@ -647,6 +672,8 @@ java: .kaffeh .kaffe
 #
 #  DVB apps
 #
+
+dvb_apps: .dvbstream .dvbtext .dvbtune
 
 .dvbstream: @DEPENDS_dvbstream@
 	@PREPARE_dvbstream@
@@ -947,11 +974,11 @@ distclean-local:
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
-	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libreadline .libsdl .libxml2 .libz
+	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libreadline .libsdl .libxml2 .libz .libcrypto
 	-rm .cabextract .msttf
 	-rm .gdb .strace .nano
 	-rm .kaffeh .kaffe
-	-rm .scummvm
+	-rm .mad .scummvm
 	-rm .ppcboot .linuxkernel .driver
 	-rm .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .tools .tuxtxt .zapit

@@ -73,6 +73,7 @@ kaffeh;make:install
 #
 # fun stuff
 #
+mad;make:install
 scummvm;install:-m755:scummvm:TARGET/bin
 
 #
