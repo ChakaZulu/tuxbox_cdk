@@ -1130,7 +1130,7 @@ driver-clean:
 #   own applications
 #
 
-apps: .dvbsnoop .enigma .lcars .lcdmenu .neutrino .plugins .stream
+apps: .dvbsnoop .enigma .lcars .lcdmenu .neutrino .plugins .dvb_tools
 
 CONFIGURE_OPTS = \
 	--build=$(build) \
@@ -1193,11 +1193,11 @@ $(appsdir)/dvb/zapit/Makefile: .bootstrap .tuxbox_tools .misc_libs
 # dvb/tools
 
 $(appsdir)/dvb/tools/Makefile: .bootstrap .misc_libs
-	cd $(appsdir)/dvb/tools && $(CONFIGURE)
+	cd $(appsdir)/dvb/tools && $(CONFIGURE_NEW)
 
-.stream: $(appsdir)/dvb/tools/Makefile .inetd
-	$(MAKE) -C $(appsdir)/dvb/tools/stream all install
-	touch .stream
+.dvb_tools: $(appsdir)/dvb/tools/Makefile .inetd
+	$(MAKE) -C $(appsdir)/dvb/tools all install
+	touch .dvb_tools
 
 # misc/libs
 
@@ -1274,7 +1274,7 @@ $(appsdir)/tuxbox/neutrino/Makefile: .bootstrap .libcurl .libfreetype .misc_libs
 # tuxbox/plugins
 
 $(appsdir)/tuxbox/plugins/Makefile: .bootstrap
-	cd $(appsdir)/tuxbox/plugins && $(CONFIGURE)
+	cd $(appsdir)/tuxbox/plugins && $(CONFIGURE_NEW)
 
 .plugins: $(appsdir)/tuxbox/plugins/Makefile
 	$(MAKE) -C $(appsdir)/tuxbox/plugins all install
@@ -1529,7 +1529,7 @@ distclean-local:
 	-rm .kaffeh .kaffe
 	-rm .gnuboy .scummvm .sdldoom
 	-rm .ppcboot .linuxkernel .driver
-	-rm .dvbsnoop .enigma .lcars .lcdmenu .neutrino .stream .zapit
+	-rm .dvbsnoop .enigma .lcars .lcdmenu .neutrino .dvb_tools .zapit
 	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	-rm .misc_libs .misc_tools .plugins .tuxbox_libs .tuxbox_tools
