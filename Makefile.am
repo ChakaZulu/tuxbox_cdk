@@ -518,7 +518,7 @@ endif
 
 .liblcddisplay: $(appsdir)/Makefile
 	make -C $(appsdir)/liblcddisplay all install
-	touch .liblcdmenu
+	touch .liblcddisplay
 
 .libmd5sum:  $(appsdir)/Makefile
 	make -C $(appsdir)/libmd5sum all install
@@ -567,6 +567,8 @@ distclean-local:
 	-rm .dvbsnoop .edvb .fx2 .lcars .lcdmenu
 	-rm .neutrino .sections .stream .tools .zapit
 	-rm .liblcddisplay .libmd5sum .libucodes
+	-rm .dvbstream
+	-rm .driver
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 
