@@ -37,26 +37,35 @@ AC_ARG_WITH(targetruleset,
 	[targetruleset="$withval"],[targetruleset="standard"])
 
 if test "$targetruleset" = "standard"; then
-	TARGET_CFLAGS="-O2 -mcpu=823 -pipe"
-	TARGET_CXXFLAGS="-O2 -mcpu=823 -pipe"
-	TARGET_LDFLAGS=""
 	INSTALLRULESETFILE=""
 elif test "$targetruleset" = "flash"; then
-	TARGET_CFLAGS="-Os -mcpu=823 -pipe"
-	TARGET_CXXFLAGS="-Os -mcpu=823 -pipe"
-	TARGET_LDFLAGS="-s"
 	INSTALLRULESETFILE="-flash"
 else
 	AC_MSG_ERROR([invalid targetruleset "$targetruleset", choose on from standard or flash]);
 fi
 
-AM_CONDITIONAL(TARGETRULESET_STANDARD,test "$targetruleset" = "standard")
-AM_CONDITIONAL(TARGETRULESET_FLASH,test "$targetruleset" = "flash")
+if test -z "$CFLAGS" ; then
+	CFLAGS="-O2"
+fi
 
+if test -z "$TARGET_CFLAGS" -o -z "$TARGET_CXXFLAGS"; then
+	if test "$targetruleset" = "standard"; then
+		TARGET_CFLAGS="-O3 -mcpu=823 -msoft-float -mmultiple -mstring -g -ggdb -pipe"
+		TARGET_LDFLAGS=""
+	elif test "$targetruleset" = "flash"; then
+		TARGET_CFLAGS="-Os -mcpu=823 -msoft-float -mmultiple -mstring -pipe"
+		TARGET_LDFLAGS="-s"
+	fi
+	TARGET_CXXFLAGS="$TARGET_CFLAGS"
+fi
+
+AC_SUBST(CFLAGS)
 AC_SUBST(TARGET_CFLAGS)
 AC_SUBST(TARGET_CXXFLAGS)
 AC_SUBST(TARGET_LDFLAGS)
-AC_SUBST(APPSTARGET)
+
+AM_CONDITIONAL(TARGETRULESET_STANDARD,test "$targetruleset" = "standard")
+AM_CONDITIONAL(TARGETRULESET_FLASH,test "$targetruleset" = "flash")
 
 AC_PREFIX_DEFAULT(/dbox2)
 

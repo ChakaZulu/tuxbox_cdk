@@ -353,7 +353,7 @@ libs: \
 	@CLEANUP_libcrypto@
 	touch .libcrypto
 
-.libcurl: .bootstrap .libcrypto @DEPENDS_libcurl@
+.libcurl: .bootstrap @DEPENDS_libcurl@
 	@PREPARE_libcurl@
 	cd @DIR_libcurl@ && \
 		CC=$(target)-gcc \
@@ -365,8 +365,7 @@ libs: \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
-			--with-random \
-			--with-ssl && \
+			--with-random &&
 		$(MAKE) all && \
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
@@ -1288,7 +1287,10 @@ endif
 
 CONFIGURE = \
 	./autogen.sh && \
-	CC=$(target)-gcc CXX=$(target)-g++ CFLAGS="$(TARGET_CFLAGS)" CXXFLAGS="$(TARGET_CXXFLAGS)" \
+	CC=$(target)-gcc \
+	CXX=$(target)-g++ \
+	CFLAGS="-Wall $(TARGET_CFLAGS)" \
+	CXXFLAGS="-Wall $(TARGET_CXXFLAGS)" \
 	./configure $(CONFIGURE_OPTS) $(CONFIGURE_OPTS_MAINTAINER) $(CONFIGURE_OPTS_DEBUG)
 
 # dvb/svbsnoop
@@ -1327,7 +1329,7 @@ $(appsdir)/misc/libs/Makefile: .bootstrap
 
 # tuxbox/enigma
 
-$(appsdir)/tuxbox/enigma/Makefile: .bootstrap .libfreetype .libmad .libpng .libsigc .misc_libs
+$(appsdir)/tuxbox/enigma/Makefile: .bootstrap .libfreetype .libmad .libpng .libsigc .misc_libs .plugins
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE)
 
 .enigma: $(appsdir)/tuxbox/enigma/Makefile .tuxbox_tools
