@@ -14,7 +14,7 @@ options graphic_fb debug=0
 options saa7126 debug=0
 options tuner debug=0
 
-probeall graphic graphic_core graphic_fb graphic_dmx graphic_vbi graphic_capture graphic_pig
+probeall graphic graphic_core graphic_fb graphic_dmx graphic_vbi graphic_capture graphic_pig graphic_pcm
 
 if $DEMOD = "AT76C651"
   alias tuner at76c651
@@ -40,6 +40,7 @@ if $GRAPHIC = "gtx"
   alias graphic_core gtx_core
   alias graphic_dmx gtx_dmx
   alias graphic_fb gtx_fb
+  alias graphic_pcm gtx_pcm
   alias graphic_pig gtx_pig
   alias graphic_vbi gtx_vbi
 elseif $GRAPHIC = "enx"
@@ -47,6 +48,7 @@ elseif $GRAPHIC = "enx"
   alias graphic_core enx_core
   alias graphic_dmx enx_dmx
   alias graphic_fb enx_fb
+  alias graphic_pcm enx_pcm
   alias graphic_pig enx_pig
   alias graphic_vbi enx_vbi
 endif

@@ -10,7 +10,7 @@ inetd
 echo "Loading modules"
 depmod -a
 modprobe -a rtc info
-. /proc/bus/dbox.sh
+. /etc/profile
 echo "mID: $mID"
 echo "feID: $feID"
 echo "fpID: $fpID"
@@ -19,18 +19,11 @@ echo "gtxID: $gtxID"
 echo "hwREV: $hwREV"
 echo "fpREV: $fpREV"
 echo "DEMOD: $DEMOD"
-
-modprobe -a saa7126 input keybdev mousedev joydev evdev dvb_frontend dvb tuner graphic lcd
-
 test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
-
-echo "Starting loopback device"
 ifconfig lo 127.0.0.1 up
-# it must be tuned to a valid ts for dvbtime
-export TZ=CET-1CEST,M3.5.0/2,M10.5.0/3
+modprobe -a saa7126 input keybdev mousedev joydev evdev dvb_frontend dvb tuner graphic avia_oss lcd
 lcdmenu
 RC="$?"
 test "$RC" -eq 0 && /etc/init.d/start_enigma
 test "$RC" -eq 1 && /etc/init.d/start_neutrino
 test "$RC" -eq 2 && /etc/init.d/start_lcars
-exit 0
