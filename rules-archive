@@ -93,7 +93,7 @@ nano-1.0.7.tar.gz;http://www.nano-editor.org/dist/v1.0
 #
 # java
 #
-kaffe-1.0.6.tar.gz;http://www.kaffe.org/ftp/pub/kaffe
+kaffe-1.0.6.tar.gz;ftp://ftp.kaffe.org/pub/kaffe/v1.0.x-production
 
 #
 # fun
