@@ -58,8 +58,7 @@ diff -urN busybox-0.60.1.orig/Config.h busybox-0.60.1/Config.h
  //#define BB_INSMOD
  #define BB_KILL
  #define BB_KILLALL
--#define BB_KLOGD
-+//#define BB_KLOGD
+ #define BB_KLOGD
  //#define BB_LASH
  //#define BB_LENGTH
  #define BB_LN
@@ -118,8 +117,7 @@ diff -urN busybox-0.60.1.orig/Config.h busybox-0.60.1/Config.h
 -#define BB_SWAPONOFF
 +//#define BB_SWAPONOFF
  #define BB_SYNC
--#define BB_SYSLOGD
-+//#define BB_SYSLOGD
+ #define BB_SYSLOGD
  #define BB_TAIL
  #define BB_TAR
  //#define BB_TEE
