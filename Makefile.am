@@ -412,6 +412,9 @@ $(DEPDIR)/libdirectfbpp: bootstrap libdirectfb @DEPENDS_libdirectfbpp@
 		$(MAKE) all && \
 		@INSTALL_libdirectfbpp@
 	@CLEANUP_libdirectfbpp@
+	mv $(targetprefix)/lib/libdfb++.la $(targetprefix)/lib/libdfb++.la.old
+	sed -e "s, /lib, $(targetprefix)/lib,g" < $(targetprefix)/lib/libdfb++.la.old >$(targetprefix)/lib/libdfb++.la
+	rm -f $(targetprefix)/lib/libdfb++.la.old
 	touch $@
 
 $(DEPDIR)/libdvb: bootstrap @DEPENDS_libdvb@
