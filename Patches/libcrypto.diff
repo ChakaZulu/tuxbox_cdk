@@ -6,7 +6,7 @@ diff -Naur openssl-0.9.6d.org/Configure openssl-0.9.6d/Configure
  "newsos4-gcc","gcc:-O -DB_ENDIAN -DNEWS4::(unknown):-lmld -liberty:BN_LLONG RC4_CHAR RC4_CHUNK DES_PTR DES_RISC1 DES_UNROLL BF_PTR::::",
  
 +##### TuxBox
-+"tuxbox","powerpc-tuxbox-linux-gnu-gcc:-DB_ENDIAN -DTERMIO -Os -fomit-frame-pointer -Wall::-D_REENTRANT:-ldl:BN_LLONG DES_UNROLL DES_RISC2 DES_PTR MD2_CHAR RC4_INDEX::::::::::dlfcn:linux-shared:-fPIC",
++"tuxbox","powerpc-tuxbox-linux-gnu-gcc:-DB_ENDIAN -DTERMIO -O3 -mcpu=823 -mmultiple -mstring -meabi -msoft-float -fomit-frame-pointer -Wall::-D_REENTRANT:-ldl:BN_LLONG DES_UNROLL DES_RISC2 DES_PTR MD2_CHAR RC4_INDEX::::::::::dlfcn:linux-shared:-fPIC",
 +
  ##### VxWorks for various targets
  "vxworks-ppc405","ccppc:-g -msoft-float -mlongcall -DVXWORKS -DCPU=PPC405 -I\$(WIND_BASE)/target/h:::-r:::::",
