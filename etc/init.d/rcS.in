@@ -118,3 +118,8 @@ ln -sf dvr0 /dev/dvb/adapter0/dvr1
 ln -sf fb/0 /dev/fb0
 
 test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
+
+if [ -e /etc/init.d/rcS_local ]; then
+	. /etc/init.d/rcS_local
+fi
+
