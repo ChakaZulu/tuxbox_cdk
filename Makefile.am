@@ -1417,10 +1417,6 @@ $(appsdir)/tuxbox/tools/Makefile: .bootstrap
 	$(MAKE) -C $(appsdir)/tuxbox/tools/misc all install
 	touch .tuxbox_tools
 
-.tuxtxt: $(appsdir)/Makefile
-	$(MAKE) -C $(appsdir)/tuxtxt all install
-	touch .tuxtxt
-
 #######################
 #
 #   flash
@@ -1553,7 +1549,7 @@ $(flashprefix)/.part_lcars: $(flashprefix)/.flash .lcars
 
 flash-fx2: $(flashprefix)/.part_fx2
 
-$(flashprefix)/.part_fx2: $(flashprefix)/.flash .fx2
+$(flashprefix)/.part_fx2: $(flashprefix)/.flash .plugins
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
 	cp -a $(targetprefix)/lib/tuxbox/plugins/* $(flashprefix)/root/lib/tuxbox/plugins
 	$(INSTALL) -m644 $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/root/var/tuxbox/config
@@ -1655,20 +1651,17 @@ distclean-local:
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc .rpcgen
 	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
-	-rm .libdb2 .libcommoncplusplus .libcrypto .libcurl .libffi .libfreetype
+	-rm .libcommoncplusplus .libcrypto .libcurl .libdb2 .libdvbpsi .libffi .libfreetype
 	-rm .libncurses .libjpeg .libmad .libnet .libnids .libpcap .libpng .libpopt
 	-rm .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
 	-rm .cabextract .msttf
 	-rm .gdb .ksymoops .ltrace .strace .nano
 	-rm .kaffeh .kaffe
-	-rm .scummvm
+	-rm .scummvm .sdldoom
 	-rm .ppcboot .linuxkernel .driver
-	-rm .camd .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
-	-rm .fx2 .sections .tools .tuxtxt .zapit
-	-rm .libconfigfile .libcramfs .libxmltree
-	-rm .liblcddisplay .libmd5sum .libmpegtools .libdboxnet .libucodes
+	-rm .camd .dvbsnoop .enigma .lcars .lcdmenu .neutrino .stream .zapit
 	-rm .console_data .console_tools .dsniff .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
-	-rm .dvbstream .dvbtext .dvbtune
+	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	-rm .misc_libs .plugins .tuxbox_libs .tuxbox_tools
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
