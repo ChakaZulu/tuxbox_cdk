@@ -46,6 +46,7 @@ libz;make:install
 #
 # contrib apps
 #
+fbset;install:-m755:fbset:TARGET/bin
 ssh;make:install-nokeys:prefix=TARGET
 
 #

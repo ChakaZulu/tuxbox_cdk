@@ -441,6 +441,17 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz
 #   contrib apps
 #
 
+.fbset: .bootstrap @DEPENDS_fbset@
+	@PREPARE_fbset@
+	cd @DIR_fbset@ && \
+		make \
+			CC=$(target)-gcc \
+			CFLAGS="$(TARGET_CFLAGS)" \
+			LDFLAGS="$(TARGET_LDFLAGS)" && \
+		@INSTALL_fbset@
+	@CLEANUP_fbset@
+	touch .fbset
+
 .ssh: .bootstrap .libcrypto .libz @DEPENDS_ssh@
 	@PREPARE_ssh@
 	cd @DIR_ssh@ && \
@@ -907,7 +918,8 @@ distclean-local:
 	-rm .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .tools .tuxtxt .zapit
 	-rm .liblcddisplay .libmd5sum .libnet .libucodes
-	-rm .dvbstream
+	-rm .fbset .ssh
+	-rm .dvbstream .dvbtext .dvbtune
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 

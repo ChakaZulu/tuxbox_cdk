@@ -49,6 +49,7 @@ readline-4.2a.tar.gz;ftp://ftp.gnu.org/gnu/readline
 #
 # contrib apps
 #
+fbset-2.1.tar.gz;http://home.tvd.be/cr26864/Linux/fbdev
 openssh-3.0.2p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 
 #
