@@ -101,15 +101,3 @@ diff -Naur tinylogin-1.2/Makefile tinylogin-1.2new/Makefile
  # GNU libc and uClibc want libcrypt.  libc5 wants this disabled...
  LIBRARIES = -lcrypt
  
-diff -Naur tinylogin-1.2/pod2htmd.x~~ tinylogin-1.2new/pod2htmd.x~~
---- tinylogin-1.2/pod2htmd.x~~	1970-01-01 01:00:00.000000000 +0100
-+++ tinylogin-1.2new/pod2htmd.x~~	2002-10-12 17:50:30.000000000 +0200
-@@ -0,0 +1,2 @@
-+
-+.
-diff -Naur tinylogin-1.2/pod2htmi.x~~ tinylogin-1.2new/pod2htmi.x~~
---- tinylogin-1.2/pod2htmi.x~~	1970-01-01 01:00:00.000000000 +0100
-+++ tinylogin-1.2new/pod2htmi.x~~	2002-10-12 17:50:30.000000000 +0200
-@@ -0,0 +1,2 @@
-+
-+.
