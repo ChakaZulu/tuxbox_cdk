@@ -92,7 +92,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 
 .glibc: @DEPENDS_glibc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
-		make.bootstrap_gcc; \
+		make .bootstrap_gcc; \
 	elif [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		make .gcc; \
 	fi
