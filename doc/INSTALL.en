@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.20 2004/01/02 00:29:28 obi Exp $
+# $Id: INSTALL.en,v 1.21 2004/01/13 14:22:39 obi Exp $
 #
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
@@ -38,6 +38,7 @@ I. Prerequistes:
  - flex
  - bison
  - pkg-config
+ - wget
 
  Ensure that you have these programs installed and accessible on your system.
  Compare version numbers where applicable. Don't report any bugs before having
