@@ -1038,7 +1038,7 @@ $(flashprefix)/.flash: .busybox .driver .modutils
 	install -d $(flashprefix)/root/lib/tuxbox
 	install -d $(flashprefix)/root/proc
 	install -d $(flashprefix)/root/sbin
-	install -d $(flashprefix)/root/share/tuxbox
+	install -d $(flashprefix)/root/share/tuxbox/image
 	install -d $(flashprefix)/root/var/tuxbox/config
 	install -d $(flashprefix)/root/var/tuxbox/ucodes
 	install -d $(flashprefix)/root/tmp
@@ -1055,7 +1055,6 @@ $(flashprefix)/.flash: .busybox .driver .modutils
 	install -d $(flashprefix)/root/lib/modules/$(KERNELVERSION)
 	cp -a $(targetprefix)/lib/modules/$(KERNELVERSION)/kernel $(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
 		$(flashprefix)/root/lib/modules/$(KERNELVERSION)
-	install -d $(flashprefix)/root/var/lib/modules/$(KERNELVERSION)
 	cp -a $(bootprefix)/kernel-cdk $(flashprefix)/root/vmlinuz
 	@touch $(flashprefix)/.flash
 
@@ -1085,12 +1084,19 @@ $(flashprefix)/.part_tinylogin: $(flashprefix)/.flash .tinylogin
 flash-ssh: $(flashprefix)/.part_ssh
 
 $(flashprefix)/.part_ssh: $(flashprefix)/.flash .ssh
+	$(INSTALL) -d $(flashprefix)/root/etc/ssh
+	cp -a $(targetprefix)/etc/ssh/ssh_config $(flashprefix)/root/etc/ssh
 	$(INSTALL) $(targetprefix)/bin/ssh $(flashprefix)/root/bin
 	@touch $(flashprefix)/.part_ssh
 
 flash-sshd: $(flashprefix)/.part_sshd
 
 $(flashprefix)/.part_sshd: $(flashprefix)/.flash .ssh
+	$(INSTALL) -d $(flashprefix)/root/etc/ssh
+	cp -a $(targetprefix)/etc/ssh/* $(flashprefix)/root/etc/ssh
+	$(INSTALL) $(targetprefix)/bin/ssh-keygen $(flashprefix)/root/bin
+	$(INSTALL) -d $(flashprefix)/root/libexec
+	$(INSTALL) $(targetprefix)/libexec/sftp-server $(flashprefix)/root/libexec
 	$(INSTALL) $(targetprefix)/sbin/sshd $(flashprefix)/root/sbin
 	@touch $(flashprefix)/.part_sshd
 
@@ -1106,10 +1112,12 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash $(flashprefix)/.part_msttf 
 	$(INSTALL) $(targetprefix)/bin/sectionsd $(flashprefix)/root/bin
 
 	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
-	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/zapit
+	cp -a $(targetprefix)/var/tuxbox/config/zapit $(flashprefix)/root/var/tuxbox/config
 
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	cp -a $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
+
+	cp -a $(targetprefix)/var/tuxbox/config/*.xml $(flashprefix)/root/var/tuxbox/config
 	@touch $(flashprefix)/.part_neutrino
 
 $(flashprefix)/.part_msttf: $(flashprefix)/.flash .msttf
@@ -1126,6 +1134,15 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
 	cp -a $(targetprefix)/share/fonts/Marlett.ttf $(targetprefix)/share/fonts/unmrs.pfa \
 		$(flashprefix)/root/share/fonts
 	@touch $(flashprefix)/.part_enigma
+
+flash-lcars: $(flashprefix)/.part_lcars
+
+$(flashprefix)/.part_lcars: $(flashprefix)/.flash .lcars
+	$(INSTALL) $(targetprefix)/bin/lcars $(flashprefix)/root/bin
+	$(INSTALL) -d $(flashprefix)/root/share/fonts
+	cp -a $(targetprefix)/share/fonts/ds9.ttf $(flashprefix)/root/share/fonts
+	cp -a $(targetprefix)/var/tuxbox/config/lcars $(flashprefix)/root/var/tuxbox/config
+	@touch $(flashprefix)/.part_lcars
 
 flash-fx2: $(flashprefix)/.part_fx2
 
@@ -1163,7 +1180,8 @@ flash-compress-complete-jffs2: $(flashprefix)/root-jffs2.img
 $(flashprefix)/root-cramfs.img: $(flashprefix)/.lib
 	@install -d $(flashprefix)/temp
 	@cp -a $(flashprefix)/root/* $(flashprefix)/temp/
-	@rm -rf $(flashprefix)/temp/var/*
+	@mv $(flashprefix)/temp/var $(flashprefix)/temp/share/tuxbox/image
+	ln -sf /var/etc/ssh $(flashprefix)/temp/etc/ssh
 	@$(FAKEROOT) $(MKCRAMFS) -n "TuxBox-`date +%Y%m%d`" $(flashprefix)/temp/ $(flashprefix)/root-cramfs.img
 	@rm -rf $(flashprefix)/temp/
 
