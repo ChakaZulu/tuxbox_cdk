@@ -24,7 +24,7 @@ fi
 AC_SUBST(BUILD,[$host])
 
 AC_ARG_WITH(targetruleset,
-	[  --with-targetrulseset=NAME target ruleset [[standard,flash]]],
+	[  --with-targetruleset=NAME target ruleset [[standard,flash]]],
 	[targetruleset="$withval"],[targetruleset="standard"])
 
 if test "$targetruleset" = "standard"; then
