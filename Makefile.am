@@ -643,7 +643,7 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc
 	@CLEANUP_lirc@
 	touch .lirc
 
-.pump: .bootstrap .libpopt @DEPENDS_ssh@
+.pump: .bootstrap .libpopt @DEPENDS_pump@
 	@PREPARE_pump@
 	cd @DIR_pump@ && \
 		CC=$(target)-gcc \
