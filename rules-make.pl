@@ -124,11 +124,11 @@ if ( $#ARGV >= 2 )
       }
       elsif ( $_[0] eq "remove" )
       {
-        $output .= "rm -rf " . $_[1] . " || /bin/true";
+        $output .= "( rm -rf " . $_[1] . " || /bin/true )";
       }
       elsif ( $_[0] eq "link" )
       {
-        $output .= "ln -s " . $_[1] . " " . $_[2] . " || /bin/true";
+        $output .= "( ln -s " . $_[1] . " " . $_[2] . " || /bin/true )";
       }
       else
       {
