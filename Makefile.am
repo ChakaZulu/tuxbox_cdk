@@ -1253,7 +1253,7 @@ driver-clean:
 	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		distclean
-	-rm (DEPDIR)/driver
+	-rm $(DEPDIR)/driver
 
 $(driverdir)/directfb/Makefile: bootstrap libdirectfb
 	cd $(driverdir)/directfb && \
