@@ -17,19 +17,19 @@ core: .directories .binutils .linuxdir .glibc .gcc
 	touch .bootstrap
 
 .directories:
-	install -d $(targetprefix)/bin
-	install -d $(targetprefix)/dev
-	install -d $(targetprefix)/etc
-	install -d $(targetprefix)/include
-	install -d $(targetprefix)/lib
-	install -d $(targetprefix)/proc
-	install -d $(targetprefix)/root
-	install -d $(targetprefix)/sbin
-	install -d $(targetprefix)/tmp
-	install -d $(targetprefix)/var
-	install -d $(targetprefix)$(UCODEDIR)
-	install -d $(hostprefix)/$(target)
-	install -d $(bootprefix)
+	$(INSTALL) -d $(targetprefix)/bin
+	$(INSTALL) -d $(targetprefix)/dev
+	$(INSTALL) -d $(targetprefix)/etc
+	$(INSTALL) -d $(targetprefix)/include
+	$(INSTALL) -d $(targetprefix)/lib
+	$(INSTALL) -d $(targetprefix)/proc
+	$(INSTALL) -d $(targetprefix)/root
+	$(INSTALL) -d $(targetprefix)/sbin
+	$(INSTALL) -d $(targetprefix)/tmp
+	$(INSTALL) -d $(targetprefix)/var
+	$(INSTALL) -d $(targetprefix)$(UCODEDIR)
+	$(INSTALL) -d $(hostprefix)/$(target)
+	$(INSTALL) -d $(bootprefix)
 	-rm $(hostprefix)/$(target)/include
 	-rm $(hostprefix)/$(target)/lib
 	-ln -s $(targetprefix)/include $(hostprefix)/$(target)/include
@@ -37,7 +37,7 @@ core: .directories .binutils .linuxdir .glibc .gcc
 	-ln -s $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
 	-ln -s $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include
 if TARGETRULESET_FLASH
-	install -d $(flashprefix)
+	$(INSTALL) -d $(flashprefix)
 endif
 	touch .directories
 
@@ -77,7 +77,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 		make .binutils; \
 	fi
 	@PREPARE_bootstrap_gcc@
-	install -d $(hostprefix)/$(target)/sys-include
+	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
 	ln -sf $(buildprefix)/@DIR_linux@/include/asm $(hostprefix)/$(target)/sys-include/
 	cd @DIR_bootstrap_gcc@ && \
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
@@ -104,7 +104,7 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 		make .binutils; \
 	fi
 	@PREPARE_bootstrap_gcc_2_95@
-	install -d $(hostprefix)/$(target)/sys-include
+	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
 	ln -sf $(buildprefix)/@DIR_linux@/include/asm $(hostprefix)/$(target)/sys-include/
 	cd @DIR_bootstrap_gcc_2_95@ && \
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
@@ -170,7 +170,7 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 		make .glibc; \
 	fi
 	@PREPARE_gcc@
-	install -d $(hostprefix)/$(target)/sys-include
+	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
 	cp -p $(hostprefix)/$(target)/include/limits.h $(hostprefix)/$(target)/sys-include/
 	cd @DIR_gcc@ && \
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
@@ -661,11 +661,11 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc
 
 .msttf: .bootstrap .cabextract @DEPENDS_msttf@
 	@PREPARE_msttf@
-	install -d $(targetprefix)$(FONTDIR)
-	install -m 0644 @DIR_msttf@/AriBlk.TTF $(targetprefix)$(FONTDIR)/Arial_Black.ttf
-	install -m 0644 @DIR_msttf@/Arial.TTF $(targetprefix)$(FONTDIR)/Arial.ttf
-	install -m 0644 @DIR_msttf@/Arialbd.TTF $(targetprefix)$(FONTDIR)/Arial_Bold.ttf
-	install -m 0644 @DIR_msttf@/Ariali.TTF $(targetprefix)$(FONTDIR)/Arial_Italic.ttf
+	$(INSTALL) -d $(targetprefix)$(FONTDIR)
+	$(INSTALL) -m 0644 @DIR_msttf@/AriBlk.TTF $(targetprefix)$(FONTDIR)/Arial_Black.ttf
+	$(INSTALL) -m 0644 @DIR_msttf@/Arial.TTF $(targetprefix)$(FONTDIR)/Arial.ttf
+	$(INSTALL) -m 0644 @DIR_msttf@/Arialbd.TTF $(targetprefix)$(FONTDIR)/Arial_Bold.ttf
+	$(INSTALL) -m 0644 @DIR_msttf@/Ariali.TTF $(targetprefix)$(FONTDIR)/Arial_Italic.ttf
 	@CLEANUP_msttf@
 	touch .msttf
 
@@ -851,13 +851,13 @@ KERNELGCC = `if [ -f $(hostprefix)/bin/$(target)-gcc-2.95 ]; then echo $(target)
 if HOSTRULESET_CYGWIN
 	make -C $(bootdir)/ppcboot dbox_config CYGWIN=1
 	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CYGWIN=1
-	install Patches/cygwin/mkimage.exe $(hostprefix)/bin
+	$(INSTALL) Patches/cygwin/mkimage.exe $(hostprefix)/bin
 else
 	make -C $(bootdir)/ppcboot dbox_config
 	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CC=$(KERNELGCC)
-	install $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
+	$(INSTALL) $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
 endif
-	install -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
+	$(INSTALL) -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
 if MAINTAINER_MODE
 else
 	make -C $(bootdir)/ppcboot distclean
@@ -888,8 +888,8 @@ endif
 	touch .linuxkernel
 
 .driver: .bootstrap .linuxkernel
-	install -d $(targetprefix)/bin
-	install -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
+	$(INSTALL) -d $(targetprefix)/bin
+	$(INSTALL) -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
 	make -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		CROSS_COMPILE=$(target)- CC=$(KERNELGCC) \
@@ -1033,15 +1033,16 @@ rebuild-flash:
 
 $(flashprefix)/.flash: .busybox .driver .modutils
 	-rm -rf $(flashprefix)/root
-	install -d $(flashprefix)/root/bin
-	install -d $(flashprefix)/root/dev
-	install -d $(flashprefix)/root/lib/tuxbox
-	install -d $(flashprefix)/root/proc
-	install -d $(flashprefix)/root/sbin
-	install -d $(flashprefix)/root/share/tuxbox/image
-	install -d $(flashprefix)/root/var/tuxbox/config
-	install -d $(flashprefix)/root/var/tuxbox/ucodes
-	install -d $(flashprefix)/root/tmp
+	$(INSTALL) -d $(flashprefix)/root/bin
+	$(INSTALL) -d $(flashprefix)/root/dev
+	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox
+	$(INSTALL) -d $(flashprefix)/root/mnt
+	$(INSTALL) -d $(flashprefix)/root/proc
+	$(INSTALL) -d $(flashprefix)/root/sbin
+	$(INSTALL) -d $(flashprefix)/root/share/tuxbox/image
+	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config
+	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/ucodes
+	$(INSTALL) -d $(flashprefix)/root/tmp
 	make -C etc install targetprefix=$(flashprefix)/root
 
 	$(INSTALL) $(targetprefix)/bin/busybox $(flashprefix)/root/bin
@@ -1052,7 +1053,7 @@ $(flashprefix)/.flash: .busybox .driver .modutils
 	$(INSTALL) $(targetprefix)/sbin/depmod $(flashprefix)/root/sbin
 	for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -a $$i $(flashprefix)/root/sbin/ ; done
 
-	install -d $(flashprefix)/root/lib/modules/$(KERNELVERSION)
+	$(INSTALL) -d $(flashprefix)/root/lib/modules/$(KERNELVERSION)
 	cp -a $(targetprefix)/lib/modules/$(KERNELVERSION)/kernel $(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
 		$(flashprefix)/root/lib/modules/$(KERNELVERSION)
 	cp -a $(bootprefix)/kernel-cdk $(flashprefix)/root/vmlinuz
@@ -1178,16 +1179,17 @@ flash-compress: $(flashprefix)/root-cramfs.img $(flashprefix)/var-jffs2.img
 flash-compress-complete-jffs2: $(flashprefix)/root-jffs2.img
 
 $(flashprefix)/root-cramfs.img: $(flashprefix)/.lib
-	@install -d $(flashprefix)/temp
-	@cp -a $(flashprefix)/root/* $(flashprefix)/temp/
+	@cp -a $(flashprefix)/root $(flashprefix)/temp
+	@$(INSTALL) -d $(flashprefix)/temp/var/etc
+	@mv $(flashprefix)/temp/etc/ssh $(flashprefix)/temp/var/etc/ssh
+	@ln -sf /var/etc/ssh $(flashprefix)/temp/etc/ssh
 	@mv $(flashprefix)/temp/var $(flashprefix)/temp/share/tuxbox/image
-	ln -sf /var/etc/ssh $(flashprefix)/temp/etc/ssh
+	@$(INSTALL) -d $(flashprefix)/temp/var
 	@$(FAKEROOT) $(MKCRAMFS) -n "TuxBox-`date +%Y%m%d`" $(flashprefix)/temp/ $(flashprefix)/root-cramfs.img
 	@rm -rf $(flashprefix)/temp/
 
 $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
-	@install -d $(flashprefix)/temp
-	@cp -a $(flashprefix)/root/var/* $(flashprefix)/temp/
+	@cp -a $(flashprefix)/root/var $(flashprefix)/temp
 	@$(FAKEROOT) $(MKJFFS2) -b -e 131072 -o $(flashprefix)/var-jffs2.img -r $(flashprefix)/temp/
 	@rm -rf $(flashprefix)/temp/
 
