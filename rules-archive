@@ -10,9 +10,9 @@
 # core
 #
 linux-2.4.2.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
-binutils-2.12.90.0.1.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
-gcc-core-3.0.4.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.0.4
-gcc-g++-3.0.4.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.0.4
+binutils-2.12.90.0.7.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
+gcc-core-3.1.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.1
+gcc-g++-3.1.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.1
 glibc-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 glibc-linuxthreads-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 uClibc-0.9.11.tar.bz2;
@@ -36,7 +36,7 @@ procps-010114.tar.gz;http://www.cs.uml.edu/~acahalan/procps/
 #
 openssl-0.9.6c.tar.gz;http://www.openssl.org/source
 curl-7.9.1.tar.bz2;http://curl.haxx.se/download
-freetype-2.0.9.tar.bz2;http://prdownloads.sourceforge.net/freetype
+freetype-2.1.0.tar.bz2; http://telia.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.2.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
 libpng-1.0.12.tar.gz;http://www.libpng.org/pub/png/src
