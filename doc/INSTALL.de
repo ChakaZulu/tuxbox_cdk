@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.de,v 1.4 2002/04/12 18:16:20 obi Exp $
+# $Id: INSTALL.de,v 1.5 2002/05/02 10:22:57 waldi Exp $
 #
 # Urheber:
 # --------
@@ -23,6 +23,7 @@ Prerequisiten:
  - automake >= 1.4p5
  - libtool >= 1.4
  - make >= 3.79
+ - gettext >= 0.10.38
  - makeinfo (aus texinfo)
  - tar
  - bunzip2

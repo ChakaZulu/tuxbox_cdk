@@ -1,3 +1,7 @@
+#
+# $Id: INSTALL-cygwin.de,v 1.4 2002/05/02 10:22:57 waldi Exp $
+#
+
 HOWTO
 -----
 
@@ -16,33 +20,7 @@ Folgende Packages sind *nicht* zu installieren:
  - zlib
 
 
-mkdir $HOME/tuxbox-cvs
-mkdir /dbox2
-cd $HOME/tuxbox-cvs
-cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox login
-cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z9 co .
-cd cdk
-./autogen.sh
-./configure --prefix=/dbox2 --with-hostruleset=cygwin --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode
-
-Jetzt EINMAL das Script
-
-./run-cygwin.sh
-ausführen.
-
-Anschließend entweder
-
-make .neutrino
-make .edvb
-make .lcars
-make .lcdmenu
-make .stream
-
-oder
- 
-make all
-
-
+ansonsten weiter wie in INSTALL.de
 
 Viel Erfolg
 +tbn
