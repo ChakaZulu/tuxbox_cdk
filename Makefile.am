@@ -375,14 +375,12 @@ libs_optional: \
 	@PREPARE_libdirectfb@
 	cd @DIR_libdirectfb@ && \
 		@BUILDENV_libdirectfb@ \
-		AS="$(target)-gcc" \
-		CPPFLAGS="-I$(driverdir)/include" \
-		./autogen.sh \
+		CPPFLAGS="-I$(buildprefix)/@DIR_linux@/arch/ppc" \
+		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
 			--enable-linux-input \
-			--disable-avifile \
 			--disable-jpeg \
 			--disable-sdl && \
 		$(MAKE) all && \
