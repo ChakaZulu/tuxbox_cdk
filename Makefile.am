@@ -325,11 +325,12 @@ distclean-local:
 	-rm .edvb
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
-	-rm -f linux
-	-rm -rf linux-$(KERNELVERSION)
 	-make -C $(appsdir) distclean
 	-make -C $(bootdir)/ppcboot distclean
-	-make -C $(driverdir) clean
+	-make -C $(driverdir) clean \
+		KERNEL_LOCATION=$(buildprefix)/linux
+	-rm -f linux
+	-rm -rf linux-$(KERNELVERSION)
 
 include Makefile-archive
 

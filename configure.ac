@@ -114,7 +114,6 @@ AC_SUBST(appsdir)
 AC_SUBST(bootdir)
 AC_SUBST(driverdir)
 
-
 #
 # core
 #
@@ -152,6 +151,9 @@ AC_MSG_NOTICE([creating Makefile-archive])
 ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 ])
 
+#
+# summary
+#
 AC_MSG_RESULT()
 AC_MSG_RESULT(Summary:)
 AC_MSG_RESULT([Hostruleset:	$hostruleset])
