@@ -1,5 +1,5 @@
 #
-# $Id: README.3rdparty.de,v 1.4 2003/04/22 00:43:24 obi Exp $
+# $Id: README.3rdparty.de,v 1.5 2003/07/11 00:30:16 obi Exp $
 #
 # Copyright (c) 2002-2003 Andreas Oberritter <obi@tuxbox.org>
 #
@@ -132,9 +132,9 @@ Aufruf von configure ersetzt und in ein Makefile geschrieben werden.
 Regeln, die zu einem Paket gehoeren, Werden wie der oben gewaehlte Bezeichner
 mit einem Punkt vorangestellt genannt.
 
-Am Ende jeder Regel steht ein touch .<Regelname> !
-Durch das Erstellen dieser Dateien wird gekennzeichnet, ob ein Programm
-bereits gebaut wurde.
+Am Ende jeder Regel steht "touch $@". Dieser Befehl erstellt eine Datei mit
+dem Namen der aktuellen Regel. Dadurch wird gekennzeichnet, dass eine Regel
+vollstaendig durchlaufen wurde.
 
 Beispiel fuer eine Regel:
 
@@ -151,11 +151,11 @@ Beispiel fuer eine Regel:
 	@CLEANUP_paket@
 	touch $@
 
-@BUILDENV_paket@ ist ein Makro, das eine Menge an oft gebrauchten Umgebungs-
-variablen enthaelt, wie z.b. CC, CFLAGS usw.
+$(BUILDENV) ist ein Makro, das eine Menge an oft gebrauchten Umgebungsvariablen
+enthaelt, wie z.b. CC, CFLAGS usw.
 Ab und zu kann es vorkommen, dass ein Paket andere oder zusaetzliche Variablen
-braucht. Diese koennen unterhalb von BUILDENV angegeben werden. Beispiele dazu
-findet man im Makefile.am.
+braucht. Diese koennen unterhalb von $(BUILDENV) angegeben werden. Beispiele
+dazu findet man im Makefile.am.
 
 Weiterhin gibt es in Makefile.am Regeln, die verschiedene Regeln gruppieren
 und letztendlich zu einer globalen Regel ("all") zusammengefasst werden.
