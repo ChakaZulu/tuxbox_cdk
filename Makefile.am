@@ -1024,6 +1024,9 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 boot: .u-boot .linuxkernel .driver
 
 .u-boot: .bootstrap $(bootdir)/u-boot/Makefile
+if HOSTRULESET_CYGWIN
+	export CYGWIN
+endif
 	$(MAKE) -C $(bootdir)/u-boot dbox2_config
 	$(MAKE) -C $(bootdir)/u-boot CROSS_COMPILE=$(target)-
 	$(INSTALL) -m644 $(bootdir)/u-boot/u-boot $(bootprefix)
