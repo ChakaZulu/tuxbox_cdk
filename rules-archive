@@ -1,0 +1,18 @@
+# rules file for cdk
+linux-2.4.2.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
+binutils-2.11.92.0.10.tar.bz2;ftp://ftp.kernel.org/pub/linux/devel/binutils
+gcc-core-3.0.2.tar.gz;ftp://ftp.fu-berlin.de/unix/languages/egcs/snapshots/2001-09-03
+gcc-g++-3.0.2.tar.gz;ftp://ftp.fu-berlin.de/unix/languages/egcs/snapshots/2001-09-03/
+glibc-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases/
+glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases/
+
+busybox-0.60.1.tar.gz
+
+curl-7.9.1.tar.bz2
+freetype-2.0.4.tar.bz2
+ncurses-5.2.tar.gz
+jpegsrc.v6b.tar.gz
+libpng-1.0.12.tar.gz
+qt-embedded-2.3.0.tar.gz
+libxml2-2.4.10.tar.gz
+zlib.tar.gz

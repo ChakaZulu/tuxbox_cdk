@@ -1,0 +1,22 @@
+diff -Naur gcc-3.0.ori/gcc/config/rs6000/linux.h gcc-3.0/gcc/config/rs6000/linux.h
+--- gcc-3.0.ori/gcc/config/rs6000/linux.h	Mon Jun 11 21:35:51 2001
++++ gcc-3.0/gcc/config/rs6000/linux.h	Mon Jun 25 13:21:48 2001
+@@ -78,8 +78,7 @@
+    state data appropriately.  See unwind-dw2.c for the structs.  */
+ 
+ #ifdef IN_LIBGCC2
+-#include <signal.h>
+-#include <sys/ucontext.h>
++#include <asm/sigcontext.h>
+ 
+ enum { SIGNAL_FRAMESIZE = 64 };
+ #endif
+@@ -87,7 +88,7 @@
+ #define MD_FALLBACK_FRAME_STATE_FOR(CONTEXT, FS, SUCCESS)		\
+   do {									\
+     unsigned char *pc_ = (CONTEXT)->ra;					\
+-    struct sigcontext *sc_;						\
++    struct sigcontext_struct *sc_;						\
+     long new_cfa_;							\
+     int i_;								\
+ 									\

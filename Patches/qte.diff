@@ -1,0 +1,1564 @@
+diff -Naur qt/Makefile qt-2.3.0/Makefile
+--- qt/Makefile	Sat Mar  3 16:38:50 2001
++++ qt-2.3.0/Makefile	Sat May 19 15:15:40 2001
+@@ -40,7 +40,7 @@
+ sub-tutorial: sub-src FORCE
+ 	cd tutorial; $(MAKE)
+ 
+-sub-examples: sub-src FORCE
++sub-examples: .buildopts FORCE
+ 	cd examples; $(MAKE)
+ 
+ clean:
+diff -Naur qt/configs/linux-powerpc-g++-shared qt-2.3.0/configs/linux-powerpc-g++-shared
+--- qt/configs/linux-powerpc-g++-shared	Thu Jan  1 01:00:00 1970
++++ qt-2.3.0/configs/linux-powerpc-g++-shared	Sat May 19 15:15:40 2001
+@@ -0,0 +1,99 @@
++# Compiling
++INTERFACE_DECL_PATH 	= .
++SYSCONF_CXX		= powerpc-linux-g++
++SYSCONF_CC		= powerpc-linux-gcc
++DASHCROSS		= 
++
++# Compiling with support libraries
++SYSCONF_CXXFLAGS_X11	= 
++SYSCONF_CXXFLAGS_QT	= -I$(QTDIR)/include
++SYSCONF_CXXFLAGS_OPENGL	= 
++#SYSCONF_CXXFLAGS_OPENGL	= -I/usr/X11R6/include
++
++# Compiling YACC output
++SYSCONF_CXXFLAGS_YACC     = -Wno-unused -Wno-parentheses
++
++# Linking with support libraries
++SYSCONF_RPATH_X11	= 
++SYSCONF_RPATH_QT	= 
++#SYSCONF_RPATH_QT	= -Wl,-rpath,$(QTDIR)/lib
++SYSCONF_RPATH_OPENGL	= 
++#SYSCONF_RPATH_OPENGL	= -Wl,-rpath,/usr/X11R6/lib
++
++# Linking with support libraries
++# X11
++SYSCONF_LFLAGS_X11	= 
++SYSCONF_LIBS_X11	= 
++# Qt, Qt+OpenGL
++SYSCONF_LFLAGS_QT	= -L$(QTDIR)/lib
++SYSCONF_LIBS_QT		= -lqte$(QT_THREAD_SUFFIX)
++SYSCONF_LIBS_QT_OPENGL	= 
++# OpenGL
++SYSCONF_LFLAGS_OPENGL	= 
++#SYSCONF_LFLAGS_OPENGL	= -L/usr/X11R6/lib
++SYSCONF_LIBS_OPENGL	= 
++# Yacc
++SYSCONF_LIBS_YACC	= 
++
++# Linking applications
++SYSCONF_LINK		= powerpc-linux-g++
++SYSCONF_LFLAGS		= 
++SYSCONF_LIBS		= 
++
++# Link flags for shared objects
++SYSCONF_LFLAGS_SHOBJ	= -shared
++
++# Flags for threading
++SYSCONF_CFLAGS_THREAD	= -D_REENTRANT
++SYSCONF_CXXFLAGS_THREAD	= -D_REENTRANT
++SYSCONF_LFLAGS_THREAD	= 
++SYSCONF_LIBS_THREAD	=  -lpthread
++
++# Meta-object compiler
++SYSCONF_MOC		= $(QTDIR)/bin/moc
++
++# UI compiler
++SYSCONF_UIC		= $(QTDIR)/bin/uic
++
++# Linking shared libraries
++#   - Build the $(TARGET) library, eg. lib$(TARGET).so.2.2.2
++#   - Place target in $(DESTDIR) - which has a trailing /
++#   - Usually needs to incorporate $(VER_MAJ), $(VER_MIN) and $(VER_PATCH)
++#
++SYSCONF_LINK_SHLIB	= powerpc-linux-g++
++SYSCONF_LINK_TARGET_SHARED	= lib$(TARGET).so.$(VER_MAJ).$(VER_MIN).$(VER_PATCH)
++SYSCONF_LINK_LIB_SHARED	=  $(SYSCONF_LINK_SHLIB) -shared -Wl,-soname,lib$(TARGET).so.$(VER_MAJ) \
++				     $(LFLAGS) -o $(SYSCONF_LINK_TARGET_SHARED) \
++				     $(OBJECTS) $(OBJMOC) $(LIBS) && \
++				 mv $(SYSCONF_LINK_TARGET_SHARED) $(DESTDIR); \
++				 cd $(DESTDIR) && \
++				 rm -f lib$(TARGET).so lib$(TARGET).so.$(VER_MAJ) lib$(TARGET).so.$(VER_MAJ).$(VER_MIN); \
++				 ln -s $(SYSCONF_LINK_TARGET_SHARED) lib$(TARGET).so; \
++				 ln -s $(SYSCONF_LINK_TARGET_SHARED) lib$(TARGET).so.$(VER_MAJ); \
++				 ln -s $(SYSCONF_LINK_TARGET_SHARED) lib$(TARGET).so.$(VER_MAJ).$(VER_MIN)
++
++# Linking static libraries
++#   - Build the $(TARGET) library, eg. lib$(TARGET).a
++#   - Place target in $(DESTDIR) - which has a trailing /
++#
++SYSCONF_AR		= powerpc-linux-ar cqs
++SYSCONF_LINK_TARGET_STATIC = lib$(TARGET).a
++SYSCONF_LINK_LIB_STATIC	= rm -f $(DESTDIR)$(SYSCONF_LINK_TARGET_STATIC) ; \
++				 $(SYSCONF_AR) $(DESTDIR)$(SYSCONF_LINK_TARGET_STATIC) $(OBJECTS) $(OBJMOC) 
++# Compiling application source
++SYSCONF_CXXFLAGS	= -pipe -fshared-data -DQWS -D_GNU_SOURCE -fomit-frame-pointer -fno-exceptions -fno-rtti -Os
++SYSCONF_CFLAGS		= -pipe -fshared-data -Os -D_GNU_SOURCE -fomit-frame-pointer
++# Default link type (static linking is still be used where required)
++SYSCONF_LINK_LIB	= $(SYSCONF_LINK_LIB_SHARED)
++SYSCONF_LINK_TARGET	= $(SYSCONF_LINK_TARGET_SHARED)
++# Compiling library source
++SYSCONF_CXXFLAGS_LIB	= -fPIC
++SYSCONF_CFLAGS_LIB	= -fPIC
++# Compiling shared-object source
++SYSCONF_CXXFLAGS_SHOBJ	= -fPIC
++SYSCONF_CFLAGS_SHOBJ	= -fPIC
++# Linking Qt
++SYSCONF_LIBS_QTLIB	= $(SYSCONF_LFLAGS_X11) $(QT_LIBS_MT) $(QT_LIBS_OPT)
++# Linking Qt applications
++SYSCONF_LIBS_QTAPP	= 
++
+diff -Naur qt/configure qt-2.3.0/configure
+--- qt/configure	Sat Mar  3 16:39:20 2001
++++ qt-2.3.0/configure	Sat May 19 15:15:40 2001
+@@ -97,7 +97,9 @@
+ 	echo "Type 'no' to decline this license offer."
+ 	echo
+ 	echo "Do you accept the terms of the license?"
+-	read acceptance
++	acceptance=yes
++	echo $acceptance
++#	read acceptance
+ 	if [ "$acceptance" = yes ]
+ 	then
+ 	    break
+diff -Naur qt/examples/Makefile.in qt-2.3.0/examples/Makefile.in
+--- qt/examples/Makefile.in	Sat Mar  3 16:39:33 2001
++++ qt-2.3.0/examples/Makefile.in	Sat May 19 15:15:40 2001
+@@ -56,12 +56,6 @@
+ 		wizard \
+ 		xform \
+ 		canvas \
+-		box \
+-		gear \
+-		glpixmap \
+-		overlay \
+-		sharedbox \
+-		texture \
+ 		fileiconview \
+ 		iconview \
+ 		ftpclient \
+diff -Naur qt/include/qnamespace.h qt-2.3.0/include/qnamespace.h
+--- qt/include/qnamespace.h	Sat Mar  3 16:34:24 2001
++++ qt-2.3.0/include/qnamespace.h	Sat May 19 15:37:47 2001
+@@ -68,6 +68,7 @@
+     QT_STATIC_CONST QColor & darkCyan;
+     QT_STATIC_CONST QColor & darkMagenta;
+     QT_STATIC_CONST QColor & darkYellow;
++    QT_STATIC_CONST QColor & dboxTransparent;
+ 
+     // documented in qevent.cpp
+     enum ButtonState {				// mouse/keyboard state values
+diff -Naur qt/src/Makefile.in qt-2.3.0/src/Makefile.in
+--- qt/src/Makefile.in	Sat Mar  3 16:39:20 2001
++++ qt-2.3.0/src/Makefile.in	Sat May 19 15:15:40 2001
+@@ -6,9 +6,9 @@
+ CXXFLAGS=	$(SYSCONF_CXXFLAGS_QT) $(SYSCONF_CXXFLAGS_X11) $(SYSCONF_CXXFLAGS) $(SYSCONF_CXXFLAGS_LIB) $(QT_CXXFLAGS_OPT)
+ CC	=	$(SYSCONF_CC) $(QT_C_MT)
+ CFLAGS	=	$(SYSCONF_CFLAGS) $(SYSCONF_CFLAGS_LIB) $(QT_CFLAGS_OPT)
+-INCPATH =	-I3rdparty/libpng -I3rdparty/zlib -I3rdparty/freetype/src -I3rdparty/freetype/include -I3rdparty/freetype/builds/unix
++INCPATH =	-I3rdparty/libpng $(shell freetype-config --cflags)
+ LFLAGS	=	$(SYSCONF_LFLAGS) $(QT_LFLAGS_MT)
+-LIBS	=	$(SUBLIBS) -lm $(SYSCONF_LIBS_QTLIB)
++LIBS	=	$(SUBLIBS) -lm $(shell freetype-config --libs) $(SYSCONF_LIBS_QTLIB)
+ MOC	=	$(SYSCONF_MOC)
+ UIC	=	$(SYSCONF_UIC)
+ 
+@@ -39,39 +39,6 @@
+ 		3rdparty/libpng/pngwrite.c \
+ 		3rdparty/libpng/pngwtran.c \
+ 		3rdparty/libpng/pngwutil.c \
+-		3rdparty/zlib/adler32.c \
+-		3rdparty/zlib/compress.c \
+-		3rdparty/zlib/crc32.c \
+-		3rdparty/zlib/deflate.c \
+-		3rdparty/zlib/gzio.c \
+-		3rdparty/zlib/infblock.c \
+-		3rdparty/zlib/infcodes.c \
+-		3rdparty/zlib/inffast.c \
+-		3rdparty/zlib/inflate.c \
+-		3rdparty/zlib/inftrees.c \
+-		3rdparty/zlib/infutil.c \
+-		3rdparty/zlib/trees.c \
+-		3rdparty/zlib/uncompr.c \
+-		3rdparty/zlib/zutil.c \
+-		3rdparty/freetype/builds/unix/ftsystem.c \
+-		3rdparty/freetype/src/base/ftdebug.c \
+-		3rdparty/freetype/src/base/ftinit.c \
+-		3rdparty/freetype/src/base/ftbase.c \
+-		3rdparty/freetype/src/base/ftglyph.c \
+-		3rdparty/freetype/src/base/ftmm.c \
+-		3rdparty/freetype/src/base/ftbbox.c \
+-		3rdparty/freetype/src/autohint/autohint.c \
+-		3rdparty/freetype/src/cache/ftcache.c \
+-		3rdparty/freetype/src/cff/cff.c \
+-		3rdparty/freetype/src/cid/type1cid.c \
+-		3rdparty/freetype/src/psaux/psaux.c \
+-		3rdparty/freetype/src/psnames/psmodule.c \
+-		3rdparty/freetype/src/raster/raster.c \
+-		3rdparty/freetype/src/sfnt/sfnt.c \
+-		3rdparty/freetype/src/smooth/smooth.c \
+-		3rdparty/freetype/src/truetype/truetype.c \
+-		3rdparty/freetype/src/type1/type1.c \
+-		3rdparty/freetype/src/winfonts/winfnt.c \
+ 		allmoc.cpp
+ OBJECTS =	3rdparty/libpng/png.o \
+ 		3rdparty/libpng/pngerror.o \
+@@ -88,39 +55,6 @@
+ 		3rdparty/libpng/pngwrite.o \
+ 		3rdparty/libpng/pngwtran.o \
+ 		3rdparty/libpng/pngwutil.o \
+-		3rdparty/zlib/adler32.o \
+-		3rdparty/zlib/compress.o \
+-		3rdparty/zlib/crc32.o \
+-		3rdparty/zlib/deflate.o \
+-		3rdparty/zlib/gzio.o \
+-		3rdparty/zlib/infblock.o \
+-		3rdparty/zlib/infcodes.o \
+-		3rdparty/zlib/inffast.o \
+-		3rdparty/zlib/inflate.o \
+-		3rdparty/zlib/inftrees.o \
+-		3rdparty/zlib/infutil.o \
+-		3rdparty/zlib/trees.o \
+-		3rdparty/zlib/uncompr.o \
+-		3rdparty/zlib/zutil.o \
+-		3rdparty/freetype/builds/unix/ftsystem.o \
+-		3rdparty/freetype/src/base/ftdebug.o \
+-		3rdparty/freetype/src/base/ftinit.o \
+-		3rdparty/freetype/src/base/ftbase.o \
+-		3rdparty/freetype/src/base/ftglyph.o \
+-		3rdparty/freetype/src/base/ftmm.o \
+-		3rdparty/freetype/src/base/ftbbox.o \
+-		3rdparty/freetype/src/autohint/autohint.o \
+-		3rdparty/freetype/src/cache/ftcache.o \
+-		3rdparty/freetype/src/cff/cff.o \
+-		3rdparty/freetype/src/cid/type1cid.o \
+-		3rdparty/freetype/src/psaux/psaux.o \
+-		3rdparty/freetype/src/psnames/psmodule.o \
+-		3rdparty/freetype/src/raster/raster.o \
+-		3rdparty/freetype/src/sfnt/sfnt.o \
+-		3rdparty/freetype/src/smooth/smooth.o \
+-		3rdparty/freetype/src/truetype/truetype.o \
+-		3rdparty/freetype/src/type1/type1.o \
+-		3rdparty/freetype/src/winfonts/winfnt.o \
+ 		allmoc.o $(QT_MODULE_OBJ)
+ INTERFACES =    
+ UICDECLS =      
+@@ -142,39 +76,6 @@
+ 		3rdparty/libpng/pngwrite.o \
+ 		3rdparty/libpng/pngwtran.o \
+ 		3rdparty/libpng/pngwutil.o
+-ZLIB_OBJECTS = 3rdparty/zlib/adler32.o \
+-		3rdparty/zlib/compress.o \
+-		3rdparty/zlib/crc32.o \
+-		3rdparty/zlib/deflate.o \
+-		3rdparty/zlib/gzio.o \
+-		3rdparty/zlib/infblock.o \
+-		3rdparty/zlib/infcodes.o \
+-		3rdparty/zlib/inffast.o \
+-		3rdparty/zlib/inflate.o \
+-		3rdparty/zlib/inftrees.o \
+-		3rdparty/zlib/infutil.o \
+-		3rdparty/zlib/trees.o \
+-		3rdparty/zlib/uncompr.o \
+-		3rdparty/zlib/zutil.o
+-FT_OBJECTS = 3rdparty/freetype/builds/unix/ftsystem.o \
+-		3rdparty/freetype/src/base/ftdebug.o \
+-		3rdparty/freetype/src/base/ftinit.o \
+-		3rdparty/freetype/src/base/ftbase.o \
+-		3rdparty/freetype/src/base/ftglyph.o \
+-		3rdparty/freetype/src/base/ftmm.o \
+-		3rdparty/freetype/src/base/ftbbox.o \
+-		3rdparty/freetype/src/autohint/autohint.o \
+-		3rdparty/freetype/src/cache/ftcache.o \
+-		3rdparty/freetype/src/cff/cff.o \
+-		3rdparty/freetype/src/cid/type1cid.o \
+-		3rdparty/freetype/src/psaux/psaux.o \
+-		3rdparty/freetype/src/psnames/psmodule.o \
+-		3rdparty/freetype/src/raster/raster.o \
+-		3rdparty/freetype/src/sfnt/sfnt.o \
+-		3rdparty/freetype/src/smooth/smooth.o \
+-		3rdparty/freetype/src/truetype/truetype.o \
+-		3rdparty/freetype/src/type1/type1.o \
+-		3rdparty/freetype/src/winfonts/winfnt.o
+ 
+ 
+ OBJECTS_tools = tools/qdir_unix.o \
+@@ -791,550 +692,68 @@
+ 		3rdparty/libpng/png.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+-3rdparty/zlib/adler32.o: 3rdparty/zlib/adler32.c \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/compress.o: 3rdparty/zlib/compress.c \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/crc32.o: 3rdparty/zlib/crc32.c \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/deflate.o: 3rdparty/zlib/deflate.c \
+-		3rdparty/zlib/deflate.h \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/gzio.o: 3rdparty/zlib/gzio.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/infblock.o: 3rdparty/zlib/infblock.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/infblock.h \
+-		3rdparty/zlib/inftrees.h \
+-		3rdparty/zlib/infcodes.h \
+-		3rdparty/zlib/infutil.h
+-
+-3rdparty/zlib/infcodes.o: 3rdparty/zlib/infcodes.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/inftrees.h \
+-		3rdparty/zlib/infblock.h \
+-		3rdparty/zlib/infcodes.h \
+-		3rdparty/zlib/infutil.h \
+-		3rdparty/zlib/inffast.h
+-
+-3rdparty/zlib/inffast.o: 3rdparty/zlib/inffast.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/inftrees.h \
+-		3rdparty/zlib/infblock.h \
+-		3rdparty/zlib/infcodes.h \
+-		3rdparty/zlib/infutil.h \
+-		3rdparty/zlib/inffast.h
+-
+-3rdparty/zlib/inflate.o: 3rdparty/zlib/inflate.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/infblock.h
+-
+-3rdparty/zlib/inftrees.o: 3rdparty/zlib/inftrees.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/inftrees.h \
+-		3rdparty/zlib/inffixed.h
+-
+-3rdparty/zlib/infutil.o: 3rdparty/zlib/infutil.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/infblock.h \
+-		3rdparty/zlib/inftrees.h \
+-		3rdparty/zlib/infcodes.h \
+-		3rdparty/zlib/infutil.h
+-
+-3rdparty/zlib/trees.o: 3rdparty/zlib/trees.c \
+-		3rdparty/zlib/deflate.h \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/trees.h
+-
+-3rdparty/zlib/uncompr.o: 3rdparty/zlib/uncompr.c \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/zutil.o: 3rdparty/zlib/zutil.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/freetype/builds/unix/ftsystem.o: 3rdparty/freetype/builds/unix/ftsystem.c \
+-		3rdparty/freetype/builds/unix/ftconfig.h
+-
+-3rdparty/freetype/src/base/ftdebug.o: 3rdparty/freetype/src/base/ftdebug.c
+-
+-3rdparty/freetype/src/base/ftinit.o: 3rdparty/freetype/src/base/ftinit.c
+-
+-3rdparty/freetype/src/base/ftbase.o: 3rdparty/freetype/src/base/ftbase.c \
+-		3rdparty/freetype/src/base/ftcalc.c \
+-		3rdparty/freetype/src/base/ftobjs.c \
+-		3rdparty/freetype/src/base/ftstream.c \
+-		3rdparty/freetype/src/base/ftlist.c \
+-		3rdparty/freetype/src/base/ftoutln.c \
+-		3rdparty/freetype/src/base/ftextend.c \
+-		3rdparty/freetype/src/base/ftnames.c
+-
+-3rdparty/freetype/src/base/ftglyph.o: 3rdparty/freetype/src/base/ftglyph.c
+-
+-3rdparty/freetype/src/base/ftmm.o: 3rdparty/freetype/src/base/ftmm.c
+-
+-3rdparty/freetype/src/base/ftbbox.o: 3rdparty/freetype/src/base/ftbbox.c
+-
+-3rdparty/freetype/src/autohint/autohint.o: 3rdparty/freetype/src/autohint/autohint.c \
+-		3rdparty/freetype/src/autohint/ahangles.c \
+-		3rdparty/freetype/src/autohint/ahangles.h \
+-		3rdparty/freetype/src/autohint/ahtypes.h \
+-		3rdparty/freetype/src/autohint/ahloader.h \
+-		3rdparty/freetype/src/autohint/ahglyph.c \
+-		3rdparty/freetype/src/autohint/ahglyph.h \
+-		3rdparty/freetype/src/autohint/ahglobal.h \
+-		3rdparty/freetype/src/autohint/ahglobal.c \
+-		3rdparty/freetype/src/autohint/ahhint.c \
+-		3rdparty/freetype/src/autohint/ahhint.h \
+-		3rdparty/freetype/src/autohint/ahmodule.c
+-
+-3rdparty/freetype/src/cache/ftcache.o: 3rdparty/freetype/src/cache/ftcache.c \
+-		3rdparty/freetype/src/cache/ftlru.c \
+-		3rdparty/freetype/src/cache/ftcmanag.c \
+-		3rdparty/freetype/src/cache/ftcglyph.c \
+-		3rdparty/freetype/src/cache/ftcchunk.c \
+-		3rdparty/freetype/src/cache/ftcimage.c \
+-		3rdparty/freetype/src/cache/ftcsbits.c
+-
+-3rdparty/freetype/src/cff/cff.o: 3rdparty/freetype/src/cff/cff.c \
+-		3rdparty/freetype/src/cff/t2driver.c \
+-		3rdparty/freetype/src/cff/t2driver.h \
+-		3rdparty/freetype/src/cff/t2gload.h \
+-		3rdparty/freetype/src/cff/t2objs.h \
+-		3rdparty/freetype/src/cff/t2parse.c \
+-		3rdparty/freetype/src/cff/t2parse.h \
+-		3rdparty/freetype/src/cff/t2tokens.h \
+-		3rdparty/freetype/src/cff/t2load.c \
+-		3rdparty/freetype/src/cff/t2load.h \
+-		3rdparty/freetype/src/cff/t2objs.c \
+-		3rdparty/freetype/src/cff/t2gload.c
+-
+-3rdparty/freetype/src/cid/type1cid.o: 3rdparty/freetype/src/cid/type1cid.c \
+-		3rdparty/freetype/src/cid/cidparse.c \
+-		3rdparty/freetype/src/cid/cidparse.h \
+-		3rdparty/freetype/src/cid/cidload.c \
+-		3rdparty/freetype/src/cid/cidload.h \
+-		3rdparty/freetype/src/cid/cidtokens.h \
+-		3rdparty/freetype/src/cid/cidobjs.c \
+-		3rdparty/freetype/src/cid/cidgload.h \
+-		3rdparty/freetype/src/cid/cidobjs.h \
+-		3rdparty/freetype/src/cid/cidriver.c \
+-		3rdparty/freetype/src/cid/cidriver.h \
+-		3rdparty/freetype/src/cid/cidgload.c
+-
+-3rdparty/freetype/src/psaux/psaux.o: 3rdparty/freetype/src/psaux/psaux.c \
+-		3rdparty/freetype/src/psaux/psobjs.c \
+-		3rdparty/freetype/src/psaux/psobjs.h \
+-		3rdparty/freetype/src/psaux/psauxmod.c \
+-		3rdparty/freetype/src/psaux/t1decode.c \
+-		3rdparty/freetype/src/psaux/t1decode.h
+-
+-3rdparty/freetype/src/psnames/psmodule.o: 3rdparty/freetype/src/psnames/psmodule.c \
+-		3rdparty/freetype/src/psnames/psmodule.h \
+-		3rdparty/freetype/src/psnames/pstables.h
+-
+-3rdparty/freetype/src/raster/raster.o: 3rdparty/freetype/src/raster/raster.c \
+-		3rdparty/freetype/src/raster/ftraster.c \
+-		3rdparty/freetype/src/raster/ftraster.h \
+-		3rdparty/freetype/src/raster/ftrend1.c \
+-		3rdparty/freetype/src/raster/ftrend1.h
+-
+-3rdparty/freetype/src/sfnt/sfnt.o: 3rdparty/freetype/src/sfnt/sfnt.c \
+-		3rdparty/freetype/src/sfnt/ttload.c \
+-		3rdparty/freetype/src/sfnt/ttload.h \
+-		3rdparty/freetype/src/sfnt/ttcmap.h \
+-		3rdparty/freetype/src/sfnt/ttcmap.c \
+-		3rdparty/freetype/src/sfnt/sfobjs.c \
+-		3rdparty/freetype/src/sfnt/sfobjs.h \
+-		3rdparty/freetype/src/sfnt/ttsbit.c \
+-		3rdparty/freetype/src/sfnt/ttsbit.h \
+-		3rdparty/freetype/src/sfnt/ttpost.c \
+-		3rdparty/freetype/src/sfnt/ttpost.h \
+-		3rdparty/freetype/src/sfnt/sfdriver.c \
+-		3rdparty/freetype/src/sfnt/sfdriver.h
+-
+-3rdparty/freetype/src/smooth/smooth.o: 3rdparty/freetype/src/smooth/smooth.c \
+-		3rdparty/freetype/src/smooth/ftgrays.c \
+-		3rdparty/freetype/src/smooth/ftgrays.h \
+-		3rdparty/freetype/src/smooth/ftsmooth.c \
+-		3rdparty/freetype/src/smooth/ftsmooth.h
+-
+-3rdparty/freetype/src/truetype/truetype.o: 3rdparty/freetype/src/truetype/truetype.c \
+-		3rdparty/freetype/src/truetype/ttdriver.c \
+-		3rdparty/freetype/src/truetype/ttdriver.h \
+-		3rdparty/freetype/src/truetype/ttgload.h \
+-		3rdparty/freetype/src/truetype/ttobjs.h \
+-		3rdparty/freetype/src/truetype/ttinterp.h \
+-		3rdparty/freetype/src/truetype/ttpload.c \
+-		3rdparty/freetype/src/truetype/ttpload.h \
+-		3rdparty/freetype/src/truetype/ttgload.c \
+-		3rdparty/freetype/src/truetype/ttobjs.c \
+-		3rdparty/freetype/src/truetype/ttinterp.c
+-
+-3rdparty/freetype/src/type1/type1.o: 3rdparty/freetype/src/type1/type1.c \
+-		3rdparty/freetype/src/type1/t1parse.c \
+-		3rdparty/freetype/src/type1/t1parse.h \
+-		3rdparty/freetype/src/type1/t1load.c \
+-		3rdparty/freetype/src/type1/t1load.h \
+-		3rdparty/freetype/src/type1/t1tokens.h \
+-		3rdparty/freetype/src/type1/t1objs.c \
+-		3rdparty/freetype/src/type1/t1gload.h \
+-		3rdparty/freetype/src/type1/t1objs.h \
+-		3rdparty/freetype/src/type1/t1afm.h \
+-		3rdparty/freetype/src/type1/t1driver.c \
+-		3rdparty/freetype/src/type1/t1driver.h \
+-		3rdparty/freetype/src/type1/t1gload.c \
+-		3rdparty/freetype/src/type1/t1afm.c
+-
+-3rdparty/freetype/src/winfonts/winfnt.o: 3rdparty/freetype/src/winfonts/winfnt.c \
+-		3rdparty/freetype/src/winfonts/winfnt.h
+-
+ allmoc.o: allmoc.cpp
+ 
+ 3rdparty/libpng/png.o: 3rdparty/libpng/png.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngerror.o: 3rdparty/libpng/pngerror.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngget.o: 3rdparty/libpng/pngget.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngmem.o: 3rdparty/libpng/pngmem.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngpread.o: 3rdparty/libpng/pngpread.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngread.o: 3rdparty/libpng/pngread.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngrio.o: 3rdparty/libpng/pngrio.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngrtran.o: 3rdparty/libpng/pngrtran.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngrutil.o: 3rdparty/libpng/pngrutil.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngset.o: 3rdparty/libpng/pngset.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngtrans.o: 3rdparty/libpng/pngtrans.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngwio.o: 3rdparty/libpng/pngwio.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngwrite.o: 3rdparty/libpng/pngwrite.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngwtran.o: 3rdparty/libpng/pngwtran.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ 3rdparty/libpng/pngwutil.o: 3rdparty/libpng/pngwutil.c \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+-3rdparty/zlib/adler32.o: 3rdparty/zlib/adler32.c \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/compress.o: 3rdparty/zlib/compress.c \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/crc32.o: 3rdparty/zlib/crc32.c \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/deflate.o: 3rdparty/zlib/deflate.c \
+-		3rdparty/zlib/deflate.h \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/gzio.o: 3rdparty/zlib/gzio.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/infblock.o: 3rdparty/zlib/infblock.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/infblock.h \
+-		3rdparty/zlib/inftrees.h \
+-		3rdparty/zlib/infcodes.h \
+-		3rdparty/zlib/infutil.h
+-
+-3rdparty/zlib/infcodes.o: 3rdparty/zlib/infcodes.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/inftrees.h \
+-		3rdparty/zlib/infblock.h \
+-		3rdparty/zlib/infcodes.h \
+-		3rdparty/zlib/infutil.h \
+-		3rdparty/zlib/inffast.h
+-
+-3rdparty/zlib/inffast.o: 3rdparty/zlib/inffast.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/inftrees.h \
+-		3rdparty/zlib/infblock.h \
+-		3rdparty/zlib/infcodes.h \
+-		3rdparty/zlib/infutil.h \
+-		3rdparty/zlib/inffast.h
+-
+-3rdparty/zlib/inflate.o: 3rdparty/zlib/inflate.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/infblock.h
+-
+-3rdparty/zlib/inftrees.o: 3rdparty/zlib/inftrees.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/inftrees.h \
+-		3rdparty/zlib/inffixed.h
+-
+-3rdparty/zlib/infutil.o: 3rdparty/zlib/infutil.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/infblock.h \
+-		3rdparty/zlib/inftrees.h \
+-		3rdparty/zlib/infcodes.h \
+-		3rdparty/zlib/infutil.h
+-
+-3rdparty/zlib/trees.o: 3rdparty/zlib/trees.c \
+-		3rdparty/zlib/deflate.h \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+-		3rdparty/zlib/trees.h
+-
+-3rdparty/zlib/uncompr.o: 3rdparty/zlib/uncompr.c \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/zlib/zutil.o: 3rdparty/zlib/zutil.c \
+-		3rdparty/zlib/zutil.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h
+-
+-3rdparty/freetype/builds/unix/ftsystem.o: 3rdparty/freetype/builds/unix/ftsystem.c \
+-		3rdparty/freetype/builds/unix/ftconfig.h
+-
+-3rdparty/freetype/src/base/ftdebug.o: 3rdparty/freetype/src/base/ftdebug.c
+-
+-3rdparty/freetype/src/base/ftinit.o: 3rdparty/freetype/src/base/ftinit.c
+-
+-3rdparty/freetype/src/base/ftbase.o: 3rdparty/freetype/src/base/ftbase.c \
+-		3rdparty/freetype/src/base/ftcalc.c \
+-		3rdparty/freetype/src/base/ftobjs.c \
+-		3rdparty/freetype/src/base/ftstream.c \
+-		3rdparty/freetype/src/base/ftlist.c \
+-		3rdparty/freetype/src/base/ftoutln.c \
+-		3rdparty/freetype/src/base/ftextend.c \
+-		3rdparty/freetype/src/base/ftnames.c
+-
+-3rdparty/freetype/src/base/ftglyph.o: 3rdparty/freetype/src/base/ftglyph.c
+-
+-3rdparty/freetype/src/base/ftmm.o: 3rdparty/freetype/src/base/ftmm.c
+-
+-3rdparty/freetype/src/base/ftbbox.o: 3rdparty/freetype/src/base/ftbbox.c
+-
+-3rdparty/freetype/src/autohint/autohint.o: 3rdparty/freetype/src/autohint/autohint.c \
+-		3rdparty/freetype/src/autohint/ahangles.c \
+-		3rdparty/freetype/src/autohint/ahangles.h \
+-		3rdparty/freetype/src/autohint/ahtypes.h \
+-		3rdparty/freetype/src/autohint/ahloader.h \
+-		3rdparty/freetype/src/autohint/ahglyph.c \
+-		3rdparty/freetype/src/autohint/ahglyph.h \
+-		3rdparty/freetype/src/autohint/ahglobal.h \
+-		3rdparty/freetype/src/autohint/ahglobal.c \
+-		3rdparty/freetype/src/autohint/ahhint.c \
+-		3rdparty/freetype/src/autohint/ahhint.h \
+-		3rdparty/freetype/src/autohint/ahmodule.c
+-
+-3rdparty/freetype/src/cache/ftcache.o: 3rdparty/freetype/src/cache/ftcache.c \
+-		3rdparty/freetype/src/cache/ftlru.c \
+-		3rdparty/freetype/src/cache/ftcmanag.c \
+-		3rdparty/freetype/src/cache/ftcglyph.c \
+-		3rdparty/freetype/src/cache/ftcchunk.c \
+-		3rdparty/freetype/src/cache/ftcimage.c \
+-		3rdparty/freetype/src/cache/ftcsbits.c
+-
+-3rdparty/freetype/src/cff/cff.o: 3rdparty/freetype/src/cff/cff.c \
+-		3rdparty/freetype/src/cff/t2driver.c \
+-		3rdparty/freetype/src/cff/t2driver.h \
+-		3rdparty/freetype/src/cff/t2gload.h \
+-		3rdparty/freetype/src/cff/t2objs.h \
+-		3rdparty/freetype/src/cff/t2parse.c \
+-		3rdparty/freetype/src/cff/t2parse.h \
+-		3rdparty/freetype/src/cff/t2tokens.h \
+-		3rdparty/freetype/src/cff/t2load.c \
+-		3rdparty/freetype/src/cff/t2load.h \
+-		3rdparty/freetype/src/cff/t2objs.c \
+-		3rdparty/freetype/src/cff/t2gload.c
+-
+-3rdparty/freetype/src/cid/type1cid.o: 3rdparty/freetype/src/cid/type1cid.c \
+-		3rdparty/freetype/src/cid/cidparse.c \
+-		3rdparty/freetype/src/cid/cidparse.h \
+-		3rdparty/freetype/src/cid/cidload.c \
+-		3rdparty/freetype/src/cid/cidload.h \
+-		3rdparty/freetype/src/cid/cidtokens.h \
+-		3rdparty/freetype/src/cid/cidobjs.c \
+-		3rdparty/freetype/src/cid/cidgload.h \
+-		3rdparty/freetype/src/cid/cidobjs.h \
+-		3rdparty/freetype/src/cid/cidriver.c \
+-		3rdparty/freetype/src/cid/cidriver.h \
+-		3rdparty/freetype/src/cid/cidgload.c
+-
+-3rdparty/freetype/src/psaux/psaux.o: 3rdparty/freetype/src/psaux/psaux.c \
+-		3rdparty/freetype/src/psaux/psobjs.c \
+-		3rdparty/freetype/src/psaux/psobjs.h \
+-		3rdparty/freetype/src/psaux/psauxmod.c \
+-		3rdparty/freetype/src/psaux/t1decode.c \
+-		3rdparty/freetype/src/psaux/t1decode.h
+-
+-3rdparty/freetype/src/psnames/psmodule.o: 3rdparty/freetype/src/psnames/psmodule.c \
+-		3rdparty/freetype/src/psnames/psmodule.h \
+-		3rdparty/freetype/src/psnames/pstables.h
+-
+-3rdparty/freetype/src/raster/raster.o: 3rdparty/freetype/src/raster/raster.c \
+-		3rdparty/freetype/src/raster/ftraster.c \
+-		3rdparty/freetype/src/raster/ftraster.h \
+-		3rdparty/freetype/src/raster/ftrend1.c \
+-		3rdparty/freetype/src/raster/ftrend1.h
+-
+-3rdparty/freetype/src/sfnt/sfnt.o: 3rdparty/freetype/src/sfnt/sfnt.c \
+-		3rdparty/freetype/src/sfnt/ttload.c \
+-		3rdparty/freetype/src/sfnt/ttload.h \
+-		3rdparty/freetype/src/sfnt/ttcmap.h \
+-		3rdparty/freetype/src/sfnt/ttcmap.c \
+-		3rdparty/freetype/src/sfnt/sfobjs.c \
+-		3rdparty/freetype/src/sfnt/sfobjs.h \
+-		3rdparty/freetype/src/sfnt/ttsbit.c \
+-		3rdparty/freetype/src/sfnt/ttsbit.h \
+-		3rdparty/freetype/src/sfnt/ttpost.c \
+-		3rdparty/freetype/src/sfnt/ttpost.h \
+-		3rdparty/freetype/src/sfnt/sfdriver.c \
+-		3rdparty/freetype/src/sfnt/sfdriver.h
+-
+-3rdparty/freetype/src/smooth/smooth.o: 3rdparty/freetype/src/smooth/smooth.c \
+-		3rdparty/freetype/src/smooth/ftgrays.c \
+-		3rdparty/freetype/src/smooth/ftgrays.h \
+-		3rdparty/freetype/src/smooth/ftsmooth.c \
+-		3rdparty/freetype/src/smooth/ftsmooth.h
+-
+-3rdparty/freetype/src/truetype/truetype.o: 3rdparty/freetype/src/truetype/truetype.c \
+-		3rdparty/freetype/src/truetype/ttdriver.c \
+-		3rdparty/freetype/src/truetype/ttdriver.h \
+-		3rdparty/freetype/src/truetype/ttgload.h \
+-		3rdparty/freetype/src/truetype/ttobjs.h \
+-		3rdparty/freetype/src/truetype/ttinterp.h \
+-		3rdparty/freetype/src/truetype/ttpload.c \
+-		3rdparty/freetype/src/truetype/ttpload.h \
+-		3rdparty/freetype/src/truetype/ttgload.c \
+-		3rdparty/freetype/src/truetype/ttobjs.c \
+-		3rdparty/freetype/src/truetype/ttinterp.c
+-
+-3rdparty/freetype/src/type1/type1.o: 3rdparty/freetype/src/type1/type1.c \
+-		3rdparty/freetype/src/type1/t1parse.c \
+-		3rdparty/freetype/src/type1/t1parse.h \
+-		3rdparty/freetype/src/type1/t1load.c \
+-		3rdparty/freetype/src/type1/t1load.h \
+-		3rdparty/freetype/src/type1/t1tokens.h \
+-		3rdparty/freetype/src/type1/t1objs.c \
+-		3rdparty/freetype/src/type1/t1gload.h \
+-		3rdparty/freetype/src/type1/t1objs.h \
+-		3rdparty/freetype/src/type1/t1afm.h \
+-		3rdparty/freetype/src/type1/t1driver.c \
+-		3rdparty/freetype/src/type1/t1driver.h \
+-		3rdparty/freetype/src/type1/t1gload.c \
+-		3rdparty/freetype/src/type1/t1afm.c
+-
+-3rdparty/freetype/src/winfonts/winfnt.o: 3rdparty/freetype/src/winfonts/winfnt.c \
+-		3rdparty/freetype/src/winfonts/winfnt.h
+-
+ 
+ 
+ # Module tools...
+@@ -5687,8 +5106,6 @@
+ 		kernel/qasyncimageio.h \
+ 		kernel/qpngio.h \
+ 		3rdparty/libpng/png.h \
+-		3rdparty/zlib/zlib.h \
+-		3rdparty/zlib/zconf.h \
+ 		3rdparty/libpng/pngconf.h
+ 
+ kernel/qpointarray.o: kernel/qpointarray.cpp \
+diff -Naur qt/src/kernel/qcolor.cpp qt-2.3.0/src/kernel/qcolor.cpp
+--- qt/src/kernel/qcolor.cpp	Sat Mar  3 16:34:24 2001
++++ qt-2.3.0/src/kernel/qcolor.cpp	Sat May 19 15:36:32 2001
+@@ -125,7 +125,7 @@
+ #define COLOR1_PIX 1
+ #endif
+ 
+-static QColor stdcol[19];
++static QColor stdcol[20];
+ 
+ QT_STATIC_CONST_IMPL QColor & Qt::color0 = stdcol[0];
+ QT_STATIC_CONST_IMPL QColor & Qt::color1  = stdcol[1];
+@@ -146,6 +146,7 @@
+ QT_STATIC_CONST_IMPL QColor & Qt::darkCyan = stdcol[16];
+ QT_STATIC_CONST_IMPL QColor & Qt::darkMagenta = stdcol[17];
+ QT_STATIC_CONST_IMPL QColor & Qt::darkYellow = stdcol[18];
++QT_STATIC_CONST_IMPL QColor & Qt::dboxTransparent = stdcol[19];
+ 
+ 
+ /*****************************************************************************
+@@ -208,6 +209,7 @@
+     stdcol[16].setRgb(   0, 128, 128 );
+     stdcol[17].setRgb( 128,   0, 128 );
+     stdcol[18].setRgb( 128, 128,   0 );
++    stdcol[19].setRgb( 0xff, 0x80, 0x7f );
+ }
+ 
+ 
+diff -Naur qt/src/kernel/qkeyboard_qws.cpp qt-2.3.0/src/kernel/qkeyboard_qws.cpp
+--- qt/src/kernel/qkeyboard_qws.cpp	Sat Mar  3 16:34:24 2001
++++ qt-2.3.0/src/kernel/qkeyboard_qws.cpp	Sat May 19 15:15:40 2001
+@@ -34,6 +34,8 @@
+ #include "qwsutils_qws.h"
+ #include "qgfx_qws.h"
+ 
++#include "rc.h" // dbox-defines
++
+ #include <qapplication.h>
+ #include <qsocketnotifier.h>
+ #include <qnamespace.h>
+@@ -192,6 +194,27 @@
+     QSocketNotifier *notifier;
+ };
+ 
++class QWSdboxSagemRCHandler : public QWSKeyboardHandler
++{
++    Q_OBJECT
++public:
++    QWSdboxSagemRCHandler();
++    virtual ~QWSdboxSagemRCHandler();
++
++    bool isOpen() { return rcFD > 0; }
++
++private slots:
++    void readKeyboardData();
++
++private:
++    QString rcDeviceName;
++    int rcFD;
++    int kbdIdx;
++    int kbdBufferLen;
++    unsigned char *kbdBuffer;
++    QSocketNotifier *notifier;
++};
++
+ class QWSVFbKeyboardHandler : public QWSKeyboardHandler
+ {
+     Q_OBJECT
+@@ -736,6 +759,145 @@
+ 
+ 
+ /*
++ * dbox-rc driver
++ */
++
++QWSdboxSagemRCHandler::QWSdboxSagemRCHandler() : QWSKeyboardHandler()
++{
++    rcDeviceName = "/dev/dbox/rc0";
++    rcFD = -1;
++    notifier = 0;
++
++    if ((rcFD = open(rcDeviceName, O_RDONLY | O_NDELAY, 0)) < 0)
++    {
++	qWarning("Keybord handler cannot open %s\n", rcDeviceName.latin1());
++    }
++
++    if ( rcFD >= 0 ) {
++	notifier = new QSocketNotifier( rcFD, QSocketNotifier::Read, this );
++	connect( notifier, SIGNAL(activated(int)),this,
++		 SLOT(readKeyboardData()) );
++    }
++
++    kbdBufferLen = 80;
++    kbdBuffer = new unsigned char [kbdBufferLen];
++    kbdIdx = 0;
++}
++
++QWSdboxSagemRCHandler::~QWSdboxSagemRCHandler()
++{
++    if ( rcFD > 0 ) {
++	::close( rcFD );
++	rcFD = -1;
++    }
++    delete notifier;
++    notifier = 0;
++    delete [] kbdBuffer;
++}
++
++void QWSdboxSagemRCHandler::readKeyboardData()
++{
++    int n = 0;
++    do {
++	n  = read(rcFD, kbdBuffer+kbdIdx, kbdBufferLen - kbdIdx );
++	if ( n > 0 )
++	    kbdIdx += n;
++    } while ( n > 0 );
++
++    int idx = 0;
++    while ( kbdIdx - idx >= 2 ) {
++	unsigned char *next = kbdBuffer + idx;
++	unsigned short *code = (unsigned short *)next;
++	int keycode = Qt::Key_unknown;
++	ushort unicode=0;
++	*code=translateRC(*code);
++	switch (*code) {
++	    case RC_up:
++		keycode = Qt::Key_Up;
++		break;
++	    case RC_right:
++		keycode = Qt::Key_Right;
++		break;
++	    case RC_down:
++		keycode = Qt::Key_Down;
++		break;
++	    case RC_left:
++		keycode = Qt::Key_Left;
++		break;
++	    case RC_OK:
++		keycode = Qt::Key_Return;
++		unicode=13;
++		break;
++	    case RC_Standby:
++		keycode = Qt::Key_Escape;
++		unicode=27;
++		break;
++            case RC_Minus:
++		keycode = Qt::Key_Minus;
++		unicode='-';
++		break;
++            case RC_Plus:
++		keycode = Qt::Key_Plus;
++		unicode='+';
++		break;
++	    case RC_Help:
++		keycode = Qt::Key_F1;
++		break;
++	    case RC_TV: // d-box
++		keycode = Qt::Key_F2;
++		break;
++	    case RC_Radio: // Home
++		keycode = Qt::Key_F3;
++		break;
++	    case RC_Spkr: // Mute
++		keycode = Qt::Key_F4;
++		break;
++	    case RC_Info: // red
++		keycode = Qt::Key_F5;
++		break;
++	    case RC_Opt: // green
++		keycode = Qt::Key_F6;
++		break;
++	    case RC_Mark: // yellow
++		keycode = Qt::Key_F7;
++		break;
++	    case RC_Menue: // blue
++		keycode = Qt::Key_F8;
++		break;
++	    case RC_Page_up:
++		keycode = Qt::Key_PageUp;
++		break;
++	    case RC_Page_down:
++		keycode = Qt::Key_PageDown;
++		break;
++            case RC_0:
++            case RC_1:
++            case RC_2:
++            case RC_3:
++            case RC_4:
++            case RC_5:
++            case RC_6:
++            case RC_7:
++            case RC_8:
++            case RC_9:
++		keycode = Qt::Key_0+*code;
++		unicode='0'+*code;
++		break;
++	    default:
++		qDebug("Unrecognised RC code: %04x", (int)(*code));
++	}
++//	    keyCode = QWSServer::keyMap()[code].key_code;
++        processKeyEvent(unicode, keycode, 0, TRUE, FALSE );
++	processKeyEvent(unicode, keycode, 0, FALSE, FALSE );
++	idx += 2;
++    }
++    int surplus = kbdIdx - idx;
++    for ( int i = 0; i < surplus; i++ )
++	kbdBuffer[i] = kbdBuffer[idx+i];
++    kbdIdx = surplus;
++}
++
++/*
+  * keyboard driver instantiation
+  */
+ 
+@@ -744,9 +906,11 @@
+     server = this;
+ 
+     QWSKeyboardHandler *handler = 0;
+-    
++
+     if ( spec == "Buttons" ) {
+ 	handler = new QWSVr41xxButtonsHandler();
++    } else if ( spec == "dboxRC" ) {
++	handler = new QWSdboxSagemRCHandler();
+     } else if ( spec == "QVFbKeyboard" ) {
+ 	handler = new QWSVFbKeyboardHandler();
+     } else if ( spec == "TTY" ) {
+diff -Naur qt/src/kernel/qnamespace.h qt-2.3.0/src/kernel/qnamespace.h
+--- qt/src/kernel/qnamespace.h	Sat Mar  3 16:34:24 2001
++++ qt-2.3.0/src/kernel/qnamespace.h	Sat May 19 15:37:47 2001
+@@ -68,6 +68,7 @@
+     QT_STATIC_CONST QColor & darkCyan;
+     QT_STATIC_CONST QColor & darkMagenta;
+     QT_STATIC_CONST QColor & darkYellow;
++    QT_STATIC_CONST QColor & dboxTransparent;
+ 
+     // documented in qevent.cpp
+     enum ButtonState {				// mouse/keyboard state values
+diff -Naur qt/src/kernel/qwindowsystem_qws.cpp qt-2.3.0/src/kernel/qwindowsystem_qws.cpp
+--- qt/src/kernel/qwindowsystem_qws.cpp	Sat Mar  3 16:34:25 2001
++++ qt-2.3.0/src/kernel/qwindowsystem_qws.cpp	Sat May 19 15:39:58 2001
+@@ -650,7 +650,8 @@
+     }
+ #endif
+     if ( !bgColor )
+-	bgColor = new QColor( 0x20, 0xb0, 0x50 );
++	bgColor = new QColor(Qt::dboxTransparent); // transparency on d-box 2, thanks to TheDOC
++//	bgColor = new QColor( 0x20, 0xb0, 0x50 );
+     screenRegion = QRegion( 0, 0, swidth, sheight );
+     paintBackground( screenRegion );
+ 
+diff -Naur qt/src/kernel/qwsmouse_qws.cpp qt-2.3.0/src/kernel/qwsmouse_qws.cpp
+--- qt/src/kernel/qwsmouse_qws.cpp	Sat Mar  3 16:34:25 2001
++++ qt-2.3.0/src/kernel/qwsmouse_qws.cpp	Sat May 19 15:15:40 2001
+@@ -55,6 +55,8 @@
+ 
+ #include <qgfx_qws.h>
+ 
++#include "rc.h" // dbox-defines
++
+ #ifdef QT_QWS_CASSIOPEIA
+ #include <linux/tpanel.h>
+ #define QWS_TOUCHPANEL
+@@ -1141,9 +1143,9 @@
+     unsigned int numSamples;
+     int mouseIdx;
+     uchar mouseBuf[mouseBufSize];
+-    
++
+ private slots:
+-    void readMouseData();   
++    void readMouseData();
+ };
+ 
+ 
+@@ -1414,6 +1416,234 @@
+ }
+ 
+ /*
++ * dbox-rc mouse driver
++ */
++
++class QdboxSagemRCMausHandler : public QWSMouseHandler {
++    Q_OBJECT
++public:
++    QdboxSagemRCMausHandler(MouseProtocol, QString dev);
++    ~QdboxSagemRCMausHandler();
++
++    bool isOpen() { return rcFD > 0; }
++
++private:
++
++    QString rcDeviceName;
++    int rcFD;
++    int kbdIdx;
++    int kbdBufferLen;
++//    QPoint mousPos;
++//    int mouseX, mouseY;
++    unsigned char *kbdBuffer;
++    QSocketNotifier *notifier;
++
++private slots:
++    void readKeyboardData();
++//    void readMouseData();
++};
++
++QdboxSagemRCMausHandler::QdboxSagemRCMausHandler(MouseProtocol, QString mouseDev)
++{
++    rcDeviceName = "/dev/dbox/rc0";
++    rcFD = -1;
++    notifier = 0;
++//    mouseX=mouseY=300;
++//    mousePos=QCursor:pos();
++    if ((rcFD = open(rcDeviceName, O_RDONLY | O_NDELAY, 0)) < 0)
++    {
++	qWarning("Mouse handler cannot open %s\n", rcDeviceName.latin1());
++    }
++
++    if ( rcFD >= 0 ) {
++	notifier = new QSocketNotifier( rcFD, QSocketNotifier::Read, this );
++	connect( notifier, SIGNAL(activated(int)),this,
++		 SLOT(readKeyboardData()) );
++    }
++
++    kbdBufferLen = 80;
++    kbdBuffer = new unsigned char [kbdBufferLen];
++    kbdIdx = 0;
++}
++
++QdboxSagemRCMausHandler::~QdboxSagemRCMausHandler()
++{
++    if ( rcFD > 0 ) {
++	::close( rcFD );
++	rcFD = -1;
++    }
++    delete notifier;
++    notifier = 0;
++    delete [] kbdBuffer;
++}
++
++void QdboxSagemRCMausHandler::readKeyboardData()
++{
++    int n = 0;
++    do {
++	n  = read(rcFD, kbdBuffer+kbdIdx, kbdBufferLen - kbdIdx );
++	if ( n > 0 )
++	    kbdIdx += n;
++    } while ( n > 0 );
++
++    int idx = 0;
++    while ( kbdIdx - idx >= 2 ) {
++	unsigned char *next = kbdBuffer + idx;
++	unsigned short *code = (unsigned short *)next;
++	int keycode = 0;
++	ushort unicode=0xffff;
++	*code=translateRC(*code);
++	switch (*code) {
++	    case RC_up:
++	    	mousePos.setY(mousePos.y()-15);
++		break;
++	    case RC_right:
++	    	mousePos.setX(mousePos.x()+15);
++		break;
++	    case RC_down:
++	    	mousePos.setY(mousePos.y()+15);
++		break;
++	    case RC_left:
++	    	mousePos.setX(mousePos.x()-15);
++		break;
++	    case RC_up_left:
++	    	mousePos.setY(mousePos.y()-15);
++	    	mousePos.setX(mousePos.x()-15);
++		break;
++	    case RC_up_right:
++	    	mousePos.setY(mousePos.y()-15);
++	    	mousePos.setX(mousePos.x()+15);
++		break;
++	    case RC_down_right:
++	    	mousePos.setY(mousePos.y()+15);
++	    	mousePos.setX(mousePos.x()+15);
++		break;
++	    case RC_down_left:
++	    	mousePos.setY(mousePos.y()+15);
++	    	mousePos.setX(mousePos.x()-15);
++		break;
++	    case RC_OK:
++		keycode = Qt::LeftButton;
++		break;
++	    case RC_Standby:
++		keycode = Qt::Key_Escape;
++		unicode=27;
++		break;
++            case RC_Minus:
++		keycode = Qt::Key_Minus;
++		unicode='-';
++		break;
++            case RC_Plus:
++		keycode = Qt::Key_Plus;
++		unicode='+';
++		break;
++	    case RC_Help:
++		keycode = Qt::Key_F1;
++		break;
++	    case RC_TV: // d-box
++		keycode = Qt::Key_F2;
++		break;
++	    case RC_Radio: // Home
++		keycode = Qt::Key_F3;
++		break;
++	    case RC_Spkr: // Mute
++		keycode = Qt::Key_F4;
++		break;
++	    case RC_Info: // red
++		keycode = Qt::Key_F5;
++		break;
++	    case RC_Opt: // green
++		keycode = Qt::Key_F6;
++		break;
++	    case RC_Mark: // yellow
++		keycode = Qt::Key_F7;
++		break;
++	    case RC_Menue: // blue
++		keycode = Qt::Key_F8;
++		break;
++	    case RC_Page_up:
++		keycode = Qt::Key_PageUp;
++		break;
++	    case RC_Page_down:
++		keycode = Qt::Key_PageDown;
++		break;
++	    case RC_0:
++		keycode = Qt::Key_Return;
++		unicode=13;
++		break;
++	    case RC_2:
++		keycode = Qt::Key_Up;
++		break;
++	    case RC_4:
++		keycode = Qt::Key_Left;
++		break;
++	    case RC_6:
++		keycode = Qt::Key_Right;
++		break;
++	    case RC_8:
++		keycode = Qt::Key_Down;
++		break;
++            case RC_1:
++            case RC_3:
++            case RC_5:
++            case RC_7:
++            case RC_9:
++		keycode = Qt::Key_0+*code;
++		unicode='0'+*code;
++		break;
++	    default:
++		qDebug("Unrecognised RC code: %04x", (int)(*code));
++	}
++	if(!keycode || keycode==Qt::LeftButton) {
++          limitToScreen( mousePos );
++          emit mouseChanged(mousePos, keycode);
++	  if(keycode==Qt::LeftButton)
++            emit mouseChanged(mousePos, 0); // Taste wieder loslassen
++        }
++	else if(keycode) {
++//          qDebug("Key pressed: 0x%04x (RC: 0x%04x)", keycode, (int)(*code));
++          QWSServer::sendKeyEvent( unicode, keycode, 0, TRUE, FALSE );
++          QWSServer::sendKeyEvent( unicode, keycode, 0, FALSE, FALSE );
++        }
++	idx += 2;
++    }
++
++    int surplus = kbdIdx - idx;
++    for ( int i = 0; i < surplus; i++ )
++	kbdBuffer[i] = kbdBuffer[idx+i];
++    kbdIdx = surplus;
++}
++
++/*
++void QdboxSagemRCMausHandler::readMouseData()
++{
++    int n;
++    do {
++	n = read(mouseFD, mouseBuf+mouseIdx, mouseBufSize-mouseIdx );
++	if ( n > 0 )
++	    mouseIdx += n;
++    } while ( n > 0 );
++
++    int idx = 0;
++    while ( mouseIdx-idx >= int(sizeof( QPoint ) + sizeof( int )) ) {
++	uchar *mb = mouseBuf+idx;
++	QPoint *p = (QPoint *) mb;
++	mb += sizeof( QPoint );
++	int *bstate = (int *)mb;
++	mousePos = *p;
++	limitToScreen( mousePos );
++	emit mouseChanged(mousePos, *bstate);
++	idx += sizeof( QPoint ) + sizeof( int );
++    }
++
++    int surplus = mouseIdx - idx;
++    for ( int i = 0; i < surplus; i++ )
++	mouseBuf[i] = mouseBuf[idx+i];
++    mouseIdx = surplus;
++}
++*/
++
++/*
+  * return a QWSMouseHandler that supports /a spec.
+  */
+ 
+@@ -1426,39 +1656,44 @@
+ //			  qt_screen->height()/2);
+     }
+ 
+-    int c = spec.find(':');
+-    QString mouseProto;
+-    QString mouseDev;
+-    if ( c >= 0 ) {
+-	mouseProto = spec.left(c);
++    QWSMouseHandler *handler = 0;
++    MouseProtocol mouseProtocol = Unknown;
++
++    if ( spec == "dboxRC" ) {
++      // d-box-Maus ;)
++      handler=new QdboxSagemRCMausHandler(mouseProtocol, "");
++    }
++    else {
++      int c = spec.find(':');
++      QString mouseProto;
++      QString mouseDev;
++      if ( c >= 0 ) {
++        mouseProto = spec.left(c);
+ 	mouseDev = spec.mid(c+1);
+-    } else {
++      } else {
+ 	mouseProto = spec;
+-    }
++      }
+ 
+-    MouseProtocol mouseProtocol = Unknown;
+ 
+-    int idx = 0;
+-    while (mouseProtocol == Unknown && mouseConfig[idx].name) {
++      int idx = 0;
++      while (mouseProtocol == Unknown && mouseConfig[idx].name) {
+ 	if (mouseProto == QString(mouseConfig[idx].name)) {
+ 	    mouseProtocol = mouseConfig[idx].id;
+ 	}
+ 	idx++;
+-    }
+-
+-    QWSMouseHandler *handler = 0;
++      }
+ 
+ #ifdef QWS_CUSTOMTOUCHPANEL
+-    handler=new QCustomTPanelHandlerPrivate(mouseProtocol,mouseDev);
++      handler=new QCustomTPanelHandlerPrivate(mouseProtocol,mouseDev);
+ #endif
+ 
+ #ifdef QT_QWS_IPAQ
+-    handler=new QIpaqHandlerPrivate(mouseProtocol,mouseDev);
++      handler=new QIpaqHandlerPrivate(mouseProtocol,mouseDev);
+ #endif
+-    
++
+ #ifndef QWS_CUSTOMTOUCHPANEL
+ #ifndef QT_QWS_IPAQ
+-    switch ( mouseProtocol ) {
++      switch ( mouseProtocol ) {
+ 	case Auto:
+ 	    handler = new QAutoMouseHandler();
+ 	    break;
+@@ -1479,10 +1714,10 @@
+ 
+ 	default:
+ 	    qDebug( "Mouse type %s unsupported", spec.latin1() );
+-    }
++      }
+ #endif
+ #endif
+-
++  } // else ! dbox
+     return handler;
+ }
+ 
+diff -Naur qt/src/kernel/rc.h qt-2.3.0/src/kernel/rc.h
+--- qt/src/kernel/rc.h	Thu Jan  1 01:00:00 1970
++++ qt-2.3.0/src/kernel/rc.h	Sat May 19 15:15:40 2001
+@@ -0,0 +1,109 @@
++#ifndef __RC_H
++#define __RC_H
++
++#define RC_Standby      0x0010
++#define RC_Radio        0x001F
++#define RC_TV           0x0018
++#define RC_0            0x0000
++#define RC_1            0x0001
++#define RC_2            0x0002
++#define RC_3            0x0003
++#define RC_4            0x0004
++#define RC_5            0x0005
++#define RC_6            0x0006
++#define RC_7            0x0007
++#define RC_8            0x0008
++#define RC_9            0x0009
++#define RC_Menue        0x0014
++#define RC_Mark         0x0012
++#define RC_Opt          0x0011
++#define RC_Info         0x0013
++#define RC_Page_up      0x0054
++#define RC_Page_down    0x0053
++#define RC_up           0x000C
++#define RC_down         0x000D
++#define RC_left         0x000B
++#define RC_right        0x000A
++#define RC_down_left    0x001D
++#define RC_down_right   0x001E
++#define RC_up_left	0x001B
++#define RC_up_right	0x001C
++#define RC_OK           0x000E
++#define RC_Plus         0x0015
++#define RC_Minus        0x0016
++#define RC_Spkr         0x000F
++#define RC_Help         0x0017
++#define RC_Break        0xFFFE
++
++inline unsigned short translateRC(unsigned short code)
++{
++  if ((code&0xFF00)==0x5C) {
++    switch (code&0xFF) {
++      case 0x10:
++	return RC_Standby;
++      case 0x1F:
++        return RC_Radio;
++      case 0x18:
++        return RC_TV;
++      case 0x00:
++        return RC_0;
++      case 0x01:
++        return RC_1;
++      case 0x02:
++        return RC_2;
++      case 0x03:
++        return RC_3;
++      case 0x04:
++        return RC_4;
++      case 0x05:
++        return RC_5;
++      case 0x06:
++        return RC_6;
++      case 0x07:
++        return RC_7;
++      case 0x08:
++        return RC_8;
++      case 0x09:
++        return RC_9;
++      case 0x14:
++        return RC_Menue;
++      case 0x12:
++        return RC_Mark;
++      case 0x11:
++        return RC_Opt;
++      case 0x13:
++        return RC_Info;
++      case 0x54:
++        return RC_Page_up;
++      case 0x53:
++        return RC_Page_down;
++      case 0x0C:
++        return RC_up;
++      case 0x0D:
++        return RC_down;
++      case 0x0B:
++        return RC_left;
++      case 0x0A:
++        return RC_right;
++      case 0x0E:
++        return RC_OK;
++      case 0x15:
++        return RC_Plus;
++      case 0x16:
++        return RC_Minus;
++      case 0x0F:
++        return RC_Spkr;
++      case 0x17:
++        return RC_Help;
++      default:
++//        qDebug("unknown old rc code %x", (int)code);
++        return (unsigned short)-1;
++    }
++  }
++  else if (!(code&0x00))
++    return code&0x3F;
++  else
++//    qDebug("unknown rc code %x", (int)code);
++    return (unsigned short)-1;
++}
++#endif // __RC_H
+diff -Naur qt/src/tools/qconfig-dbox.h qt-2.3.0/src/tools/qconfig-dbox.h
+--- qt/src/tools/qconfig-dbox.h	Thu Jan  1 01:00:00 1970
++++ qt-2.3.0/src/tools/qconfig-dbox.h	Sat May 19 15:15:40 2001
+@@ -0,0 +1,11 @@
++// Everything
++#define QT_NO_UNICODETABLES
++#ifndef QT_NO_QWS_MACH64
++#define QT_NO_QWS_MACH64
++#endif
++#define QT_NO_QWS_VFB
++//#define QT_NO_PSPRINTER
++//#define QT_NO_PRINTER
++//#define QT_NO_PRINTDIALOG
++//#define QT_NO_STYLE_PLATINUM
++//#define QT_NO_STYLE_SGI

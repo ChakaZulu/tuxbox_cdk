@@ -1,0 +1,24 @@
+diff -Naur zlib/Makefile.in zlib-1.1.3/Makefile.in
+--- zlib/Makefile.in	Thu Jul  9 18:07:18 1998
++++ zlib-1.1.3/Makefile.in	Wed Mar  7 05:03:07 2001
+@@ -80,7 +80,7 @@
+ 	rm -f _match.s
+ 
+ $(SHAREDLIB).$(VER): $(OBJS)
+-	$(LDSHARED) -o $@ $(OBJS)
++	$(LDSHARED) -o $@ $(OBJS) -lc
+ 	rm -f $(SHAREDLIB) $(SHAREDLIB).1
+ 	ln -s $@ $(SHAREDLIB)
+ 	ln -s $@ $(SHAREDLIB).1
+diff -Naur zlib/configure zlib-1.1.3/configure
+--- zlib/configure	Wed Jul  8 20:19:35 1998
++++ zlib-1.1.3/configure	Wed Mar  7 05:02:57 2001
+@@ -72,7 +72,7 @@
+   SFLAGS=${CFLAGS-"-fPIC -O3"}
+   CFLAGS="$cflags"
+   case `(uname -s || echo unknown) 2>/dev/null` in
+-  Linux | linux) LDSHARED=${LDSHARED-"gcc -shared -Wl,-soname,libz.so.1"};;
++  Linux | linux) LDSHARED=${LDSHARED-"$CC -shared -Wl,-soname,libz.so.1"};;
+   *)             LDSHARED=${LDSHARED-"gcc -shared"};;
+   esac
+ else

@@ -1,0 +1,3 @@
+# rules file for cdk with cygwin
+glibc;2.2.3;glibc-2.2.3;glibc-2.2.3.tar.bz2:glibc-linuxthreads-2.2.3.tar.bz2:glibc.diff:cygwin/glibc.diff;extract:glibc-2.2.3.tar.bz2;dirextract:glibc-linuxthreads-2.2.3.tar.bz2;patch:glibc.diff;patch:cygwin/glibc.diff
+>>>;rules-make

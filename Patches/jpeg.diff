@@ -1,0 +1,37 @@
+--- jpeg-6b.orig/makefile.cfg	Sat Mar 21 19:08:57 1998
++++ jpeg-6b/makefile.cfg	Sat Dec  1 12:55:28 2001
+@@ -23,7 +23,7 @@
+ CC= @CC@
+ 
+ # You may need to adjust these cc options:
+-CFLAGS= @CFLAGS@ @CPPFLAGS@ @INCLUDEFLAGS@
++CFLAGS= @CFLAGS@ @CPPFLAGS@ @INCLUDEFLAGS@ -fPIC
+ # Generally, we recommend defining any configuration symbols in jconfig.h,
+ # NOT via -D switches here.
+ # However, any special defines for ansi2knr.c may be included here:
+@@ -166,6 +166,10 @@
+ 	$(AR) libjpeg.a  $(LIBOBJECTS)
+ 	$(AR2) libjpeg.a
+ 
++libjpeg.so.6: @A2K_DEPS@ $(LIBOBJECTS)
++	$(CC) -shared -Wl,-soname,libjpeg.so.6 \
++	    -o libjpeg.so.6 $(LIBOBJECTS)
++
+ # with libtool:
+ libjpeg.la: @A2K_DEPS@ $(LIBOBJECTS)
+ 	$(LIBTOOL) --mode=link $(CC) -o libjpeg.la $(LIBOBJECTS) \
+@@ -202,8 +206,12 @@
+ 	$(INSTALL_DATA) $(srcdir)/rdjpgcom.1 $(mandir)/$(manprefix)rdjpgcom.$(manext)
+ 	$(INSTALL_DATA) $(srcdir)/wrjpgcom.1 $(mandir)/$(manprefix)wrjpgcom.$(manext)
+ 
+-install-lib: libjpeg.$(A) install-headers
+-	$(INSTALL_LIB) libjpeg.$(A) $(libdir)/$(binprefix)libjpeg.$(A)
++install-lib: libjpeg.so.6 install-headers
++	$(INSTALL_LIB) libjpeg.so.6 $(libdir)/$(binprefix)libjpeg.so.6.0.0
++	-rm $(libdir)/$(binprefix)libjpeg.so.6
++	-rm $(libdir)/$(binprefix)libjpeg.so
++	ln -s libjpeg.so.6.0.0 $(libdir)/$(binprefix)libjpeg.so.6
++	ln -s libjpeg.so.6 $(libdir)/$(binprefix)libjpeg.so
+ 
+ install-headers: jconfig.h
+ 	$(INSTALL_DATA) jconfig.h $(includedir)/jconfig.h

@@ -1,0 +1,149 @@
+diff -Naur busybox-0.60.1.orig/Config.h busybox-0.60.1/Config.h
+--- busybox-0.60.1.orig/Config.h	Fri Aug 24 00:14:30 2001
++++ busybox-0.60.1/Config.h	Fri Nov 30 09:44:33 2001
+@@ -51,7 +51,7 @@
+ #define BB_HALT
+ #define BB_HEAD
+ //#define BB_HOSTID
+-//#define BB_HOSTNAME
++#define BB_HOSTNAME
+ //#define BB_HUSH
+ #define BB_ID
+ //#define BB_IFCONFIG
+@@ -59,7 +59,7 @@
+ //#define BB_INSMOD
+ #define BB_KILL
+ #define BB_KILLALL
+-#define BB_KLOGD
++//#define BB_KLOGD
+ //#define BB_LASH
+ //#define BB_LENGTH
+ #define BB_LN
+@@ -69,25 +69,25 @@
+ #define BB_LOGGER
+ //#define BB_LOGNAME
+ #define BB_LS
+-#define BB_LSMOD
++//#define BB_LSMOD
+ //#define BB_MAKEDEVS
+ //#define BB_MD5SUM
+ #define BB_MKDIR
+ //#define BB_MKFIFO
+ //#define BB_MKFS_MINIX
+-#define BB_MKNOD
+-#define BB_MKSWAP
++//#define BB_MKNOD
++//#define BB_MKSWAP
+ //#define BB_MKTEMP
+-#define BB_MODPROBE
++//#define BB_MODPROBE
+ #define BB_MORE
+ #define BB_MOUNT
+ #define BB_MSH
+ //#define BB_MT
+ #define BB_MV
+ //#define BB_NC
+-//#define BB_NSLOOKUP
++#define BB_NSLOOKUP
+ #define BB_PIDOF
+-//#define BB_PING
++#define BB_PING
+ //#define BB_PIVOT_ROOT
+ #define BB_POWEROFF
+ //#define BB_PRINTF
+@@ -108,13 +108,13 @@
+ #define BB_SLEEP
+ #define BB_SORT
+ //#define BB_STTY
+-#define BB_SWAPONOFF
++//#define BB_SWAPONOFF
+ #define BB_SYNC
+-#define BB_SYSLOGD
++//#define BB_SYSLOGD
+ #define BB_TAIL
+ #define BB_TAR
+ //#define BB_TEE
+-//#define BB_TEST
++#define BB_TEST
+ //#define BB_TELNET
+ //#define BB_TFTP
+ #define BB_TOUCH
+@@ -134,7 +134,7 @@
+ //#define BB_VI
+ //#define BB_WATCHDOG
+ #define BB_WC
+-//#define BB_WGET
++#define BB_WGET
+ #define BB_WHICH
+ #define BB_WHOAMI
+ #define BB_XARGS
+@@ -206,32 +206,32 @@
+ #define BB_FEATURE_LS_FOLLOWLINKS
+ //
+ // Disable for a smaller (but less functional) ping
+-#define BB_FEATURE_FANCY_PING
++//#define BB_FEATURE_FANCY_PING
+ //
+ // Make init use a simplified /etc/inittab file (recommended).
+ #define BB_FEATURE_USE_INITTAB
+ //
+ //Enable init being called as /linuxrc
+-#define BB_FEATURE_LINUXRC
++//#define BB_FEATURE_LINUXRC
+ //
+ //Have init enable core dumping for child processes (for debugging only) 
+ //#define BB_FEATURE_INIT_COREDUMPS
+ //
+ //Make sure nothing is printed to the console on boot
+-//#define BB_FEATURE_EXTRA_QUIET
++#define BB_FEATURE_EXTRA_QUIET
+ //
+ // enable syslogd -R remotehost
+-#define BB_FEATURE_REMOTE_LOG
++//#define BB_FEATURE_REMOTE_LOG
+ //
+ // enable syslogd -C
+ //#define BB_FEATURE_IPC_SYSLOG
+ //
+ //Disable for a simple tail implementation (2.34k vs 3k for the full one).
+ //Both provide 'tail -f', but this cuts out -c, -q, -s, and -v. 
+-#define BB_FEATURE_FANCY_TAIL
++//#define BB_FEATURE_FANCY_TAIL
+ //
+ // Enable support for loop devices in mount
+-#define BB_FEATURE_MOUNT_LOOP
++//#define BB_FEATURE_MOUNT_LOOP
+ //
+ // Enable support for a real /etc/mtab file instead of /proc/mounts
+ //#define BB_FEATURE_MTAB_SUPPORT
+@@ -242,7 +242,7 @@
+ //
+ // If you are using uClibc, be sure that you've already compiled
+ // uClibc with INCLUDE_RPC=true (contained in the Config file)
+-//#define BB_FEATURE_NFSMOUNT
++#define BB_FEATURE_NFSMOUNT
+ //
+ // Enable support forced filesystem unmounting 
+ // (i.e., in case of an unreachable NFS system).
+@@ -293,7 +293,7 @@
+ // current username and hostname.  On systems that don't have usernames
+ // or hostnames, this can look hideous.
+ // Only relevant if a shell is enabled.
+-//#define BB_FEATURE_SH_FANCY_PROMPT
++#define BB_FEATURE_SH_FANCY_PROMPT
+ //
+ //Turn on extra fbset options
+ //#define BB_FEATURE_FBSET_FANCY
+@@ -341,10 +341,10 @@
+ //#define BB_FEATURE_INSTALLER
+ //
+ // Enable a nifty progress meter in wget (adds just under 2k)
+-#define BB_FEATURE_WGET_STATUSBAR
++//#define BB_FEATURE_WGET_STATUSBAR
+ //
+ // Enable HTTP authentication in wget
+-#define BB_FEATURE_WGET_AUTHENTICATION
++//#define BB_FEATURE_WGET_AUTHENTICATION
+ //
+ // Clean up all memory before exiting -- usually not needed
+ // as the OS can clean up...  Don't enable this unless you
