@@ -5,3 +5,6 @@ export PATH="/sbin:/bin"
 # timezone, only applicable for middle europe
 export TZ=CET-1CEST,M3.5.0/2,M10.5.0/3
 
+if [ -e /etc/profile.local ]; then
+	. /etc/profile.local
+fi
