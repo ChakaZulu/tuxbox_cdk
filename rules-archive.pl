@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 
-my $head = "all:";
+my $head = "download:";
 my $output;
 
 open ( RULES, $ARGV[0] ) or die;
