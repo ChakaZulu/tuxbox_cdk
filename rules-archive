@@ -14,8 +14,8 @@ patch-2.4.22-pre9.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4/testing;ftp:
 binutils-2.14.90.0.5.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
 gcc-core-3.2.3.tar.bz2;ftp://$(gnuserver)/gcc/gcc-3.2.3
 gcc-g++-3.2.3.tar.bz2;ftp://$(gnuserver)/gcc/gcc-3.2.3
-glibc-2.3.2.tar.bz2;ftp://$(gnuserver)/glibc
-glibc-linuxthreads-2.3.2.tar.bz2;ftp://$(gnuserver)/glibc
+glibc-2.2.5.tar.bz2;ftp://$(gnuserver)/glibc
+glibc-linuxthreads-2.2.5.tar.bz2;ftp://$(gnuserver)/glibc
 uClibc-0.9.11.tar.bz2
 watchdog_5.2.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/w/watchdog
 
