@@ -1,6 +1,6 @@
 diff -urN mad-0.14.2b.orig/libid3tag/Makefile.am mad-0.14.2b/libid3tag/Makefile.am
 --- mad-0.14.2b.orig/libid3tag/Makefile.am	2001-11-09 05:55:21.000000000 +0100
-+++ mad-0.14.2b/libid3tag/Makefile.am	2002-12-14 12:37:04.000000000 +0100
++++ mad-0.14.2b/libid3tag/Makefile.am	2002-12-15 19:48:10.000000000 +0100
 @@ -52,6 +52,9 @@
  
  libid3tag_la_LDFLAGS =	-version-info $(version_info)
@@ -13,7 +13,7 @@ diff -urN mad-0.14.2b.orig/libid3tag/Makefile.am mad-0.14.2b/libid3tag/Makefile.
  $(srcdir)/frametype.c: $(srcdir)/frametype.gperf Makefile.am
 diff -urN mad-0.14.2b.orig/libid3tag/Makefile.in mad-0.14.2b/libid3tag/Makefile.in
 --- mad-0.14.2b.orig/libid3tag/Makefile.in	2001-11-09 08:02:58.000000000 +0100
-+++ mad-0.14.2b/libid3tag/Makefile.in	2002-12-14 12:37:18.000000000 +0100
++++ mad-0.14.2b/libid3tag/Makefile.in	2002-12-15 19:48:10.000000000 +0100
 @@ -1,6 +1,6 @@
 -# Makefile.in generated automatically by automake 1.4 from Makefile.am
 +# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
@@ -265,9 +265,25 @@ diff -urN mad-0.14.2b.orig/libid3tag/Makefile.in mad-0.14.2b/libid3tag/Makefile.
  installcheck-am installcheck all-recursive-am install-exec-am \
  install-exec install-data-am install-data install-am install \
  uninstall-am uninstall all-redirect all-am all installdirs \
+diff -urN mad-0.14.2b.orig/libid3tag/aclocal.m4 mad-0.14.2b/libid3tag/aclocal.m4
+--- mad-0.14.2b.orig/libid3tag/aclocal.m4	2001-11-02 10:52:20.000000000 +0100
++++ mad-0.14.2b/libid3tag/aclocal.m4	2002-12-15 19:48:10.000000000 +0100
+@@ -551,3 +551,4 @@
+   $1_FALSE=
+ fi])
+ 
++
+diff -urN mad-0.14.2b.orig/libid3tag/config.h.in mad-0.14.2b/libid3tag/config.h.in
+--- mad-0.14.2b.orig/libid3tag/config.h.in	2001-11-02 10:59:10.000000000 +0100
++++ mad-0.14.2b/libid3tag/config.h.in	2002-12-15 19:49:19.000000000 +0100
+@@ -62,3 +62,4 @@
+  *****************************************************************************/
+ 
+ # endif
++
 diff -urN mad-0.14.2b.orig/libid3tag/configure mad-0.14.2b/libid3tag/configure
 --- mad-0.14.2b.orig/libid3tag/configure	2001-11-02 10:52:25.000000000 +0100
-+++ mad-0.14.2b/libid3tag/configure	2002-12-14 12:37:15.000000000 +0100
++++ mad-0.14.2b/libid3tag/configure	2002-12-15 19:48:10.000000000 +0100
 @@ -1834,7 +1834,7 @@
  int main() {
  
@@ -306,7 +322,7 @@ diff -urN mad-0.14.2b.orig/libid3tag/configure mad-0.14.2b/libid3tag/configure
  for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
 diff -urN mad-0.14.2b.orig/libid3tag/configure.in mad-0.14.2b/libid3tag/configure.in
 --- mad-0.14.2b.orig/libid3tag/configure.in	2001-11-02 10:50:44.000000000 +0100
-+++ mad-0.14.2b/libid3tag/configure.in	2002-12-14 12:37:13.000000000 +0100
++++ mad-0.14.2b/libid3tag/configure.in	2002-12-15 19:48:10.000000000 +0100
 @@ -156,4 +156,4 @@
  LTLIBOBJS=`echo "$LIBOBJS" | sed -e 's/\.o/.lo/g'`
  AC_SUBST(LTLIBOBJS)
@@ -315,7 +331,7 @@ diff -urN mad-0.14.2b.orig/libid3tag/configure.in mad-0.14.2b/libid3tag/configur
 +AC_OUTPUT(Makefile id3tag.pc)
 diff -urN mad-0.14.2b.orig/libid3tag/id3tag.pc.in mad-0.14.2b/libid3tag/id3tag.pc.in
 --- mad-0.14.2b.orig/libid3tag/id3tag.pc.in	1970-01-01 01:00:00.000000000 +0100
-+++ mad-0.14.2b/libid3tag/id3tag.pc.in	2002-12-14 12:36:03.000000000 +0100
++++ mad-0.14.2b/libid3tag/id3tag.pc.in	2002-12-15 19:48:10.000000000 +0100
 @@ -0,0 +1,11 @@
 +prefix=@prefix@
 +exec_prefix=@exec_prefix@
@@ -330,7 +346,7 @@ diff -urN mad-0.14.2b.orig/libid3tag/id3tag.pc.in mad-0.14.2b/libid3tag/id3tag.p
 +Cflags: -L${includedir}
 diff -urN mad-0.14.2b.orig/libmad/Makefile.am mad-0.14.2b/libmad/Makefile.am
 --- mad-0.14.2b.orig/libmad/Makefile.am	2001-11-09 05:55:25.000000000 +0100
-+++ mad-0.14.2b/libmad/Makefile.am	2002-12-14 12:37:56.000000000 +0100
++++ mad-0.14.2b/libmad/Makefile.am	2002-12-15 19:48:10.000000000 +0100
 @@ -44,6 +44,9 @@
  libmad_la_DEPENDENCIES =	@ASO_OBJS@
  libmad_la_LIBADD =		@ASO_OBJS@
@@ -343,7 +359,7 @@ diff -urN mad-0.14.2b.orig/libmad/Makefile.am mad-0.14.2b/libmad/Makefile.am
  
 diff -urN mad-0.14.2b.orig/libmad/Makefile.in mad-0.14.2b/libmad/Makefile.in
 --- mad-0.14.2b.orig/libmad/Makefile.in	2001-11-09 08:03:06.000000000 +0100
-+++ mad-0.14.2b/libmad/Makefile.in	2002-12-14 12:38:01.000000000 +0100
++++ mad-0.14.2b/libmad/Makefile.in	2002-12-15 19:48:10.000000000 +0100
 @@ -1,6 +1,6 @@
 -# Makefile.in generated automatically by automake 1.4 from Makefile.am
 +# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
@@ -597,9 +613,25 @@ diff -urN mad-0.14.2b.orig/libmad/Makefile.in mad-0.14.2b/libmad/Makefile.in
  installcheck-am installcheck all-recursive-am install-exec-am \
  install-exec install-data-am install-data install-am install \
  uninstall-am uninstall all-redirect all-am all installdirs \
+diff -urN mad-0.14.2b.orig/libmad/aclocal.m4 mad-0.14.2b/libmad/aclocal.m4
+--- mad-0.14.2b.orig/libmad/aclocal.m4	2001-11-03 20:27:06.000000000 +0100
++++ mad-0.14.2b/libmad/aclocal.m4	2002-12-15 19:48:10.000000000 +0100
+@@ -538,3 +538,4 @@
+ done<<>>dnl>>)
+ changequote([,]))])
+ 
++
+diff -urN mad-0.14.2b.orig/libmad/config.h.in mad-0.14.2b/libmad/config.h.in
+--- mad-0.14.2b.orig/libmad/config.h.in	2001-11-03 22:07:49.000000000 +0100
++++ mad-0.14.2b/libmad/config.h.in	2002-12-15 19:49:23.000000000 +0100
+@@ -120,3 +120,4 @@
+  *****************************************************************************/
+ 
+ # endif
++
 diff -urN mad-0.14.2b.orig/libmad/configure mad-0.14.2b/libmad/configure
 --- mad-0.14.2b.orig/libmad/configure	2001-11-03 20:27:11.000000000 +0100
-+++ mad-0.14.2b/libmad/configure	2002-12-14 12:37:59.000000000 +0100
++++ mad-0.14.2b/libmad/configure	2002-12-15 19:48:10.000000000 +0100
 @@ -2010,7 +2010,7 @@
  int main() {
  
@@ -793,7 +825,7 @@ diff -urN mad-0.14.2b.orig/libmad/configure mad-0.14.2b/libmad/configure
  for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
 diff -urN mad-0.14.2b.orig/libmad/configure.in mad-0.14.2b/libmad/configure.in
 --- mad-0.14.2b.orig/libmad/configure.in	2001-11-03 20:15:07.000000000 +0100
-+++ mad-0.14.2b/libmad/configure.in	2002-12-14 12:37:37.000000000 +0100
++++ mad-0.14.2b/libmad/configure.in	2002-12-15 19:48:10.000000000 +0100
 @@ -374,4 +374,4 @@
  LTLIBOBJS=`echo "$LIBOBJS" | sed -e 's/\.o/.lo/g'`
  AC_SUBST(LTLIBOBJS)
@@ -802,7 +834,7 @@ diff -urN mad-0.14.2b.orig/libmad/configure.in mad-0.14.2b/libmad/configure.in
 +AC_OUTPUT(Makefile mad.pc)
 diff -urN mad-0.14.2b.orig/libmad/mad.pc.in mad-0.14.2b/libmad/mad.pc.in
 --- mad-0.14.2b.orig/libmad/mad.pc.in	1970-01-01 01:00:00.000000000 +0100
-+++ mad-0.14.2b/libmad/mad.pc.in	2002-12-14 12:37:27.000000000 +0100
++++ mad-0.14.2b/libmad/mad.pc.in	2002-12-15 19:48:10.000000000 +0100
 @@ -0,0 +1,11 @@
 +prefix=@prefix@
 +exec_prefix=@exec_prefix@
