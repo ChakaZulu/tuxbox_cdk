@@ -1246,7 +1246,7 @@ $(DEPDIR)/uboot $(DEPDIR)/u-boot: bootstrap @DEPENDS_uboot@
 	$(INSTALL) @DIR_uboot@/tools/mkimage $(hostprefix)/bin
 
 	@CLEANUP_uboot@
-	touch $(DEPDIR)/uboot
+	touch $(DEPDIR)/uboot $(DEPDIR)/u-boot
 
 $(DEPDIR)/linuxkernel: bootstrap linuxdir u-boot
 	$(MAKE) -C @DIR_linux@ zImage modules \
