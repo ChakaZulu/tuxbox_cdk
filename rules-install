@@ -9,6 +9,7 @@
 #
 # core
 #
+uboot
 linux
 binutils;make:install
 bootstrap_gcc;make:install

@@ -12,6 +12,7 @@
 #
 # core
 #
+uboot;1.1.1;u-boot-1.1.1;u-boot-1.1.1.tar.bz2:u-boot-1.1.1.diff;extract:u-boot-1.1.1.tar.bz2;patch:u-boot-1.1.1.diff
 linux;2.4.25-dbox2;linux-2.4.25;linux-2.4.25.tar.bz2:linux-2.4.25-cifs24.103.diff.bz2:linux-2.4.25-dbox2-mtd.diff.bz2;remove:linux;extract:linux-2.4.25.tar.bz2;patch:linux-2.4.25-dbox2.diff;patch:linux-2.4.25-dbox2-shift.diff;patch:linux-2.4.25-dbox2-keyboard.diff;patch:linux-2.4.25-dbox2-v4l2.diff;patch:linux-2.4.25-dbox2-cramfs.diff;patch:linux-2.4.25-dbox2-mtd.diff.bz2;patch:linux-2.4.25-cifs24.103.diff.bz2;patch:fb_accel_id.diff;patch:squashfs1.3r3-patch;link:linux-2.4.25:linux
 binutils;2.14.90.0.5;binutils-2.14.90.0.5;binutils-2.14.90.0.5.tar.bz2;extract:binutils-2.14.90.0.5.tar.bz2
 bootstrap_gcc;3.3.3;gcc-3.3.3;gcc-core-3.3.3.tar.bz2:gcc-core.diff;extract:gcc-core-3.3.3.tar.bz2;patch:gcc-core.diff
