@@ -189,86 +189,6 @@ root: .busybox .tinylogin .modutils .telnetd .msttf
 	@CLEANUP_telnetd@
 	touch .telnetd
 
-.cabextract: .gcc @DEPENDS_cabextract@
-	@PREPARE_cabextract@
-	cd @DIR_cabextract@ && \
-		CC=$(CC) CFLAGS="$(CFLAGS)" \
-		./configure \
-			--prefix=$(hostprefix) && \
-		make all && \
-		@INSTALL_cabextract@
-	@CLEANUP_cabextract@
-	touch .cabextract
-
-.msttf: .cabextract @DEPENDS_msttf@
-	@PREPARE_msttf@
-	install -d $(targetprefix)$(FONTDIR)
-	install -m 0644 @DIR_msttf@/AriBlk.TTF $(targetprefix)$(FONTDIR)/Arial_Black.ttf
-	install -m 0644 @DIR_msttf@/Arial.TTF $(targetprefix)$(FONTDIR)/Arial.ttf
-	install -m 0644 @DIR_msttf@/Arialbd.TTF $(targetprefix)$(FONTDIR)/Arial_Bold.ttf
-	install -m 0644 @DIR_msttf@/Arialbi.TTF $(targetprefix)$(FONTDIR)/Arial_Bold_Italic.ttf
-	install -m 0644 @DIR_msttf@/Ariali.TTF $(targetprefix)$(FONTDIR)/Arial_Italic.ttf
-	install -m 0644 @DIR_msttf@/cour.ttf $(targetprefix)$(FONTDIR)/Courier_New.ttf
-	install -m 0644 @DIR_msttf@/courbd.ttf $(targetprefix)$(FONTDIR)/Courier_New_Bold.ttf
-	install -m 0644 @DIR_msttf@/courbi.ttf $(targetprefix)$(FONTDIR)/Courier_New_Bold_Italic.ttf
-	install -m 0644 @DIR_msttf@/couri.ttf $(targetprefix)$(FONTDIR)/Courier_New_Italic.ttf
-	@CLEANUP_msttf@
-	touch .msttf
-
-.nano: @DEPENDS_nano@
-	@PREPARE_nano@
-	cd @DIR_nano@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure \
-			--prefix=$(targetprefix) && \
-		make all && \
-		@INSTALL_nano@
-	@CLEANUP_nano@
-	touch .nano
-
-	
-
-#######################
-#
-#   development tools
-#
-
-devel: .gdb .strace
-
-.gdb: .gcc .libncurses @DEPENDS_gdb@
-	@PREPARE_gdb@
-	cd @DIR_gdb@ && \
-		LD_LIBRARY_PATH=$(libdir) \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--target=$(target) \
-			--nfp \
-			--disable-sim \
-			--prefix=$(targetprefix) && \
-		make all && \
-		@INSTALL_gdb@
-	@CLEANUP_gdb@
-	touch .gdb
-
-.strace: .gcc @DEPENDS_strace@
-	@PREPARE_strace@
-	cd @DIR_strace@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--target=$(target) \
-			--prefix=$(targetprefix) && \
-		make all && \
-		@INSTALL_strace@
-	@CLEANUP_strace@
-	touch .strace
-
-
 #######################
 #
 #   contrib libs
@@ -399,6 +319,93 @@ libs: .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 
 #######################
 #
+# msttf
+#
+
+.cabextract: .gcc @DEPENDS_cabextract@
+	@PREPARE_cabextract@
+	cd @DIR_cabextract@ && \
+		CC=$(CC) CFLAGS="$(CFLAGS)" \
+		./configure \
+			--prefix=$(hostprefix) && \
+		make all && \
+		@INSTALL_cabextract@
+	@CLEANUP_cabextract@
+	touch .cabextract
+
+.msttf: .cabextract @DEPENDS_msttf@
+	@PREPARE_msttf@
+	install -d $(targetprefix)$(FONTDIR)
+	install -m 0644 @DIR_msttf@/AriBlk.TTF $(targetprefix)$(FONTDIR)/Arial_Black.ttf
+	install -m 0644 @DIR_msttf@/Arial.TTF $(targetprefix)$(FONTDIR)/Arial.ttf
+	install -m 0644 @DIR_msttf@/Arialbd.TTF $(targetprefix)$(FONTDIR)/Arial_Bold.ttf
+	install -m 0644 @DIR_msttf@/Arialbi.TTF $(targetprefix)$(FONTDIR)/Arial_Bold_Italic.ttf
+	install -m 0644 @DIR_msttf@/Ariali.TTF $(targetprefix)$(FONTDIR)/Arial_Italic.ttf
+	install -m 0644 @DIR_msttf@/cour.ttf $(targetprefix)$(FONTDIR)/Courier_New.ttf
+	install -m 0644 @DIR_msttf@/courbd.ttf $(targetprefix)$(FONTDIR)/Courier_New_Bold.ttf
+	install -m 0644 @DIR_msttf@/courbi.ttf $(targetprefix)$(FONTDIR)/Courier_New_Bold_Italic.ttf
+	install -m 0644 @DIR_msttf@/couri.ttf $(targetprefix)$(FONTDIR)/Courier_New_Italic.ttf
+	@CLEANUP_msttf@
+	touch .msttf
+
+#######################
+#
+#   development tools
+#
+
+devel: .gdb .strace
+
+.gdb: .gcc .libncurses @DEPENDS_gdb@
+	@PREPARE_gdb@
+	cd @DIR_gdb@ && \
+		LD_LIBRARY_PATH=$(libdir) \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--nfp \
+			--disable-sim \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_gdb@
+	@CLEANUP_gdb@
+	touch .gdb
+
+.strace: .gcc @DEPENDS_strace@
+	@PREPARE_strace@
+	cd @DIR_strace@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_strace@
+	@CLEANUP_strace@
+	touch .strace
+
+#######################
+#
+# misc apps
+#
+
+.nano: @DEPENDS_nano@
+	@PREPARE_nano@
+	cd @DIR_nano@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_nano@
+	@CLEANUP_nano@
+	touch .nano
+
+#######################
+#
 #   own kernel and driver
 #
 
@@ -443,7 +450,7 @@ boot: .ppcboot .linuxkernel .driver
 #   own applications
 #
 
-apps: .dvbsnoop .dvbstream .edvb .lcars .lcdmenu .neutrino .stream
+apps: .dvbsnoop .dvbstream .edvb .lcars .lcdmenu .neutrino .stream 
 
 if MAINTAINER_MODE
 $(appsdir)/configure: $(appsdir)/configure.ac
@@ -559,13 +566,14 @@ distclean-local:
 	-make -C $(appsdir) distclean
 	-rm Makefile-archive
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .etc .busybox .tinylogin .modutils .inetd .telnetd .cabextract .msttf
-	-rm .nano
+	-rm .etc .busybox .tinylogin .modutils .inetd .telnetd 
 	-rm .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
-	-rm .ppcboot .linuxkernel
+	-rm .cabextract .msttf
 	-rm .gdb .strace
-	-rm .dvbsnoop .edvb .fx2 .lcars .lcdmenu
-	-rm .neutrino .sections .stream .tools .zapit
+	-rm .nano
+	-rm .ppcboot .linuxkernel
+	-rm .dvbsnoop .dvbstream .edvb .lcars .lcdmenu .neutrino .stream
+	-rm .fx2 .sections .zapit
 	-rm .liblcddisplay .libmd5sum .libucodes
 	-rm .dvbstream
 	-rm .driver
