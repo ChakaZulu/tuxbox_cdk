@@ -1,5 +1,5 @@
 #
-# $Id: FAQ.en,v 1.3 2003/02/14 17:38:23 obi Exp $
+# $Id: FAQ.en,v 1.4 2003/05/29 10:01:30 obi Exp $
 #
 # Frequently Asked Questions about the Cross Development Kit
 #
@@ -29,13 +29,13 @@ A: "automake" creates "Makefile.in" from "Makefile.am". You can call
 
 Q: Why does nobody want to answer my question?
 A: Because it has probably already been answered many times and is already
-   documented. See "https://tuxbox.berlios.de/forum/". However, sometimes it
+   documented. See "https://tuxbox.org/forum/". However, sometimes it
    happens that your question gets lost in the huge number of posts. Please
    feel free to ask your question again.
 
 Q: What is a good place to look for more answers to
    my problems with linux on my dbox2?
-A: The forum at "https://tuxbox.berlios.de/forum/" provides a search facility.
+A: The forum at "https://tuxbox.org/forum/" provides a search facility.
    There are also public mailing lists at
    "https://developer.berlios.de/mail/?group_id=72".
 
