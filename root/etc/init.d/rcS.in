@@ -113,7 +113,7 @@ elif [ $MODEL_ID -eq 2 ]; then
 
 fi
 
-echo "Willkomen auf Ihrer $VENDOR $MODEL - Kernel %r (%t)." >> /etc/issue.net
+@TARGETRULESET_FLASH_FALSE@echo "$VENDOR $MODEL - Kernel %r (%t)." > /etc/issue.net
 
 # compatibility links
 ln -sf demux0 /dev/dvb/adapter0/demux1
