@@ -45,7 +45,8 @@ libfreetype;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARG
 libfribidi;rewrite-pkgconfig:fribidi.pc;make:install:DESTDIR=TARGET
 libgmp;make:install:DESTDIR=TARGET
 libjpeg;make:install-lib:libdir=TARGET/lib:includedir=TARGET/include
-libmad;rewrite-pkgconfig:libid3tag/id3tag.pc;rewrite-pkgconfig:libmad/mad.pc;make:install:DESTDIR=TARGET
+libmad;rewrite-pkgconfig:mad.pc;make:install:DESTDIR=TARGET;install:-m644:mad.pc:TARGET/lib/pkgconfig
+libid3tag;rewrite-pkgconfig:id3tag.pc;make:install:DESTDIR=TARGET;install:-m644:id3tag.pc:TARGET/lib/pkgconfig
 libncurses;make:install.libs:DESTDIR=TARGET
 libpcap;make:install:DESTDIR=TARGET
 libpng;make:install-static:install-shared:install-config:prefix=TARGET;link:TARGET/bin/libpng-config:HOST/bin/libpng-config
