@@ -9,18 +9,18 @@
 #
 # core
 #
-linux-2.4.2.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4/;ftp://ftp.kernel.org/pub/linux/kernel/v2.4/
-binutils-2.11.92.0.10.tar.bz2;ftp://ftp.kernel.org/pub/linux/devel/binutils/
-gcc-core-3.0.2.tar.gz;ftp://ftp.fu-berlin.de/unix/languages/egcs/snapshots/2001-09-03/
-gcc-g++-3.0.2.tar.gz;ftp://ftp.fu-berlin.de/unix/languages/egcs/snapshots/2001-09-03/
-glibc-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases/
-glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases/
+linux-2.4.2.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
+binutils-2.11.92.0.10.tar.bz2;ftp://ftp.kernel.org/pub/linux/devel/binutils
+gcc-core-3.0.2.tar.gz;ftp://ftp.fu-berlin.de/unix/languages/egcs/snapshots/2001-09-03
+gcc-g++-3.0.2.tar.gz;ftp://ftp.fu-berlin.de/unix/languages/egcs/snapshots/2001-09-03
+glibc-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
+glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 
 #
 # minimal root
 #
-busybox-0.60.1.tar.gz;ftp://busybox.net/busybox/
-tinylogin-0.80.tar.gz;ftp://oss.lineo.com/tinylogin/
+busybox-0.60.1.tar.gz;ftp://busybox.net/busybox
+tinylogin-0.80.tar.gz;ftp://oss.lineo.com/tinylogin
 modutils-2.4.9.tar.bz2
 netkit-rsh-0.17.tar.gz
 
@@ -39,13 +39,13 @@ zlib.tar.gz
 #
 # msttf
 #
-cabextract-0.5.tar.gz;http://www.kyz.uklinux.net/downloads/
-arialb32.exe;http://www.microsoft.com/typography/downloads/
-arial32.exe;http://www.microsoft.com/typography/downloads/
-courie32.exe;http://www.microsoft.com/typography/downloads/
+cabextract-0.5.tar.gz;http://www.kyz.uklinux.net/downloads
+arialb32.exe;http://www.microsoft.com/typography/downloads
+arial32.exe;http://www.microsoft.com/typography/downloads
+courie32.exe;http://www.microsoft.com/typography/downloads
 
 #
 # additional
 #
-gdb-5.0.tar.gz;ftp://ftp.freenet.de/pub/ftp.gnu.org/gnu/gdb/
+gdb-5.0.tar.gz;ftp://ftp.freenet.de/pub/ftp.gnu.org/gnu/gdb
 
