@@ -1564,6 +1564,7 @@ flash-neutrino: $(flashprefix)/.part_neutrino
 
 $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino .root
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
+	$(INSTALL) -d $(flashprefix)/root/share/iso-codes
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/lirc
 	$(INSTALL) $(targetprefix)/bin/controld $(targetprefix)/bin/neutrino \
 		$(targetprefix)/bin/nhttpd $(targetprefix)/bin/timerd \
@@ -1576,7 +1577,9 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino .root
 	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
 	sed -e 's/neutrino/neutrino -u -f/' $(targetprefix)/etc/init.d/start_neutrino > \
 		$(flashprefix)/root/etc/init.d/start_neutrino ;
+	chmod 755 $(flashprefix)/root/etc/init.d/start_neutrino ;
 	cp -pa $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
+	cp -pa $(targetprefix)/share/iso-codes/iso-639.tab $(flashprefix)/root/share/iso-codes
 	cp -pa $(targetprefix)/var/tuxbox/config/zapit $(flashprefix)/root/var/tuxbox/config
 	@touch $@
 
