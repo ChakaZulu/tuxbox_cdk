@@ -1504,7 +1504,7 @@ distclean-local:
 	-rm .libdirectfb .libdirectfbpp .libdvbpsi .libffi .libfreetype
 	-rm .libncurses .libjpeg .libmad .libpcap .libpng
 	-rm .libreadline .libsdl .libsigc .libxml2 .libz
-	-rm .gdb .gdb-remote .ksymoops .ltrace .strace .nano
+	-rm .gdb .gdb-remote .ltrace .strace .nano
 	-rm .kaffeh .kaffe
 	-rm .gnuboy .scummvm .sdldoom
 	-rm .ppcboot .linuxkernel .driver

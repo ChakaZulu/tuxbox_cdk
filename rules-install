@@ -78,7 +78,6 @@ msttf
 # development tools
 #
 gdb;make:install-gdb:prefix=TARGET
-ksymoops;make:install:INSTALL_PREFIX=TARGET
 ltrace;make:install:DESTDIR=TARGET
 strace;make:install:prefix=TARGET
 nano;make:install:DESTDIR=TARGET

@@ -15,65 +15,71 @@ AC_SUBST(target)
 
 AC_ARG_WITH(hardwareruleset,
 	[  --with-hardwareruleset=NAME  hardware ruleset [[dbox2,dreambox]]],
-	[hardwareruleset="$withval"],[hardwareruleset="dbox2"])
+	[HARDWARERULESET="$withval"],[HARDWARERULESET="dbox2"])
 
-if test "$hardwareruleset" = "dbox2"; then
-	HARDWARERULESET=dbox2
-elif test "$hardwareruleset" = "dreambox"; then
-	HARDWARERULESET=dreambox
+if test "$HARDWARERULESET" = "dbox2"; then
+	true
+elif test "$HARDWARERULESET" = "dreambox"; then
+	true
 else
 	AC_MSG_ERROR([invalid hardwareruleset "$hardwareruleset", choose on from dbox2 or dreambox]);
 fi
 
 AC_SUBST(HARDWARERULESET)
-AM_CONDITIONAL(HARDWARERULESET_DBOX2,test "$hardwareruleset" = "dbox2")
-AM_CONDITIONAL(HARDWARERULESET_DREAMBOX,test "$hardwareruleset" = "dreambox")
+AM_CONDITIONAL(HARDWARERULESET_DBOX2,test "$HARDWARERULESET" = "dbox2")
+AM_CONDITIONAL(HARDWARERULESET_DREAMBOX,test "$HARDWARERULESET" = "dreambox")
 
 AC_ARG_WITH(hostruleset,
 	[  --with-hostruleset=NAME host ruleset [[standard,cygwin]]],
-	[hostruleset="$withval"],[hostruleset="standard"])
+	[HOSTRULESET="$withval"],[HOSTRULESET="NULL"])
 
-if test "$host_os" = "cygwin" -a "$hostruleset" = "standard"; then
-	AC_MSG_WARN([overriding standard ruleset])
-	hostruleset="cygwin"
+if test "$HOSTRULESET" = "NULL"; then
+	if test "$host_os" = "cygwin"; then
+		HOSTRULESET="cygwin"
+	else
+		HOSTRULESET="standard"
+	fi
 fi
 
-if test "$hostruleset" = "standard"; then
+if test "$HOSTRULESET" = "standard"; then
 	MAKERULESETFILE=""
-elif test "$hostruleset" = "cygwin"; then
+elif test "$HOSTRULESET" = "cygwin"; then
 	MAKERULESETFILE="-cygwin"
 else
-	AC_MSG_ERROR([invalid hostruleset "$hostruleset", choose on from standard or cygwin]);
+	AC_MSG_ERROR([invalid hostruleset "$HOSTRULESET", choose on from standard or cygwin]);
 fi
 
-AM_CONDITIONAL(HOSTRULESET_STANDARD,test "$hostruleset" = "standard")
-AM_CONDITIONAL(HOSTRULESET_CYGWIN,test "$hostruleset" = "cygwin")
+AC_SUBST(HOSTRULESET)
+AM_CONDITIONAL(HOSTRULESET_STANDARD,test "$HOSTRULESET" = "standard")
+AM_CONDITIONAL(HOSTRULESET_CYGWIN,test "$HOSTRULESET" = "cygwin")
 
 AC_ARG_WITH(targetruleset,
 	[  --with-targetruleset=NAME target ruleset [[standard,flash]]],
-	[targetruleset="$withval"],[targetruleset="standard"])
+	[TARGETRULESET="$withval"],[TARGETRULESET="standard"])
 
-if test "$targetruleset" = "standard"; then
+if test "$TARGETRULESET" = "standard"; then
 	INSTALLRULESETFILE=""
-elif test "$targetruleset" = "flash"; then
+elif test "$TARGETRULESET" = "flash"; then
 	INSTALLRULESETFILE="-flash"
 else
-	AC_MSG_ERROR([invalid targetruleset "$targetruleset", choose on from standard or flash]);
+	AC_MSG_ERROR([invalid targetruleset "$TARGETRULESET", choose on from standard or flash]);
 fi
 
-AM_CONDITIONAL(TARGETRULESET_STANDARD,test "$targetruleset" = "standard")
-AM_CONDITIONAL(TARGETRULESET_FLASH,test "$targetruleset" = "flash")
+AC_SUBST(TARGETRULESET)
+AM_CONDITIONAL(TARGETRULESET_STANDARD,test "$TARGETRULESET" = "standard")
+AM_CONDITIONAL(TARGETRULESET_FLASH,test "$TARGETRULESET" = "flash")
 
 if test -z "$CFLAGS" ; then
 	CFLAGS="-O2"
 fi
 
 if test -z "$TARGET_CFLAGS" -o -z "$TARGET_CXXFLAGS"; then
-	if test "$targetruleset" = "standard"; then
-		TARGET_CFLAGS="-O3 -mcpu=823 -msoft-float -mmultiple -mstring -meabi -g -pipe"
+	TARGET_CFLAGS="-msoft-float -mmultiple -mstring -meabi"
+	if test "$TARGETRULESET" = "standard"; then
+		TARGET_CFLAGS="$TARGET_CFLAGS -O3 -g -pipe"
 		TARGET_LDFLAGS=""
-	elif test "$targetruleset" = "flash"; then
-		TARGET_CFLAGS="-Os -mcpu=823 -msoft-float -mmultiple -mstring -meabi -pipe"
+	elif test "$TARGETRULESET" = "flash"; then
+		TARGET_CFLAGS="$TARGET_CFLAGS -Os -pipe"
 		TARGET_LDFLAGS="-s"
 	fi
 	TARGET_CXXFLAGS="$TARGET_CFLAGS"
@@ -313,7 +319,6 @@ TUXBOX_RULES_MAKE(msttf)
 # additional
 #
 TUXBOX_RULES_MAKE(gdb)
-TUXBOX_RULES_MAKE(ksymoops)
 TUXBOX_RULES_MAKE(ltrace)
 TUXBOX_RULES_MAKE(strace)
 TUXBOX_RULES_MAKE(nano)
@@ -355,9 +360,9 @@ ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 #
 AC_MSG_RESULT([
 Summary:
-Hardwareruleset:	$hardwareruleset
-Hostruleset:		$hostruleset
-Targetruleset:		$targetruleset
+Hardwareruleset:	$HARDWARERULESET
+Hostruleset:		$HOSTRULESET
+Targetruleset:		$TARGETRULESET
 Targetprefix:		$targetprefix
 Hostprefix:		$hostprefix
 Bootprefix:		$bootprefix

@@ -74,7 +74,6 @@ DirectFB-examples-0.9.15.tar.gz;http://www.directfb.org/download/DirectFB
 # development tools
 #
 gdb-5.3.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
-ksymoops-2.4.6.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/ksymoops/v2.4
 ltrace_0.3.26.tar.gz;ftp://ftp.debian.org/debian/pool/main/l/ltrace
 strace_4.4-1.tar.gz;http://switch.dl.sourceforge.net/sourceforge/strace
 nano-1.0.7.tar.gz;http://www.nano-editor.org/dist/v1.0
