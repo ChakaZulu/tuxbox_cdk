@@ -1,5 +1,5 @@
 # /etc/services:
-# $Id: services,v 1.5 2002/03/23 00:09:07 obi Exp $
+# $Id: services,v 1.6 2003/09/18 15:25:57 obi Exp $
 
 echo		7/tcp
 echo		7/udp
@@ -44,3 +44,6 @@ streamavpes	31336/tcp
 streamps	31337/tcp
 streampes	31338/tcp
 streamts	31339/tcp
+udpstreampes	31340/tcp
+udpstreampes	31341/udp
+
