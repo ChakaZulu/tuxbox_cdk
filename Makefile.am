@@ -60,7 +60,8 @@ endif
 	fi
 	@PREPARE_binutils@
 	cd @DIR_binutils@ && \
-		CC=$(CC) CFLAGS="$(CFLAGS)" \
+		CC=$(CC) \
+		CFLAGS="$(CFLAGS)" \
 		@CONFIGURE_binutils@ \
 			--target=$(target) \
 			--prefix=$(hostprefix) \
@@ -141,8 +142,11 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 	fi
 	@PREPARE_glibc@
 	cd @DIR_glibc@ && \
-		CC=$(target)-gcc AR=$(target)-ar RANLIB=$(target)-ranlib \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		CC=$(target)-gcc \
+		AR=$(target)-ar \
+		RANLIB=$(target)-ranlib \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		@CONFIGURE_glibc@ \
 			--build=$(build) \
 			--host=$(target) \
@@ -919,7 +923,8 @@ devel: .gdb .strace .nano
 	@PREPARE_gdb@
 	cd @DIR_gdb@ && \
 		LD_LIBRARY_PATH=$(libdir) \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -1213,6 +1218,10 @@ endif
 		-a 00000000 -e 00000000 \
 		-d `if [ -f @DIR_linux@/arch/ppc/coffboot/vmlinux.gz ]; then echo @DIR_linux@/arch/ppc/coffboot/vmlinux.gz; else echo @DIR_linux@/arch/ppc/boot/images/vmlinux.gz; fi` \
 		$(bootprefix)/kernel-cdk;
+
+	$(INSTALL) -d $(targetprefix)/boot
+	$(INSTALL) -m644 @DIR_linux@/vmlinux $(targetprefix)/boot/vmlinux
+	$(INSTALL) -m644 @DIR_linux@/System.map $(targetprefix)/boot/System.map
 if MAINTAINER_MODE
 else
 	$(MAKE) -C @DIR_linux@ clean
