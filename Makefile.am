@@ -23,13 +23,9 @@ core: directories binutils linuxdir glibc gcc
 
 VPATH = $(DEPDIR)
 
-depdir:
-	if [ ! -d $(DEPDIR) ]; then \
-		mkdir $(DEPDIR); \
-	fi
+DEP_FILES = $(DEPDIR)/dummy
 
 $(DEPDIR)/bootstrap:
-	$(MAKE) depdir
 	@if [ ! -f glibc ]; then \
 		$(MAKE) glibc gcc; \
 	elif [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
@@ -38,7 +34,6 @@ $(DEPDIR)/bootstrap:
 	touch $@
 
 $(DEPDIR)/directories:
-	$(MAKE) depdir
 	$(INSTALL) -d $(targetprefix)/bin
 	$(INSTALL) -d $(targetprefix)/boot
 	$(INSTALL) -d $(targetprefix)/dev
@@ -68,7 +63,6 @@ endif
 	touch $@
 
 $(DEPDIR)/linuxdir: @DEPENDS_linux@
-	$(MAKE) depdir
 	@if [ ! -d $(targetprefix)/bin ]; then \
 		$(MAKE) directories; \
 	fi
@@ -85,7 +79,6 @@ endif
 	touch $@
 
 $(DEPDIR)/binutils: @DEPENDS_binutils@
-	$(MAKE) depdir
 	@if [ ! -h linux ]; then \
 		$(MAKE) linuxdir; \
 	fi
