@@ -1157,7 +1157,7 @@ $(appsdir)/dvb/dvbsnoop/config.status: .bootstrap
 
 # dvb/zapit
 
-$(appsdir)/dvb/zapit/config.status: .bootstrap .tuxbox_tools .misc_libs
+$(appsdir)/dvb/zapit/config.status: .bootstrap .misc_libs
 	cd $(appsdir)/dvb/zapit && $(CONFIGURE)
 
 .zapit: $(appsdir)/dvb/zapit/config.status .config
