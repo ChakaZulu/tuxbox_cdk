@@ -1,6 +1,15 @@
 diff -Naur u-boot-1.1.1.orig/Makefile u-boot-1.1.1/Makefile
 --- u-boot-1.1.1.orig/Makefile	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/Makefile	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/Makefile	2004-05-02 23:28:03.000000000 +0200
+@@ -103,7 +103,7 @@
+ LIBS += cpu/$(CPU)/lib$(CPU).a
+ LIBS += lib_$(ARCH)/lib$(ARCH).a
+ LIBS += fs/cramfs/libcramfs.a fs/fat/libfat.a fs/fdos/libfdos.a fs/jffs2/libjffs2.a \
+-	fs/reiserfs/libreiserfs.a
++	fs/reiserfs/libreiserfs.a fs/squashfs/libsquashfs.a
+ LIBS += net/libnet.a
+ LIBS += disk/libdisk.a
+ LIBS += rtc/librtc.a
 @@ -146,6 +146,13 @@
  			sed -e 's/"[	 ]*$$/ for $(BOARD) board"/') \
  		-d $< $@
@@ -45,7 +54,7 @@ diff -Naur u-boot-1.1.1.orig/Makefile u-boot-1.1.1/Makefile
  	rm -f include/asm/proc include/asm/arch include/asm
 diff -Naur u-boot-1.1.1.orig/common/Makefile u-boot-1.1.1/common/Makefile
 --- u-boot-1.1.1.orig/common/Makefile	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/common/Makefile	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/common/Makefile	2004-05-02 23:31:31.000000000 +0200
 @@ -34,7 +34,7 @@
  	  cmd_date.o cmd_dcr.o cmd_diag.o cmd_doc.o cmd_dtt.o \
  	  cmd_eeprom.o cmd_elf.o \
@@ -57,7 +66,7 @@ diff -Naur u-boot-1.1.1.orig/common/Makefile u-boot-1.1.1/common/Makefile
  	  cmd_nand.o cmd_net.o cmd_nvedit.o \
 diff -Naur u-boot-1.1.1.orig/common/cmd_flash.c u-boot-1.1.1/common/cmd_flash.c
 --- u-boot-1.1.1.orig/common/cmd_flash.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/common/cmd_flash.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/common/cmd_flash.c	2004-05-02 23:31:31.000000000 +0200
 @@ -319,6 +319,8 @@
  		p = 0;
  	} else if (strcmp(argv[1], "on") == 0) {
@@ -69,7 +78,7 @@ diff -Naur u-boot-1.1.1.orig/common/cmd_flash.c u-boot-1.1.1/common/cmd_flash.c
  		return 1;
 diff -Naur u-boot-1.1.1.orig/common/cmd_net.c u-boot-1.1.1/common/cmd_net.c
 --- u-boot-1.1.1.orig/common/cmd_net.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/common/cmd_net.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/common/cmd_net.c	2004-05-02 23:31:31.000000000 +0200
 @@ -94,7 +94,10 @@
  );
  #endif	/* CFG_CMD_NFS */
@@ -84,7 +93,7 @@ diff -Naur u-boot-1.1.1.orig/common/cmd_net.c u-boot-1.1.1/common/cmd_net.c
  
 diff -Naur u-boot-1.1.1.orig/common/cmd_nvedit.c u-boot-1.1.1/common/cmd_nvedit.c
 --- u-boot-1.1.1.orig/common/cmd_nvedit.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/common/cmd_nvedit.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/common/cmd_nvedit.c	2004-05-02 23:31:31.000000000 +0200
 @@ -523,7 +523,7 @@
  	return (-1);
  }
@@ -106,7 +115,7 @@ diff -Naur u-boot-1.1.1.orig/common/cmd_nvedit.c u-boot-1.1.1/common/cmd_nvedit.
  	saveenv, 1, 0,	do_saveenv,
 diff -Naur u-boot-1.1.1.orig/common/devices.c u-boot-1.1.1/common/devices.c
 --- u-boot-1.1.1.orig/common/devices.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/common/devices.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/common/devices.c	2004-05-02 23:31:31.000000000 +0200
 @@ -193,6 +193,9 @@
  #ifdef CONFIG_LOGBUFFER
  	drv_logbuff_init ();
@@ -119,7 +128,7 @@ diff -Naur u-boot-1.1.1.orig/common/devices.c u-boot-1.1.1/common/devices.c
  	drv_usbtty_init ();
 diff -Naur u-boot-1.1.1.orig/common/env_common.c u-boot-1.1.1/common/env_common.c
 --- u-boot-1.1.1.orig/common/env_common.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/common/env_common.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/common/env_common.c	2004-05-02 23:31:31.000000000 +0200
 @@ -42,6 +42,10 @@
  	extern void disable_nvram(void);
  #endif
@@ -156,7 +165,7 @@ diff -Naur u-boot-1.1.1.orig/common/env_common.c u-boot-1.1.1/common/env_common.
  #ifdef CONFIG_AUTO_COMPLETE
 diff -Naur u-boot-1.1.1.orig/common/main.c u-boot-1.1.1/common/main.c
 --- u-boot-1.1.1.orig/common/main.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/common/main.c	2004-05-02 00:47:23.000000000 +0200
++++ u-boot-1.1.1/common/main.c	2004-05-02 23:31:32.000000000 +0200
 @@ -34,6 +34,11 @@
  
  #include <post.h>
@@ -308,7 +317,7 @@ diff -Naur u-boot-1.1.1.orig/common/main.c u-boot-1.1.1/common/main.c
  # else
 diff -Naur u-boot-1.1.1.orig/cpu/mpc8xx/cpu_init.c u-boot-1.1.1/cpu/mpc8xx/cpu_init.c
 --- u-boot-1.1.1.orig/cpu/mpc8xx/cpu_init.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/cpu/mpc8xx/cpu_init.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/cpu/mpc8xx/cpu_init.c	2004-05-02 23:31:32.000000000 +0200
 @@ -110,6 +110,7 @@
  	immr->im_clkrst.car_plprcr = reg;
  #endif
@@ -337,7 +346,7 @@ diff -Naur u-boot-1.1.1.orig/cpu/mpc8xx/cpu_init.c u-boot-1.1.1/cpu/mpc8xx/cpu_i
  	 * on the MBX, things are a little bit different:
 diff -Naur u-boot-1.1.1.orig/cpu/mpc8xx/start.S u-boot-1.1.1/cpu/mpc8xx/start.S
 --- u-boot-1.1.1.orig/cpu/mpc8xx/start.S	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/cpu/mpc8xx/start.S	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/cpu/mpc8xx/start.S	2004-05-02 23:31:32.000000000 +0200
 @@ -83,6 +83,9 @@
   * r4 - 2nd arg to board_init(): boot flag
   */
@@ -348,9 +357,21 @@ diff -Naur u-boot-1.1.1.orig/cpu/mpc8xx/start.S u-boot-1.1.1/cpu/mpc8xx/start.S
  	.long	0x27051956		/* U-Boot Magic Number			*/
  	.globl	version_string
  version_string:
+diff -Naur u-boot-1.1.1.orig/fs/Makefile u-boot-1.1.1/fs/Makefile
+--- u-boot-1.1.1.orig/fs/Makefile	2004-05-01 17:00:26.000000000 +0200
++++ u-boot-1.1.1/fs/Makefile	2004-05-02 23:31:32.000000000 +0200
+@@ -22,7 +22,7 @@
+ #
+ #
+ 
+-SUBDIRS	:= jffs2 cramfs fdos fat reiserfs
++SUBDIRS	:= jffs2 cramfs fdos fat reiserfs squashfs
+ 
+ .depend all:
+ 	@for dir in $(SUBDIRS) ; do \
 diff -Naur u-boot-1.1.1.orig/fs/cramfs/cramfs.c u-boot-1.1.1/fs/cramfs/cramfs.c
 --- u-boot-1.1.1.orig/fs/cramfs/cramfs.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/fs/cramfs/cramfs.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/fs/cramfs/cramfs.c	2004-05-02 23:31:32.000000000 +0200
 @@ -27,7 +27,7 @@
  #include <common.h>
  #include <malloc.h>
@@ -368,7 +389,7 @@ diff -Naur u-boot-1.1.1.orig/fs/cramfs/cramfs.c u-boot-1.1.1/fs/cramfs/cramfs.c
 +#endif /* CFG_FS_CRAMFS || CFG_FS_CRAMFS */
 diff -Naur u-boot-1.1.1.orig/fs/cramfs/uncompress.c u-boot-1.1.1/fs/cramfs/uncompress.c
 --- u-boot-1.1.1.orig/fs/cramfs/uncompress.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/fs/cramfs/uncompress.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/fs/cramfs/uncompress.c	2004-05-02 23:31:32.000000000 +0200
 @@ -1,4 +1,4 @@
 -/*
 +	/*
@@ -392,7 +413,7 @@ diff -Naur u-boot-1.1.1.orig/fs/cramfs/uncompress.c u-boot-1.1.1/fs/cramfs/uncom
 +#endif /* CFG_FS_CRAMFS || CFG_FS_CRAMFS */
 diff -Naur u-boot-1.1.1.orig/fs/jffs2/compr_rtime.c u-boot-1.1.1/fs/jffs2/compr_rtime.c
 --- u-boot-1.1.1.orig/fs/jffs2/compr_rtime.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/fs/jffs2/compr_rtime.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/fs/jffs2/compr_rtime.c	2004-05-02 23:31:32.000000000 +0200
 @@ -46,7 +46,7 @@
   */
  
@@ -410,7 +431,7 @@ diff -Naur u-boot-1.1.1.orig/fs/jffs2/compr_rtime.c u-boot-1.1.1/fs/jffs2/compr_
 +#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.1.orig/fs/jffs2/compr_rubin.c u-boot-1.1.1/fs/jffs2/compr_rubin.c
 --- u-boot-1.1.1.orig/fs/jffs2/compr_rubin.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/fs/jffs2/compr_rubin.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/fs/jffs2/compr_rubin.c	2004-05-02 23:31:32.000000000 +0200
 @@ -39,7 +39,7 @@
   */
  
@@ -428,7 +449,7 @@ diff -Naur u-boot-1.1.1.orig/fs/jffs2/compr_rubin.c u-boot-1.1.1/fs/jffs2/compr_
 +#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.1.orig/fs/jffs2/compr_zlib.c u-boot-1.1.1/fs/jffs2/compr_zlib.c
 --- u-boot-1.1.1.orig/fs/jffs2/compr_zlib.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/fs/jffs2/compr_zlib.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/fs/jffs2/compr_zlib.c	2004-05-02 23:31:32.000000000 +0200
 @@ -37,7 +37,7 @@
  
  #include <common.h>
@@ -446,7 +467,7 @@ diff -Naur u-boot-1.1.1.orig/fs/jffs2/compr_zlib.c u-boot-1.1.1/fs/jffs2/compr_z
 +#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.1.orig/fs/jffs2/jffs2_1pass.c u-boot-1.1.1/fs/jffs2/jffs2_1pass.c
 --- u-boot-1.1.1.orig/fs/jffs2/jffs2_1pass.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/fs/jffs2/jffs2_1pass.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/fs/jffs2/jffs2_1pass.c	2004-05-02 23:31:32.000000000 +0200
 @@ -117,7 +117,7 @@
  #include <linux/stat.h>
  #include <linux/time.h>
@@ -464,7 +485,7 @@ diff -Naur u-boot-1.1.1.orig/fs/jffs2/jffs2_1pass.c u-boot-1.1.1/fs/jffs2/jffs2_
 +#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.1.orig/fs/jffs2/mini_inflate.c u-boot-1.1.1/fs/jffs2/mini_inflate.c
 --- u-boot-1.1.1.orig/fs/jffs2/mini_inflate.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/fs/jffs2/mini_inflate.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/fs/jffs2/mini_inflate.c	2004-05-02 23:31:32.000000000 +0200
 @@ -25,7 +25,7 @@
  
  #include <config.h>
@@ -482,7 +503,7 @@ diff -Naur u-boot-1.1.1.orig/fs/jffs2/mini_inflate.c u-boot-1.1.1/fs/jffs2/mini_
 +#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.1.orig/include/cmd_confdefs.h u-boot-1.1.1/include/cmd_confdefs.h
 --- u-boot-1.1.1.orig/include/cmd_confdefs.h	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/include/cmd_confdefs.h	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/include/cmd_confdefs.h	2004-05-02 23:31:32.000000000 +0200
 @@ -89,6 +89,7 @@
  #define CFG_CMD_NFS	0x0080000000000000U	/* NFS support			*/
  #define CFG_CMD_REISER  0x0100000000000000U     /* Reiserfs support		*/
@@ -499,7 +520,7 @@ diff -Naur u-boot-1.1.1.orig/include/cmd_confdefs.h u-boot-1.1.1/include/cmd_con
  			CFG_CMD_HWFLOW	| \
  			CFG_CMD_I2C	| \
  			CFG_CMD_IDE	| \
-@@ -172,4 +174,10 @@
+@@ -172,4 +174,11 @@
  #define CONFIG_BOOTP_MASK		CONFIG_BOOTP_DEFAULT
  #endif
  
@@ -508,11 +529,12 @@ diff -Naur u-boot-1.1.1.orig/include/cmd_confdefs.h u-boot-1.1.1/include/cmd_con
 +#endif /* CONFIG_FS */
 +#define CFG_FS_CRAMFS			0x00000001
 +#define CFG_FS_JFFS2			0x00000002
++#define CFG_FS_SQUASHFS			0x00000004
 +
  #endif	/* _CMD_CONFIG_H */
 diff -Naur u-boot-1.1.1.orig/include/commproc.h u-boot-1.1.1/include/commproc.h
 --- u-boot-1.1.1.orig/include/commproc.h	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/include/commproc.h	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/include/commproc.h	2004-05-02 23:31:32.000000000 +0200
 @@ -604,6 +604,27 @@
  
  #endif	/* CONFIG_PCU_E, CONFIG_CCM */
@@ -543,7 +565,7 @@ diff -Naur u-boot-1.1.1.orig/include/commproc.h u-boot-1.1.1/include/commproc.h
  #ifdef CONFIG_ELPT860
 diff -Naur u-boot-1.1.1.orig/include/devices.h u-boot-1.1.1/include/devices.h
 --- u-boot-1.1.1.orig/include/devices.h	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/include/devices.h	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/include/devices.h	2004-05-02 23:31:32.000000000 +0200
 @@ -105,6 +105,9 @@
  #ifdef CONFIG_KEYBOARD
  int	drv_keyboard_init (void);
@@ -556,7 +578,7 @@ diff -Naur u-boot-1.1.1.orig/include/devices.h u-boot-1.1.1/include/devices.h
  #endif
 diff -Naur u-boot-1.1.1.orig/include/flash.h u-boot-1.1.1/include/flash.h
 --- u-boot-1.1.1.orig/include/flash.h	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/include/flash.h	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/include/flash.h	2004-05-02 23:31:32.000000000 +0200
 @@ -213,6 +213,7 @@
  #define STM_ID_29W320DT 0x22CA22CA	/* M29W320DT ID (32 M, top boot sector) */
  #define STM_ID_29W320DB 0x22CB22CB	/* M29W320DB ID (32 M, bottom boot sect)	*/
@@ -575,7 +597,7 @@ diff -Naur u-boot-1.1.1.orig/include/flash.h u-boot-1.1.1/include/flash.h
  #define FLASH_28F400_B	0x0063		/* MT  28F400B3 ID (  4M = 256K x 16 )	*/
 diff -Naur u-boot-1.1.1.orig/include/jffs2/load_kernel.h u-boot-1.1.1/include/jffs2/load_kernel.h
 --- u-boot-1.1.1.orig/include/jffs2/load_kernel.h	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/include/jffs2/load_kernel.h	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/include/jffs2/load_kernel.h	2004-05-02 23:31:32.000000000 +0200
 @@ -26,6 +26,16 @@
   */
  
@@ -603,7 +625,7 @@ diff -Naur u-boot-1.1.1.orig/include/jffs2/load_kernel.h u-boot-1.1.1/include/jf
  jffs2_part_info(int part_num);
 diff -Naur u-boot-1.1.1.orig/include/lcd.h u-boot-1.1.1/include/lcd.h
 --- u-boot-1.1.1.orig/include/lcd.h	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/include/lcd.h	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/include/lcd.h	2004-05-02 23:31:32.000000000 +0200
 @@ -37,7 +37,11 @@
  
  /* Video functions */
@@ -618,7 +640,7 @@ diff -Naur u-boot-1.1.1.orig/include/lcd.h u-boot-1.1.1/include/lcd.h
  void	lcd_printf	(const char *fmt, ...);
 diff -Naur u-boot-1.1.1.orig/include/version.h u-boot-1.1.1/include/version.h
 --- u-boot-1.1.1.orig/include/version.h	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/include/version.h	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/include/version.h	2004-05-02 23:31:32.000000000 +0200
 @@ -24,6 +24,7 @@
  #ifndef	__VERSION_H__
  #define	__VERSION_H__
@@ -630,7 +652,7 @@ diff -Naur u-boot-1.1.1.orig/include/version.h u-boot-1.1.1/include/version.h
  #endif	/* __VERSION_H__ */
 diff -Naur u-boot-1.1.1.orig/lib_generic/crc32.c u-boot-1.1.1/lib_generic/crc32.c
 --- u-boot-1.1.1.orig/lib_generic/crc32.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/lib_generic/crc32.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/lib_generic/crc32.c	2004-05-02 23:31:32.000000000 +0200
 @@ -171,7 +171,7 @@
      return crc ^ 0xffffffffL;
  }
@@ -648,7 +670,7 @@ diff -Naur u-boot-1.1.1.orig/lib_generic/crc32.c u-boot-1.1.1/lib_generic/crc32.
 +#endif	/* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.1.orig/net/bootp.c u-boot-1.1.1/net/bootp.c
 --- u-boot-1.1.1.orig/net/bootp.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/net/bootp.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/net/bootp.c	2004-05-02 23:31:32.000000000 +0200
 @@ -355,6 +355,17 @@
  		}
  	}
@@ -697,7 +719,7 @@ diff -Naur u-boot-1.1.1.orig/net/bootp.c u-boot-1.1.1/net/bootp.c
  		}
 diff -Naur u-boot-1.1.1.orig/net/net.c u-boot-1.1.1/net/net.c
 --- u-boot-1.1.1.orig/net/net.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/net/net.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/net/net.c	2004-05-02 23:31:32.000000000 +0200
 @@ -160,6 +160,10 @@
  
  static int net_check_prereq (proto_t protocol);
@@ -722,7 +744,7 @@ diff -Naur u-boot-1.1.1.orig/net/net.c u-boot-1.1.1/net/net.c
  				printf("Bytes transferred = %ld (%lx hex)\n",
 diff -Naur u-boot-1.1.1.orig/net/tftp.c u-boot-1.1.1/net/tftp.c
 --- u-boot-1.1.1.orig/net/tftp.c	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/net/tftp.c	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/net/tftp.c	2004-05-02 23:31:32.000000000 +0200
 @@ -277,8 +277,12 @@
  	case TFTP_ERROR:
  		printf ("\nTFTP error: '%s' (%d)\n",
@@ -738,7 +760,7 @@ diff -Naur u-boot-1.1.1.orig/net/tftp.c u-boot-1.1.1/net/tftp.c
  }
 diff -Naur u-boot-1.1.1.orig/tools/Makefile u-boot-1.1.1/tools/Makefile
 --- u-boot-1.1.1.orig/tools/Makefile	2004-05-01 17:00:26.000000000 +0200
-+++ u-boot-1.1.1/tools/Makefile	2004-05-02 00:46:51.000000000 +0200
++++ u-boot-1.1.1/tools/Makefile	2004-05-02 23:31:32.000000000 +0200
 @@ -21,9 +21,9 @@
  # MA 02111-1307 USA
  #
