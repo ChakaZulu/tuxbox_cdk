@@ -42,7 +42,7 @@ mrouted_3.9-beta3.orig.tar.gz;ftp://ftp.debian.org/debian/pool/non-free/m/mroute
 # contrib libs
 #
 openssl-0.9.7e.tar.gz;http://www.openssl.org/source
-curl-7.10.1.tar.bz2;http://curl.siamu.ac.th/download
+curl-7.10.1.tar.gz;http://curl.haxx.se/download/archeology
 freetype-2.1.4.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.3.tar.gz;ftp://$(gnuserver)/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
@@ -56,7 +56,7 @@ libsigc++-1.2.5.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/libsigc
 libpcap-0.7.2.tar.gz;http://www.tcpdump.org/release
 commoncpp2-1.0.13.tar.gz;ftp://$(gnuserver)/commonc++
 libdvbpsi-0.1.3.tar.bz2;http://www.videolan.org/pub/videolan/libdvbpsi/0.1.3
-DirectFB-0.9.22-cvs20050216.tar.gz;http://tuxbox.berlios.de/pub/tuxbox/cdk/src
+DirectFB-0.9.22.tar.gz;http://www.directfb.org/downloads/Core
 DFB++-0.9.22-cvs20050216.tar.gz;http://tuxbox.berlios.de/pub/tuxbox/cdk/src
 ++DFB-0.9.22-cvs20050216.tar.gz;http://tuxbox.berlios.de/pub/tuxbox/cdk/src
 boost_1_32_0.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/boost
@@ -81,7 +81,7 @@ lirc-0.6.6.tar.bz2;http://unusedino.de/lirc/software
 openssh-3.8p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 tcpdump-3.7.1.tar.gz;http://www.tcpdump.org/release
 lsof_4.72.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof
-DirectFB-examples-0.9.18.tar.gz;http://www.directfb.org/download/DirectFB
+DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/download/DirectFB-extra
 vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/lufs
 dropbear-0.44.tar.gz;http://matt.ucc.asn.au/dropbear/releases
