@@ -36,10 +36,15 @@ AC_ARG_WITH(hostprefix,
 	[  --with-hostprefix=DIR   prefix for host files [[PREFIX/host]]],
 	[hostprefix="$with_hostprefix"],[hostprefix="${prefix}/host"])
 
+AC_ARG_WITH(bootprefix,
+	[  --with-bootprefix=DIR   prefix for boot files [[PREFIX/boot]]],
+	[bootprefix="$with_bootprefix"],[bootprefix="${prefix}/boot"])
+
 buildprefix=`pwd`
 AC_SUBST(targetprefix)
 AC_SUBST(hostprefix)
 AC_SUBST(buildprefix)
+AC_SUBST(bootprefix)
 
 AC_ARG_WITH(cvs,
 	[  --with-cvs=DIR          where to find the cvs],
@@ -152,6 +157,7 @@ AC_MSG_RESULT([Target:       $TARGET])
 AC_MSG_RESULT([Prefix:       $prefix])
 AC_MSG_RESULT([Targetprefix: $targetprefix])
 AC_MSG_RESULT([Hostprefix:   $hostprefix])
+AC_MSG_RESULT([Bootprefix:   $bootprefix])
 AC_MSG_RESULT([Buildprefix:  $buildprefix])
 if test "$cvs" != "NONE"; then
 AC_MSG_RESULT([CVS:          $cvs])
