@@ -84,7 +84,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 	fi
 	@PREPARE_bootstrap_gcc@
 	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
-	ln -sf $(buildprefix)/@DIR_linux@/include/asm $(hostprefix)/$(target)/sys-include/
+	ln -sf $(buildprefix)/linux/include/{asm,linux} $(hostprefix)/$(target)/sys-include/
 	cd @DIR_bootstrap_gcc@ && \
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
 		@CONFIGURE_bootstrap_gcc@ \
@@ -121,7 +121,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
-			--with-headers=$(buildprefix)/@DIR_linux@/include \
+			--with-headers=$(buildprefix)/linux/include \
 			--enable-kernel=$(KERNELVERSION) \
 			--disable-profile \
 			--enable-shared \
@@ -354,7 +354,7 @@ libs_optional: \
 	@PREPARE_libdirectfb@
 	cd @DIR_libdirectfb@ && \
 		@BUILDENV_libdirectfb@ \
-		CPPFLAGS="-I$(buildprefix)/@DIR_linux@/arch/ppc" \
+		CPPFLAGS="-I$(buildprefix)/linux/arch/ppc" \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -1098,7 +1098,7 @@ $(driverdir)/directfb/Makefile: .bootstrap .libdirectfb
 		--host=$(target) \
 		--prefix= \
 		--enable-maintainer-mode \
-		--with-kernel-source=$(buildprefix)/@DIR_linux@
+		--with-kernel-source=$(buildprefix)/linux
 
 .directfb_gtx: $(driverdir)/directfb/Makefile
 	$(MAKE) -C $(driverdir)/directfb all install DESTDIR=$(targetprefix)
