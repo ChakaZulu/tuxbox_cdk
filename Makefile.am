@@ -305,7 +305,6 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 		CC=$(TARGET)-gcc CXX=$(TARGET)-g++ \
 		./configure \
 			--build=$(BUILD) \
-			--host=$(TARGET) \
 			--prefix=$(targetprefix) \
 			--with-driver=$(driverdir) \
 			--with-target=$(APPSTARGET)
@@ -334,7 +333,6 @@ distclean-local:
 		KERNEL_LOCATION=$(buildprefix)/linux
 	-rm -f linux
 	-rm -rf linux-$(KERNELVERSION)
-	-rm -rf build
 
 include Makefile-archive
 
