@@ -1230,7 +1230,7 @@ $(DEPDIR)/bluez_utils: bootstrap bluez_libs @DEPENDS_bluez_utils@
 
 boot: u-boot linuxkernel driver
 
-$(DEPDIR)/uboot $(DEPDIR)/u-boot: bootstrap @DEPENDS_uboot@
+$(DEPDIR)/u-boot: bootstrap @DEPENDS_uboot@
 	@PREPARE_uboot@
 	@if [ ! -e $(bootdir)/u-boot-config/u-boot.config ]; then \
 	    ln -s ./u-boot.cdk.dbox2.h $(bootdir)/u-boot-config/u-boot.config; \
@@ -1246,7 +1246,7 @@ $(DEPDIR)/uboot $(DEPDIR)/u-boot: bootstrap @DEPENDS_uboot@
 	$(INSTALL) @DIR_uboot@/tools/mkimage $(hostprefix)/bin
 
 	@CLEANUP_uboot@
-	touch $(DEPDIR)/uboot $(DEPDIR)/u-boot
+	touch $@
 
 $(DEPDIR)/linuxkernel: bootstrap linuxdir u-boot
 	$(MAKE) -C @DIR_linux@ zImage modules \
