@@ -35,7 +35,7 @@ telnetd;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz;extract:netkit-telnet-
 libcrypto;0.9.6c;openssl-0.9.6c;openssl-0.9.6c.tar.gz:libcrypto.diff;extract:openssl-0.9.6c.tar.gz;patch:libcrypto.diff
 libcurl;7.9.1;curl-7.9.1;curl-7.9.1.tar.bz2;extract:curl-7.9.1.tar.bz2
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
-libfreetype;2.0.5;freetype-2.0.5;freetype-2.0.5.tar.bz2;extract:freetype-2.0.5.tar.bz2
+libfreetype;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2;extract:freetype-2.0.9.tar.bz2
 libncurses;5.2;ncurses-5.2;ncurses-5.2.tar.gz:ncurses.diff;extract:ncurses-5.2.tar.gz;patch:ncurses.diff
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff
 libpng;1.0.12;libpng-1.0.12;libpng-1.0.12.tar.gz;extract:libpng-1.0.12.tar.gz
