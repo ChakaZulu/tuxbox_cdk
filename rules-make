@@ -13,7 +13,7 @@
 # core
 #
 linux;2.4.2;linux-2.4.2;linux-2.4.2.tar.bz2:linux-2.4.2.dbox.diff;remove:linux;extract:linux-2.4.2.tar.bz2;move:linux:linux-2.4.2;patch:linux-2.4.2.dbox.diff;link:linux-2.4.2:linux
-binutils;2.11.92.0.12.3;binutils-2.11.92.0.12.3;binutils-2.11.92.0.12.3.tar.bz2;extract:binutils-2.11.92.0.12.3.tar.bz2
+binutils;2.12.90.0.1;binutils-2.12.90.0.1;binutils-2.12.90.0.1.tar.bz2;extract:binutils-2.12.90.0.1.tar.bz2
 bootstrap_gcc;3.0.4;gcc-3.0.4;gcc-core-3.0.4.tar.gz:gcc-core.diff;extract:gcc-core-3.0.4.tar.gz;patch:gcc-core.diff
 glibc;2.2.5;glibc-2.2.5;glibc-2.2.5.tar.bz2:glibc-linuxthreads-2.2.5.tar.bz2:glibc.diff;extract:glibc-2.2.5.tar.bz2;dirextract:glibc-linuxthreads-2.2.5.tar.bz2;patch:glibc.diff
 gcc;3.0.4;gcc-3.0.4;gcc-core-3.0.4.tar.gz:gcc-g++-3.0.4.tar.gz:gcc.diff;extract:gcc-core-3.0.4.tar.gz;extract:gcc-g++-3.0.4.tar.gz;patch:gcc.diff
@@ -21,7 +21,7 @@ gcc;3.0.4;gcc-3.0.4;gcc-core-3.0.4.tar.gz:gcc-g++-3.0.4.tar.gz:gcc.diff;extract:
 #
 # minimal root
 #
-busybox;0.60.2;busybox-0.60.2;busybox-0.60.2.tar.gz:busybox.diff;extract:busybox-0.60.2.tar.gz;patch:busybox-0.60.2.diff
+busybox;0.60.2;busybox-0.60.2;busybox-0.60.2.tar.gz:busybox-0.60.2.diff;extract:busybox-0.60.2.tar.gz;patch:busybox-0.60.2.diff
 tinylogin;0.80;tinylogin-0.80;tinylogin-0.80.tar.gz:tinylogin.diff;extract:tinylogin-0.80.tar.gz;patch:tinylogin.diff
 modutils;2.4.13;modutils-2.4.13;modutils-2.4.13.tar.bz2;extract:modutils-2.4.13.tar.bz2
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
