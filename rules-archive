@@ -27,10 +27,10 @@ netkit-rsh-0.17.tar.gz
 #
 # contrib libs
 #
-curl-7.9.1.tar.bz2
-freetype-2.0.4.tar.bz2
-ncurses-5.2.tar.gz
-jpegsrc.v6b.tar.gz
+curl-7.9.1.tar.bz2;http://curl.haxx.se/download
+freetype-2.0.4.tar.bz2;http://prdownloads.sourceforge.net/freetype
+ncurses-5.2.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
+jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
 libpng-1.0.12.tar.gz
 qt-embedded-2.3.0.tar.gz
 libxml2-2.4.10.tar.gz
