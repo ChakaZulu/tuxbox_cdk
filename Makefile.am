@@ -1456,7 +1456,7 @@ rebuild-flash:
 	-rm -rf $(flashprefix)/root
 	$(MAKE) flash-lib
 
-$(flashprefix)/root: .busybox .driver .modutils
+$(flashprefix)/.flash: .busybox .driver .modutils
 	-rm -rf $(flashprefix)/root
 	$(INSTALL) -d $(flashprefix)/root/bin
 	$(INSTALL) -d $(flashprefix)/root/dev
@@ -1553,8 +1553,6 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	cp -a $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
 
-	cp -a $(targetprefix)/etc/cables.xml $(flashprefix)/etc
-	cp -a $(targetprefix)/etc/satellites.xml $(flashprefix)/etc
 	@touch $(flashprefix)/.part_neutrino
 
 flash-enigma: $(flashprefix)/.part_enigma
@@ -1566,8 +1564,6 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
 	cp -a $(targetprefix)/share/fonts/Marlett.ttf $(targetprefix)/share/fonts/unmrs.pfa \
 		$(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/v5loxica*.ttf \
 		$(flashprefix)/root/share/fonts
-	cp -a $(targetprefix)/etc/cables.xml $(flashprefix)/etc
-	cp -a $(targetprefix)/etc/satellites.xml $(flashprefix)/etc
 	@touch $(flashprefix)/.part_enigma
 
 flash-lcars: $(flashprefix)/.part_lcars
@@ -1596,7 +1592,7 @@ $(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash .lcdmenu
 
 flash-lib: $(flashprefix)/.lib
 
-$(flashprefix)/.lib: $(flashprefix)/root $(shell ls -1 $(flashprefix)/.part_*)
+$(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_*)
 	@find $(flashprefix)/root/lib -maxdepth 1 -type f -o -type l | xargs rm -f
 	@cp -a $(targetprefix)/lib/libnss_dns-?.*.so $(flashprefix)/root/lib
 	@cp -a $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
