@@ -144,8 +144,8 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	touch .modutils
 
 .etc: .busybox .tinylogin .modutils
-        patch -p1 $(targetprefix)/etc < ./Patches/etc.diff
-        touch .etc
+	patch -p1 $(targetprefix)/etc < ./Patches/etc.diff
+	touch .etc
 
 		
 #######################
