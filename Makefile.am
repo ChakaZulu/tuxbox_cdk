@@ -371,7 +371,7 @@ boot: .ppcboot .linuxkernel .driver
 #   own applications
 #
 
-apps: .edvb .fx2 .zapit .neutrino .lcars .lcdmenu .stream .tools .sections
+apps: .edvb .fx2 .zapit .neutrino .lcars .lcdmenu .stream .tools .sections .dvbsnoop
 
 $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	cd $(appsdir) && \
@@ -418,6 +418,10 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 .sections: $(appsdir)/Makefile
 	make -C $(appsdir)/sections all install
 	touch .sections
+
+.dvbsnoop: $(appsdir)/Makefile
+	make -C $(appsdir)/dvbsnoop all install
+	touch .dvbsnoop
 
 
 #######################
