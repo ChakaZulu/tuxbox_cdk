@@ -32,7 +32,7 @@ if test "$targetruleset" = "standard"; then
 	TARGET_CXXFLAGS="-O2 -mcpu=823"
 	TARGET_LDFLAGS="-s"
 	INSTALLRULESFILE=""
-	appstarget="dbox2"
+	APPSTARGET="dbox2"
 elif test "$targetruleset" = "flash"; then
 	TARGET_CFLAGS="-Os -mcpu=823"
 	TARGET_CXXFLAGS="-Os -mcpu=823"
