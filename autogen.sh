@@ -7,6 +7,8 @@ test -z "$srcdir" && srcdir=.
 
 cd "$srcdir"
 
+mkdir .deps >/null 2>&1
+
 echo "Generating configuration files for $package, please wait...."
 
 autoreconf -f -i -s
