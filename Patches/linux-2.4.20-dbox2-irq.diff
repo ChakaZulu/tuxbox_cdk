@@ -1,0 +1,18 @@
+diff -Naur linux-2.4.20/arch/ppc/kernel/irq.c linux-2.4.20-dbox2/arch/ppc/kernel/irq.c
+--- linux-2.4.20/arch/ppc/kernel/irq.c	2002-11-29 00:53:11.000000000 +0100
++++ linux-2.4.20-dbox2/arch/ppc/kernel/irq.c	2003-07-15 08:31:37.000000000 +0200
+@@ -519,6 +519,14 @@
+ 		else if (irq_desc[irq].handler->enable)
+ 			irq_desc[irq].handler->enable(irq);
+ 	}
++	
++#ifdef CONFIG_DBOX2
++	if (action) {
++	    if (action->flags & SA_ONESHOT)
++		disable_irq_nosync(irq);
++	}
++#endif
++
+ 	spin_unlock(&desc->lock);
+ }
+ 
