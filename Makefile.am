@@ -1265,7 +1265,7 @@ driver-clean:
 #   own applications
 #
 
-apps: .dvbsnoop .enigma .fx2 .lcars .lcdmenu .neutrino .stream .tuxtxt
+apps: .dvbsnoop .enigma .lcars .lcdmenu .neutrino .plugins .stream
 
 CONFIGURE_OPTS = \
 	--build=$(build) \
