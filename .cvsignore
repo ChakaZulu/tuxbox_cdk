@@ -56,3 +56,5 @@ linux-2.4.20
 .lirc
 .libexpat
 .directfb_gtx
+.libcrypto
+Archive
