@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.6 2002/10/19 00:58:09 Jolt Exp $
+# $Id: INSTALL.en,v 1.7 2003/01/18 02:13:38 obi Exp $
 #
 # Author:
 # --------
@@ -54,7 +54,11 @@ Prerequistes:
  - CVS will ask for a password. Press <enter> to send an empty password.
    Then enter the following command:
 
-   cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co -r rel_1_0_0 .
+   (if you prefer the latest unstable development versions)
+   cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co -P .
+
+   (if you prefer older maybe more stable versions)
+   cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co -P -r rel_1_0_0 .
 
 2. Generating the Makefiles:
 ----------------------------
@@ -77,5 +81,20 @@ Prerequistes:
 
  - Enter the following command (see Makefile.am for other make targets):
 
-   make all extra
+   make all
+
+ - This step should always complete without errors. If it does not then
+   please report at https://tuxbox.berlios.de/forum/viewforum.php?f=7
+
+ - If you want to try building additional programs which are usually not
+   needed for using tuxbox applications, then enter
+
+   make extra
+
+ - These programs are hardly maintained, so they might sometimes fail to
+   build. If you encounter errors, then please report them to the address
+   mentioned above, but do not expect to get the problems fixed quickly if
+   you do not post the solution to the problem.
+
+ - Note that you can skip single make targets by typing touch .package_name
 
