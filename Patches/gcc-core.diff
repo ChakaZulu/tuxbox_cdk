@@ -1,17 +1,21 @@
-diff -Naur gcc-3.2.ori/gcc/config/rs6000/linux.h gcc-3.2/gcc/config/rs6000/linux.h
---- gcc-3.2.ori/gcc/config/rs6000/linux.h	Mon Jun 11 21:35:51 2001
-+++ gcc-3.2/gcc/config/rs6000/linux.h	Mon Jun 25 13:21:48 2001
-@@ -78,8 +78,7 @@
+diff -urN gcc-3.2.2.orig/gcc/config/rs6000/linux.h gcc-3.2.2/gcc/config/rs6000/linux.h
+--- gcc-3.2.2.orig/gcc/config/rs6000/linux.h	2003-01-23 23:19:42.000000000 +0100
++++ gcc-3.2.2/gcc/config/rs6000/linux.h	2003-02-08 14:53:52.000000000 +0100
+@@ -78,8 +78,11 @@
     state data appropriately.  See unwind-dw2.c for the structs.  */
  
  #ifdef IN_LIBGCC2
 -#include <signal.h>
 -#include <sys/ucontext.h>
++#include <linux/types.h>
 +#include <asm/sigcontext.h>
++#include <asm/siginfo.h>
++#include <asm/signal.h>
++#include <asm/ucontext.h>
  
  enum { SIGNAL_FRAMESIZE = 64 };
  #endif
-@@ -87,7 +88,7 @@
+@@ -87,7 +90,7 @@
  #define MD_FALLBACK_FRAME_STATE_FOR(CONTEXT, FS, SUCCESS)		\
    do {									\
      unsigned char *pc_ = (CONTEXT)->ra;					\
@@ -20,3 +24,12 @@ diff -Naur gcc-3.2.ori/gcc/config/rs6000/linux.h gcc-3.2/gcc/config/rs6000/linux
      long new_cfa_;							\
      int i_;								\
  									\
+@@ -102,7 +105,7 @@
+       {									\
+ 	struct sigframe {						\
+ 	  char gap[SIGNAL_FRAMESIZE];					\
+-	  struct sigcontext sigctx;					\
++	  struct sigcontext_struct sigctx;					\
+ 	} *rt_ = (CONTEXT)->cfa;					\
+ 	sc_ = &rt_->sigctx;						\
+       }									\
