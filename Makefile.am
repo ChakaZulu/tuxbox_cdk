@@ -1548,10 +1548,11 @@ distclean-local:
 	-make -C $(appsdir) distclean
 	-rm Makefile-archive
 	-rm .bootstrap
-	-rm .directories .linuxdir .binutils .glibc .gcc
+	-rm .directories .linuxdir .binutils .glibc .gcc .rpcgen
 	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
-	-rm .libcommoncplusplus .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg .libnet .libnids
-	-rm .libpcap .libpng .libpopt .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
+	-rm .libdb2 .libcommoncplusplus .libcrypto .libcurl .libffi .libfreetype
+	-rm .libncurses .libjpeg .libnet .libnids .libpcap .libpng .libpopt
+	-rm .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
 	-rm .cabextract .msttf
 	-rm .gdb .ltrace .strace .nano
 	-rm .kaffeh .kaffe
@@ -1561,7 +1562,7 @@ distclean-local:
 	-rm .fx2 .sections .tools .tuxtxt .zapit
 	-rm .libconfigfile .libcramfs
 	-rm .liblcddisplay .libmd5sum .libmpegtools .libdboxnet .libucodes
-	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
+	-rm .console_data .console_tools .dsniff .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
 	-rm .dvbstream .dvbtext .dvbtune
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
