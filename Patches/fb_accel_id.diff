@@ -1,0 +1,13 @@
+--- linux/include/linux/fb.h.old	2002-12-28 21:38:02.000000000 +0100
++++ linux/include/linux/fb.h	2002-12-28 21:40:53.000000000 +0100
+@@ -108,6 +108,10 @@
+ #define FB_ACCEL_NEOMAGIC_NM2380 98	/* NeoMagic NM2380              */
+ 
+ 
++#define FB_ACCEL_CCUBE_AVIA_GTX	120	/* C-Cube AViA GTX		*/
++#define FB_ACCEL_CCUBE_AVIA_ENX	121	/* C-Cube AViA eNX		*/
++
++
+ struct fb_fix_screeninfo {
+ 	char id[16];			/* identification string eg "TT Builtin" */
+ 	unsigned long smem_start;	/* Start of frame buffer mem */
