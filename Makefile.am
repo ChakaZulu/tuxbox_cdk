@@ -801,7 +801,7 @@ $(DEPDIR)/libungif: bootstrap @DEPENDS_libungif@
 		./configure \
 			--host=$(target) \
 			--build=$(build) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--without-x && \
 		$(MAKE) && \
 		@INSTALL_libungif@
