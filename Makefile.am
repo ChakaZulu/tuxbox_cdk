@@ -12,7 +12,7 @@ core: .directories .binutils .linuxdir .glibc .gcc
 
 .bootstrap:
 	@if [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
-		make .gcc; \
+		$(MAKE) .gcc; \
 	fi
 	touch .bootstrap
 
@@ -44,19 +44,19 @@ endif
 
 .linuxdir: @DEPENDS_linux@
 	@if [ ! -d $(targetprefix)/bin ]; then \
-		make .directories; \
+		$(MAKE) .directories; \
 	fi
 	@PREPARE_linux@
 	cat Patches/linux-dbox2-$(KERNELVERSION).config > @DIR_linux@/.config
-	make -C @DIR_linux@ oldconfig \
+	$(MAKE) -C @DIR_linux@ oldconfig \
 		ARCH=ppc
-	make -C @DIR_linux@ include/linux/version.h \
+	$(MAKE) -C @DIR_linux@ include/linux/version.h \
 		ARCH=ppc
 	touch .linuxdir
 
 .binutils: @DEPENDS_binutils@
 	@if [ ! -h linux ]; then \
-		make .linuxdir; \
+		$(MAKE) .linuxdir; \
 	fi
 	@PREPARE_binutils@
 	cd @DIR_binutils@ && \
@@ -66,7 +66,8 @@ endif
 			--prefix=$(hostprefix) \
 			--disable-nls \
 			--nfp && \
-		make all all-gprof install
+		$(MAKE) all all-gprof && \
+		@INSTALL_binutils@
 	@CLEANUP_binutils@
 	touch .binutils
 
@@ -75,7 +76,7 @@ endif
 #
 bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 	@if [ ! -d $(hostprefix)/$(target)/bin/as ]; then \
-		make .binutils; \
+		$(MAKE) .binutils; \
 	fi
 	@PREPARE_bootstrap_gcc@
 	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
@@ -94,7 +95,8 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 			--disable-nls \
 			--disable-threads \
 			--nfp && \
-		make all install
+		$(MAKE) all && \
+		@INSTALL_bootstrap_gcc@
 	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_bootstrap_gcc@
 
@@ -103,7 +105,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 #
 bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 	@if [ ! -d $(hostprefix)/$(target)/bin/as ]; then \
-		make .binutils; \
+		$(MAKE) .binutils; \
 	fi
 	@PREPARE_bootstrap_gcc_2_95@
 	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
@@ -122,7 +124,7 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 			--disable-shared \
 			--disable-nls \
 			--nfp && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_bootstrap_gcc_2_95@
 	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_bootstrap_gcc_2_95@
@@ -133,9 +135,9 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 
 .glibc: @DEPENDS_glibc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
-		make bootstrap_gcc; \
+		$(MAKE) bootstrap_gcc; \
 	elif [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
-		make .gcc; \
+		$(MAKE) .gcc; \
 	fi
 	@PREPARE_glibc@
 	cd @DIR_glibc@ && \
@@ -151,7 +153,7 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 			--enable-shared \
 			--enable-add-ons=linuxthreads \
 			--without-fp && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_glibc@
 	@CLEANUP_glibc@
 	touch .glibc
@@ -163,7 +165,7 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 .uclibc: @DEPENDS_uclibc@
 	@PREPARE_uclibc@
 	cd @DIR_uclibc@ && \
-		make all CROSS=$(target)- && \
+		$(MAKE) all CROSS=$(target)- && \
 		@INSTALL_uclibc@
 	@CLEANUP_uclibc@
 	touch .uclibc
@@ -173,7 +175,7 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 #
 .gcc: @DEPENDS_gcc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so ]; then \
-		make .glibc; \
+		$(MAKE) .glibc; \
 	fi
 	@PREPARE_gcc@
 	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
@@ -192,7 +194,7 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 			--enable-threads \
 			--disable-nls \
 			--nfp && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_gcc@
 	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_gcc@
@@ -206,13 +208,13 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
 
 .etc:
-	make -C etc install
+	$(MAKE) -C etc install
 	touch .etc
 
 .busybox: .bootstrap .etc @DEPENDS_busybox@
 	@PREPARE_busybox@
 	cd @DIR_busybox@ && \
-		make CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
+		$(MAKE) CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
 		@INSTALL_busybox@
 	@CLEANUP_busybox@
 	touch .busybox
@@ -220,7 +222,7 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 .tinylogin: .bootstrap .busybox @DEPENDS_tinylogin@
 	@PREPARE_tinylogin@
 	cd @DIR_tinylogin@ && \
-		make CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
+		$(MAKE) CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
 		@INSTALL_tinylogin@
 	@CLEANUP_tinylogin@
 	touch .tinylogin
@@ -237,7 +239,7 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 			--prefix=$(targetprefix) \
 			--disable-root-check \
 			--disable-strip && \
-		make && \
+		$(MAKE) && \
 		@INSTALL_modutils@
 	@CLEANUP_modutils@
 	touch .modutils
@@ -245,7 +247,7 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 .ifupdown: .bootstrap @DEPENDS_ifupdown@
 	@PREPARE_ifupdown@
 	cd @DIR_ifupdown@ && \
-		make all \
+		$(MAKE) all \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" && \
 		@INSTALL_ifupdown@
@@ -258,7 +260,7 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 	cd @DIR_inetd@/inetd && \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_inetd@
 	@CLEANUP_inetd@
 	touch .inetd
@@ -268,7 +270,7 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 	cd @DIR_ftpd@ && \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		make && \
+		$(MAKE) && \
 		@INSTALL_ftpd@
 	@CLEANUP_ftpd@
 	touch .ftpd
@@ -280,11 +282,11 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 		CXX=$(target)-g++ \
 		CXXFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		LIBS="-lncurses" \
-		make -C telnet && \
+		$(MAKE) -C telnet && \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		LIBS="-lutil" \
-		make -C telnetd && \
+		$(MAKE) -C telnetd && \
 		@INSTALL_netkit_telnet@
 	@CLEANUP_netkit_telnet@
 	touch .netkit_telnet
@@ -294,7 +296,7 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 	cd @DIR_portmap@ && \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		make && \
+		$(MAKE) && \
 		@INSTALL_portmap@
 	@CLEANUP_portmap@
 	touch .portmap
@@ -304,7 +306,7 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 	cd @DIR_procps@ && \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		make top ps && \
+		$(MAKE) top ps && \
 		@INSTALL_procps@
 	@CLEANUP_procps@
 	touch .procps
@@ -329,7 +331,7 @@ libs: \
 			--host=$(target) \
 			--target=$(target) \
 			--prefix=$(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libcommoncplusplus@
 	@CLEANUP_libcommoncplusplus@
 	touch .libcommoncplusplus
@@ -338,7 +340,7 @@ libs: \
 	@PREPARE_libcrypto@
 	cd @DIR_libcrypto@ && \
 		./Configure shared no-idea no-md2 no-md4 no-mdc2 no-rc2 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libcrypto@
 	@CLEANUP_libcrypto@
 	touch .libcrypto
@@ -353,7 +355,7 @@ libs: \
 			--prefix=$(targetprefix) \
 			--with-random \
 			--with-ssl && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
 	touch .libcurl
@@ -375,7 +377,7 @@ libs: \
 			--prefix= \
 			--enable-compat185 \
 			--enable-cxx && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libdb2@
 	@CLEANUP_libdb2@
 	touch .libdb2
@@ -388,7 +390,7 @@ libs: \
 		./configure \
 			--host=$(target) \
 			--prefix=$(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libdvbpsi@
 	@CLEANUP_libdvbpsi@
 	touch .libdvbpsi
@@ -401,7 +403,7 @@ libs: \
 		./configure \
 			--host=$(target) \
 			--prefix=$(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libffi@
 	@CLEANUP_libffi@
 	touch .libffi
@@ -409,10 +411,10 @@ libs: \
 .libfreetype: .bootstrap @DEPENDS_libfreetype@
 	@PREPARE_libfreetype@
 	cd @DIR_libfreetype@ && \
-		make \
+		$(MAKE) \
 			CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS)" \
 			CFG="--host=${target} --prefix=${targetprefix}" && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libfreetype@
 	@CLEANUP_libfreetype@
 	touch .libfreetype
@@ -455,7 +457,7 @@ libs: \
 			--prefix=$(targetprefix) \
 			--with-pf_packet=yes \
 			--with-fast_x86_check=no && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libnet@
 	@CLEANUP_libnet@
 	touch .libnet
@@ -471,7 +473,7 @@ libs: \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libnids@
 	@CLEANUP_libnids@
 	touch .libnids
@@ -484,7 +486,7 @@ libs: \
 		./configure \
 			--host=$(target) \
 			--prefix=$(targetprefix) && \
-		make libjpeg.so.6 && \
+		$(MAKE) libjpeg.so.6 && \
 		@INSTALL_libjpeg@
 	@CLEANUP_libjpeg@
 	touch .libjpeg
@@ -499,7 +501,7 @@ libs: \
 			--prefix=$(targetprefix) \
 			--with-pcap=linux \
 			--build=$(build) && \
-		make && \
+		$(MAKE) all && \
 		@INSTALL_libpcap@
 	@CLEANUP_libpcap@
 	touch .libpcap
@@ -507,7 +509,7 @@ libs: \
 .libpng: .bootstrap .libz @DEPENDS_libpng@
 	@PREPARE_libpng@
 	cd @DIR_libpng@ && \
-		make all CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS) -DPNG_DEBUG=0" && \
+		$(MAKE) all CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS) -DPNG_DEBUG=0" && \
 		@INSTALL_libpng@
 	@CLEANUP_libpng@
 	touch .libpng
@@ -522,7 +524,7 @@ libs: \
 			--prefix=$(targetprefix)\
 			--with-pic \
 			--disable-nls && \
-		make && \
+		$(MAKE) all && \
 		@INSTALL_libpopt@
 	@CLEANUP_libpopt@
 	touch .libpopt
@@ -543,7 +545,7 @@ libs: \
 			-qconfig dbox \
 			-qvfb \
 			-depths 4,8,16,24,32 && \
-		make -C src/moc QTDIR=`pwd` && \
+		$(MAKE) -C src/moc QTDIR=`pwd` && \
 		@INSTALL_libqt@
 	@CLEANUP_libqt@
 	touch .libqt
@@ -558,7 +560,7 @@ libs: \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) && \
-		make shared && \
+		$(MAKE) shared && \
 		@INSTALL_libreadline@
 	@CLEANUP_libreadline@
 	touch .libreadline
@@ -595,7 +597,7 @@ libs: \
 			--disable-video-opengl \
 			--disable-stdio-redirect \
 			--disable-directx && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libsdl@
 	@CLEANUP_libsdl@
 	touch .libsdl
@@ -613,7 +615,7 @@ libs: \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
 			--disable-checks && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libsigc@
 	@CLEANUP_libsigc@
 	touch .libsigc
@@ -630,7 +632,7 @@ libs: \
 			--without-catalog --without-docbook --with-xpath --without-xptr \
 			--without-xinclude --without-iconv --without-debug --without-mem-debug \
 			--without-python && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libxml2@
 	@CLEANUP_libxml2@
 	touch .libxml2
@@ -668,7 +670,7 @@ libs: \
 		./configure.pl \
 			--disable-examples \
 			--prefix $(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_libxmlwrapp@
 	@CLEANUP_libxmlwrapp@
 	touch .libxmlwrapp
@@ -681,7 +683,7 @@ libs: \
 		./configure \
 			--prefix=$(targetprefix) \
 			--shared && \
-		make libz.so.1.1.4 && \
+		$(MAKE) libz.so.1.1.4 && \
 		@INSTALL_libz@
 	@CLEANUP_libz@
 	touch .libz
@@ -691,7 +693,7 @@ libs: \
 #   contrib apps
 #
 
-contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thttpd
+contrib_apps: .console_tools .fbset .lirc .ssh .tcpdump .xrc .thttpd
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -708,7 +710,7 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thtt
 	@CLEANUP_console_data@
 	touch .console_data
 
-.console_tools: .bootstrap @DEPENDS_console_tools@
+.console_tools: .bootstrap .console_data @DEPENDS_console_tools@
 	@PREPARE_console_tools@
 	cd @DIR_console_tools@ && \
 		CC=$(target)-gcc \
@@ -735,7 +737,7 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thtt
 			--host=$(target) \
 			--prefix= \
 			--without-x && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_dsniff@
 	@CLEANUP_dsniff@
 	touch .dsniff
@@ -743,7 +745,7 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thtt
 .fbset: .bootstrap @DEPENDS_fbset@
 	@PREPARE_fbset@
 	cd @DIR_fbset@ && \
-		make \
+		$(MAKE) \
 			CC=$(target)-gcc \
 			CFLAGS="$(TARGET_CFLAGS)" \
 			LDFLAGS="$(TARGET_LDFLAGS)" && \
@@ -777,7 +779,7 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thtt
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
-		make && \
+		$(MAKE) all && \
 		@INSTALL_pump@
 	@CLEANUP_pump@
 	touch .pump
@@ -799,7 +801,7 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thtt
 			--with-path="/bin:/sbin" \
 			--with-privsep-user=sshd \
 			--with-privsep-path=/share/empty && \
-		make && \
+		$(MAKE) all && \
 		@INSTALL_ssh@
 	@CLEANUP_ssh@
 	touch .ssh
@@ -814,7 +816,7 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thtt
 			--prefix=$(targetprefix) \
 			--libdir=$(targetprefix)/lib \
 			--build=$(build) && \
-		make && \
+		$(MAKE) && \
 		@INSTALL_tcpdump@
 	@CLEANUP_tcpdump@
 	touch .tcpdump
@@ -846,7 +848,7 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thtt
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_thttpd@
 	@CLEANUP_thttpd@
 	touch .thttpd
@@ -863,7 +865,7 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thtt
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
 		./configure \
 			--prefix=$(hostprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_cabextract@
 	@CLEANUP_cabextract@
 	touch .cabextract
@@ -897,7 +899,7 @@ devel: .gdb .strace .nano
 			--nfp \
 			--disable-sim \
 			--prefix=$(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_gdb@
 	@CLEANUP_gdb@
 	touch .gdb
@@ -911,7 +913,7 @@ devel: .gdb .strace .nano
 			--host=$(build) \
 			--target=$(target) \
 			--prefix=$(hostprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_gdb@
 	@CLEANUP_gdb@
 	touch .gdb-remote
@@ -926,7 +928,7 @@ devel: .gdb .strace .nano
 			--host=$(target) \
 			--target=$(target) \
 			--prefix= && \
-		make clean all LD=$(target)-ld && \
+		$(MAKE) clean all LD=$(target)-ld && \
 		@INSTALL_ltrace@
 	@CLEANUP_ltrace@
 	touch .ltrace
@@ -941,7 +943,7 @@ devel: .gdb .strace .nano
 			--host=$(target) \
 			--target=$(target) \
 			--prefix=$(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_strace@
 	@CLEANUP_strace@
 	touch .strace
@@ -953,7 +955,7 @@ devel: .gdb .strace .nano
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
 			--prefix=$(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_nano@
 	@CLEANUP_nano@
 	touch .nano
@@ -975,7 +977,7 @@ java: .kaffeh .kaffe
 			--without-x \
 			--without-suncompat \
 			--disable-gcj && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_kaffeh@
 	@CLEANUP_kaffeh@
 	touch .kaffeh
@@ -996,7 +998,7 @@ java: .kaffeh .kaffe
 			--without-x \
 			--without-suncompat \
 			--disable-gcj && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_kaffe@
 	@CLEANUP_kaffe@
 	touch .kaffe
@@ -1019,7 +1021,7 @@ fun: .mad .scummvm
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_gnuboy@
 	@CLEANUP_gnuboy@
 	touch .gnuboy
@@ -1040,7 +1042,7 @@ fun: .mad .scummvm
 			--enable-speed \
 			--enable-fpm=ppc \
 			--enable-sso && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_mad@
 	@CLEANUP_mad@
 	touch .mad
@@ -1048,7 +1050,7 @@ fun: .mad .scummvm
 .scummvm: .bootstrap .libreadline .libsdl @DEPENDS_scummvm@
 	@PREPARE_scummvm@
 	cd @DIR_scummvm@ && \
-		make \
+		$(MAKE) \
 			CC=$(target)-g++ \
 			CFLAGS="$(TARGET_CFLAGS)" \
 			LDFLAGS="$(TAGET_LDFLAGS)" \
@@ -1057,7 +1059,7 @@ fun: .mad .scummvm
 	@CLEANUP_scummvm@
 	touch .scummvm
 
-.sdldoom: .bootstrap @DEPENDS_sdldoom@
+.sdldoom: .bootstrap .libsdl @DEPENDS_sdldoom@
 	@PREPARE_sdldoom@
 	cd @DIR_sdldoom@ && \
 		CC=$(target)-gcc \
@@ -1067,7 +1069,7 @@ fun: .mad .scummvm
 			--host=$(target) \
 			--target=$(target) \
 			--prefix=$(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_sdldoom@
 	@CLEANUP_sdldoom@
 	touch .sdldoom
@@ -1082,7 +1084,7 @@ dvb_apps: .dvbstream .dvbtext .dvbtune
 .dvbstream: .bootstrap @DEPENDS_dvbstream@
 	@PREPARE_dvbstream@
 	cd @DIR_dvbstream@ && \
-		make dvbstream \
+		$(MAKE) dvbstream \
 			INCS="-I$(driverdir)/include" \
 			CC=$(target)-gcc \
 			CFLAGS="$(TARGET_CFLAGS) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" && \
@@ -1101,7 +1103,7 @@ dvb_apps: .dvbstream .dvbtext .dvbtune
 .dvbtune: .bootstrap @DEPENDS_dvbtune@
 	@PREPARE_dvbtune@
 	cd @DIR_dvbtune@ && \
-		make \
+		$(MAKE) \
 			CC=$(target)-gcc \
 			CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/include" && \
 		@INSTALL_dvbtune@
@@ -1123,7 +1125,7 @@ dvb_apps: .dvbstream .dvbtext .dvbtune
 			--disable-dvd \
 			--with-dvb=$(driverdir)/include \
 			--with-dvbpsi=$(targetprefix) && \
-		make all && \
+		$(MAKE) all && \
 		@INSTALL_vls@
 	@CLEANUP_vls@
 	touch .vls
@@ -1139,29 +1141,29 @@ KERNELGCC = `if [ -f $(hostprefix)/bin/$(target)-gcc-2.95 ]; then echo $(target)
 
 .ppcboot: .bootstrap $(bootdir)/ppcboot/Makefile
 if HOSTRULESET_CYGWIN
-	make -C $(bootdir)/ppcboot dbox_config CYGWIN=1
-	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CYGWIN=1
+	$(MAKE) -C $(bootdir)/ppcboot dbox_config CYGWIN=1
+	$(MAKE) -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CYGWIN=1
 	$(INSTALL) Patches/cygwin/mkimage.exe $(hostprefix)/bin
 else
-	make -C $(bootdir)/ppcboot dbox_config
-	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CC=$(KERNELGCC)
+	$(MAKE) -C $(bootdir)/ppcboot dbox_config
+	$(MAKE) -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CC=$(KERNELGCC)
 	$(INSTALL) $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
 endif
 	$(INSTALL) -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
 if MAINTAINER_MODE
 else
-	make -C $(bootdir)/ppcboot distclean
+	$(MAKE) -C $(bootdir)/ppcboot distclean
 endif
 	touch .ppcboot
 
 .linuxkernel: .bootstrap .linuxdir
 	@if [ ! -f $(hostprefix)/bin/mkimage ]; then \
-		make .ppcboot; \
+		$(MAKE) .ppcboot; \
 	fi
-	make -C @DIR_linux@ zImage modules \
+	$(MAKE) -C @DIR_linux@ zImage modules \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)- CC=$(KERNELGCC)
-	make -C @DIR_linux@ modules_install \
+	$(MAKE) -C @DIR_linux@ modules_install \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)- \
 		DEPMOD=/bin/true \
@@ -1173,30 +1175,30 @@ endif
 		$(bootprefix)/kernel-cdk;
 if MAINTAINER_MODE
 else
-	make -C @DIR_linux@ clean
+	$(MAKE) -C @DIR_linux@ clean
 endif
 	touch .linuxkernel
 
 .driver: .bootstrap .linuxkernel
 	$(INSTALL) -d $(targetprefix)/bin
 	$(INSTALL) -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
-	make -C $(driverdir) \
+	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		CROSS_COMPILE=$(target)- CC=$(KERNELGCC) \
 		INSTALL_MOD_PATH=$(targetprefix)
-	make -C $(driverdir) install \
+	$(MAKE) -C $(driverdir) install \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		BIN_DEST=$(targetprefix)/bin \
 		INSTALL_MOD_PATH=$(targetprefix)
 if MAINTAINER_MODE
 else
-	make -C $(driverdir) clean \
+	$(MAKE) -C $(driverdir) clean \
 		KERNEL_LOCATION=$(buildprefix)/linux
 endif
 	touch .driver
 
 driver-clean:
-	make -C $(driverdir) clean \
+	$(MAKE) -C $(driverdir) clean \
 		KERNEL_LOCATION=$(buildprefix)/linux
 	rm .driver
 
@@ -1232,56 +1234,60 @@ $(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng .libsigc
 			--with-target=$(APPSTARGET)
 endif
 
+.apps: .libqt .libxml2 .mad .msttf .thttpd $(appsdir)/Makefile
+	$(MAKE) -C $(appsdir) all install
+	touch .apps
+
 .camd: $(appsdir)/Makefile
-	make -C $(appsdir)/camd all install
+	$(MAKE) -C $(appsdir)/camd all install
 	touch .camd
 
 .dvbsnoop: $(appsdir)/Makefile
-	make -C $(appsdir)/dvbsnoop all install
+	$(MAKE) -C $(appsdir)/dvbsnoop all install
 	touch .dvbsnoop
 
-.edvb: $(appsdir)/Makefile .tools .msttf
-	make -C $(appsdir)/edvb all install
+.edvb: .libqt .msttf .tools
+	$(MAKE) -C $(appsdir)/edvb all install
 	touch .edvb
 
-.enigma: $(appsdir)/Makefile .tools .mad
-	make -C $(appsdir)/enigma all install
+.enigma: .mad .tools
+	$(MAKE) -C $(appsdir)/enigma all install
 	touch .enigma
 
 .fx2: $(appsdir)/Makefile
-	make -C $(appsdir)/fx2 all install
+	$(MAKE) -C $(appsdir)/fx2 all install
 	touch .fx2
 
 .lcars: $(appsdir)/Makefile
-	make -C $(appsdir)/lcars all install
+	$(MAKE) -C $(appsdir)/lcars all install
 	touch .lcars
 
 .lcdmenu: $(appsdir)/Makefile .liblcddisplay
-	make -C $(appsdir)/lcdmenu all install
+	$(MAKE) -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
-.neutrino: $(appsdir)/Makefile .libcramfs .libconfigfile .liblcddisplay .libmd5sum .libdboxnet .libucodes .sections .zapit
-	make -C $(appsdir)/mczap all install
+.neutrino: .thttpd .libconfigfile .libcramfs .libdboxnet .liblcddisplay .libmd5sum .libucodes .sections .zapit
+	$(MAKE) -C $(appsdir)/mczap all install
 	touch .neutrino
 
 .sections: $(appsdir)/Makefile
-	make -C $(appsdir)/sections all install
+	$(MAKE) -C $(appsdir)/sections all install
 	touch .sections
 
-.stream: $(appsdir)/Makefile .inetd .libmpegtools
-	make -C $(appsdir)/stream all install
+.stream: .inetd .libmpegtools
+	$(MAKE) -C $(appsdir)/stream all install
 	touch .stream
 
 .tools: $(appsdir)/Makefile
-	make -C $(appsdir)/tools all install
+	$(MAKE) -C $(appsdir)/tools all install
 	touch .tools
 
 .tuxtxt: $(appsdir)/Makefile
-	make -C $(appsdir)/tuxtxt all install
+	$(MAKE) -C $(appsdir)/tuxtxt all install
 	touch .tuxtxt
 
-.zapit: $(appsdir)/Makefile .camd
-	make -C $(appsdir)/zapit all install
+.zapit: .camd
+	$(MAKE) -C $(appsdir)/zapit all install
 	touch .zapit
 
 #######################
@@ -1290,31 +1296,31 @@ endif
 #
 
 .libconfigfile: $(appsdir)/Makefile
-	make -C $(appsdir)/libconfigfile all install
+	$(MAKE) -C $(appsdir)/libconfigfile all install
 	touch .libconfigfile
 
 .libcramfs: $(appsdir)/Makefile
-	make -C $(appsdir)/libcramfs all install
+	$(MAKE) -C $(appsdir)/libcramfs all install
 	touch .libcramfs
 
+.libdboxnet: $(appsdir)/Makefile
+	$(MAKE) -C $(appsdir)/libnet all
+	touch .libdboxnet
+
 .liblcddisplay: $(appsdir)/Makefile
-	make -C $(appsdir)/liblcddisplay all install
+	$(MAKE) -C $(appsdir)/liblcddisplay all install
 	touch .liblcddisplay
 
 .libmd5sum: $(appsdir)/Makefile
-	make -C $(appsdir)/libmd5sum all install
+	$(MAKE) -C $(appsdir)/libmd5sum all install
 	touch .libmd5sum
 
 .libmpegtools: $(appsdir)/Makefile
-	make -C $(appsdir)/libmpegtools all
+	$(MAKE) -C $(appsdir)/libmpegtools all
 	touch .libmpegtools
 
-.libdboxnet: $(appsdir)/Makefile
-	make -C $(appsdir)/libnet all
-	touch .libdboxnet
-
 .libucodes: $(appsdir)/Makefile
-	make -C $(appsdir)/libucodes all install
+	$(MAKE) -C $(appsdir)/libucodes all install
 	touch .libucodes
 
 #######################
@@ -1325,7 +1331,7 @@ endif
 if TARGETRULESET_FLASH
 rebuild-flash:
 	-rm -rf $(flashprefix)/root
-	make flash-lib
+	$(MAKE) flash-lib
 
 $(flashprefix)/root: .busybox .driver .modutils
 	-rm -rf $(flashprefix)/root
@@ -1339,7 +1345,7 @@ $(flashprefix)/root: .busybox .driver .modutils
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/ucodes
 	$(INSTALL) -d $(flashprefix)/root/tmp
-	make -C etc install targetprefix=$(flashprefix)/root
+	$(MAKE) -C etc install targetprefix=$(flashprefix)/root
 
 	$(INSTALL) $(targetprefix)/bin/busybox $(flashprefix)/root/bin
 	for i in `find $(targetprefix)/bin/ -lname "*busybox"` ; do cp -a $$i $(flashprefix)/root/bin/ ; done
@@ -1535,18 +1541,18 @@ endif
 #
 
 clean-local:
-	-make -C etc clean
-	-make -C $(appsdir) clean
-	-make -C $(bootdir)/ppcboot distclean
-	-make -C $(driverdir) clean \
+	-$(MAKE) -C etc clean
+	-$(MAKE) -C $(appsdir) clean
+	-$(MAKE) -C $(bootdir)/ppcboot distclean
+	-$(MAKE) -C $(driverdir) clean \
 		KERNEL_LOCATION=$(buildprefix)/linux
 	-rm -f linux
 	-rm -rf build
 	-@CLEANUP@
 
 distclean-local:
-	-make -C etc distclean
-	-make -C $(appsdir) distclean
+	-$(MAKE) -C etc distclean
+	-$(MAKE) -C $(appsdir) distclean
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc .rpcgen
