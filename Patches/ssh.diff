@@ -1,6 +1,6 @@
 diff -urN openssh-3.4p1.orig/Makefile.in openssh-3.4p1/Makefile.in
 --- openssh-3.4p1.orig/Makefile.in	Wed Jun 26 01:45:42 2002
-+++ openssh-3.4p1/Makefile.in	Sat Jun 29 21:44:10 2002
++++ openssh-3.4p1/Makefile.in	Mon Jul  8 21:48:07 2002
 @@ -198,13 +198,9 @@
  	$(AUTORECONF)
  	(cd scard && $(MAKE) -f Makefile.in distprep)
@@ -16,10 +16,11 @@ diff -urN openssh-3.4p1.orig/Makefile.in openssh-3.4p1/Makefile.in
  scard-install:
  	(cd scard && $(MAKE) DESTDIR=$(DESTDIR) install)
  
-@@ -219,19 +215,19 @@
+@@ -218,20 +214,20 @@
+ 	$(srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/$(mansubdir)8
  	$(srcdir)/mkinstalldirs $(DESTDIR)$(libexecdir)
  	$(srcdir)/mkinstalldirs $(DESTDIR)$(PRIVSEP_PATH)
- 	chmod 0700 $(DESTDIR)$(PRIVSEP_PATH)
+-	chmod 0700 $(DESTDIR)$(PRIVSEP_PATH)
 -	$(INSTALL) -m 0755 -s ssh $(DESTDIR)$(bindir)/ssh
 -	$(INSTALL) -m 0755 -s scp $(DESTDIR)$(bindir)/scp
 -	$(INSTALL) -m 0755 -s ssh-add $(DESTDIR)$(bindir)/ssh-add
@@ -27,6 +28,7 @@ diff -urN openssh-3.4p1.orig/Makefile.in openssh-3.4p1/Makefile.in
 -	$(INSTALL) -m 0755 -s ssh-keygen $(DESTDIR)$(bindir)/ssh-keygen
 -	$(INSTALL) -m 0755 -s ssh-keyscan $(DESTDIR)$(bindir)/ssh-keyscan
 -	$(INSTALL) -m 0755 -s sshd $(DESTDIR)$(sbindir)/sshd
++	-chmod 0700 $(DESTDIR)$(PRIVSEP_PATH)
 +	$(INSTALL) -m 0755 ssh $(DESTDIR)$(bindir)/ssh
 +	$(INSTALL) -m 0755 scp $(DESTDIR)$(bindir)/scp
 +	$(INSTALL) -m 0755 ssh-add $(DESTDIR)$(bindir)/ssh-add
@@ -113,7 +115,7 @@ diff -urN openssh-3.4p1.orig/Makefile.in openssh-3.4p1/Makefile.in
  	./ssh-keygen -t rsa1 -f $(DESTDIR)$(sysconfdir)/ssh_host_key -N ""
 diff -urN openssh-3.4p1.orig/configure openssh-3.4p1/configure
 --- openssh-3.4p1.orig/configure	Wed Jun 26 16:08:18 2002
-+++ openssh-3.4p1/configure	Sat Jun 29 20:04:57 2002
++++ openssh-3.4p1/configure	Mon Jul  8 21:46:55 2002
 @@ -3900,6 +3900,7 @@
  
  	;;
@@ -1278,7 +1280,7 @@ diff -urN openssh-3.4p1.orig/configure openssh-3.4p1/configure
  fi;
 diff -urN openssh-3.4p1.orig/configure.ac openssh-3.4p1/configure.ac
 --- openssh-3.4p1.orig/configure.ac	Wed Jun 26 00:35:16 2002
-+++ openssh-3.4p1/configure.ac	Sat Jun 29 20:04:57 2002
++++ openssh-3.4p1/configure.ac	Mon Jul  8 21:46:55 2002
 @@ -156,6 +156,7 @@
  	AC_DEFINE(WITH_ABBREV_NO_TTY)
  	;;
@@ -1604,7 +1606,7 @@ diff -urN openssh-3.4p1.orig/configure.ac openssh-3.4p1/configure.ac
  if test "$USES_LOGIN_CONF" != "yes" ; then
 diff -urN openssh-3.4p1.orig/sshd_config openssh-3.4p1/sshd_config
 --- openssh-3.4p1.orig/sshd_config	Fri Jun 21 03:11:36 2002
-+++ openssh-3.4p1/sshd_config	Sat Jun 29 20:08:49 2002
++++ openssh-3.4p1/sshd_config	Mon Jul  8 21:46:55 2002
 @@ -11,7 +11,7 @@
  # default value.
  
