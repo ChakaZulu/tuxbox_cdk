@@ -1839,6 +1839,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma root
 	$(INSTALL) $(targetprefix)/bin/enigma $(flashprefix)/root/bin
 	cp -pa $(targetprefix)/share/tuxbox/enigma $(flashprefix)/root/share/tuxbox
 	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
+	$(INSTALL) -d $(flashprefix)/root/hdd/movie
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/share/fonts/* $(flashprefix)/root/share/fonts 
 	cp -pa $(targetprefix)/etc/init.d/start_enigma $(flashprefix)/root/etc/init.d
