@@ -20,7 +20,6 @@ endif
 
 if $mID = "01"
   options avia_gt chip_type=1
-  probeall avia_gt gtx_pig
   alias avia_gt_fb gtx_fb
   alias avia_gt_napi gtx_dmx
   alias avia_gt_vbi gtx_vbi
