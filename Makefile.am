@@ -149,7 +149,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 #   minimal root
 #
 
-root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd .procps
+root: .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 
 .etc:
 	make -C etc install
@@ -209,17 +209,21 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd .procps
 	@CLEANUP_ftpd@
 	touch .ftpd
 
-.telnetd: .bootstrap .inetd .libncurses @DEPENDS_telnetd@
-	@PREPARE_telnetd@
-	touch @DIR_telnetd@/MCONFIG
-	cd @DIR_telnetd@/telnetd && \
+.netkit_telnet: .bootstrap .inetd .libncurses @DEPENDS_netkit_telnet@
+	@PREPARE_netkit_telnet@
+	touch @DIR_netkit_telnet@/MCONFIG
+	cd @DIR_netkit_telnet@ && \
+		CXX=$(target)-g++ \
+		CXXFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		LIBS="-lncurses" \
+		make -C telnet && \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		LIBS=-lutil \
-		make all && \
-		@INSTALL_telnetd@
-	@CLEANUP_telnetd@
-	touch .telnetd
+		LIBS="-lutil" \
+		make -C telnetd && \
+		@INSTALL_netkit_telnet@
+	@CLEANUP_netkit_telnet@
+	touch .netkit_telnet
 
 .procps: .bootstrap .libncurses @DEPENDS_procps@
 	@PREPARE_procps@
@@ -938,7 +942,7 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd .procps
+	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libreadline .libsdl .libxml2 .libz
 	-rm .cabextract .msttf
 	-rm .gdb .strace .nano

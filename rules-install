@@ -24,7 +24,7 @@ modutils;make:install-bin
 inetd;install:-m755:inetd:TARGET/sbin
 ftpd;install:-m755:vsftpd:TARGET/sbin/in.ftpd;install:-m644:vsftpd-dbox2.conf:TARGET/etc/vsftpd.conf;install:-d:TARGET/share/empty
 rsh;make:install:PREFIX=TARGET
-telnetd;install:-m755:telnetd:TARGET/sbin/in.telnetd
+netkit_telnet;install:-m755:telnet/telnet:TARGET/bin/telnet;install:-m755:telnetd/telnetd:TARGET/sbin/in.telnetd
 procps;install:-m755:top:ps/ps:TARGET/bin
 
 #

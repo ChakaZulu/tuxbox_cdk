@@ -27,7 +27,7 @@ modutils;2.4.13;modutils-2.4.13;modutils-2.4.13.tar.bz2;extract:modutils-2.4.13.
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
 rsh;0.17;netkit-rsh-0.17;netkit-rsh-0.17.tar.gz;extract:netkit-rsh-0.17.tar.gz
-telnetd;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz;extract:netkit-telnet-0.17.tar.gz
+netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
 procps;010114;procps-010114;procps-010114.tar.gz;extract:procps-010114.tar.gz
 
 #
