@@ -421,7 +421,7 @@ devel: .gdb .strace
 	touch .kaffeh
 
 # for ppc
-.kaffe: .gcc .kaffeh @DEPENDS_kaffe@
+.kaffe: .gcc .kaffeh .libffi @DEPENDS_kaffe@
 	@PREPARE_kaffe@
 	cd @DIR_kaffe@ && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
