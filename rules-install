@@ -38,6 +38,7 @@ libcommoncplusplus;make:install:DESTDIR=TARGET
 libdirectfb;rewrite-pkgconfig:directfb.pc;rewrite-pkgconfig:directfb-internal.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libdirectfb.la
 libdirectfbpp;rewrite-pkgconfig:dfb++.pc;make:install:DESTDIR=TARGET
 libdvbpsi;make:install:DESTDIR=TARGET
+libexpat;make:install:prefix=TARGET
 libffi;make:install:DESTDIR=TARGET
 libfreetype;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARGET/bin:prefix=TARGET
 libfribidi;rewrite-pkgconfig:fribidi.pc;make:install:DESTDIR=TARGET

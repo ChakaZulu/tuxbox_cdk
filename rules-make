@@ -41,6 +41,7 @@ libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.bz2:libcurl.diff;extract:curl-7.10.1.
 libdirectfb;0.9.17;DirectFB-0.9.17;DirectFB-0.9.17.tar.gz;extract:DirectFB-0.9.17.tar.gz
 libdirectfbpp;0.9.15;DFB++-0.9.15;DFB++-0.9.15.tar.gz;extract:DFB++-0.9.15.tar.gz
 libdvbpsi;0.1.2;libdvbpsi-0.1.2;libdvbpsi-0.1.2.tar.gz;extract:libdvbpsi-0.1.2.tar.gz
+libexpat;1.95.6;expat-1.95.6;expat-1.95.6.tar.gz:libexpat.diff;extract:expat-1.95.6.tar.gz;patch:libexpat.diff
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
 libfreetype;2.1.4rc2;freetype-2.1.4rc2;freetype-2.1.4rc2.tar.bz2;extract:freetype-2.1.4rc2.tar.bz2;patch:libfreetype.diff
 libfribidi;0.10.4;fribidi-0.10.4;fribidi-0.10.4.tar.bz2;extract:fribidi-0.10.4.tar.bz2

@@ -380,6 +380,19 @@ libs_optional: \
 	@CLEANUP_libdvbpsi@
 	touch $@
 
+.libexpat: .bootstrap @DEPENDS_libexpat@
+	@PREPARE_libexpat@
+	cd @DIR_libexpat@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
+		$(MAKE) all && \
+		@INSTALL_libexpat@
+	@CLEANUP_libexpat@
+	touch $@
+
 .libffi: .bootstrap @DEPENDS_libffi@
 	@PREPARE_libffi@
 	cd @DIR_libffi@ && \
