@@ -1,6 +1,6 @@
-AC_INIT(Makefile.am)
-AC_PREREQ(2.50)
-AM_INIT_AUTOMAKE(tuxbox-cdk, 0.0.1)
+AC_INIT([tuxbox-cdk],[0])
+AC_PREREQ(2.54)
+AM_INIT_AUTOMAKE([])
 AM_MAINTAINER_MODE
 
 AC_PROG_CC
@@ -14,7 +14,7 @@ AC_CANONICAL_TARGET
 AC_SUBST(target)
 
 AC_ARG_ENABLE(libcrypto,
-	AC_HELP_STRING([--disable-libcrypto], [don't build libcrypto to reduce binary size]),
+	AS_HELP_STRING(--disable-libcrypto,don't build libcrypto to reduce binary size),
 	,[enable_libcrypto=yes])
 
 AM_CONDITIONAL(WITH_LIBCRYPTO,test "$enable_libcrypto" = "yes")
@@ -399,7 +399,7 @@ host apps directory:	$hostappsdir
 GNU server:		$gnuserver
 ])
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 root/Makefile
 root/etc/Makefile
@@ -408,3 +408,5 @@ root/etc/network/Makefile
 root/share/Makefile
 root/share/udhcpc/Makefile
 ])
+
+AC_OUTPUT
