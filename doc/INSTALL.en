@@ -1,5 +1,8 @@
 #
-# $Id: INSTALL.en,v 1.10 2003/02/14 15:17:29 obi Exp $
+# $Id: INSTALL.en,v 1.11 2003/02/20 10:58:46 obi Exp $
+#
+# This document describes the steps needed to set up a cross compile
+# environment (CDK) for linux on embedded PowerPC using a GNU system.
 #
 # Copyright (c) 2002-2003 Andreas Oberritter <obi@tuxbox.org>
 #
@@ -9,9 +12,6 @@
 # with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 # A copy of the license is included in cdk/common-licenses/FDL-1.2
 #
-# This document describes the steps needed to set up a cross compile
-# environment (CDK) for linux on embedded PowerPC using a GNU system.
-#
 
 
 Prerequistes:
@@ -19,7 +19,7 @@ Prerequistes:
  - cvs
  - autoconf >= 2.50
  - automake >= 1.4p5
- - libtool >= 1.4
+ - libtool >= 1.4.2
  - gettext >= 0.10.38
  - make >= 3.79
  - makeinfo (texinfo)
@@ -38,10 +38,12 @@ Prerequistes:
 1. Getting the sources:
 -----------------------
 
- - It is recommended to add a new user to your system. The user will
-   be called "tuxbox" within this document.
+ - It is recommended to add a new user to your system, to prevent data loss.
+   If you do not have sufficient rights to do so, remember that everything
+   you do happens at your own risk. Do never build as root. Don't even think
+   of it! It will make your system go nuts and eat your cat!
 
- - Login as "tuxbox".
+ - Login as the desired user.
 
  - Enter the following commands:
 
@@ -53,6 +55,10 @@ Prerequistes:
 
    (if you prefer older maybe more stable versions)
    cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co -P -r rel_1_0_0 .
+
+   Note: Some people tend to become blind when it comes to viewing trailing dots.
+         There are dots at the end of the cvs command line because they belong to
+	 the command. Don't skip them!
 
 2. Generating the Makefiles:
 ----------------------------
@@ -69,6 +75,11 @@ Prerequistes:
  - Enter the following command:
 
    make download
+
+   Note: This will download more source packages than you will probably ever
+         want to compile. This causes more ip traffic than skipping this step,
+	 but all downloads are done in one step, which might or might not reduce
+	 the amount of time spent online, depending on your internet connection.
 
 4. Building the CDK:
 --------------------
