@@ -1,39 +1,54 @@
 #
-#  $Id: FAQ.en,v 1.2 2002/10/13 16:38:14 obi Exp $
+# $Id: FAQ.en,v 1.3 2003/02/14 17:38:23 obi Exp $
 #
-#  Frequently Asked Questions about the Cross Development Kit
+# Frequently Asked Questions about the Cross Development Kit
+#
+# Copyright (c) 2002-2003 Andreas Oberritter <obi@tuxbox.org>
+#
+# Permission is granted to copy, distribute and/or modify this document
+# under the terms of the GNU Free Documentation License, Version 1.2
+# or any later version published by the Free Software Foundation;
+# with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+# A copy of the license is included in cdk/common-licenses/FDL-1.2
 #
 
-Q: why is there no configure script?
-A: autoconf creates configure from configure.ac
+Q: Why is there no configure script?
+A: "autoconf" creates configure from "configure.ac". You can call
+   "./autogen.sh", which will call "autoconf" for you.
 
-Q: why is there no Makefile, neither in the root
+Q: Why is there no "Makefile", neither in the root
    directory nor in any subdirectory?
-A: configure creates Makefile from Makefile.in
+A: "configure" creates "Makefile" from "Makefile.in". "./configure --help"
+   usually shows the available options.
 
-Q: why is there no Makefile.in?
-A: automake creates Makefile.in from Makefile.am
+Q: Why is there no "Makefile.in"?
+A: "automake" creates "Makefile.in" from "Makefile.am". You can call
+   "./autogen.sh", which will call "automake" for you. If you call
+   "automake" manually, then make sure your working directory contains
+   "configure.ac".
 
-Q: why does nobody want to answer my question?
-A: because it has probably already been answered
-   many times and is already documented
+Q: Why does nobody want to answer my question?
+A: Because it has probably already been answered many times and is already
+   documented. See "https://tuxbox.berlios.de/forum/". However, sometimes it
+   happens that your question gets lost in the huge number of posts. Please
+   feel free to ask your question again.
 
-Q: what is a good place to look for more answers to
-   my problems with linux and d-box 2?
-A: the forum at http://tuxbox.berlios.de/forum/
-   provides a very good search facility
+Q: What is a good place to look for more answers to
+   my problems with linux on my dbox2?
+A: The forum at "https://tuxbox.berlios.de/forum/" provides a search facility.
+   There are also public mailing lists at
+   "https://developer.berlios.de/mail/?group_id=72".
 
-Q: How can I move files to a different location in
-   cvs without losing their history?
-A: 1) If the destination directory does not exist,
-      then create it using "cvs add". This makes sure
-      that your new directory has correct permissions.
-   2) On the cvs server's filesystem, copy the files
-      you want to move to the new location.
-   3) Use "cvs remove" to remove files from the old
-      location.
+Q: How can I move files to a different location in cvs without losing their
+   history?
+A: 1) If the destination directory does not exist, then create it using
+      "cvs add <directory>". This makes sure that your new directory has
+      correct permissions.
+   2) On the cvs server's filesystem, copy the files you want to move to the
+      new location.
+   3) Use "cvs remove -f <filename>" to remove files from the old location.
    Do NOT move the files on the filesystem, just copy
-   and "cvs remove". Deleting cvs revision files on
+   and "cvs remove -f". Deleting cvs revision files on
    the filesystem is a bad thing[tm].
    To rename files just skip step 1.
 
