@@ -934,6 +934,31 @@ $(DEPDIR)/dropbear: bootstrap libz @DEPENDS_dropbear@
 	@CLEANUP_dropbear@
 	touch $@
 
+$(DEPDIR)/dropbearkey: bootstrap libz @DEPENDS_dropbear@
+	@PREPARE_dropbear@
+	cd @DIR_dropbear@ && \
+		$(BUILDENV) \
+		autoconf && \
+		./configure \
+			--prefix= \
+			--disable-syslog \
+			--disable-shadow \
+			--disable-lastlog \
+			--disable-utmp \
+			--disable-utmpx \
+			--disable-wtmp \
+			--disable-wtmpx && \
+		cp ../Patches/dropbear-options.h options.h && \
+		$(MAKE) PROGRAMS="dropbear dropbearkey"
+		@if [ ! -e $(targetprefix)/etc/dropbear ]; then \
+			mkdir $(targetprefix)/etc/dropbear; \
+		fi
+		-rm -rf $(targetprefix)/etc/dropbear/dropbear_rsa_host_key $(targetprefix)/etc/dropbear/dropbear_dss_host_key
+		./@DIR_dropbear@/dropbearkey -t rsa -f $(targetprefix)/etc/dropbear/dropbear_rsa_host_key && \
+		./@DIR_dropbear@/dropbearkey -t dss -f $(targetprefix)/etc/dropbear/dropbear_dss_host_key
+	@CLEANUP_dropbear@
+	touch $@
+
 $(DEPDIR)/ssh: bootstrap libcrypto libz @DEPENDS_ssh@
 	@PREPARE_ssh@
 	cd @DIR_ssh@ && \
