@@ -2121,8 +2121,9 @@ $(flashprefix)/.cramfs:
 $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
 	rm -rf $(flashprefix)/jffs2
 	cp -pa $(flashprefix)/root/var $(flashprefix)/jffs2
-	rm -f $(flashprefix)/jffs2/tuxbox/boot
-	$(INSTALL) -d $(flashprefix)/jffs2/tuxbox/boot
+	if [ ! -d $(flashprefix)/jffs2/tuxbox/boot ] ; then \
+		$(INSTALL) -d $(flashprefix)/jffs2/tuxbox/boot ; \
+	fi
 	$(INSTALL) -d $(flashprefix)/jffs2/etc/init.d
 	for i in `find $(flashprefix)/root/etc/init.d/ -name "start*"` ; do \
 		cp -pa $$i $(flashprefix)/jffs2/etc/init.d/ ; \
