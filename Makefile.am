@@ -424,6 +424,28 @@ libs_optional: \
 	@CLEANUP_libdb2@
 	touch .libdb2
 
+.libdirectfb: .bootstrap .libfreetype .libjpeg .libpng .libz @DEPENDS_libdirectfb@
+	@PREPARE_libdirectfb@
+	cd @DIR_libdirectfb@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CPPFLAGS="-I$(driverdir)/include" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		NM=$(target)-nm \
+		./autogen.sh \
+			--build=$(build) \
+			--host=$(target) \
+			--disable-sdl \
+			--prefix= && \
+		$(MAKE) all && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb-config > $(hostprefix)/bin/directfb-config && \
+		chmod 755 $(hostprefix)/bin/directfb-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb.pc > directfb.pc.tmp && \
+		mv directfb.pc.tmp directfb.pc && \
+		@INSTALL_libdirectfb@
+	@CLEANUP_libdirectfb@
+	touch .libdirectfb
+
 .libdvbpsi: .bootstrap @DEPENDS_libdvbpsi@
 	@PREPARE_libdvbpsi@
 	cd @DIR_libdvbpsi@ && \
@@ -638,16 +660,21 @@ libs_optional: \
 	@CLEANUP_libreadline@
 	touch .libreadline
 
-.libsdl: .bootstrap @DEPENDS_libsdl@
+.libsdl: .bootstrap .libdirectfb @DEPENDS_libsdl@
 	@PREPARE_libsdl@
 	cd @DIR_libsdl@ && \
 		CC=$(target)-gcc \
+		CXX=$(target)-g++ \
 		CFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
+		NM=$(target)-nm \
+		RANLIB=$(target)-ranlib \
+		PKG_CONFIG_PATH=$(targetprefix)/lib/pkgconfig \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--disable-alsa \
 			--disable-openbsdaudio \
 			--disable-esd \
@@ -660,7 +687,7 @@ libs_optional: \
 			--without-x \
 			--enable-video-fbcon \
 			--disable-video-photon \
-			--disable-video-directfb \
+			--enable-video-directfb \
 			--disable-video-ps2gs \
 			--disable-video-ggi \
 			--disable-video-svga \
@@ -671,6 +698,9 @@ libs_optional: \
 			--disable-stdio-redirect \
 			--disable-directx && \
 		$(MAKE) all && \
+		rm -f $(hostprefix)/bin/sdl-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < sdl-config > $(hostprefix)/bin/sdl-config && \
+		chmod 755 $(hostprefix)/bin/sdl-config && \
 		@INSTALL_libsdl@
 	@CLEANUP_libsdl@
 	touch .libsdl
@@ -798,6 +828,23 @@ contrib_apps_optional: .dsniff .pump .thttpd
 		@INSTALL_console_tools@
 	@CLEANUP_console_tools@
 	touch .console_tools
+
+.directfb_examples: .bootstrap .libdirectfb @DEPENDS_directfb_examples@
+	@PREPARE_directfb_examples@
+	cd @DIR_directfb_examples@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		NM=$(target)-nm \
+		PKG_CONFIG_PATH=$(targetprefix)/lib/pkgconfig \
+		./autogen.sh \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
+		$(MAKE) all && \
+		@INSTALL_directfb_examples@
+	@CLEANUP_directfb_examples@
+	touch .directfb_examples
 
 .dsniff: .bootstrap .libnet .libnids .libdb2 .rpcgen @DEPENDS_dsniff@
 	@PREPARE_dsniff@
