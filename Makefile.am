@@ -1265,7 +1265,7 @@ $(appsdir)/tuxbox/neutrino/config.status: .bootstrap .libboost .libcurl .libfree
 
 # tuxbox/plugins
 
-$(appsdir)/tuxbox/plugins/config.status: .bootstrap .libcurl
+$(appsdir)/tuxbox/plugins/config.status: .bootstrap .libcurl .libfreetype
 	cd $(appsdir)/tuxbox/plugins && $(CONFIGURE)
 
 .plugins: $(appsdir)/tuxbox/plugins/config.status
