@@ -40,6 +40,7 @@ tinylogin;0.80;tinylogin-0.80;tinylogin-0.80.tar.gz:tinylogin.diff;extract:tinyl
 libcommoncplusplus;1.9.7;CommonC++-1.9.7;CommonC++-1.9.7.tar.gz;extract:CommonC++-1.9.7.tar.gz
 libcrypto;0.9.6d;openssl-0.9.6d;openssl-0.9.6d.tar.gz:libcrypto.diff;extract:openssl-0.9.6d.tar.gz;patch:libcrypto.diff
 libcurl;7.9.1;curl-7.9.1;curl-7.9.1.tar.bz2;extract:curl-7.9.1.tar.bz2
+libdb2;2.7.7;db-2.7.7;db-2.7.7.tar.gz:libdb2.diff;extract:db-2.7.7.tar.gz;patch:libdb2.diff
 libdvbpsi;0.1.1;libdvbpsi-0.1.1;libdvbpsi-0.1.1.tar.gz;extract:libdvbpsi-0.1.1.tar.gz
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
 libfreetype;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2;extract:freetype-2.0.9.tar.bz2
@@ -64,6 +65,7 @@ libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff;extract:zlib-1.1.4.tar.bz2;pa
 #
 console_data;1999.08.29;console-data-1999.08.29;console-data_1999.08.29.orig.tar.gz;extract:console-data_1999.08.29.orig.tar.gz
 console_tools;0.2.3;console-tools-0.2.3;console-tools-0.2.3.tar.gz:console-tools.diff;extract:console-tools-0.2.3.tar.gz;patch:console-tools.diff
+dsniff;2.4b1;dsniff-2.4;dsniff-2.4b1.tar.gz:dsniff.diff;extract:dsniff-2.4b1.tar.gz;patch:dsniff.diff
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.6.5;lirc-0.6.5;lirc-0.6.5.tar.bz2;extract:lirc-0.6.5.tar.bz2
 pump;0.8.11;pump-0.8.11;pump-0.8.11.tar.bz2:pump.diff;extract:pump-0.8.11.tar.bz2;patch:pump.diff

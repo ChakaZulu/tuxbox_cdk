@@ -126,6 +126,10 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_bootstrap_gcc_2_95@
 
+.rpcgen: .bootstrap
+	$(RPCGEN) -h -o $(targetprefix)/include/rpcsvc/yppasswd.h $(targetprefix)/include/rpcsvc/yppasswd.x
+	touch .rpcgen
+
 .glibc: @DEPENDS_glibc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		make bootstrap_gcc; \
@@ -353,6 +357,28 @@ libs: \
 	@CLEANUP_libcurl@
 	touch .libcurl
 
+.libdb2: .bootstrap @DEPENDS_libdb2@
+	@PREPARE_libdb2@
+	cd @DIR_libdb2@/dist && \
+		chmod 755 configure && \
+		autoconf && \
+		CC=$(target)-gcc \
+		CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		CROSS_COMPILE=$(target)- \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--enable-compat185 \
+			--enable-cxx && \
+		make all && \
+		@INSTALL_libdb2@
+	@CLEANUP_libdb2@
+	touch .libdb2
+
 .libdvbpsi: .bootstrap @DEPENDS_libdvbpsi@
 	@PREPARE_libdvbpsi@
 	cd @DIR_libdvbpsi@ && \
@@ -433,7 +459,7 @@ libs: \
 	@CLEANUP_libnet@
 	touch .libnet
 
-.libnids: .bootstrap @DEPENDS_libnids@
+.libnids: .bootstrap .libnet @DEPENDS_libnids@
 	@PREPARE_libnids@
 	cd @DIR_libnids@ && \
 		CC=$(target)-gcc \
@@ -696,6 +722,23 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thtt
 		@INSTALL_console_tools@
 	@CLEANUP_console_tools@
 	touch .console_tools
+
+.dsniff: .bootstrap .libnet .libnids .rpcgen @DEPENDS_dsniff@
+	@PREPARE_dsniff@
+	cd @DIR_dsniff@ && \
+		CC=$(target)-gcc \
+		RANLIB=$(target)-ranlib \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--without-x && \
+		make all && \
+		@INSTALL_dsniff@
+	@CLEANUP_dsniff@
+	touch .dsniff
 
 .fbset: .bootstrap @DEPENDS_fbset@
 	@PREPARE_fbset@

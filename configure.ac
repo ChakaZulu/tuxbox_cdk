@@ -210,6 +210,11 @@ AC_SUBST(UCODEDIR)
 CLEANUP="rm -rf"
 AC_SUBST(CLEANUP)
 
+AC_PATH_PROG(RPCGEN,rpcgen,no)
+if test "$RPCGEN" = "no"; then
+	RPCGEN=/bin/false
+fi
+
 #
 # core
 #
@@ -242,6 +247,7 @@ TUXBOX_RULES_MAKE(tinylogin)
 TUXBOX_RULES_MAKE(libcommoncplusplus)
 TUXBOX_RULES_MAKE(libcrypto)
 TUXBOX_RULES_MAKE(libcurl)
+TUXBOX_RULES_MAKE(libdb2)
 TUXBOX_RULES_MAKE(libdvbpsi)
 TUXBOX_RULES_MAKE(libffi)
 TUXBOX_RULES_MAKE(libfreetype)
@@ -266,6 +272,7 @@ TUXBOX_RULES_MAKE(libz)
 #
 TUXBOX_RULES_MAKE(console_data)
 TUXBOX_RULES_MAKE(console_tools)
+TUXBOX_RULES_MAKE(dsniff)
 TUXBOX_RULES_MAKE(fbset)
 TUXBOX_RULES_MAKE(lirc)
 TUXBOX_RULES_MAKE(pump)
