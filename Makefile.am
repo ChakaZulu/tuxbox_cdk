@@ -1509,6 +1509,7 @@ $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
 	$(INSTALL) $(targetprefix)/sbin/depmod $(flashprefix)/root/sbin
 	for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
 	ln -s /tmp $(flashprefix)/root/var/run
+	ln -s /var $(flashprefix)/root/root
 	@touch $@
 
 flash-ftpd: $(flashprefix)/.part_ftpd
