@@ -1782,7 +1782,7 @@ $(flashprefix)/.part_dropbear: $(flashprefix)/.flash dropbear dropbearkey
 	ln -s ../bin/dropbearmulti $(flashprefix)/root/sbin/dropbear
 	ln -s ../bin/dropbearmulti $(flashprefix)/root/sbin/dbclient
 	ln -s ../bin/dropbearmulti $(flashprefix)/root/bin/scp
-	cp -ap $(flashprefix)/etc/dropbear/* $(flashprefix)/root/etc/dropbear
+	cp -ap $(targetprefix)/etc/dropbear/* $(flashprefix)/root/etc/dropbear
 	@touch $@
 
 flash-dvb-tools: $(flashprefix)/.part_dvb_tools
