@@ -1723,8 +1723,8 @@ $(flashprefix)/.flash: procps busybox driver tuxbox_tools lirc
 	$(INSTALL) $(targetprefix)/bin/switch $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/tuxinfo $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/sbin/lircd $(flashprefix)/root/sbin
-	if [ -e $(targetprefix)/bin/eraseall ] ; then \
-		$(INSTALL) $(targetprefix)/bin/eraseall $(flashprefix)/root/bin ; \
+	if [ -e $(targetprefix)/sbin/eraseall ] ; then \
+		$(INSTALL) $(targetprefix)/sbin/eraseall $(flashprefix)/root/sbin ; \
 	fi
 	rm -f $(flashprefix)/root/etc/init.d/start_*
 	$(INSTALL) -d $(flashprefix)/root/lib/modules/$(KERNELVERSION)
