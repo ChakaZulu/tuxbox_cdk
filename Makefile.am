@@ -1233,6 +1233,21 @@ else
 endif
 	touch $@
 
+$(DEPDIR)/uboot_cdk $(DEPDIR)/uboot_1x_flash $(DEPDIR)/uboot_2x_flash $(DEPDIR)/uboot_yadd: bootstrap @DEPENDS_uboot@
+	@PREPARE_uboot@
+
+	cp -pR $(bootdir)/u-boot-tuxbox/* @DIR_uboot@
+	cp -p $(bootdir)/u-boot-config/u-boot.$(subst $(DEPDIR)/uboot_,,$@).dbox2.h @DIR_uboot@/include/configs/dbox2.h
+
+	$(MAKE) -C @DIR_uboot@ dbox2_config
+	$(MAKE) -C @DIR_uboot@ CROSS_COMPILE=$(target)- u-boot.stripped
+
+	$(INSTALL) -m644 @DIR_uboot@/u-boot.stripped $(bootprefix)/u-boot
+	$(INSTALL) @DIR_uboot@/tools/mkimage $(hostprefix)/bin
+
+	@CLEANUP_uboot@
+	touch $@
+
 $(DEPDIR)/linuxkernel: bootstrap linuxdir u-boot
 	$(MAKE) -C @DIR_linux@ zImage modules \
 		ARCH=ppc \
