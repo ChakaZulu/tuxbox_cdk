@@ -7,6 +7,8 @@ DIR_$1=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`
 AC_SUBST(DIR_$1)dnl
 INSTALL_$1=`${srcdir}/rules-install.pl ${srcdir}/rules-install${INSTALLRULESETFILE} $1`
 AC_SUBST(INSTALL_$1)dnl
+VERSION_$1=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 version`
+AC_SUBST(VERSION_$1)dnl
 CLEANUP_$1="rm -rf `${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`"
 AC_SUBST(CLEANUP_$1)dnl
 CLEANUP="$CLEANUP `${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`"
@@ -23,6 +25,8 @@ CONFIGURE_$1="../`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE}
 AC_SUBST(CONFIGURE_$1)dnl
 INSTALL_$1=`${srcdir}/rules-install.pl ${srcdir}/rules-install${INSTALLRULESETFILE} $1`
 AC_SUBST(INSTALL_$1)dnl
+VERSION_$1=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 version`
+AC_SUBST(VERSION_$1)dnl
 CLEANUP_$1="rm -rf `${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir` build"
 AC_SUBST(CLEANUP_$1)dnl
 CLEANUP="$CLEANUP `${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`"
