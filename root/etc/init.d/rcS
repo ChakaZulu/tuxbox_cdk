@@ -68,11 +68,15 @@ if [ $MODEL_ID -eq 1 ]; then
 	modprobe lcd
 
 	# A/V
+	GTOPTS=""
 	if [ -e /var/etc/.hw_sections ]; then
-	modprobe avia_gt 		ucode=/var/tuxbox/ucodes/ucode.bin hw_sections=0
-	 else
-	  modprobe avia_gt              ucode=/var/tuxbox/ucodes/ucode.bin
+		GTOPTS="hw_sections=0 "
 	fi
+	if [ -e /var/etc/.no_enxwatchdog ]; then
+		GTOPTS="${GTOPTS}no_watchdog=1 "
+	fi
+
+	modprobe avia_gt 	ucode=/var/tuxbox/ucodes/ucode.bin ${GTOPTS}
 	  
 	modprobe avia_gt_fb
 	modprobe avia_gt_lirc
