@@ -1213,7 +1213,7 @@ $(appsdir)/configure: $(appsdir)/configure.ac
 
 $(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng .libsigc $(appsdir)/configure $(appsdir)/Makefile.am
 	cd $(appsdir) && \
-		CC=$(target)-gcc CXX=$(target)-g++ \
+		CC=$(target)-gcc CXX=$(target)-g++ CFLAGS="" CXXFLAGS=""\
 		./configure \
 			--host=$(host) \
 			--prefix=$(targetprefix) \
