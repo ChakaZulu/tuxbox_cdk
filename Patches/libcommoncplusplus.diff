@@ -21,3 +21,23 @@ diff -Naur commoncpp2-0.99.7.orig/configure commoncpp2-0.99.7/configure
  
  
  	
+--- commoncpp2-1.0.6/src/ccgnu2-config.in	2002-12-22 21:42:55.000000000 +0100
++++ old/commoncpp2-1.0.6/src/ccgnu2-config.in	2002-08-22 19:23:44.000000000 +0200
+@@ -28,7 +28,7 @@
+ Options:
+ 	[--prefix]
+ 	[--version]
+-	[--flags]
++	[--cflags]
+ 	[--libs]
+ 	[--gnulibs]
+ 	[--iolibs]
+@@ -51,7 +51,7 @@
+ 	--version)
+ 		echo @VERSION@
+ 		;;
+-	--flags)
++	--cflags)
+ 		echo $includedir $ccflags
+ 		;;
+ 	--libs | --gnulibs)
