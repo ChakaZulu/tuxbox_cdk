@@ -1,4 +1,5 @@
 Makefile
+Makefile.am.local
 Makefile-archive
 aclocal.m4
 autom4te.cache
@@ -50,6 +51,7 @@ linux-2.4.20
 .neutrino
 .dvb_tools
 .gdb
+.gdb-remote
 .ltrace
 .strace
 .nano
