@@ -1840,7 +1840,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma root
 	$(INSTALL) $(targetprefix)/etc/timezone.xml $(flashprefix)/root/etc
 	cp -pa $(targetprefix)/share/zoneinfo $(flashprefix)/root/share
 	ln -sf /var/etc/localtime $(flashprefix)/root/etc 
-	cp -pa $(targetprefix)/var/tuxbox/config/scart.conf $(flashprefix)/root/var/tuxbox/config
+	cp -pa $$(appsdir)/tuxbox/neutrino/daemons/controld/scart.conf $(flashprefix)/root/var/tuxbox/config
 	@touch $@
 
 flash-lcars: $(flashprefix)/.part_lcars
