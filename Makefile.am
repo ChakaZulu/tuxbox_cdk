@@ -659,6 +659,7 @@ distclean-local:
 	-rm .etc .busybox .tinylogin .modutils .inetd .telnetd 
 	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	-rm .cabextract .msttf
+	-rm .tools
 	-rm .gdb .strace .nano
 	-rm .kaffeh .kaffe
 	-rm .ppcboot .linuxkernel .driver
