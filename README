@@ -1,0 +1,32 @@
+#
+#  $Id: README,v 1.2 2001/12/11 08:08:20 obi Exp $
+#
+
+Hier ganz kurz die Kommandos zum bauen des cdk:
+
+Als normaler user:
+
+# mkdir ~/tuxbox-cvs
+# cd ~/tuxbox-cvs
+# cvs -d:pserver:anonymous@cvs.tuxbox.berlios.de login
+# cvs -d:pserver:anonymous@cvs.tuxbox.berlios.de -z9 co .
+# cd cdk
+# ./autogen.sh
+# ./configure --prefix=/dbox2 --with-cvsdir=$PWD/..
+
+Dann als root das Installationsverzeichnis anlegen (wie in prefix angegeben):
+
+# mkdir /dbox2
+
+Und wieder als normaler user:
+
+# make .zapit .sections .neutrino
+# make .edvb
+# make .lcdmenu
+# make .stream
+
+(je nachdem, was man haben moechte)
+
+make all wird nachgeliefert
+
+
