@@ -16,7 +16,7 @@ linux;2.4.25-dbox2;linux-2.4.25;linux-2.4.25.tar.bz2:linux-2.4.25-cifs24.103.dif
 binutils;2.14.90.0.5;binutils-2.14.90.0.5;binutils-2.14.90.0.5.tar.bz2;extract:binutils-2.14.90.0.5.tar.bz2
 bootstrap_gcc;3.3.3;gcc-3.3.3;gcc-core-3.3.3.tar.bz2:gcc-core.diff;extract:gcc-core-3.3.3.tar.bz2;patch:gcc-core.diff
 gcc;3.3.3;gcc-3.3.3;gcc-core-3.3.3.tar.bz2:gcc-g++-3.3.3.tar.bz2;extract:gcc-core-3.3.3.tar.bz2;extract:gcc-g++-3.3.3.tar.bz2
-glibc;2.2.5;glibc-2.2.5;glibc-2.2.5.tar.bz2:glibc-linuxthreads-2.2.5.tar.bz2:glibc.diff;extract:glibc-2.2.5.tar.bz2;dirextract:glibc-linuxthreads-2.2.5.tar.bz2;patch:glibc.diff
+glibc;2.3.2;glibc-2.3.2;glibc-2.3.2.tar.bz2:glibc-linuxthreads-2.3.2.tar.bz2:glibc-2.3.2.diff;extract:glibc-2.3.2.tar.bz2;dirextract:glibc-linuxthreads-2.3.2.tar.bz2;patch:glibc-2.3.2.diff
 uclibc;0.9.11;uClibc-0.9.11;uClibc-0.9.11.tar.bz2:uclibc-0.9.11.diff;extract:uClibc-0.9.11.tar.bz2;patch:uclibc-0.9.11.diff
 watchdog;5.2.4;watchdog-5.2.4.orig;watchdog_5.2.4.orig.tar.gz:watchdog.diff;extract:watchdog_5.2.4.orig.tar.gz;patch:watchdog.diff
 
@@ -38,7 +38,7 @@ mrouted;3.9-beta3;mrouted-3.9-beta3.orig;mrouted_3.9-beta3.orig.tar.gz:mrouted_3
 #
 libboost;1.30.2;boost-1.30.2;boost-1.30.2.tar.bz2;extract:boost-1.30.2.tar.bz2
 libcommoncplusplus;1.0.13;commoncpp2-1.0.13;commoncpp2-1.0.13.tar.gz:libcommoncplusplus.diff;extract:commoncpp2-1.0.13.tar.gz;patch:libcommoncplusplus.diff
-libcrypto;0.9.7c;openssl-0.9.7c;openssl-0.9.7c.tar.gz:libcrypto.diff;extract:openssl-0.9.7c.tar.gz;patch:libcrypto.diff
+libcrypto;0.9.7d;openssl-0.9.7d;openssl-0.9.7d.tar.gz:libcrypto.diff;extract:openssl-0.9.7d.tar.gz;patch:libcrypto.diff
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.bz2:libcurl.diff;extract:curl-7.10.1.tar.bz2;patch:libcurl.diff
 libdirectfb;0.9.21;DirectFB-0.9.21;DirectFB-0.9.21-cvs20031218.tar.gz;extract:DirectFB-0.9.21-cvs20031218.tar.gz
 libdirectfbpp;0.9.20;DFB++-0.9.20;DFB++-0.9.20.tar.gz;extract:DFB++-0.9.20.tar.gz

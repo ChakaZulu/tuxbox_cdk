@@ -37,7 +37,7 @@ mrouted_3.9-beta3.orig.tar.gz;ftp://ftp.debian.org/debian/pool/non-free/m/mroute
 #
 # contrib libs
 #
-openssl-0.9.7c.tar.gz;http://www.openssl.org/source
+openssl-0.9.7d.tar.gz;http://www.openssl.org/source
 curl-7.10.1.tar.bz2;http://curl.haxx.se/download
 freetype-2.1.4.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.3.tar.gz;ftp://$(gnuserver)/ncurses
