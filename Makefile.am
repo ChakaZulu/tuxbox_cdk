@@ -734,7 +734,7 @@ contrib_apps_optional: .pump
 			--host=$(target) \
 			--prefix=$(targetprefix) \
 			--with-devdir=/dev \
-			--with-driver=serial \
+			--with-driver=none \
 			--with-kerneldir=$(buildprefix)/linux-$(KERNELVERSION) \
 			--with-moduledir=$(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
 			--without-x && \
