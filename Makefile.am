@@ -119,6 +119,14 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	@CLEANUP_busybox@
 	touch .busybox
 
+.tinylogin: .gcc @DEPENDS_tinylogin@
+	@PREPARE_tinylogin@
+	cd @DIR_tinylogin@ && \
+		make CROSS=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
+		@INSTALL_tinylogin@
+	@CLEANUP_tinylogin@
+	touch .tinylogin
+	
 .modutils: .gcc @DEPENDS_modutils@
 	@PREPARE_modutils@
 	cd @DIR_modutils@ && \
@@ -134,7 +142,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 		@INSTALL_modutils@
 	@CLEANUP_modutils@
 	touch .modutils
-		
+
 #######################
 #
 #   contrib libs
@@ -354,7 +362,7 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 distclean-local:
 	-rm Makefile-archive
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .busybox
+	-rm .busybox .tinylogin
 	-rm .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	-rm .ppcboot .linuxkernel
 	-rm .libfx2 .fx2 .edvb .neutrino .lcdmenu .stream .tools

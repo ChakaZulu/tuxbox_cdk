@@ -19,6 +19,7 @@ gcc
 # minimal root
 #
 busybox;make:install:PREFIX=TARGET
+tinylogin;make:install:PREFIX=TARGET
 modutils;make:install-bin
 
 #

@@ -129,6 +129,7 @@ TUXBOX_RULES_MAKE_EXDIR(gcc)
 # minimal root
 #
 TUXBOX_RULES_MAKE(busybox)
+TUXBOX_RULES_MAKE(tinylogin)
 TUXBOX_RULES_MAKE(modutils)
 
 #
