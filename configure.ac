@@ -95,6 +95,10 @@ AC_SUBST(hostprefix)
 AC_SUBST(buildprefix)
 AC_SUBST(bootprefix)
 AC_SUBST(flashprefix)
+flashprefix_ro=${flashprefix}/ro
+AC_SUBST(flashprefix_ro)
+flashprefix_rw=${flashprefix}/rw
+AC_SUBST(flashprefix_rw)
 
 AC_ARG_WITH(cvsdir,
 	[  --with-cvsdir=DIR       where to find the cvs],
@@ -351,10 +355,6 @@ root/Makefile
 root/etc/Makefile
 root/etc/init.d/Makefile
 root/etc/network/Makefile
-root/etc/fstab
-root/etc/modules.conf
-root/etc/init.d/rcS
-root/etc/init.d/start_sshd
 root/share/Makefile
 root/share/udhcpc/Makefile
 ])
