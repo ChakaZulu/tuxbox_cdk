@@ -375,6 +375,7 @@ libs_optional: \
 	@PREPARE_libdirectfb@
 	cd @DIR_libdirectfb@ && \
 		@BUILDENV_libdirectfb@ \
+		AS="$(target)-gcc" \
 		CPPFLAGS="-I$(driverdir)/include" \
 		./autogen.sh \
 			--build=$(build) \
