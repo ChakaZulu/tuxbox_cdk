@@ -306,6 +306,7 @@ TUXBOX_RULES_MAKE(libgmp)
 TUXBOX_RULES_MAKE(libmad)
 TUXBOX_RULES_MAKE(libncurses)
 TUXBOX_RULES_MAKE(libjpeg)
+TUXBOX_RULES_MAKE(giflib)
 TUXBOX_RULES_MAKE(libpcap)
 TUXBOX_RULES_MAKE(libpng)
 TUXBOX_RULES_MAKE(libreadline)
@@ -315,6 +316,7 @@ TUXBOX_RULES_MAKE(libvorbisidec)
 TUXBOX_RULES_MAKE(libxml2)
 TUXBOX_RULES_MAKE(libz)
 TUXBOX_RULES_MAKE(libglib)
+TUXBOX_RULES_MAKE(giflib)
 
 #
 # contrib apps
