@@ -1539,7 +1539,7 @@ distclean-local:
 	-rm .gdb .gdb-remote .ltrace .strace .nano
 	-rm .kaffeh .kaffe
 	-rm .gnuboy .scummvm .sdldoom
-	-rm .ppcboot .linuxkernel .driver
+	-rm .u-boot .linuxkernel .driver
 	-rm .dvbsnoop .config .enigma .lcars .lcdmenu .neutrino .dvb_tools .zapit
 	-rm .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
