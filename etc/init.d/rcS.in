@@ -1,0 +1,57 @@
+#!/bin/sh
+
+PATH=/sbin:/bin
+
+hostname -F /etc/hostname
+mount -a
+
+ifconfig lo 127.0.0.1 up
+
+@TARGETRULESET_FLASH_TRUE@if test -d /share/tuxbox/image/var ; then
+@TARGETRULESET_FLASH_TRUE@for i in `cd /share/tuxbox/image/var ; find . -type d` ; do test -d /var/$i || mkdir -p /var/$i ; done
+@TARGETRULESET_FLASH_TRUE@for i in `cd /share/tuxbox/image/var ; find . -type f` ; do test -f /var/$i || cp -a /share/tuxbox/image/var/$i /var/$i ; done
+@TARGETRULESET_FLASH_TRUE@fi
+@TARGETRULESET_FLASH_TRUE@test -d /var/lib/modules/`uname -r` || mkdir -p /var/lib/modules/`uname -r`
+
+test -x /sbin/inetd && inetd
+
+if test -x /sbin/sshd ; then
+	/etc/init.d/start_sshd &
+fi
+
+@TARGETRULESET_FLASH_TRUE@test -f /var/lib/modules/`uname -r`/modules.dep || \
+depmod -ae
+
+modprobe rtc
+modprobe info
+
+. /etc/profile
+echo "mID: $mID"
+echo "feID: $feID"
+echo "fpID: $fpID"
+echo "enxID: $enxID"
+echo "gtxID: $gtxID"
+echo "hwREV: $hwREV"
+echo "fpREV: $fpREV"
+echo "DEMOD: $DEMOD"
+
+test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
+
+modprobe i2c-8xx
+modprobe saa7126
+modprobe avs
+modprobe input
+modprobe keybdev
+modprobe mousedev
+modprobe joydev
+modprobe evdev
+modprobe dvb_frontend
+modprobe dvb
+modprobe tuner
+modprobe avia_gt
+modprobe avia_gt_fb
+modprobe avia_gt_oss
+modprobe avia_gt_napi
+modprobe avia_gt_vbi
+modprobe lcd
+
