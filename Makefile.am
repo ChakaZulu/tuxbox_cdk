@@ -382,7 +382,8 @@ $(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz @DEPENDS_libdir
 		$(BUILDENV) \
 		LDFLAGS=-L$(targetprefix)/lib \
 		CPPFLAGS="-I$(buildprefix)/linux/arch/ppc" \
-		./configure \
+		CFLAGS="$(TARGET_CFLAGS) -I$(buildprefix)/linux/arch/ppc" \
+		./autogen.sh \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
@@ -392,15 +393,23 @@ $(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz @DEPENDS_libdir
 		$(MAKE) all && \
 		@INSTALL_libdirectfb@
 	@CLEANUP_libdirectfb@
+	mv $(targetprefix)/lib/libdirectfb.la $(targetprefix)/lib/libdirectfb.la.old
+	mv $(targetprefix)/lib/libfusion.la $(targetprefix)/lib/libfusion.la.old
+	sed -e "s, /lib, $(targetprefix)/lib,g" < $(targetprefix)/lib/libdirectfb.la.old >$(targetprefix)/lib/libdirectfb.la
+	sed -e "s, /lib, $(targetprefix)/lib,g" < $(targetprefix)/lib/libfusion.la.old >$(targetprefix)/lib/libfusion.la
+	rm -f $(targetprefix)/lib/libdirectfb.la.old
+	rm -f $(targetprefix)/lib/libfusion.la.old
 	touch $@
 
 $(DEPDIR)/libdirectfbpp: bootstrap libdirectfb @DEPENDS_libdirectfbpp@
 	@PREPARE_libdirectfbpp@
 	cd @DIR_libdirectfbpp@ && \
 		$(BUILDENV) \
-		./configure \
+		LDFLAGS="-L$(targetprefix)/lib" \
+		./autogen.sh \
 			--build=$(build) \
 			--host=$(target) \
+			--libdir="$(targetprefix)/lib" \
 			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_libdirectfbpp@
