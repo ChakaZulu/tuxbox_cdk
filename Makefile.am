@@ -448,19 +448,11 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	install -d $(targetprefix)/var/lcars
 	touch .lcars
 
-.lcdmenu: $(appsdir)/Makefile
+.lcdmenu: $(appsdir)/Makefile .liblcddisplay
 	make -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
-.libmd5sum:  $(appsdir)/Makefile
-	make -C  $(appsdir)/libmd5sum all install
-	touch .libmd5sum
-
-.libucodes: $(appsdir)/Makefile
-	make -C  $(appsdir)/libucodes all install
-	touch .libucodes
-
-.neutrino: $(appsdir)/Makefile .fx2 .sections .zapit .libmd5sum .libucodes
+.neutrino: $(appsdir)/Makefile .fx2 .sections .zapit .libmd5sum .libucodes .liblcddisplay
 	make -C $(appsdir)/mczap all install
 	touch .neutrino
 
@@ -481,8 +473,25 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	install -d $(targetprefix)/var/zapit
 	touch .zapit
 
+#######################
+#
+#  own libs
+#
 
-############################
+.liblcddisplay: $(appsdir)/Makefile
+	make -C $(appsdir)/liblcddisplay all install
+	touch .liblcdmenu
+
+.libmd5sum:  $(appsdir)/Makefile
+	make -C $(appsdir)/libmd5sum all install
+	touch .libmd5sum
+
+.libucodes: $(appsdir)/Makefile
+	make -C $(appsdir)/libucodes all install
+	touch .libucodes
+
+
+#######################
 #
 #  3rd party apps
 #
@@ -505,7 +514,8 @@ distclean-local:
 	-rm .ppcboot .linuxkernel
 	-rm .gdb .strace
 	-rm .dvbsnoop .edvb .fx2 .lcars .lcdmenu
-	-rm .libmd5sum .libucodes .neutrino .sections .stream .tools .zapit
+	-rm .neutrino .sections .stream .tools .zapit
+	-rm .liblcddisplay .libmd5sum .libucodes
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 	-make -C $(appsdir) distclean
