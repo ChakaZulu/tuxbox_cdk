@@ -1158,7 +1158,7 @@ $(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
 # dvb/zapit
 
 $(appsdir)/dvb/zapit/Makefile: .bootstrap .tuxbox_tools .misc_libs
-	cd $(appsdir)/dvb/zapit && $(CONFIGURE) --with-neutrino-source=$(appsdir)/tuxbox/neutrino
+	cd $(appsdir)/dvb/zapit && $(CONFIGURE)
 
 .zapit: $(appsdir)/dvb/zapit/Makefile
 	$(MAKE) -C $(appsdir)/dvb/zapit all install
