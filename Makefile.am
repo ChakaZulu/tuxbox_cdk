@@ -149,7 +149,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 #   minimal root
 #
 
-root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd
+root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd .top
 
 .etc:
 	make -C etc install
@@ -195,7 +195,7 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		make all && \
-		install -m755 inetd $(targetprefix)/sbin
+		@INSTALL_inetd@
 	@CLEANUP_inetd@
 	touch .inetd
 
@@ -217,10 +217,21 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		LIBS=-lutil \
 		make all && \
-		install -m755 telnetd $(targetprefix)/sbin/in.telnetd
+		@INSTALL_telnetd@
 	@CLEANUP_telnetd@
 	touch .telnetd
 
+.top: .bootstrap .libncurses @DEPENDS_top@
+	@PREPARE_top@
+	cd @DIR_top@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		make top && \
+		@INSTALL_top@
+	@CLEANUP_top@
+	touch .top
+		 
+		
 #######################
 #
 #   contrib libs
@@ -770,7 +781,7 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd 
+	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd .top
 	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libreadline .libsdl .libxml2 .libz
 	-rm .cabextract .msttf
 	-rm .gdb .strace .nano
