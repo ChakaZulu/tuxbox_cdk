@@ -128,19 +128,21 @@ if ( $#ARGV >= 2 )
 
         $output .= " )";
       }
-      elsif ( $_[0] eq "patch" )
+      elsif ( $_[0] eq "patch" or $_[0] eq "patchtime" )
       {
+        $_ = "-p1 ";
+        $_ .= "-Z " if $_[0] eq "patchtime";
         if ( $_[1] =~ m#\.bz2$# )
         {
-          $output .= "( cd " . $dir . "; bunzip2 -cd ../Archive/" . $_[1] . " | patch -p1 )";
+          $output .= "( cd " . $dir . "; bunzip2 -cd ../Archive/" . $_[1] . " | patch $_ )";
         }
         elsif ( $_[1] =~ m#\.gz$# )
         {
-          $output .= "( cd " . $dir . "; gunzip -cd ../Archive/" . $_[1] . " | patch -p1 )";
+          $output .= "( cd " . $dir . "; gunzip -cd ../Archive/" . $_[1] . " | patch $_ )";
         }
         else
         {
-          $output .= "( cd " . $dir . "; patch -p1 < ../Patches/" . $_[1] . " )";
+          $output .= "( cd " . $dir . "; patch $_ < ../Patches/" . $_[1] . " )";
         }
       }
       elsif ( $_[0] eq "move" )
