@@ -1,6 +1,6 @@
-diff -Naur procps-010114/Makefile procps-010114new/Makefile
---- procps-010114/Makefile	2002-11-18 01:11:34.000000000 +0100
-+++ procps-010114new/Makefile	2002-11-18 01:09:43.000000000 +0100
+diff -Naur procps-010114/Makefile procps-010114.new/Makefile
+--- procps-010114/Makefile	2001-01-13 12:00:48.000000000 +0100
++++ procps-010114.new/Makefile	2004-07-22 14:47:45.000000000 +0200
 @@ -31,17 +31,6 @@
  
  SUBDIRS    =  ps # sub-packages to build/install
@@ -19,9 +19,21 @@ diff -Naur procps-010114/Makefile procps-010114new/Makefile
  #LDFLAGS    =  -qmagic -s#		recommended for a.out systems
  #LDFLAGS    =  -Xlinker -qmagic -s#	older a.out systems may need this
  #LDFLAGS    =  -N -s#			still older a.out systems use this
-diff -Naur procps-010114/proc/proc/compare.h procps-010114new/proc/proc/compare.h
+diff -Naur procps-010114/proc/ksym.c procps-010114.new/proc/ksym.c
+--- procps-010114/proc/ksym.c	2001-01-13 10:46:07.000000000 +0100
++++ procps-010114.new/proc/ksym.c	2004-07-22 14:57:54.000000000 +0200
+@@ -112,7 +112,7 @@
+ 
+ /* These mostly rely on POSIX to make them zero. */
+ 
+-static const symb hashtable[256];
++static symb hashtable[256];
+ 
+ static char       *sysmap_data;
+ static unsigned    sysmap_room;
+diff -Naur procps-010114/proc/proc/compare.h procps-010114.new/proc/proc/compare.h
 --- procps-010114/proc/proc/compare.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114new/proc/proc/compare.h	2002-11-18 01:09:43.000000000 +0100
++++ procps-010114.new/proc/proc/compare.h	2004-07-22 14:47:45.000000000 +0200
 @@ -0,0 +1,9 @@
 +typedef int (*cmp_t)(void*,void*);       /* for function pointer casts */
 +
@@ -32,9 +44,9 @@ diff -Naur procps-010114/proc/proc/compare.h procps-010114new/proc/proc/compare.
 +extern const char *parse_sort_opt(const char* opt);
 +extern const char *parse_long_sort(const char* opt);
 +
-diff -Naur procps-010114/proc/proc/devname.h procps-010114new/proc/proc/devname.h
+diff -Naur procps-010114/proc/proc/devname.h procps-010114.new/proc/proc/devname.h
 --- procps-010114/proc/proc/devname.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114new/proc/proc/devname.h	2002-11-18 01:09:43.000000000 +0100
++++ procps-010114.new/proc/proc/devname.h	2004-07-22 14:47:45.000000000 +0200
 @@ -0,0 +1,7 @@
 +#define ABBREV_DEV  1     /* remove /dev/         */
 +#define ABBREV_TTY  2     /* remove tty           */
@@ -43,9 +55,9 @@ diff -Naur procps-010114/proc/proc/devname.h procps-010114new/proc/proc/devname.
 +int dev_to_tty(char *ret, int chop, int dev, int pid, unsigned int flags);
 +
 +int tty_to_dev(char *name);
-diff -Naur procps-010114/proc/proc/procps.h procps-010114new/proc/proc/procps.h
+diff -Naur procps-010114/proc/proc/procps.h procps-010114.new/proc/proc/procps.h
 --- procps-010114/proc/proc/procps.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114new/proc/proc/procps.h	2002-11-18 01:09:43.000000000 +0100
++++ procps-010114.new/proc/proc/procps.h	2004-07-22 14:47:45.000000000 +0200
 @@ -0,0 +1,27 @@
 +/* The shadow of the original with only common prototypes now. */
 +#include <stdio.h>
@@ -74,9 +86,9 @@ diff -Naur procps-010114/proc/proc/procps.h procps-010114new/proc/proc/procps.h
 +
 +unsigned print_str    (FILE* file, char *s, unsigned max);
 +unsigned print_strlist(FILE* file, char **strs, char* sep, unsigned max);
-diff -Naur procps-010114/proc/proc/readproc.h procps-010114new/proc/proc/readproc.h
+diff -Naur procps-010114/proc/proc/readproc.h procps-010114.new/proc/proc/readproc.h
 --- procps-010114/proc/proc/readproc.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114new/proc/proc/readproc.h	2002-11-18 01:09:43.000000000 +0100
++++ procps-010114.new/proc/proc/readproc.h	2004-07-22 14:47:45.000000000 +0200
 @@ -0,0 +1,200 @@
 +#ifndef PROCPS_PROC_READPROC_H
 +#define PROCPS_PROC_READPROC_H
@@ -278,9 +290,9 @@ diff -Naur procps-010114/proc/proc/readproc.h procps-010114new/proc/proc/readpro
 +#define PROC_ANYTTY  0x1000  /* proc must have a controlling terminal */
 +
 +#endif
-diff -Naur procps-010114/proc/proc/sig.h procps-010114new/proc/proc/sig.h
+diff -Naur procps-010114/proc/proc/sig.h procps-010114.new/proc/proc/sig.h
 --- procps-010114/proc/proc/sig.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114new/proc/proc/sig.h	2002-11-18 01:09:43.000000000 +0100
++++ procps-010114.new/proc/proc/sig.h	2004-07-22 14:47:45.000000000 +0200
 @@ -0,0 +1,19 @@
 +/*
 + * Copyright 1998 by Albert Cahalan; all rights resered.
@@ -301,17 +313,17 @@ diff -Naur procps-010114/proc/proc/sig.h procps-010114new/proc/proc/sig.h
 +extern void pretty_print_signals(void);
 +
 +extern void unix_print_signals(void);
-diff -Naur procps-010114/proc/proc/status.h procps-010114new/proc/proc/status.h
+diff -Naur procps-010114/proc/proc/status.h procps-010114.new/proc/proc/status.h
 --- procps-010114/proc/proc/status.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114new/proc/proc/status.h	2002-11-18 01:09:43.000000000 +0100
++++ procps-010114.new/proc/proc/status.h	2004-07-22 14:47:45.000000000 +0200
 @@ -0,0 +1,4 @@
 +#ifndef __PROC_STATUS_H
 +#define __PROC_STATUS_H
 +extern char *status(proc_t* task);
 +#endif
-diff -Naur procps-010114/proc/proc/sysinfo.h procps-010114new/proc/proc/sysinfo.h
+diff -Naur procps-010114/proc/proc/sysinfo.h procps-010114.new/proc/proc/sysinfo.h
 --- procps-010114/proc/proc/sysinfo.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114new/proc/proc/sysinfo.h	2002-11-18 01:09:43.000000000 +0100
++++ procps-010114.new/proc/proc/sysinfo.h	2004-07-22 14:47:45.000000000 +0200
 @@ -0,0 +1,40 @@
 +#ifndef SYSINFO_H
 +#define SYSINFO_H
@@ -353,9 +365,9 @@ diff -Naur procps-010114/proc/proc/sysinfo.h procps-010114new/proc/proc/sysinfo.
 +extern void meminfo(void);
 +
 +#endif /* SYSINFO_H */
-diff -Naur procps-010114/proc/proc/tree.h procps-010114new/proc/proc/tree.h
+diff -Naur procps-010114/proc/proc/tree.h procps-010114.new/proc/proc/tree.h
 --- procps-010114/proc/proc/tree.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114new/proc/proc/tree.h	2002-11-18 01:09:43.000000000 +0100
++++ procps-010114.new/proc/proc/tree.h	2004-07-22 14:47:45.000000000 +0200
 @@ -0,0 +1,15 @@
 +/* for oldps.c and proc/compare.c */
 +struct tree_node {
@@ -372,9 +384,9 @@ diff -Naur procps-010114/proc/proc/tree.h procps-010114new/proc/proc/tree.h
 +    int have_parent;
 +};
 +
-diff -Naur procps-010114/proc/proc/version.h procps-010114new/proc/proc/version.h
+diff -Naur procps-010114/proc/proc/version.h procps-010114.new/proc/proc/version.h
 --- procps-010114/proc/proc/version.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114new/proc/proc/version.h	2002-11-18 01:09:43.000000000 +0100
++++ procps-010114.new/proc/proc/version.h	2004-07-22 14:47:45.000000000 +0200
 @@ -0,0 +1,23 @@
 +#ifndef PROC_VERSION_H
 +#define PROC_VERSION_H
@@ -399,9 +411,9 @@ diff -Naur procps-010114/proc/proc/version.h procps-010114new/proc/proc/version.
 +#define LINUX_VERSION_PATCH(x) ( (x)      & 0xFF)
 +
 +#endif	/* PROC_VERSION_H */
-diff -Naur procps-010114/proc/proc/whattime.h procps-010114new/proc/proc/whattime.h
+diff -Naur procps-010114/proc/proc/whattime.h procps-010114.new/proc/proc/whattime.h
 --- procps-010114/proc/proc/whattime.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114new/proc/proc/whattime.h	2002-11-18 01:09:43.000000000 +0100
++++ procps-010114.new/proc/proc/whattime.h	2004-07-22 14:47:45.000000000 +0200
 @@ -0,0 +1,9 @@
 +/* whattime.h --- see whattime.c for explanation */
 +
@@ -412,9 +424,21 @@ diff -Naur procps-010114/proc/proc/whattime.h procps-010114new/proc/proc/whattim
 +extern char *sprint_uptime(void);
 +
 +#endif
-diff -Naur procps-010114/top.c procps-010114new/top.c
+diff -Naur procps-010114/proc/sysinfo.c procps-010114.new/proc/sysinfo.c
+--- procps-010114/proc/sysinfo.c	2001-01-13 09:46:06.000000000 +0100
++++ procps-010114.new/proc/sysinfo.c	2004-07-22 14:55:14.000000000 +0200
+@@ -310,7 +310,7 @@
+     );
+     head = tail+1;
+     if(!found) goto nextline;
+-    *(found->slot) = strtoul(head,&tail,10);
++    *(unsigned *)(found->slot) = strtoul(head,&tail,10);
+ nextline:
+     tail = strchr(head, '\n');
+     if(!tail) break;
+diff -Naur procps-010114/top.c procps-010114.new/top.c
 --- procps-010114/top.c	2001-01-14 11:40:14.000000000 +0100
-+++ procps-010114new/top.c	2002-11-18 01:10:35.000000000 +0100
++++ procps-010114.new/top.c	2004-07-22 14:47:45.000000000 +0200
 @@ -92,7 +92,7 @@
  #include <time.h>
  #include <sys/ioctl.h>
