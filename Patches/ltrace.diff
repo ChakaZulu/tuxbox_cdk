@@ -1,0 +1,9 @@
+diff -Naur ltrace-0.3.26.orig/sysdeps/linux-gnu/Makefile ltrace-0.3.26/sysdeps/linux-gnu/Makefile
+--- ltrace-0.3.26.orig/sysdeps/linux-gnu/Makefile	Sun Mar  3 02:18:47 2002
++++ ltrace-0.3.26/sysdeps/linux-gnu/Makefile	Fri Jun 21 20:53:58 2002
+@@ -1,4 +1,4 @@
+-ARCH	:=	$(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ -e s/arm.*/arm/ -e s/sa110/arm/)
++ARCH	:=	ppc
+ 
+ CFLAGS	+=	-I$(TOPDIR)/sysdeps/linux-gnu/$(ARCH)
+ 
