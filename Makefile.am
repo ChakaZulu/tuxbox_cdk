@@ -300,12 +300,14 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 #
 
 $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
-	cd $(appsdir) && ./autogen.sh && \
-	CC=$(TARGET)-gcc CXX=$(TARGET)-g++ \
-	./configure \
-		--prefix=$(targetprefix) \
-		--with-driver=$(driverdir) \
-		--with-target=$(APPSTARGET)
+	cd $(appsdir) && \
+		./autogen.sh && \
+		CC=$(TARGET)-gcc CXX=$(TARGET)-g++ \
+		./configure \
+			--build=$(BUILD) \
+			--prefix=$(targetprefix) \
+			--with-driver=$(driverdir) \
+			--with-target=$(APPSTARGET)
 
 .edvb: $(appsdir)/Makefile
 	make -C $(appsdir)/edvb all install
