@@ -243,7 +243,9 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 #   contrib libs
 #
 
-libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz .libcrypto .libreadline .libsdl .libxml2
+libs: \
+	.libcrypto .libcurl .libffi .libfreetype .libjpeg .libncurses \
+	.libpng .libqt .libreadline .libsdl .libsigc .libxml2 .libz
 
 .libcrypto: .bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
@@ -410,6 +412,24 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz .l
 		@INSTALL_libsdl@
 	@CLEANUP_libsdl@
 	touch .libsdl
+
+.libsigc: .bootstrap @DEPENDS_libsigc@
+	@PREPARE_libsigc@
+	cd @DIR_libsigc@ && \
+		CC=$(target)-gcc \
+		CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--disable-checks && \
+		make all && \
+		@INSTALL_libsigc@
+	@CLEANUP_libsigc@
+	touch .libsigc
 
 .libxml2: .bootstrap @DEPENDS_libxml2@
 	@PREPARE_libxml2@
@@ -762,7 +782,7 @@ endif
 #   own applications
 #
 
-apps: .dvbsnoop .edvb .enigma .fx2 .lcars .lcdmenu .libxml2 .neutrino .stream .tuxtxt
+apps: .dvbsnoop .edvb .enigma .fx2 .lcars .lcdmenu .neutrino .stream .tuxtxt
 
 if MAINTAINER_MODE
 $(appsdir)/configure: $(appsdir)/configure.ac
@@ -797,7 +817,7 @@ endif
 	make -C $(appsdir)/edvb all install
 	touch .edvb
 
-.enigma: $(appsdir)/Makefile .tools
+.enigma: $(appsdir)/Makefile .tools .libsigc
 	make -C $(appsdir)/enigma all install
 	touch .enigma
 
@@ -974,7 +994,8 @@ distclean-local:
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
-	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libreadline .libsdl .libxml2 .libz .libcrypto
+	-rm .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg
+	-rm .libpng .libqt .libreadline .libsdl .libsigc .libxml2 .libz
 	-rm .cabextract .msttf
 	-rm .gdb .strace .nano
 	-rm .kaffeh .kaffe

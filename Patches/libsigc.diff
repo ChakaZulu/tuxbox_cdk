@@ -1,0 +1,23 @@
+diff -Naur libsigc++-1.0.4.orig/ac_thread.sh libsigc++-1.0.4/ac_thread.sh
+--- libsigc++-1.0.4.orig/ac_thread.sh	Thu Jan  1 01:00:00 1970
++++ libsigc++-1.0.4/ac_thread.sh	Fri Apr  5 22:10:06 2002
+@@ -0,0 +1,7 @@
++ac_thread_cond_attr_size=4
++ac_thread_cond_impl_size=12
++ac_thread_mutex_attr_size=4
++ac_thread_mutex_impl_size=24
++ac_thread_thread_attr_size=4
++ac_thread_thread_impl_size=4
++ac_thread_key_impl_size=4
+diff -Naur libsigc++-1.0.4.orig/configure libsigc++-1.0.4/configure
+--- libsigc++-1.0.4.orig/configure	Tue Oct 23 13:39:48 2001
++++ libsigc++-1.0.4/configure	Fri Apr  5 22:13:04 2002
+@@ -2830,7 +2830,7 @@
+ if test "$cross_compiling" = yes; then
+   
+ echo "$ac_t""cross" 1>&6
+-  if test ! -f ac_thread.h; then
++  if test ! -f ac_thread.sh; then
+     echo '
+ ac_thread_cond_attr_size=
+ ac_thread_cond_impl_size=

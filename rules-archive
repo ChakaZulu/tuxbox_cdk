@@ -45,6 +45,7 @@ zlib-1.1.4.tar.bz2;ftp://ftp.info-zip.org/pub/infozip/zlib
 libffi-1.20.tar.gz;ftp://sourceware.cygnus.com/pub/libffi
 SDL-1.2.3.tar.gz;http://www.libsdl.org/release
 readline-4.2a.tar.gz;ftp://ftp.gnu.org/gnu/readline
+libsigc++-1.0.4.tar.gz;ftp://download.sourceforge.net/pub/sourceforge/libsigc
 
 #
 # contrib apps
