@@ -504,7 +504,7 @@ libs_optional: \
 	cd @DIR_libmad@ && \
 		$(BUILDENV) \
 		./configure \
-       			--build=$(build) \
+			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
 			--enable-shared=yes \
@@ -1291,7 +1291,7 @@ $(appsdir)/tuxbox/lcd/config.status: .bootstrap .libfreetype .misc_libs .tuxbox_
 
 # tuxbox/libs
 
-$(appsdir)/tuxbox/libs/config.status: .bootstrap .libfreetype
+$(appsdir)/tuxbox/libs/config.status: .bootstrap .libfreetype .libpng
 	cd $(appsdir)/tuxbox/libs && $(CONFIGURE)
 
 .tuxbox_libs: $(appsdir)/tuxbox/libs/config.status
