@@ -221,15 +221,15 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd .procps
 	@CLEANUP_telnetd@
 	touch .telnetd
 
-.procps: .bootstrap .libncurses @DEPENDS_top@
-	@PREPARE_top@
-	cd @DIR_top@ && \
+.procps: .bootstrap .libncurses @DEPENDS_procps@
+	@PREPARE_procps@
+	cd @DIR_procps@ && \
 		patch -p1 < ../Patches/procps-010114.diff && \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		make top && \
-		@INSTALL_top@
-	@CLEANUP_top@
+		make top ps && \
+		@INSTALL_procps@
+	@CLEANUP_procps@
 	touch .procps
 		 
 		
