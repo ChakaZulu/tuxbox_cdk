@@ -1840,7 +1840,6 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma root
 	$(INSTALL) $(targetprefix)/etc/timezone.xml $(flashprefix)/root/etc
 	cp -pa $(targetprefix)/share/zoneinfo $(flashprefix)/root/share
 	ln -sf /var/etc/localtime $(flashprefix)/root/etc 
-	cp -pa $$(appsdir)/tuxbox/neutrino/daemons/controld/scart.conf $(flashprefix)/root/var/tuxbox/config
 	@touch $@
 
 flash-lcars: $(flashprefix)/.part_lcars
@@ -2031,7 +2030,10 @@ $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
 	$(INSTALL) -d $(flashprefix)/jffs2/tuxbox/plugins
 	$(INSTALL) -d $(flashprefix)/jffs2/bin
 	cp -p $(flashprefix)/root/bin/camd2 $(flashprefix)/jffs2/bin/camd2 
-	$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/jffs2/ -o $(flashprefix)/var-jffs2.img
+	@if [ ! -e $(flashprefix)/root/var/tuxbox/config/scart.conf ]; then \
+		cp -pa $(appsdir)/tuxbox/neutrino/daemons/controld/scart.conf $(flashprefix)/root/var/tuxbox/config ; \
+	fi
+	$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/jffs2/ -o $(flashprefix)/var-jffs2.img ; \
 	rm -rf $(flashprefix)/jffs2
 
 $(flashprefix)/.rojffs2neutrino: flash-neutrino flash-ftpd flash-plugins flash-lib $(flashprefix)/.root-roimg $(flashprefix)/var-jffs2.img $(flashprefix)/.cramfs-flfs $(flashprefix)/.squashfs-flfs
