@@ -73,6 +73,7 @@ msttf;0.0;msttf;arial32.exe:arialb32.exe;dircreate;dirextract:arial32.exe;dirext
 # development tools
 #
 gdb;5.2;gdb-5.2;gdb-5.2.tar.gz:gdb.diff;extract:gdb-5.2.tar.gz;patch:gdb.diff
+ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz;extract:ltrace_0.3.26.tar.gz;patch:ltrace.diff
 strace;4.2;strace-4.2;strace-4.2.tar.gz:strace.diff;extract:strace-4.2.tar.gz;patch:strace.diff
 nano;1.0.7;nano-1.0.7;nano-1.0.7.tar.gz;extract:nano-1.0.7.tar.gz
 

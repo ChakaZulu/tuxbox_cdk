@@ -716,6 +716,21 @@ devel: .gdb .strace .nano
 	@CLEANUP_gdb@
 	touch .gdb
 
+.ltrace: .bootstrap @DEPENDS_ltrace@
+	@PREPARE_ltrace@
+	cd @DIR_ltrace@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--prefix= && \
+		make clean all LD=$(target)-ld && \
+		@INSTALL_ltrace@
+	@CLEANUP_ltrace@
+	touch .ltrace
+
 .strace: .bootstrap @DEPENDS_strace@
 	@PREPARE_strace@
 	cd @DIR_strace@ && \
@@ -1243,9 +1258,9 @@ distclean-local:
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 	-rm .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg
-	-rm .libpcap .libpng .libqt .libreadline .libsdl .libsigc .libxml2 .libz
+	-rm .libpcap .libpng .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
 	-rm .cabextract .msttf
-	-rm .gdb .strace .nano
+	-rm .gdb .ltrace .strace .nano
 	-rm .kaffeh .kaffe
 	-rm .mad .scummvm
 	-rm .ppcboot .linuxkernel .driver

@@ -244,6 +244,7 @@ TUXBOX_RULES_MAKE(msttf)
 # additional
 #
 TUXBOX_RULES_MAKE(gdb)
+TUXBOX_RULES_MAKE(ltrace)
 TUXBOX_RULES_MAKE(strace)
 TUXBOX_RULES_MAKE(nano)
 
