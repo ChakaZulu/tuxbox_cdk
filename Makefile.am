@@ -912,6 +912,8 @@ $(DEPDIR)/gdb: bootstrap libncurses @DEPENDS_gdb@
 			--build=$(build) \
 			--host=$(target) \
 			--nfp \
+			--disable-tui \
+			--without-tui \
 			--disable-sim \
 			--without-sim \
 			--without-expect \
