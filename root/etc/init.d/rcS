@@ -47,12 +47,11 @@ if [ $MODEL_ID -eq 1 ]; then
 	# Nokia
 	if [ $VENDOR_ID -eq 1 ]; then
 		modprobe ves1820
-		modprobe ves1x93 board_type=2
-		modprobe ves1x93 board_type=3
+		modprobe ves1x93 board_type=1
 	# Sagem
 	elif [ $VENDOR_ID -eq 2 ]; then
 		modprobe at76c651
-		modprobe ves1x93 board_type=4
+		modprobe ves1x93 board_type=2
 	# Philips
 	elif [ $VENDOR_ID -eq 3 ]; then
 		modprobe tda8044h
