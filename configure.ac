@@ -78,11 +78,16 @@ AC_ARG_WITH(bootprefix,
 	[  --with-bootprefix=DIR   prefix for boot files [[PREFIX/tftpboot]]],
 	[bootprefix="$with_bootprefix"],[bootprefix="${prefix}/tftpboot"])
 
+AC_ARG_WITH(flashprefix,
+	[  --with-flashprefix=DIR  prefix for flash files [[PREFIX/cdkflash]] (only used for flash building)],
+	[flashprefix="$with_flashprefix"],[flashprefix="${prefix}/cdkflash"])
+
 buildprefix=`pwd`
 AC_SUBST(targetprefix)
 AC_SUBST(hostprefix)
 AC_SUBST(buildprefix)
 AC_SUBST(bootprefix)
+AC_SUBST(flashprefix)
 
 AC_ARG_WITH(cvsdir,
 	[  --with-cvsdir=DIR       where to find the cvs],

@@ -50,7 +50,7 @@ libz;make:install
 console_data;make:install
 console_tools;make:install
 fbset;install:-m755:fbset:TARGET/bin
-ssh;make:install-nokeys:prefix=TARGET
+ssh;make:install-nokeys:prefix=TARGET:sysconfdir=TARGET/etc/ssh
 
 #
 # msttf

@@ -36,6 +36,9 @@ core: .directories .binutils .linuxdir .glibc .gcc
 	-ln -s $(targetprefix)/lib $(hostprefix)/$(target)/lib
 	-ln -s $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
 	-ln -s $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include
+if TARGETRULESET_FLASH
+	install -d $(flashprefix)
+endif
 	touch .directories
 
 .linuxdir: @DEPENDS_linux@
@@ -848,7 +851,7 @@ endif
 	make -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
-.neutrino: $(appsdir)/Makefile .liblcddisplay .libmd5sum .libnet .libucodes .msttf .sections .zapit
+.neutrino: $(appsdir)/Makefile .libconfigfile .liblcddisplay .libmd5sum .libnet .libucodes .msttf .sections .zapit
 	make -C $(appsdir)/mczap all install
 	touch .neutrino
 
@@ -877,6 +880,10 @@ endif
 #  own libs
 #
 
+.libconfigfile: $(appsdir)/Makefile
+	make -C $(appsdir)/libconfigfile all install
+	touch .libconfigfile
+
 .liblcddisplay: $(appsdir)/Makefile
 	make -C $(appsdir)/liblcddisplay all install
 	touch .liblcddisplay
@@ -903,88 +910,140 @@ endif
 #
 
 if TARGETRULESET_FLASH
-copy:
-	@if [ ! -d $(targetprefix)/bin ]; then \
-		make .directories; \
-	fi
-	-rm -rf $(targetprefix)/root/flash
-	install -d $(targetprefix)/root/flash/root/bin
-	install -d $(targetprefix)/root/flash/root/dev
-	install -d $(targetprefix)/root/flash/root/lib/tuxbox
-	install -d $(targetprefix)/root/flash/root/proc
-	install -d $(targetprefix)/root/flash/root/sbin
-	install -d $(targetprefix)/root/flash/root/share/tuxbox
-	install -d $(targetprefix)/root/flash/root/var
-	install -d $(targetprefix)/root/flash/root/tmp
-	install -d $(targetprefix)/root/flash/var/tuxbox/config
-	install -d $(targetprefix)/root/flash/var/tuxbox/ucodes
-	make -C etc install targetprefix=$(targetprefix)/root/flash/root
-	if [ -f .busybox ] ; then \
-		$(INSTALL) $(targetprefix)/bin/busybox $(targetprefix)/root/flash/root/bin ; \
-		for i in `find $(targetprefix)/bin/ -lname "*busybox"` ; do cp -a $$i $(targetprefix)/root/flash/root/bin/ ; done ; \
-		for i in `find $(targetprefix)/sbin/ -lname "*busybox"` ; do cp -a $$i $(targetprefix)/root/flash/root/sbin/ ; done ; \
-	fi
-	if [ -f .modutils ] ; then \
-		$(INSTALL) $(targetprefix)/sbin/insmod $(targetprefix)/root/flash/root/sbin ; \
-		for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -a $$i $(targetprefix)/root/flash/root/sbin/ ; done ; \
-	fi
-	if [ -f .driver ] ; then \
-		cp -a $(targetprefix)/lib/modules $(targetprefix)/root/flash/root/lib/ ; \
-	fi
-	if [ -f .ftpd ] ; then \
-		$(INSTALL) -m644 $(targetprefix)/etc/vsftpd.conf $(targetprefix)/root/flash/root/etc ; \
-		$(INSTALL) $(targetprefix)/sbin/in.ftpd $(targetprefix)/root/flash/root/sbin ; \
-		$(INSTALL) -d $(targetprefix)/root/flash/root/share/empty ; \
-	fi
-	if [ -f .inetd ] ; then \
-		$(INSTALL) $(targetprefix)/sbin/inetd $(targetprefix)/root/flash/root/sbin ; \
-	fi
-	if [ -f .ssh ] ; then \
-		$(INSTALL) $(targetprefix)/bin/ssh $(targetprefix)/root/flash/root/bin ; \
-	fi
-	if [ -f .telnetd ] ; then \
-		$(INSTALL) $(targetprefix)/sbin/in.telnetd $(targetprefix)/root/flash/root/sbin ; \
-	fi
-	if [ -f .neutrino ] ; then \
-		$(INSTALL) $(targetprefix)/bin/controld $(targetprefix)/bin/lcdd $(targetprefix)/bin/neutrino \
-			$(targetprefix)/bin/nhttpd $(targetprefix)/root/flash/root/bin ; \
-		cp -a $(targetprefix)/share/tuxbox/neutrino $(targetprefix)/share/tuxbox/lcdd \
-			$(targetprefix)/root/flash/root/share/tuxbox ; \
-	fi
-	if [ -f .sections ] ; then \
-		$(INSTALL) $(targetprefix)/bin/sectionsd $(targetprefix)/root/flash/root/bin ; \
-	fi
-	if [ -f .zapit ] ; then \
-		$(INSTALL) $(targetprefix)/bin/zapit $(targetprefix)/root/flash/root/bin ; \
-		$(INSTALL) -d $(targetprefix)/root/flash/var/tuxbox/config/zapit ; \
-	fi
-	if [ -f .fx2 ] ; then \
-		$(INSTALL) -d $(targetprefix)/root/flash/root/lib/tuxbox/plugins ; \
-		cp -a $(targetprefix)/lib/tuxbox/plugins/* $(targetprefix)/root/flash/root/lib/tuxbox/plugins ; \
-		$(INSTALL) -m644 $(targetprefix)/var/tuxbox/config/games.cfg $(targetprefix)/root/flash/var/tuxbox/config ; \
-	fi
-	if [ -f .msttf ] ; then \
-		cp -a $(targetprefix)/share/fonts $(targetprefix)/root/flash/root/share ; \
-	fi
+rebuild-flash:
+	-rm $(flashprefix)/.flash
+	make flash-compress
 
-lib:
-	find $(targetprefix)/root/flash/root/lib -maxdepth 1 -type f -o -type l | xargs rm -f
-	cp -a $(targetprefix)/lib/libnss_dns-?.*.so $(targetprefix)/root/flash/root/lib
-	cp -a $(targetprefix)/lib/libnss_files-?.*.so $(targetprefix)/root/flash/root/lib
-	$(PYTHON) mklibs.py -v --target $(target) --ldlib ld.so.1 --libc-extras-dir $(targetprefix)/lib/libc_pic \
-		-d $(targetprefix)/root/flash/root/lib \
+$(flashprefix)/.flash: .busybox .driver .modutils
+	-rm -rf $(flashprefix)/root
+	-rm -rf $(flashprefix)/var
+	install -d $(flashprefix)/root/bin
+	install -d $(flashprefix)/root/dev
+	install -d $(flashprefix)/root/lib/tuxbox
+	install -d $(flashprefix)/root/proc
+	install -d $(flashprefix)/root/sbin
+	install -d $(flashprefix)/root/share/tuxbox
+	install -d $(flashprefix)/root/var
+	install -d $(flashprefix)/root/tmp
+	install -d $(flashprefix)/var/tuxbox/config
+	install -d $(flashprefix)/var/tuxbox/ucodes
+	make -C etc install targetprefix=$(flashprefix)/root
+
+	$(INSTALL) $(targetprefix)/bin/busybox $(flashprefix)/root/bin
+	for i in `find $(targetprefix)/bin/ -lname "*busybox"` ; do cp -a $$i $(flashprefix)/root/bin/ ; done
+	for i in `find $(targetprefix)/sbin/ -lname "*busybox"` ; do cp -a $$i $(flashprefix)/root/sbin/ ; done
+
+	$(INSTALL) $(targetprefix)/sbin/insmod $(flashprefix)/root/sbin
+	for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -a $$i $(flashprefix)/root/sbin/ ; done
+
+	cp -a $(targetprefix)/lib/modules $(flashprefix)/root/lib/
+	@touch $(flashprefix)/.flash
+
+flash-ftpd: $(flashprefix)/.part_ftpd
+
+$(flashprefix)/.part_ftpd: $(flashprefix)/.flash $(flashprefix)/.prog_inetd .ftpd
+	$(INSTALL) -m644 $(targetprefix)/etc/vsftpd.conf $(flashprefix)/root/etc
+	$(INSTALL) $(targetprefix)/sbin/in.ftpd $(flashprefix)/root/sbin
+	$(INSTALL) -d $(flashprefix)/root/share/empty
+	@touch $(flashprefix)/.part_ftpd
+
+$(flashprefix)/.part_inetd: $(flashprefix)/.flash .inetd
+	$(INSTALL) $(targetprefix)/sbin/inetd $(flashprefix)/root/sbin
+	@touch $(flashprefix)/.part_inetd
+
+flash-telnetd: $(flashprefix)/.part_telnetd
+
+$(flashprefix)/.part_telnetd: $(flashprefix)/.flash $(flashprefix)/.part_inetd $(flashprefix)/.part_tinylogin .netkit_telnet
+	$(INSTALL) $(targetprefix)/sbin/in.telnetd $(flashprefix)/root/sbin
+	@touch $(flashprefix)/.part_telnetd
+
+$(flashprefix)/.part_tinylogin: $(flashprefix)/.flash .tinylogin
+	$(INSTALL) $(targetprefix)/bin/tinylogin $(flashprefix)/root/bin
+	for i in `find $(targetprefix)/sbin/ -lname "*tinylogin"` ; do cp -a $$i $(flashprefix)/root/bin/ ; done
+	@touch $(flashprefix)/.part_tinylogin
+
+flash-ssh: $(flashprefix)/.part_ssh
+
+$(flashprefix)/.part_ssh: $(flashprefix)/.flash .ssh
+	$(INSTALL) $(targetprefix)/bin/ssh $(flashprefix)/root/bin
+	@touch $(flashprefix)/.part_ssh
+
+flash-sshd: $(flashprefix)/.part_sshd
+
+$(flashprefix)/.part_sshd: $(flashprefix)/.flash .ssh
+	$(INSTALL) $(targetprefix)/sbin/sshd $(flashprefix)/root/sbin
+	@touch $(flashprefix)/.part_sshd
+
+flash-neutrino: $(flashprefix)/.part_neutrino
+
+$(flashprefix)/.part_neutrino: $(flashprefix)/.flash $(flashprefix)/.part_msttf .neutrino
+	$(INSTALL) $(targetprefix)/bin/controld $(targetprefix)/bin/lcdd $(targetprefix)/bin/neutrino \
+		$(targetprefix)/bin/nhttpd $(targetprefix)/bin/timerd \
+		$(flashprefix)/root/bin
+	cp -a $(targetprefix)/share/tuxbox/neutrino $(targetprefix)/share/tuxbox/lcdd \
+		$(flashprefix)/root/share/tuxbox
+
+	$(INSTALL) $(targetprefix)/bin/sectionsd $(flashprefix)/root/bin
+
+	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
+	$(INSTALL) -d $(flashprefix)/var/tuxbox/config/zapit
+
+	$(INSTALL) -d $(flashprefix)/root/share/fonts
+	cp -a $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
+	@touch $(flashprefix)/.part_neutrino
+
+$(flashprefix)/.part_msttf: $(flashprefix)/.flash .msttf
+	$(INSTALL) -d $(flashprefix)/root/share/fonts
+	cp -a $(targetprefix)/share/fonts/Arial*.ttf $(flashprefix)/root/share/fonts
+	@touch $(flashprefix)/.part_msttf
+
+flash-enigma: $(flashprefix)/.part_enigma
+
+$(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
+	$(INSTALL) $(targetprefix)/bin/enigma $(flashprefix)/root/bin
+	cp -a $(targetprefix)/share/tuxbox/enigma $(flashprefix)/root/share/tuxbox
+	$(INSTALL) -d $(flashprefix)/root/share/fonts
+	cp -a $(targetprefix)/share/fonts/Marlett.ttf $(targetprefix)/share/fonts/unmrs.pfa \
+		$(flashprefix)/root/share/fonts
+	@touch $(flashprefix)/.part_enigma
+
+flash-fx2: $(flashprefix)/.part_fx2
+
+$(flashprefix)/.part_fx2: $(flashprefix)/.flash .fx2
+	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
+	cp -a $(targetprefix)/lib/tuxbox/plugins/* $(flashprefix)/root/lib/tuxbox/plugins
+	$(INSTALL) -m644 $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/var/tuxbox/config
+	@touch $(flashprefix)/.part_fx2
+
+flash-lib: $(flashprefix)/.lib
+
+$(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_*)
+	@find $(flashprefix)/root/lib -maxdepth 1 -type f -o -type l | xargs rm -f
+	@cp -a $(targetprefix)/lib/libnss_dns-?.*.so $(flashprefix)/root/lib
+	@cp -a $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
+	@$(PYTHON) mklibs.py --target $(target) --ldlib ld.so.1 --libc-extras-dir $(targetprefix)/lib/libc_pic \
+		-d $(flashprefix)/root/lib \
 		-L $(targetprefix)/lib \
-		`find $(targetprefix)/root/flash/root/bin/ -path "*bin/?*"` \
-		`find $(targetprefix)/root/flash/root/lib/ -name "libnss_*"` \
-		`find $(targetprefix)/root/flash/root/lib/tuxbox/plugins/ -name "*.so"` \
-		`find $(targetprefix)/root/flash/root/sbin/ -path "*sbin/?*"`
-	for i in `find $(targetprefix)/root/flash/root/lib/ -name ld*.so -o -name lib*.so.?.* -o -name lib*-?.*.so` ; do \
-		ln -sf `basename $$i` $(targetprefix)/root/flash/root/lib/`objdump -x $$i 2>/dev/null | grep SONAME | awk '{print $$2}'` ; \
+		`find $(flashprefix)/root/bin/ -path "*bin/?*"` \
+		`find $(flashprefix)/root/lib/ -name "libnss_*"` \
+		`find $(flashprefix)/root/lib/tuxbox/ -name "*.so" -type f` \
+		`find $(flashprefix)/root/sbin/ -path "*sbin/?*"`
+	@for i in `find $(flashprefix)/root/lib/ -name ld*.so -o -name lib*.so.?.* -o -name lib*-?.*.so` ; do \
+		ln -sf `basename $$i` $(flashprefix)/root/lib/`objdump -x $$i 2>/dev/null | grep SONAME | awk '{print $$2}'` ; \
 	done
+	@strip --remove-section=.comment --remove-section=.note `find $(flashprefix)/root/bin/ -path "*bin/?*"` 2>/dev/null || /bin/true
+	@strip --remove-section=.comment --remove-section=.note --strip-unneeded `find $(flashprefix)/root/lib/tuxbox -name "*.so"` 2>/dev/null || /bin/true
+	@touch $(flashprefix)/.lib
 
-compress:
-	chmod u+rwX,go+rX-w -Rc $(targetprefix)/root/flash/root/
-	$(FAKEROOT) $(MKCRAMFS) -n "TuxBox-`date +%Y%m%d`" $(targetprefix)/root/flash/root/ $(targetprefix)/root/root.img
+flash-compress: $(flashprefix)/root.img $(flashprefix)/var.img
+
+$(flashprefix)/root.img: $(flashprefix)/.lib
+	@chmod u+rwX,go+rX-w -R $(flashprefix)/root/
+	@$(FAKEROOT) $(MKCRAMFS) -n "TuxBox-`date +%Y%m%d`" $(flashprefix)/root/ $(flashprefix)/root.img
+
+$(flashprefix)/var.img: $(flashprefix)/.lib
+	@chmod u+rwX,go+rX-w -R $(flashprefix)/var/
+	@#$(FAKEROOT) $(MKJFFS2) $(flashprefix)/var/ $(flashprefix)/var.img
 endif
 
 #######################
