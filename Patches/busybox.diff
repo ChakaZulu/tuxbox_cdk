@@ -1,0 +1,123 @@
+diff -urN busybox-1.00-pre3.orig/init/init.c busybox-1.00-pre3/init/init.c
+--- busybox-1.00-pre3.orig/init/init.c	2003-09-11 10:51:32.000000000 +0200
++++ busybox-1.00-pre3/init/init.c	2003-09-19 20:32:59.000000000 +0200
+@@ -236,6 +236,10 @@
+ 	msg[l] = 0;
+ #else
+ 
++#ifdef CONFIG_NOLOG
++	log_fd = -2;
++	device = CONSOLE;
++#else
+ 	msg[l++] = '\n';
+ 	msg[l] = 0;
+ 	/* Take full control of the log tty, and never close it.
+@@ -253,6 +257,7 @@
+ 		bb_full_write(log_fd, msg, l);
+ 	}
+ #endif
++#endif
+ 
+ 	if (device & CONSOLE) {
+ 		int fd = device_open(_PATH_CONSOLE,
+@@ -376,7 +381,7 @@
+ 	while ((fd = open(console, O_RDONLY | O_NONBLOCK)) < 0 && tried < 2) {
+ 		/* Can't open selected console -- try
+ 			logical system console and VT_MASTER */
+-		safe_strncpy(console, (tried == 0 ? _PATH_CONSOLE : CURRENT_VC),
++		safe_strncpy(console, (tried == 0 ? _PATH_CONSOLE : "/dev/tty0"),
+ 							sizeof(console));
+ 		tried++;
+ 	}
+diff -urN busybox-1.00-pre3.orig/libbb/messages.c busybox-1.00-pre3/libbb/messages.c
+--- busybox-1.00-pre3.orig/libbb/messages.c	2003-09-02 04:36:11.000000000 +0200
++++ busybox-1.00-pre3/libbb/messages.c	2003-09-19 20:32:03.000000000 +0200
+@@ -56,27 +56,47 @@
+ #endif
+ 
+ #ifdef L_passwd_file
+-#define PASSWD_FILE        "/etc/passwd"
++#ifdef CONFIG_AUTH_IN_VAR_ETC
++ #define PASSWD_FILE        "/var/etc/passwd"
++#else
++ #define PASSWD_FILE        "/etc/passwd"
++#endif
+ const char * const bb_path_passwd_file = PASSWD_FILE;
+ #endif
+ 
+ #ifdef L_shadow_file
+-#define SHADOW_FILE        "/etc/shadow"
++#ifdef CONFIG_AUTH_IN_VAR_ETC
++ #define SHADOW_FILE        "/var/etc/shadow"
++#else
++ #define SHADOW_FILE        "/etc/shadow"
++#endif
+ const char * const bb_path_shadow_file = SHADOW_FILE;
+ #endif
+ 
+ #ifdef L_group_file
+-#define GROUP_FILE         "/etc/group"
++#ifdef CONFIG_AUTH_IN_VAR_ETC
++ #define GROUP_FILE         "/var/etc/group"
++#else
++ #define GROUP_FILE         "/etc/group"
++#endif
+ const char * const bb_path_group_file = GROUP_FILE;
+ #endif
+ 
+ #ifdef L_gshadow_file
+-#define GSHADOW_FILE       "/etc/gshadow"
++#ifdef CONFIG_AUTH_IN_VAR_ETC
++ #define GSHADOW_FILE       "/var/etc/gshadow"
++#else
++ #define GSHADOW_FILE       "/etc/gshadow"
++#endif
+ const char * const bb_path_gshadow_file = GSHADOW_FILE;
+ #endif
+ 
+ #ifdef L_nologin_file
+-#define NOLOGIN_FILE       "/etc/nologin"
++#ifdef CONFIG_AUTH_IN_VAR_ETC
++ #define NOLOGIN_FILE       "/var/etc/nologin"
++#else
++ #define NOLOGIN_FILE       "/etc/nologin"
++#endif
+ const char * const bb_path_nologin_file = NOLOGIN_FILE;
+ #endif
+ 
+diff -urN busybox-1.00-pre3.orig/sysdeps/linux/Config.in busybox-1.00-pre3/sysdeps/linux/Config.in
+--- busybox-1.00-pre3.orig/sysdeps/linux/Config.in	2003-08-05 04:18:20.000000000 +0200
++++ busybox-1.00-pre3/sysdeps/linux/Config.in	2003-09-19 20:32:03.000000000 +0200
+@@ -187,6 +187,14 @@
+ 	  if you want to add some simple compiler switches (like -march=i686),
+ 	  or check for warnings using -Werror, just those options here.
+ 
++config CONFIG_AUTH_IN_VAR_ETC
++	bool "Search auth files in /var/etc"
++	default n
++	help
++	  passwd, shadow, group, gshadow and nologin will be searched in
++	  /var/etc instead of /etc. This is usefull, if /etc is not
++	  writeable (flash).
++
+ endmenu
+ 
+ menu 'Installation Options'
+diff -urN busybox-1.00-pre3.orig/sysklogd/Config.in busybox-1.00-pre3/sysklogd/Config.in
+--- busybox-1.00-pre3.orig/sysklogd/Config.in	2003-07-26 10:20:46.000000000 +0200
++++ busybox-1.00-pre3/sysklogd/Config.in	2003-09-19 20:32:19.000000000 +0200
+@@ -78,5 +78,14 @@
+ 	    they can be logged.  This is generally used to help locate
+ 	    problems that occur within programs and scripts.
+ 
++config CONFIG_NOLOG
++	bool "Disable log on any tty"
++	default n
++	help
++	    This only make sense if CONFIG_SYSLOGD is disabled.
++	    Normally log will be written to tty and only fully disabled,
++	    if write to it does not work. With this option it is every
++	    time disabled.
++
+ endmenu
+ 

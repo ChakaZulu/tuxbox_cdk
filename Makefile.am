@@ -62,7 +62,11 @@ endif
 		$(MAKE) .directories; \
 	fi
 	@PREPARE_linux@
+if TARGETRULESET_FLASH
+	cat Patches/linux-2.4.22-dbox2-flash.config > @DIR_linux@/.config
+else
 	cat Patches/linux-2.4.22-dbox2.config > @DIR_linux@/.config
+endif
 	$(MAKE) -C @DIR_linux@ oldconfig \
 		ARCH=ppc
 	$(MAKE) -C @DIR_linux@ include/linux/version.h \
@@ -200,7 +204,11 @@ root_optional: \
 
 .busybox: .bootstrap @DEPENDS_busybox@
 	@PREPARE_busybox@
+if TARGETRULESET_FLASH
+	cat Patches/busybox-flash.config > @DIR_busybox@/.config
+else
 	cat Patches/busybox.config > @DIR_busybox@/.config
+endif
 	cd @DIR_busybox@ && \
 		$(MAKE) dep all \
 			CROSS=$(target)- \
@@ -280,7 +288,7 @@ root_optional: \
 
 libs: \
 	.libcrypto .libcurl .libdirectfb .libdirectfbpp .libdvbpsi \
-	.libfreetype .libjpeg .libmad .libncurses .libpng \
+	.libfreetype .libjpeg .libmad .libid3tag .libncurses .libpng \
 	.libreadline .libsdl .libsigc .libz .libdvb
 
 libs_optional: \
