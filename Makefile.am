@@ -1839,7 +1839,12 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma root
 	cp -pa $(targetprefix)/etc/init.d/start_enigma $(flashprefix)/root/etc/init.d
 	$(INSTALL) $(targetprefix)/etc/timezone.xml $(flashprefix)/root/etc
 	cp -pa $(targetprefix)/share/zoneinfo $(flashprefix)/root/share
-	ln -sf /var/etc/localtime $(flashprefix)/root/etc 
+	ln -sf /var/etc/localtime $(flashprefix)/root/etc
+	$(INSTALL) -d $(flashprefix)/root/share/locale
+	cp -pa $(appsdir)/tuxbox/enigma/po/locale.alias.image $(flashprefix)/root/share/locale/locale.alias
+	cd $(flashprefix)/root/lib && tar xjvf $(appsdir)/tuxbox/enigma/po/locale.image.tar.bz2
+	cp -pa $(targetprefix)/share/locale/de $(flashprefix)/root/share/locale/
+	cp -pa $(targetprefix)/share/locale/fr $(flashprefix)/root/share/locale/
 	@touch $@
 
 flash-lcars: $(flashprefix)/.part_lcars
