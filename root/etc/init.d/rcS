@@ -22,7 +22,7 @@ echo "fpREV: $fpREV"
 echo "DEMOD: $DEMOD"
 
 modprobe saa7126
-#modprobe dvb_frontend
+modprobe dvb_frontend
 modprobe dvb
 modprobe tuner
 modprobe graphic
