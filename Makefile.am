@@ -198,6 +198,16 @@ root: .etc .busybox .tinylogin .modutils .telnetd .msttf
 	@CLEANUP_inetd@
 	touch .inetd
 
+.ftpd: .bootstrap .inetd @DEPENDS_ftpd@
+	@PREPARE_ftpd@
+	cd @DIR_ftpd@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		make && \
+		@INSTALL_ftpd@
+	@CLEANUP_ftpd@
+	touch .ftpd
+
 .telnetd: .bootstrap .inetd .libncurses @DEPENDS_telnetd@
 	@PREPARE_telnetd@
 	touch @DIR_telnetd@/MCONFIG
@@ -426,12 +436,7 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libxml2
 	install -m 0644 @DIR_msttf@/AriBlk.TTF $(targetprefix)$(FONTDIR)/Arial_Black.ttf
 	install -m 0644 @DIR_msttf@/Arial.TTF $(targetprefix)$(FONTDIR)/Arial.ttf
 	install -m 0644 @DIR_msttf@/Arialbd.TTF $(targetprefix)$(FONTDIR)/Arial_Bold.ttf
-	install -m 0644 @DIR_msttf@/Arialbi.TTF $(targetprefix)$(FONTDIR)/Arial_Bold_Italic.ttf
 	install -m 0644 @DIR_msttf@/Ariali.TTF $(targetprefix)$(FONTDIR)/Arial_Italic.ttf
-	install -m 0644 @DIR_msttf@/cour.ttf $(targetprefix)$(FONTDIR)/Courier_New.ttf
-	install -m 0644 @DIR_msttf@/courbd.ttf $(targetprefix)$(FONTDIR)/Courier_New_Bold.ttf
-	install -m 0644 @DIR_msttf@/courbi.ttf $(targetprefix)$(FONTDIR)/Courier_New_Bold_Italic.ttf
-	install -m 0644 @DIR_msttf@/couri.ttf $(targetprefix)$(FONTDIR)/Courier_New_Italic.ttf
 	@CLEANUP_msttf@
 	touch .msttf
 
@@ -726,7 +731,7 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .etc .busybox .tinylogin .modutils .inetd .telnetd 
+	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd 
 	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libreadline .libsdl .libxml2 .libz
 	-rm .cabextract .msttf
 	-rm .gdb .strace .nano
@@ -751,6 +756,14 @@ endif
 
 .PHONY: core libs root apps boot devel java
 
-EXTRA_DIST = rules-archive rules-archive.pl rules-install rules-install.pl rules-make rules-make.pl tuxbox.m4
+EXTRA_DIST = \
+	rules-archive rules-archive.pl \
+	rules-install rules-install-flash rules-install.pl \
+	rules-make rules-make-cygwin rules-make.pl \
+	tuxbox.m4
 
-CONFIG_STATUS_DEPENDENCIES = $(top_srcdir)/rules-install $(top_srcdir)/rules-install.pl $(top_srcdir)/rules-make $(top_srcdir)/rules-make.pl Makefile-archive
+CONFIG_STATUS_DEPENDENCIES = \
+	$(top_srcdir)/rules-install $(top_srcdir)/rules-install-flash $(top_srcdir)/rules-install.pl \
+	$(top_srcdir)/rules-make $(top_srcdir)/rules-make-cygwin $(top_srcdir)/rules-make.pl \
+	Makefile-archive
+

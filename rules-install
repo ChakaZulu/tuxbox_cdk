@@ -22,6 +22,7 @@ busybox;make:install:PREFIX=TARGET
 tinylogin;make:install:PREFIX=TARGET
 modutils;make:install-bin
 inetd
+ftpd;install:-m755:vsftpd:TARGET/sbin/in.ftpd;install:-m644:vsftpd-dbox2.conf:TARGET/etc/vsftpd.conf;install:-d:TARGET/share/empty
 rsh;make:install:PREFIX=TARGET
 telnetd
 
