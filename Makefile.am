@@ -1238,7 +1238,7 @@ $(appsdir)/tuxbox/funstuff/Makefile: .bootstrap
 # tuxbox/lcars
 
 $(appsdir)/tuxbox/lcars/Makefile: .bootstrap .libcurl .libfreetype .plugins
-	cd $(appsdir)/tuxbox/lcars && $(CONFIGURE)
+	cd $(appsdir)/tuxbox/lcars && $(CONFIGURE_NEW)
 
 .lcars: $(appsdir)/tuxbox/lcars/Makefile
 	$(MAKE) -C $(appsdir)/tuxbox/lcars all install
