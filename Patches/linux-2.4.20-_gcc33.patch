@@ -1,0 +1,162 @@
+diff -Naur linux-2.4.20-pa32/arch/parisc/kernel/signal.c linux-2.4.20-pa32-gcc33/arch/parisc/kernel/signal.c
+--- linux-2.4.20-pa32/arch/parisc/kernel/signal.c	2003-03-21 10:54:23.000000000 +0100
++++ linux-2.4.20-pa32-gcc33/arch/parisc/kernel/signal.c	2003-03-21 12:39:20.000000000 +0100
+@@ -489,7 +489,11 @@
+ 		ka = &current->sig->action[signr-1];
+ 		DBG(("sa_handler is %x\n", 
+ 			(unsigned int) ka->sa.sa_handler));
++#if !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++		if (ka->sa.sa_handler == (void *)SIG_IGN) {
++#else
+ 		if (ka->sa.sa_handler == SIG_IGN) {
++#endif
+ 			if (signr != SIGCHLD)
+ 				continue;
+ 			while (sys_wait4(-1, NULL, WNOHANG, NULL) > 0)
+@@ -497,7 +501,11 @@
+ 			continue;
+ 		}
+ 
++#if !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++		if (ka->sa.sa_handler == (void *)SIG_DFL) {
++#else
+ 		if (ka->sa.sa_handler == SIG_DFL) {
++#endif
+ 			int exit_code = signr;
+ 
+ 			/* Init gets no signals it doesn't want.  */
+diff -Naur linux-2.4.20-pa32/drivers/char/n_tty.c linux-2.4.20-pa32-gcc33/drivers/char/n_tty.c
+--- linux-2.4.20-pa32/drivers/char/n_tty.c	2003-03-21 10:51:30.000000000 +0100
++++ linux-2.4.20-pa32-gcc33/drivers/char/n_tty.c	2003-03-21 12:34:35.000000000 +0100
+@@ -810,7 +810,11 @@
+ int is_ignored(int sig)
+ {
+ 	return (sigismember(&current->blocked, sig) ||
++#if defined (__hppa__) && !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++	        current->sig->action[sig-1].sa.sa_handler == (void *)SIG_IGN);
++#else
+ 	        current->sig->action[sig-1].sa.sa_handler == SIG_IGN);
++#endif
+ }
+ 
+ static void n_tty_set_termios(struct tty_struct *tty, struct termios * old)
+diff -Naur linux-2.4.20-pa32/fs/ncpfs/sock.c linux-2.4.20-pa32-gcc33/fs/ncpfs/sock.c
+--- linux-2.4.20-pa32/fs/ncpfs/sock.c	2003-03-21 10:36:05.000000000 +0100
++++ linux-2.4.20-pa32-gcc33/fs/ncpfs/sock.c	2003-03-21 12:35:37.000000000 +0100
+@@ -466,9 +466,17 @@
+ 			   What if we've blocked it ourselves?  What about
+ 			   alarms?  Why, in fact, are we mucking with the
+ 			   sigmask at all? -- r~ */
++#if defined (__hppa__) && !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++			if (current->sig->action[SIGINT - 1].sa.sa_handler == (void *)SIG_DFL)
++#else
+ 			if (current->sig->action[SIGINT - 1].sa.sa_handler == SIG_DFL)
++#endif
+ 				mask |= sigmask(SIGINT);
++#if defined (__hppa__) && !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++			if (current->sig->action[SIGQUIT - 1].sa.sa_handler == (void *)SIG_DFL)
++#else
+ 			if (current->sig->action[SIGQUIT - 1].sa.sa_handler == SIG_DFL)
++#endif
+ 				mask |= sigmask(SIGQUIT);
+ 		}
+ 		siginitsetinv(&current->blocked, mask);
+diff -Naur linux-2.4.20-pa32/fs/proc/array.c linux-2.4.20-pa32-gcc33/fs/proc/array.c
+--- linux-2.4.20-pa32/fs/proc/array.c	2003-03-21 10:01:18.000000000 +0100
++++ linux-2.4.20-pa32-gcc33/fs/proc/array.c	2003-03-21 12:36:44.000000000 +0100
+@@ -231,9 +231,17 @@
+ 	if (p->sig) {
+ 		k = p->sig->action;
+ 		for (i = 1; i <= _NSIG; ++i, ++k) {
++#if defined (__hppa__) && !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++			if (k->sa.sa_handler == (void *)SIG_IGN)
++#else
+ 			if (k->sa.sa_handler == SIG_IGN)
++#endif
+ 				sigaddset(ign, i);
++#if defined (__hppa__) && !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++			else if (k->sa.sa_handler != (void *)SIG_DFL)
++#else
+ 			else if (k->sa.sa_handler != SIG_DFL)
++#endif
+ 				sigaddset(catch, i);
+ 		}
+ 	}
+diff -Naur linux-2.4.20-pa32/include/linux/compiler.h linux-2.4.20-pa32-gcc33/include/linux/compiler.h
+--- linux-2.4.20-pa32/include/linux/compiler.h	2003-03-21 12:31:39.000000000 +0100
++++ linux-2.4.20-pa32-gcc33/include/linux/compiler.h	2003-03-21 12:32:07.000000000 +0100
+@@ -1,6 +1,12 @@
+ #ifndef __LINUX_COMPILER_H
+ #define __LINUX_COMPILER_H
+ 
++#if (__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1)
++#define inline		__inline__ __attribute__((always_inline))
++#define __inline__	__inline__ __attribute__((always_inline))
++#define __inline	__inline__ __attribute__((always_inline))
++#endif
++
+ /* Somewhere in the middle of the GCC 2.96 development cycle, we implemented
+    a mechanism by which the user can annotate likely branch directions and
+    expect the blocks to be reordered appropriately.  Define __builtin_expect
+diff -Naur linux-2.4.20-pa32/kernel/signal.c linux-2.4.20-pa32-gcc33/kernel/signal.c
+--- linux-2.4.20-pa32/kernel/signal.c	2003-03-21 10:39:32.000000000 +0100
++++ linux-2.4.20-pa32-gcc33/kernel/signal.c	2003-03-21 12:37:40.000000000 +0100
+@@ -126,7 +126,11 @@
+ 	int i;
+ 	struct k_sigaction *ka = &t->sig->action[0];
+ 	for (i = _NSIG ; i != 0 ; i--) {
++#if defined (__hppa__) && !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++		if (ka->sa.sa_handler != (void *)SIG_IGN)
++#else
+ 		if (ka->sa.sa_handler != SIG_IGN)
++#endif
+ 			ka->sa.sa_handler = SIG_DFL;
+ 		ka->sa.sa_flags = 0;
+ 		sigemptyset(&ka->sa.sa_mask);
+@@ -572,7 +576,11 @@
+ 		return -ESRCH;
+ 	}
+ 
++#if defined (__hppa__) && !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++	if (t->sig->action[sig-1].sa.sa_handler == (void *)SIG_IGN)
++#else
+ 	if (t->sig->action[sig-1].sa.sa_handler == SIG_IGN)
++#endif
+ 		t->sig->action[sig-1].sa.sa_handler = SIG_DFL;
+ 	sigdelset(&t->blocked, sig);
+ 	recalc_sigpending(t);
+@@ -1094,8 +1102,13 @@
+ 		 * the signal to be ignored.
+ 		 */
+ 
++#if defined (__hppa__) && !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++		if (k->sa.sa_handler == (void *)SIG_IGN
++		    || (k->sa.sa_handler == (void *)SIG_DFL
++#else
+ 		if (k->sa.sa_handler == SIG_IGN
+ 		    || (k->sa.sa_handler == SIG_DFL
++#endif
+ 			&& (sig == SIGCONT ||
+ 			    sig == SIGCHLD ||
+ 			    sig == SIGURG ||
+diff -Naur linux-2.4.20-pa32/net/sunrpc/clnt.c linux-2.4.20-pa32-gcc33/net/sunrpc/clnt.c
+--- linux-2.4.20-pa32/net/sunrpc/clnt.c	2003-03-21 10:46:28.000000000 +0100
++++ linux-2.4.20-pa32-gcc33/net/sunrpc/clnt.c	2003-03-21 12:38:07.000000000 +0100
+@@ -209,9 +209,17 @@
+ 	/* Turn off various signals */
+ 	if (clnt->cl_intr) {
+ 		struct k_sigaction *action = current->sig->action;
++#if defined (__hppa__) && !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++		if (action[SIGINT-1].sa.sa_handler == (void *)SIG_DFL)
++#else
+ 		if (action[SIGINT-1].sa.sa_handler == SIG_DFL)
++#endif
+ 			sigallow |= sigmask(SIGINT);
++#if defined (__hppa__) && !defined (__LP64__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
++		if (action[SIGQUIT-1].sa.sa_handler == (void *)SIG_DFL)
++#else
+ 		if (action[SIGQUIT-1].sa.sa_handler == SIG_DFL)
++#endif
+ 			sigallow |= sigmask(SIGQUIT);
+ 	}
+ 	spin_lock_irqsave(&current->sigmask_lock, irqflags);
