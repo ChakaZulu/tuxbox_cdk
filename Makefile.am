@@ -855,8 +855,7 @@ devel_optional: .gdb-remote .ksymoops
 			--host=$(build) \
 			--target=$(target) \
 			--prefix=$(hostprefix) && \
-		$(MAKE) all-gdb && \
-		@INSTALL_gdb@
+		$(MAKE) all-gdb install-gdb \
 	@CLEANUP_gdb@
 	touch .gdb-remote
 
