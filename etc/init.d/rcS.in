@@ -17,6 +17,7 @@ fi
 
 @TARGETRULESET_FLASH_TRUE@test -d /var/lib/modules/`uname -r` || mkdir -p /var/lib/modules/`uname -r`
 @TARGETRULESET_FLASH_TRUE@test -f /var/lib/modules/`uname -r`/modules.dep || \
+touch /etc/modules.conf
 depmod -ae
 
 modprobe tuxbox
@@ -63,7 +64,12 @@ if [ $MODEL_ID -eq 1 ]; then
 	# Misc IO
 	modprobe avs
 	modprobe saa7126
-	modprobe cam
+	# Philips
+	if [ $VENDOR_ID -eq 3 ]; then
+		modprobe cam mio=0xC040000
+	else
+		modprobe cam mio=0xC000000
+	fi
 	modprobe lcd
 
 	# A/V
