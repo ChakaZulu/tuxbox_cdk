@@ -2,7 +2,7 @@ TARGET = powerpc-tuxbox-linux-gnu
 
 PATH := $(hostprefix)/bin:$(PATH)
 
-all: .lcars .etc .linuxkernel
+all: .lcars .etc .linuxkernel .driver
 
 bootstrap: .gcc
 
