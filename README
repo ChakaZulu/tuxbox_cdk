@@ -1,12 +1,12 @@
 #
-#  $Id: README,v 1.6 2001/12/14 02:41:37 obi Exp $
+#  $Id: README,v 1.7 2001/12/14 13:44:25 obi Exp $
 #
 
 Folgende tools werden lokal benoetigt bevor das bauen los geht:
 ---------------------------------------------------------------
  - cvs
  - autoconf 2.50
- - automake 1.4
+ - automake 1.4p5
  - libtool 1.4.2
  - make
  - makeinfo (gehoert zu texinfo)
@@ -20,7 +20,7 @@ Folgende tools werden lokal benoetigt bevor das bauen los geht:
  - flex
  - bison
 
-
+http://packman.links2linux.de/index.php4?action=101
 
 Hier die Kommandos zum bauen des cdk:
 -------------------------------------
@@ -34,11 +34,6 @@ cvs -d:pserver:anonymous@cvs.tuxbox.berlios.de:/cvsroot/tuxbox -z9 co .
 cd cdk
 ./autogen.sh
 ./configure --prefix=/dbox2 --with-cvsdir=$HOME/tuxbox-cvs
-
-Wenn hier irgendwas schief geht, was ihr euch nicht erklaeren koennt, weil ihr alle
-Versionen ueberprueft habt und keinen Quatsch eingetippt habt, dann probiert mal einfach
-configure.in zu erstellen (touch configure.in). bei suse 7.3 hilft das scheibar wegen
-einem bug in suse. das ist zwar haeslich und nich sinn der sache, aber das hat geholfen.
 
 
  - Dann als root das Installationsverzeichnis anlegen (wie in prefix angegeben):
