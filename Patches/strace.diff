@@ -1,0 +1,36 @@
+diff -Naur strace/file.c strace-4.2/file.c
+--- strace/file.c	Tue Jan 11 15:41:10 2000
++++ strace-4.2/file.c	Wed Mar 21 14:27:12 2001
+@@ -31,15 +31,18 @@
+  */
+ 
+ #include "defs.h"
+-
++#include <time.h>
+ #include <dirent.h>
+ #ifdef linux
++#define dirent64 kernel_dirent64
+ #define dirent kernel_dirent
+ #include <linux/types.h>
+ #include <linux/dirent.h>
+ #undef dirent
++#undef dirent64
+ #else
+ #define kernel_dirent dirent
++#define kernel_dirent64 dirent64
+ #endif
+ 
+ #ifdef linux
+diff -Naur strace/stream.c strace-4.2/stream.c
+--- strace/stream.c	Thu Dec 23 15:20:15 1999
++++ strace-4.2/stream.c	Wed Mar 21 14:36:14 2001
+@@ -168,7 +168,8 @@
+ 	return RVAL_HEX | RVAL_STR;
+ }
+ 
+-#ifdef HAVE_PUTPMSG
++#ifdef I_AM_HOPEFULLY_NOT_DEFINED
++//#ifdef HAVE_PUTPMSG
+ 
+ static struct xlat pmsgflags[] = {
+ 	{ MSG_HIPRI,	"MSG_HIPRI"	},

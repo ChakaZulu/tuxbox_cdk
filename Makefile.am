@@ -201,6 +201,21 @@ root: .busybox .tinylogin .modutils .etc
 	@CLEANUP_telnetd@
 	touch .telnetd
 
+.strace: .gcc @DEPENDS_strace@
+	@PREPARE_strace@
+	cd @DIR_strace@ && \
+		CC=$(TARGET)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--target=$(TARGET) \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_strace@
+	@CLEANUP_strace@
+	touch .strace
+
 #######################
 #
 #   contrib libs

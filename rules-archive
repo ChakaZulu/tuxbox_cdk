@@ -50,3 +50,4 @@ courie32.exe;http://www.microsoft.com/typography/downloads
 gdb-5.0.tar.gz;ftp://ftp.freenet.de/pub/ftp.gnu.org/gnu/gdb
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
+strace-4.2.tar.gz;http://prdownloads.sourceforge.net/strace
