@@ -1,7 +1,120 @@
-diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
---- openssh-3.3p1.orig/configure	Fri Jun 21 17:56:52 2002
-+++ openssh-3.3p1/configure	Tue Jun 25 17:29:05 2002
-@@ -3893,6 +3893,7 @@
+diff -urN openssh-3.4p1.orig/Makefile.in openssh-3.4p1/Makefile.in
+--- openssh-3.4p1.orig/Makefile.in	Wed Jun 26 01:45:42 2002
++++ openssh-3.4p1/Makefile.in	Sat Jun 29 21:44:10 2002
+@@ -198,13 +198,9 @@
+ 	$(AUTORECONF)
+ 	(cd scard && $(MAKE) -f Makefile.in distprep)
+ 
+-install: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files host-key check-user
++install: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files host-key
+ install-nokeys: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files
+ 
+-check-user:
+-	id $(SSH_PRIVSEP_USER) || \
+-		echo "WARNING: Privilege separation user \"$(SSH_PRIVSEP_USER)\" does not exist"
+-
+ scard-install:
+ 	(cd scard && $(MAKE) DESTDIR=$(DESTDIR) install)
+ 
+@@ -219,19 +215,19 @@
+ 	$(srcdir)/mkinstalldirs $(DESTDIR)$(libexecdir)
+ 	$(srcdir)/mkinstalldirs $(DESTDIR)$(PRIVSEP_PATH)
+ 	chmod 0700 $(DESTDIR)$(PRIVSEP_PATH)
+-	$(INSTALL) -m 0755 -s ssh $(DESTDIR)$(bindir)/ssh
+-	$(INSTALL) -m 0755 -s scp $(DESTDIR)$(bindir)/scp
+-	$(INSTALL) -m 0755 -s ssh-add $(DESTDIR)$(bindir)/ssh-add
+-	$(INSTALL) -m 0755 -s ssh-agent $(DESTDIR)$(bindir)/ssh-agent
+-	$(INSTALL) -m 0755 -s ssh-keygen $(DESTDIR)$(bindir)/ssh-keygen
+-	$(INSTALL) -m 0755 -s ssh-keyscan $(DESTDIR)$(bindir)/ssh-keyscan
+-	$(INSTALL) -m 0755 -s sshd $(DESTDIR)$(sbindir)/sshd
++	$(INSTALL) -m 0755 ssh $(DESTDIR)$(bindir)/ssh
++	$(INSTALL) -m 0755 scp $(DESTDIR)$(bindir)/scp
++	$(INSTALL) -m 0755 ssh-add $(DESTDIR)$(bindir)/ssh-add
++	$(INSTALL) -m 0755 ssh-agent $(DESTDIR)$(bindir)/ssh-agent
++	$(INSTALL) -m 0755 ssh-keygen $(DESTDIR)$(bindir)/ssh-keygen
++	$(INSTALL) -m 0755 ssh-keyscan $(DESTDIR)$(bindir)/ssh-keyscan
++	$(INSTALL) -m 0755 sshd $(DESTDIR)$(sbindir)/sshd
+ 	if test ! -z "$(INSTALL_SSH_RAND_HELPER)" ; then \
+-		$(INSTALL) -m 0755 -s ssh-rand-helper $(DESTDIR)$(libexecdir)/ssh-rand-helper ; \
++		$(INSTALL) -m 0755 ssh-rand-helper $(DESTDIR)$(libexecdir)/ssh-rand-helper ; \
+ 	fi
+-	$(INSTALL) -m 4711 -s ssh-keysign $(DESTDIR)$(SSH_KEYSIGN)
+-	@NO_SFTP@$(INSTALL) -m 0755 -s sftp $(DESTDIR)$(bindir)/sftp
+-	@NO_SFTP@$(INSTALL) -m 0755 -s sftp-server $(DESTDIR)$(SFTP_SERVER)
++	$(INSTALL) -m 4711 ssh-keysign $(DESTDIR)$(SSH_KEYSIGN)
++	@NO_SFTP@$(INSTALL) -m 0755 sftp $(DESTDIR)$(bindir)/sftp
++	@NO_SFTP@$(INSTALL) -m 0755 sftp-server $(DESTDIR)$(SFTP_SERVER)
+ 	$(INSTALL) -m 644 ssh.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh.1
+ 	$(INSTALL) -m 644 scp.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/scp.1
+ 	$(INSTALL) -m 644 ssh-add.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh-add.1
+@@ -254,17 +250,17 @@
+ 	if [ ! -d $(DESTDIR)$(sysconfdir) ]; then \
+ 		$(srcdir)/mkinstalldirs $(DESTDIR)$(sysconfdir); \
+ 	fi
+-	if [ ! -f $(DESTDIR)$(sysconfdir)/ssh_config ]; then \
++	@if [ ! -f $(DESTDIR)$(sysconfdir)/ssh_config ]; then \
+ 		$(INSTALL) -m 644 ssh_config.out $(DESTDIR)$(sysconfdir)/ssh_config; \
+ 	else \
+ 		echo "$(DESTDIR)$(sysconfdir)/ssh_config already exists, install will not overwrite"; \
+ 	fi
+-	if [ ! -f $(DESTDIR)$(sysconfdir)/sshd_config ]; then \
++	@if [ ! -f $(DESTDIR)$(sysconfdir)/sshd_config ]; then \
+ 		$(INSTALL) -m 644 sshd_config.out $(DESTDIR)$(sysconfdir)/sshd_config; \
+ 	else \
+ 		echo "$(DESTDIR)$(sysconfdir)/sshd_config already exists, install will not overwrite"; \
+ 	fi
+-	if [ -f ssh_prng_cmds -a ! -z "$(INSTALL_SSH_PRNG_CMDS)" ]; then \
++	@if [ -f ssh_prng_cmds -a ! -z "$(INSTALL_SSH_PRNG_CMDS)" ]; then \
+ 		$(PERL) $(srcdir)/fixprogs ssh_prng_cmds $(ENT); \
+ 		if [ ! -f $(DESTDIR)$(sysconfdir)/ssh_prng_cmds ] ; then \
+ 			$(INSTALL) -m 644 ssh_prng_cmds.out $(DESTDIR)$(sysconfdir)/ssh_prng_cmds; \
+@@ -272,7 +268,7 @@
+ 			echo "$(DESTDIR)$(sysconfdir)/ssh_prng_cmds already exists, install will not overwrite"; \
+ 		fi ; \
+ 	fi
+-	if [ ! -f $(DESTDIR)$(sysconfdir)/moduli ]; then \
++	@if [ ! -f $(DESTDIR)$(sysconfdir)/moduli ]; then \
+ 		if [ -f $(DESTDIR)$(sysconfdir)/primes ]; then \
+ 			echo "moving $(DESTDIR)$(sysconfdir)/primes to $(DESTDIR)$(sysconfdir)/moduli"; \
+ 			mv "$(DESTDIR)$(sysconfdir)/primes" "$(DESTDIR)$(sysconfdir)/moduli"; \
+@@ -284,23 +280,16 @@
+ 	fi
+ 
+ host-key: ssh-keygen$(EXEEXT)
+-	if [ -z "$(DESTDIR)" ] ; then \
+-		if [ -f "$(DESTDIR)$(sysconfdir)/ssh_host_key" ] ; then \
+-			echo "$(DESTDIR)$(sysconfdir)/ssh_host_key already exists, skipping." ; \
+-		else \
+-			./ssh-keygen -t rsa1 -f $(DESTDIR)$(sysconfdir)/ssh_host_key -N "" ; \
+-		fi ; \
+-		if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key ] ; then \
+-			echo "$(DESTDIR)$(sysconfdir)/ssh_host_dsa_key already exists, skipping." ; \
+-		else \
+-			./ssh-keygen -t dsa -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key -N "" ; \
+-		fi ; \
+-		if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key ] ; then \
+-			echo "$(DESTDIR)$(sysconfdir)/ssh_host_rsa_key already exists, skipping." ; \
+-		else \
+-			./ssh-keygen -t rsa -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key -N "" ; \
+-		fi ; \
+-	fi ;
++	if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key ] ; then \
++		echo "$(DESTDIR)$(sysconfdir)/ssh_host_dsa_key already exists, skipping." ; \
++	else \
++		ssh-keygen -t dsa -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key -N "" -b 2048 ; \
++	fi
++	if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key ] ; then \
++		echo "$(DESTDIR)$(sysconfdir)/ssh_host_rsa_key already exists, skipping." ; \
++	else \
++		ssh-keygen -t rsa -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key -N "" -b 2048 ; \
++	fi
+ 
+ host-key-force: ssh-keygen$(EXEEXT)
+ 	./ssh-keygen -t rsa1 -f $(DESTDIR)$(sysconfdir)/ssh_host_key -N ""
+diff -urN openssh-3.4p1.orig/configure openssh-3.4p1/configure
+--- openssh-3.4p1.orig/configure	Wed Jun 26 16:08:18 2002
++++ openssh-3.4p1/configure	Sat Jun 29 20:04:57 2002
+@@ -3900,6 +3900,7 @@
  
  	;;
  *-*-linux*)
@@ -9,7 +122,7 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
  	no_dev_ptmx=1
  	check_for_libcrypt_later=1
  	cat >>confdefs.h <<\_ACEOF
-@@ -6150,53 +6151,6 @@
+@@ -6163,53 +6164,6 @@
  rm -f conftest*
  
  
@@ -63,10 +176,153 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
  # Check whether user wants S/Key support
  SKEY_MSG="no"
  
-@@ -6516,440 +6470,6 @@
+@@ -6443,354 +6397,38 @@
  
  
- 
+ for ac_func in arc4random b64_ntop bcopy bindresvport_sa \
+-	clock fchmod fchown freeaddrinfo futimes gai_strerror \
+-	getaddrinfo getcwd getgrouplist getnameinfo getopt \
+-	getrlimit getrusage getttyent glob inet_aton inet_ntoa \
+-	inet_ntop innetgr login_getcapbool md5_crypt memmove \
+-	mkdtemp mmap ngetaddrinfo openpty ogetaddrinfo readpassphrase \
+-	realpath recvmsg rresvport_af sendmsg setdtablesize setegid \
+-	setenv seteuid setgroups setlogin setproctitle setresgid setreuid \
+-	setrlimit setsid setpcred setvbuf sigaction sigvec snprintf \
+-	socketpair strerror strlcat strlcpy strmode strsep sysconf tcgetpgrp \
+-	truncate utimes vhangup vsnprintf waitpid __b64_ntop _getpty
+-do
+-as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
+-echo "$as_me:$LINENO: checking for $ac_func" >&5
+-echo $ECHO_N "checking for $ac_func... $ECHO_C" >&6
+-if eval "test \"\${$as_ac_var+set}\" = set"; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  cat >conftest.$ac_ext <<_ACEOF
+-#line $LINENO "configure"
+-#include "confdefs.h"
+-/* System header to define __stub macros and hopefully few prototypes,
+-    which can conflict with char $ac_func (); below.  */
+-#include <assert.h>
+-/* Override any gcc2 internal prototype to avoid an error.  */
+-#ifdef __cplusplus
+-extern "C"
+-#endif
+-/* We use char because int might match the return type of a gcc2
+-   builtin and then its argument prototype would still apply.  */
+-char $ac_func ();
+-char (*f) ();
+-
+-#ifdef F77_DUMMY_MAIN
+-#  ifdef __cplusplus
+-     extern "C"
+-#  endif
+-   int F77_DUMMY_MAIN() { return 1; }
+-#endif
+-int
+-main ()
+-{
+-/* The GNU C library defines this for functions which it implements
+-    to always fail with ENOSYS.  Some functions are actually named
+-    something starting with __ and the normal name is an alias.  */
+-#if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+-choke me
+-#else
+-f = $ac_func;
+-#endif
+-
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-rm -f conftest.$ac_objext conftest$ac_exeext
+-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+-  (eval $ac_link) 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } &&
+-         { ac_try='test -s conftest$ac_exeext'
+-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+-  (eval $ac_try) 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); }; }; then
+-  eval "$as_ac_var=yes"
+-else
+-  echo "$as_me: failed program was:" >&5
+-cat conftest.$ac_ext >&5
+-eval "$as_ac_var=no"
+-fi
+-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+-fi
+-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_var'}'`" >&5
+-echo "${ECHO_T}`eval echo '${'$as_ac_var'}'`" >&6
+-if test `eval echo '${'$as_ac_var'}'` = yes; then
+-  cat >>confdefs.h <<_ACEOF
+-#define `echo "HAVE_$ac_func" | $as_tr_cpp` 1
+-_ACEOF
+-
+-fi
+-done
+-
+-
+-if test $ac_cv_func_mmap = yes ; then
+-echo "$as_me:$LINENO: checking for mmap anon shared" >&5
+-echo $ECHO_N "checking for mmap anon shared... $ECHO_C" >&6
+-if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling" >&5
+-echo "$as_me: error: cannot run test program while cross compiling" >&2;}
+-   { (exit 1); exit 1; }; }
+-else
+-  cat >conftest.$ac_ext <<_ACEOF
+-#line $LINENO "configure"
+-#include "confdefs.h"
+-
+-#include <stdio.h>
+-#include <sys/mman.h>
+-#if !defined(MAP_ANON) && defined(MAP_ANONYMOUS)
+-#define MAP_ANON MAP_ANONYMOUS
+-#endif
+-main() { char *p;
+-p = (char *) mmap(NULL, 10, PROT_WRITE|PROT_READ, MAP_ANON|MAP_SHARED, -1, 0);
+-if (p == (char *)-1)
+-	exit(1);
+-exit(0);
+-}
+-
+-_ACEOF
+-rm -f conftest$ac_exeext
+-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+-  (eval $ac_link) 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+-  (eval $ac_try) 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); }; }; then
+-
+-		echo "$as_me:$LINENO: result: yes" >&5
+-echo "${ECHO_T}yes" >&6
+-		cat >>confdefs.h <<\_ACEOF
+-#define HAVE_MMAP_ANON_SHARED 1
+-_ACEOF
+-
+-
+-else
+-  echo "$as_me: program exited with status $ac_status" >&5
+-echo "$as_me: failed program was:" >&5
+-cat conftest.$ac_ext >&5
+-( exit $ac_status )
+- echo "$as_me:$LINENO: result: no" >&5
+-echo "${ECHO_T}no" >&6
+-
+-fi
+-rm -f core core.* *.core conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+-fi
+-fi
+-
+-
 -for ac_func in dirname
 -do
 -as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
@@ -257,54 +513,76 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
 -	echo "$as_me:$LINENO: checking for dirname in -lgen" >&5
 -echo $ECHO_N "checking for dirname in -lgen... $ECHO_C" >&6
 -if test "${ac_cv_lib_gen_dirname+set}" = set; then
--  echo $ECHO_N "(cached) $ECHO_C" >&6
--else
++	clock fchmod fchown freeaddrinfo futimes gai_strerror \
++	getaddrinfo getcwd getgrouplist getnameinfo getopt \
++	getrlimit getrusage getttyent glob inet_aton inet_ntoa \
++	inet_ntop innetgr login_getcapbool md5_crypt memmove \
++	mkdtemp mmap ngetaddrinfo openpty ogetaddrinfo readpassphrase \
++	realpath recvmsg rresvport_af sendmsg setdtablesize setegid \
++	setenv seteuid setgroups setlogin setproctitle setresgid setreuid \
++	setrlimit setsid setpcred setvbuf sigaction sigvec snprintf \
++	socketpair strerror strlcat strlcpy strmode strsep sysconf tcgetpgrp \
++	truncate utimes vhangup vsnprintf waitpid __b64_ntop _getpty
++do
++as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
++echo "$as_me:$LINENO: checking for $ac_func" >&5
++echo $ECHO_N "checking for $ac_func... $ECHO_C" >&6
++if eval "test \"\${$as_ac_var+set}\" = set"; then
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
 -  ac_check_lib_save_LIBS=$LIBS
 -LIBS="-lgen  $LIBS"
 -cat >conftest.$ac_ext <<_ACEOF
--#line $LINENO "configure"
--#include "confdefs.h"
++  cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+ #include "confdefs.h"
 -
--/* Override any gcc2 internal prototype to avoid an error.  */
--#ifdef __cplusplus
--extern "C"
--#endif
--/* We use char because int might match the return type of a gcc2
--   builtin and then its argument prototype would still apply.  */
++/* System header to define __stub macros and hopefully few prototypes,
++    which can conflict with char $ac_func (); below.  */
++#include <assert.h>
+ /* Override any gcc2 internal prototype to avoid an error.  */
+ #ifdef __cplusplus
+ extern "C"
+ #endif
+ /* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
 -char dirname ();
--#ifdef F77_DUMMY_MAIN
--#  ifdef __cplusplus
--     extern "C"
--#  endif
--   int F77_DUMMY_MAIN() { return 1; }
--#endif
--int
--main ()
--{
++char $ac_func ();
++char (*f) ();
++
+ #ifdef F77_DUMMY_MAIN
+ #  ifdef __cplusplus
+      extern "C"
+@@ -6800,7 +6438,15 @@
+ int
+ main ()
+ {
 -dirname ();
--  ;
--  return 0;
--}
--_ACEOF
--rm -f conftest.$ac_objext conftest$ac_exeext
--if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
--  (eval $ac_link) 2>&5
--  ac_status=$?
--  echo "$as_me:$LINENO: \$? = $ac_status" >&5
--  (exit $ac_status); } &&
--         { ac_try='test -s conftest$ac_exeext'
--  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
--  (eval $ac_try) 2>&5
--  ac_status=$?
--  echo "$as_me:$LINENO: \$? = $ac_status" >&5
--  (exit $ac_status); }; }; then
++/* The GNU C library defines this for functions which it implements
++    to always fail with ENOSYS.  Some functions are actually named
++    something starting with __ and the normal name is an alias.  */
++#if defined (__stub_$ac_func) || defined (__stub___$ac_func)
++choke me
++#else
++f = $ac_func;
++#endif
++
+   ;
+   return 0;
+ }
+@@ -6817,207 +6463,35 @@
+   ac_status=$?
+   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+   (exit $ac_status); }; }; then
 -  ac_cv_lib_gen_dirname=yes
--else
--  echo "$as_me: failed program was:" >&5
--cat conftest.$ac_ext >&5
++  eval "$as_ac_var=yes"
+ else
+   echo "$as_me: failed program was:" >&5
+ cat conftest.$ac_ext >&5
 -ac_cv_lib_gen_dirname=no
--fi
--rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
++eval "$as_ac_var=no"
+ fi
+ rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 -LIBS=$ac_check_lib_save_LIBS
 -fi
 -echo "$as_me:$LINENO: result: $ac_cv_lib_gen_dirname" >&5
@@ -481,30 +759,40 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
 -echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_Header'}'`" >&5
 -echo "${ECHO_T}`eval echo '${'$as_ac_Header'}'`" >&6
 -
--fi
+ fi
 -if test `eval echo '${'$as_ac_Header'}'` = yes; then
--  cat >>confdefs.h <<_ACEOF
++echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_var'}'`" >&5
++echo "${ECHO_T}`eval echo '${'$as_ac_var'}'`" >&6
++if test `eval echo '${'$as_ac_var'}'` = yes; then
+   cat >>confdefs.h <<_ACEOF
 -#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
--_ACEOF
++#define `echo "HAVE_$ac_func" | $as_tr_cpp` 1
+ _ACEOF
+ 
+ fi
 -
--fi
--
--done
--
+ done
+ 
 -		fi
 -
 -fi
--
--
--fi
+ 
++if test $ac_cv_func_mmap = yes ; then
++echo "$as_me:$LINENO: checking for mmap anon shared" >&5
++echo $ECHO_N "checking for mmap anon shared... $ECHO_C" >&6
++echo "$as_me:$LINENO: result: yes" >&5
++echo "${ECHO_T}yes" >&6
++cat >>confdefs.h <<\_ACEOF
++#define HAVE_MMAP_ANON_SHARED 1
++_ACEOF
+ 
+ fi
 -done
 -
--
--
  
- for ac_func in gettimeofday time
- do
-@@ -7596,73 +7116,22 @@
+ 
+ 
+@@ -7666,73 +7140,22 @@
    echo "$as_me: failed program was:" >&5
  cat conftest.$ac_ext >&5
  ac_cv_lib_ucb_getpagesize=no
@@ -589,7 +877,7 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
  
  echo "$as_me:$LINENO: checking whether getpgrp requires zero arguments" >&5
  echo $ECHO_N "checking whether getpgrp requires zero arguments... $ECHO_C" >&6
-@@ -8164,52 +7633,9 @@
+@@ -8234,52 +7657,9 @@
  # Sanity check OpenSSL headers
  echo "$as_me:$LINENO: checking whether OpenSSL's headers match the library" >&5
  echo $ECHO_N "checking whether OpenSSL's headers match the library... $ECHO_C" >&6
@@ -643,7 +931,7 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
  # Some Linux systems (Slackware) need crypt() from libcrypt, *not* the
  # version in OpenSSL. Skip this for PAM
  if test "x$PAM_MSG" = "xno" -a "x$check_for_libcrypt_later" = "x1"; then
-@@ -8280,53 +7706,10 @@
+@@ -8350,53 +7730,10 @@
  # Check wheter OpenSSL seeds itself
  echo "$as_me:$LINENO: checking whether OpenSSL's PRNG is internally seeded" >&5
  echo $ECHO_N "checking whether OpenSSL's PRNG is internally seeded... $ECHO_C" >&6
@@ -699,7 +987,7 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
  
  # Do we want to force the use of the rand helper?
  
-@@ -12718,65 +12101,6 @@
+@@ -12789,65 +12126,6 @@
  	"x$ac_cv_sizeof_long_int" != "x8" -a \
  	"x$ac_cv_sizeof_long_long_int" = "x0" ; then
  	NO_SFTP='#'
@@ -765,7 +1053,7 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
  fi
  
  
-@@ -13827,50 +13151,7 @@
+@@ -13898,50 +13176,7 @@
    echo $ECHO_N "(cached) $ECHO_C" >&6
  else
  
@@ -817,7 +1105,7 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
  
  fi
  echo "$as_me:$LINENO: result: $ac_cv_have_accrights_in_msghdr" >&5
-@@ -13888,50 +13169,7 @@
+@@ -13959,50 +13194,7 @@
    echo $ECHO_N "(cached) $ECHO_C" >&6
  else
  
@@ -869,7 +1157,7 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
  
  fi
  echo "$as_me:$LINENO: result: $ac_cv_have_control_in_msghdr" >&5
-@@ -15421,35 +14659,6 @@
+@@ -15433,35 +14625,6 @@
  
  	fi
  fi
@@ -905,7 +1193,7 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
  # Options from here on. Some of these are preset by platform above
  
  # Check whether --with-mantype or --without-mantype was given.
-@@ -15680,81 +14889,7 @@
+@@ -15692,81 +14855,7 @@
  	{ echo "$as_me:$LINENO: WARNING: Make sure the path to scp is in /etc/login.conf" >&5
  echo "$as_me: WARNING: Make sure the path to scp is in /etc/login.conf" >&2;}
  	else
@@ -988,10 +1276,10 @@ diff -urN openssh-3.3p1.orig/configure openssh-3.3p1/configure
  	fi
  
  fi;
-diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
---- openssh-3.3p1.orig/configure.ac	Fri Jun 21 02:01:19 2002
-+++ openssh-3.3p1/configure.ac	Tue Jun 25 17:28:40 2002
-@@ -154,6 +154,7 @@
+diff -urN openssh-3.4p1.orig/configure.ac openssh-3.4p1/configure.ac
+--- openssh-3.4p1.orig/configure.ac	Wed Jun 26 00:35:16 2002
++++ openssh-3.4p1/configure.ac	Sat Jun 29 20:04:57 2002
+@@ -156,6 +156,7 @@
  	AC_DEFINE(WITH_ABBREV_NO_TTY)
  	;;
  *-*-linux*)
@@ -999,7 +1287,7 @@ diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
  	no_dev_ptmx=1
  	check_for_libcrypt_later=1
  	AC_DEFINE(DONT_TRY_OTHER_AF)
-@@ -461,20 +462,6 @@
+@@ -463,20 +464,6 @@
          ]
  )
  
@@ -1020,9 +1308,33 @@ diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
  # Check whether user wants S/Key support
  SKEY_MSG="no" 
  AC_ARG_WITH(skey,
-@@ -575,43 +562,6 @@
- 	socketpair strerror strlcat strlcpy strmode strsep sysconf tcgetpgrp \
- 	truncate utimes vhangup vsnprintf waitpid __b64_ntop _getpty)
+@@ -579,65 +566,10 @@
+ 
+ if test $ac_cv_func_mmap = yes ; then
+ AC_MSG_CHECKING([for mmap anon shared])
+-AC_TRY_RUN(
+-	[
+-#include <stdio.h>
+-#include <sys/mman.h>
+-#if !defined(MAP_ANON) && defined(MAP_ANONYMOUS)
+-#define MAP_ANON MAP_ANONYMOUS
+-#endif
+-main() { char *p;
+-p = (char *) mmap(NULL, 10, PROT_WRITE|PROT_READ, MAP_ANON|MAP_SHARED, -1, 0);
+-if (p == (char *)-1)
+-	exit(1);
+-exit(0);
+-}
+-	],
+-	[
+-		AC_MSG_RESULT(yes)
+-		AC_DEFINE(HAVE_MMAP_ANON_SHARED)
+-	],
+-	[ AC_MSG_RESULT(no) ] 
+-)
++AC_MSG_RESULT(yes)
++AC_DEFINE(HAVE_MMAP_ANON_SHARED)
+ fi
  
 -dnl IRIX and Solaris 2.5.1 have dirname() in libgen
 -AC_CHECK_FUNCS(dirname, [AC_CHECK_HEADERS(libgen.h)] ,[
@@ -1064,7 +1376,7 @@ diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
  dnl    Checks for time functions
  AC_CHECK_FUNCS(gettimeofday time)
  dnl    Checks for utmp functions
-@@ -631,23 +581,6 @@
+@@ -657,23 +589,6 @@
  	[AC_CHECK_LIB(ucb, getpagesize, [LIBS="$LIBS -lucb"; AC_DEFINE(HAVE_GETPAGESIZE)])]
  )
  
@@ -1088,7 +1400,7 @@ diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
  AC_FUNC_GETPGRP
  
  # Check for PAM libs
-@@ -746,20 +679,7 @@
+@@ -772,20 +687,7 @@
  
  # Sanity check OpenSSL headers
  AC_MSG_CHECKING([whether OpenSSL's headers match the library])
@@ -1110,7 +1422,7 @@ diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
  
  # Some Linux systems (Slackware) need crypt() from libcrypt, *not* the 
  # version in OpenSSL. Skip this for PAM
-@@ -772,23 +692,8 @@
+@@ -798,23 +700,8 @@
  
  # Check wheter OpenSSL seeds itself
  AC_MSG_CHECKING([whether OpenSSL's PRNG is internally seeded])
@@ -1136,7 +1448,7 @@ diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
  
  
  # Do we want to force the use of the rand helper?
-@@ -1364,34 +1269,6 @@
+@@ -1391,34 +1278,6 @@
  	"x$ac_cv_sizeof_long_int" != "x8" -a \
  	"x$ac_cv_sizeof_long_long_int" = "x0" ; then
  	NO_SFTP='#'
@@ -1171,7 +1483,7 @@ diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
  fi
  AC_SUBST(NO_SFTP)
  
-@@ -1496,23 +1373,7 @@
+@@ -1523,23 +1382,7 @@
  dnl make sure we're using the real structure members and not defines
  AC_CACHE_CHECK([for msg_accrights field in struct msghdr],
  		ac_cv_have_accrights_in_msghdr, [
@@ -1195,7 +1507,7 @@ diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
  ])
  if test "x$ac_cv_have_accrights_in_msghdr" = "xyes" ; then
  	AC_DEFINE(HAVE_ACCRIGHTS_IN_MSGHDR)
-@@ -1520,23 +1381,7 @@
+@@ -1547,23 +1390,7 @@
  
  AC_CACHE_CHECK([for msg_control field in struct msghdr],
  		ac_cv_have_control_in_msghdr, [
@@ -1219,7 +1531,7 @@ diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
  ])
  if test "x$ac_cv_have_control_in_msghdr" = "xyes" ; then
  	AC_DEFINE(HAVE_CONTROL_IN_MSGHDR)
-@@ -1855,13 +1700,6 @@
+@@ -1868,13 +1695,6 @@
  		)
  	fi
  fi
@@ -1233,7 +1545,7 @@ diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
  # Options from here on. Some of these are preset by platform above
  AC_ARG_WITH(mantype,
  	[  --with-mantype=man|cat|doc  Set man page type],
-@@ -1975,55 +1813,7 @@
+@@ -1988,55 +1808,7 @@
  	[ if test "$USES_LOGIN_CONF" = "yes" ; then
  	AC_MSG_WARN([Make sure the path to scp is in /etc/login.conf])
  	else
@@ -1290,3 +1602,15 @@ diff -urN openssh-3.3p1.orig/configure.ac openssh-3.3p1/configure.ac
  	fi ]
  )
  if test "$USES_LOGIN_CONF" != "yes" ; then
+diff -urN openssh-3.4p1.orig/sshd_config openssh-3.4p1/sshd_config
+--- openssh-3.4p1.orig/sshd_config	Fri Jun 21 03:11:36 2002
++++ openssh-3.4p1/sshd_config	Sat Jun 29 20:08:49 2002
+@@ -11,7 +11,7 @@
+ # default value.
+ 
+ #Port 22
+-#Protocol 2,1
++Protocol 2
+ #ListenAddress 0.0.0.0
+ #ListenAddress ::
+ 
