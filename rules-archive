@@ -21,7 +21,7 @@ glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnu
 #
 busybox-0.60.1.tar.gz;ftp://busybox.net/busybox
 tinylogin-0.80.tar.gz;ftp://oss.lineo.com/tinylogin
-modutils-2.4.9.tar.bz2
+modutils-2.4.9.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4
 # netkibase includes inetd
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
@@ -34,10 +34,10 @@ curl-7.9.1.tar.bz2;http://curl.haxx.se/download
 freetype-2.0.5.tar.bz2;http://prdownloads.sourceforge.net/freetype
 ncurses-5.2.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
-libpng-1.0.12.tar.gz
-qt-embedded-2.3.0.tar.gz
-libxml2-2.4.10.tar.gz
-zlib.tar.gz
+libpng-1.0.12.tar.gz;http://www.libpng.org/pub/png/src
+qt-embedded-2.3.0.tar.gz;ftp://ftp.trolltech.com/qt/source
+libxml2-2.4.10.tar.gz;ftp://xmlsoft.org
+zlib.tar.gz;http://www.gzip.org/zlib.tar.gz
 libffi-1.20.tar.gz;ftp://sourceware.cygnus.com/pub/libffi
 
 #
