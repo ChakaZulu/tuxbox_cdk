@@ -54,7 +54,7 @@ modprobe dbox2_fp
 modprobe saa7126
 
 modprobe dvb_copy
-modprove dvbdev
+modprobe dvbdev
 modprobe dmxdev
 modprobe dvb_demux
 modprobe dvb_frontend
