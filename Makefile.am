@@ -1515,7 +1515,6 @@ $(flashprefix)/.flash: busybox driver modutils tuxbox_tools
 		echo "directory $(flashprefix)/root already exists. please remove manually." && false; \
 	fi
 	$(INSTALL) -d $(flashprefix)/root/bin
-	$(INSTALL) -d $(flashprefix)/root/boot
 	$(INSTALL) -d $(flashprefix)/root/dev
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox
 	$(INSTALL) -d $(flashprefix)/root/mnt
@@ -1536,7 +1535,6 @@ $(flashprefix)/.flash: busybox driver modutils tuxbox_tools
 	if [ -e $(targetprefix)/bin/eraseall ] ; then \
 		$(INSTALL) $(targetprefix)/bin/eraseall $(flashprefix)/root/bin ; \
 	fi
-	echo "console=ttyS0" > $(flashprefix)/root/boot/ppcboot.conf
 	rm -f $(flashprefix)/root/etc/init.d/start_*
 	$(INSTALL) -d $(flashprefix)/root/lib/modules/$(KERNELVERSION)
 	cp -ap $(targetprefix)/lib/modules/$(KERNELVERSION)/kernel $(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
