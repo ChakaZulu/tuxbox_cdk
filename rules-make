@@ -61,6 +61,7 @@ libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff;extract:zlib-1.1.4.tar.bz2;pa
 #
 # contrib apps
 #
+bzip2;1.0.2;bzip2-1.0.2;bzip2-1.0.2.tar.gz:bzip2.diff;extract:bzip2-1.0.2.tar.gz;patch:bzip2.diff
 console_data;1999.08.29;console-data-1999.08.29;console-data_1999.08.29.orig.tar.gz;extract:console-data_1999.08.29.orig.tar.gz
 console_tools;0.2.3;console-tools-0.2.3;console-tools-0.2.3.tar.gz:console-tools.diff;extract:console-tools-0.2.3.tar.gz;patch:console-tools.diff
 directfb_examples;0.9.15;DirectFB-examples-0.9.15;DirectFB-examples-0.9.15.tar.gz;extract:DirectFB-examples-0.9.15.tar.gz

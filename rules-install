@@ -55,6 +55,7 @@ libz;make:install:prefix=TARGET
 #
 # contrib apps
 #
+bzip2;make:install:PREFIX=TARGET
 console_data;make:install
 console_tools;make:install
 directfb_examples;make:install:DESTDIR=TARGET

@@ -649,7 +649,17 @@ libs_optional: \
 #   contrib apps
 #
 
-contrib_apps: .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
+contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
+
+.bzip2: .bootstrap @DEPENDS_bzip2@
+	@PREPARE_bzip2@
+	cd @DIR_bzip2@ && \
+	mv Makefile-libbz2_so Makefile && \
+		CC=$(target)-gcc \
+		$(MAKE) all && \
+		@INSTALL_bzip2@
+	@CLEANUP_bzip2@
+	touch .bzip2
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -1112,6 +1122,8 @@ CONFIGURE_OPTS = \
 if MAINTAINER_MODE
 CONFIGURE_OPTS_MAINTAINER = \
 	--enable-maintainer-mode
+#	--enable-maintainer-mode \
+#        --enable-use-libxml2
 endif
 
 if TARGETRULESET_FLASH
