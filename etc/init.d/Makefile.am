@@ -13,5 +13,5 @@ install-data-local: $(FILES)
 	done
 
 distclean-local:
-	rm -f rcS
+	rm -f rcS start_sshd
 
