@@ -1092,7 +1092,7 @@ else
 endif
 	touch .linuxkernel
 
-.driver: .bootstrap .linuxkernel
+.driver: .bootstrap .linuxkernel .tuxbox_libs
 	$(INSTALL) -d $(targetprefix)/bin
 	$(INSTALL) -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
 	$(MAKE) -C $(driverdir) \
@@ -1272,7 +1272,7 @@ $(appsdir)/tuxbox/plugins/config.status: .bootstrap .libcurl
 
 # tuxbox/tools
 
-$(appsdir)/tuxbox/tools/config.status: .bootstrap
+$(appsdir)/tuxbox/tools/config.status: .bootstrap .tuxbox_libs
 	cd $(appsdir)/tuxbox/tools && $(CONFIGURE)
 
 .tuxbox_tools: $(appsdir)/tuxbox/tools/config.status
@@ -1293,6 +1293,7 @@ flash-apps: flash-neutrino flash-enigma flash-lcars flash-lcdmenu flash-plugins
 
 rebuild-flash:
 	-rm -rf $(flashprefix)/root
+	-rm -rf $(flashprefix)/.flash
 	$(MAKE) flash-lib
 
 $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
@@ -1319,7 +1320,6 @@ $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
 		$(INSTALL) $(targetprefix)/bin/eraseall $(flashprefix)/root/bin ; \
 	fi
 	echo "console=ttyS0" > $(flashprefix)/root/boot/ppcboot.conf
-	sed -e 's/tmpfs/ramfs/' $(targetprefix)/etc/fstab > $(flashprefix)/root/etc/fstab
 	rm -f $(flashprefix)/root/etc/init.d/start_*
 	$(INSTALL) -d $(flashprefix)/root/lib/modules/$(KERNELVERSION)
 	cp -ap $(targetprefix)/lib/modules/$(KERNELVERSION)/kernel $(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
@@ -1448,25 +1448,22 @@ $(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash .lcdmenu
 
 flash-lib: $(flashprefix)/.lib
 
-$(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_*)
+$(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 2>/dev/null)
 	@find $(flashprefix)/root/lib -maxdepth 1 -type f -o -type l | xargs rm -f
 	@cp -pa $(targetprefix)/lib/libnss_dns-?.*.so $(flashprefix)/root/lib
 	@cp -pa $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
-	@$(PYTHON) mklibs.py --target $(target) --ldlib ld.so.1 --libc-extras-dir $(targetprefix)/lib/libc_pic \
+	@$(MKLIBS) --target $(target) --ldlib ld.so.1 --libc-extras-dir $(targetprefix)/lib/libc_pic \
 		-d $(flashprefix)/root/lib \
 		-L $(targetprefix)/lib \
 		`find $(flashprefix)/root/bin/ -path "*bin/?*"` \
 		`find $(flashprefix)/root/lib/ -name "libnss_*"` \
 		`find $(flashprefix)/root/lib/tuxbox/ -name "*.so" -type f` \
 		`find $(flashprefix)/root/sbin/ -path "*sbin/?*"`
-	@for i in `find $(flashprefix)/root/lib/ -name ld*.so -o -name lib*.so.?.* -o -name lib*-?.*.so` ; do \
-		ln -sf `basename $$i` $(flashprefix)/root/lib/`objdump -x $$i 2>/dev/null | grep SONAME | awk '{print $$2}'` ; \
-	done
 	@$(target)-strip --remove-section=.comment --remove-section=.note \
 		`find $(flashprefix)/root/bin/ -path "*bin/?*"` 2>/dev/null || /bin/true
 	@$(target)-strip --remove-section=.comment --remove-section=.note --strip-unneeded \
 		`find $(flashprefix)/root/lib/tuxbox -name "*.so"` 2>/dev/null || /bin/true
-	@chmod 755 -R $(flashprefix)/root/
+	@chmod u+rwX,go+rX -R $(flashprefix)/root/
 	@touch $(flashprefix)/.lib
 
 flash-mix-cramfs: $(flashprefix)/root-cramfs.img
