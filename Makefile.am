@@ -46,7 +46,7 @@ endif
 		make .directories; \
 	fi
 	@PREPARE_linux@
-	cat Patches/linux-$(KERNELVERSION).dbox.config > linux-$(KERNELVERSION)/.config
+	cat Patches/linux-$(KERNELVERSION).dbox.config > @DIR_linux@/.config
 	make -C @DIR_linux@ oldconfig \
 		ARCH=ppc
 	make -C @DIR_linux@ include/linux/version.h \
@@ -78,7 +78,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 	fi
 	@PREPARE_bootstrap_gcc@
 	install -d $(hostprefix)/$(target)/sys-include
-	cp -pR $(buildprefix)/linux-$(KERNELVERSION)/include/asm $(hostprefix)/$(target)/sys-include/
+	ln -sf $(buildprefix)/@DIR_linux@/include/asm $(hostprefix)/$(target)/sys-include/
 	cd @DIR_bootstrap_gcc@ && \
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
 		@CONFIGURE_bootstrap_gcc@ \
@@ -96,6 +96,35 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_bootstrap_gcc@
 
+#
+# gcc first stage without glibc (2.95)
+#
+bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
+	@if [ ! -d $(hostprefix)/$(target)/bin/as ]; then \
+		make .binutils; \
+	fi
+	@PREPARE_bootstrap_gcc_2_95@
+	install -d $(hostprefix)/$(target)/sys-include
+	ln -sf $(buildprefix)/@DIR_linux@/include/asm $(hostprefix)/$(target)/sys-include/
+	cd @DIR_bootstrap_gcc_2_95@ && \
+		CC=$(CC) CFLAGS="$(CFLAGS)" \
+		@CONFIGURE_bootstrap_gcc_2_95@ \
+			--build=$(build) \
+			--host=$(build) \
+			--target=$(target) \
+			--prefix=$(hostprefix) \
+			--with-newlib \
+			--with-cpu=823 \
+			--enable-target-optspace \
+			--enable-languages="c" \
+			--disable-shared \
+			--disable-nls \
+			--nfp && \
+		make all && \
+		@INSTALL_bootstrap_gcc_2_95@
+	rm -rf $(hostprefix)/$(target)/sys-include
+	@CLEANUP_bootstrap_gcc_2_95@
+
 .glibc: @DEPENDS_glibc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		make bootstrap_gcc; \
@@ -110,7 +139,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
-			--with-headers=$(buildprefix)/linux-$(KERNELVERSION)/include \
+			--with-headers=$(buildprefix)/@DIR_linux@/include \
 			--enable-kernel=$(KERNELVERSION) \
 			--disable-profile \
 			--enable-shared \
@@ -817,6 +846,8 @@ dvb_apps: .dvbstream .dvbtext .dvbtune
 
 boot: .ppcboot .linuxkernel .driver
 
+KERNELGCC = `if [ -f $(hostprefix)/bin/$(target)-gcc-2.95 ]; then echo $(target)-gcc-2.95; else echo $(target)-gcc; fi`
+
 .ppcboot: .bootstrap $(bootdir)/ppcboot/Makefile
 if HOSTRULESET_CYGWIN
 	make -C $(bootdir)/ppcboot dbox_config CYGWIN=1
@@ -824,7 +855,7 @@ if HOSTRULESET_CYGWIN
 	install Patches/cygwin/mkimage.exe $(hostprefix)/bin
 else
 	make -C $(bootdir)/ppcboot dbox_config
-	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)-
+	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CC=$(KERNELGCC)
 	install $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
 endif
 	install -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
@@ -840,7 +871,7 @@ endif
 	fi
 	make -C @DIR_linux@ zImage modules \
 		ARCH=ppc \
-		CROSS_COMPILE=$(target)-
+		CROSS_COMPILE=$(target)- CC=$(KERNELGCC)
 	make -C @DIR_linux@ modules_install \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)- \
@@ -862,7 +893,7 @@ endif
 	install -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
 	make -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
-		CROSS_COMPILE=$(target)- \
+		CROSS_COMPILE=$(target)- CC=$(KERNELGCC) \
 		INSTALL_MOD_PATH=$(targetprefix)
 	make -C $(driverdir) install \
 		KERNEL_LOCATION=$(buildprefix)/linux \

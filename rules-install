@@ -12,6 +12,7 @@
 linux
 binutils;make:install
 bootstrap_gcc
+bootstrap_gcc-2_95;make:install;install:TARGET/bin/powerpc-tuxbox-linux-gnu-gcc:TARGET/bin/powerpc-tuxbox-linux-gnu-gcc-2.95;TARGET/powerpc-tuxbox-linux-gnu/bin/gcc:TARGET/powerpc-tuxbox-linux-gnu/bin/gcc-2.95
 glibc;make:install:install_root=TARGET
 uclibc;make:install:DEVEL_PREFIX=TARGET;install:-m644:lib/libc.a:TARGET/lib/libc_pic.a;install:-m644:lib/libcrypt.a:TARGET/lib/libcrypt_pic.a;install:-m644:lib/libm.a:TARGET/lib/libm_pic.a;
 gcc;make:install
