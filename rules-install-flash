@@ -13,7 +13,7 @@ gcc;make:install;install:-m644:powerpc-tuxbox-linux-gnu/libstdc++-v3/src/libstdc
 #
 # contrib libs
 #
-libcrypto;install:libcrypto.so.0.9.6:TARGET/lib;link:libcrypto.so.0.9.6:TARGET/lib/libcrypto.so.0;link:libcrypto.so.0:TARGET/lib/libcrypto.so;install:libssl.so.0.9.6:TARGET/lib;link:libssl.so.0.9.6:TARGET/lib/libssl.so.0;link:libssl.so.0:TARGET/lib/libssl.so;install:libcrypto.a:TARGET/lib/libcrypto_pic.a;install:libssl.a:TARGET/lib/libssl_pic.a;make:-C:crypto:install:INSTALL_PREFIX=TARGET:INSTALLTOP=;make:-C:ssl:install:INSTALL_PREFIX=TARGET:INSTALLTOP=
+libcrypto;install:libcrypto.so.0.9.6:TARGET/lib;link:libcrypto.so.0.9.6:TARGET/lib/libcrypto.so.0;link:libcrypto.so.0:TARGET/lib/libcrypto.so;install:libssl.so.0.9.6:TARGET/lib;link:libssl.so.0.9.6:TARGET/lib/libssl.so.0;link:libssl.so.0:TARGET/lib/libssl.so;install:libcrypto.a:TARGET/lib/libcrypto_pic.a;install:libssl.a:TARGET/lib/libssl_pic.a;install;-d;TARGET/include/openssl;make:-C:crypto:install:INSTALL_PREFIX=TARGET:INSTALLTOP=;make:-C:ssl:install:INSTALL_PREFIX=TARGET:INSTALLTOP=
 
 #
 # include

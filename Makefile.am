@@ -244,7 +244,6 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz
 	cd @DIR_libcrypto@ && \
 		./Configure shared no-idea no-md2 no-md4 no-mdc2 no-rc2 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
 		make all && \
-		install -d $(targetprefix)/include/openssl && \
 		@INSTALL_libcrypto@
 	@CLEANUP_libcrypto@
 	touch .libcrypto
