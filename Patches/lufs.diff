@@ -232,7 +232,7 @@ diff -Naur lufs-0.9.7-orig/lufsd/Makefile.am lufs-0.9.7/lufsd/Makefile.am
  EXTRA_DIST=lussh lufsd.conf
  
 -configdir=/etc
-+configdir=$(bindir)/../etc
++configdir=$(prefix)/etc
  config_DATA=lufsd.conf
  
  bin_PROGRAMS=lufsd
