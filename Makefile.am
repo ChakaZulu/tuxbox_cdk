@@ -1265,7 +1265,7 @@ $(appsdir)/tuxbox/libs/Makefile: .bootstrap .libfreetype
 # tuxbox/neutrino
 
 $(appsdir)/tuxbox/neutrino/Makefile: .bootstrap .libcurl .libfreetype .misc_libs .tuxbox_libs .zapit .plugins
-	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
+	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE_NEW)
 
 .neutrino: $(appsdir)/tuxbox/neutrino/Makefile
 	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install
