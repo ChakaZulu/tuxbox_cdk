@@ -383,7 +383,6 @@ libs_optional: \
 			--prefix= \
 			--disable-avifile \
 			--disable-jpeg \
-			--enable-multi \
 			--disable-sdl && \
 		$(MAKE) all && \
 		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb-config > $(hostprefix)/bin/directfb-config && \
