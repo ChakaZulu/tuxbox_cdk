@@ -58,3 +58,5 @@ linux-2.4.20
 .directfb_gtx
 .libcrypto
 Archive
+.libxml2
+.libcommoncplusplus
