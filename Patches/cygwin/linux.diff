@@ -1,7 +1,7 @@
-diff -Naur linux-2.4.22/Makefile linux-2.4.22/Makefile_cygwin 
---- linux-2.4.22/Makefile   2002-06-04 11:57:07.000000000 +0200 
-+++ linux-2.4.22/Makefile_cygwin   2002-06-04 11:39:30.000000000 +0200 
-@@ -419,7 +419,7 @@ 
+diff -Naur linux-2.4.25/Makefile linux-2.4.25/Makefile_cygwin 
+--- linux-2.4.25/Makefile   2002-06-04 11:57:07.000000000 +0200 
++++ linux-2.4.25/Makefile_cygwin   2002-06-04 11:39:30.000000000 +0200 
+@@ -420,7 +420,7 @@ 
  endif
  .PHONY: _modinst_post
  _modinst_post: _modinst_post_pcmcia
@@ -10,7 +10,7 @@ diff -Naur linux-2.4.22/Makefile linux-2.4.22/Makefile_cygwin
 
  # Backwards compatibilty symlinks for people still using old versions
  # of pcmcia-cs with hard coded pathnames on insmod.  Remove
-@@ -498,7 +498,7 @@ 
+@@ -499,7 +499,7 @@ 
  ifdef CONFIG_MODVERSIONS
  	$(MAKE) update-modverfile
  endif
@@ -19,10 +19,10 @@ diff -Naur linux-2.4.22/Makefile linux-2.4.22/Makefile_cygwin
  	scripts/mkdep -- init/*.c > .depend
  
  ifdef CONFIG_MODVERSIONS
- diff -Naur linux-2.4.22/arch/ppc/boot/simple/Makefile linux-2.4.22/arch/ppc/boot/simple/Makefile_org 
---- linux-2.4.22/arch/ppc/boot/simple/Makefile   2002-06-06 08:52:08.000000000 +0200 
-+++ linux-2.4.22/arch/ppc/boot/simple/Makefile_org   2002-06-06 08:55:00.000000000 +0200 
-@@ -105,7 +105,7 @@ 
+ diff -Naur linux-2.4.25/arch/ppc/boot/simple/Makefile linux-2.4.25/arch/ppc/boot/simple/Makefile_org 
+--- linux-2.4.25/arch/ppc/boot/simple/Makefile   2002-06-06 08:52:08.000000000 +0200 
++++ linux-2.4.25/arch/ppc/boot/simple/Makefile_org   2002-06-06 08:55:00.000000000 +0200 
+@@ -132,7 +132,7 @@ 
  		--set-section-flags=.image=contents,alloc,load,readonly,data \
  		../common/dummy.o image.o
  	$(LD) $(LD_ARGS) -o $@ $(obj-y) image.o $(LIBS)
@@ -31,7 +31,7 @@ diff -Naur linux-2.4.22/Makefile linux-2.4.22/Makefile_cygwin
  		-R .ramdisk -R .sysmap
  
  zvmlinux.initrd: $(obj-y) $(LIBS) ../ld.script ../images/vmlinux.gz \
-@@ -117,7 +117,7 @@ 
+@@ -144,7 +144,7 @@ 
  		--set-section-flags=.image=contents,alloc,load,readonly,data \
  		../common/dummy.o image.o
  	$(LD) $(LD_ARGS) -o $@ $(obj-y) image.o $(LIBS)
