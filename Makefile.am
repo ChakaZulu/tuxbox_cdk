@@ -804,7 +804,7 @@ $(appsdir)/configure: $(appsdir)/configure.ac
 	cd $(appsdir) && \
 		./autogen.sh
 
-$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libqt .libsigc $(appsdir)/configure $(appsdir)/Makefile.am
+$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng .libsigc $(appsdir)/configure $(appsdir)/Makefile.am
 	cd $(appsdir) && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
 		./configure \
@@ -814,7 +814,7 @@ $(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libqt .libsigc $(appsdir)
 			--with-target=$(APPSTARGET) \
 			--enable-maintainer-mode
 else
-$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libqt
+$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libpng
 	cd $(appsdir) && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
 		./configure \

@@ -1,6 +1,6 @@
 diff -urN openssl-0.9.6c.orig/Configure openssl-0.9.6c/Configure
 --- openssl-0.9.6c.orig/Configure	Thu Dec  6 14:11:39 2001
-+++ openssl-0.9.6c/Configure	Sat Mar  2 15:58:08 2002
++++ openssl-0.9.6c/Configure	Thu May  2 13:15:20 2002
 @@ -480,6 +480,9 @@
  ##### Sony NEWS-OS 4.x
  "newsos4-gcc","gcc:-O -DB_ENDIAN -DNEWS4::(unknown):-lmld -liberty:BN_LLONG RC4_CHAR RC4_CHUNK DES_PTR DES_RISC1 DES_UNROLL BF_PTR::::",
@@ -13,7 +13,7 @@ diff -urN openssl-0.9.6c.orig/Configure openssl-0.9.6c/Configure
  my @WinTargets=qw(VC-NT VC-WIN32 VC-WIN16 VC-W31-16 VC-W31-32 VC-MSDOS BC-32
 diff -urN openssl-0.9.6c.orig/Makefile.org openssl-0.9.6c/Makefile.org
 --- openssl-0.9.6c.orig/Makefile.org	Wed Nov 14 11:44:11 2001
-+++ openssl-0.9.6c/Makefile.org	Sat Mar  2 15:58:41 2002
++++ openssl-0.9.6c/Makefile.org	Thu May  2 13:27:28 2002
 @@ -256,9 +256,8 @@
  do_gnu-shared:
  	libs='-L. ${SHLIBDEPS}'; for i in ${SHLIBDIRS}; do \
@@ -26,3 +26,24 @@ diff -urN openssl-0.9.6c.orig/Makefile.org openssl-0.9.6c/Makefile.org
  	libs="$$libs -l$$i"; \
  	done
  
+@@ -608,6 +607,20 @@
+ 			cd $(INSTALL_PREFIX)$(INSTALLTOP)/lib; \
+ 			make -f $$here/Makefile link-shared ); \
+ 	fi
++
++install_cdk:
++	@for i in $(EXHEADER) ;\
++	do \
++	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
++	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
++	done;
++	@for i in $(SHLIBDIRS) ;\
++	do \
++	if [ -d "$$i" ]; then \
++		(cd $$i; echo "installing $$i..."; \
++		$(MAKE) INSTALL_PREFIX='${INSTALL_PREFIX}' INSTALLTOP='${INSTALLTOP}' install ); \
++	fi; \
++	done
+ 
+ install_docs:
+ 	@$(PERL) $(TOP)/util/mkdir-p.pl \
