@@ -1220,8 +1220,8 @@ endif
 		$(bootprefix)/kernel-cdk;
 
 	$(INSTALL) -d $(targetprefix)/boot
-	$(INSTALL) -m644 @DIR_linux@/vmlinux $(targetprefix)/boot/vmlinux
-	$(INSTALL) -m644 @DIR_linux@/System.map $(targetprefix)/boot/System.map
+	$(INSTALL) -m644 @DIR_linux@/vmlinux $(targetprefix)/boot/vmlinux-$(KERNELVERSION)
+	$(INSTALL) -m644 @DIR_linux@/System.map $(targetprefix)/boot/System.map-$(KERNELVERSION)
 if MAINTAINER_MODE
 else
 	$(MAKE) -C @DIR_linux@ clean
