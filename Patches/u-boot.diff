@@ -11291,7 +11291,7 @@ diff -Naur u-boot-1.0.2/common/main.c u-boot-1.0.2-dbox2/common/main.c
  #ifdef CONFIG_SILENT_CONSOLE
  	{
  		DECLARE_GLOBAL_DATA_PTR;
-@@ -371,6 +456,10 @@
+@@ -411,6 +496,10 @@
  		int prev = disable_ctrlc(1);	/* disable Control C checking */
  # endif
  
@@ -11300,7 +11300,7 @@ diff -Naur u-boot-1.0.2/common/main.c u-boot-1.0.2-dbox2/common/main.c
 +#endif /* CONFIG_DBOX2_LCD_INFO */
 +
  # ifndef CFG_HUSH_PARSER
- 		run_command (p, 0);
+ 		run_command (s, 0);
  # else
 diff -Naur u-boot-1.0.2/common/Makefile u-boot-1.0.2-dbox2/common/Makefile
 --- u-boot-1.0.2/common/Makefile	2004-01-06 23:38:21.000000000 +0100
