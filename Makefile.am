@@ -1517,22 +1517,22 @@ $(DEPDIR)/hostapps_cross: $(hostappsdir)/config.status
 
 # TODO: fix the flash-* for the apps... they don't work anymore
 if TARGETRULESET_FLASH
-flash-all: flash-neutrino flash-enigma flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-ssh flash-sshd flash-lib
+flash-all: flash-neutrino flash-enigma flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-ssh flash-sshd flash-lib
 
 flash-ssl: flash-ssh flash-sshd flash-lib
 
-flash-enigma-all: flash-enigma flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-lib
+flash-enigma-all: flash-enigma flash-lcdmenu flash-plugins flash-ftpd flash-lib
 
-flash-neutrino-all: flash-neutrino flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-lib flash-dvb-tools
+flash-neutrino-all: flash-neutrino flash-lcdmenu flash-plugins flash-ftpd flash-dvb-tools flash-lib
 
-flash-lcars-all: flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-lib
+flash-lcars-all: flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-lib
 
 rebuild-flash:
 	-rm -rf $(flashprefix)/root
 	-rm -f $(flashprefix)/.flash
 	$(MAKE) flash-lib
 
-$(flashprefix)/.flash: busybox driver modutils tuxbox_tools
+$(flashprefix)/.flash: busybox driver modutils tuxbox_tools lirc procps
 	if [ -d $(flashprefix)/root ]; then \
 		echo "directory $(flashprefix)/root already exists. please remove manually." && false; \
 	fi
@@ -1548,12 +1548,17 @@ $(flashprefix)/.flash: busybox driver modutils tuxbox_tools
 	$(INSTALL) -d $(flashprefix)/root/tmp
 	$(MAKE) -C root install targetprefix=$(flashprefix)/root
 	cp -pa $(bootprefix)/kernel-cdk $(flashprefix)/root/vmlinuz
-	echo "version=0106`date +%Y%m%d%H%M`" > $(flashprefix)/root/.version
+	echo "version=0107`date +%Y%m%d%H%M`" > $(flashprefix)/root/.version
 	echo "comment=Erstellt von `id -un`" >> $(flashprefix)/root/.version
 	$(INSTALL) $(targetprefix)/bin/busybox $(flashprefix)/root/bin
 	for i in `find $(targetprefix)/bin/ -lname "*busybox"` ; do cp -ap $$i $(flashprefix)/root/bin/ ; done
 	$(INSTALL) $(targetprefix)/bin/switch $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/tuxinfo $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/top $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/rcsim $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/tuxmaild $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/saa $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/sbin/lircd $(flashprefix)/root/sbin
 	if [ -e $(targetprefix)/bin/eraseall ] ; then \
 		$(INSTALL) $(targetprefix)/bin/eraseall $(flashprefix)/root/bin ; \
 	fi
@@ -1571,19 +1576,15 @@ $(flashprefix)/.flash: busybox driver modutils tuxbox_tools
 
 flash-ftpd: $(flashprefix)/.part_ftpd
 
-$(flashprefix)/.part_ftpd: $(flashprefix)/.flash $(flashprefix)/.part_inetd ftpd
+$(flashprefix)/.part_ftpd: $(flashprefix)/.flash 
 	$(INSTALL) -d $(flashprefix)/root/share/empty
 	$(INSTALL) $(targetprefix)/etc/vsftpd.conf $(flashprefix)/root/etc
 	$(INSTALL) $(targetprefix)/sbin/in.ftpd $(flashprefix)/root/sbin
 	@touch $@
 
-$(flashprefix)/.part_inetd: $(flashprefix)/.flash
-	$(INSTALL) $(targetprefix)/sbin/inetd $(flashprefix)/root/sbin
-	@touch $@
-
 flash-telnetd: $(flashprefix)/.part_telnetd
 
-$(flashprefix)/.part_telnetd: $(flashprefix)/.flash $(flashprefix)/.part_inetd
+$(flashprefix)/.part_telnetd: $(flashprefix)/.flash
 	$(INSTALL) $(targetprefix)/sbin/telnetd $(flashprefix)/root/sbin
 	@touch $@
 
@@ -1617,9 +1618,6 @@ $(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash dvb_tools
 	$(INSTALL) $(targetprefix)/sbin/streamsec $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/udpstreampes $(flashprefix)/root/sbin
-	$(target)-strip -s $(flashprefix)/root/sbin/fserver
-	$(target)-strip -s $(flashprefix)/root/sbin/stream*
-	$(target)-strip -s $(flashprefix)/root/sbin/udpstreampes
 	@touch $@
 
 flash-neutrino: $(flashprefix)/.part_neutrino
@@ -1637,6 +1635,8 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash neutrino root
 	$(INSTALL) $(targetprefix)/bin/sectionsd $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/pzapit $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/fbshot $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/etherwake $(flashprefix)/root/bin
 	sed -e 's/neutrino/neutrino -u -f/' $(targetprefix)/etc/init.d/start_neutrino > \
 		$(flashprefix)/root/etc/init.d/start_neutrino ;
 	chmod 755 $(flashprefix)/root/etc/init.d/start_neutrino ;
@@ -1657,6 +1657,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/unmrs.pfa \
 		$(flashprefix)/root/share/fonts
+	cp -pa $(targetprefix)/share/fonts/md_khmurabi_10.ttf $(flashprefix)/root/share/fonts 
 	cp -pa $(targetprefix)/etc/init.d/start_enigma $(flashprefix)/root/etc/init.d
 	$(INSTALL) $(targetprefix)/etc/timezone.xml $(flashprefix)/root/etc
 	cp -pa $(targetprefix)/share/zoneinfo $(flashprefix)/root/share
