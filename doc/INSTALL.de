@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.de,v 1.12 2002/10/19 00:58:09 Jolt Exp $
+# $Id: INSTALL.de,v 1.13 2002/10/30 00:43:32 woglinde Exp $
 #
 # Urheber:
 # --------
@@ -88,7 +88,7 @@ make boot
  - ... und anschliessend
 
 make .neutrino
-make .edvb
+make .enigma
 make .lcars
 make .lcdmenu
 make .stream
