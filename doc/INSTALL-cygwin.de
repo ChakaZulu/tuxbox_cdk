@@ -1,0 +1,55 @@
+HOWTO
+-----
+
+Erstmal danke an +tbn!
+Aktuelle(re) Versionen dieses cygwin-Patches sind unter Umständen unter
+http://tbn-world.tripod.com/files/tuxbox-cygwin.zip 
+zu finden. 
+
+
+Folgende Packages sind zu installieren:
+ - autoconf-2.52
+ - automake-1.4-p5
+ - libtool-1.4.2
+
+Folgende Packages sind *nicht* zu installieren:
+ - zlib
+
+
+mkdir $HOME/tuxbox-cvs
+mkdir /dbox2
+cd $HOME/tuxbox-cvs
+cvs -d:pserver:anonymous@sheep.berlios.de:/cvsroot/tuxbox login
+cvs -d:pserver:anonymous@sheep.berlios.de:/cvsroot/tuxbox -z9 co .
+cd cdk
+./autogen.sh
+./configure --prefix=/dbox2 --with-hostruleset=cygwin --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode
+
+An dieser Stelle MÜSST ihr euch das oben beschriebene ZIP-File von .tbn holen
+(falls ihr das ganze CDK bauen wollt), da Binary-Files im cvs (sinnloserweise)
+nicht erlaubt sind. Ihr braucht aber das mkimage.exe. Packt dieses File ins Verzeichnis
+cdkverzeichnis/Patches/cygwin/mkimage.exe aus. 
+
+Danach einmal das Script
+
+./run-cygwin.sh
+ausführen.
+
+Anschließend entweder
+
+make .neutrino
+make .edvb
+make .lcars
+make .lcdmenu
+make .stream
+
+oder
+ 
+make all
+
+
+
+Viel Erfolg
++tbn
+
+Updated: 5.3.02 field

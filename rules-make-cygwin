@@ -5,12 +5,12 @@
 #
 
 #
+# core
 #
-core
-#
-glibc;2.2.5;glibc-2.2.5;glibc-2.2.5.tar.bz2:glibc-linuxthreads-2.2.5.tar.bz2:glibc.diff:cygwin/glibc.diff;extract:glibc-2.2.5.tar.bz2;dirextract:glibc-linuxthreads-2.2.5.tar.bz2;patch:glibc.diff;patch:cygwin/glibc.diff
+linux;2.4.2;linux-2.4.2;linux-2.4.2.tar.bz2:linux-2.4.2.dbox.diff;remove:linux;extract:linux-2.4.2.tar.bz2;move:linux:linux-2.4.2;patch:linux-2.4.2.dbox.diff;patch:cygwin/linux.diff;link:linux-2.4.2:linux
 bootstrap_gcc;3.0.4;gcc-3.0.4;gcc-core-3.0.4.tar.gz:gcc-core.diff;extract:gcc-core-3.0.4.tar.gz;patch:gcc-core.diff;patch:cygwin/gcc.diff
-gcc;3.0.4;gcc-3.0.4;gcc-core-3.0.4.tar.gz:gcc-g++-3.0.4.tar.gz;extract:gcc-core-3.0.4.tar.gz;extract:gcc-g++-3.0.4.tar.gz;patch:cygwin/gcc.diff
+glibc;2.2.5;glibc-2.2.5;glibc-2.2.5.tar.bz2:glibc-linuxthreads-2.2.5.tar.bz2:glibc.diff;extract:glibc-2.2.5.tar.bz2;dirextract:glibc-linuxthreads-2.2.5.tar.bz2;patch:glibc.diff;patch:cygwin/glibc.diff
+gcc;3.0.4;gcc-3.0.4;gcc-core-3.0.4.tar.gz:gcc-g++-3.0.4.tar.gz:gcc.diff;extract:gcc-core-3.0.4.tar.gz;extract:gcc-g++-3.0.4.tar.gz;patch:gcc.diff;patch:cygwin/gcc.diff
 
 #
 # contrib libs
@@ -18,6 +18,14 @@ gcc;3.0.4;gcc-3.0.4;gcc-core-3.0.4.tar.gz:gcc-g++-3.0.4.tar.gz;extract:gcc-core-
 libfreetype;2.0.5;freetype-2.0.5;freetype-2.0.5.tar.bz2;extract:freetype-2.0.5.tar.bz2;patch:cygwin/freetype.diff
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff;patch:cygwin/qte.diff
 libz;1.1.3;zlib-1.1.3;zlib.tar.gz:zlib.diff;extract:zlib.tar.gz;patch:zlib.diff;patch:cygwin/zlib.diff
+
+#
+# java
+#
+# for ppc
+# kaffe;1.0.6;kaffe-1.0.6;kaffe-1.0.6.tar.gz:kaffe.diff;extract:kaffe-1.0.6.tar.gz;patch:kaffe.diff
+# we need kaffeh to build
+kaffeh;1.0.6;kaffe-1.0.6;kaffe-1.0.6.tar.gz:kaffeh.diff;extract:kaffe-1.0.6.tar.gz;patch:kaffeh.diff;patch:cygwin/kaffeh.diff
 
 #
 # include
