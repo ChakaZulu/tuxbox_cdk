@@ -213,6 +213,7 @@ TUXBOX_RULES_MAKE(libsdl)
 TUXBOX_RULES_MAKE(libsigc)
 TUXBOX_RULES_MAKE(libxml2)
 TUXBOX_RULES_MAKE(libz)
+TUXBOX_RULES_MAKE(libpcap)
 
 #
 # contrib apps

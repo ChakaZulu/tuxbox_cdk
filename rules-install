@@ -44,7 +44,8 @@ libsdl;make:install;link:TARGET/bin/sdl-config:HOST/bin/sdl-config
 libsigc;make:install;link:TARGET/bin/sigc-config:HOST/bin/sigc-config
 libxml2;make:install;link:TARGET/bin/xml2-config:HOST/bin/xml2-config
 libz;make:install
-
+libpcap
+ 
 #
 # contrib apps
 #

@@ -47,9 +47,10 @@ libsdl;1.2.3;SDL-1.2.3;SDL-1.2.3.tar.gz:sdl.diff;extract:SDL-1.2.3.tar.gz;patch:
 libsigc;1.0.4;libsigc++-1.0.4;libsigc++-1.0.4.tar.gz:libsigc.diff;extract:libsigc++-1.0.4.tar.gz;patch:libsigc.diff
 libxml2;2.4.19;libxml2-2.4.19;libxml2-2.4.19.tar.gz;extract:libxml2-2.4.19.tar.gz
 libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff;extract:zlib-1.1.4.tar.bz2;patch:zlib.diff
-
+libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;patch:libpcap.diff
 #
-# contrib apps
+# contrib
+apps
 #
 console_data;1999.08.29;console-data-1999.08.29;console-data_1999.08.29.orig.tar.gz;extract:console-data_1999.08.29.orig.tar.gz
 console_tools;0.2.3;console-tools-0.2.3;console-tools-0.2.3.tar.gz:console-tools.diff;extract:console-tools-0.2.3.tar.gz;patch:console-tools.diff

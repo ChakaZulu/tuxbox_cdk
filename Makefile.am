@@ -358,6 +358,21 @@ libs: \
 	@CLEANUP_libpng@
 	touch .libpng
 
+.libpcap: .bootstrap @DEPENDS_libpcap@
+	@PREPARE_libpcap@
+	cd @DIR_libpcap@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_CFLAGS)" \
+		./configure \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--with-pcap=linux \
+			--build=$(build) && \
+		make && \
+		make install
+		@INSTALL_libpcap@
+	@CLEANUP_libpcap@
+	touch .libpcap
 #
 # qt embedded (current only moc)
 #
@@ -584,6 +599,23 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .xrc
 		@INSTALL_xrc@
 	@CLEANUP_xrc@
 	touch .xrc
+
+.tcpdump: .bootstrap @DEPENDS_tcpdump@
+	@PREPARE_tcpdump@
+	cd @DIR_tcpdump@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_CFLAGS)" \
+		LIBS="-lpcap" \
+		./configure \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--build=$(build) && \
+		make && \
+		make install
+		@INSTALL_tcpdump@
+	@CLEANUP_tcpdump@
+	touch .tcpdump
+
 
 #######################
 #
@@ -1119,7 +1151,7 @@ distclean-local:
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 	-rm .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg
-	-rm .libpng .libqt .libreadline .libsdl .libsigc .libxml2 .libz
+	-rm .libpng .libqt .libreadline .libsdl .libsigc .libxml2 .libz .libpcap
 	-rm .cabextract .msttf
 	-rm .gdb .strace .nano
 	-rm .kaffeh .kaffe

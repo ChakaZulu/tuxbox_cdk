@@ -47,7 +47,7 @@ libffi-1.20.tar.gz;ftp://sourceware.cygnus.com/pub/libffi
 SDL-1.2.3.tar.gz;http://www.libsdl.org/release
 readline-4.2a.tar.gz;ftp://ftp.gnu.org/gnu/readline
 libsigc++-1.0.4.tar.gz;ftp://download.sourceforge.net/pub/sourceforge/libsigc
-
+libpcap-0.7.1.tar.gz;http://www.tcpdump.org/release
 #
 # contrib apps
 #
@@ -57,7 +57,6 @@ fbset-2.1.tar.gz;http://home.tvd.be/cr26864/Linux/fbdev
 lirc-0.6.5.tar.bz2;http://belnet.dl.sourceforge.net/sourceforge/lirc
 openssh-3.0.2p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 xrc-0.6.3.tar.gz;http://belnet.dl.sourceforge.net/sourceforge/lirc
-
 #
 # msttf
 #
