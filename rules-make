@@ -12,7 +12,7 @@
 #
 # core
 #
-linux;2.4.20;linux-2.4.20;linux-2.4.20.tar.bz2:linux-dbox2-2.4.20-1.diff.bz2;remove:linux;extract:linux-2.4.20.tar.bz2;patch:linux-dbox2-2.4.20-1.diff.bz2;link:linux-2.4.20:linux
+linux;2.4.20;linux-2.4.20;linux-2.4.20.tar.bz2:linux-dbox2-2.4.20-1.diff.bz2:v4l2-api-2.4.20.diff;remove:linux;extract:linux-2.4.20.tar.bz2;patch:linux-dbox2-2.4.20-1.diff.bz2;patch:v4l2-api-2.4.20.diff;link:linux-2.4.20:linux
 binutils;2.13.90.0.16;binutils-2.13.90.0.16;binutils-2.13.90.0.16.tar.bz2;extract:binutils-2.13.90.0.16.tar.bz2
 bootstrap_gcc;3.2.1;gcc-3.2.1;gcc-core-3.2.1.tar.gz:gcc-core.diff;extract:gcc-core-3.2.1.tar.gz;patch:gcc-core.diff
 gcc;3.2.1;gcc-3.2.1;gcc-core-3.2.1.tar.gz:gcc-g++-3.2.1.tar.gz;extract:gcc-core-3.2.1.tar.gz;extract:gcc-g++-3.2.1.tar.gz
