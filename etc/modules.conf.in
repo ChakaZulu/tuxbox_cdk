@@ -18,3 +18,12 @@ elseif $DEMOD = "VES1993"
 	alias tuner ves1993
 endif
 
+@TARGETRULESET_FLASH_TRUE@depfile=/var/lib/modules/`uname -r`/modules.dep
+@TARGETRULESET_FLASH_TRUE@generic_stringfile=/var/lib/modules/`uname -r`/modules.generic_string
+@TARGETRULESET_FLASH_TRUE@pcimapfile=/var/lib/modules/`uname -r`/modules.pcimap
+@TARGETRULESET_FLASH_TRUE@isapnpmapfile=/var/lib/modules/`uname -r`/modules.isapnpmap
+@TARGETRULESET_FLASH_TRUE@usbmapfile=/var/lib/modules/`uname -r`/modules.usbmap
+@TARGETRULESET_FLASH_TRUE@parportmapfile=/var/lib/modules/`uname -r`/modules.parportmap
+@TARGETRULESET_FLASH_TRUE@ieee1394mapfile=/var/lib/modules/`uname -r`/modules.ieee1394map
+@TARGETRULESET_FLASH_TRUE@pnpbiosmapfile=/var/lib/modules/`uname -r`/modules.pnpbiosmap
+
