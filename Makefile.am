@@ -418,6 +418,25 @@ libs: \
 	@PREPARE_libnet@
 	cd @DIR_libnet@ && \
 		CC=$(target)-gcc \
+		AR=$(target)-ar \
+		RANLIB=$(target)-ranlib \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--with-pf_packet=yes \
+			--with-fast_x86_check=no && \
+		make all && \
+		@INSTALL_libnet@
+	@CLEANUP_libnet@
+	touch .libnet
+
+.libnids: .bootstrap @DEPENDS_libnids@
+	@PREPARE_libnids@
+	cd @DIR_libnids@ && \
+		CC=$(target)-gcc \
 		RANLIB=$(target)-ranlib \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
@@ -426,9 +445,9 @@ libs: \
 			--host=$(target) \
 			--prefix=$(targetprefix) && \
 		make all && \
-		@INSTALL_libnet@
-	@CLEANUP_libnet@
-	touch .libnet
+		@INSTALL_libnids@
+	@CLEANUP_libnids@
+	touch .libnids
 
 .libjpeg: .bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libjpeg@
@@ -1488,7 +1507,7 @@ distclean-local:
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
-	-rm .libcommoncplusplus .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg .libnet
+	-rm .libcommoncplusplus .libcrypto .libcurl .libffi .libfreetype .libncurses .libjpeg .libnet .libnids
 	-rm .libpcap .libpng .libpopt .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
 	-rm .cabextract .msttf
 	-rm .gdb .ltrace .strace .nano
