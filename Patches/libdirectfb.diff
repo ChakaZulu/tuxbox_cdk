@@ -1,6 +1,6 @@
-diff --exclude CVS -Naur DirectFB/configure.in DirectFB-0.9.16cvs2/configure.in
---- DirectFB/configure.in	2002-12-27 20:41:19.000000000 +0100
-+++ DirectFB-0.9.16cvs2/configure.in	2002-12-29 19:52:17.000000000 +0100
+diff -Naur DirectFB-0.9.16.orig/configure.in DirectFB-0.9.16/configure.in
+--- DirectFB-0.9.16.orig/configure.in	2002-12-27 20:41:19.000000000 +0100
++++ DirectFB-0.9.16/configure.in	2003-01-02 14:35:56.000000000 +0100
 @@ -58,6 +58,8 @@
  AM_SANITY_CHECK
  AC_ISC_POSIX
@@ -18,9 +18,20 @@ diff --exclude CVS -Naur DirectFB/configure.in DirectFB-0.9.16cvs2/configure.in
      AVIFILE=yes
      AVIFILE_CFLAGS=`avifile-config --cflags`
      AVIFILE_LIBS="`avifile-config --libs` -lstdc++"
-diff --exclude CVS -Naur DirectFB/src/misc/ppcasm_string.S DirectFB-0.9.16cvs2/src/misc/ppcasm_string.S
---- DirectFB/src/misc/ppcasm_string.S	2002-12-27 20:41:19.000000000 +0100
-+++ DirectFB-0.9.16cvs2/src/misc/ppcasm_string.S	2002-12-30 20:56:41.000000000 +0100
+diff -Naur DirectFB-0.9.16.orig/src/misc/memcpy.c DirectFB-0.9.16/src/misc/memcpy.c
+--- DirectFB-0.9.16.orig/src/misc/memcpy.c	2002-12-27 20:41:19.000000000 +0100
++++ DirectFB-0.9.16/src/misc/memcpy.c	2003-01-02 14:36:28.000000000 +0100
+@@ -418,7 +418,6 @@
+ #endif /* ARCH_X86 */
+ #ifdef ARCH_PPC
+      { "ppcasm_memcpy()",            ppcasm_memcpy, 0, 0},
+-     { "ppcasm_cacheable_memcpy()",   ppcasm_cacheable_memcpy, 0, 0},
+ #endif /* ARCH_PPC */
+      { NULL, NULL, 0, 0}
+ };
+diff -Naur DirectFB-0.9.16.orig/src/misc/ppcasm_string.S DirectFB-0.9.16/src/misc/ppcasm_string.S
+--- DirectFB-0.9.16.orig/src/misc/ppcasm_string.S	2002-12-27 20:41:19.000000000 +0100
++++ DirectFB-0.9.16/src/misc/ppcasm_string.S	2003-01-02 14:35:56.000000000 +0100
 @@ -9,7 +9,6 @@
   * 2 of the License, or (at your option) any later version.
   */
