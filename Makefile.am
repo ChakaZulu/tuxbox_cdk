@@ -1058,21 +1058,21 @@ else
 endif
 	touch .linuxkernel
 
-.driver: .bootstrap .linuxkernel .tuxbox_libs
-	$(INSTALL) -d $(targetprefix)/bin
-	$(INSTALL) -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
+.driver: .bootstrap .linuxkernel
 	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		CROSS_COMPILE=$(target)- \
-		INSTALL_MOD_PATH=$(targetprefix)
-	$(MAKE) -C $(driverdir) install \
+		dep modules
+	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		BIN_DEST=$(targetprefix)/bin \
-		INSTALL_MOD_PATH=$(targetprefix)
+		INSTALL_MOD_PATH=$(targetprefix) \
+		modules_install
 if MAINTAINER_MODE
 else
-	$(MAKE) -C $(driverdir) clean \
-		KERNEL_LOCATION=$(buildprefix)/linux
+	$(MAKE) -C $(driverdir) \
+		KERNEL_LOCATION=$(buildprefix)/linux \
+		distclean
 endif
 	touch .driver
 
