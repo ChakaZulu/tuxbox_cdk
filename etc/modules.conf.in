@@ -18,14 +18,12 @@ elseif $DEMOD = "VES1993"
   alias tuner ves1993
 endif
 
+alias avia_gt_napi avia_gt_dmx
+
 if $mID = "01"
   options avia_gt chip_type=1
   alias avia_gt_fb gtx_fb
-  alias avia_gt_napi gtx_dmx
-  alias avia_gt_vbi gtx_vbi
 else
   options avia_gt chip_type=0
-  alias avia_gt_napi enx_dmx
-  alias avia_gt_vbi enx_vbi
 endif
 
