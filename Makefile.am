@@ -1230,24 +1230,14 @@ $(DEPDIR)/bluez_utils: bootstrap bluez_libs @DEPENDS_bluez_utils@
 
 boot: u-boot linuxkernel driver
 
-$(DEPDIR)/u-boot: bootstrap $(bootdir)/u-boot/Makefile
-	$(MAKE) -C $(bootdir)/u-boot dbox2_config
-	$(MAKE) -C $(bootdir)/u-boot CROSS_COMPILE=$(target)- u-boot.stripped
-
-	$(INSTALL) -m644 $(bootdir)/u-boot/u-boot.stripped $(bootprefix)/u-boot
-	$(INSTALL) $(bootdir)/u-boot/tools/mkimage $(hostprefix)/bin
-
-if MAINTAINER_MODE
-else
-	$(MAKE) -C $(bootdir)/u-boot distclean
-endif
-	touch $@
-
-$(DEPDIR)/uboot_cdk $(DEPDIR)/uboot_squashfs $(DEPDIR)/uboot_cramfs $(DEPDIR)/uboot_yadd: bootstrap @DEPENDS_uboot@
+$(DEPDIR)/uboot $(DEPDIR)/u-boot: bootstrap @DEPENDS_uboot@
 	@PREPARE_uboot@
+	@if [ ! -e $(bootdir)/u-boot-config/u-boot.config ]; then \
+	    ln -s ./u-boot.cdk.dbox2.h $(bootdir)/u-boot-config/u-boot.config; \
+	fi
 
 	cp -pR $(bootdir)/u-boot-tuxbox/* @DIR_uboot@
-	cp -p $(bootdir)/u-boot-config/u-boot.$(subst $(DEPDIR)/uboot_,,$@).dbox2.h @DIR_uboot@/include/configs/dbox2.h
+	cp -p $(bootdir)/u-boot-config/u-boot.config @DIR_uboot@/include/configs/dbox2.h
 
 	$(MAKE) -C @DIR_uboot@ dbox2_config
 	$(MAKE) -C @DIR_uboot@ CROSS_COMPILE=$(target)- u-boot.stripped
@@ -1256,7 +1246,7 @@ $(DEPDIR)/uboot_cdk $(DEPDIR)/uboot_squashfs $(DEPDIR)/uboot_cramfs $(DEPDIR)/ub
 	$(INSTALL) @DIR_uboot@/tools/mkimage $(hostprefix)/bin
 
 	@CLEANUP_uboot@
-	touch $@
+	touch $(DEPDIR)/uboot
 
 $(DEPDIR)/linuxkernel: bootstrap linuxdir u-boot
 	$(MAKE) -C @DIR_linux@ zImage modules \
@@ -1793,7 +1783,6 @@ endif
 clean-local:
 	-$(MAKE) -C etc clean
 	-$(MAKE) -C $(appsdir) clean
-	-$(MAKE) -C $(bootdir)/u-boot distclean
 	-$(MAKE) -C $(driverdir) clean \
 		KERNEL_LOCATION=$(buildprefix)/linux
 	-rm -f linux
@@ -1819,7 +1808,6 @@ distclean-local:
 	-$(MAKE) -C $(appsdir)/tuxbox/libtuxbox distclean
 	-$(MAKE) -C $(appsdir)/tuxbox/neutrino distclean
 	-$(MAKE) -C $(appsdir)/tuxbox/tools distclean
-	-$(MAKE) -C $(bootdir)/u-boot distclean
 	-$(MAKE) -C $(driverdir) distclean KERNEL_LOCATION=$(buildprefix)/linux
 	-rm Makefile-archive
 	-rm $(DEPDIR) -rf
