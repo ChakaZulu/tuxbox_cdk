@@ -101,6 +101,7 @@ if [ $MODEL_ID -eq 1 ]; then
 	else
 	modprobe avia_gt_napi
 	fi
+	modprobe aviaEXT
 	modprobe dbox2_fp_napi
 
 # Dreambox
