@@ -83,7 +83,7 @@ msttf;0.0;msttf;arial32.exe:arialb32.exe;dircreate;dirextract:arial32.exe;dirext
 #
 # development tools
 #
-gdb;5.3;gdb-5.3;gdb-5.3.tar.bz2;extract:gdb-5.3.tar.bz2
+gdb;6.0;gdb-6.0;gdb-6.0.tar.bz2:gdb.diff;extract:gdb-6.0.tar.bz2;patch:gdb.diff
 insight;6.0;insight-6.0;insight-6.0.tar.bz2;extract:insight-6.0.tar.bz2
 ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz;extract:ltrace_0.3.26.tar.gz;patch:ltrace.diff
 strace;4.4.98;strace-4.4.98;strace-4.4.98.tar.bz2;extract:strace-4.4.98.tar.bz2

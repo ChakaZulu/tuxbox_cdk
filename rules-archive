@@ -78,7 +78,7 @@ vdr-1.2.2.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 #
 # development tools
 #
-gdb-5.3.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
+gdb-6.0.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
 insight-6.0.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
 ltrace_0.3.26.tar.gz;ftp://ftp.debian.org/debian/pool/main/l/ltrace
 strace-4.4.98.tar.bz2;http://belnet.dl.sourceforge.net/sourceforge/strace
@@ -105,3 +105,4 @@ dvbstream-20020918.tar.bz2
 dvbtext-0.1.tar.gz;http://www.linuxstb.org/dvbtext
 dvbtune-20030118.tar.bz2
 vls-0.4.0.tar.bz2;http://www.videolan.org/pub/videolan/vls/0.4.0
+
