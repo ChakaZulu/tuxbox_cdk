@@ -1361,6 +1361,15 @@ $(appsdir)/tuxbox/neutrino/Makefile: .bootstrap .libcurl .libfreetype .misc_libs
 	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install
 	touch .neutrino
 
+# tuxbox/plugins
+
+$(appsdir)/tuxbox/plugins/Makefile: .bootstrap
+	cd $(appsdir)/tuxbox/plugins && $(CONFIGURE)
+
+.plugins: $(appsdir)/tuxbox/plugins/Makefile
+	$(MAKE) -C $(appsdir)/tuxbox/plugins all install
+	touch .plugins
+
 # tuxbox/tools
 
 $(appsdir)/tuxbox/tools/Makefile: .bootstrap
