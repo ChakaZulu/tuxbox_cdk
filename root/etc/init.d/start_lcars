@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "Lade lcd"
+$INSMOD $MODDIR/misc/lcd.o
+
+
+echo "Starte lcars"
+/bin/lcars 0 repeat=on old=on

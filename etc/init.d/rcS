@@ -1,0 +1,62 @@
+#!/bin/sh
+
+echo "rcS starting"
+
+rm -f /var/run/*.pid
+
+echo "Mounting /proc device"
+/bin/mount -n -t proc proc /proc
+
+export INSMOD="/sbin/insmod"
+export MODDIR="/lib/modules/2.4.2"
+
+echo "Starting inetd"
+/sbin/inetd
+
+echo "Setting hostname"
+/bin/hostname -F /etc/hostname
+
+
+echo "Lade module"
+
+echo "lade rtc-modul"
+$INSMOD $MODDIR/misc/rtc.o
+
+echo "Lade i2c-core"
+$INSMOD $MODDIR/kernel/drivers/i2c/i2c-core.o
+echo "Lade i2c-8xx"
+$INSMOD $MODDIR/misc/i2c-8xx.o debug=0
+echo "Lade info"
+$INSMOD $MODDIR/misc/info.o
+. /proc/bus/dbox.sh
+echo "mID: $mID"
+echo "feID: $feID"
+echo "fpID: $fpID"
+echo "enxID: $enxID"
+echo "gtxID: $gtxID"
+echo "hwREV: $hwREV"
+echo "fpREV: $fpREV"
+echo "DEMOD: $DEMOD"
+
+
+# Module HW-abhaengig laden
+/etc/init.d/$DEMOD
+
+ln -sf sound/dsp /dev/dsp
+ln -sf fb/0 /dev/fb0
+
+echo "Setting up loopback device"
+/sbin/ifconfig lo 127.0.0.1 netmask 255.0.0.0 up
+
+# it must be tuned to a valid ts for dvbtime
+export TZ=CET-01CEST-02,J84,J302
+
+
+#$INSMOD $MODDIR/misc/lcd.o
+#$INSMOD $MODDIR/misc/lcd.o
+#/bin/lcdmenu
+#export startmenu="$?"
+#/etc/init.d/start$startmenu
+
+
+exit 0

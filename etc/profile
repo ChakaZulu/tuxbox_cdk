@@ -1,0 +1,24 @@
+# /etc/profile: executed for shells.
+
+export PATH=".:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+#export PS1="$HOSTNAME# "
+
+# Die HW-Envs setzen
+. /proc/bus/dbox.sh                                                             
+
+# Die Zeitzone
+export TZ=CET-01CEST-02,J84,J302
+
+# Nur eins von beiden aktivieren
+export QWS_MOUSE_PROTO=dboxRC
+#export QWS_KEYBOARD=dboxRC
+
+#umask 022
+
+# damit Kernelnachrichten auch in telnet-sessions angezeigt werden
+# (s. syslog.conf)
+#killall -HUP syslogd
+
+# zum debuggen (s. info libc)
+#export MALLOC_CHECK_=1

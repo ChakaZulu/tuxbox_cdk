@@ -1,0 +1,24 @@
+#!/bin/sh
+
+killall -9 startmenu
+
+echo "Lade sectionsd"
+/bin/sectionsd
+
+echo "Lade zapit"
+/bin/zapit
+
+echo "Lade lcd"
+$INSMOD $MODDIR/misc/lcd.o
+
+echo "Lade lcdd"
+/bin/lcdd
+
+echo "Lade controld"
+/bin/controld
+
+echo "Starting nhttpd"
+/bin/nhttpd &
+
+echo "Starte Neutrino"
+/bin/neutrino -z

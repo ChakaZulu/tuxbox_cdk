@@ -1,0 +1,4 @@
+#!/bin/sh
+# Startet pppd
+modprobe pppoe
+/usr/sbin/pppd call t-online-dsl

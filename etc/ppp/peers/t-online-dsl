@@ -1,0 +1,42 @@
+#
+# PPPoE options
+#
+# Plugin enables us to pipe the password to pppd, thus we don't have
+# to put it into pap-secrets and chap-secrets. User is also passed
+# on command line.
+#
+plugin "/usr/lib/pppd/plugins/pppoe.so"
+
+eth0
+
+#lock
+#
+#sync
+#local
+#nocrtscts
+noauth
+usepeerdns
+#mru 1492
+mtu 1492
+# this is recommended
+defaultroute
+hide-password
+nodetach
+lcp-echo-interval 600
+lcp-echo-failure 3
+# switch off all compressions (this is a must)
+nopcomp
+# this is recommended
+#novj
+#novjccomp
+#nobsdcomp
+#nodeflate
+#noccp
+name atm@t-online.de
+ktune
+demand
+ipcp-accept-local
+ipcp-accept-remote
+#idle 3600
+#idle 900
+                                                           

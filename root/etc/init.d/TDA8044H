@@ -1,0 +1,74 @@
+#!/bin/sh
+
+echo "Lade soundcore"
+$INSMOD $MODDIR/kernel/drivers/sound/soundcore.o
+#modprobe soundcore
+
+echo "Lade avs"
+$INSMOD $MODDIR/misc/avs.o type=2 debug=0
+#modprobe avs
+
+echo "Lade saa7126"
+$INSMOD $MODDIR/misc/saa7126.o board=1 debug=0
+#modprobe saa7126
+
+echo "Lade fp"
+$INSMOD $MODDIR/misc/fp.o debug=0 useimap=0
+#modprobe fp
+
+echo "Lade avia"
+$INSMOD $MODDIR/misc/avia.o pal=1 debug=0 firmware=/ucodes
+#modprobe avia
+
+echo "Lade enx_core"
+$INSMOD $MODDIR/misc/enx_core.o debug=0
+#modprobe enx_core
+
+echo "Lade demux"
+$INSMOD $MODDIR/misc/demux.o
+#modprobe demux
+
+echo "Lade cam"
+$INSMOD $MODDIR/misc/cam.o debug=0 firmware=/ucodes/cam-alpha.bin
+#modprobe cam
+
+echo "Lade dmxdev"
+$INSMOD $MODDIR/misc/dmxdev.o
+#modprobe dmxdev
+
+echo "Lade dvbdev"
+$INSMOD $MODDIR/misc/dvbdev.o
+#modprobe dvbdev
+
+echo "Lade dvb"
+$INSMOD $MODDIR/misc/dvb.o
+#modprobe dvb
+
+#echo "Lade dvb_net"
+#$INSMOD $MODDIR/misc/dvb_net.o
+#modprobe dvb_net
+
+echo "Lade tda8044h"
+$INSMOD $MODDIR/misc/tda8044h.o debug=0
+#modprobe tda8044h
+
+echo "Lade enx_dmx"
+$INSMOD $MODDIR/misc/enx_dmx.o debug=0 ucode=/ucodes/ucode.bin
+#modprobe enx_dmx
+
+echo "Lade enx_vbi"
+$INSMOD $MODDIR/misc/enx_vbi.o
+#modprobe enx_vbi
+
+echo "Lade enx_fb"
+$INSMOD $MODDIR/misc/enx_fb.o debug=0
+#modprobe enx_fb
+
+echo "Lade enx_capture"
+$INSMOD $MODDIR/misc/enx_capture.o
+
+echo "Lade enx_pig"
+$INSMOD $MODDIR/misc/enx_pig.o
+
+#echo "Lade osd"
+#modprobe osd
