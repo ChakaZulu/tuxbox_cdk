@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: rcS.insmod,v 1.1 2005/01/30 22:26:10 alexh Exp $
+# $Id: rcS.insmod,v 1.2 2005/01/30 22:41:28 alexh Exp $
 # Alles mounten
 mount -a
 
@@ -111,11 +111,6 @@ fi
   # Je nach Typ weitere Module laden
   if [ $VENDOR_ID -eq 1 ]; then
     #Nokia
-    if [ -e /var/etc/.cable ]; then
-     $IM -f $MD/cable_ves1820.o
-    else
-     $IM $MD/ves1820.o
-    fi
     $IM $MD/ves1x93.o board_type=1
   elif [ $VENDOR_ID -eq 2 ]; then
     # Philips
@@ -134,13 +129,9 @@ fi
   fi
 
   $IM $MD/avia_av_napi.o
-
   $IM $MD/avia_gt_napi.o
   $IM $MD/dvb2eth.o
-
-  if [ -e /var/etc/.aviaext ]; then
-    $IM $MD/aviaEXT.o
-  fi
+  $IM $MD/aviaEXT.o
 
 
   # Lirc konfigurieren, falls Datei existiert
