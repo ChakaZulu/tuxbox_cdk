@@ -57,7 +57,7 @@ diff -Naur glibc-2.2.5.org/Makerules glibc-2.2.5/Makerules
  				  $(routines) $(aux) $(sysdep_routines)) \
  		     $(elide-bp-thunks)
  elide-routines.os += $(static-only-routines) $(elide-bp-thunks)
-@@ -958,15 +958,15 @@
+@@ -958,7 +958,7 @@
  install: $(inst_libdir)/libc.so
  $(inst_libdir)/libc.so: $(common-objpfx)format.lds \
  			$(common-objpfx)libc.so$(libc.so-version) \
@@ -66,10 +66,10 @@ diff -Naur glibc-2.2.5.org/Makerules glibc-2.2.5/Makerules
  						  $(libprefix)$(libc-name)) \
  			$(+force)
  	(echo '/* GNU ld script';\
- 	 echo '   Use the shared library, but some functions are only in';\
- 	 echo '   the static library, so try that secondarily.  */';\
- 	 cat $<; \
- 	 echo 'GROUP ( $(inst_libdir)/libc.so$(libc.so-version)' \
+@@ -966,7 +966,7 @@
+	 echo '   the static library, so try that secondarily.  */';\
+	 cat $<; \
+	 echo 'GROUP ( $(inst_libdir)/libc.so$(libc.so-version)' \
 -	      '$(inst_libdir)/$(patsubst %,$(libtype.oS),$(libprefix)$(libc-name))'\
 +	      '$(inst_libdir)/$(patsubst %,$(libtype.ot),$(libprefix)$(libc-name))'\
  	      ')' \
