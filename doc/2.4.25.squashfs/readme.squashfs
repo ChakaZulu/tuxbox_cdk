@@ -1,10 +1,8 @@
 #
-# $Id: readme.squashfs,v 1.1 2004/02/22 15:16:59 lucgas Exp $
+# $Id: readme.squashfs,v 1.2 2004/02/23 11:08:49 lucgas Exp $
 #
 # This document describes the steps needed to set up a squashfs 
 # system(mix) for your dbox2
-# Copyright (c) 2002-2004 Andreas Oberritter <obi@tuxbox.org>
-#
 # Permission is granted to copy, distribute and/or modify this document
 # under the terms of the GNU Free Documentation License, Version 1.2
 # or any later version published by the Free Software Foundation;
@@ -15,6 +13,19 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
+
+What is squashfs:
+
+Squashfs is a compressed read-only filesystem for Linux. Squashfs is intended for general read-only filesystem use, for archival use (i.e. in cases where a .tar.gz file may be used), and in constrained block device/memory systems (e.g. embedded systems) where low overhead is needed. The filesystem is currently stable, and has been tested on PowerPC, i586, Sparc and ARM architectures.
+Squashfs overview
+
+    * Data, inodes and directories are compressed.
+    * Squashfs stores full uid/gids (32 bits), and file creation time.
+    * Files up to 2^32 bytes are supported. Filesystems can be up to 2^32 bytes.
+    * Inode and directory data are highly compacted, and packed on byte boundaries. Each compressed inode is on average 8 bytes in length (the exact length varies on file type, i.e. regular file, directory, symbolic link, and block/char device inodes have different sizes).
+    * Squashfs can use block sizes up to 32K (the default size is 32K). Using 32K blocks achieves greater compression ratios than the normal 4K block size.
+    * File duplicates are detected and removed.
+    * Both big and little endian architectures are supported. The mksquashfs program can generate filesystems for different endian architectures for cases where the host byte ordering is different to the target. This is useful for embedded systems. 
 
 You need just to replace the files what you in this dir found with the 
 original one.
