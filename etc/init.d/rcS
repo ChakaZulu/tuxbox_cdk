@@ -49,9 +49,3 @@ modprobe avia_gt_napi
 modprobe avia_gt_vbi
 modprobe lcd
 
-lcdmenu
-RC="$?"
-test "$RC" -eq 0 && /etc/init.d/start_enigma
-test "$RC" -eq 1 && /etc/init.d/start_neutrino
-test "$RC" -eq 2 && /etc/init.d/start_lcars
-

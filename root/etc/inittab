@@ -1,5 +1,7 @@
 ::sysinit:/etc/init.d/rcS
 
+::once:/etc/init.d/start
+
 #tts/0::respawn:/bin/agetty -L tts/0 9600 vt102
 #vc/1::respawn:/bin/agetty 38400 vc/1
 #vc/2::respawn:/bin/agetty 38400 vc/2
