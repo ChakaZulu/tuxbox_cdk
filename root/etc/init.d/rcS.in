@@ -9,18 +9,13 @@ ifup -a
 
 test -O /bin/tinylogin || chown root.root /bin/tinylogin
 
-@TARGETRULESET_FLASH_TRUE@if test -d /share/tuxbox/image/var ; then
-@TARGETRULESET_FLASH_TRUE@for i in `cd /share/tuxbox/image/var ; find . -type d` ; do test -d /var/$i || mkdir -p /var/$i ; done
-@TARGETRULESET_FLASH_TRUE@for i in `cd /share/tuxbox/image/var ; find . -type f` ; do test -f /var/$i || cp -a /share/tuxbox/image/var/$i /var/$i ; done
-@TARGETRULESET_FLASH_TRUE@fi
-@TARGETRULESET_FLASH_TRUE@test -d /var/lib/modules/`uname -r` || mkdir -p /var/lib/modules/`uname -r`
-
 test -x /sbin/inetd && inetd
 
 if test -x /sbin/sshd ; then
 	/etc/init.d/start_sshd &
 fi
 
+@TARGETRULESET_FLASH_TRUE@test -d /var/lib/modules/`uname -r` || mkdir -p /var/lib/modules/`uname -r`
 @TARGETRULESET_FLASH_TRUE@test -f /var/lib/modules/`uname -r`/modules.dep || \
 depmod -ae
 

@@ -1,0 +1,125 @@
+#
+#
+#
+# Urheber:
+# --------
+# (C) 2002 by genial <genial@oups.info>
+#
+# Lizenz:
+# -------
+# Dieses Dokument darf weder verkauft werden noch darf es auf
+# kostenpflichtigen Datentraegern weiterverbreitet werden.
+#
+# Inhalt:
+# -------
+# Inhalt dieses Dokuments sind die noetigen Schritte zum Erstellen
+# von Flash-Images.
+#
+
+Prerequisiten:
+--------------
+
+- python
+- mkcramfs
+- mkjffs2
+- fakeroot (?)
+
+- ucodes
+- logo-fb
+- logo-lcd
+- mix-ppcboot-flfs.img (siehe Bemerkung weiter unten)
+- jffs2-ppcboot-flfs.img (siehe Bemerkung weiter unten)
+
+
+Hier die Kommandos zum Erstellen von Flash-Imgaes:
+--------------------------------------------------
+- Auschecken des CDKs weitestgehend nach INSTALL.de,
+  abweichend davon wird configure mit den Flashrules aufgerufen
+
+mkdir $HOME/tuxbox-cvs
+cd $HOME/tuxbox-cvs
+cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox login
+cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co .
+cd cdk
+./autogen.sh
+./configure --prefix=/dbox2 --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode --with-targetruleset=flash
+
+
+- Danach kann man wie in INSTALL.de beschrieben die einzelnen oder
+  alle Module vorab kompilieren, muss man aber nicht.
+
+
+- Um alle Flash-Module vorzubereiten und ggf. zu kompilieren:
+
+make flash-all
+
+
+- Nur die Netzwerk-Module:
+  (Ftp-Daemon, Telnet-Daemon, SSH, SSH-Daemon)
+
+make flash-network
+
+
+- Nur die Applikationen:
+  (Neutrino, Enigma, Lcars, Plugins, LCD-Menue)
+
+make flash-apps
+
+
+- Die einzelnen Netzwerk-Module:
+
+make flash-ftpd
+make flash-telnetd
+make flash-ssh
+make flash-sshd
+
+
+- Die einzelnen Applikations-Module:
+
+make flash-neutrino
+make flash-enigma
+make flash-lcars
+make flash-plugins
+make flash-lcdmenu
+
+
+- Wenn man die gewuensten Module vorbreitet hat, kann man nun fertige Flash-Images erstellen
+  oder auch nur die einzelnen Flash-Partitionen. Voher muss man noch seine ucodes nach
+  cdkflash/root/var/ucodes und die beiden boot-logos nach cdkflash/root/boot kopieren.
+
+- Komplettes Image mit ppcboot im flfs, root im cramfs und var im jffs2:
+  (Dafuer benoetigt man die Datei mix-ppcboot-flfs.img im cdkflash-Verzeichnis.
+  Man erhaelt diese Datei, in dem man aus einem Image mit cramfs und jffs2 über die
+  Expertenfunktion des Softwareupdates das ppcboot[flfs] ausliest und dann die Datei
+  mtd1.img mittels FTP von der D-Box holt und in mix-ppcboot-flfs.img umbenennt.)
+
+make flash-mix-image
+
+
+- Nur das root als cramfs:
+
+make flash-mix-cramfs
+
+
+- Nur das var als jffs2:
+
+make flash-mix-jffs2
+
+
+- Komplettes Image mit ppcboot im flfs und gesamtes root im jffs2:
+  (ACHTUNG: Dafuer benoetigt man einen modifierten Kernel als kernel-cdk in tftpboot
+  und ein angepasstes ppcboot in einem flfs als mix-ppcboot-flfs.img in cdkflash.
+  Diese kann man sich aus einem bereits bestehenden Image ohne cramfs besorgen.)
+
+make flash-jffs2-image
+
+
+- Das gesamte root als jffs2:
+
+make flash-jffs2-root
+
+
+- Aktualisieren der bereits vorbereiteten Module nach Aenderungen im cdkroot:
+  (Nur bereits vorbereitete Module werden dabei aktualisiert, bereits erstelle Images bleiben davon unberuehrt)
+
+make rebuild-flash
