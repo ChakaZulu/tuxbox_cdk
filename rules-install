@@ -27,7 +27,7 @@ inetd;install:-m755:inetd:TARGET/sbin
 modutils;make:install-bin
 netkit_telnet;install:-m755:telnet/telnet:TARGET/bin/telnet;install:-m755:telnetd/telnetd:TARGET/sbin/in.telnetd
 portmap;make:install:BASEDIR=TARGET
-procps;install:-m755:top:ps/ps:TARGET/bin
+procps;remove:TARGET/bin/ps;install:-m755:top:ps/ps:TARGET/bin
 rsh;make:install:PREFIX=TARGET
 tinylogin;make:install:PREFIX=TARGET
 
