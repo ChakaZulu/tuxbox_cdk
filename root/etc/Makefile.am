@@ -1,8 +1,8 @@
 SUBDIRS = init.d network
 
 EXTRA_DIST = \
-	fstab.in group host.conf hostname hosts inetd.conf inittab \
-	mime.types modules.conf.in nsswitch.conf passwd profile protocols \
+	fstab group host.conf hostname hosts inetd.conf inittab \
+	mime.types modules.conf nsswitch.conf passwd profile protocols \
 	resolv.conf services termcap
 
 FILES = \
@@ -10,17 +10,13 @@ FILES = \
 	mime.types modules.conf nsswitch.conf passwd profile protocols \
 	resolv.conf services termcap
 
-all-local: $(FILES)
+FILES_FLASH_RO = \
+	fstab host.conf inittab mime.types modules.conf-flash nsswitch.conf \
+	protocols termcap
 
-install-data-local: $(FILES)
-	install -d $(targetprefix)/etc
-	@for i in $(FILES) ; do \
-		if [ "$(FORCE)" -o ! -e $(targetprefix)/etc/$$i ] ; then \
-			echo "install -m644 $$i $(targetprefix)/etc" ; \
-			install -m644 $$i $(targetprefix)/etc ; \
-		fi ; \
-	done
+FILES_FLASH_RW = \
+	group hostname hosts inetd.conf passwd profile resolv.conf services
 
-distclean-local:
-	-rm -f fstab modules.conf
+DIR = /etc
 
+include $(top_srcdir)/root/Makefile.inc

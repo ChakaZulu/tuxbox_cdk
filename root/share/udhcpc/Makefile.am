@@ -1,17 +1,12 @@
 EXTRA_DIST = \
+	default.script default.script-flash
+
+FILES_EXEC = \
 	default.script
 
-FILES = \
-	default.script
+FILES_FLASH_RO_EXEC = \
+	default.script-flash
 
-all-local: $(FILES)
+DIR = /share/udhcpc
 
-install-data-local: $(FILES)
-	install -d $(targetprefix)/share/udhcpc
-	@for i in $(FILES) ; do \
-		if [ "$(FORCE)" -o ! -e $(targetprefix)/share/udhcpc/$$i ] ; then \
-			echo "install -m755 $$i $(targetprefix)/share/udhcpc" ; \
-			install -m755 $$i $(targetprefix)/share/udhcpc ; \
-		fi ; \
-	done
-
+include $(top_srcdir)/root/Makefile.inc

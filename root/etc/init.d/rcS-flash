@@ -1,0 +1,119 @@
+#!/bin/sh
+
+PATH=/sbin:/bin
+
+hostname -F /etc/hostname
+mount -a
+ifup -a
+
+test -x /sbin/inetd && inetd
+
+if test -x /sbin/sshd ; then
+	/etc/init.d/start_sshd &
+fi
+
+test -d /var/lib/modules/`uname -r` || mkdir -p /var/lib/modules/`uname -r`
+depmod -ae
+
+modprobe tuxbox
+
+. /etc/profile
+
+VENDOR=`/bin/tuxinfo -m`
+VENDOR_ID=`/bin/tuxinfo -i -d`
+MODEL=`/bin/tuxinfo -M`
+MODEL_ID=`/bin/tuxinfo -I -d`
+
+echo "Detected STB:"
+echo "  Vendor: $VENDOR"
+echo "  Model: $MODEL"
+
+modprobe dvb-core
+
+# D-BOX2
+if [ $MODEL_ID -eq 1 ]; then
+
+	# I2C core
+	modprobe dbox2_i2c
+	modprobe dvb_i2c_bridge
+	
+	# Frontprozessor
+	modprobe dbox2_fp
+	modprobe dbox2_fp_input
+
+	# Frontends
+	# Nokia
+	if [ $VENDOR_ID -eq 1 ]; then
+		modprobe ves1820
+		modprobe ves1x93 board_type=2
+		modprobe ves1x93 board_type=3
+	# Sagem
+	elif [ $VENDOR_ID -eq 2 ]; then
+		modprobe at76c651
+		modprobe ves1x93 board_type=4
+	# Philips
+	elif [ $VENDOR_ID -eq 3 ]; then
+		modprobe tda8044h
+	fi
+
+	# Misc IO
+	modprobe avs
+	modprobe saa7126
+	# Philips
+	if [ $VENDOR_ID -eq 3 ]; then
+		modprobe cam mio=0xC040000
+	else
+		modprobe cam mio=0xC000000
+	fi
+	modprobe lcd
+
+	# A/V
+	modprobe avia_gt
+	modprobe avia_gt_fb
+	modprobe avia_gt_lirc
+	modprobe avia_gt_oss
+	modprobe avia_gt_v4l2
+	modprobe avia_av
+
+	modprobe avia_napi
+	modprobe cam_napi
+	modprobe avia_av_napi
+	modprobe avia_gt_napi
+	modprobe dbox2_fp_napi
+
+# Dreambox DM 7000
+elif [ $MODEL_ID -eq 2 ]; then
+
+	# I2C core
+#	modprobe dvb_i2c_bridge
+
+	# Frontprozessor
+	modprobe dreambox_fp
+
+	# Frontends
+	modprobe alps_bsru6
+#	modprobe alps_tdme7
+	modprobe philips_1216
+	
+	# Misc IO
+	modprobe ir-hw
+	modprobe dreambox_rc_input
+	modprobe avs
+	modprobe lcd
+
+	# A/V
+	modprobe stb_td
+	modprobe stb_fb
+	modprobe stb_denc
+	modprobe stb_aud
+	modprobe stb_vg
+	modprobe stb_clip
+
+fi
+
+test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
+
+if [ -e /etc/init.d/rcS_local ]; then
+	. /etc/init.d/rcS_local
+fi
+
