@@ -45,7 +45,7 @@ zlib-1.1.4.tar.bz2;ftp://ftp.info-zip.org/pub/infozip/zlib
 libffi-1.20.tar.gz;ftp://sourceware.cygnus.com/pub/libffi
 SDL-1.2.5.tar.gz;http://www.libsdl.org/release
 readline-4.3.tar.gz;ftp://ftp.gnu.org/gnu/readline
-libsigc++-1.2.2.tar.gz;http://belnet.dl.sourceforge.net/sourceforge/libsigc
+libsigc++-1.2.5.tar.gz;http://switch.dl.sourceforge.net/sourceforge/libsigc
 libpcap-0.7.1.tar.gz;http://www.tcpdump.org/release
 commoncpp2-1.0.9.tar.gz;ftp://ftp.gnu.org/gnu/commonc++
 libdvbpsi-0.1.2.tar.gz;http://www.videolan.org/pub/videolan/libdvbpsi/0.1.2

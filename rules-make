@@ -54,7 +54,7 @@ libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;pa
 libpng;1.2.5;libpng-1.2.5;libpng-1.2.5.tar.gz:libpng.diff;extract:libpng-1.2.5.tar.gz;patch:libpng.diff
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.5;SDL-1.2.5;SDL-1.2.5.tar.gz:sdl.diff;extract:SDL-1.2.5.tar.gz;patch:sdl.diff
-libsigc;1.2.2;libsigc++-1.2.2;libsigc++-1.2.2.tar.gz:libsigc.diff;extract:libsigc++-1.2.2.tar.gz;patch:libsigc.diff
+libsigc;1.2.5;libsigc++-1.2.5;libsigc++-1.2.5.tar.gz;extract:libsigc++-1.2.5.tar.gz
 libxml2;2.4.30;libxml2-2.4.30;libxml2-2.4.30.tar.gz;extract:libxml2-2.4.30.tar.gz
 libxmlparse;0.9.3;xmlparse-0.9.3;xmlparse_0.9.3.tar.bz2:xmlparse.diff;extract:xmlparse_0.9.3.tar.bz2;patch:xmlparse.diff
 libxmlwrapp;0.2.1;xmlwrapp-0.2.1;xmlwrapp-0.2.1.tar.gz;extract:xmlwrapp-0.2.1.tar.gz
