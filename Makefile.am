@@ -481,6 +481,10 @@ libs_optional: \
 			--enable-fpm=ppc \
 			--enable-sso && \
 		$(MAKE) all && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < libid3tag/id3tag.pc > libid3tag/id3tag.pc.tmp && \
+		mv libid3tag/id3tag.pc.tmp libid3tag/id3tag.pc && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < libmad/mad.pc > libmad/mad.pc.tmp && \
+		mv libmad/mad.pc.tmp libmad/mad.pc && \
 		@INSTALL_libmad@
 	@CLEANUP_libmad@
 	touch .libmad
