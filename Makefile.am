@@ -339,6 +339,7 @@ libs: \
 			CFG="--host=${target} --prefix=${targetprefix}" && \
 		make all && \
 		@INSTALL_libfreetype@
+		$(target)-ar cru $(targetprefix)/lib/libfreetype_pic.a @DIR_libfreetype@/objs/*.o
 	@CLEANUP_libfreetype@
 	touch .libfreetype
 
@@ -362,6 +363,7 @@ libs: \
 			--without-cxx-binding \
 			--with-fallbacks='linux vt100 xterm' && \
 		@INSTALL_libncurses@
+		$(target)-ar cru $(targetprefix)/lib/libncurses_pic.a @DIR_libncurses@/obj_s/*.o @DIR_libncurses@/objects/*.o
 	@CLEANUP_libncurses@
 	touch .libncurses
 
