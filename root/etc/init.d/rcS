@@ -1,19 +1,16 @@
 #!/bin/sh
-echo "Starting rcS"
-PATH=/sbin:/bin:/usr/bin
+PATH=/sbin:/bin
 rm -f /var/run/*.pid
-echo "Mounting /proc"
-mount -n -t proc proc /proc
-echo "Starting inetd"
-inetd
 echo "Setting hostname"
 hostname -F /etc/hostname
+echo "Mounting anything"
+mount -a
+echo "Starting inetd"
+inetd
 echo "Loading modules"
-insmod rtc
-insmod i2c-core
-insmod i2c-8xx debug=0
-insmod soundcore
-insmod info
+depmod -a
+modprobe rtc
+modprobe info
 . /proc/bus/dbox.sh
 echo "mID: $mID"
 echo "feID: $feID"
@@ -23,15 +20,16 @@ echo "gtxID: $gtxID"
 echo "hwREV: $hwREV"
 echo "fpREV: $fpREV"
 echo "DEMOD: $DEMOD"
-# Module HW-abhaengig laden
-/etc/init.d/$DEMOD
-ln -sf sound/dsp /dev/dsp
-ln -sf fb/0 /dev/fb0
+
+modprobe dvb
+modprobe tuner
+modprobe graphic
+modprobe lcd
+
 echo "Starting loopback device"
-ifconfig lo 127.0.0.1 netmask 255.0.0.0 up
+ifconfig lo 127.0.0.1 up
 # it must be tuned to a valid ts for dvbtime
 export TZ=CET-01CEST-02,J84,J302
-insmod lcd
 lcdmenu
 RC="$?"
 test "$RC" -eq 0 && /etc/init.d/start_ezap
