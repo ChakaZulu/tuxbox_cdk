@@ -1,0 +1,31 @@
+diff --exclude CVS -Naur DirectFB/configure.in DirectFB-0.9.16cvs2/configure.in
+--- DirectFB/configure.in	2002-12-27 20:41:19.000000000 +0100
++++ DirectFB-0.9.16cvs2/configure.in	2002-12-29 19:52:17.000000000 +0100
+@@ -58,6 +58,8 @@
+ AM_SANITY_CHECK
+ AC_ISC_POSIX
+ AM_PROG_CC_STDC
++AM_PROG_AS
++AC_PROG_CXX
+ AC_PROG_INSTALL
+ AC_PROG_MAKE_SET
+ AC_HEADER_STDC
+@@ -513,7 +515,6 @@
+     AC_MSG_WARN([
+ *** avifile-config not found -- AVI media provider will not be built.])
+   else
+-    AC_PROG_CXX
+     AVIFILE=yes
+     AVIFILE_CFLAGS=`avifile-config --cflags`
+     AVIFILE_LIBS="`avifile-config --libs` -lstdc++"
+diff --exclude CVS -Naur DirectFB/src/misc/ppcasm_string.S DirectFB-0.9.16cvs2/src/misc/ppcasm_string.S
+--- DirectFB/src/misc/ppcasm_string.S	2002-12-27 20:41:19.000000000 +0100
++++ DirectFB-0.9.16cvs2/src/misc/ppcasm_string.S	2002-12-30 20:56:41.000000000 +0100
+@@ -9,7 +9,6 @@
+  * 2 of the License, or (at your option) any later version.
+  */
+ 
+-#define __KERNEL__
+ #define __ASSEMBLY__
+ 
+ #include <linux/config.h>
