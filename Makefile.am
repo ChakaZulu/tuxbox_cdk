@@ -1521,8 +1521,8 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
-	-rm .libcommoncplusplus .libcrypto .libcurl .libdvbpsi .libffi .libfreetype
+	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin .watchdog
+	-rm .libcommoncplusplus .libcrypto .libcurl .libdirectfb .libdirectfbpp .libdvbpsi .libffi .libfreetype
 	-rm .libncurses .libjpeg .libmad .libpcap .libpng .libpopt
 	-rm .libreadline .libsdl .libsigc .libxml2 .libz
 	-rm .gdb .ksymoops .ltrace .strace .nano
