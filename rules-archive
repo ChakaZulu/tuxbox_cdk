@@ -48,7 +48,7 @@ ncurses-5.3.tar.gz;ftp://$(gnuserver)/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
 libpng-1.2.8.tar.bz2;ftp://swrinde.nde.swri.edu/pub/png/src
 libxml2-2.4.30.tar.gz;ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.4
-zlib-1.2.2.tar.bz2;http://www.zlib.net
+zlib-1.2.2.tar.bz2;http://www.gzip.org/zlib
 libffi-1.20.tar.gz;ftp://sources.redhat.com/pub/libffi
 SDL-1.2.6.tar.gz;http://www.libsdl.org/release
 readline-4.3.tar.gz;ftp://$(gnuserver)/readline
