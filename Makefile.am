@@ -2033,7 +2033,7 @@ $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
 	@if [ ! -e $(flashprefix)/root/var/tuxbox/config/scart.conf ]; then \
 		cp -pa $(appsdir)/tuxbox/neutrino/daemons/controld/scart.conf $(flashprefix)/root/var/tuxbox/config ; \
 	fi
-	$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/jffs2/ -o $(flashprefix)/var-jffs2.img ; \
+	$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/jffs2/ -o $(flashprefix)/var-jffs2.img
 	rm -rf $(flashprefix)/jffs2
 
 $(flashprefix)/.rojffs2neutrino: flash-neutrino flash-ftpd flash-plugins flash-lib $(flashprefix)/.root-roimg $(flashprefix)/var-jffs2.img $(flashprefix)/.cramfs-flfs $(flashprefix)/.squashfs-flfs
