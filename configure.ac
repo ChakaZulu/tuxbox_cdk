@@ -184,7 +184,7 @@ else
 fi
 
 AC_MSG_CHECKING([for boot directory])
-if test ! -f "$bootdir/u-boot/Makefile" ; then
+if test ! -d "$bootdir/u-boot-tuxbox" ; then
 	bootdir=no
 	AC_MSG_RESULT([no])
 else
