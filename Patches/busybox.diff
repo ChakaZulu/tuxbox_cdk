@@ -85,6 +85,33 @@ diff -urN busybox-1.00-pre3.orig/libbb/messages.c busybox-1.00-pre3/libbb/messag
  const char * const bb_path_nologin_file = NOLOGIN_FILE;
  #endif
  
+diff -urN busybox-1.00-pre3.orig/networking/ifupdown.c busybox-1.00-pre3/networking/ifupdown.c
+--- busybox-1.00-pre3.orig/networking/ifupdown.c	2003-09-12 10:42:16.000000000 +0200
++++ busybox-1.00-pre3/networking/ifupdown.c	2003-10-27 09:00:05.000000000 +0100
+@@ -1047,9 +1047,9 @@
+ 	int result;
+ 	if (!iface->method->up(iface,check)) return -1;
+ 	set_environ(iface, "start");
+-	result = execute_all(iface, doit, "pre-up");
++//	result = execute_all(iface, doit, "pre-up");
+ 	result += iface->method->up(iface, doit);
+-	result += execute_all(iface, doit, "up");
++//	result += execute_all(iface, doit, "up");
+ 	return(result);
+ }
+ 
+@@ -1058,9 +1058,9 @@
+ 	int result;
+ 	if (!iface->method->down(iface,check)) return -1;
+ 	set_environ(iface, "stop");
+-	result = execute_all(iface, doit, "down");
++//	result = execute_all(iface, doit, "down");
+ 	result += iface->method->down(iface, doit);
+-	result += execute_all(iface, doit, "post-down");
++//	result += execute_all(iface, doit, "post-down");
+ 	return(result);
+ }
+ 
 diff -urN busybox-1.00-pre3.orig/sysdeps/linux/Config.in busybox-1.00-pre3/sysdeps/linux/Config.in
 --- busybox-1.00-pre3.orig/sysdeps/linux/Config.in	2003-08-05 04:18:20.000000000 +0200
 +++ busybox-1.00-pre3/sysdeps/linux/Config.in	2003-09-19 20:32:03.000000000 +0200
