@@ -19,14 +19,16 @@ modprobe tuxbox
 
 . /etc/profile
 
-VENDOR=`/bin/tuxinfo -m`
-VENDOR_ID=`/bin/tuxinfo -i -d`
+VENDOR=`/bin/tuxinfo -V`
+VENDOR_ID=`/bin/tuxinfo -v`
 MODEL=`/bin/tuxinfo -M`
-MODEL_ID=`/bin/tuxinfo -I -d`
+MODEL_ID=`/bin/tuxinfo -m`
+SUBMODEL=`/bin/tuxinfo -S`
+SUBMODEL_ID=`/bin/tuxinfo -s`
 
 echo "Detected STB:"
 echo "  Vendor: $VENDOR"
-echo "  Model: $MODEL"
+echo "  Model: $MODEL $SUBMODEL"
 
 modprobe dvb-core
 
@@ -81,7 +83,7 @@ if [ $MODEL_ID -eq 1 ]; then
 	modprobe avia_gt_napi
 	modprobe dbox2_fp_napi
 
-# Dreambox DM 7000
+# Dreambox
 elif [ $MODEL_ID -eq 2 ]; then
 
 	# I2C core
