@@ -1,26 +1,52 @@
 AC_INIT(Makefile.am)
 AM_INIT_AUTOMAKE(tuxbox-cdk, 0.0.1)
 
-AC_ARG_WITH(target,
-	[  --with-target=TARGET    target for compilation [[dbox2,dbox2flash]]],
-	[TARGET="$with_target"],[TARGET="dbox2"])
+AC_PROG_CC
+AC_CANONICAL_HOST
 
-if test "$TARGET" = "dbox2"; then
+AC_ARG_WITH(hostruleset,
+	[  --with-hostruleset=NAME host ruleset [[cygwin]]],
+	[hostruleset="$with_hostruleset"],[hostruleset="NONE"])
+
+if test "$host_os" = "cygwin" -a "$hostruleset" == "NONE"; then
+	AC_MSG_WARN([overriding standard ruleset])
+	hostruleset="cygwin"
+fi
+
+if test "$hostruleset" = "cygwin"; then
+	MAKERULESETFILE="-cygwin"
+elif test "$hostruleset" = "NONE"; then
+	MAKERULESETFILE=""
+else
+	AC_MSG_ERROR([invalid ruleset "$hostruleset", choose on from [[cygwin]]]);
+fi
+
+AC_SUBST(BUILD,[$host])
+
+AC_ARG_WITH(targetruleset,
+	[  --with-targetrulseset=NAME target ruleset [[flash]]],
+	[targetruleset="$with_targetrulseset"],[targetruleset="NONE"])
+
+if test "$targetruleset" = "NONE"; then
 	TARGET_CFLAGS="-O2 -mcpu=823"
 	TARGET_CXXFLAGS="-O2 -mcpu=823"
 	TARGET_LDFLAGS="-s"
-elif test "$TARGET" = "dbox2flash"; then
+	INSTALLRULESFILE=""
+	appstarget="dbox2"
+elif test "$targetruleset" = "flash"; then
 	TARGET_CFLAGS="-Os -mcpu=823"
 	TARGET_CXXFLAGS="-Os -mcpu=823"
 	TARGET_LDFLAGS="-s"
+	INSTALLRULESFILE="-flash"
+	appstarget="dbox2flash"
 else
-	AC_MSG_ERROR([invalid target "$TARGET", choose on from dbox2,dbox2flash]);
+AC_MSG_ERROR([invalid ruleset "$targetruleset", choose on from [[flash]]]);
 fi
 
-AC_SUBST(TARGET)
 AC_SUBST(TARGET_CFLAGS)
 AC_SUBST(TARGET_CXXFLAGS)
 AC_SUBST(TARGET_LDFLAGS)
+AC_SUBST(appstarget)
 
 AC_PREFIX_DEFAULT(/dbox2)
 
@@ -46,9 +72,9 @@ AC_SUBST(hostprefix)
 AC_SUBST(buildprefix)
 AC_SUBST(bootprefix)
 
-AC_ARG_WITH(cvs,
-	[  --with-cvs=DIR          where to find the cvs],
-	[cvs="$with_cvs"],[cvs="NONE"])
+AC_ARG_WITH(cvsdir,
+	[  --with-cvsdir=DIR       where to find the cvs],
+	[cvsdir="$with_cvsdir"],[cvsdir="NONE"])
 
 AC_ARG_WITH(appsdir,
 	[  --with-appsdir=DIR      apps dir from cvs [[[CVS/]apps/]]],
@@ -62,7 +88,7 @@ AC_ARG_WITH(driverdir,
 	[  --with-driverdir=DIR    driver dir from cvs [[[CVS/]driver]]],
 	[driverdir="$with_driverdir"],[driverdir="NONE"])
 
-if test "$cvs" = "NONE"; then
+if test "$cvsdir" = "NONE"; then
 	if test "$appsdir" = "NONE"; then
 		appsdir="$buildprefix/apps"
 	fi
@@ -88,27 +114,6 @@ AC_SUBST(appsdir)
 AC_SUBST(bootdir)
 AC_SUBST(driverdir)
 
-AC_ARG_WITH(ruleset,
-	[  --with-ruleset=NAME     ruleset [[cygwin]]],
-	[RULESET="$with_ruleset"],[RULESET="NONE"])
-
-AC_CANONICAL_HOST
-
-if test "$host_os" = "cygwin" -a "$RULESET" == "NONE"; then
-	AC_MSG_WARN([overriding standard ruleset])
-	RULESET="cygwin"
-fi
-
-if test "$RULESET" = "cygwin"; then
-	RULESETFILE="-cygwin"
-elif test "$RULESET" = "NONE"; then
-	RULESETFILE=""
-else
-	AC_MSG_ERROR([invalid ruleset "$RULESET", choose on from cygwin]);
-fi
-
-AC_SUBST(BUILD,[$host])
-AC_SUBST(RULESET)
 
 #
 # core
@@ -146,23 +151,19 @@ AC_MSG_NOTICE([creating Makefile-archive])
 ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 ])
 
-AC_PROG_CC
-
 AC_MSG_RESULT()
 AC_MSG_RESULT(Summary:)
-AC_MSG_RESULT([Target:       $TARGET])
-AC_MSG_RESULT([Prefix:       $prefix])
-AC_MSG_RESULT([Targetprefix: $targetprefix])
-AC_MSG_RESULT([Hostprefix:   $hostprefix])
-AC_MSG_RESULT([Bootprefix:   $bootprefix])
-AC_MSG_RESULT([Buildprefix:  $buildprefix])
-if test "$cvs" != "NONE"; then
-AC_MSG_RESULT([CVS:          $cvs])
-fi
-AC_MSG_RESULT([Appsdir:      $appsdir])
-AC_MSG_RESULT([Bootdir:      $bootdir])
-AC_MSG_RESULT([Driverdir:    $driverdir])
-AC_MSG_RESULT([Ruleset:      $RULESET])
+AC_MSG_RESULT([Hostruleset:	$hostruleset])
+AC_MSG_RESULT([Targetruleset:	$targetruleset])
+AC_MSG_RESULT([Prefix:		$prefix])
+AC_MSG_RESULT([Targetprefix:	$targetprefix])
+AC_MSG_RESULT([Hostprefix:	$hostprefix])
+AC_MSG_RESULT([Bootprefix:	$bootprefix])
+AC_MSG_RESULT([Buildprefix:	$buildprefix])
+AC_MSG_RESULT([CVSdir:		$cvsdir])
+AC_MSG_RESULT([Appsdir:	$appsdir])
+AC_MSG_RESULT([Bootdir:	$bootdir])
+AC_MSG_RESULT([Driverdir:	$driverdir])
 AC_MSG_RESULT()
 
 AC_OUTPUT([
