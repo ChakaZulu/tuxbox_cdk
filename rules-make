@@ -73,7 +73,7 @@ console_tools;0.2.3;console-tools-0.2.3;console-tools-0.2.3.tar.gz:console-tools
 directfb_examples;0.9.18;DirectFB-examples-0.9.18;DirectFB-examples-0.9.18.tar.gz;extract:DirectFB-examples-0.9.18.tar.gz
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.diff
-lsof;4.71;lsof_4.71;lsof_4.71.tar.gz:lsof.diff;extract:lsof_4.71.tar.gz
+lsof;4.72;lsof_4.72;lsof_4.72.tar.gz:lsof.diff;extract:lsof_4.72.tar.gz
 ssh;3.8p1;openssh-3.8p1;openssh-3.8p1.tar.gz:ssh.diff;extract:openssh-3.8p1.tar.gz;patch:ssh.diff
 tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz:tcpdump.diff;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
 vdr;1.2.6;vdr-1.2.6;vdr-1.2.6.tar.bz2:vdr.diff;extract:vdr-1.2.6.tar.bz2;patch:vdr.diff
