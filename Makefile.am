@@ -322,9 +322,16 @@ libs_optional: \
 	.libcommoncplusplus .libffi \
 	.libpcap .libpopt .libxml2
 
+.libboost: .bootstrap @DEPENDS_libboost@
+	@PREPARE_libboost@
+	cd @DIR_libboost@ && \
+		@INSTALL_libboost@
+	@CLEANUP_libboost@
+	touch .libboost
+
 .libcommoncplusplus: .bootstrap .libxml2 @DEPENDS_libcommoncplusplus@
 	@PREPARE_libcommoncplusplus@
-	cd @DIR_libcommoncplusplus@ &&\
+	cd @DIR_libcommoncplusplus@ && \
 		@BUILDENV_libcommoncplusplus@ \
 		./configure \
 			--build=$(build) \
@@ -1227,7 +1234,7 @@ $(appsdir)/tuxbox/libs/Makefile: .bootstrap .libfreetype
 
 # tuxbox/neutrino
 
-$(appsdir)/tuxbox/neutrino/Makefile: .bootstrap .libcurl .libfreetype .libmad .misc_libs .tuxbox_libs .zapit .plugins
+$(appsdir)/tuxbox/neutrino/Makefile: .bootstrap .libboost .libcurl .libfreetype .libmad .misc_libs .plugins .tuxbox_libs .zapit
 	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
 
 .neutrino: $(appsdir)/tuxbox/neutrino/Makefile
@@ -1542,7 +1549,8 @@ distclean-local:
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin .watchdog
-	-rm .libcommoncplusplus .libcrypto .libcurl .libdirectfb .libdirectfbpp .libdvbpsi .libffi .libfreetype
+	-rm .libboost .libcommoncplusplus .libcrypto .libcurl
+	-rm .libdirectfb .libdirectfbpp .libdvbpsi .libffi .libfreetype
 	-rm .libncurses .libjpeg .libmad .libpcap .libpng .libpopt
 	-rm .libreadline .libsdl .libsigc .libxml2 .libz
 	-rm .gdb .ksymoops .ltrace .strace .nano
