@@ -1,0 +1,21 @@
+diff -Naur boot.org/ppcboot/Makefile boot/ppcboot/Makefile
+--- boot.org/ppcboot/Makefile	Fri Apr 20 10:47:37 2001
++++ boot/ppcboot/Makefile	Wed Feb 20 21:25:11 2002
+@@ -34,7 +34,7 @@
+ 
+ #########################################################################
+ 
+-TOPDIR	:= $(shell if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
++TOPDIR	:= $(shell pwd)
+ export	TOPDIR
+ 
+ ifeq (include/config.mk,$(wildcard include/config.mk))
+@@ -44,7 +44,7 @@
+ # load other configuration
+ include $(TOPDIR)/config.mk
+ 
+-SUBDIRS	= $(ARCH) $(CPU) $(BOARD) common net disk examples tools
++SUBDIRS	= $(ARCH) $(CPU) $(BOARD) common net disk
+ 
+ #########################################################################
+ # ppcboot objects....order is important (i.e. start must be first)

@@ -1,7 +1,7 @@
-diff -Naur glibc-2.2.5/Makeconfig _gp/Makeconfig
---- glibc-2.2.5/Makeconfig	Wed Sep 12 18:49:45 2001
-+++ _gp/Makeconfig	Mon Mar  4 15:04:12 2002
-@@ -439,7 +439,7 @@
+diff -Naur glibc-2.2.5.org/Makeconfig glibc-2.2.5/Makeconfig
+--- glibc-2.2.5.org/Makeconfig	Wed Sep 12 18:49:45 2001
++++ glibc-2.2.5/Makeconfig	Sun Mar  3 00:11:44 2002
+@@ -439,13 +439,13 @@
  # run the linked programs.
  link-libc = -Wl,-rpath-link=$(rpath-link) \
  	    $(common-objpfx)libc.so$(libc.so-version) \
@@ -10,6 +10,13 @@ diff -Naur glibc-2.2.5/Makeconfig _gp/Makeconfig
  # This is how to find at build-time things that will be installed there.
  rpath-dirs = math elf dlfcn nss nis rt resolv crypt
  else
+ ifneq (,$(findstring aix,$(config-os)))
+ link-libc = $(common-objpfx)libc.a \
+-	    $(common-objpfx)$(patsubst %,$(libtype.oS),c) $(gnulib)
++	    $(common-objpfx)$(patsubst %,$(libtype.ot),c) $(gnulib)
+ rpath-dirs = math dlfcn nss nis rt resolv crypt
+ endif
+ endif
 @@ -649,7 +649,7 @@
  # The compilation rules use $(CPPFLAGS-${SUFFIX}) and $(CFLAGS-${SUFFIX})
  # to pass different flags for each flavor.
@@ -38,9 +45,9 @@ diff -Naur glibc-2.2.5/Makeconfig _gp/Makeconfig
  endif
  
  
-diff -Naur glibc-2.2.5/Makerules _gp/Makerules
---- glibc-2.2.5/Makerules	Mon Mar  4 15:16:45 2002
-+++ _gp/Makerules	Mon Mar  4 15:09:30 2002
+diff -Naur glibc-2.2.5.org/Makerules glibc-2.2.5/Makerules
+--- glibc-2.2.5.org/Makerules	Sun Mar  3 00:08:12 2002
++++ glibc-2.2.5/Makerules	Sun Mar  3 00:12:40 2002
 @@ -361,7 +361,7 @@
  # Bounded pointer thunks are only built for *.ob
  elide-bp-thunks = $(addprefix $(bppfx),$(bp-thunks))
@@ -67,9 +74,9 @@ diff -Naur glibc-2.2.5/Makerules _gp/Makerules
  	      ')' \
  	) > $@.new
  	mv -f $@.new $@
-diff -Naur glibc-2.2.5/sysdeps/sparc/sparc32/sparcv9/Makefile _gp/sysdeps/sparc/sparc32/sparcv9/Makefile
---- glibc-2.2.5/sysdeps/sparc/sparc32/sparcv9/Makefile	Tue Apr 10 00:11:57 2001
-+++ _gp/sysdeps/sparc/sparc32/sparcv9/Makefile	Mon Mar  4 15:04:12 2002
+diff -Naur glibc-2.2.5.org/sysdeps/sparc/sparc32/sparcv9/Makefile glibc-2.2.5/sysdeps/sparc/sparc32/sparcv9/Makefile
+--- glibc-2.2.5.org/sysdeps/sparc/sparc32/sparcv9/Makefile	Tue Apr 10 00:11:57 2001
++++ glibc-2.2.5/sysdeps/sparc/sparc32/sparcv9/Makefile	Sun Mar  3 00:13:42 2002
 @@ -10,5 +10,5 @@
  ASFLAGS-.op += -Wa,-Av9a
  ASFLAGS-.og += -Wa,-Av9a

@@ -1,0 +1,30 @@
+diff -Naur linux.org/Makefile linux/Makefile
+--- linux.org/Makefile	Fri Feb 15 18:41:57 2002
++++ linux/Makefile	Wed Feb 20 21:18:29 2002
+@@ -11,7 +11,7 @@
+ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
+ 	  else if [ -x /bin/bash ]; then echo /bin/bash; \
+ 	  else echo sh; fi ; fi)
+-TOPDIR	:= $(shell if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
++TOPDIR	:= $(shell pwd)
+ 
+ HPATH   	= $(TOPDIR)/include
+ FINDHPATH	= $(HPATH)/asm $(HPATH)/linux $(HPATH)/scsi $(HPATH)/net
+@@ -373,7 +373,7 @@
+ endif
+ .PHONY: _modinst_post
+ _modinst_post: _modinst_post_pcmcia
+-	if [ -r System.map ]; then echo "don't foreget to run depmod on the target system"; fi
++#	if [ -r System.map ]; then echo "don't foreget to run depmod on the target system"; fi
+ 
+ # Backwards compatibilty symlinks for people still using old versions
+ # of pcmcia-cs with hard coded pathnames on insmod.  Remove
+@@ -442,7 +442,7 @@
+ 
+ dep-files: scripts/mkdep archdep include/linux/version.h
+ 	scripts/mkdep init/*.c > .depend
+-	scripts/mkdep `find $(FINDHPATH) -name SCCS -prune -o -follow -name \*.h ! -name modversions.h -print` > .hdepend
++	scripts/mkdep 'find $(FINDHPATH) -name SCCS -prune -o -follow -name \*.h ! -name modversions.h -print' > .hdepend
+ 	$(MAKE) $(patsubst %,_sfdep_%,$(SUBDIRS)) _FASTDEP_ALL_SUB_DIRS="$(SUBDIRS)"
+ ifdef CONFIG_MODVERSIONS
+ 	$(MAKE) update-modverfile
