@@ -365,7 +365,7 @@ libs: \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
-			--with-random &&
+			--with-random && \
 		$(MAKE) all && \
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
@@ -648,7 +648,7 @@ libs: \
 		CC=$(target)-gcc \
 		CXX=$(target)-g++ \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS) -I$(buildprefix)/linux-2.4.19/include" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
 			--build=$(build) \
