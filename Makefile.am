@@ -1198,6 +1198,7 @@ distclean-local:
 	-rm .ppcboot .linuxkernel .driver
 	-rm .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .tools .tuxtxt .zapit
+	-rm .libconfigfile .libcramfs
 	-rm .liblcddisplay .libmd5sum .libmpegtools .libnet .libucodes
 	-rm .console_data .console_tools .fbset .ssh
 	-rm .dvbstream .dvbtext .dvbtune
