@@ -113,11 +113,28 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 
 .busybox: .gcc @DEPENDS_busybox@
 	@PREPARE_busybox@
-	make -C @DIR_busybox@ CROSS=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)"
-	make -C @DIR_busybox@ install PREFIX=$(targetprefix)
+	cd @DIR_busybox@ && \
+		make CROSS=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
+		@INSTALL_busybox@
 	@CLEANUP_busybox@
 	touch .busybox
 
+.modutils: .gcc @DEPENDS_modutils@
+	@PREPARE_modutils@
+	cd @DIR_modutils@ && \
+		CC=$(TARGET)-gcc CXX=$(TARGET)-g++ CFLAGS="$(TARGET_CFLAGS)" \
+		BUILDCC=gcc BUILDCFLAGS="-O2" \
+		./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--prefix=$(targetprefix) \
+			--disable-root-check \
+			--disable-strip && \
+		make && \
+		@INSTALL_modutils@
+	@CLEANUP_modutils@
+	touch .modutils
+		
 #######################
 #
 #   contrib libs
@@ -241,7 +258,7 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 
 #######################
 #
-#   own boot
+#   own kernel and driver
 #
 
 .ppcboot: .gcc $(bootdir)/ppcboot/Makefile
@@ -263,6 +280,20 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	make -C @DIR_linux@ clean
 	touch .linuxkernel
 
+.driver: .gcc .linuxkernel
+	install -d $(targetprefix)/bin
+	install -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
+	make -C $(driverdir) \
+		KERNEL_LOCATION=$(buildprefix)/linux \
+		CROSS_COMPILE=$(TARGET)-
+	make -C $(driverdir) install \
+		KERNEL_LOCATION=$(buildprefix)/linux \
+		BIN_DEST=$(targetprefix)/bin \
+		MODULE_DEST=$(targetprefix)/lib/modules/$(KERNELVERSION)/misc
+	make -C $(driverdir) clean \
+		KERNEL_LOCATION=$(buildprefix)/linux
+	touch .driver
+
 #######################
 #
 #   own applications
@@ -274,7 +305,7 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	./configure \
 		--prefix=$(targetprefix) \
 		--with-driver=$(driverdir) \
-		--with-target=$(appstarget)
+		--with-target=$(APPSTARGET)
 
 .edvb: $(appsdir)/Makefile
 	make -C $(appsdir)/edvb all install
