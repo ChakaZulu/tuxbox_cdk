@@ -1338,7 +1338,7 @@ $(appsdir)/tuxbox/enigma/Makefile: .bootstrap .libfreetype .libmad .libpng .libs
 
 # tuxbox/lcars
 
-$(appsdir)/tuxbox/lcars/Makefile: .bootstrap .libcurl .libfreetype
+$(appsdir)/tuxbox/lcars/Makefile: .bootstrap .libcurl .libfreetype .plugins
 	cd $(appsdir)/tuxbox/lcars && $(CONFIGURE)
 
 .lcars: $(appsdir)/tuxbox/lcars/Makefile
