@@ -524,6 +524,7 @@ libs: \
 			--shared && \
 		make libz.so.1.1.4 && \
 		@INSTALL_libz@
+		$(target)-ar cru $(targetprefix)/lib/libz_pic.a @DIR_libz@/*.o
 	@CLEANUP_libz@
 	touch .libz
 
@@ -1008,6 +1009,7 @@ endif
 
 .libmpegtools: $(appsdir)/Makefile
 	make -C $(appsdir)/libmpegtools all install
+	$(target)-ar cru $(targetprefix)/lib/libmpegtools_pic.a $(appsdir)/libmpegtools/*.o
 	touch .libmpegtools
 
 .libnet: $(appsdir)/Makefile
