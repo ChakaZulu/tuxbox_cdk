@@ -6,5 +6,5 @@ export PATH="/sbin:/bin"
 . /proc/bus/dbox.sh                                                             
 
 # timezone, only applicable for middle europe
-export TZ=CET-01CEST-02,J84,J302
+export TZ=CET-1CEST,M3.5.0/2,M10.5.0/3
 
