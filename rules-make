@@ -13,7 +13,7 @@
 # core
 #
 linux;2.4.19;linux-2.4.19;linux-2.4.19.tar.bz2:linux-dbox2-2.4.19-2.diff.bz2;remove:linux;extract:linux-2.4.19.tar.bz2;patch:linux-dbox2-2.4.19-2.diff.bz2;link:linux-2.4.19:linux
-binutils;2.12.90.0.14;binutils-2.12.90.0.14;binutils-2.12.90.0.14.tar.bz2;extract:binutils-2.12.90.0.14.tar.bz2
+binutils;2.13.90.0.4;binutils-2.13.90.0.4;binutils-2.13.90.0.4.tar.bz2;extract:binutils-2.13.90.0.4.tar.bz2
 bootstrap_gcc;3.2;gcc-3.2;gcc-core-3.2.tar.gz:gcc-core.diff;extract:gcc-core-3.2.tar.gz;patch:gcc-core.diff
 bootstrap_gcc_2_95;2.95.3;gcc-2.95.3;gcc-core-2.95.3.tar.gz;extract:gcc-core-2.95.3.tar.gz
 glibc;2.2.5;glibc-2.2.5;glibc-2.2.5.tar.bz2:glibc-linuxthreads-2.2.5.tar.bz2:glibc.diff;extract:glibc-2.2.5.tar.bz2;dirextract:glibc-linuxthreads-2.2.5.tar.bz2;patch:glibc.diff
@@ -27,7 +27,7 @@ busybox;0.60.3;busybox-0.60.3;busybox-0.60.3.tar.bz2:busybox.diff;extract:busybo
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
 ifupdown;0.6.4;ifupdown-0.6.4-tuxbox.1;ifupdown-0.6.4-tuxbox.1.tar.bz2;extract:ifupdown-0.6.4-tuxbox.1.tar.bz2
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
-modutils;2.4.16;modutils-2.4.16;modutils-2.4.16.tar.bz2;extract:modutils-2.4.16.tar.bz2
+modutils;2.4.19;modutils-2.4.19;modutils-2.4.19.tar.bz2;extract:modutils-2.4.19.tar.bz2
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
 portmap;5;portmap-5;portmap-5.tar.bz2:portmap-5.diff;extract:portmap-5.tar.bz2;patch:portmap-5.diff
 procps;010114;procps-010114;procps-010114.tar.gz:procps-010114.diff;extract:procps-010114.tar.gz;patch:procps-010114.diff
@@ -84,9 +84,9 @@ msttf;0.0;msttf;arial32.exe:arialb32.exe;dircreate;dirextract:arial32.exe;dirext
 #
 # development tools
 #
-gdb;5.2;gdb-5.2;gdb-5.2.tar.gz:gdb.diff;extract:gdb-5.2.tar.gz;patch:gdb.diff
+gdb;5.2.1;gdb-5.2.1;gdb-5.2.1.tar.gz:gdb.diff;extract:gdb-5.2.1.tar.gz;patch:gdb.diff
 ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz;extract:ltrace_0.3.26.tar.gz;patch:ltrace.diff
-strace;4.2;strace-4.2;strace-4.2.tar.gz:strace.diff;extract:strace-4.2.tar.gz;patch:strace.diff
+strace;4.4;strace-4.4;strace_4.4-1.tar.gz:strace.diff;extract:strace_4.4-1.tar.gz;patch:strace.diff
 nano;1.0.7;nano-1.0.7;nano-1.0.7.tar.gz;extract:nano-1.0.7.tar.gz
 
 #
