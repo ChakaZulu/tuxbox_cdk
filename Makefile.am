@@ -1201,8 +1201,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune
 			--host=$(target) \
 			--prefix= \
 			--disable-dvd \
-			--with-dvb=$(driverdir)/include \
-			--with-dvbpsi=$(targetprefix) && \
+			--with-dvb=$(driverdir)/include && \
 		$(MAKE) all && \
 		@INSTALL_vls@
 	@CLEANUP_vls@
