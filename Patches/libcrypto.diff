@@ -11,16 +11,15 @@ diff -u openssl-0.9.7d.old/Configure openssl-0.9.7d.new/Configure
  ##### VxWorks for various targets
  "vxworks-ppc405","ccppc:-g -msoft-float -mlongcall -DCPU=PPC405 -I\$(WIND_BASE)/target/h:::VXWORKS:-r:::::",
  "vxworks-ppc750","ccppc:-ansi -nostdinc -DPPC750 -D_REENTRANT -fvolatile -fno-builtin -fno-for-scope -fsigned-char -Wall -msoft-float -mlongcall -DCPU=PPC604 -I\$(WIND_BASE)/target/h \$(DEBUG_FLAG):::VXWORKS:-r:::::",
-diff -u openssl-0.9.7d.old/Makefile.org openssl-0.9.7d.new/Makefile.org
 --- openssl-0.9.7d.old/Makefile.org	2004-03-12 22:33:04.000000000 +0100
 +++ openssl-0.9.7d.new/Makefile.org	2004-05-13 19:10:12.000000000 +0200
 @@ -173,7 +173,7 @@
  # we might set SHLIB_MARK to '$(SHARED_LIBS)'.
  SHLIB_MARK=
  
--DIRS=   crypto ssl $(SHLIB_MARK) apps test tools
+-DIRS=   crypto fips ssl $(SHLIB_MARK) sigs apps test tools
 +DIRS=   crypto ssl
- SHLIBDIRS= crypto ssl
+ SHLIBDIRS= fips crypto ssl
  
  # dirs in crypto to build
 @@ -883,4 +883,51 @@
