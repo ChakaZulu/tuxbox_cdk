@@ -48,7 +48,7 @@ if ( $#ARGV >= 1 )
 
     if ( $_[0] eq "make" )
     {
-      $output .= "make";
+      $output .= "\$\(MAKE\)";
       shift @_;
 
       foreach ( @_ )
@@ -58,7 +58,7 @@ if ( $#ARGV >= 1 )
     }
     elsif ( $_[0] eq "install" )
     {
-      $output .= "install";
+      $output .= "\$\(INSTALL\)";
       shift @_;
 
       foreach ( @_ )
