@@ -44,8 +44,9 @@ libdb2;2.7.7;db-2.7.7;db-2.7.7.tar.gz:libdb2.diff;extract:db-2.7.7.tar.gz;patch:
 libdvbpsi;0.1.1;libdvbpsi-0.1.1;libdvbpsi-0.1.1.tar.gz;extract:libdvbpsi-0.1.1.tar.gz
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
 libfreetype;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2;extract:freetype-2.0.9.tar.bz2;patch:libfreetype.diff
-libncurses;5.2;ncurses-5.2;ncurses-5.2.tar.gz:ncurses.diff;extract:ncurses-5.2.tar.gz;patch:ncurses.diff
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff
+libmad;0.14.2b;mad-0.14.2b;mad-0.14.2b.tar.gz;extract:mad-0.14.2b.tar.gz;patch:mad.diff
+libncurses;5.2;ncurses-5.2;ncurses-5.2.tar.gz:ncurses.diff;extract:ncurses-5.2.tar.gz;patch:ncurses.diff
 libnet;1.0.2a;Libnet-1.0.2a;libnet-1.0.2a.tar.gz:libnet.diff;extract:libnet-1.0.2a.tar.gz;patch:libnet.diff
 libnids;1.16;libnids-1.16;libnids-1.16.tar.gz;extract:libnids-1.16.tar.gz
 libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;patch:libpcap.diff
@@ -102,7 +103,6 @@ kaffeh;1.0.6;kaffe-1.0.6;kaffe-1.0.6.tar.gz:kaffeh.diff;extract:kaffe-1.0.6.tar.
 # fun stuff
 #
 gnuboy;1.0.3;gnuboy-1.0.3;gnuboy-1.0.3.tar.gz:gnuboy.diff;extract:gnuboy-1.0.3.tar.gz;patch:gnuboy.diff
-mad;0.14.2b;mad-0.14.2b;mad-0.14.2b.tar.gz;extract:mad-0.14.2b.tar.gz;patch:mad.diff
 scummvm;20020717;scummvm;scummvm-20020717.tar.bz2:scummvm.diff;extract:scummvm-20020717.tar.bz2;patch:scummvm.diff
 sdldoom;1.10;sdldoom-1.10;sdldoom-1.10.tar.gz;extract:sdldoom-1.10.tar.gz;patch:sdldoom.diff
 
