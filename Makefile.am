@@ -1569,7 +1569,7 @@ endif
 clean-local:
 	-$(MAKE) -C etc clean
 	-$(MAKE) -C $(appsdir) clean
-	-$(MAKE) -C $(bootdir)/ppcboot distclean
+	-$(MAKE) -C $(bootdir)/u-boot distclean
 	-$(MAKE) -C $(driverdir) clean \
 		KERNEL_LOCATION=$(buildprefix)/linux
 	-rm -f linux
@@ -1577,8 +1577,23 @@ clean-local:
 	-@CLEANUP@
 
 distclean-local:
-	-$(MAKE) -C etc distclean
+	-$(MAKE) -C root distclean
 	-$(MAKE) -C $(appsdir) distclean
+	-$(MAKE) -C $(appsdir)/dvb/configtools distclean
+	-$(MAKE) -C $(appsdir)/dvb/dvbsnoop distclean
+	-$(MAKE) -C $(appsdir)/dvb/dvb/libdvb++ distclean
+	-$(MAKE) -C $(appsdir)/dvb/tools distclean
+	-$(MAKE) -C $(appsdir)/dvb/zapit distclean
+	-$(MAKE) -C $(appsdir)/misc/libs distclean
+	-$(MAKE) -C $(appsdir)/misc/tools distclean
+	-$(MAKE) -C $(appsdir)/tuxbox/enigma distclean
+	-$(MAKE) -C $(appsdir)/tuxbox/funstuff distclean
+	-$(MAKE) -C $(appsdir)/tuxbox/lcars distclean
+	-$(MAKE) -C $(appsdir)/tuxbox/lcd distclean
+	-$(MAKE) -C $(appsdir)/tuxbox/libs distclean
+	-$(MAKE) -C $(appsdir)/tuxbox/libtuxbox distclean
+	-$(MAKE) -C $(appsdir)/tuxbox/neutrino distclean
+	-$(MAKE) -C $(appsdir)/tuxbox/tools distclean
 	-$(MAKE) -C $(bootdir)/u-boot distclean
 	-$(MAKE) -C $(driverdir) distclean KERNEL_LOCATION=$(buildprefix)/linux
 	-rm Makefile-archive
