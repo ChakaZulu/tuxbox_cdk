@@ -55,6 +55,7 @@ linux-2.4.22
 .libdvb
 .libdvb++
 .libdvbpsi
+.libdvbsi++
 .libexpat
 .libffi
 .libfreetype
