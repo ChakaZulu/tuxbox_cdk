@@ -9,8 +9,7 @@ echo "Starting inetd"
 inetd
 echo "Loading modules"
 depmod -a
-modprobe rtc
-modprobe info
+modprobe -a rtc info
 . /proc/bus/dbox.sh
 echo "mID: $mID"
 echo "feID: $feID"
@@ -21,17 +20,7 @@ echo "hwREV: $hwREV"
 echo "fpREV: $fpREV"
 echo "DEMOD: $DEMOD"
 
-modprobe saa7126
-modprobe input
-modprobe keybdev
-modprobe mousedev
-modprobe joydev
-modprobe evdev
-modprobe dvb_frontend
-modprobe dvb
-modprobe tuner
-modprobe graphic
-modprobe lcd
+modprobe -a saa7126 input keybdev mousedev joydev evdev dvb_frontend dvb tuner graphic lcd
 
 echo "Starting loopback device"
 ifconfig lo 127.0.0.1 up
