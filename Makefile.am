@@ -244,7 +244,8 @@ apps/Makefile: .libxml2 .freetype .libqte .curl
 	cd apps && ./autogen.sh && \
 	./configure \
 		--prefix=$(targetprefix) \
-		--with-driver=$(buildprefix)/driver
+		--with-driver=$(buildprefix)/driver \
+		--with-target=$(TARGET)
 
 .edvb: apps/Makefile
 	make -C apps/edvb all install
