@@ -21,7 +21,7 @@ uClibc-0.9.11.tar.bz2;
 #
 # root
 #
-busybox-0.60.3.tar.gz;ftp://busybox.net/busybox
+busybox-0.60.3.tar.bz2;ftp://busybox.net/busybox
 ifupdown-0.6.4-tuxbox.1.tar.bz2;
 modutils-2.4.16.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
