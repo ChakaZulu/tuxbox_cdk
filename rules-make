@@ -23,7 +23,7 @@ gcc;3.1;gcc-3.1;gcc-core-3.1.tar.gz:gcc-g++-3.1.tar.gz:gcc.diff;extract:gcc-core
 #
 # root
 #
-busybox;0.60.2;busybox-0.60.2;busybox-0.60.2.tar.gz:busybox-0.60.2.diff;extract:busybox-0.60.2.tar.gz;patch:busybox-0.60.2.diff
+busybox;0.60.3;busybox-0.60.3;busybox-0.60.3.tar.gz:busybox.diff;extract:busybox-0.60.3.tar.gz;patch:busybox.diff
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
 ifupdown;0.6.4;ifupdown-0.6.4-tuxbox.1;ifupdown-0.6.4-tuxbox.1.tar.bz2;extract:ifupdown-0.6.4-tuxbox.1.tar.bz2
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
@@ -47,7 +47,7 @@ libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;pa
 libpng;1.0.14;libpng-1.0.14;libpng-1.0.14.tar.gz:libpng.diff;extract:libpng-1.0.14.tar.gz;patch:libpng.diff
 libpopt;1.6.4;popt-1.6.4;popt-1.6.4.tar.gz;extract:popt-1.6.4.tar.gz
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff
-libreadline;4.2a;readline-4.2a;readline-4.2a.tar.gz;extract:readline-4.2a.tar.gz
+libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.4;SDL-1.2.4;SDL-1.2.4.tar.gz:sdl.diff;extract:SDL-1.2.4.tar.gz;patch:sdl.diff
 libsigc;1.0.4;libsigc++-1.0.4;libsigc++-1.0.4.tar.gz:libsigc.diff;extract:libsigc++-1.0.4.tar.gz;patch:libsigc.diff
 libxml2;2.4.22;libxml2-2.4.22;libxml2-2.4.22.tar.bz2;extract:libxml2-2.4.22.tar.bz2
