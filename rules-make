@@ -12,7 +12,7 @@
 #
 # core
 #
-linux;2.4.19;linux-2.4.19;linux-2.4.19.tar.bz2:linux-dbox2-2.4.19-2.diff.bz2;remove:linux;extract:linux-2.4.19.tar.bz2;patch:linux-dbox2-2.4.19-2.diff.bz2;link:linux-2.4.19:linux
+linux;2.4.20;linux-2.4.20;linux-2.4.20.tar.bz2:linux-dbox2-2.4.20-1.diff.bz2;remove:linux;extract:linux-2.4.20.tar.bz2;patch:linux-dbox2-2.4.20-1.diff.bz2;link:linux-2.4.20:linux
 binutils;2.13.90.0.16;binutils-2.13.90.0.16;binutils-2.13.90.0.16.tar.bz2;extract:binutils-2.13.90.0.16.tar.bz2
 bootstrap_gcc;3.2.1;gcc-3.2.1;gcc-core-3.2.1.tar.gz:gcc-core.diff;extract:gcc-core-3.2.1.tar.gz;patch:gcc-core.diff
 gcc;3.2.1;gcc-3.2.1;gcc-core-3.2.1.tar.gz:gcc-g++-3.2.1.tar.gz;extract:gcc-core-3.2.1.tar.gz;extract:gcc-g++-3.2.1.tar.gz
@@ -31,7 +31,6 @@ modutils;2.4.21;modutils-2.4.21;modutils-2.4.21.tar.bz2;extract:modutils-2.4.21.
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
 portmap;5;portmap-5;portmap-5.tar.bz2:portmap-5.diff;extract:portmap-5.tar.bz2;patch:portmap-5.diff
 procps;010114;procps-010114;procps-010114.tar.gz:procps.diff;extract:procps-010114.tar.gz;patch:procps.diff
-rsh;0.17;netkit-rsh-0.17;netkit-rsh-0.17.tar.gz;extract:netkit-rsh-0.17.tar.gz
 tinylogin;1.2;tinylogin-1.2;tinylogin-1.2.tar.gz:tinylogin.diff;extract:tinylogin-1.2.tar.gz;patch:tinylogin.diff
 
 #
@@ -40,22 +39,22 @@ tinylogin;1.2;tinylogin-1.2;tinylogin-1.2.tar.gz:tinylogin.diff;extract:tinylogi
 libboost;1.29.0;boost_1_29_0;boost_1_29_0.tar.gz;extract:boost_1_29_0.tar.gz
 libcommoncplusplus;0.99.7;commoncpp2-0.99.7;commoncpp2-0.99.7.tar.gz:libcommoncplusplus.diff;extract:commoncpp2-0.99.7.tar.gz;patch:libcommoncplusplus.diff
 libcrypto;0.9.6g;openssl-0.9.6g;openssl-0.9.6g.tar.gz:libcrypto.diff;extract:openssl-0.9.6g.tar.gz;patch:libcrypto.diff
-libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.bz2:libcurl.diff;extract:curl-7.10.1.tar.bz2;patch:libcurl.diff
+libcurl;7.10.2;curl-7.10.2;curl-7.10.2.tar.bz2:libcurl.diff;extract:curl-7.10.2.tar.bz2;patch:libcurl.diff
 libdirectfb;0.9.15;DirectFB-0.9.15;DirectFB-0.9.15.tar.gz;extract:DirectFB-0.9.15.tar.gz
 libdirectfbpp;0.9.15;DFB++-0.9.15;DFB++-0.9.15.tar.gz;extract:DFB++-0.9.15.tar.gz
 libdvbpsi;0.1.2;libdvbpsi-0.1.2;libdvbpsi-0.1.2.tar.gz;extract:libdvbpsi-0.1.2.tar.gz
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
-libfreetype;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2;extract:freetype-2.0.9.tar.bz2;patch:libfreetype.diff
+libfreetype;2.1.2;freetype-2.1.2;freetype-2.1.2.tar.bz2;extract:freetype-2.1.2.tar.bz2;patch:libfreetype.diff
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff
 libmad;0.14.2b;mad-0.14.2b;mad-0.14.2b.tar.gz;extract:mad-0.14.2b.tar.gz;patch:mad.diff
 libncurses;5.3;ncurses-5.3;ncurses-5.3.tar.gz;extract:ncurses-5.3.tar.gz
 libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;patch:libpcap.diff
 libpng;1.2.5;libpng-1.2.5;libpng-1.2.5.tar.gz:libpng.diff;extract:libpng-1.2.5.tar.gz;patch:libpng.diff
-libpopt;1.6.4;popt-1.6.4;popt-1.6.4.tar.gz;extract:popt-1.6.4.tar.gz
+libpopt;1.7;popt-1.7;popt-1.7.tar.gz;extract:popt-1.7.tar.gz
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.5;SDL-1.2.5;SDL-1.2.5.tar.gz:sdl.diff;extract:SDL-1.2.5.tar.gz;patch:sdl.diff
-libsigc;1.2.1;libsigc++-1.2.1;libsigc++-1.2.1.tar.gz:libsigc.diff;extract:libsigc++-1.2.1.tar.gz;patch:libsigc.diff
+libsigc;1.2.2;libsigc++-1.2.2;libsigc++-1.2.2.tar.gz:libsigc.diff;extract:libsigc++-1.2.2.tar.gz;patch:libsigc.diff
 libxml2;2.4.22;libxml2-2.4.22;libxml2-2.4.22.tar.bz2;extract:libxml2-2.4.22.tar.bz2
 libxmlparse;0.9.3;xmlparse-0.9.3;xmlparse_0.9.3.tar.bz2:xmlparse.diff;extract:xmlparse_0.9.3.tar.bz2;patch:xmlparse.diff
 libxmlwrapp;0.2.1;xmlwrapp-0.2.1;xmlwrapp-0.2.1.tar.gz;extract:xmlwrapp-0.2.1.tar.gz
@@ -75,6 +74,7 @@ ssh;3.5p1;openssh-3.5p1;openssh-3.5p1.tar.gz:ssh.diff;extract:openssh-3.5p1.tar.
 tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
 xrc;0.6.3;xrc-0.6.3;xrc-0.6.3.tar.gz:xrc.diff;extract:xrc-0.6.3.tar.gz;patch:xrc.diff
 thttpd;2.23beta1;thttpd-2.23beta1;thttpd-2.23beta1.tar.gz;extract:thttpd-2.23beta1.tar.gz;patch:thttpd.diff
+
 
 #
 # msttf

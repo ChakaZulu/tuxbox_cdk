@@ -9,8 +9,8 @@
 #
 # core
 #
-linux-2.4.19.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
-linux-dbox2-2.4.19-2.diff.bz2
+linux-2.4.20.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
+linux-dbox2-2.4.20-1.diff.bz2
 binutils-2.13.90.0.16.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
 gcc-core-3.2.1.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.2.1
 gcc-g++-3.2.1.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.2.1
@@ -37,18 +37,18 @@ vsftpd-1.0.1.tar.gz;ftp://ferret.lmh.ox.ac.uk/pub/linux
 # contrib libs
 #
 openssl-0.9.6g.tar.gz;http://www.openssl.org/source
-curl-7.10.1.tar.bz2;http://curl.haxx.se/download
-freetype-2.0.9.tar.bz2;http://telia.dl.sourceforge.net/sourceforge/freetype
+curl-7.10.2.tar.bz2;http://curl.haxx.se/download
+freetype-2.1.2.tar.bz2;http://telia.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.3.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
 libpng-1.2.5.tar.gz;http://www.libpng.org/pub/png/src
-popt-1.6.4.tar.gz;ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x
+popt-1.7.tar.gz;ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x
 libxml2-2.4.22.tar.bz2;ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml
 zlib-1.1.4.tar.bz2;ftp://ftp.info-zip.org/pub/infozip/zlib
 libffi-1.20.tar.gz;ftp://sourceware.cygnus.com/pub/libffi
 SDL-1.2.5.tar.gz;http://www.libsdl.org/release
 readline-4.3.tar.gz;ftp://ftp.gnu.org/gnu/readline
-libsigc++-1.2.1.tar.gz;http://switch.dl.sourceforge.net/sourceforge/libsigc
+libsigc++-1.2.2.tar.gz;http://switch.dl.sourceforge.net/sourceforge/libsigc
 libpcap-0.7.1.tar.gz;http://www.tcpdump.org/release
 commoncpp2-0.99.7.tar.gz;ftp://ftp.gnu.org/gnu/commonc++
 libdvbpsi-0.1.2.tar.gz;http://www.videolan.org/pub/videolan/libdvbpsi/0.1.2
