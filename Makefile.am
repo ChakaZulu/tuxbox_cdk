@@ -45,8 +45,8 @@ core: .directories .binutils .linuxdir .glibc .gcc
 	fi
 	@PREPARE_linux@
 	cat Patches/linux-$(KERNELVERSION).dbox.config > linux-$(KERNELVERSION)/.config
-	make -C linux-$(KERNELVERSION) oldconfig
-	make -C linux-$(KERNELVERSION) include/linux/version.h
+	make -C linux-$(KERNELVERSION) ARCH=ppc oldconfig
+	make -C linux-$(KERNELVERSION) ARCH=ppc include/linux/version.h
 	touch .linuxdir
 
 .binutils: @DEPENDS_binutils@
