@@ -1,6 +1,6 @@
 diff -Nru a/drivers/w1/Kconfig b/drivers/w1/Kconfig
---- a/drivers/w1/Kconfig	2005-01-18 22:16:49 +01:00
-+++ b/drivers/w1/Kconfig	2005-01-18 22:16:49 +01:00
+--- a/drivers/w1/Kconfig	2005-01-28 15:39:06 +01:00
++++ b/drivers/w1/Kconfig	2005-01-28 15:39:06 +01:00
 @@ -11,6 +11,16 @@
  	  This W1 support can also be built as a module.  If so, the module
  	  will be called wire.ko.
@@ -19,8 +19,8 @@ diff -Nru a/drivers/w1/Kconfig b/drivers/w1/Kconfig
  	tristate "Matrox G400 transport layer for 1-wire"
  	depends on W1 && PCI
 diff -Nru a/drivers/w1/Makefile b/drivers/w1/Makefile
---- a/drivers/w1/Makefile	2005-01-18 22:16:49 +01:00
-+++ b/drivers/w1/Makefile	2005-01-18 22:16:49 +01:00
+--- a/drivers/w1/Makefile	2005-01-28 15:39:06 +01:00
++++ b/drivers/w1/Makefile	2005-01-28 15:39:06 +01:00
 @@ -5,6 +5,7 @@
  obj-$(CONFIG_W1)	+= wire.o
  wire-objs		:= w1.o w1_int.o w1_family.o w1_netlink.o w1_io.o
@@ -31,7 +31,7 @@ diff -Nru a/drivers/w1/Makefile b/drivers/w1/Makefile
  obj-$(CONFIG_W1_SMEM)		+= w1_smem.o
 diff -Nru a/drivers/w1/dbox2_w1.c b/drivers/w1/dbox2_w1.c
 --- /dev/null	Wed Dec 31 16:00:00 196900
-+++ b/drivers/w1/dbox2_w1.c	2005-01-18 22:16:49 +01:00
++++ b/drivers/w1/dbox2_w1.c	2005-01-28 15:39:06 +01:00
 @@ -0,0 +1,60 @@
 +#include <linux/init.h>
 +#include <linux/module.h>
@@ -90,6 +90,69 @@ diff -Nru a/drivers/w1/dbox2_w1.c b/drivers/w1/dbox2_w1.c
 +	w1_remove_master_device(bus_master);
 +	kfree(bus_master);
 +}
-+
++MODULE_LICENSE("GPL");
 +module_init(dbox2_w1_init);
 +module_exit(dbox2_w1_exit);
+diff -Nru a/drivers/w1/w1.c b/drivers/w1/w1.c
+--- a/drivers/w1/w1.c	2005-01-28 15:39:06 +01:00
++++ b/drivers/w1/w1.c	2005-01-28 15:39:06 +01:00
+@@ -20,6 +20,7 @@
+  */
+ 
+ #include <asm/atomic.h>
++#include <asm/byteorder.h>
+ 
+ #include <linux/delay.h>
+ #include <linux/kernel.h>
+@@ -463,6 +464,9 @@
+ static void w1_search(struct w1_master *dev)
+ {
+ 	u64 last, rn, tmp;
++#ifdef __BIG_ENDIAN
++	struct w1_reg_num _tmp;
++#endif
+ 	int i, count = 0, slave_count;
+ 	int last_family_desc, last_zero, last_device;
+ 	int search_bit, id_bit, comp_bit, desc_bit;
+@@ -540,6 +544,13 @@
+ 
+ 		}
+ #endif
++		
++#ifdef __BIG_ENDIAN
++		__cpu_to_le64s(&rn);
++		_tmp.family = (rn>>56)&0xff;
++		_tmp.id = (rn>>8)&0xffffffffffffLL;
++		_tmp.crc = rn&0xff;
++#endif
+ 
+ 		if (desc_bit == last_zero)
+ 			last_device = 1;
+@@ -550,8 +561,12 @@
+ 		list_for_each(ent, &dev->slist) {
+ 			struct w1_reg_num *tmp;
+ 
++#ifdef __BIG_ENDIAN
++			tmp = &_tmp;
++#else
+ 			tmp = (struct w1_reg_num *) &rn;
+-
++#endif
++			
+ 			sl = list_entry(ent, struct w1_slave, w1_slave_entry);
+ 
+ 			if (sl->reg_num.family == tmp->family &&
+@@ -569,8 +584,13 @@
+ 		}
+ 
+ 		if (slave_count == dev->slave_count &&
++#ifdef __BIG_ENDIAN
++		    (rn & 0xff) == w1_calc_crc8((u8 *)&rn, 7)) {
++			w1_attach_slave_device(dev, &_tmp);
++#else
+ 		    ((rn >> 56) & 0xff) == w1_calc_crc8((u8 *)&rn, 7)) {
+ 			w1_attach_slave_device(dev, (struct w1_reg_num *) &rn);
++#endif
+ 		}
+ 	}
+ }
