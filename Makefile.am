@@ -1657,8 +1657,7 @@ endif
 EXTRA_DIST = \
 	rules-archive rules-archive.pl \
 	rules-install rules-install-flash rules-install.pl \
-	rules-make rules-make-cygwin rules-make.pl \
-	tuxbox.m4
+	rules-make rules-make-cygwin rules-make.pl
 
 ACLOCAL_AMFLAGS = -I .
 
