@@ -1184,7 +1184,7 @@ $(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
 	touch .dvbsnoop
 
 $(appsdir)/dvb/zapit/Makefile: .bootstrap .camd .misc_libs
-	cd $(appsdir)/dvb/zapit && $(CONFIGURE) --with-neutrino-source=$(appsdir)/tuxbox/neutrino
+	cd $(appsdir)/dvb/zapit && $(CONFIGURE_NEW) --with-neutrino-source=$(appsdir)/tuxbox/neutrino
 
 .zapit: $(appsdir)/dvb/zapit/Makefile
 	$(MAKE) -C $(appsdir)/dvb/zapit all install
