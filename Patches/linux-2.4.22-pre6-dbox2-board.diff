@@ -56,7 +56,7 @@ diff -Naur linux-2.4.22-pre6/arch/ppc/platforms/dbox2.h linux-2.4.22-pre6-dbox2/
 diff -Naur linux-2.4.22-pre6/include/asm-ppc/commproc.h linux-2.4.22-pre6-dbox2/include/asm-ppc/commproc.h
 --- linux-2.4.22-pre6/include/asm-ppc/commproc.h	2003-06-13 16:51:38.000000000 +0200
 +++ linux-2.4.22-pre6-dbox2/include/asm-ppc/commproc.h	2003-07-15 09:16:34.000000000 +0200
-@@ -466,6 +466,24 @@
+@@ -466,6 +466,23 @@
  #define SICR_ENET_CLKRT	((uint)0x0000003d)
  #endif	/* CONFIG_RPXCLASSIC */
  
@@ -69,8 +69,7 @@ diff -Naur linux-2.4.22-pre6/include/asm-ppc/commproc.h linux-2.4.22-pre6-dbox2/
 +#define PA_ENET_RCLK	((ushort)0x0200)
 +#define PA_ENET_TCLK	((ushort)0x0800)
 +
-+#define PB_ENET_TENA	((ushort)0x0002)
-+
++#define PC_ENET_TENA	((ushort)0x0002)
 +#define PC_ENET_CLSN	((ushort)0x0040)
 +#define PC_ENET_RENA	((ushort)0x0080)
 +
