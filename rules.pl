@@ -172,7 +172,7 @@ sub process_make_prepare (@)
     }
     elsif ( $_[0] eq "link" )
     {
-      $output .= "( ln -s " . $_[1] . " " . $_[2] . " || /bin/true )";
+      $output .= "( ln -sf " . $_[1] . " " . $_[2] . " || /bin/true )";
     }
     elsif ( $_[0] eq "dircreate" )
     {
@@ -180,7 +180,7 @@ sub process_make_prepare (@)
     }
     else
     {
-      die "can't recognise @_";
+      die "can't recognize @_";
     }
   }
 
@@ -217,7 +217,7 @@ sub process_make ($$$)
   }
   else
   {
-    die "can't recognise $arg" if not $args{$arg};
+    die "can't recognize $arg" if not $args{$arg};
 
     $output = &{$args{$arg}} (@rules);
   }
@@ -264,7 +264,7 @@ sub process_install_rule ($)
   }
   else
   {
-    die "can't recognise rule \"$rule\"";
+    die "can't recognize rule \"$rule\"";
   }
 
   return $output;
