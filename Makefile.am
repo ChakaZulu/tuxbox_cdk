@@ -1670,7 +1670,7 @@ $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 
 	cp -pa $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
 	$(MKLIBS) --target $(target) --ldlib ld.so.1 --libc-extras-dir $(targetprefix)/lib/libc_pic \
 		-d $(flashprefix)/root/lib \
-		-D -L $(targetprefix)/lib \
+		-D -L $(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins \
 		--root $(flashprefix)/root \
 		`find $(flashprefix)/root/bin/ -path "*bin/?*"` \
 		`find $(flashprefix)/root/lib/ -name "libnss_*"` \
