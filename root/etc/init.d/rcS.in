@@ -22,7 +22,6 @@ fi
 @TARGETRULESET_FLASH_TRUE@test -f /var/lib/modules/`uname -r`/modules.dep || \
 depmod -ae
 
-modprobe rtc
 modprobe info
 
 . /etc/profile
