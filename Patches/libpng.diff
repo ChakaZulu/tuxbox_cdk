@@ -40,6 +40,7 @@ diff -Naur libpng-1.2.5/Makefile libpng-1.2.5new/Makefile
 +
 +LDFLAGS=-L. -Wl,-rpath,. -L$(ZLIBLIB) -Wl,-rpath,$(ZLIBLIB) -lpng12 -lz -lm
 +LDFLAGS_A=-L$(ZLIBLIB) -Wl,-rpath,$(ZLIBLIB) libpng.a -lz -lm
++LDFLAGS_L=-lz -lm
 +
 +RANLIB=ranlib
 +#RANLIB=echo
@@ -103,7 +104,8 @@ diff -Naur libpng-1.2.5/Makefile libpng-1.2.5new/Makefile
 +$(LIBNAME).so.$(PNGVER): $(OBJSDLL)
 +	$(CC) -shared -Wl,-soname,$(LIBNAME).so.$(PNGMAJ) \
 +	-o $(LIBNAME).so.$(PNGVER) \
-+	$(OBJSDLL)
++	$(OBJSDLL) \
++	$(LDFLAGS_L)
 +
 +pngtest: pngtest.o $(LIBNAME).so
 +	$(CC) -o pngtest $(CFLAGS) pngtest.o $(LDFLAGS)
