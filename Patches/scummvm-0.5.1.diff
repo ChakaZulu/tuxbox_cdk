@@ -1,0 +1,43 @@
+diff -Naur scummvm-0.5.1.orig/Makefile.common scummvm-0.5.1/Makefile.common
+--- scummvm-0.5.1.orig/Makefile.common	Sat Jul 19 16:55:58 2003
++++ scummvm-0.5.1/Makefile.common	Sat Oct  4 01:35:53 2003
+@@ -87,18 +87,18 @@
+ DEPDIRS = $(addsuffix /$(DEPDIR),$(MODULES))
+ DEPFILES = $(wildcard $(addsuffix /*.d,$(DEPDIRS)))
+ 
+-.cpp.o:
+-	$(MKDIR) $(*D)/$(DEPDIR)
+-	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2" $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+-	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
+-	$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
+-	$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
++#.cpp.o:
++#	$(MKDIR) $(*D)/$(DEPDIR)
++#	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2" $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
++#	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
++#	$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
++#	$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
+ 
+ # If you even have GCC 3.x, you can use this build rule, which is safer; the above
+ # rule can get you into a bad state if you Ctrl-C it in the wrong moment.
+-#.cpp.o:
+-#	$(MKDIR) $(*D)/$(DEPDIR)
+-#	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d",-MQ,"$@",-MP $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
++.cpp.o:
++	$(MKDIR) $(*D)/$(DEPDIR)
++	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d",-MQ,"$@",-MP $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+ 
+ -include $(DEPFILES) /dev/null
+ 
+diff -Naur scummvm-0.5.1.orig/backends/sdl/sdl.cpp scummvm-0.5.1/backends/sdl/sdl.cpp
+--- scummvm-0.5.1.orig/backends/sdl/sdl.cpp	Mon Jul 21 02:01:05 2003
++++ scummvm-0.5.1/backends/sdl/sdl.cpp	Sat Oct  4 02:30:36 2003
+@@ -123,7 +123,7 @@
+ 	// Create the surface that contains the scaled graphics in 16 bit mode
+ 	//
+ 
+-	_hwscreen = SDL_SetVideoMode(_screenWidth * _scaleFactor, (_adjustAspectRatio ? 240 : _screenHeight) * _scaleFactor, 16, 
++	_hwscreen = SDL_SetVideoMode(640, 480, 16, 
+ 		_full_screen ? (SDL_FULLSCREEN|SDL_SWSURFACE) : SDL_SWSURFACE
+ 	);
+ 	if (_hwscreen == NULL)

@@ -978,6 +978,7 @@ fun: .gnuboy .scummvm .sdldoom
 	cd @DIR_scummvm@ && \
 		$(MAKE) \
 			$(BUILDENV) \
+			AR='$(target)-ar cru' \
 			DEFINES="-DUNIX" && \
 		@INSTALL_scummvm@
 	@CLEANUP_scummvm@

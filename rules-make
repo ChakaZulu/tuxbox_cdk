@@ -100,7 +100,7 @@ kaffeh;1.0.6;kaffe-1.0.6;kaffe-1.0.6.tar.gz:kaffeh.diff;extract:kaffe-1.0.6.tar.
 # fun stuff
 #
 gnuboy;1.0.3;gnuboy-1.0.3;gnuboy-1.0.3.tar.gz:gnuboy.diff;extract:gnuboy-1.0.3.tar.gz;patch:gnuboy.diff
-scummvm;0.3.0b;scummvm-0.3.0;scummvm_0.3.0b-src.tar.bz2:scummvm.diff;extract:scummvm_0.3.0b-src.tar.bz2
+scummvm;0.5.1;scummvm-0.5.1;scummvm-0.5.1.tar.bz2:scummvm-0.5.1.diff;extract:scummvm-0.5.1.tar.bz2;patch:scummvm-0.5.1.diff
 sdldoom;1.10;sdldoom-1.10;sdldoom-1.10.tar.gz;extract:sdldoom-1.10.tar.gz;patch:sdldoom.diff
 
 #
