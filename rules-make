@@ -13,7 +13,7 @@
 # core
 #
 linux;2.4.2;linux-2.4.2;linux-2.4.2.tar.bz2:linux-2.4.2.dbox.diff;remove:linux;extract:linux-2.4.2.tar.bz2;move:linux:linux-2.4.2;patch:linux-2.4.2.dbox.diff;link:linux-2.4.2:linux
-binutils;2.11.93.0.2;binutils-2.11.93.0.2;binutils-2.11.93.0.2.tar.bz2;extract:binutils-2.11.93.0.2.tar.bz2
+binutils;2.11.92.0.12.3;binutils-2.11.92.0.12.3;binutils-2.11.92.0.12.3.tar.bz2;extract:binutils-2.11.92.0.12.3.tar.bz2
 bootstrap_gcc;3.0.4;gcc-3.0.4;gcc-core-3.0.4.tar.gz:gcc-core.diff;extract:gcc-core-3.0.4.tar.gz;patch:gcc-core.diff
 glibc;2.2.3;glibc-2.2.3;glibc-2.2.3.tar.bz2:glibc-linuxthreads-2.2.3.tar.bz2:glibc.diff;extract:glibc-2.2.3.tar.bz2;dirextract:glibc-linuxthreads-2.2.3.tar.bz2;patch:glibc.diff
 gcc;3.0.4;gcc-3.0.4;gcc-core-3.0.4.tar.gz:gcc-g++-3.0.4.tar.gz;extract:gcc-core-3.0.4.tar.gz;extract:gcc-g++-3.0.4.tar.gz

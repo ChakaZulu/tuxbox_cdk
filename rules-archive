@@ -10,7 +10,7 @@
 # core
 #
 linux-2.4.2.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
-binutils-2.11.93.0.2.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
+binutils-2.11.92.0.12.3.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
 gcc-core-3.0.4.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.0.4
 gcc-g++-3.0.4.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.0.4
 glibc-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
