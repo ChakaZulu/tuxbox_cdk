@@ -66,7 +66,7 @@ endif
 			--prefix=$(hostprefix) \
 			--disable-nls \
 			--nfp && \
-		make all install
+		make all all-gprof install
 	@CLEANUP_binutils@
 	touch .binutils
 
@@ -316,7 +316,7 @@ libs: \
 
 .libcommoncplusplus: .bootstrap @DEPENDS_libcommoncplusplus@
 	@PREPARE_libcommoncplusplus@
-	cd @DIR_libcommoncplusplus@ && \
+	cd @DIR_libcommoncplusplus@ && autoconf2.50 &&\
 		CC=$(target)-gcc CXX=$(target)-g++ \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
@@ -474,7 +474,7 @@ libs: \
 
 .libreadline: .bootstrap @DEPENDS_libreadline@
 	@PREPARE_libreadline@
-	cd @DIR_libreadline@ && \
+	cd @DIR_libreadline@ && autoconf &&\
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
