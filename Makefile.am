@@ -1253,7 +1253,7 @@ driver-clean:
 	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		distclean
-	-rm .driver
+	-rm (DEPDIR)/driver
 
 $(driverdir)/directfb/Makefile: bootstrap libdirectfb
 	cd $(driverdir)/directfb && \
@@ -1343,7 +1343,7 @@ $(DEPDIR)/libdvbsi++: $(appsdir)/dvb/libdvbsi++/config.status
 $(appsdir)/dvb/zapit/config.status: bootstrap misc_libs
 	cd $(appsdir)/dvb/zapit && $(CONFIGURE)
 
-$(DEPDIR)/zapit: $(appsdir)/dvb/zapit/config.status .config
+$(DEPDIR)/zapit: $(appsdir)/dvb/zapit/config.status config
 	$(MAKE) -C $(appsdir)/dvb/zapit all install
 	touch $@
 
