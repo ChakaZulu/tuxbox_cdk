@@ -383,6 +383,8 @@ $(DEPDIR)/libcrypto: bootstrap @DEPENDS_libcrypto@
 		sh ./Configure.tuxbox shared no-hw no-idea no-md2 no-md4 no-mdc2 no-rc2 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
 		$(MAKE) depend all && \
 		@INSTALL_libcrypto@
+	rm -f $(targetprefix)/lib/pkgconfig/openssl.pc && \
+	sed -e "s,^prefix=,prefix=$(targetprefix)," <  > $(targetprefix)/lib/pkgconfig/openssl.pc && \
 	@CLEANUP_libcrypto@
 	touch $@
 
