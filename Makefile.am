@@ -980,10 +980,12 @@ dvb_apps: .dvbstream .dvbtext .dvbtune
 		CXXFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
+			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
 			--disable-dvd \
-			--with-dvb=$(driverdir)/include && \
+			--with-dvb=$(driverdir)/include \
+			--with-dvbpsi=$(targetprefix) && \
 		make all && \
 		@INSTALL_vls@
 	@CLEANUP_vls@
