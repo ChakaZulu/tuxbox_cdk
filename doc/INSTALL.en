@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.23 2004/02/16 08:01:43 diemade Exp $
+# $Id: INSTALL.en,v 1.24 2004/03/28 16:23:37 diemade Exp $
 #
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
@@ -111,5 +111,5 @@ IV. Building the CDK:
 
  - Note that you can skip single make targets by typing
 
-   you@pc:~/tuxbox-cvs/cdk$ touch .package_name
+   you@pc:~/tuxbox-cvs/cdk$ touch .deps/package_name
 
