@@ -20,6 +20,7 @@ core: .directories .binutils .linuxdir .glibc .gcc
 
 .directories:
 	$(INSTALL) -d $(targetprefix)/bin
+	$(INSTALL) -d $(targetprefix)/boot
 	$(INSTALL) -d $(targetprefix)/dev
 	$(INSTALL) -d $(targetprefix)/etc
 	$(INSTALL) -d $(targetprefix)/include
@@ -1022,8 +1023,6 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 
 boot: .ppcboot .linuxkernel .driver
 
-KERNELGCC = `if [ -f $(hostprefix)/bin/$(target)-gcc-2.95 ]; then echo $(target)-gcc-2.95; else echo $(target)-gcc; fi`
-
 .ppcboot: .bootstrap $(bootdir)/ppcboot/Makefile
 if HOSTRULESET_CYGWIN
 	$(MAKE) -C $(bootdir)/ppcboot dbox2_config CYGWIN=1
@@ -1047,7 +1046,7 @@ endif
 	fi
 	$(MAKE) -C @DIR_linux@ zImage modules \
 		ARCH=ppc \
-		CROSS_COMPILE=$(target)- CC=$(KERNELGCC)
+		CROSS_COMPILE=$(target)-
 	$(MAKE) -C @DIR_linux@ modules_install \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)- \
@@ -1056,12 +1055,12 @@ endif
 	$(hostprefix)/bin/mkimage \
 		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
 		-a 00000000 -e 00000000 \
-		-d `if [ -f @DIR_linux@/arch/ppc/coffboot/vmlinux.gz ]; then echo @DIR_linux@/arch/ppc/coffboot/vmlinux.gz; else echo @DIR_linux@/arch/ppc/boot/images/vmlinux.gz; fi` \
+		-d @DIR_linux@/arch/ppc/boot/images/vmlinux.gz \
 		$(bootprefix)/kernel-cdk;
 
-	$(INSTALL) -d $(targetprefix)/boot
 	$(INSTALL) -m644 @DIR_linux@/vmlinux $(targetprefix)/boot/vmlinux-$(KERNELVERSION)
 	$(INSTALL) -m644 @DIR_linux@/System.map $(targetprefix)/boot/System.map-$(KERNELVERSION)
+
 if MAINTAINER_MODE
 else
 	$(MAKE) -C @DIR_linux@ clean
@@ -1123,8 +1122,6 @@ CONFIGURE_OPTS = \
 if MAINTAINER_MODE
 CONFIGURE_OPTS_MAINTAINER = \
 	--enable-maintainer-mode
-#	--enable-maintainer-mode \
-#        --enable-use-libxml2
 endif
 
 if TARGETRULESET_FLASH
@@ -1320,11 +1317,7 @@ $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
 	$(INSTALL) $(targetprefix)/sbin/insmod $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/depmod $(flashprefix)/root/sbin
 	for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
-	ln -s ../../boot $(flashprefix)/root/var/tuxbox/boot
-	ln -s ../lib $(flashprefix)/root/var/lib
-	ln -s ../tmp $(flashprefix)/root/var/tmp
-	ln -s ../tmp $(flashprefix)/root/var/run
-	ln -s var/tmp $(flashprefix)/root/root
+	ln -s /tmp $(flashprefix)/root/var/run
 	@touch $(flashprefix)/.flash
 
 flash-ftpd: $(flashprefix)/.part_ftpd
