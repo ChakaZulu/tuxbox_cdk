@@ -2002,6 +2002,8 @@ $(flashprefix)/.root-roimg: $(flashprefix)/.lib
 	fi
 	ln -sf /var/etc/issue.net $(flashprefix)/cramfs/etc/issue.net
 	cp -p $(targetprefix)/share/tuxbox/*.xml $(flashprefix)/cramfs/share/tuxbox
+	rm $(flashprefix)/cramfs/etc/passwd
+	ln -sf /var/etc/passwd $(flashprefix)/cramfs/etc/passwd
 	rm $(flashprefix)/cramfs/bin/camd2
 	ln -sf /var/bin/camd2 $(flashprefix)/cramfs/bin/camd2
 	$(FAKEROOT) $(MKCRAMFS) -p -n "0106`date +%Y%m%d%H%M`" $(flashprefix)/cramfs/ $(flashprefix)/root-cramfs.img
@@ -2029,6 +2031,7 @@ $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
 	$(INSTALL) -d $(flashprefix)/jffs2/plugins
 	$(INSTALL) -d $(flashprefix)/jffs2/tuxbox/plugins
 	$(INSTALL) -d $(flashprefix)/jffs2/bin
+	cp -p $(flashprefix)/root/etc/passwd $(flashprefix)/jffs2/etc/passwd
 	cp -p $(flashprefix)/root/bin/camd2 $(flashprefix)/jffs2/bin/camd2 
 	@if [ ! -e $(flashprefix)/root/var/tuxbox/config/scart.conf ]; then \
 		cp -pa $(appsdir)/tuxbox/neutrino/daemons/controld/scart.conf $(flashprefix)/root/var/tuxbox/config ; \
