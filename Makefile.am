@@ -1155,6 +1155,15 @@ $(appsdir)/dvb/dvbsnoop/config.status: .bootstrap
 	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
 	touch $@
 
+# dvb/libdvb++
+
+$(appsdir)/dvb/libdvb++/config.status: .bootstrap
+	cd $(appsdir)/dvb/libdvb++ && $(CONFIGURE) CPPFLAGS="$(CPPFLAGS) -I$(driverdir)/dvb/include"
+
+.libdvb++: $(appsdir)/dvb/libdvb++/config.status
+	$(MAKE) -C $(appsdir)/dvb/libdvb++ all install
+	touch $@
+
 # dvb/zapit
 
 $(appsdir)/dvb/zapit/config.status: .bootstrap .misc_libs
