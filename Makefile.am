@@ -347,11 +347,11 @@ libs_optional: \
 			--host=$(target) \
 			--prefix= \
 			--enable-linux-input \
-			--enable-jpeg \
-			--disable-sdl && \
+			--disable-sdl \
+			--with-gfxdrivers=none && \
 		$(MAKE) all && \
-		sed -e "s,^libdir='/lib',libdir='$(targetprefix)/lib'," <  src/.libs/libdirectfb.la > libdirectfb.la.tmp && \
-		mv libdirectfb.la.tmp src/.libs/libdirectfb.la && \
+		sed -e "s,^libdir='/lib',libdir='$(targetprefix)/lib'," <  src/libdirectfb.la > libdirectfb.la.tmp && \
+		mv libdirectfb.la.tmp src/libdirectfb.la && \
 		@INSTALL_libdirectfb@
 	@CLEANUP_libdirectfb@
 	touch $@
