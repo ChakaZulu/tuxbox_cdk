@@ -14,7 +14,7 @@ while ( <RULES> )
     @_ = split ( /;/, $_ );
     my $file = $_[0];
     $head .= " Archive/" . $file;
-    $output .= "Archive/" . $file . ":\n\twget -c -P Archive http://tuxbox.berlios.de/pub/tuxbox/cdk/src/" . $file;
+    $output .= "Archive/" . $file . ":\n\tfalse";
     shift @_;
     foreach ( @_ )
     {
@@ -27,6 +27,7 @@ while ( <RULES> )
         $output .= " || \\\n\twget -c --passive-ftp -P Archive " . $_ . "/" . $file;
       }
     }
+    $output .= " || \\\n\twget -c -P Archive http://tuxbox.berlios.de/pub/tuxbox/cdk/src/" . $file;
     $output .= "\n\n";
   }
 }

@@ -148,6 +148,10 @@ AC_ARG_WITH(hostapsdir,
 	[  --with-hostappsdir=DIR  hostapps dir from cvs [[[CVS/]hostapps]]],
 	[hostappsdir="$with_driverdir"],[hostappsdir="NONE"])
 
+AC_ARG_WITH(gnu_server,
+        [  --with-gnuserver=ADDRESS   the gnu server for gnu-stuff (without ftp://)],
+        [gnu_server="$with_gnuserver"],[gnu_server="NONE"])
+
 if test "$cvsdir" = "NONE"; then
 	if test "$appsdir" = "NONE"; then
 		appsdir="$buildprefix/apps"
@@ -174,6 +178,10 @@ else
 	if test "$hostappsdir" = "NONE"; then
 		hostappsdir="$cvsdir/hostapps"
 	fi
+fi
+
+if test "$gnu_server" = "NONE"; then
+	gnu_server="ftp.gnu.org/gnu"
 fi
 
 AC_MSG_CHECKING([for apps directory])
@@ -212,6 +220,7 @@ AC_SUBST(appsdir)
 AC_SUBST(bootdir)
 AC_SUBST(driverdir)
 AC_SUBST(hostappsdir)
+AC_SUBST(gnu_server)
 
 if test "$TARGETRULESET" = "flash"; then
 	AC_PATH_PROG(MKLIBS,mklibs,no)
@@ -377,6 +386,7 @@ Appsdir:		$appsdir
 Bootdir:		$bootdir
 Driverdir:		$driverdir
 Hostappsdir:		$hostappsdir
+GNU-Server:		$gnu_server
 ])
 
 AC_OUTPUT([
