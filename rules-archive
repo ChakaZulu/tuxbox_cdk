@@ -34,7 +34,7 @@ vsftpd-1.0.1.tar.gz;ftp://ferret.lmh.ox.ac.uk/pub/linux
 #
 # contrib libs
 #
-openssl-0.9.7a.tar.gz;http://www.openssl.org/source
+openssl-0.9.7b.tar.gz;http://www.openssl.org/source
 curl-7.10.1.tar.bz2;http://curl.haxx.se/download
 freetype-2.1.4rc2.tar.bz2;http://telia.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.3.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
