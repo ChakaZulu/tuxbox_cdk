@@ -441,6 +441,36 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz
 #   contrib apps
 #
 
+.console_data: .bootstrap @DEPENDS_console_data@
+	@PREPARE_console_data@
+	cd @DIR_console_data@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--with-main_compressor=gzip && \
+		@INSTALL_console_data@
+	@CLEANUP_console_data@
+	touch .console_data
+
+.console_tools: .bootstrap @DEPENDS_console_tools@
+	@PREPARE_console_tools@
+	cd @DIR_console_tools@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--disable-nls && \
+		@INSTALL_console_tools@
+	@CLEANUP_console_tools@
+	touch .console_tools
+
 .fbset: .bootstrap @DEPENDS_fbset@
 	@PREPARE_fbset@
 	cd @DIR_fbset@ && \
@@ -918,7 +948,7 @@ distclean-local:
 	-rm .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .tools .tuxtxt .zapit
 	-rm .liblcddisplay .libmd5sum .libnet .libucodes
-	-rm .fbset .ssh
+	-rm .console_data .console_tools .fbset .ssh
 	-rm .dvbstream .dvbtext .dvbtune
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)

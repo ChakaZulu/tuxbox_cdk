@@ -49,6 +49,8 @@ libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff;extract:zlib-1.1.4.tar.bz2;pa
 #
 # contrib apps
 #
+console_data;1999.08.29;console-data-1999.08.29;console-data_1999.08.29.orig.tar.gz;extract:console-data_1999.08.29.orig.tar.gz
+console_tools;0.2.3;console-tools-0.2.3;console-tools-0.2.3.tar.gz;extract:console-tools-0.2.3.tar.gz
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 ssh;3.0.2p1;openssh-3.0.2p1;openssh-3.0.2p1.tar.gz:ssh.diff;extract:openssh-3.0.2p1.tar.gz;patch:ssh.diff
 

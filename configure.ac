@@ -208,6 +208,8 @@ TUXBOX_RULES_MAKE(libz)
 #
 # contrib apps
 #
+TUXBOX_RULES_MAKE(console_data)
+TUXBOX_RULES_MAKE(console_tools)
 TUXBOX_RULES_MAKE(fbset)
 TUXBOX_RULES_MAKE(ssh)
 

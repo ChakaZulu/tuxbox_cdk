@@ -49,6 +49,8 @@ readline-4.2a.tar.gz;ftp://ftp.gnu.org/gnu/readline
 #
 # contrib apps
 #
+console-data_1999.08.29.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/c/console-data
+console-tools-0.2.3.tar.gz;http://prdownloads.sourceforge.net/lct
 fbset-2.1.tar.gz;http://home.tvd.be/cr26864/Linux/fbdev
 openssh-3.0.2p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 
