@@ -69,7 +69,9 @@ if [ $MODEL_ID -eq 1 ]; then
 	# A/V
 	modprobe avia_gt
 	modprobe avia_gt_fb
+	modprobe avia_gt_lirc
 	modprobe avia_gt_oss
+	modprobe avia_gt_v4l2
 	modprobe avia_av
 
 	modprobe avia_napi
