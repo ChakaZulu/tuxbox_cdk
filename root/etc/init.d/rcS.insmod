@@ -1,0 +1,171 @@
+#!/bin/sh
+# $Id: rcS.insmod,v 1.1 2005/01/30 22:26:10 alexh Exp $
+# Alles mounten
+mount -a
+
+# Pfade setzen
+export PATH=/var/bin:/sbin:/bin:/var/plugins
+
+# Pfad zu insmod und den Modules festlegen
+export IM="/sbin/insmod"
+export MD="/lib/modules/"$(uname -r)"/misc"
+
+# Zeitformat setzen
+. /etc/profile
+
+# Den Hostnamen (dbox) festlegen
+hostname -F /etc/hostname
+
+
+# Module laden
+  $IM $MD/event.o
+  $IM $MD/tuxbox.o
+  
+  # DVB core
+  $IM $MD/dvb-core.o dvb_shutdown_timeout=0
+
+  # I2C core
+  $IM $MD/dbox2_i2c.o
+
+  # Frontprozessor
+  $IM $MD/dbox2_fp.o
+  if [ -e /var/etc/.oldrc ]; then
+   $IM $MD/dbox2_fp_input.o disable_new_rc=1
+  else
+   $IM $MD/dbox2_fp_input.o
+  fi
+
+  # Misc IO
+  $IM $MD/avs.o
+  $IM $MD/saa7126.o
+
+# Daten ueber die Box einlesen
+  VENDOR=`/bin/tuxinfo -V`
+  VENDOR_ID=`/bin/tuxinfo -v`
+  MODEL=`/bin/tuxinfo -M`
+  MODEL_ID=`/bin/tuxinfo -m`
+  SUBMODEL=`/bin/tuxinfo -S`
+  SUBMODEL_ID=`/bin/tuxinfo -s`
+
+  # Und ausgeben
+  echo "Detected STB:"
+  echo "  Vendor: $VENDOR"
+  echo "  Model: $MODEL $SUBMODEL"
+
+# rcS nur fuer die D-BOX2
+if [ ! $MODEL_ID -eq 1 ]; then
+  halt
+fi
+
+# CAM laden
+if [ $VENDOR_ID -eq 2 ]; then
+  # Philips
+  insmod cam mio=0xC040000 firmware=/var/tuxbox/ucodes/cam-alpha.bin
+else
+  # Andere 
+  insmod cam mio=0xC000000 firmware=/var/tuxbox/ucodes/cam-alpha.bin
+fi
+
+# Weitere Module
+  $IM $MD/dvb_i2c_bridge.o
+  $IM $MD/avia_napi.o
+  $IM $MD/cam_napi.o
+  $IM $MD/dbox2_fp_napi.o
+
+# Falls Netzwerk konfiguriert
+  ifup -a &
+  test -x /sbin/inetd && inetd
+  test -x /sbin/sshd &&/etc/init.d/start_sshd &
+
+# Internetzeit holen
+if [ -e /var/etc/.rdate ]; then
+ /sbin/rdate time.fu-berlin.de
+fi
+
+# Weitere Module
+  # Zum abschalten des Watchdogs bei AVIA 500
+  if [ -e /var/etc/.no_watchdog ]; then
+    $IM $MD/avia_av.o firmware=/var/tuxbox/ucodes no_watchdog=1
+  else
+    $IM $MD/avia_av.o firmware=/var/tuxbox/ucodes
+  fi;
+
+  # Bei Avia_gt hw_sections und nowatchdog abfragen
+  GTOPTS=""
+  if [ -e /var/etc/.hw_sections ]; then
+    GTOPTS="hw_sections=0 "
+  fi;
+  if [ -e /var/etc/.no_enxwatchdog ]; then
+    GTOPTS="${GTOPTS}no_watchdog=1 "
+  fi;
+
+  $IM $MD/avia_gt.o ucode=/var/tuxbox/ucodes/ucode.bin ${GTOPTS}
+
+
+  $IM $MD/avia_gt_fb.o console_transparent=0
+  $IM $MD/lcd.o
+  $IM $MD/avia_gt_lirc.o
+  $IM $MD/avia_gt_oss.o
+  $IM $MD/avia_gt_v4l2.o
+
+  # Je nach Typ weitere Module laden
+  if [ $VENDOR_ID -eq 1 ]; then
+    #Nokia
+    if [ -e /var/etc/.cable ]; then
+     $IM -f $MD/cable_ves1820.o
+    else
+     $IM $MD/ves1820.o
+    fi
+    $IM $MD/ves1x93.o board_type=1
+  elif [ $VENDOR_ID -eq 2 ]; then
+    # Philips
+    if [ -e /var/etc/.tda80xx.o  ]; then
+     $IM $MD/tda80xx.o
+    else
+     $IM $MD/tda8044h.o
+    fi
+  elif [ $VENDOR_ID -eq 3 ]; then
+    # Sagem
+    $IM $MD/at76c651.o
+    $IM $MD/ves1x93.o board_type=2
+  else
+    echo "Hersteller unbekannt"
+    halt
+  fi
+
+  $IM $MD/avia_av_napi.o
+
+  $IM $MD/avia_gt_napi.o
+  $IM $MD/dvb2eth.o
+
+  if [ -e /var/etc/.aviaext ]; then
+    $IM $MD/aviaEXT.o
+  fi
+
+
+  # Lirc konfigurieren, falls Datei existiert
+  if [ -e /var/tuxbox/config/lirc/lircd.conf ]; then
+    /sbin/lircd /var/tuxbox/config/lirc/lircd.conf
+  fi;
+
+  # Telnet-Begruessung schreiben
+  echo "$VENDOR $MODEL - Kernel %r (%t)." > /etc/issue.net
+
+# compatibility links
+  ln -sf demux0 /dev/dvb/adapter0/demux1
+  ln -sf dvr0 /dev/dvb/adapter0/dvr1
+  ln -sf fb/0 /dev/fb0
+
+test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
+
+if [ -e /var/etc/init.d/rcS.local ]; then
+	. /var/etc/init.d/rcS.local
+elif [ -e /etc/init.d/rcS.local ]; then
+	. /etc/init.d/rcS.local
+fi
+
+# tuxmail-Daemon starten
+if [ -e /var/etc/.tuxmaild ]; then
+  /bin/tuxmaild
+fi
+
