@@ -1,0 +1,95 @@
+diff -Naur linux-2.4.23-pre4.orig/arch/ppc/boot/simple/embed_config.c linux-2.4.23-pre4/arch/ppc/boot/simple/embed_config.c
+--- linux-2.4.23-pre4.orig/arch/ppc/boot/simple/embed_config.c	2003-09-13 02:50:27.000000000 +0200
++++ linux-2.4.23-pre4/arch/ppc/boot/simple/embed_config.c	2003-09-13 03:06:48.000000000 +0200
+@@ -755,3 +755,11 @@
+ }
+ #endif
+ 
++/* weak function for boards which don't need to build the
++ * board info struct because they are using ppcboot/u-boot.
++ */
++void __attribute__ ((weak))
++embed_config(bd_t **bdp)
++{
++}
++
+diff -Naur linux-2.4.23-pre4.orig/arch/ppc/config.in linux-2.4.23-pre4/arch/ppc/config.in
+--- linux-2.4.23-pre4.orig/arch/ppc/config.in	2003-09-13 02:50:27.000000000 +0200
++++ linux-2.4.23-pre4/arch/ppc/config.in	2003-09-19 00:09:08.000000000 +0200
+@@ -80,6 +80,7 @@
+ 	 RPX-Classic	CONFIG_RPXCLASSIC	\
+ 	 BSE-IP		CONFIG_BSEIP		\
+ 	 FADS		CONFIG_FADS		\
++	 DBOX2		CONFIG_DBOX2		\
+ 	 TQM823L	CONFIG_TQM823L		\
+ 	 TQM850L	CONFIG_TQM850L		\
+ 	 TQM855L	CONFIG_TQM855L		\
+diff -Naur linux-2.4.23-pre4.orig/arch/ppc/platforms/dbox2.h linux-2.4.23-pre4/arch/ppc/platforms/dbox2.h
+--- linux-2.4.23-pre4.orig/arch/ppc/platforms/dbox2.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.23-pre4/arch/ppc/platforms/dbox2.h	2003-09-13 03:06:48.000000000 +0200
+@@ -0,0 +1,24 @@
++/*
++ * D-BOX2 board specific definitions
++ * 
++ * Copyright (c) 2001-2002 Florian Schirmer (jolt@tuxbox.org)
++ */
++
++#ifndef __MACH_DBOX2_H
++#define __MACH_DBOX2_H
++
++#include <linux/config.h>
++ 
++#include <asm/ppcboot.h>
++
++#define	DBOX2_IMMR_BASE	0xFF000000	/* phys. addr of IMMR */
++#define	DBOX2_IMAP_SIZE	(64 * 1024)	/* size of mapped area */
++
++#define	IMAP_ADDR	DBOX2_IMMR_BASE	/* physical base address of IMMR area */
++#define IMAP_SIZE	DBOX2_IMAP_SIZE	/* mapped size of IMMR area */
++
++/* We don't use the 8259.
++*/
++#define NR_8259_INTS	0
++
++#endif	/* __MACH_DBOX2_H */
+diff -Naur linux-2.4.23-pre4.orig/include/asm-ppc/commproc.h linux-2.4.23-pre4/include/asm-ppc/commproc.h
+--- linux-2.4.23-pre4.orig/include/asm-ppc/commproc.h	2003-09-13 02:49:53.000000000 +0200
++++ linux-2.4.23-pre4/include/asm-ppc/commproc.h	2003-09-19 00:22:58.000000000 +0200
+@@ -466,6 +466,23 @@
+ #define SICR_ENET_CLKRT	((uint)0x0000003d)
+ #endif	/* CONFIG_RPXCLASSIC */
+ 
++/***  D-BOX2  ***********************************************/
++
++#ifdef CONFIG_DBOX2
++
++#define PA_ENET_RXD	((ushort)0x0004)
++#define PA_ENET_TXD	((ushort)0x0008)
++#define PA_ENET_RCLK	((ushort)0x0200)
++#define PA_ENET_TCLK	((ushort)0x0800)
++
++#define PC_ENET_TENA	((ushort)0x0002)
++#define PC_ENET_CLSN	((ushort)0x0040)
++#define PC_ENET_RENA	((ushort)0x0080)
++
++#define SICR_ENET_MASK	((uint)0x0000ff00)
++#define SICR_ENET_CLKRT	((uint)0x00003d00)
++#endif	/* CONFIG_DBOX2 */
++
+ /***  TQM823L, TQM850L  ***********************************************/
+ 
+ #if defined(CONFIG_TQM823L) || defined(CONFIG_TQM850L)
+diff -Naur linux-2.4.23-pre4.orig/include/asm-ppc/mpc8xx.h linux-2.4.23-pre4/include/asm-ppc/mpc8xx.h
+--- linux-2.4.23-pre4.orig/include/asm-ppc/mpc8xx.h	2003-06-13 16:51:38.000000000 +0200
++++ linux-2.4.23-pre4/include/asm-ppc/mpc8xx.h	2003-09-19 00:19:05.000000000 +0200
+@@ -32,6 +32,10 @@
+ #include <platforms/rpxclassic.h>
+ #endif
+ 
++#ifdef CONFIG_DBOX2
++#include <platforms/dbox2.h>
++#endif
++
+ #if defined(CONFIG_TQM8xxL)
+ #include <platforms/tqm8xx.h>
+ #endif
