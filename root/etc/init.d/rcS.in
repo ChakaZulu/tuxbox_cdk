@@ -7,6 +7,8 @@ mount -a
 echo -n >/etc/network/ifstate
 ifup -a
 
+test -O /bin/tinylogin || chown root.root /bin/tinylogin
+
 @TARGETRULESET_FLASH_TRUE@if test -d /share/tuxbox/image/var ; then
 @TARGETRULESET_FLASH_TRUE@for i in `cd /share/tuxbox/image/var ; find . -type d` ; do test -d /var/$i || mkdir -p /var/$i ; done
 @TARGETRULESET_FLASH_TRUE@for i in `cd /share/tuxbox/image/var ; find . -type f` ; do test -f /var/$i || cp -a /share/tuxbox/image/var/$i /var/$i ; done
