@@ -1,6 +1,6 @@
 diff -Naur xrc-0.6.3.orig/Makefile.am xrc-0.6.3/Makefile.am
 --- xrc-0.6.3.orig/Makefile.am	Wed Mar 27 20:49:37 2002
-+++ xrc-0.6.3/Makefile.am	Wed May  8 01:56:51 2002
++++ xrc-0.6.3/Makefile.am	Thu May  9 21:03:03 2002
 @@ -5,25 +5,11 @@
  
  EXTRA_DIST = cfgparser.h .xrcrc images/technisat/*
@@ -30,7 +30,7 @@ diff -Naur xrc-0.6.3.orig/Makefile.am xrc-0.6.3/Makefile.am
  
 diff -Naur xrc-0.6.3.orig/Makefile.in xrc-0.6.3/Makefile.in
 --- xrc-0.6.3.orig/Makefile.in	Wed Mar 27 20:51:58 2002
-+++ xrc-0.6.3/Makefile.in	Wed May  8 01:56:55 2002
++++ xrc-0.6.3/Makefile.in	Thu May  9 21:03:03 2002
 @@ -1,6 +1,7 @@
 -# Makefile.in generated automatically by automake 1.4 from Makefile.am
 +# Makefile.in generated automatically by automake 1.5 from Makefile.am.
@@ -657,9 +657,34 @@ diff -Naur xrc-0.6.3.orig/Makefile.in xrc-0.6.3/Makefile.in
  # Tell versions [3.59,3.63) of GNU make to not export all variables.
  # Otherwise a system limit (for SysV at least) may be exceeded.
  .NOEXPORT:
+diff -Naur xrc-0.6.3.orig/config.h.in xrc-0.6.3/config.h.in
+--- xrc-0.6.3.orig/config.h.in	Wed Mar 27 20:50:25 2002
++++ xrc-0.6.3/config.h.in	Thu May  9 21:04:12 2002
+@@ -1,10 +1,10 @@
+ /* config.h.in.  Generated automatically from configure.in by autoheader.  */
+-/* 	$Id: acconfig.h,v 1.4 2002/03/27 19:49:19 columbus Exp $	 */
++/*	$Id: acconfig.h,v 1.4 2002/03/27 19:49:19 columbus Exp $	 */
+ 
+ #undef WANT_QPE
+ 
+ /* location of daemon's socket */
+-#define LIRCD "/dev/null"
++#define LIRCD "/dev/lircd"
+ 
+ /* default filename of lirc applications' configfile */
+ #define LIRCCFGFILE ".lircrc"
+@@ -31,7 +31,7 @@
+ #undef VERSION
+ 
+ /* Define if the X Window System is missing or not being used. */
+-#undef X_DISPLAY_MISSING
++#define X_DISPLAY_MISSING
+ 
+ /* Define if `lex' declares `yytext' as a `char *' by default, not a `char[]'.
+    */
 diff -Naur xrc-0.6.3.orig/configure xrc-0.6.3/configure
 --- xrc-0.6.3.orig/configure	Wed Mar 27 20:49:51 2002
-+++ xrc-0.6.3/configure	Wed May  8 01:57:01 2002
++++ xrc-0.6.3/configure	Thu May  9 21:03:03 2002
 @@ -1,119 +1,28 @@
  #! /bin/sh
 +
@@ -8542,7 +8567,7 @@ diff -Naur xrc-0.6.3.orig/configure xrc-0.6.3/configure
  
 diff -Naur xrc-0.6.3.orig/configure.in xrc-0.6.3/configure.in
 --- xrc-0.6.3.orig/configure.in	Wed Mar 27 20:49:36 2002
-+++ xrc-0.6.3/configure.in	Wed May  8 01:56:02 2002
++++ xrc-0.6.3/configure.in	Thu May  9 21:03:03 2002
 @@ -1,5 +1,5 @@
  dnl Process this file with autoconf to produce a configure script.
 -dnl 
