@@ -1,9 +1,9 @@
-diff -urN linux-2.4.22/arch/ppc/kernel/m8xx_setup.c linux-2.4.22-keyboard/arch/ppc/kernel/m8xx_setup.c
---- linux-2.4.22/arch/ppc/kernel/m8xx_setup.c	Sat Jul 12 10:12:52 2003
-+++ linux-2.4.22-keyboard/arch/ppc/kernel/m8xx_setup.c	Sat Jul 12 10:13:32 2003
-@@ -59,6 +59,14 @@
- extern unsigned long find_available_memory(void);
+diff -Naur linux-2.4.25/arch/ppc/kernel/m8xx_setup.c linux-2.4.25-keyboard/arch/ppc/kernel/m8xx_setup.c
+--- linux-2.4.25/arch/ppc/kernel/m8xx_setup.c	2004-01-01 18:46:50.000000000 +0100
++++ linux-2.4.25-keyboard/arch/ppc/kernel/m8xx_setup.c	2004-01-01 18:51:42.000000000 +0100
+@@ -60,6 +60,14 @@
  extern void m8xx_cpm_reset(uint);
+ extern void m8xx_wdt_handler_install(bd_t *bp);
  
 +#if defined(CONFIG_DBOX2) && defined(CONFIG_VT)
 +extern int pckbd_setkeycode(unsigned int scancode, unsigned int keycode);
@@ -16,7 +16,7 @@ diff -urN linux-2.4.22/arch/ppc/kernel/m8xx_setup.c linux-2.4.22-keyboard/arch/p
  void __init
  m8xx_setup_arch(void)
  {
-@@ -462,10 +470,17 @@
+@@ -413,10 +421,17 @@
  	ppc_md.find_end_of_memory	= m8xx_find_end_of_memory;
  	ppc_md.setup_io_mappings	= m8xx_map_io;
  
@@ -34,9 +34,9 @@ diff -urN linux-2.4.22/arch/ppc/kernel/m8xx_setup.c linux-2.4.22-keyboard/arch/p
  	ppc_md.kbd_leds			= NULL;
  	ppc_md.kbd_init_hw		= NULL;
  	ppc_md.ppc_kbd_sysrq_xlate	= NULL;
-diff -urN linux-2.4.22/include/linux/pc_keyb.h linux-2.4.22-keyboard/include/linux/pc_keyb.h
---- linux-2.4.22/include/linux/pc_keyb.h	Mon Oct 11 19:15:40 1999
-+++ linux-2.4.22-keyboard/include/linux/pc_keyb.h	Sat Jul 12 10:13:32 2003
+diff -Naur linux-2.4.25/include/linux/pc_keyb.h linux-2.4.25-keyboard/include/linux/pc_keyb.h
+--- linux-2.4.25/include/linux/pc_keyb.h	1999-10-11 19:15:40.000000000 +0200
++++ linux-2.4.25-keyboard/include/linux/pc_keyb.h	2004-01-01 18:51:42.000000000 +0100
 @@ -11,7 +11,7 @@
   */
  

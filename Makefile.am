@@ -64,9 +64,9 @@ endif
 	fi
 	@PREPARE_linux@
 if TARGETRULESET_FLASH
-	cat Patches/linux-2.4.22-dbox2-flash.config > @DIR_linux@/.config
+	cat Patches/linux-$(KERNELVERSION).config-flash > @DIR_linux@/.config
 else
-	cat Patches/linux-2.4.22-dbox2.config > @DIR_linux@/.config
+	cat Patches/linux-$(KERNELVERSION).config > @DIR_linux@/.config
 endif
 	$(MAKE) -C @DIR_linux@ oldconfig \
 		ARCH=ppc

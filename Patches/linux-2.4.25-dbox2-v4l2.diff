@@ -1,6 +1,7 @@
-diff -urN linux-2.4.22/drivers/media/video/Makefile linux-2.4.22-v4l2/drivers/media/video/Makefile
---- linux-2.4.22/drivers/media/video/Makefile	Fri Jun 13 16:51:34 2003
-+++ linux-2.4.22-v4l2/drivers/media/video/Makefile	Sat Jul 12 10:14:34 2003
+20_v4l2
+diff -u linux-2.4.24-rc1/drivers/media/video/Makefile linux/drivers/media/video/Makefile
+--- linux-2.4.24-rc1/drivers/media/video/Makefile	2004-01-07 13:45:24.000000000 +0100
++++ linux/drivers/media/video/Makefile	2004-01-07 13:53:09.000000000 +0100
 @@ -25,13 +25,14 @@
  # All of the (potential) objects that export symbols.
  # This list comes from 'grep -l EXPORT_SYMBOL *.[hc]'.
@@ -18,10 +19,10 @@ diff -urN linux-2.4.22/drivers/media/video/Makefile linux-2.4.22-v4l2/drivers/me
  
  obj-$(CONFIG_BUS_I2C) += i2c-old.o
  obj-$(CONFIG_VIDEO_BT848) += bttv.o msp3400.o tvaudio.o \
-diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drivers/media/video/v4l1-compat.c
---- linux-2.4.22/drivers/media/video/v4l1-compat.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.22-v4l2/drivers/media/video/v4l1-compat.c	Sat Jul 12 10:14:34 2003
-@@ -0,0 +1,976 @@
+diff -u linux-2.4.24-rc1/drivers/media/video/v4l1-compat.c linux/drivers/media/video/v4l1-compat.c
+--- linux-2.4.24-rc1/drivers/media/video/v4l1-compat.c	2004-01-07 13:53:09.000000000 +0100
++++ linux/drivers/media/video/v4l1-compat.c	2004-01-07 13:53:09.000000000 +0100
+@@ -0,0 +1,1027 @@
 +/*
 + *	Video for Linux Two
 + *	Backward Compatibility Layer
@@ -45,7 +46,6 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +
 +#include <linux/config.h>
 +
-+#include <linux/version.h>
 +#include <linux/init.h>
 +#include <linux/module.h>
 +#include <linux/types.h>
@@ -76,7 +76,7 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +MODULE_LICENSE("GPL");
 +
 +#define dprintk(fmt, arg...)	if (debug) \
-+	printk(KERN_DEBUG "v4l1-compat: " fmt, ## arg)
++	printk(KERN_DEBUG "v4l1-compat: " fmt , ## arg)
 +
 +/*
 + *	I O C T L   T R A N S L A T I O N
@@ -104,8 +104,10 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	{
 +		ctrl2.id = qctrl2.id;
 +		err = drv(inode, file, VIDIOC_G_CTRL, &ctrl2);
-+		if (err < 0)
++		if (err < 0) {
 +			dprintk("VIDIOC_G_CTRL: %d\n",err);
++			return 0;
++		}
 +		return ((ctrl2.value - qctrl2.minimum) * 65535
 +			 + (qctrl2.maximum - qctrl2.minimum) / 2)
 +			/ (qctrl2.maximum - qctrl2.minimum);
@@ -151,6 +153,8 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	return 0;
 +}
 +
++/* ----------------------------------------------------------------- */
++
 +static int palette2pixelformat[] = {
 +	[VIDEO_PALETTE_GREY]    = V4L2_PIX_FMT_GREY,
 +	[VIDEO_PALETTE_RGB555]  = V4L2_PIX_FMT_RGB555,
@@ -169,16 +173,16 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	[VIDEO_PALETTE_YUV422P] = V4L2_PIX_FMT_YUV422P,
 +};
 +
-+static int
-+palette_to_pixelformat(int palette)
++static unsigned int
++palette_to_pixelformat(unsigned int palette)
 +{
-+	if (palette < sizeof(palette2pixelformat)/sizeof(int))
++	if (palette < ARRAY_SIZE(palette2pixelformat))
 +		return palette2pixelformat[palette];
 +	else
 +		return 0;
 +}
 +
-+static int
++static unsigned int
 +pixelformat_to_palette(int pixelformat)
 +{
 +	int	palette = 0;
@@ -223,11 +227,14 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	return palette;
 +}
 +
++/* ----------------------------------------------------------------- */
++
 +static int poll_one(struct file *file)
 +{
 +	int retval = 1;
-+	poll_table wait_table, *table;
-+	
++	poll_table *table;
++	poll_table wait_table;
++
 +	poll_initwait(&wait_table);
 +	table = &wait_table;
 +	for (;;) {
@@ -243,7 +250,7 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +		}
 +		schedule();
 +	}
-+	current->state = TASK_RUNNING;
++	set_current_state(TASK_RUNNING);
 +	poll_freewait(&wait_table);
 +	return retval;
 +}
@@ -293,6 +300,7 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	return 0;
 +}
 +
++/* ----------------------------------------------------------------- */
 +
 +/*
 + *	This function is exported.
@@ -304,25 +312,36 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +			   void			*arg,
 +			   v4l2_kioctl          drv)
 +{
-+	int err;
++	struct v4l2_capability  *cap2 = NULL;
++	struct v4l2_format	*fmt2 = NULL;
++
++	struct v4l2_framebuffer fbuf2;
++	struct v4l2_input	input2;
++	struct v4l2_tuner	tun2;
++	struct v4l2_standard	std2;
++	struct v4l2_frequency   freq2;
++	struct v4l2_audio	aud2;
++	struct v4l2_queryctrl	qctrl2;
++	struct v4l2_buffer	buf2;
++	v4l2_std_id    		sid;
++	int i, err = 0;
 +
 +	switch (cmd) {
 +	case VIDIOCGCAP:	/* capability */
 +	{
 +		struct video_capability *cap = arg;
-+		struct v4l2_capability cap2;
-+		struct v4l2_framebuffer fbuf2;
-+		
++
++		cap2 = kmalloc(sizeof(*cap2),GFP_KERNEL);
 +		memset(cap, 0, sizeof(*cap));
-+		memset(&cap2, 0, sizeof(cap2));
++		memset(cap2, 0, sizeof(*cap2));
 +		memset(&fbuf2, 0, sizeof(fbuf2));
 +
-+		err = drv(inode, file, VIDIOC_QUERYCAP, &cap2);
++		err = drv(inode, file, VIDIOC_QUERYCAP, cap2);
 +		if (err < 0) {
 +			dprintk("VIDIOCGCAP / VIDIOC_QUERYCAP: %d\n",err);
 +			break;
 +		}
-+		if (cap2.capabilities & V4L2_CAP_VIDEO_OVERLAY) {
++		if (cap2->capabilities & V4L2_CAP_VIDEO_OVERLAY) {
 +			err = drv(inode, file, VIDIOC_G_FBUF, &fbuf2);
 +			if (err < 0) {
 +				dprintk("VIDIOCGCAP / VIDIOC_G_FBUF: %d\n",err);
@@ -331,16 +350,16 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +			err = 0;
 +		}
 +
-+		memcpy(cap->name, cap2.card, 
-+		       min(sizeof(cap->name), sizeof(cap2.card)));
++		memcpy(cap->name, cap2->card, 
++		       min(sizeof(cap->name), sizeof(cap2->card)));
 +		cap->name[sizeof(cap->name) - 1] = 0;
-+		if (cap2.capabilities & V4L2_CAP_VIDEO_CAPTURE)
++		if (cap2->capabilities & V4L2_CAP_VIDEO_CAPTURE)
 +			cap->type |= VID_TYPE_CAPTURE;
-+		if (cap2.capabilities & V4L2_CAP_TUNER)
++		if (cap2->capabilities & V4L2_CAP_TUNER)
 +			cap->type |= VID_TYPE_TUNER;
-+		if (cap2.capabilities & V4L2_CAP_VBI_CAPTURE)
++		if (cap2->capabilities & V4L2_CAP_VBI_CAPTURE)
 +			cap->type |= VID_TYPE_TELETEXT;
-+		if (cap2.capabilities & V4L2_CAP_VIDEO_OVERLAY)
++		if (cap2->capabilities & V4L2_CAP_VIDEO_OVERLAY)
 +			cap->type |= VID_TYPE_OVERLAY;
 +		if (fbuf2.capability & V4L2_FBUF_CAP_LIST_CLIPPING)
 +			cap->type |= VID_TYPE_CLIPPING;
@@ -356,7 +375,6 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCGFBUF: /*  get frame buffer  */
 +	{
 +		struct video_buffer	*buffer = arg;
-+		struct v4l2_framebuffer	fbuf2;
 +
 +		err = drv(inode, file, VIDIOC_G_FBUF, &fbuf2);
 +		if (err < 0) {
@@ -398,7 +416,6 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCSFBUF: /*  set frame buffer  */
 +	{
 +		struct video_buffer	*buffer = arg;
-+		struct v4l2_framebuffer	fbuf2;
 +
 +		memset(&fbuf2, 0, sizeof(fbuf2));
 +		fbuf2.base       = buffer->base;
@@ -430,36 +447,36 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCGWIN: /*  get window or capture dimensions  */
 +	{
 +		struct video_window	*win = arg;
-+		struct v4l2_format	fmt2;
 +
++		fmt2 = kmalloc(sizeof(*fmt2),GFP_KERNEL);
 +		memset(win,0,sizeof(*win));
-+		memset(&fmt2,0,sizeof(fmt2));
++		memset(fmt2,0,sizeof(*fmt2));
 +
-+		fmt2.type = V4L2_BUF_TYPE_VIDEO_OVERLAY;
-+		err = drv(inode, file, VIDIOC_G_FMT, &fmt2);
++		fmt2->type = V4L2_BUF_TYPE_VIDEO_OVERLAY;
++		err = drv(inode, file, VIDIOC_G_FMT, fmt2);
 +		if (err < 0)
 +			dprintk("VIDIOCGWIN / VIDIOC_G_WIN: %d\n",err);
 +		if (err == 0) {
-+			win->x         = fmt2.fmt.win.w.left;
-+			win->y         = fmt2.fmt.win.w.top;
-+			win->width     = fmt2.fmt.win.w.width;
-+			win->height    = fmt2.fmt.win.w.height;
-+			win->chromakey = fmt2.fmt.win.chromakey;
++			win->x         = fmt2->fmt.win.w.left;
++			win->y         = fmt2->fmt.win.w.top;
++			win->width     = fmt2->fmt.win.w.width;
++			win->height    = fmt2->fmt.win.w.height;
++			win->chromakey = fmt2->fmt.win.chromakey;
 +			win->clips     = NULL;
 +			win->clipcount = 0;
 +			break;
 +		}
 +
-+		fmt2.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-+		err = drv(inode, file, VIDIOC_G_FMT, &fmt2);
++		fmt2->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
++		err = drv(inode, file, VIDIOC_G_FMT, fmt2);
 +		if (err < 0) {
 +			dprintk("VIDIOCGWIN / VIDIOC_G_FMT: %d\n",err);
 +			break;
 +		}
 +		win->x         = 0;
 +		win->y         = 0;
-+		win->width     = fmt2.fmt.pix.width;
-+		win->height    = fmt2.fmt.pix.height;
++		win->width     = fmt2->fmt.pix.width;
++		win->height    = fmt2->fmt.pix.height;
 +		win->chromakey = 0;
 +		win->clips     = NULL;
 +		win->clipcount = 0;
@@ -468,41 +485,54 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCSWIN: /*  set window and/or capture dimensions  */
 +	{
 +		struct video_window	*win = arg;
-+		struct v4l2_format	fmt2;
++		int err1,err2;
 +
-+		memset(&fmt2,0,sizeof(fmt2));
-+		fmt2.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-+		err = drv(inode, file, VIDIOC_G_FMT, &fmt2);
-+		if (err < 0)
++		fmt2 = kmalloc(sizeof(*fmt2),GFP_KERNEL);
++		memset(fmt2,0,sizeof(*fmt2));
++		fmt2->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
++		err1 = drv(inode, file, VIDIOC_G_FMT, fmt2);
++		if (err1 < 0)
 +			dprintk("VIDIOCSWIN / VIDIOC_G_FMT: %d\n",err);
-+		if (err == 0) {
-+			fmt2.fmt.pix.width  = win->width;
-+			fmt2.fmt.pix.height = win->height;
-+			fmt2.fmt.pix.field  = V4L2_FIELD_ANY;
-+			err = drv(inode, file, VIDIOC_S_FMT, &fmt2);
++		if (err1 == 0) {
++			fmt2->fmt.pix.width  = win->width;
++			fmt2->fmt.pix.height = win->height;
++			fmt2->fmt.pix.field  = V4L2_FIELD_ANY;
++			fmt2->fmt.pix.bytesperline = 0;
++			err = drv(inode, file, VIDIOC_S_FMT, fmt2);
 +			if (err < 0)
 +				dprintk("VIDIOCSWIN / VIDIOC_S_FMT #1: %d\n",
 +					err);
-+			win->width  = fmt2.fmt.pix.width;
-+			win->height = fmt2.fmt.pix.height;
++			win->width  = fmt2->fmt.pix.width;
++			win->height = fmt2->fmt.pix.height;
 +		}
 +
-+		memset(&fmt2,0,sizeof(fmt2));
-+		fmt2.type = V4L2_BUF_TYPE_VIDEO_OVERLAY;
-+		fmt2.fmt.win.w.left    = win->x;
-+		fmt2.fmt.win.w.top     = win->y;
-+		fmt2.fmt.win.w.width   = win->width;
-+		fmt2.fmt.win.w.height  = win->height;
-+		fmt2.fmt.win.chromakey = win->chromakey;
-+		fmt2.fmt.win.clips     = (void *)win->clips;
-+		fmt2.fmt.win.clipcount = win->clipcount;
-+		err = drv(inode, file, VIDIOC_S_FMT, &fmt2);
-+		if (err < 0)
++		memset(fmt2,0,sizeof(*fmt2));
++		fmt2->type = V4L2_BUF_TYPE_VIDEO_OVERLAY;
++		fmt2->fmt.win.w.left    = win->x;
++		fmt2->fmt.win.w.top     = win->y;
++		fmt2->fmt.win.w.width   = win->width;
++		fmt2->fmt.win.w.height  = win->height;
++		fmt2->fmt.win.chromakey = win->chromakey;
++		fmt2->fmt.win.clips     = (void *)win->clips;
++		fmt2->fmt.win.clipcount = win->clipcount;
++		err2 = drv(inode, file, VIDIOC_S_FMT, fmt2);
++		if (err2 < 0)
 +			dprintk("VIDIOCSWIN / VIDIOC_S_FMT #2: %d\n",err);
++
++		if (err1 != 0 && err2 != 0)
++			err = err1;
 +		break;
 +	}
 +	case VIDIOCCAPTURE: /*  turn on/off preview  */
 +	{
++		int *on = arg;
++
++		if (0 == *on) {
++			/* dirty hack time.  But v4l1 has no STREAMOFF
++			 * equivalent in the API, and this one at
++			 * least comes close ... */
++			drv(inode, file, VIDIOC_STREAMOFF, NULL);
++		}
 +		err = drv(inode, file, VIDIOC_OVERLAY, arg);
 +		if (err < 0)
 +			dprintk("VIDIOCCAPTURE / VIDIOC_PREVIEW: %d\n",err);
@@ -511,8 +541,6 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCGCHAN: /*  get input information  */
 +	{
 +		struct video_channel	*chan = arg;
-+		struct v4l2_input	input2;
-+		v4l2_std_id    		sid;
 +
 +		memset(&input2,0,sizeof(input2));
 +		input2.index = chan->channel;
@@ -554,8 +582,8 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCSCHAN: /*  set input  */
 +	{
 +		struct video_channel *chan = arg;
-+		v4l2_std_id    	     sid = 0;
-+		
++
++		sid = 0;
 +		err = drv(inode, file, VIDIOC_S_INPUT, &chan->channel);
 +		if (err < 0)
 +			dprintk("VIDIOCSCHAN / VIDIOC_S_INPUT: %d\n",err);
@@ -580,7 +608,6 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCGPICT: /*  get tone controls & partial capture format  */
 +	{
 +		struct video_picture	*pict = arg;
-+		struct v4l2_format	fmt2;
 +
 +		pict->brightness = get_v4l_control(inode, file,
 +						   V4L2_CID_BRIGHTNESS,drv);
@@ -593,25 +620,24 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +		pict->whiteness = get_v4l_control(inode, file,
 +						  V4L2_CID_WHITENESS, drv);
 +
-+		memset(&fmt2,0,sizeof(fmt2));
-+		fmt2.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-+		err = drv(inode, file, VIDIOC_G_FMT, &fmt2);
++		fmt2 = kmalloc(sizeof(*fmt2),GFP_KERNEL);
++		memset(fmt2,0,sizeof(*fmt2));
++		fmt2->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
++		err = drv(inode, file, VIDIOC_G_FMT, fmt2);
 +		if (err < 0) {
 +			dprintk("VIDIOCGPICT / VIDIOC_G_FMT: %d\n",err);
 +			break;
 +		}
 +#if 0 /* FIXME */
-+		pict->depth   = fmt2.fmt.pix.depth;
++		pict->depth   = fmt2->fmt.pix.depth;
 +#endif
 +		pict->palette = pixelformat_to_palette(
-+			fmt2.fmt.pix.pixelformat);
++			fmt2->fmt.pix.pixelformat);
 +		break;
 +	}
 +	case VIDIOCSPICT: /*  set tone controls & partial capture format  */
 +	{
 +		struct video_picture	*pict = arg;
-+		struct v4l2_format	fmt2;
-+		struct v4l2_framebuffer	fbuf2;
 +
 +		set_v4l_control(inode, file,
 +				V4L2_CID_BRIGHTNESS, pict->brightness, drv);
@@ -624,16 +650,17 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +		set_v4l_control(inode, file,
 +				V4L2_CID_WHITENESS, pict->whiteness, drv);
 +
-+		memset(&fmt2,0,sizeof(fmt2));
-+		fmt2.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-+		err = drv(inode, file, VIDIOC_G_FMT, &fmt2);
++		fmt2 = kmalloc(sizeof(*fmt2),GFP_KERNEL);
++		memset(fmt2,0,sizeof(*fmt2));
++		fmt2->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
++		err = drv(inode, file, VIDIOC_G_FMT, fmt2);
 +		if (err < 0)
 +			dprintk("VIDIOCSPICT / VIDIOC_G_FMT: %d\n",err);
-+		if (fmt2.fmt.pix.pixelformat != 
++		if (fmt2->fmt.pix.pixelformat != 
 +		    palette_to_pixelformat(pict->palette)) {
-+			fmt2.fmt.pix.pixelformat = palette_to_pixelformat(
++			fmt2->fmt.pix.pixelformat = palette_to_pixelformat(
 +				pict->palette);
-+			err = drv(inode, file, VIDIOC_S_FMT, &fmt2);
++			err = drv(inode, file, VIDIOC_S_FMT, fmt2);
 +			if (err < 0)
 +				dprintk("VIDIOCSPICT / VIDIOC_S_FMT: %d\n",err);
 +		}
@@ -655,10 +682,6 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCGTUNER: /*  get tuner information  */
 +	{
 +		struct video_tuner	*tun = arg;
-+		struct v4l2_tuner	tun2;
-+		struct v4l2_standard	std2;
-+		v4l2_std_id    		sid;
-+		int i;
 +
 +		memset(&tun2,0,sizeof(tun2));
 +		err = drv(inode, file, VIDIOC_G_TUNER, &tun2);
@@ -706,22 +729,22 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +		tun->signal = tun2.signal;
 +		break;
 +	}
-+#if 0 /* FIXME */
 +	case VIDIOCSTUNER: /*  select a tuner input  */
 +	{
-+		int	i;
-+
++#if 0 /* FIXME */
 +		err = drv(inode, file, VIDIOC_S_INPUT, &i);
 +		if (err < 0)
 +			dprintk("VIDIOCSTUNER / VIDIOC_S_INPUT: %d\n",err);
++#else
++		err = 0;
++#endif
 +		break;
 +	}
-+#endif
 +	case VIDIOCGFREQ: /*  get frequency  */
 +	{
 +		int *freq = arg;
-+		struct v4l2_frequency freq2;
-+		
++
++		freq2.tuner = 0;
 +		err = drv(inode, file, VIDIOC_G_FREQUENCY, &freq2);
 +		if (err < 0)
 +			dprintk("VIDIOCGFREQ / VIDIOC_G_FREQUENCY: %d\n",err);
@@ -732,8 +755,8 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCSFREQ: /*  set frequency  */
 +	{
 +		int *freq = arg;
-+		struct v4l2_frequency freq2;
 +
++		freq2.tuner = 0;
 +		drv(inode, file, VIDIOC_G_FREQUENCY, &freq2);
 +		freq2.frequency = *freq;
 +		err = drv(inode, file, VIDIOC_S_FREQUENCY, &freq2);
@@ -744,10 +767,6 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCGAUDIO: /*  get audio properties/controls  */
 +	{
 +		struct video_audio	*aud = arg;
-+		struct v4l2_audio	aud2;
-+		struct v4l2_queryctrl	qctrl2;
-+		struct v4l2_tuner	tun2;
-+		int			v;
 +
 +		err = drv(inode, file, VIDIOC_G_AUDIO, &aud2);
 +		if (err < 0) {
@@ -759,34 +778,29 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +		aud->name[sizeof(aud->name) - 1] = 0;
 +		aud->audio = aud2.index;
 +		aud->flags = 0;
-+		v = get_v4l_control(inode, file, V4L2_CID_AUDIO_VOLUME, drv);
-+		if (v >= 0)
-+		{
-+			aud->volume = v;
++		i = get_v4l_control(inode, file, V4L2_CID_AUDIO_VOLUME, drv);
++		if (i >= 0) {
++			aud->volume = i;
 +			aud->flags |= VIDEO_AUDIO_VOLUME;
 +		}
-+		v = get_v4l_control(inode, file, V4L2_CID_AUDIO_BASS, drv);
-+		if (v >= 0)
-+		{
-+			aud->bass = v;
++		i = get_v4l_control(inode, file, V4L2_CID_AUDIO_BASS, drv);
++		if (i >= 0) {
++			aud->bass = i;
 +			aud->flags |= VIDEO_AUDIO_BASS;
 +		}
-+		v = get_v4l_control(inode, file, V4L2_CID_AUDIO_TREBLE, drv);
-+		if (v >= 0)
-+		{
-+			aud->treble = v;
++		i = get_v4l_control(inode, file, V4L2_CID_AUDIO_TREBLE, drv);
++		if (i >= 0) {
++			aud->treble = i;
 +			aud->flags |= VIDEO_AUDIO_TREBLE;
 +		}
-+		v = get_v4l_control(inode, file, V4L2_CID_AUDIO_BALANCE, drv);
-+		if (v >= 0)
-+		{
-+			aud->balance = v;
++		i = get_v4l_control(inode, file, V4L2_CID_AUDIO_BALANCE, drv);
++		if (i >= 0) {
++			aud->balance = i;
 +			aud->flags |= VIDEO_AUDIO_BALANCE;
 +		}
-+		v = get_v4l_control(inode, file, V4L2_CID_AUDIO_MUTE, drv);
-+		if (v >= 0)
-+		{
-+			if (v)
++		i = get_v4l_control(inode, file, V4L2_CID_AUDIO_MUTE, drv);
++		if (i >= 0) {
++			if (i)
 +				aud->flags |= VIDEO_AUDIO_MUTE;
 +			aud->flags |= VIDEO_AUDIO_MUTABLE;
 +		}
@@ -813,8 +827,6 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCSAUDIO: /*  set audio controls  */
 +	{
 +		struct video_audio	*aud = arg;
-+		struct v4l2_audio	aud2;
-+		struct v4l2_tuner	tun2;
 +
 +		memset(&aud2,0,sizeof(aud2));
 +		memset(&tun2,0,sizeof(tun2));
@@ -870,29 +882,29 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCMCAPTURE: /*  capture a frame  */
 +	{
 +		struct video_mmap	*mm = arg;
-+		struct v4l2_buffer	buf2;
-+		struct v4l2_format	fmt2;
 +
++		fmt2 = kmalloc(sizeof(*fmt2),GFP_KERNEL);
 +		memset(&buf2,0,sizeof(buf2));
-+		memset(&fmt2,0,sizeof(fmt2));
++		memset(fmt2,0,sizeof(*fmt2));
 +		
-+		fmt2.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-+		err = drv(inode, file, VIDIOC_G_FMT, &fmt2);
++		fmt2->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
++		err = drv(inode, file, VIDIOC_G_FMT, fmt2);
 +		if (err < 0) {
 +			dprintk("VIDIOCMCAPTURE / VIDIOC_G_FMT: %d\n",err);
 +			break;
 +		}
-+		if (mm->width   != fmt2.fmt.pix.width || 
-+		    mm->height != fmt2.fmt.pix.height ||
++		if (mm->width   != fmt2->fmt.pix.width  || 
++		    mm->height  != fmt2->fmt.pix.height ||
 +		    palette_to_pixelformat(mm->format) != 
-+		    fmt2.fmt.pix.pixelformat)
++		    fmt2->fmt.pix.pixelformat)
 +		{/* New capture format...  */
-+			fmt2.fmt.pix.width = mm->width;
-+			fmt2.fmt.pix.height = mm->height;
-+			fmt2.fmt.pix.pixelformat =
++			fmt2->fmt.pix.width = mm->width;
++			fmt2->fmt.pix.height = mm->height;
++			fmt2->fmt.pix.pixelformat =
 +				palette_to_pixelformat(mm->format);
-+			fmt2.fmt.pix.field = V4L2_FIELD_ANY;
-+			err = drv(inode, file, VIDIOC_S_FMT, &fmt2);
++			fmt2->fmt.pix.field = V4L2_FIELD_ANY;
++			fmt2->fmt.pix.bytesperline = 0;
++			err = drv(inode, file, VIDIOC_S_FMT, fmt2);
 +			if (err < 0) {
 +				dprintk("VIDIOCMCAPTURE / VIDIOC_S_FMT: %d\n",err);
 +				break;
@@ -910,7 +922,7 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +			dprintk("VIDIOCMCAPTURE / VIDIOC_QBUF: %d\n",err);
 +			break;
 +		}
-+		err = drv(inode, file, VIDIOC_STREAMON, &buf2.type);
++		err = drv(inode, file, VIDIOC_STREAMON, NULL);
 +		if (err < 0)
 +			dprintk("VIDIOCMCAPTURE / VIDIOC_STREAMON: %d\n",err);
 +		break;
@@ -918,7 +930,6 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCSYNC: /*  wait for a frame  */
 +	{
 +		int			*i = arg;
-+		struct v4l2_buffer	buf2;
 +
 +		buf2.index = *i;
 +		buf2.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -960,34 +971,75 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 +	case VIDIOCGVBIFMT: /* query VBI data capture format */
 +	{
 +		struct vbi_format      *fmt = arg;
-+		struct v4l2_format      fmt2;
 +		
-+		memset(&fmt2, 0, sizeof(fmt2));
-+		fmt2.type = V4L2_BUF_TYPE_VBI_CAPTURE;
++		fmt2 = kmalloc(sizeof(*fmt2),GFP_KERNEL);
++		memset(fmt2, 0, sizeof(*fmt2));
++		fmt2->type = V4L2_BUF_TYPE_VBI_CAPTURE;
 +		
-+		err = drv(inode, file, VIDIOC_G_FMT, &fmt2);
++		err = drv(inode, file, VIDIOC_G_FMT, fmt2);
 +		if (err < 0) {
-+			dprintk("VIDIOCMCAPTURE / VIDIOC_G_FMT: %d\n", err);
++			dprintk("VIDIOCGVBIFMT / VIDIOC_G_FMT: %d\n", err);
 +			break;
 +		}
 +		memset(fmt, 0, sizeof(*fmt));
-+		fmt->samples_per_line = fmt2.fmt.vbi.samples_per_line;
-+		fmt->sampling_rate    = fmt2.fmt.vbi.sampling_rate;
++		fmt->samples_per_line = fmt2->fmt.vbi.samples_per_line;
++		fmt->sampling_rate    = fmt2->fmt.vbi.sampling_rate;
 +		fmt->sample_format    = VIDEO_PALETTE_RAW;
-+		fmt->start[0]         = fmt2.fmt.vbi.start[0];
-+		fmt->count[0]         = fmt2.fmt.vbi.count[0];
-+		fmt->start[1]         = fmt2.fmt.vbi.start[1];
-+		fmt->count[1]         = fmt2.fmt.vbi.count[1];
-+		if (fmt2.fmt.vbi.flags & VBI_UNSYNC)
-+			fmt->flags   |= V4L2_VBI_UNSYNC;
-+		if (fmt2.fmt.vbi.flags & VBI_INTERLACED)
-+			fmt->flags   |= V4L2_VBI_INTERLACED;
++		fmt->start[0]         = fmt2->fmt.vbi.start[0];
++		fmt->count[0]         = fmt2->fmt.vbi.count[0];
++		fmt->start[1]         = fmt2->fmt.vbi.start[1];
++		fmt->count[1]         = fmt2->fmt.vbi.count[1];
++		fmt->flags            = fmt2->fmt.vbi.flags & 0x03;
 +                break;
 +	}
++	case VIDIOCSVBIFMT:
++	{
++		struct vbi_format      *fmt = arg;
++		
++		fmt2 = kmalloc(sizeof(*fmt2),GFP_KERNEL);
++		memset(fmt2, 0, sizeof(*fmt2));
++
++		fmt2->type = V4L2_BUF_TYPE_VBI_CAPTURE;
++		fmt2->fmt.vbi.samples_per_line = fmt->samples_per_line;
++		fmt2->fmt.vbi.sampling_rate    = fmt->sampling_rate;
++		fmt2->fmt.vbi.sample_format    = V4L2_PIX_FMT_GREY;
++		fmt2->fmt.vbi.start[0]         = fmt->start[0]; 
++		fmt2->fmt.vbi.count[0]         = fmt->count[0]; 
++		fmt2->fmt.vbi.start[1]         = fmt->start[1]; 
++		fmt2->fmt.vbi.count[1]         = fmt->count[1]; 
++		fmt2->fmt.vbi.flags            = fmt->flags;
++		err = drv(inode, file, VIDIOC_TRY_FMT, fmt2);
++		if (err < 0) {
++			dprintk("VIDIOCSVBIFMT / VIDIOC_TRY_FMT: %d\n", err);
++			break;
++		}
++
++		if (fmt2->fmt.vbi.samples_per_line != fmt->samples_per_line ||
++		    fmt2->fmt.vbi.sampling_rate    != fmt->sampling_rate    ||
++		    VIDEO_PALETTE_RAW              != fmt->sample_format    ||
++		    fmt2->fmt.vbi.start[0]         != fmt->start[0]         ||
++		    fmt2->fmt.vbi.count[0]         != fmt->count[0]         ||
++		    fmt2->fmt.vbi.start[1]         != fmt->start[1]         ||
++		    fmt2->fmt.vbi.count[1]         != fmt->count[1]         ||
++		    fmt2->fmt.vbi.flags            != fmt->flags) {
++			err = -EINVAL;
++			break;
++		}
++		err = drv(inode, file, VIDIOC_S_FMT, fmt2);
++		if (err < 0)
++			dprintk("VIDIOCSVBIFMT / VIDIOC_S_FMT: %d\n", err);
++		break;
++	}
++	
 +	default:
 +		err = -ENOIOCTLCMD;
 +		break;
 +	}
++
++	if (cap2)
++		kfree(cap2);
++	if (fmt2)
++		kfree(fmt2);
 +	return err;
 +}
 +
@@ -998,10 +1050,10 @@ diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drive
 + * c-basic-offset: 8
 + * End:
 + */
-diff -urN linux-2.4.22/drivers/media/video/v4l2-common.c linux-2.4.22-v4l2/drivers/media/video/v4l2-common.c
---- linux-2.4.22/drivers/media/video/v4l2-common.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.22-v4l2/drivers/media/video/v4l2-common.c	Sat Jul 12 10:14:34 2003
-@@ -0,0 +1,211 @@
+diff -u linux-2.4.24-rc1/drivers/media/video/v4l2-common.c linux/drivers/media/video/v4l2-common.c
+--- linux-2.4.24-rc1/drivers/media/video/v4l2-common.c	2004-01-07 13:53:09.000000000 +0100
++++ linux/drivers/media/video/v4l2-common.c	2004-01-07 13:53:09.000000000 +0100
+@@ -0,0 +1,281 @@
 +/*
 + *	Video for Linux Two
 + *
@@ -1049,7 +1101,6 @@ diff -urN linux-2.4.22/drivers/media/video/v4l2-common.c linux-2.4.22-v4l2/drive
 + */
 +
 +#include <linux/config.h>
-+#include <linux/version.h>
 +#include <linux/module.h>
 +#include <linux/types.h>
 +#include <linux/kernel.h>
@@ -1071,6 +1122,8 @@ diff -urN linux-2.4.22/drivers/media/video/v4l2-common.c linux-2.4.22-v4l2/drive
 +#if defined(CONFIG_UST) || defined(CONFIG_UST_MODULE)
 +#include <linux/ust.h>
 +#endif
++
++# define strlcpy(dest,src,len) strncpy(dest,src,(len)-1)
 +
 +#include <linux/videodev.h>
 +
@@ -1105,9 +1158,11 @@ diff -urN linux-2.4.22/drivers/media/video/v4l2-common.c linux-2.4.22-v4l2/drive
 +int v4l2_video_std_construct(struct v4l2_standard *vs,
 +			     int id, char *name)
 +{
-+	memset(vs, 0, sizeof(struct v4l2_standard));
++	u32 index = vs->index;
 +
-+	vs->id = id;
++	memset(vs, 0, sizeof(struct v4l2_standard));
++	vs->index = index;
++	vs->id    = id;
 +	if (id & (V4L2_STD_NTSC | V4L2_STD_PAL_M)) {
 +		vs->frameperiod.numerator = 1001;
 +		vs->frameperiod.denominator = 30000;
@@ -1117,12 +1172,72 @@ diff -urN linux-2.4.22/drivers/media/video/v4l2-common.c linux-2.4.22-v4l2/drive
 +		vs->frameperiod.denominator = 25;
 +		vs->framelines = 625;
 +	}
-+	strncpy(vs->name,name,sizeof(vs->name));
++	strlcpy(vs->name,name,sizeof(vs->name));
 +	return 0;
 +}
 +
 +
 +/* ----------------------------------------------------------------- */
++/* priority handling                                                 */
++
++#define V4L2_PRIO_VALID(val) (val == V4L2_PRIORITY_BACKGROUND   || \
++			      val == V4L2_PRIORITY_INTERACTIVE  || \
++			      val == V4L2_PRIORITY_RECORD)
++
++int v4l2_prio_init(struct v4l2_prio_state *global)
++{
++	memset(global,0,sizeof(*global));
++	return 0;
++}
++	
++int v4l2_prio_change(struct v4l2_prio_state *global, enum v4l2_priority *local,
++		     enum v4l2_priority new)
++{
++	if (!V4L2_PRIO_VALID(new))
++		return -EINVAL;
++	if (*local == new)
++		return 0;
++
++	atomic_inc(&global->prios[new]);
++	if (V4L2_PRIO_VALID(*local))
++		atomic_dec(&global->prios[*local]);
++	*local = new;
++	return 0;
++}
++
++int v4l2_prio_open(struct v4l2_prio_state *global, enum v4l2_priority *local)
++{
++	return v4l2_prio_change(global,local,V4L2_PRIORITY_DEFAULT);
++}
++
++int v4l2_prio_close(struct v4l2_prio_state *global, enum v4l2_priority *local)
++{
++	if (V4L2_PRIO_VALID(*local))
++		atomic_dec(&global->prios[*local]);
++	return 0;
++}
++
++enum v4l2_priority v4l2_prio_max(struct v4l2_prio_state *global)
++{
++	if (atomic_read(&global->prios[V4L2_PRIORITY_RECORD]) > 0)
++		return V4L2_PRIORITY_RECORD;
++	if (atomic_read(&global->prios[V4L2_PRIORITY_INTERACTIVE]) > 0)
++		return V4L2_PRIORITY_INTERACTIVE;
++	if (atomic_read(&global->prios[V4L2_PRIORITY_BACKGROUND]) > 0)
++		return V4L2_PRIORITY_BACKGROUND;
++	return V4L2_PRIORITY_UNSET;
++}
++
++int v4l2_prio_check(struct v4l2_prio_state *global, enum v4l2_priority *local)
++{
++	if (*local < v4l2_prio_max(global))
++		return -EBUSY;
++	return 0;
++}
++
++
++/* ----------------------------------------------------------------- */
++/* some arrays for pretty-printing debug messages                    */
 +
 +char *v4l2_field_names[] = {
 +	[V4L2_FIELD_ANY]        = "any",
@@ -1204,6 +1319,13 @@ diff -urN linux-2.4.22/drivers/media/video/v4l2-common.c linux-2.4.22-v4l2/drive
 +EXPORT_SYMBOL(v4l2_video_std_fps);
 +EXPORT_SYMBOL(v4l2_video_std_construct);
 +
++EXPORT_SYMBOL(v4l2_prio_init);
++EXPORT_SYMBOL(v4l2_prio_change);
++EXPORT_SYMBOL(v4l2_prio_open);
++EXPORT_SYMBOL(v4l2_prio_close);
++EXPORT_SYMBOL(v4l2_prio_max);
++EXPORT_SYMBOL(v4l2_prio_check);
++
 +EXPORT_SYMBOL(v4l2_field_names);
 +EXPORT_SYMBOL(v4l2_type_names);
 +EXPORT_SYMBOL(v4l2_ioctl_names);
@@ -1213,46 +1335,85 @@ diff -urN linux-2.4.22/drivers/media/video/v4l2-common.c linux-2.4.22-v4l2/drive
 + * c-basic-offset: 8
 + * End:
 + */
-diff -urN linux-2.4.22/include/linux/videodev.h linux-2.4.22-v4l2/include/linux/videodev.h
---- linux-2.4.22/include/linux/videodev.h	Fri Jun 13 16:51:39 2003
-+++ linux-2.4.22-v4l2/include/linux/videodev.h	Sat Jul 12 10:14:34 2003
-@@ -4,7 +4,7 @@
+diff -u linux-2.4.24-rc1/drivers/media/video/videodev.c linux/drivers/media/video/videodev.c
+--- linux-2.4.24-rc1/drivers/media/video/videodev.c	2004-01-07 13:44:54.000000000 +0100
++++ linux/drivers/media/video/videodev.c	2004-01-07 13:53:09.000000000 +0100
+@@ -255,6 +255,30 @@
+ /*
+  * helper function -- handles userspace copying for ioctl arguments
+  */
++
++static unsigned int
++video_fix_command(unsigned int cmd)
++{
++	switch (cmd) {
++	case VIDIOC_OVERLAY_OLD:
++		cmd = VIDIOC_OVERLAY;
++		break;
++	case VIDIOC_S_PARM_OLD:
++		cmd = VIDIOC_S_PARM;
++		break;
++	case VIDIOC_S_CTRL_OLD:
++		cmd = VIDIOC_S_CTRL;
++		break;
++	case VIDIOC_G_AUDIO_OLD:
++		cmd = VIDIOC_G_AUDIO;
++		break;
++	case VIDIOC_G_AUDOUT_OLD:
++		cmd = VIDIOC_G_AUDOUT;
++		break;
++	}
++	return cmd;
++}
++
+ int
+ video_usercopy(struct inode *inode, struct file *file,
+ 	       unsigned int cmd, unsigned long arg,
+@@ -266,12 +290,14 @@
+ 	void	*parg = NULL;
+ 	int	err  = -EINVAL;
+ 
++	cmd = video_fix_command(cmd);
++
+ 	/*  Copy arguments into temp kernel buffer  */
+ 	switch (_IOC_DIR(cmd)) {
+ 	case _IOC_NONE:
+ 		parg = (void *)arg;
+ 		break;
+-	case _IOC_READ: /* some v4l ioctls are marked wrong ... */
++	case _IOC_READ:
+ 	case _IOC_WRITE:
+ 	case (_IOC_WRITE | _IOC_READ):
+ 		if (_IOC_SIZE(cmd) <= sizeof(sbuf)) {
+@@ -285,8 +311,9 @@
+ 		}
+ 		
+ 		err = -EFAULT;
+-		if (copy_from_user(parg, (void *)arg, _IOC_SIZE(cmd)))
+-			goto out;
++		if (_IOC_DIR(cmd) & _IOC_WRITE)
++			if (copy_from_user(parg, (void *)arg, _IOC_SIZE(cmd)))
++				goto out;
+ 		break;
+ 	}
+ 
+diff -u linux-2.4.24-rc1/include/linux/videodev.h linux/include/linux/videodev.h
+--- linux-2.4.24-rc1/include/linux/videodev.h	2004-01-07 13:46:32.000000000 +0100
++++ linux/include/linux/videodev.h	2004-01-07 13:53:09.000000000 +0100
+@@ -4,6 +4,9 @@
  #include <linux/types.h>
  #include <linux/version.h>
  
--#if 0
-+#if 1
- /*
-  * v4l2 is still work-in-progress, integration planed for 2.5.x
-  *   v4l2 project homepage:   http://www.thedirks.org/v4l2/
-@@ -20,6 +20,7 @@
++#define HAVE_V4L2 1
++#include <linux/videodev2.h>
++
+ #ifdef __KERNEL__
  
  #include <linux/poll.h>
- #include <linux/devfs_fs_kernel.h>
-+#include <linux/mm.h>
- 
- struct video_device
- {
-@@ -30,6 +31,7 @@
- 	int hardware;
- 	int minor;
- 
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)
- 	/* old, obsolete interface -- dropped in 2.5.x, don't use it */
- 	int (*open)(struct video_device *, int mode);
- 	void (*close)(struct video_device *);
-@@ -39,6 +41,7 @@
- 	int (*ioctl)(struct video_device *, unsigned int , void *);
- 	int (*mmap)(struct video_device *, const char *, unsigned long);
- 	int (*initialize)(struct video_device *);       
-+#endif
- 
-  	/* new interface -- we will use file_operations directly
-  	 * like soundcore does. */
-diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux/videodev2.h
---- linux-2.4.22/include/linux/videodev2.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.22-v4l2/include/linux/videodev2.h	Sat Jul 12 10:14:34 2003
-@@ -0,0 +1,861 @@
+diff -u linux-2.4.24-rc1/include/linux/videodev2.h linux/include/linux/videodev2.h
+--- linux-2.4.24-rc1/include/linux/videodev2.h	2004-01-07 13:53:09.000000000 +0100
++++ linux/include/linux/videodev2.h	2004-01-07 13:53:09.000000000 +0100
+@@ -0,0 +1,938 @@
 +#ifndef __LINUX_VIDEODEV2_H
 +#define __LINUX_VIDEODEV2_H
 +/*
@@ -1261,7 +1422,7 @@ diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux
 + *	Header file for v4l or V4L2 drivers and applications, for
 + *	Linux kernels 2.2.x or 2.4.x.
 + *
-+ *	See http://www.thedirks.org/v4l2/ for API specs and other
++ *	See http://bytesex.org/v4l/ for API specs and other
 + *	v4l2 documentation.
 + *
 + *	Author: Bill Dirks <bdirks@pacbell.net>
@@ -1368,6 +1529,14 @@ diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux
 +	V4L2_COLORSPACE_SRGB          = 8,
 +};
 +
++enum v4l2_priority {
++	V4L2_PRIORITY_UNSET       = 0,  /* not initialized */
++	V4L2_PRIORITY_BACKGROUND  = 1,
++	V4L2_PRIORITY_INTERACTIVE = 2,
++	V4L2_PRIORITY_RECORD      = 3,
++	V4L2_PRIORITY_DEFAULT     = V4L2_PRIORITY_INTERACTIVE,
++};
++
 +struct v4l2_rect {
 +	__s32   left;
 +	__s32   top;
@@ -1387,7 +1556,7 @@ diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux
 +{
 +	__u8	driver[16];	/* i.e. "bttv" */
 +	__u8	card[32];	/* i.e. "Hauppauge WinTV" */
-+	__u8	bus_info[32];	/* "PCI:" + pci_dev->slot_name */
++	__u8	bus_info[32];	/* "PCI:" + pci_name(pci_dev) */
 +	__u32   version;        /* should use KERNEL_VERSION() */
 +	__u32	capabilities;	/* Device capabilities */
 +	__u32	reserved[4];
@@ -1401,8 +1570,9 @@ diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux
 +#define V4L2_CAP_VBI_OUTPUT	0x00000020  /* Is a VBI output device */
 +#define V4L2_CAP_RDS_CAPTURE	0x00000100  /* RDS data capture */
 +
-+#define V4L2_CAP_TUNER		0x00010000  /* Has a tuner */
++#define V4L2_CAP_TUNER		0x00010000  /* has a tuner */
 +#define V4L2_CAP_AUDIO		0x00020000  /* has audio support */
++#define V4L2_CAP_RADIO		0x00040000  /* is a radio device */
 +
 +#define V4L2_CAP_READWRITE      0x01000000  /* read/write systemcalls */
 +#define V4L2_CAP_ASYNCIO        0x02000000  /* async I/O */
@@ -1460,7 +1630,7 @@ diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux
 +#define V4L2_PIX_FMT_MPEG     v4l2_fourcc('M','P','E','G') /* MPEG          */
 +
 +/*  Vendor-specific formats   */
-+#define V4L2_PIX_FMT_WNVA    v4l2_fourcc('W','N','V','A') /* Winnov hw compres */
++#define V4L2_PIX_FMT_WNVA     v4l2_fourcc('W','N','V','A') /* Winnov hw compress */
 +
 +/*
 + *	F O R M A T   E N U M E R A T I O N
@@ -1521,6 +1691,51 @@ diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux
 +	__u32	keyframerate;
 +	__u32	pframerate;
 +	__u32	reserved[5];
++
++/*  what we'll need for MPEG, extracted from some postings on
++    the v4l list (Gert Vervoort, PlasmaJohn).
++
++system stream:
++  - type: elementary stream(ES), packatised elementary stream(s) (PES)
++    program stream(PS), transport stream(TS)
++  - system bitrate
++  - PS packet size (DVD: 2048 bytes, VCD: 2324 bytes)
++  - TS video PID
++  - TS audio PID
++  - TS PCR PID
++  - TS system information tables (PAT, PMT, CAT, NIT and SIT)
++  - (MPEG-1 systems stream vs. MPEG-2 program stream (TS not supported
++    by MPEG-1 systems)
++
++audio:
++  - type: MPEG (+Layer I,II,III), AC-3, LPCM
++  - bitrate
++  - sampling frequency (DVD: 48 Khz, VCD: 44.1 KHz, 32 kHz)
++  - Trick Modes? (ff, rew)
++  - Copyright
++  - Inverse Telecine
++
++video:
++  - picturesize (SIF, 1/2 D1, 2/3 D1, D1) and PAL/NTSC norm can be set
++    through excisting V4L2 controls
++  - noise reduction, parameters encoder specific?
++  - MPEG video version: MPEG-1, MPEG-2
++  - GOP (Group Of Pictures) definition:
++    - N: number of frames per GOP
++    - M: distance between reference (I,P) frames
++    - open/closed GOP
++  - quantiser matrix: inter Q matrix (64 bytes) and intra Q matrix (64 bytes)
++  - quantiser scale: linear or logarithmic
++  - scanning: alternate or zigzag
++  - bitrate mode: CBR (constant bitrate) or VBR (variable bitrate).
++  - target video bitrate for CBR
++  - target video bitrate for VBR
++  - maximum video bitrate for VBR - min. quantiser value for VBR
++  - max. quantiser value for VBR
++  - adaptive quantisation value
++  - return the number of bytes per GOP or bitrate for bitrate monitoring
++
++*/
 +};
 +#endif
 +
@@ -2040,22 +2255,22 @@ diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux
 +#define VIDIOC_QUERYBUF		_IOWR ('V',  9, struct v4l2_buffer)
 +#define VIDIOC_G_FBUF		_IOR  ('V', 10, struct v4l2_framebuffer)
 +#define VIDIOC_S_FBUF		_IOW  ('V', 11, struct v4l2_framebuffer)
-+#define VIDIOC_OVERLAY		_IOWR ('V', 14, int)
++#define VIDIOC_OVERLAY		_IOW  ('V', 14, int)
 +#define VIDIOC_QBUF		_IOWR ('V', 15, struct v4l2_buffer)
 +#define VIDIOC_DQBUF		_IOWR ('V', 17, struct v4l2_buffer)
 +#define VIDIOC_STREAMON		_IOW  ('V', 18, int)
 +#define VIDIOC_STREAMOFF	_IOW  ('V', 19, int)
 +#define VIDIOC_G_PARM		_IOWR ('V', 21, struct v4l2_streamparm)
-+#define VIDIOC_S_PARM		_IOW  ('V', 22, struct v4l2_streamparm)
++#define VIDIOC_S_PARM		_IOWR ('V', 22, struct v4l2_streamparm)
 +#define VIDIOC_G_STD		_IOR  ('V', 23, v4l2_std_id)
 +#define VIDIOC_S_STD		_IOW  ('V', 24, v4l2_std_id)
 +#define VIDIOC_ENUMSTD		_IOWR ('V', 25, struct v4l2_standard)
 +#define VIDIOC_ENUMINPUT	_IOWR ('V', 26, struct v4l2_input)
 +#define VIDIOC_G_CTRL		_IOWR ('V', 27, struct v4l2_control)
-+#define VIDIOC_S_CTRL		_IOW  ('V', 28, struct v4l2_control)
++#define VIDIOC_S_CTRL		_IOWR ('V', 28, struct v4l2_control)
 +#define VIDIOC_G_TUNER		_IOWR ('V', 29, struct v4l2_tuner)
 +#define VIDIOC_S_TUNER		_IOW  ('V', 30, struct v4l2_tuner)
-+#define VIDIOC_G_AUDIO		_IOWR ('V', 33, struct v4l2_audio)
++#define VIDIOC_G_AUDIO		_IOR  ('V', 33, struct v4l2_audio)
 +#define VIDIOC_S_AUDIO		_IOW  ('V', 34, struct v4l2_audio)
 +#define VIDIOC_QUERYCTRL	_IOWR ('V', 36, struct v4l2_queryctrl)
 +#define VIDIOC_QUERYMENU	_IOWR ('V', 37, struct v4l2_querymenu)
@@ -2064,7 +2279,7 @@ diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux
 +#define VIDIOC_G_OUTPUT		_IOR  ('V', 46, int)
 +#define VIDIOC_S_OUTPUT		_IOWR ('V', 47, int)
 +#define VIDIOC_ENUMOUTPUT	_IOWR ('V', 48, struct v4l2_output)
-+#define VIDIOC_G_AUDOUT		_IOWR ('V', 49, struct v4l2_audioout)
++#define VIDIOC_G_AUDOUT		_IOR  ('V', 49, struct v4l2_audioout)
 +#define VIDIOC_S_AUDOUT		_IOW  ('V', 50, struct v4l2_audioout)
 +#define VIDIOC_G_MODULATOR	_IOWR ('V', 54, struct v4l2_modulator)
 +#define VIDIOC_S_MODULATOR	_IOW  ('V', 55, struct v4l2_modulator)
@@ -2077,6 +2292,17 @@ diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux
 +#define VIDIOC_S_JPEGCOMP	_IOW  ('V', 62, struct v4l2_jpegcompression)
 +#define VIDIOC_QUERYSTD      	_IOR  ('V', 63, v4l2_std_id)
 +#define VIDIOC_TRY_FMT      	_IOWR ('V', 64, struct v4l2_format)
++#define VIDIOC_ENUMAUDIO	_IOWR ('V', 65, struct v4l2_audio)
++#define VIDIOC_ENUMAUDOUT	_IOWR ('V', 66, struct v4l2_audioout)
++#define VIDIOC_G_PRIORITY       _IOR  ('V', 67, enum v4l2_priority)
++#define VIDIOC_S_PRIORITY       _IOW  ('V', 68, enum v4l2_priority)
++
++/* for compatibility, will go away some day */
++#define VIDIOC_OVERLAY_OLD     	_IOWR ('V', 14, int)
++#define VIDIOC_S_PARM_OLD      	_IOW  ('V', 22, struct v4l2_streamparm)
++#define VIDIOC_S_CTRL_OLD      	_IOW  ('V', 28, struct v4l2_control)
++#define VIDIOC_G_AUDIO_OLD     	_IOWR ('V', 33, struct v4l2_audio)
++#define VIDIOC_G_AUDOUT_OLD    	_IOWR ('V', 49, struct v4l2_audioout)
 +
 +#define BASE_VIDIOC_PRIVATE	192		/* 192-255 are private */
 +
@@ -2095,16 +2321,28 @@ diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux
 +extern int v4l2_video_std_construct(struct v4l2_standard *vs,
 +				    int id, char *name);
 +
-+/*  Compatibility layer interface  */
-+typedef int (*v4l2_kioctl)(struct inode *inode, struct file *file,
-+			   unsigned int cmd, void *arg);
-+int v4l_compat_translate_ioctl(struct inode *inode, struct file *file,
-+			       int cmd, void *arg, v4l2_kioctl driver_ioctl);
++/* prority handling */
++struct v4l2_prio_state {
++	atomic_t prios[4];
++};
++int v4l2_prio_init(struct v4l2_prio_state *global);
++int v4l2_prio_change(struct v4l2_prio_state *global, enum v4l2_priority *local,
++		     enum v4l2_priority new);
++int v4l2_prio_open(struct v4l2_prio_state *global, enum v4l2_priority *local);
++int v4l2_prio_close(struct v4l2_prio_state *global, enum v4l2_priority *local);
++enum v4l2_priority v4l2_prio_max(struct v4l2_prio_state *global);
++int v4l2_prio_check(struct v4l2_prio_state *global, enum v4l2_priority *local);
 +
 +/* names for fancy debug output */
 +extern char *v4l2_field_names[];
 +extern char *v4l2_type_names[];
 +extern char *v4l2_ioctl_names[];
++
++/*  Compatibility layer interface  --  v4l1-compat module */
++typedef int (*v4l2_kioctl)(struct inode *inode, struct file *file,
++			   unsigned int cmd, void *arg);
++int v4l_compat_translate_ioctl(struct inode *inode, struct file *file,
++			       int cmd, void *arg, v4l2_kioctl driver_ioctl);
 +
 +#endif /* __KERNEL__ */
 +#endif /* __LINUX_VIDEODEV2_H */
@@ -2114,14 +2352,3 @@ diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux
 + * c-basic-offset: 8
 + * End:
 + */
-diff -urN linux-2.4.22/kernel/ksyms.c linux-2.4.22-v4l2/kernel/ksyms.c
---- linux-2.4.22/kernel/ksyms.c	Sat Jul 12 10:09:03 2003
-+++ linux-2.4.22-v4l2/kernel/ksyms.c	Sat Jul 12 10:14:34 2003
-@@ -288,6 +288,7 @@
- EXPORT_SYMBOL(dcache_dir_fsync);
- EXPORT_SYMBOL(dcache_readdir);
- EXPORT_SYMBOL(dcache_dir_ops);
-+EXPORT_SYMBOL(do_select);
- 
- /* for stackable file systems (lofs, wrapfs, cryptfs, etc.) */
- EXPORT_SYMBOL(default_llseek);

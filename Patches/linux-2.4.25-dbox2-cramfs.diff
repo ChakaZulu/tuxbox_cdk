@@ -1,6 +1,6 @@
-diff -urN linux-2.4.22/Documentation/filesystems/cramfs.txt linux-2.4.22-cramfs/Documentation/filesystems/cramfs.txt
---- linux-2.4.22/Documentation/filesystems/cramfs.txt	Sat Aug  3 02:39:42 2002
-+++ linux-2.4.22-cramfs/Documentation/filesystems/cramfs.txt	Sat Jul 12 10:17:42 2003
+diff -Naur linux-2.4.25/Documentation/filesystems/cramfs.txt linux-2.4.25-cramfs/Documentation/filesystems/cramfs.txt
+--- linux-2.4.25/Documentation/filesystems/cramfs.txt	2002-08-03 02:39:42.000000000 +0200
++++ linux-2.4.25-cramfs/Documentation/filesystems/cramfs.txt	2004-01-01 18:48:09.000000000 +0100
 @@ -37,12 +37,11 @@
  the update lasts only as long as the inode is cached in memory, after
  which the timestamp reverts to 1970, i.e. moves backwards in time.
@@ -19,79 +19,9 @@ diff -urN linux-2.4.22/Documentation/filesystems/cramfs.txt linux-2.4.22-cramfs/
  
  
  For /usr/share/magic
-diff -urN linux-2.4.22/fs/cramfs/README linux-2.4.22-cramfs/fs/cramfs/README
---- linux-2.4.22/fs/cramfs/README	Sat Aug  3 02:39:45 2002
-+++ linux-2.4.22-cramfs/fs/cramfs/README	Sat Jul 12 10:17:42 2003
-@@ -6,8 +6,8 @@
- swapped around (though it does care that directory entries (inodes) in
- a given directory are contiguous, as this is used by readdir).
- 
--All data is currently in host-endian format; neither mkcramfs nor the
--kernel ever do swabbing.  (See section `Block Size' below.)
-+All data is in little-endian format; user-space tools and the kernel do
-+swabbing on big-endian systems.  (See section `Byte Order' below.)
- 
- <filesystem>:
- 	<superblock>
-@@ -71,6 +71,27 @@
- with -z if you want it to create files that can have holes in them.
- 
- 
-+Byte Order
-+----------
-+
-+When defining the cramfs filesystem, the two options for byte order were
-+`always use little-endian' (like ext2fs) or `writer chooses endianness;
-+kernel adapts at runtime'.  Little-endian wins because of code
-+simplicity and little CPU overhead even on big-endian machines.
-+
-+While cramfs has always been defined to be little-endian, this
-+implementation originally required that cramfs filesystems be written
-+and read with architectures of the same endianness; big-endian machines
-+would write and read cramfs filesystems with big-endian byte order (the
-+"incorrect" byte order for cramfs filesystems).
-+
-+Now, only little-endian cramfs filesystems are supported for both
-+little-endian and big-endian machines.  If you need to support
-+big-endian cramfs filesystems for a legacy application on a big-endian
-+machine, you could remove the byte-swapping, but it would probably be
-+better to write a one-time byte order conversion program.
-+
-+
- Tools
- -----
- 
-@@ -108,17 +129,8 @@
- PAGE_CACHE_SIZE is subject to change between kernel versions
- (currently possible with arm and ia64).
- 
--The remaining options try to make cramfs more sharable.
--
--One part of that is addressing endianness.  The two options here are
--`always use little-endian' (like ext2fs) or `writer chooses
--endianness; kernel adapts at runtime'.  Little-endian wins because of
--code simplicity and little CPU overhead even on big-endian machines.
--
--The cost of swabbing is changing the code to use the le32_to_cpu
--etc. macros as used by ext2fs.  We don't need to swab the compressed
--data, only the superblock, inodes and block pointers.
--
-+The remaining options try to make cramfs more sharable by choosing a
-+block size.  The options are:
- 
- The other part of making cramfs more sharable is choosing a block
- size.  The options are:
-@@ -152,7 +164,6 @@
- cost is greater complexity.  Probably not worth it, but I hope someone
- will disagree.  (If it is implemented, then I'll re-use that code in
- e2compr.)
--
- 
- Another cost of 2 and 3 over 1 is making mkcramfs use a different
- block size, but that just means adding and parsing a -b option.
-diff -urN linux-2.4.22/fs/cramfs/inode.c linux-2.4.22-cramfs/fs/cramfs/inode.c
---- linux-2.4.22/fs/cramfs/inode.c	Sat Aug  3 02:39:45 2002
-+++ linux-2.4.22-cramfs/fs/cramfs/inode.c	Sat Jul 12 10:17:42 2003
+diff -Naur linux-2.4.25/fs/cramfs/inode.c linux-2.4.25-cramfs/fs/cramfs/inode.c
+--- linux-2.4.25/fs/cramfs/inode.c	2002-08-03 02:39:45.000000000 +0200
++++ linux-2.4.25-cramfs/fs/cramfs/inode.c	2004-01-01 18:48:09.000000000 +0100
 @@ -1,13 +1,18 @@
  /*
 - * Compressed rom filesystem for Linux.
@@ -256,9 +186,79 @@ diff -urN linux-2.4.22/fs/cramfs/inode.c linux-2.4.22-cramfs/fs/cramfs/inode.c
  		up(&read_mutex);
  		pgdata = kmap(page);
  		if (compr_len == 0)
-diff -urN linux-2.4.22/fs/cramfs/uncompress.c linux-2.4.22-cramfs/fs/cramfs/uncompress.c
---- linux-2.4.22/fs/cramfs/uncompress.c	Fri Nov 29 00:53:15 2002
-+++ linux-2.4.22-cramfs/fs/cramfs/uncompress.c	Sat Jul 12 10:17:42 2003
+diff -Naur linux-2.4.25/fs/cramfs/README linux-2.4.25-cramfs/fs/cramfs/README
+--- linux-2.4.25/fs/cramfs/README	2002-08-03 02:39:45.000000000 +0200
++++ linux-2.4.25-cramfs/fs/cramfs/README	2004-01-01 18:48:09.000000000 +0100
+@@ -6,8 +6,8 @@
+ swapped around (though it does care that directory entries (inodes) in
+ a given directory are contiguous, as this is used by readdir).
+ 
+-All data is currently in host-endian format; neither mkcramfs nor the
+-kernel ever do swabbing.  (See section `Block Size' below.)
++All data is in little-endian format; user-space tools and the kernel do
++swabbing on big-endian systems.  (See section `Byte Order' below.)
+ 
+ <filesystem>:
+ 	<superblock>
+@@ -71,6 +71,27 @@
+ with -z if you want it to create files that can have holes in them.
+ 
+ 
++Byte Order
++----------
++
++When defining the cramfs filesystem, the two options for byte order were
++`always use little-endian' (like ext2fs) or `writer chooses endianness;
++kernel adapts at runtime'.  Little-endian wins because of code
++simplicity and little CPU overhead even on big-endian machines.
++
++While cramfs has always been defined to be little-endian, this
++implementation originally required that cramfs filesystems be written
++and read with architectures of the same endianness; big-endian machines
++would write and read cramfs filesystems with big-endian byte order (the
++"incorrect" byte order for cramfs filesystems).
++
++Now, only little-endian cramfs filesystems are supported for both
++little-endian and big-endian machines.  If you need to support
++big-endian cramfs filesystems for a legacy application on a big-endian
++machine, you could remove the byte-swapping, but it would probably be
++better to write a one-time byte order conversion program.
++
++
+ Tools
+ -----
+ 
+@@ -108,17 +129,8 @@
+ PAGE_CACHE_SIZE is subject to change between kernel versions
+ (currently possible with arm and ia64).
+ 
+-The remaining options try to make cramfs more sharable.
+-
+-One part of that is addressing endianness.  The two options here are
+-`always use little-endian' (like ext2fs) or `writer chooses
+-endianness; kernel adapts at runtime'.  Little-endian wins because of
+-code simplicity and little CPU overhead even on big-endian machines.
+-
+-The cost of swabbing is changing the code to use the le32_to_cpu
+-etc. macros as used by ext2fs.  We don't need to swab the compressed
+-data, only the superblock, inodes and block pointers.
+-
++The remaining options try to make cramfs more sharable by choosing a
++block size.  The options are:
+ 
+ The other part of making cramfs more sharable is choosing a block
+ size.  The options are:
+@@ -153,7 +165,6 @@
+ will disagree.  (If it is implemented, then I'll re-use that code in
+ e2compr.)
+ 
+-
+ Another cost of 2 and 3 over 1 is making mkcramfs use a different
+ block size, but that just means adding and parsing a -b option.
+ 
+diff -Naur linux-2.4.25/fs/cramfs/uncompress.c linux-2.4.25-cramfs/fs/cramfs/uncompress.c
+--- linux-2.4.25/fs/cramfs/uncompress.c	2002-11-29 00:53:15.000000000 +0100
++++ linux-2.4.25-cramfs/fs/cramfs/uncompress.c	2004-01-01 18:48:09.000000000 +0100
 @@ -1,7 +1,12 @@
  /*
   * uncompress.c
@@ -273,9 +273,9 @@ diff -urN linux-2.4.22/fs/cramfs/uncompress.c linux-2.4.22-cramfs/fs/cramfs/unco
   *
   * cramfs interfaces to the uncompression library. There's really just
   * three entrypoints:
-diff -urN linux-2.4.22/include/linux/cramfs_fs.h linux-2.4.22-cramfs/include/linux/cramfs_fs.h
---- linux-2.4.22/include/linux/cramfs_fs.h	Sat Aug  3 02:39:45 2002
-+++ linux-2.4.22-cramfs/include/linux/cramfs_fs.h	Sat Jul 12 10:17:42 2003
+diff -Naur linux-2.4.25/include/linux/cramfs_fs.h linux-2.4.25-cramfs/include/linux/cramfs_fs.h
+--- linux-2.4.25/include/linux/cramfs_fs.h	2002-08-03 02:39:45.000000000 +0200
++++ linux-2.4.25-cramfs/include/linux/cramfs_fs.h	2004-01-01 18:48:09.000000000 +0100
 @@ -1,13 +1,25 @@
 -#ifndef __CRAMFS_H
 -#define __CRAMFS_H
@@ -361,41 +361,9 @@ diff -urN linux-2.4.22/include/linux/cramfs_fs.h linux-2.4.22-cramfs/include/lin
  #endif
 +
 +#endif /* not __CRAMFS_FS_H */
-diff -urN linux-2.4.22/scripts/cramfs/GNUmakefile linux-2.4.22-cramfs/scripts/cramfs/GNUmakefile
---- linux-2.4.22/scripts/cramfs/GNUmakefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.22-cramfs/scripts/cramfs/GNUmakefile	Sat Jul 12 10:17:42 2003
-@@ -0,0 +1,12 @@
-+CC = gcc
-+CFLAGS = -W -Wall -O2 -g
-+CPPFLAGS = -I../../include
-+LDLIBS = -lz
-+PROGS = mkcramfs cramfsck
-+
-+all: $(PROGS)
-+
-+distclean clean:
-+	rm -f $(PROGS)
-+
-+.PHONY: all clean
-diff -urN linux-2.4.22/scripts/cramfs/Makefile linux-2.4.22-cramfs/scripts/cramfs/Makefile
---- linux-2.4.22/scripts/cramfs/Makefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.22-cramfs/scripts/cramfs/Makefile	Sat Jul 12 10:17:42 2003
-@@ -0,0 +1,12 @@
-+CC = gcc
-+CFLAGS = -W -Wall -O2 -g
-+CPPFLAGS = -I../../include
-+LDLIBS = -lz
-+PROGS = mkcramfs cramfsck
-+
-+all: $(PROGS)
-+
-+distclean clean:
-+	rm -f $(PROGS)
-+
-+.PHONY: all clean
-diff -urN linux-2.4.22/scripts/cramfs/cramfsck.c linux-2.4.22-cramfs/scripts/cramfs/cramfsck.c
---- linux-2.4.22/scripts/cramfs/cramfsck.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.22-cramfs/scripts/cramfs/cramfsck.c	Sat Jul 12 10:17:42 2003
+diff -Naur linux-2.4.25/scripts/cramfs/cramfsck.c linux-2.4.25-cramfs/scripts/cramfs/cramfsck.c
+--- linux-2.4.25/scripts/cramfs/cramfsck.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.25-cramfs/scripts/cramfs/cramfsck.c	2004-01-01 18:48:09.000000000 +0100
 @@ -0,0 +1,718 @@
 +/*
 + * cramfsck - check a cramfs file system
@@ -1115,9 +1083,41 @@ diff -urN linux-2.4.22/scripts/cramfs/cramfsck.c linux-2.4.22-cramfs/scripts/cra
 + * c-file-style: "linux"
 + * End:
 + */
-diff -urN linux-2.4.22/scripts/cramfs/mkcramfs.c linux-2.4.22-cramfs/scripts/cramfs/mkcramfs.c
---- linux-2.4.22/scripts/cramfs/mkcramfs.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.22-cramfs/scripts/cramfs/mkcramfs.c	Sat Jul 12 10:17:42 2003
+diff -Naur linux-2.4.25/scripts/cramfs/GNUmakefile linux-2.4.25-cramfs/scripts/cramfs/GNUmakefile
+--- linux-2.4.25/scripts/cramfs/GNUmakefile	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.25-cramfs/scripts/cramfs/GNUmakefile	2004-01-01 18:48:09.000000000 +0100
+@@ -0,0 +1,12 @@
++CC = gcc
++CFLAGS = -W -Wall -O2 -g
++CPPFLAGS = -I../../include
++LDLIBS = -lz
++PROGS = mkcramfs cramfsck
++
++all: $(PROGS)
++
++distclean clean:
++	rm -f $(PROGS)
++
++.PHONY: all clean
+diff -Naur linux-2.4.25/scripts/cramfs/Makefile linux-2.4.25-cramfs/scripts/cramfs/Makefile
+--- linux-2.4.25/scripts/cramfs/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.25-cramfs/scripts/cramfs/Makefile	2004-01-01 18:48:09.000000000 +0100
+@@ -0,0 +1,12 @@
++CC = gcc
++CFLAGS = -W -Wall -O2 -g
++CPPFLAGS = -I../../include
++LDLIBS = -lz
++PROGS = mkcramfs cramfsck
++
++all: $(PROGS)
++
++distclean clean:
++	rm -f $(PROGS)
++
++.PHONY: all clean
+diff -Naur linux-2.4.25/scripts/cramfs/mkcramfs.c linux-2.4.25-cramfs/scripts/cramfs/mkcramfs.c
+--- linux-2.4.25/scripts/cramfs/mkcramfs.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.25-cramfs/scripts/cramfs/mkcramfs.c	2004-01-01 18:48:09.000000000 +0100
 @@ -0,0 +1,879 @@
 +/*
 + * mkcramfs - make a cramfs file system
