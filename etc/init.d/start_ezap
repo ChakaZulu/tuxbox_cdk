@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "Lade lcd"
-$INSMOD $MODDIR/misc/lcd.o
+$INSMOD /lib/modules/`uname -r`/misc/lcd.o
 
 echo "Starte ezap"
 /bin/ezap
