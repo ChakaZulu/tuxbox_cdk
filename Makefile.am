@@ -34,8 +34,8 @@ core: .directories .binutils .linuxdir .glibc .gcc
 	ln -s $(targetprefix)/include $(hostprefix)/$(target)/include
 	ln -s $(targetprefix)/lib $(hostprefix)/$(target)/lib
 	install -d $(hostprefix)/$(target)/sys-include
-	ln -s $(buildprefix)/linux-$(KERNELVERSION)/include/asm $(hostprefix)/$(target)/include
-	ln -s $(buildprefix)/linux-$(KERNELVERSION)/include/linux $(hostprefix)/$(target)/include
+	ln -s $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
+	ln -s $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include
 	touch .directories
 
 .linuxdir: @DEPENDS_linux@
