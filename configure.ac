@@ -50,10 +50,10 @@ fi
 
 if test -z "$TARGET_CFLAGS" -o -z "$TARGET_CXXFLAGS"; then
 	if test "$targetruleset" = "standard"; then
-		TARGET_CFLAGS="-O3 -mcpu=823 -msoft-float -mmultiple -mstring -g -ggdb -pipe"
+		TARGET_CFLAGS="-O3 -mcpu=823 -msoft-float -mmultiple -mstring -meabi -g -pipe"
 		TARGET_LDFLAGS=""
 	elif test "$targetruleset" = "flash"; then
-		TARGET_CFLAGS="-Os -mcpu=823 -msoft-float -mmultiple -mstring -pipe"
+		TARGET_CFLAGS="-Os -mcpu=823 -msoft-float -mmultiple -mstring -meabi -pipe"
 		TARGET_LDFLAGS="-s"
 	fi
 	TARGET_CXXFLAGS="$TARGET_CFLAGS"
