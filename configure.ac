@@ -164,6 +164,7 @@ TUXBOX_RULES_MAKE(modutils)
 TUXBOX_RULES_MAKE(inetd)
 TUXBOX_RULES_MAKE(ftpd)
 TUXBOX_RULES_MAKE(telnetd)
+TUXBOX_RULES_MAKE(top)
 
 #
 # contrib libs
