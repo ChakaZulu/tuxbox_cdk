@@ -1674,9 +1674,6 @@ $(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash lcd
 flash-lib: $(flashprefix)/.lib
 
 $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 2>/dev/null)
-	if [ -e $(flashprefix)/.part_neutrino ] ; then \
-	$(INSTALL) $(targetprefix)/sbin/streamfile $(flashprefix)/root/sbin ; \
-	fi
 	find $(flashprefix)/root/lib -maxdepth 1 -type f -o -type l | xargs rm -f
 	cp -pa $(targetprefix)/lib/libnss_dns-?.*.so $(flashprefix)/root/lib
 	cp -pa $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
