@@ -148,7 +148,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 #   minimal root
 #
 
-root: .etc .busybox .tinylogin .modutils .telnetd .msttf
+root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd
 
 .etc:
 	make -C etc install
@@ -608,7 +608,7 @@ endif
 #   own applications
 #
 
-apps: .dvbsnoop .dvbstream .edvb .enigma .lcars .lcdmenu .neutrino .stream 
+apps: .dvbsnoop .dvbstream .edvb .enigma .fx2 .lcars .lcdmenu .neutrino .stream 
 
 if MAINTAINER_MODE
 $(appsdir)/configure: $(appsdir)/configure.ac
@@ -738,7 +738,7 @@ distclean-local:
 	-rm .kaffeh .kaffe
 	-rm .scummvm
 	-rm .ppcboot .linuxkernel .driver
-	-rm .dvbsnoop .edvb .lcars .lcdmenu .neutrino .stream
+	-rm .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .tools .zapit
 	-rm .liblcddisplay .libmd5sum .libnet .libucodes
 	-rm .dvbstream
