@@ -55,7 +55,7 @@ libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.5;SDL-1.2.5;SDL-1.2.5.tar.gz:sdl.diff;extract:SDL-1.2.5.tar.gz;patch:sdl.diff
 libsigc;1.2.2;libsigc++-1.2.2;libsigc++-1.2.2.tar.gz:libsigc.diff;extract:libsigc++-1.2.2.tar.gz;patch:libsigc.diff
-libxml2;2.4.22;libxml2-2.4.22;libxml2-2.4.22.tar.bz2;extract:libxml2-2.4.22.tar.bz2
+libxml2;2.4.30;libxml2-2.4.30;libxml2-2.4.30.tar.gz;extract:libxml2-2.4.30.tar.gz
 libxmlparse;0.9.3;xmlparse-0.9.3;xmlparse_0.9.3.tar.bz2:xmlparse.diff;extract:xmlparse_0.9.3.tar.bz2;patch:xmlparse.diff
 libxmlwrapp;0.2.1;xmlwrapp-0.2.1;xmlwrapp-0.2.1.tar.gz;extract:xmlwrapp-0.2.1.tar.gz
 libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff;extract:zlib-1.1.4.tar.bz2;patch:zlib.diff
