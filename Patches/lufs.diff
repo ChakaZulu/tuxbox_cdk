@@ -250,23 +250,9 @@ diff -Naur lufs-0.9.7-orig/lufsd/Makefile.am lufs-0.9.7/lufsd/Makefile.am
 -	ln -fs $(DESTDIR)$(bindir)/lufsd $(DESTDIR)/sbin/mount.lufs
 +	$(mkinstalldirs) $(bindir)/../sbin
 +	ln -fs $(DESTDIR)$(bindir)/lufsd $(bindir)/../sbin/mount.lufs
-diff -Naur lufs-0.9.7-orig/util/Makefile.am lufs-0.9.7/util/Makefile.am
---- lufs-0.9.7-orig/util/Makefile.am	2003-01-27 21:56:55.000000000 +0100
-+++ lufs-0.9.7/util/Makefile.am	2004-12-19 19:33:54.000000000 +0100
-@@ -12,8 +12,7 @@
- install-exec-hook:
- 	@echo postinstall configuration
- 	$(mkinstalldirs) $(DESTDIR)/etc
--	ln -fs $(DESTDIR)$(bindir)/auto.sshfs $(DESTDIR)/etc/auto.sshfs
--	ln -fs $(DESTDIR)$(bindir)/auto.ftpfs $(DESTDIR)/etc/auto.ftpfs
-+	ln -fs $(DESTDIR)$(bindir)/auto.sshfs $(bindir)/../etc/auto.sshfs
-+	ln -fs $(DESTDIR)$(bindir)/auto.ftpfs $(bindir)/../etc/auto.ftpfs
- 	if [ "$(LSUID)" ]; then chmod a+s $(DESTDIR)$(bindir)/lufsmnt $(DESTDIR)$(bindir)/lufsumount; fi
--	if [ -f /etc/auto.master -a "$(AUTOFS_INSTALL)" -a ! "`cat $(DESTDIR)/etc/auto.master | grep \"auto.ftpfs\"`" ]; then mkdir -p $(DESTDIR)/mnt/net/ssh $(DESTDIR)/mnt/net/ftp; echo -e "/mnt/net/ssh\t/etc/auto.sshfs\t--timeout=60\n/mnt/net/ftp\t/etc/auto.ftpfs\t--timeout=60\n" >> $(DESTDIR)/etc/auto.master; $(DESTDIR)/etc/init.d/autofs restart; fi
- 	
 diff -Naur lufs-0.9.7-orig/lufsd/Makefile.in lufs-0.9.7/lufsd/Makefile.in
---- lufs-0.9.7-orig/lufsd/Makefile.in	2003-10-29 23:48:30.000000000 +0100
-+++ lufs-0.9.7/lufsd/Makefile.in	2004-12-19 23:51:10.000000000 +0100
+--- lufs-0.9.7-orig/lufsd/Makefile.in    2003-10-29 23:48:30.000000000 +0100
++++ lufs-0.9.7/lufsd/Makefile.in   2004-12-20 11:53:13.000000000 +0100
 @@ -169,7 +169,7 @@
  
  lufsd_SOURCES = daemon.c message.c fsctl.c filesystem.c dircache.c options.c
@@ -276,3 +262,47 @@ diff -Naur lufs-0.9.7-orig/lufsd/Makefile.in lufs-0.9.7/lufsd/Makefile.in
  lufsd_LDFLAGS = -rdynamic -lpthread
  subdir = lufsd
  ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+@@ -525,8 +525,8 @@
+ 
+ install-exec-hook:
+	@echo "lufsd post install configuration..."
+-	$(mkinstalldirs) $(DESTDIR)/sbin
+-	ln -fs $(DESTDIR)$(bindir)/lufsd $(DESTDIR)/sbin/mount.lufs
++	$(mkinstalldirs) $(bindir)/../sbin
++	ln -fs $(DESTDIR)$(bindir)/lufsd $(bindir)/../sbin/mount.lufs
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
+diff -Naur lufs-0.9.7-orig/util/Makefile.am lufs-0.9.7/util/Makefile.am
+--- lufs-0.9.7-orig/util/Makefile.am 2003-10-29 23:48:30.000000000 +0100
++++ lufs-0.9.7/util/Makefile.am    2004-12-20 11:57:06.000000000 +0100
+@@ -11,9 +11,8 @@
+ 
+ install-exec-hook:
+ 	@echo postinstall configuration
+-	$(mkinstalldirs) $(DESTDIR)/etc
+-	ln -fs $(DESTDIR)$(bindir)/auto.sshfs $(DESTDIR)/etc/auto.sshfs
+-	ln -fs $(DESTDIR)$(bindir)/auto.ftpfs $(DESTDIR)/etc/auto.ftpfs
++	$(mkinstalldirs) $(bindir)/../etc
++	ln -fs $(DESTDIR)$(bindir)/auto.sshfs $(bindir)/../etc/auto.sshfs
++	ln -fs $(DESTDIR)$(bindir)/auto.ftpfs $(bindir)/../etc/auto.ftpfs
+ 	if [ "$(LSUID)" ]; then chmod a+s $(DESTDIR)$(bindir)/lufsmnt $(DESTDIR)$(bindir)/lufsumount; fi
+-	if [ -f /etc/auto.master -a "$(AUTOFS_INSTALL)" -a ! "`cat $(DESTDIR)/etc/auto.master | grep \"auto.ftpfs\"`" ]; then mkdir -p $(DESTDIR)/mnt/net/ssh $(DESTDIR)/mnt/net/ftp; echo -e "/mnt/net/ssh\t/etc/auto.sshfs\t--timeout=60\n/mnt/net/ftp\t/etc/auto.ftpfs\t--timeout=60\n" >> $(DESTDIR)/etc/auto.master; $(DESTDIR)/etc/init.d/autofs restart; fi
+ 	
+diff -Naur lufs-0.9.7-orig/util/Makefile.in lufs-0.9.7/util/Makefile.in
+--- lufs-0.9.7-orig/util/Makefile.in 2003-10-29 23:48:30.000000000 +0100
++++ lufs-0.9.7/util/Makefile.in    2004-12-20 11:57:06.000000000 +0100
+@@ -508,10 +508,9 @@
+ install-exec-hook:
+	@echo postinstall configuration
+-	$(mkinstalldirs) $(DESTDIR)/etc
++	$(mkinstalldirs) $(bindir)/../etc
+-	ln -fs $(DESTDIR)$(bindir)/auto.sshfs $(DESTDIR)/etc/auto.sshfs
+-	ln -fs $(DESTDIR)$(bindir)/auto.ftpfs $(DESTDIR)/etc/auto.ftpfs
++	ln -fs $(DESTDIR)$(bindir)/auto.sshfs $(bindir)/../etc/auto.sshfs
++	ln -fs $(DESTDIR)$(bindir)/auto.ftpfs $(bindir)/../etc/auto.ftpfs
+	if [ "$(LSUID)" ]; then chmod a+s $(DESTDIR)$(bindir)/lufsmnt $(DESTDIR)$(bindir)/lufsumount; fi
+-	if [ -f /etc/auto.master -a "$(AUTOFS_INSTALL)" -a ! "`cat $(DESTDIR)/etc/auto.master | grep \"auto.ftpfs\"`" ]; then mkdir -p $(DESTDIR)/mnt/net/ssh $(DESTDIR)/mnt/net/ftp; echo -e "/mnt/net/ssh\t/etc/auto.sshfs\t--timeout=60\n/mnt/net/ftp\t/etc/auto.ftpfs\t--timeout=60\n" >> $(DESTDIR)/etc/auto.master; $(DESTDIR)/etc/init.d/autofs restart; fi
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
