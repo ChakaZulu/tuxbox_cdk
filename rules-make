@@ -38,7 +38,7 @@ tinylogin;0.80;tinylogin-0.80;tinylogin-0.80.tar.gz:tinylogin.diff;extract:tinyl
 # contrib libs
 #
 libcommoncplusplus;0.99.7;commoncpp2-0.99.7;commoncpp2-0.99.7.tar.gz;extract:commoncpp2-0.99.7.tar.gz
-libcrypto;0.9.6d;openssl-0.9.6d;openssl-0.9.6d.tar.gz:libcrypto.diff;extract:openssl-0.9.6d.tar.gz;patch:libcrypto.diff
+libcrypto;0.9.6g;openssl-0.9.6g;openssl-0.9.6g.tar.gz:libcrypto.diff;extract:openssl-0.9.6g.tar.gz;patch:libcrypto.diff
 libcurl;7.9.1;curl-7.9.1;curl-7.9.1.tar.bz2;extract:curl-7.9.1.tar.bz2
 libdb2;2.7.7;db-2.7.7;db-2.7.7.tar.gz:libdb2.diff;extract:db-2.7.7.tar.gz;patch:libdb2.diff
 libdvbpsi;0.1.1;libdvbpsi-0.1.1;libdvbpsi-0.1.1.tar.gz;extract:libdvbpsi-0.1.1.tar.gz
