@@ -1,6 +1,6 @@
 diff -Naur vls-0.3.3.orig/Makefile.opts.in vls-0.3.3/Makefile.opts.in
 --- vls-0.3.3.orig/Makefile.opts.in	Mon May 13 03:23:00 2002
-+++ vls-0.3.3/Makefile.opts.in	Sun Jul 28 08:55:58 2002
++++ vls-0.3.3/Makefile.opts.in	Sun Jul 28 12:48:02 2002
 @@ -74,7 +74,7 @@
  #
  # Specific flags
@@ -12,7 +12,7 @@ diff -Naur vls-0.3.3.orig/Makefile.opts.in vls-0.3.3/Makefile.opts.in
  VLS_LIB			= @VLS_LIB@
 diff -Naur vls-0.3.3.orig/configure vls-0.3.3/configure
 --- vls-0.3.3.orig/configure	Mon May 13 03:23:00 2002
-+++ vls-0.3.3/configure	Sun Jul 28 08:55:58 2002
++++ vls-0.3.3/configure	Sun Jul 28 12:48:02 2002
 @@ -3126,47 +3126,7 @@
  
  if test ${NEEDSRC_mpegmux} = 1
@@ -63,7 +63,7 @@ diff -Naur vls-0.3.3.orig/configure vls-0.3.3/configure
  
 diff -Naur vls-0.3.3.orig/src/modules/dvbinput/dvbinput.cpp vls-0.3.3/src/modules/dvbinput/dvbinput.cpp
 --- vls-0.3.3.orig/src/modules/dvbinput/dvbinput.cpp	Mon May 13 03:22:59 2002
-+++ vls-0.3.3/src/modules/dvbinput/dvbinput.cpp	Sun Jul 28 08:57:12 2002
++++ vls-0.3.3/src/modules/dvbinput/dvbinput.cpp	Sun Jul 28 12:51:15 2002
 @@ -125,7 +125,7 @@
    C_Application* pApp = C_Application::GetApp();
    ASSERT(pApp);
@@ -73,9 +73,25 @@ diff -Naur vls-0.3.3.orig/src/modules/dvbinput/dvbinput.cpp vls-0.3.3/src/module
  
    m_strSec      = "/dev/ost/sec" + strNumber;
    m_strFrontend = "/dev/ost/frontend" + strNumber;
+@@ -273,6 +273,7 @@
+       pesFilterParams.output  = DMX_OUT_TS_TAP;
+       switch(iType)
+       {
++#if 0
+       case TS_TYPE_MPEG1_VIDEO:
+       case TS_TYPE_MPEG2_VIDEO:
+         pesFilterParams.pesType = DMX_PES_VIDEO;
+@@ -281,6 +282,7 @@
+       case TS_TYPE_MPEG2_AUDIO:
+         pesFilterParams.pesType = DMX_PES_AUDIO;
+         break;
++#endif
+       default:
+         pesFilterParams.pesType = DMX_PES_OTHER;
+         break;
 diff -Naur vls-0.3.3.orig/src/server/config.h.in vls-0.3.3/src/server/config.h.in
 --- vls-0.3.3.orig/src/server/config.h.in	Mon May 13 03:22:59 2002
-+++ vls-0.3.3/src/server/config.h.in	Sun Jul 28 08:55:58 2002
++++ vls-0.3.3/src/server/config.h.in	Sun Jul 28 12:48:02 2002
 @@ -36,7 +36,7 @@
  #define PGRM_INFO       "VideoLAN Server v @VLS_VERSION@ (" __DATE__ ") " \
                          "- (c)1999-2001 VideoLAN\n"
@@ -87,7 +103,7 @@ diff -Naur vls-0.3.3.orig/src/server/config.h.in vls-0.3.3/src/server/config.h.i
  #else
 diff -Naur vls-0.3.3.orig/vls.cfg vls-0.3.3/vls.cfg
 --- vls-0.3.3.orig/vls.cfg	Mon May 13 03:23:00 2002
-+++ vls-0.3.3/vls.cfg	Sun Jul 28 08:55:58 2002
++++ vls-0.3.3/vls.cfg	Sun Jul 28 12:48:02 2002
 @@ -39,40 +39,40 @@
  # --- Format:
  # InputName     = "Type"
