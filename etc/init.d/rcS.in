@@ -43,12 +43,6 @@ echo "DEMOD: $DEMOD"
 
 test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
 
-modprobe input
-modprobe keybdev
-modprobe mousedev
-modprobe joydev
-modprobe evdev
-
 modprobe avs
 modprobe dbox2_fp
 modprobe saa7126
