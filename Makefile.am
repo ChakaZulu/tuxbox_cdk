@@ -19,17 +19,22 @@ extra: java contrib_apps fun dvb_apps
 #   core
 #
 
-core: .directories .binutils .linuxdir .glibc .gcc
+core: directories binutils linuxdir glibc gcc
 
-.bootstrap:
-	@if [ ! -f .glibc ]; then \
-		$(MAKE) .glibc .gcc; \
+VPATH = $(DEPDIR)
+
+$(DEPDIR):
+	mkdir $(DEPDIR)
+
+$(DEPDIR)/bootstrap: $(DEPDIR)
+	@if [ ! -f glibc ]; then \
+		$(MAKE) glibc gcc; \
 	elif [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
-		$(MAKE) .gcc; \
+		$(MAKE) gcc; \
 	fi
 	touch $@
 
-.directories:
+$(DEPDIR)/directories: $(DEPDIR)
 	$(INSTALL) -d $(targetprefix)/bin
 	$(INSTALL) -d $(targetprefix)/boot
 	$(INSTALL) -d $(targetprefix)/dev
@@ -58,9 +63,9 @@ if TARGETRULESET_FLASH
 endif
 	touch $@
 
-.linuxdir: @DEPENDS_linux@
+$(DEPDIR)/linuxdir: $(DEPDIR) @DEPENDS_linux@
 	@if [ ! -d $(targetprefix)/bin ]; then \
-		$(MAKE) .directories; \
+		$(MAKE) directories; \
 	fi
 	@PREPARE_linux@
 if TARGETRULESET_FLASH
@@ -74,9 +79,9 @@ endif
 		ARCH=ppc
 	touch $@
 
-.binutils: @DEPENDS_binutils@
+$(DEPDIR)/binutils: $(DEPDIR) @DEPENDS_binutils@
 	@if [ ! -h linux ]; then \
-		$(MAKE) .linuxdir; \
+		$(MAKE) linuxdir; \
 	fi
 	@PREPARE_binutils@
 	cd @DIR_binutils@ && \
@@ -97,7 +102,7 @@ endif
 #
 bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 	@if [ ! -d $(hostprefix)/$(target)/bin/as ]; then \
-		$(MAKE) .binutils; \
+		$(MAKE) binutils; \
 	fi
 	@PREPARE_bootstrap_gcc@
 	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
@@ -125,11 +130,11 @@ if TARGETRULESET_FLASH
 GLIBC_EXTRA_FLAGS="--enable-kernel=$(KERNELVERSION)"
 endif
 
-.glibc: @DEPENDS_glibc@
+$(DEPDIR)/glibc: $(DEPDIR) @DEPENDS_glibc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		$(MAKE) bootstrap_gcc; \
 	elif [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
-		$(MAKE) .gcc; \
+		$(MAKE) gcc; \
 	fi
 	@PREPARE_glibc@
 	cd @DIR_glibc@ && \
@@ -153,7 +158,7 @@ endif
 # uClibc
 # a minimalistic libc, won't currently work with libstdc++
 #
-.uclibc: @DEPENDS_uclibc@
+$(DEPDIR)/uclibc: @DEPENDS_uclibc@
 	@PREPARE_uclibc@
 	cd @DIR_uclibc@ && \
 		$(MAKE) all CROSS=$(target)- && \
@@ -164,9 +169,9 @@ endif
 #
 # gcc second stage with glibc
 #
-.gcc: @DEPENDS_gcc@
+$(DEPDIR)/gcc: @DEPENDS_gcc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so ]; then \
-		$(MAKE) .glibc; \
+		$(MAKE) glibc; \
 	fi
 	@PREPARE_gcc@
 	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
@@ -197,13 +202,13 @@ endif
 #
 
 root: \
-	.root .busybox .ftpd .modutils \
-	.procps .watchdog
+	root busybox ftpd modutils \
+	procps watchdog
 
 root_optional: \
-	.portmap .mrouted
+	portmap mrouted
 
-.busybox: .bootstrap @DEPENDS_busybox@
+$(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@
 	@PREPARE_busybox@
 if TARGETRULESET_FLASH
 	cat Patches/busybox-flash.config > @DIR_busybox@/.config
@@ -218,11 +223,11 @@ endif
 	@CLEANUP_busybox@
 	touch $@
 
-.root:
+$(DEPDIR)/root:
 	$(MAKE) -C root install
 	touch $@
 
-.ftpd: .bootstrap @DEPENDS_ftpd@
+$(DEPDIR)/ftpd: bootstrap @DEPENDS_ftpd@
 	@PREPARE_ftpd@
 	cd @DIR_ftpd@ && \
 		CC=$(target)-gcc \
@@ -233,7 +238,7 @@ endif
 	@CLEANUP_ftpd@
 	touch $@
 
-.module_init_tools: .bootstrap @DEPENDS_module_init_tools@
+$(DEPDIR)/module_init_tools: bootstrap @DEPENDS_module_init_tools@
 	@PREPARE_module_init_tools@
 	cd @DIR_module_init_tools@ && \
 		$(BUILDENV) \
@@ -246,7 +251,7 @@ endif
 	@CLEANUP_module_init_tools@
 	touch $@
 
-.modutils: .bootstrap @DEPENDS_modutils@
+$(DEPDIR)/modutils: bootstrap @DEPENDS_modutils@
 	@PREPARE_modutils@
 	cd @DIR_modutils@ && \
 		$(BUILDENV) \
@@ -262,7 +267,7 @@ endif
 	@CLEANUP_modutils@
 	touch $@
 
-.portmap: .bootstrap @DEPENDS_portmap@
+$(DEPDIR)/portmap: bootstrap @DEPENDS_portmap@
 	@PREPARE_portmap@
 	cd @DIR_portmap@ && \
 		$(BUILDENV) \
@@ -271,7 +276,7 @@ endif
 	@CLEANUP_portmap@
 	touch $@
 
-.procps: .bootstrap .libncurses @DEPENDS_procps@
+$(DEPDIR)/procps: bootstrap libncurses @DEPENDS_procps@
 	@PREPARE_procps@
 	cd @DIR_procps@ && \
 		$(BUILDENV) \
@@ -280,7 +285,7 @@ endif
 	@CLEANUP_procps@
 	touch $@
 
-.watchdog: .bootstrap @DEPENDS_watchdog@
+$(DEPDIR)/watchdog: bootstrap @DEPENDS_watchdog@
 	@PREPARE_watchdog@
 	cd @DIR_watchdog@ && \
 		$(BUILDENV) \
@@ -294,7 +299,7 @@ endif
 	@CLEANUP_watchdog@
 	touch $@
 
-.mrouted: .bootstrap @DEPENDS_mrouted@
+$(DEPDIR)/mrouted: bootstrap @DEPENDS_mrouted@
 	@PREPARE_mrouted@
 	cd @DIR_mrouted@ && \
 	    $(BUILDENV) \
@@ -311,26 +316,26 @@ endif
 #
 
 if WITH_LIBCRYPTO
-OPTIONAL_LIBCRYPTO = .libcrypto
+OPTIONAL_LIBCRYPTO = libcrypto
 endif
 
 libs: \
-	$(OPTIONAL_LIBCRYPTO) .libcurl .libdirectfb .libdirectfbpp .libdvbpsi \
-	.libfreetype .libjpeg .libmad .libid3tag .libncurses .libpng \
-	.libreadline .libsdl .libsigc .libz .libdvb
+	$(OPTIONAL_LIBCRYPTO) libcurl libdirectfb libdirectfbpp libdvbpsi \
+	libfreetype libjpeg libmad libid3tag libncurses libpng \
+	libreadline libsdl libsigc libz libdvb
 
 libs_optional: \
-	.libcommoncplusplus .libffi \
-	.libpcap .libxml2
+	libcommoncplusplus libffi \
+	libpcap libxml2
 
-.libboost: .bootstrap @DEPENDS_libboost@
+$(DEPDIR)/libboost: bootstrap @DEPENDS_libboost@
 	@PREPARE_libboost@
 	cd @DIR_libboost@ && \
 		@INSTALL_libboost@
 	@CLEANUP_libboost@
 	touch $@
 
-.libcommoncplusplus: .bootstrap .libxml2 @DEPENDS_libcommoncplusplus@
+$(DEPDIR)/libcommoncplusplus: bootstrap libxml2 @DEPENDS_libcommoncplusplus@
 	@PREPARE_libcommoncplusplus@
 	cd @DIR_libcommoncplusplus@ && \
 		$(BUILDENV) \
@@ -346,7 +351,7 @@ libs_optional: \
 	@CLEANUP_libcommoncplusplus@
 	touch $@
 
-.libcrypto: .bootstrap @DEPENDS_libcrypto@
+$(DEPDIR)/libcrypto: bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
 	cd @DIR_libcrypto@ && \
 		./Configure shared no-hw no-idea no-md2 no-md4 no-mdc2 no-rc2 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
@@ -355,7 +360,7 @@ libs_optional: \
 	@CLEANUP_libcrypto@
 	touch $@
 
-.libcurl: .bootstrap @DEPENDS_libcurl@
+$(DEPDIR)/libcurl: bootstrap @DEPENDS_libcurl@
 	@PREPARE_libcurl@
 	cd @DIR_libcurl@ && \
 		$(BUILDENV) \
@@ -372,7 +377,7 @@ libs_optional: \
 	@CLEANUP_libcurl@
 	touch $@
 
-.libdirectfb: .bootstrap .libfreetype .libjpeg .libpng .libz @DEPENDS_libdirectfb@
+$(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz @DEPENDS_libdirectfb@
 	@PREPARE_libdirectfb@
 	cd @DIR_libdirectfb@ && \
 		$(BUILDENV) \
@@ -390,7 +395,7 @@ libs_optional: \
 	@CLEANUP_libdirectfb@
 	touch $@
 
-.libdirectfbpp: .bootstrap .libdirectfb @DEPENDS_libdirectfbpp@
+$(DEPDIR)/libdirectfbpp: bootstrap libdirectfb @DEPENDS_libdirectfbpp@
 	@PREPARE_libdirectfbpp@
 	cd @DIR_libdirectfbpp@ && \
 		$(BUILDENV) \
@@ -403,7 +408,7 @@ libs_optional: \
 	@CLEANUP_libdirectfbpp@
 	touch $@
 
-.libdvb: .bootstrap @DEPENDS_libdvb@
+$(DEPDIR)/libdvb: bootstrap @DEPENDS_libdvb@
 	@PREPARE_libdvb@
 	cd @DIR_libdvb@ && \
 		$(MAKE) libdvb.a libdvbci.a libdvbmpegtools.a \
@@ -413,7 +418,7 @@ libs_optional: \
 	@CLEANUP_libdvb@
 	touch $@
 
-.libdvbpsi: .bootstrap @DEPENDS_libdvbpsi@
+$(DEPDIR)/libdvbpsi: bootstrap @DEPENDS_libdvbpsi@
 	@PREPARE_libdvbpsi@
 	cd @DIR_libdvbpsi@ && \
 		$(BUILDENV) \
@@ -426,7 +431,7 @@ libs_optional: \
 	@CLEANUP_libdvbpsi@
 	touch $@
 
-.libexpat: .bootstrap @DEPENDS_libexpat@
+$(DEPDIR)/libexpat: bootstrap @DEPENDS_libexpat@
 	@PREPARE_libexpat@
 	cd @DIR_libexpat@ && \
 		$(BUILDENV) \
@@ -439,7 +444,7 @@ libs_optional: \
 	@CLEANUP_libexpat@
 	touch $@
 
-.libffi: .bootstrap @DEPENDS_libffi@
+$(DEPDIR)/libffi: bootstrap @DEPENDS_libffi@
 	@PREPARE_libffi@
 	cd @DIR_libffi@ && \
 		$(BUILDENV) \
@@ -452,7 +457,7 @@ libs_optional: \
 	@CLEANUP_libffi@
 	touch $@
 
-.libfreetype: .bootstrap @DEPENDS_libfreetype@
+$(DEPDIR)/libfreetype: bootstrap @DEPENDS_libfreetype@
 	@PREPARE_libfreetype@
 	cd @DIR_libfreetype@ && \
 		$(BUILDENV) \
@@ -468,7 +473,7 @@ libs_optional: \
 	@CLEANUP_libfreetype@
 	touch $@
 
-.libfribidi: .bootstrap @DEPENDS_libfribidi@
+$(DEPDIR)/libfribidi: bootstrap @DEPENDS_libfribidi@
 	@PREPARE_libfribidi@
 	cd @DIR_libfribidi@ && \
 		$(BUILDENV) \
@@ -482,7 +487,7 @@ libs_optional: \
 	@CLEANUP_libfribidi@
 	touch $@
 
-.libgmp: .bootstrap @DEPENDS_libgmp@
+$(DEPDIR)/libgmp: bootstrap @DEPENDS_libgmp@
 	@PREPARE_libgmp@
 	cd @DIR_libgmp@ && \
 		$(BUILDENV) \
@@ -495,7 +500,7 @@ libs_optional: \
 	@CLEANUP_libgmp@
 	touch $@
 
-.libid3tag: .bootstrap .libz @DEPENDS_libid3tag@
+$(DEPDIR)/libid3tag: bootstrap libz @DEPENDS_libid3tag@
 	@PREPARE_libid3tag@
 	cd @DIR_libid3tag@ && \
 		$(BUILDENV) \
@@ -509,7 +514,7 @@ libs_optional: \
 	@CLEANUP_libid3tag@
 	touch $@
 
-.libjpeg: .bootstrap @DEPENDS_libjpeg@
+$(DEPDIR)/libjpeg: bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libjpeg@
 	cd @DIR_libjpeg@ && \
 		$(BUILDENV) \
@@ -522,7 +527,7 @@ libs_optional: \
 	@CLEANUP_libjpeg@
 	touch $@
 
-.libmad: .bootstrap .libz @DEPENDS_libmad@
+$(DEPDIR)/libmad: bootstrap libz @DEPENDS_libmad@
 	@PREPARE_libmad@
 	cd @DIR_libmad@ && \
 		$(BUILDENV) \
@@ -539,7 +544,7 @@ libs_optional: \
 	@CLEANUP_libmad@
 	touch $@
 
-.libncurses: .bootstrap @DEPENDS_libncurses@
+$(DEPDIR)/libncurses: bootstrap @DEPENDS_libncurses@
 	@PREPARE_libncurses@
 	cd @DIR_libncurses@ && \
 		$(BUILDENV) \
@@ -565,7 +570,7 @@ libs_optional: \
 	@CLEANUP_libncurses@
 	touch $@
 
-.libpcap: .bootstrap @DEPENDS_libpcap@
+$(DEPDIR)/libpcap: bootstrap @DEPENDS_libpcap@
 	@PREPARE_libpcap@
 	cd @DIR_libpcap@ && \
 		$(BUILDENV) \
@@ -579,7 +584,7 @@ libs_optional: \
 	@CLEANUP_libpcap@
 	touch $@
 
-.libpng: .bootstrap .libz @DEPENDS_libpng@
+$(DEPDIR)/libpng: bootstrap libz @DEPENDS_libpng@
 	@PREPARE_libpng@
 	cd @DIR_libpng@ && \
 		$(MAKE) libpng.a libpng12.so libpng.pc libpng-config \
@@ -590,7 +595,7 @@ libs_optional: \
 	@CLEANUP_libpng@
 	touch $@
 
-.libreadline: .bootstrap @DEPENDS_libreadline@
+$(DEPDIR)/libreadline: bootstrap @DEPENDS_libreadline@
 	@PREPARE_libreadline@
 	cd @DIR_libreadline@ && \
 		autoconf && \
@@ -604,7 +609,7 @@ libs_optional: \
 	@CLEANUP_libreadline@
 	touch $@
 
-.libsdl: .bootstrap .libdirectfb @DEPENDS_libsdl@
+$(DEPDIR)/libsdl: bootstrap libdirectfb @DEPENDS_libsdl@
 	@PREPARE_libsdl@
 	cd @DIR_libsdl@ && \
 		$(BUILDENV) \
@@ -642,7 +647,7 @@ libs_optional: \
 	@CLEANUP_libsdl@
 	touch $@
 
-.libsigc: .bootstrap @DEPENDS_libsigc@
+$(DEPDIR)/libsigc: bootstrap @DEPENDS_libsigc@
 	@PREPARE_libsigc@
 	cd @DIR_libsigc@ && \
 		$(BUILDENV) \
@@ -656,7 +661,7 @@ libs_optional: \
 	@CLEANUP_libsigc@
 	touch $@
 
-.libvorbisidec: .bootstrap @DEPENDS_libjpeg@
+$(DEPDIR)/libvorbisidec: bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libvorbisidec@
 	cd @DIR_libvorbisidec@ && \
 		$(BUILDENV) \
@@ -669,7 +674,7 @@ libs_optional: \
 	@CLEANUP_libvorbisidec@
 	touch $@
 
-.libxml2: .bootstrap @DEPENDS_libxml2@
+$(DEPDIR)/libxml2: bootstrap @DEPENDS_libxml2@
 	@PREPARE_libxml2@
 	cd @DIR_libxml2@ && \
 		$(BUILDENV) \
@@ -696,7 +701,7 @@ libs_optional: \
 	@CLEANUP_libxml2@
 	touch $@
 
-.libz: .bootstrap @DEPENDS_libz@
+$(DEPDIR)/libz: bootstrap @DEPENDS_libz@
 	@PREPARE_libz@
 	cd @DIR_libz@ && \
 		$(BUILDENV) \
@@ -713,9 +718,9 @@ libs_optional: \
 #   contrib apps
 #
 
-contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
+contrib_apps: bzip2 console_data console_tools fbset lirc lsof ssh tcpdump
 
-.bzip2: .bootstrap @DEPENDS_bzip2@
+$(DEPDIR)/bzip2: bootstrap @DEPENDS_bzip2@
 	@PREPARE_bzip2@
 	cd @DIR_bzip2@ && \
 	mv Makefile-libbz2_so Makefile && \
@@ -725,7 +730,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@CLEANUP_bzip2@
 	touch $@
 
-.console_data: .bootstrap @DEPENDS_console_data@
+$(DEPDIR)/console_data: bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
 	cd @DIR_console_data@ && \
 		$(BUILDENV) \
@@ -738,7 +743,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@CLEANUP_console_data@
 	touch $@
 
-.console_tools: .bootstrap .console_data @DEPENDS_console_tools@
+$(DEPDIR)/console_tools: bootstrap console_data @DEPENDS_console_tools@
 	@PREPARE_console_tools@
 	cd @DIR_console_tools@ && \
 		$(BUILDENV) \
@@ -751,7 +756,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@CLEANUP_console_tools@
 	touch $@
 
-.directfb_examples: .bootstrap .libdirectfb @DEPENDS_directfb_examples@
+$(DEPDIR)/directfb_examples: bootstrap libdirectfb @DEPENDS_directfb_examples@
 	@PREPARE_directfb_examples@
 	cd @DIR_directfb_examples@ && \
 		$(BUILDENV) \
@@ -764,7 +769,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@CLEANUP_directfb_examples@
 	touch $@
 
-.fbset: .bootstrap @DEPENDS_fbset@
+$(DEPDIR)/fbset: bootstrap @DEPENDS_fbset@
 	@PREPARE_fbset@
 	cd @DIR_fbset@ && \
 		$(MAKE) \
@@ -773,7 +778,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@CLEANUP_fbset@
 	touch $@
 
-.lirc: .bootstrap @DEPENDS_lirc@
+$(DEPDIR)/lirc: bootstrap @DEPENDS_lirc@
 	@PREPARE_lirc@
 	cd @DIR_lirc@ && \
 		$(BUILDENV) \
@@ -791,7 +796,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@CLEANUP_lirc@
 	touch $@
 
-.lsof: .bootstrap @DEPENDS_lsof@
+$(DEPDIR)/lsof: bootstrap @DEPENDS_lsof@
 	@PREPARE_lsof@
 	cd @DIR_lsof@ && \
 	tar xvf @DIR_lsof@_src.tar && \
@@ -808,7 +813,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@CLEANUP_lsof@
 	touch $@
 
-.ssh: .bootstrap .libcrypto .libz @DEPENDS_ssh@
+$(DEPDIR)/ssh: bootstrap libcrypto libz @DEPENDS_ssh@
 	@PREPARE_ssh@
 	cd @DIR_ssh@ && \
 		$(BUILDENV) \
@@ -829,7 +834,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@CLEANUP_ssh@
 	touch $@
 
-.tcpdump: .bootstrap .libpcap @DEPENDS_tcpdump@
+$(DEPDIR)/tcpdump: bootstrap libpcap @DEPENDS_tcpdump@
 	@PREPARE_tcpdump@
 	cd @DIR_tcpdump@ && \
 		$(BUILDENV) \
@@ -845,7 +850,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 	@CLEANUP_tcpdump@
 	touch $@
 
-.vdr: .bootstrap @DEPENDS_vdr@
+$(DEPDIR)/vdr: bootstrap @DEPENDS_vdr@
 	@PREPARE_vdr@
 	cd @DIR_vdr@ && \
 		$(BUILDENV) \
@@ -854,7 +859,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 		$(MAKE) plugins PREFIX=$(prefix) DRIVERDIR=$(driverdir) && \
 		@INSTALL_vdr@
 	@CLEANUP_vdr@
-	touch .vdr
+	touch $@
 
 
 #######################
@@ -862,10 +867,10 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 #   development tools
 #
 
-devel: .gdb .ltrace .strace .nano
-devel_optional: .gdb-remote .insight
+devel: gdb ltrace strace nano
+devel_optional: gdb-remote insight
 
-.gdb: .bootstrap .libncurses @DEPENDS_gdb@
+$(DEPDIR)/gdb: bootstrap libncurses @DEPENDS_gdb@
 	@PREPARE_gdb@
 	cd @DIR_gdb@ && \
 		$(BUILDENV) \
@@ -884,7 +889,7 @@ devel_optional: .gdb-remote .insight
 	@CLEANUP_gdb@
 	touch $@
 
-.gdb-remote: @DEPENDS_gdb@
+$(DEPDIR)/gdb-remote: @DEPENDS_gdb@
 	@PREPARE_gdb@
 	cd @DIR_gdb@ && \
 		./configure \
@@ -897,7 +902,7 @@ devel_optional: .gdb-remote .insight
 	@CLEANUP_gdb@
 	touch $@
 
-.insight: @DEPENDS_insight@
+$(DEPDIR)/insight: @DEPENDS_insight@
 	@PREPARE_insight@
 	cd @DIR_insight@ && \
 		./configure \
@@ -910,7 +915,7 @@ devel_optional: .gdb-remote .insight
 	@CLEANUP_insight@
 	touch $@
 
-.ltrace: .bootstrap @DEPENDS_ltrace@
+$(DEPDIR)/ltrace: bootstrap @DEPENDS_ltrace@
 	@PREPARE_ltrace@
 	cd @DIR_ltrace@ && \
 		$(BUILDENV) \
@@ -923,7 +928,7 @@ devel_optional: .gdb-remote .insight
 	@CLEANUP_ltrace@
 	touch $@
 
-.strace: .bootstrap @DEPENDS_strace@
+$(DEPDIR)/strace: bootstrap @DEPENDS_strace@
 	@PREPARE_strace@
 	cd @DIR_strace@ && \
 		$(BUILDENV) \
@@ -936,7 +941,7 @@ devel_optional: .gdb-remote .insight
 	@CLEANUP_strace@
 	touch $@
 
-.nano: .bootstrap .libncurses @DEPENDS_nano@
+$(DEPDIR)/nano: bootstrap libncurses @DEPENDS_nano@
 	@PREPARE_nano@
 	cd @DIR_nano@ && \
 		$(BUILDENV) \
@@ -954,10 +959,10 @@ devel_optional: .gdb-remote .insight
 # java stuff
 #
 
-java: .kaffeh .kaffe
+java: kaffeh kaffe
 
 # for x86
-.kaffeh: .bootstrap @DEPENDS_kaffeh@
+$(DEPDIR)/kaffeh: bootstrap @DEPENDS_kaffeh@
 	@PREPARE_kaffeh@
 	cd @DIR_kaffeh@ && \
 		./configure \
@@ -973,7 +978,7 @@ java: .kaffeh .kaffe
 	touch $@
 
 # for ppc
-.kaffe: .bootstrap .kaffeh .libffi @DEPENDS_kaffe@
+$(DEPDIR)/kaffe: bootstrap kaffeh libffi @DEPENDS_kaffe@
 	@PREPARE_kaffe@
 	cd @DIR_kaffe@ && \
 		$(BUILDENV) \
@@ -995,9 +1000,9 @@ java: .kaffeh .kaffe
 #   fun stuff
 #
 
-fun: .gnuboy .scummvm .sdldoom
+fun: gnuboy scummvm sdldoom
 
-.gnuboy: .bootstrap @DEPENDS_gnuboy@
+$(DEPDIR)/gnuboy: bootstrap @DEPENDS_gnuboy@
 	@PREPARE_gnuboy@
 	cd @DIR_gnuboy@ && \
 		autoconf && \
@@ -1012,7 +1017,7 @@ fun: .gnuboy .scummvm .sdldoom
 	@CLEANUP_gnuboy@
 	touch $@
 
-.scummvm: .bootstrap .libreadline .libsdl @DEPENDS_scummvm@
+$(DEPDIR)/scummvm: bootstrap libreadline libsdl @DEPENDS_scummvm@
 	@PREPARE_scummvm@
 	cd @DIR_scummvm@ && \
 		$(MAKE) \
@@ -1023,7 +1028,7 @@ fun: .gnuboy .scummvm .sdldoom
 	@CLEANUP_scummvm@
 	touch $@
 
-.sdldoom: .bootstrap .libsdl @DEPENDS_sdldoom@
+$(DEPDIR)/sdldoom: bootstrap libsdl @DEPENDS_sdldoom@
 	@PREPARE_sdldoom@
 	cd @DIR_sdldoom@ && \
 		$(BUILDENV) \
@@ -1041,9 +1046,9 @@ fun: .gnuboy .scummvm .sdldoom
 #  DVB apps
 #
 
-dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
+dvb_apps: dvbdate dvbstream dvbtext dvbtune vls
 
-.dvbdate: .bootstrap @DEPENDS_dvbdate@
+$(DEPDIR)/dvbdate: bootstrap @DEPENDS_dvbdate@
 	@PREPARE_dvbdate@
 	cd @DIR_dvbdate@ && \
 		$(MAKE) dvbdate \
@@ -1053,7 +1058,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@CLEANUP_dvbdate@
 	touch $@
 
-.dvbstream: .bootstrap @DEPENDS_dvbstream@
+$(DEPDIR)/dvbstream: bootstrap @DEPENDS_dvbstream@
 	@PREPARE_dvbstream@
 	cd @DIR_dvbstream@ && \
 		$(MAKE) dvbstream rtpfeed\
@@ -1064,7 +1069,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@CLEANUP_dvbstream@
 	touch $@
 
-.dvbtext: .bootstrap @DEPENDS_dvbtext@
+$(DEPDIR)/dvbtext: bootstrap @DEPENDS_dvbtext@
 	@PREPARE_dvbtext@
 	cd @DIR_dvbtext@ && \
 		$(target)-gcc $(TARGET_CFLAGS) -I$(driverdir)/dvb/include -DNEWSTRUCT -o dvbtext dvbtext.c && \
@@ -1072,7 +1077,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@CLEANUP_dvbtext@
 	touch $@
 
-.dvbtune: .bootstrap @DEPENDS_dvbtune@
+$(DEPDIR)/dvbtune: bootstrap @DEPENDS_dvbtune@
 	@PREPARE_dvbtune@
 	cd @DIR_dvbtune@ && \
 		$(MAKE) \
@@ -1082,7 +1087,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@CLEANUP_dvbtune@
 	touch $@
 
-.vls: .bootstrap .libdvbpsi @DEPENDS_vls@
+$(DEPDIR)/vls: bootstrap libdvbpsi @DEPENDS_vls@
 	@PREPARE_vls@
 	cd @DIR_vls@ && \
 		$(BUILDENV) \
@@ -1103,7 +1108,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 # bluetooth
 #
 
-.bluez_hcidump: .bootstrap .bluez_libs @DEPENDS_bluez_hcidump@
+$(DEPDIR)/bluez_hcidump: bootstrap bluez_libs @DEPENDS_bluez_hcidump@
 	@PREPARE_bluez_hcidump@
 	cd @DIR_bluez_hcidump@ && \
 		$(BUILDENV) \
@@ -1116,7 +1121,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@CLEANUP_bluez_hcidump@
 	touch $@
 
-.bluez_libs: .bootstrap @DEPENDS_bluez_libs@
+$(DEPDIR)/bluez_libs: bootstrap @DEPENDS_bluez_libs@
 	@PREPARE_bluez_libs@
 	cd @DIR_bluez_libs@ && \
 		$(BUILDENV) \
@@ -1129,7 +1134,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@CLEANUP_bluez_libs@
 	touch $@
 
-.bluez_pan: .bootstrap .bluez_sdp @DEPENDS_bluez_pan@
+$(DEPDIR)/bluez_pan: bootstrap bluez_sdp @DEPENDS_bluez_pan@
 	@PREPARE_bluez_pan@
 	cd @DIR_bluez_pan@ && \
 		$(BUILDENV) \
@@ -1146,7 +1151,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@CLEANUP_bluez_pan@
 	touch $@
 
-.bluez_sdp: .bootstrap .bluez_libs @DEPENDS_bluez_sdp@
+$(DEPDIR)/bluez_sdp: bootstrap bluez_libs @DEPENDS_bluez_sdp@
 	@PREPARE_bluez_sdp@
 	cd @DIR_bluez_sdp@ && \
 		$(BUILDENV) \
@@ -1161,7 +1166,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@CLEANUP_bluez_sdp@
 	touch $@
 
-.bluez_utils: .bootstrap .bluez_libs @DEPENDS_bluez_utils@
+$(DEPDIR)/bluez_utils: bootstrap bluez_libs @DEPENDS_bluez_utils@
 	@PREPARE_bluez_utils@
 	cd @DIR_bluez_utils@ && \
 		$(BUILDENV) \
@@ -1181,9 +1186,9 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 #   own kernel and driver
 #
 
-boot: .u-boot .linuxkernel .driver
+boot: u-boot linuxkernel driver
 
-.u-boot: .bootstrap $(bootdir)/u-boot/Makefile
+$(DEPDIR)/u-boot: bootstrap $(bootdir)/u-boot/Makefile
 	$(MAKE) -C $(bootdir)/u-boot dbox2_config
 	$(MAKE) -C $(bootdir)/u-boot CROSS_COMPILE=$(target)- u-boot.stripped
 
@@ -1196,7 +1201,7 @@ else
 endif
 	touch $@
 
-.linuxkernel: .bootstrap .linuxdir .u-boot
+$(DEPDIR)/linuxkernel: bootstrap linuxdir u-boot
 	$(MAKE) -C @DIR_linux@ zImage modules \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)-
@@ -1220,7 +1225,7 @@ else
 endif
 	touch $@
 
-.driver: .bootstrap .linuxkernel
+$(DEPDIR)/driver: bootstrap linuxkernel
 	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		CROSS_COMPILE=$(target)-
@@ -1244,7 +1249,7 @@ driver-clean:
 		distclean
 	-rm .driver
 
-$(driverdir)/directfb/Makefile: .bootstrap .libdirectfb
+$(driverdir)/directfb/Makefile: bootstrap libdirectfb
 	cd $(driverdir)/directfb && \
 	$(BUILDENV) \
 	./autogen.sh \
@@ -1254,7 +1259,7 @@ $(driverdir)/directfb/Makefile: .bootstrap .libdirectfb
 		--enable-maintainer-mode \
 		--with-kernel-source=$(buildprefix)/linux
 
-.directfb_gtx: $(driverdir)/directfb/Makefile
+$(DEPDIR)/directfb_gtx: $(driverdir)/directfb/Makefile
 	$(MAKE) -C $(driverdir)/directfb all install DESTDIR=$(targetprefix)
 	touch $@
 
@@ -1263,7 +1268,7 @@ $(driverdir)/directfb/Makefile: .bootstrap .libdirectfb
 #   own applications
 #
 
-apps: .dvbsnoop .enigma .lcars .lcd .neutrino .plugins .dvb_tools
+apps: dvbsnoop enigma lcars lcd neutrino plugins dvb_tools
 
 CONFIGURE_OPTS = \
 	--build=$(build) \
@@ -1296,158 +1301,158 @@ CONFIGURE = \
 $(appsdir)/dvb/config/config.status:
 	cd $(appsdir)/dvb/config && $(CONFIGURE)
 
-.config: $(appsdir)/dvb/config/config.status
+$(DEPDIR)/config: $(appsdir)/dvb/config/config.status
 	$(MAKE) -C $(appsdir)/dvb/config all install
 	touch $@
 
 # dvb/dvbsnoop
 
-$(appsdir)/dvb/dvbsnoop/config.status: .bootstrap
+$(appsdir)/dvb/dvbsnoop/config.status: bootstrap
 	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE) CPPFLAGS="$(CPPFLAGS) -I$(driverdir)/dvb/include"
 
-.dvbsnoop: $(appsdir)/dvb/dvbsnoop/config.status
+$(DEPDIR)/dvbsnoop: $(appsdir)/dvb/dvbsnoop/config.status
 	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
 	touch $@
 
 # dvb/libdvb++
 
-$(appsdir)/dvb/libdvb++/config.status: .bootstrap
+$(appsdir)/dvb/libdvb++/config.status: bootstrap
 	cd $(appsdir)/dvb/libdvb++ && $(CONFIGURE) CPPFLAGS="$(CPPFLAGS) -I$(driverdir)/dvb/include"
 
-.libdvb++: $(appsdir)/dvb/libdvb++/config.status
+$(DEPDIR)/libdvb++: $(appsdir)/dvb/libdvb++/config.status
 	$(MAKE) -C $(appsdir)/dvb/libdvb++ all install
 	touch $@
 
 # dvb/libdvbsi++
 
-$(appsdir)/dvb/libdvbsi++/config.status: .bootstrap
+$(appsdir)/dvb/libdvbsi++/config.status: bootstrap
 	cd $(appsdir)/dvb/libdvbsi++ && $(CONFIGURE) CPPFLAGS="$(CPPFLAGS) -I$(driverdir)/dvb/include"
 
-.libdvbsi++: $(appsdir)/dvb/libdvbsi++/config.status
+$(DEPDIR)/libdvbsi++: $(appsdir)/dvb/libdvbsi++/config.status
 	$(MAKE) -C $(appsdir)/dvb/libdvbsi++ all install
 	touch $@
 
 # dvb/zapit
 
-$(appsdir)/dvb/zapit/config.status: .bootstrap .misc_libs
+$(appsdir)/dvb/zapit/config.status: bootstrap misc_libs
 	cd $(appsdir)/dvb/zapit && $(CONFIGURE)
 
-.zapit: $(appsdir)/dvb/zapit/config.status .config
+$(DEPDIR)/zapit: $(appsdir)/dvb/zapit/config.status .config
 	$(MAKE) -C $(appsdir)/dvb/zapit all install
 	touch $@
 
 # dvb/tools
 
-$(appsdir)/dvb/tools/config.status: .bootstrap .misc_libs
+$(appsdir)/dvb/tools/config.status: bootstrap misc_libs
 	cd $(appsdir)/dvb/tools && $(CONFIGURE)
 
-.dvb_tools: $(appsdir)/dvb/tools/config.status
+$(DEPDIR)/dvb_tools: $(appsdir)/dvb/tools/config.status
 	$(MAKE) -C $(appsdir)/dvb/tools all install
 	touch $@
 
 # misc/libs
 
-$(appsdir)/misc/libs/config.status: .bootstrap .libz
+$(appsdir)/misc/libs/config.status: bootstrap libz
 	cd $(appsdir)/misc/libs && $(CONFIGURE)
 
-.misc_libs: $(appsdir)/misc/libs/config.status
+$(DEPDIR)/misc_libs: $(appsdir)/misc/libs/config.status
 	$(MAKE) -C $(appsdir)/misc/libs all install
 	touch $@
 
 # misc/tools
 
-$(appsdir)/misc/tools/config.status: .bootstrap
+$(appsdir)/misc/tools/config.status: bootstrap
 	cd $(appsdir)/misc/tools && $(CONFIGURE)
 
-.misc_tools: $(appsdir)/misc/tools/config.status
+$(DEPDIR)/misc_tools: $(appsdir)/misc/tools/config.status
 	$(MAKE) -C $(appsdir)/misc/tools all install
 	touch $@
 
 # tuxbox/enigma
 
-$(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libfribidi .libmad .libid3tag .libpng .libsigc .libtuxbox .misc_libs .plugins
+$(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad libid3tag libpng libsigc libtuxbox misc_libs plugins
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE)
 
-.enigma: $(appsdir)/tuxbox/enigma/config.status .tuxbox_tools .config
+$(DEPDIR)/enigma: $(appsdir)/tuxbox/enigma/config.status tuxbox_tools config
 	$(MAKE) -C $(appsdir)/tuxbox/enigma all install
 	touch $@
 
 # tuxbox/funstuff
 
-$(appsdir)/tuxbox/funstuff/config.status: .bootstrap
+$(appsdir)/tuxbox/funstuff/config.status: bootstrap
 	cd $(appsdir)/tuxbox/funstuff && $(CONFIGURE)
 
-.funstuff: $(appsdir)/tuxbox/funstuff/config.status
+$(DEPDIR)/funstuff: $(appsdir)/tuxbox/funstuff/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/funstuff all install
 	touch $@
 
 # tuxbox/lcars
 
-$(appsdir)/tuxbox/lcars/config.status: .bootstrap .libcurl .libfreetype .plugins .libcommoncplusplus
+$(appsdir)/tuxbox/lcars/config.status: bootstrap libcurl libfreetype plugins libcommoncplusplus
 	cd $(appsdir)/tuxbox/lcars && $(CONFIGURE)
 
-.lcars: $(appsdir)/tuxbox/lcars/config.status
+$(DEPDIR)/lcars: $(appsdir)/tuxbox/lcars/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/lcars all install
 	touch $@
 
 # tuxbox/lcd
 
-$(appsdir)/tuxbox/lcd/config.status: .bootstrap .libfreetype .misc_libs .tuxbox_libs
+$(appsdir)/tuxbox/lcd/config.status: bootstrap libfreetype misc_libs tuxbox_libs
 	cd $(appsdir)/tuxbox/lcd && $(CONFIGURE)
 
-.lcd: $(appsdir)/tuxbox/lcd/config.status
+$(DEPDIR)/lcd: $(appsdir)/tuxbox/lcd/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/lcd all install
 	touch $@
 
 # tuxbox/libs
 
-$(appsdir)/tuxbox/libs/config.status: .bootstrap .libfreetype .libpng
+$(appsdir)/tuxbox/libs/config.status: bootstrap libfreetype libpng
 	cd $(appsdir)/tuxbox/libs && $(CONFIGURE)
 
-.tuxbox_libs: $(appsdir)/tuxbox/libs/config.status
+$(DEPDIR)/tuxbox_libs: $(appsdir)/tuxbox/libs/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/libs all install
 	touch $@
 
 # tuxbox/libtuxbox
 
-$(appsdir)/tuxbox/libtuxbox/config.status: .bootstrap
+$(appsdir)/tuxbox/libtuxbox/config.status: bootstrap
 	cd $(appsdir)/tuxbox/libtuxbox && $(CONFIGURE)
 
-.libtuxbox: $(appsdir)/tuxbox/libtuxbox/config.status
+$(DEPDIR)/libtuxbox: $(appsdir)/tuxbox/libtuxbox/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/libtuxbox all install
 	touch $@
 
 # tuxbox/neutrino
 
-$(appsdir)/tuxbox/neutrino/config.status: .bootstrap .libboost .libcurl .libfreetype .libjpeg .libmad .libid3tag .libpng .libtuxbox .misc_libs .plugins .tuxbox_libs .zapit .misc_tools
+$(appsdir)/tuxbox/neutrino/config.status: bootstrap libboost libcurl libfreetype libjpeg libmad libid3tag libpng libtuxbox misc_libs plugins tuxbox_libs zapit misc_tools
 	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
 
-.neutrino: $(appsdir)/tuxbox/neutrino/config.status
+$(DEPDIR)/neutrino: $(appsdir)/tuxbox/neutrino/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install
 	touch $@
 
 # tuxbox/plugins
 
-$(appsdir)/tuxbox/plugins/config.status: .bootstrap .libcurl .libfreetype .libz
+$(appsdir)/tuxbox/plugins/config.status: bootstrap libcurl libfreetype libz
 	cd $(appsdir)/tuxbox/plugins && $(CONFIGURE)
 
-.plugins: $(appsdir)/tuxbox/plugins/config.status
+$(DEPDIR)/plugins: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins all install
 	touch $@
 
 # tuxbox/tools
 
-$(appsdir)/tuxbox/tools/config.status: .bootstrap .plugins .libtuxbox
+$(appsdir)/tuxbox/tools/config.status: bootstrap plugins libtuxbox
 	cd $(appsdir)/tuxbox/tools && $(CONFIGURE)
 
-.tuxbox_tools: $(appsdir)/tuxbox/tools/config.status
+$(DEPDIR)/tuxbox_tools: $(appsdir)/tuxbox/tools/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/tools all install
 	touch $@
 
-$(hostappsdir)/config.status: .bootstrap
+$(hostappsdir)/config.status: bootstrap
 	cd $(hostappsdir) && $(CONFIGURE)
 
-.hostapps_cross: $(hostappsdir)/config.status
+$(DEPDIR)/hostapps_cross: $(hostappsdir)/config.status
 	$(MAKE) -C $(hostappsdir)
 	touch $@
 
@@ -1473,7 +1478,7 @@ rebuild-flash:
 	-rm -f $(flashprefix)/.flash
 	$(MAKE) flash-lib
 
-$(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
+$(flashprefix)/.flash: busybox driver modutils tuxbox_tools
 	if [ -d $(flashprefix)/root ]; then \
 		echo "directory $(flashprefix)/root already exists. please remove manually." && false; \
 	fi
@@ -1514,7 +1519,7 @@ $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
 
 flash-ftpd: $(flashprefix)/.part_ftpd
 
-$(flashprefix)/.part_ftpd: $(flashprefix)/.flash $(flashprefix)/.part_inetd .ftpd
+$(flashprefix)/.part_ftpd: $(flashprefix)/.flash $(flashprefix)/.part_inetd ftpd
 	$(INSTALL) -d $(flashprefix)/root/share/empty
 	$(INSTALL) $(targetprefix)/etc/vsftpd.conf $(flashprefix)/root/etc
 	$(INSTALL) $(targetprefix)/sbin/in.ftpd $(flashprefix)/root/sbin
@@ -1532,7 +1537,7 @@ $(flashprefix)/.part_telnetd: $(flashprefix)/.flash $(flashprefix)/.part_inetd
 
 flash-ssh: $(flashprefix)/.part_ssh
 
-$(flashprefix)/.part_ssh: $(flashprefix)/.flash .ssh
+$(flashprefix)/.part_ssh: $(flashprefix)/.flash ssh
 	$(INSTALL) -d $(flashprefix)/root/etc/ssh
 	$(INSTALL) $(targetprefix)/bin/ssh $(targetprefix)/bin/scp \
 		$(targetprefix)/bin/sftp $(flashprefix)/root/bin
@@ -1541,7 +1546,7 @@ $(flashprefix)/.part_ssh: $(flashprefix)/.flash .ssh
 
 flash-sshd: $(flashprefix)/.part_sshd
 
-$(flashprefix)/.part_sshd: $(flashprefix)/.flash .ssh
+$(flashprefix)/.part_sshd: $(flashprefix)/.flash ssh
 	$(INSTALL) -d $(flashprefix)/root/etc/ssh
 	$(INSTALL) -d $(flashprefix)/root/libexec
 	$(INSTALL) -d $(flashprefix)/root/share/empty
@@ -1555,7 +1560,7 @@ $(flashprefix)/.part_sshd: $(flashprefix)/.flash .ssh
 
 flash-dvb-tools: $(flashprefix)/.part_dvb_tools
 
-$(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash .dvb_tools
+$(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash dvb_tools
 	$(INSTALL) $(targetprefix)/sbin/streampes $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streamsec $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
@@ -1563,7 +1568,7 @@ $(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash .dvb_tools
 
 flash-neutrino: $(flashprefix)/.part_neutrino
 
-$(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino .root
+$(flashprefix)/.part_neutrino: $(flashprefix)/.flash neutrino root
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	$(INSTALL) -d $(flashprefix)/root/share/iso-codes
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/lirc
@@ -1586,7 +1591,7 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino .root
 
 flash-enigma: $(flashprefix)/.part_enigma
 
-$(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
+$(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma
 	$(INSTALL) $(targetprefix)/bin/enigma $(flashprefix)/root/bin
 	cp -pa $(targetprefix)/share/tuxbox/enigma $(flashprefix)/root/share/tuxbox
 	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
@@ -1598,7 +1603,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
 
 flash-lcars: $(flashprefix)/.part_lcars
 
-$(flashprefix)/.part_lcars: $(flashprefix)/.flash .lcars
+$(flashprefix)/.part_lcars: $(flashprefix)/.flash lcars
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	$(INSTALL) $(targetprefix)/bin/lcars $(flashprefix)/root/bin
 	cp -pa $(targetprefix)/etc/init.d/start_lcars $(flashprefix)/root/etc/init.d/
@@ -1608,7 +1613,7 @@ $(flashprefix)/.part_lcars: $(flashprefix)/.flash .lcars
 
 flash-plugins: $(flashprefix)/.part_plugins
 
-$(flashprefix)/.part_plugins: $(flashprefix)/.flash .plugins
+$(flashprefix)/.part_plugins: $(flashprefix)/.flash plugins
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/tuxtxt
 	cp -pa $(targetprefix)/lib/tuxbox/plugins/*.cfg $(flashprefix)/root/lib/tuxbox/plugins/
@@ -1620,7 +1625,7 @@ $(flashprefix)/.part_plugins: $(flashprefix)/.flash .plugins
 
 flash-lcdmenu: $(flashprefix)/.part_lcdmenu
 
-$(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash .lcd
+$(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash lcd
 	$(INSTALL) $(targetprefix)/bin/lcdmenu $(flashprefix)/root/bin
 	cp -pa $(targetprefix)/var/tuxbox/config/lcdmenu.conf $(flashprefix)/root/var/tuxbox/config
 	@touch $@
@@ -1752,22 +1757,7 @@ distclean-local:
 	-$(MAKE) -C $(bootdir)/u-boot distclean
 	-$(MAKE) -C $(driverdir) distclean KERNEL_LOCATION=$(buildprefix)/linux
 	-rm Makefile-archive
-	-rm .bootstrap
-	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .root .busybox .ftpd .inetd .modutils .procps .watchdog .mrouted
-	-rm .libboost .libcommoncplusplus .libcrypto .libcurl
-	-rm .libdirectfb .libdirectfbpp .libdvb .libdvbpsi .libexpat .libffi .libfreetype
-	-rm .libfribidi .libncurses .libid3tag .libjpeg .libmad .libpcap .libpng
-	-rm .libreadline .libsdl .libsigc .libxml2 .libz
-	-rm .gdb .gdb-remote .insight .ltrace .strace .nano
-	-rm .kaffeh .kaffe
-	-rm .gnuboy .scummvm .sdldoom
-	-rm .u-boot .linuxkernel .driver
-	-rm .dvbsnoop .config .enigma .lcars .lcd .neutrino .dvb_tools .zapit
-	-rm .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
-	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
-	-rm .misc_libs .misc_tools .plugins .libtuxbox .tuxbox_libs .tuxbox_tools
-	-rm .bluez_hcidump .bluez_libs .bluez_pan .bluez_sdp .bluez_utils
+	-rm $(DEPDIR) -rf
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 if TARGETRULESET_FLASH
