@@ -1345,12 +1345,21 @@ $(appsdir)/tuxbox/lcars/Makefile: .bootstrap .libcurl .libfreetype
 
 # tuxbox/lcd
 
-$(appsdir)/tuxbox/lcd/Makefile: .bootstrap .libfreetype .misc_libs
+$(appsdir)/tuxbox/lcd/Makefile: .bootstrap .libfreetype .misc_libs .tuxbox_libs
 	cd $(appsdir)/tuxbox/lcd && $(CONFIGURE)
 
 .lcdmenu: $(appsdir)/tuxbox/lcd/Makefile
 	$(MAKE) -C $(appsdir)/tuxbox/lcd/lcdmenu all install
 	touch .lcdmenu
+
+# tuxbox/libs
+
+$(appsdir)/tuxbox/libs/Makefile: .bootstrap .libfreetype
+	cd $(appsdir)/tuxbox/libs && $(CONFIGURE)
+
+.tuxbox_libs: $(appsdir)/tuxbox/libs/Makefile
+	$(MAKE) -C $(appsdir)/tuxbox/libs all install
+	touch .tuxbox_libs
 
 # tuxbox/neutrino
 
