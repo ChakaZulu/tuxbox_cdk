@@ -13,8 +13,8 @@ linux-2.4.19.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.ker
 linux-dbox2-2.4.19-2.diff.bz2
 binutils-2.13.90.0.13.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils/test;ftp://ftp.kernel.org/pub/linux/devel/binutils/test
 gcc-core-2.95.3.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-2.95.3
-gcc-core-3.2.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.2
-gcc-g++-3.2.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.2
+gcc-core-3.2.1.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.2.1
+gcc-g++-3.2.1.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.2.1
 glibc-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 glibc-linuxthreads-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 uClibc-0.9.11.tar.bz2
