@@ -608,7 +608,7 @@ endif
 #   own applications
 #
 
-apps: .dvbsnoop .dvbstream .edvb .lcars .lcdmenu .neutrino .stream 
+apps: .dvbsnoop .dvbstream .edvb .enigma .lcars .lcdmenu .neutrino .stream 
 
 if MAINTAINER_MODE
 $(appsdir)/configure: $(appsdir)/configure.ac
