@@ -1753,6 +1753,7 @@ distclean-local:
 	-rm .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	-rm .misc_libs .misc_tools .plugins .libtuxbox .tuxbox_libs .tuxbox_tools
+	-rm .bluez_hcidump .bluez_libs .bluez_pan .bluez_sdp .bluez_utils
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 if TARGETRULESET_FLASH

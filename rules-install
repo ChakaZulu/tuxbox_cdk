@@ -109,4 +109,13 @@ dvbtext;install:-m755:dvbtext:TARGET/bin
 dvbtune;install:-m755:dvbtune:TARGET/bin
 vls;make:install:DESTDIR=TARGET
 
+#
+# bluetooth
+#
+bluez_hcidump;make:install:DESTDIR=TARGET
+bluez_libs;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libbluetooth.la
+bluez_pan;make:install:DESTDIR=TARGET
+bluez_sdp;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libsdp.la
+bluez_utils;make:install:DESTDIR=TARGET
+
 >>?;rules-install-local

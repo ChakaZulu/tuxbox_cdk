@@ -1,0 +1,27 @@
+diff -Naur bluez-hcidump-1.5.orig/configure bluez-hcidump-1.5/configure
+--- bluez-hcidump-1.5.orig/configure	2002-11-25 16:40:32.000000000 +0100
++++ bluez-hcidump-1.5/configure	2004-02-09 13:51:17.000000000 +0100
+@@ -5244,8 +5244,8 @@
+ if test "${with_bluez_libs+set}" = set; then
+   withval="$with_bluez_libs"
+   
+-	    BLUEZ_INCDIR="$withval"/include
+-	    BLUEZ_LIBDIR="$withval"/src
++	    BLUEZ_INCDIR="$withval"/include/bluetooth
++	    BLUEZ_LIBDIR="$withval"/lib
+ 	
+ else
+   
+diff -Naur bluez-hcidump-1.5.orig/parser/parser.h bluez-hcidump-1.5/parser/parser.h
+--- bluez-hcidump-1.5.orig/parser/parser.h	2002-10-15 19:18:45.000000000 +0200
++++ bluez-hcidump-1.5/parser/parser.h	2004-02-09 13:53:12.000000000 +0100
+@@ -29,7 +29,9 @@
+ #include <sys/types.h>
+ #include <netinet/in.h>
+ 
++#define __KERNEL__
+ #include <asm/unaligned.h>
++#undef __KERNEL__
+ 
+ struct frame {
+ 	void	*data;

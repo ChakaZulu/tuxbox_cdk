@@ -9,6 +9,11 @@ config.status
 configure
 linux-2.4.22
 .binutils
+.bluez_hcidump
+.bluez_libs
+.bluez_pan
+.bluez_sdp
+.bluez_utils
 .bootstrap
 .busybox
 .bzip2

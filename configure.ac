@@ -357,6 +357,15 @@ TUXBOX_RULES_MAKE(dvbtune)
 TUXBOX_RULES_MAKE(vls)
 
 #
+# bluetooth
+#
+TUXBOX_RULES_MAKE(bluez_hcidump)
+TUXBOX_RULES_MAKE(bluez_libs)
+TUXBOX_RULES_MAKE(bluez_pan)
+TUXBOX_RULES_MAKE(bluez_sdp)
+TUXBOX_RULES_MAKE(bluez_utils)
+
+#
 # internal
 #
 AC_SUBST_FILE(ARCHIVE)
