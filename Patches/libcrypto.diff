@@ -1,19 +1,19 @@
-diff -Naur openssl-0.9.7d.orig/Configure openssl-0.9.7d/Configure
---- openssl-0.9.7d.orig/Configure	2004-03-12 22:24:44.000000000 +0100
-+++ openssl-0.9.7d/Configure	2004-04-10 15:38:09.000000000 +0200
+diff -u openssl-0.9.7d.old/Configure openssl-0.9.7d.new/Configure
+--- openssl-0.9.7d.old/Configure	2004-03-12 22:24:44.000000000 +0100
++++ openssl-0.9.7d.new/Configure	2004-05-13 19:05:38.000000000 +0200
 @@ -557,6 +557,9 @@
  ##### OS/2 EMX
  "OS2-EMX", "gcc::::::::",
  
 +##### Tuxbox
-+"tuxbox",    "powerpc-tuxbox-linux-gnu-gcc:-DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall -mmultiple -mstring -meabi -msoft-float::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_RISC1 DES_UNROLL::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"tuxbox",    "__TUXBOX_CC__:-DB_ENDIAN -DTERMIO __TUXBOX_CFLAGS__ -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_RISC1 DES_UNROLL::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +
  ##### VxWorks for various targets
  "vxworks-ppc405","ccppc:-g -msoft-float -mlongcall -DCPU=PPC405 -I\$(WIND_BASE)/target/h:::VXWORKS:-r:::::",
  "vxworks-ppc750","ccppc:-ansi -nostdinc -DPPC750 -D_REENTRANT -fvolatile -fno-builtin -fno-for-scope -fsigned-char -Wall -msoft-float -mlongcall -DCPU=PPC604 -I\$(WIND_BASE)/target/h \$(DEBUG_FLAG):::VXWORKS:-r:::::",
-diff -Naur openssl-0.9.7d.orig/Makefile.org openssl-0.9.7d/Makefile.org
---- openssl-0.9.7d.orig/Makefile.org	2004-03-12 22:33:04.000000000 +0100
-+++ openssl-0.9.7d/Makefile.org	2004-04-10 15:38:09.000000000 +0200
+diff -u openssl-0.9.7d.old/Makefile.org openssl-0.9.7d.new/Makefile.org
+--- openssl-0.9.7d.old/Makefile.org	2004-03-12 22:33:04.000000000 +0100
++++ openssl-0.9.7d.new/Makefile.org	2004-05-13 19:10:12.000000000 +0200
 @@ -173,7 +173,7 @@
  # we might set SHLIB_MARK to '$(SHARED_LIBS)'.
  SHLIB_MARK=
@@ -23,7 +23,7 @@ diff -Naur openssl-0.9.7d.orig/Makefile.org openssl-0.9.7d/Makefile.org
  SHLIBDIRS= crypto ssl
  
  # dirs in crypto to build
-@@ -883,4 +883,40 @@
+@@ -883,4 +883,51 @@
  			 done); \
  	done
  
@@ -37,28 +37,39 @@ diff -Naur openssl-0.9.7d.orig/Makefile.org openssl-0.9.7d/Makefile.org
 +	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
 +	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
 +	done;
-+	@for i in $(SHLIBDIRS) ;\
++	@for i in $(DIRS) ;\
 +	do \
 +	if [ -d "$$i" ]; then \
 +		(cd $$i; echo "installing $$i..."; \
-+		$(MAKE) INSTALL_PREFIX='${INSTALL_PREFIX}' INSTALLTOP='${INSTALLTOP}' install ); \
++		$(MAKE) CC='${CC}' CFLAG='${CFLAG}' INSTALL_PREFIX='${INSTALL_PREFIX}' INSTALLTOP='${INSTALLTOP}' OPENSSLDIR='${OPENSSLDIR}' EX_LIBS='${EX_LIBS}' SDIRS='${SDIRS}' RANLIB='${RANLIB}' EXE_EXT='${EXE_EXT}' install ); \
 +	fi; \
-+	done	
++	done
++	@for i in $(LIBS) ;\
++	do \
++		if [ -f "$$i" ]; then \
++		(       echo installing $$i; \
++			cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
++			$(RANLIB) $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
++			chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
++			mv -f $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i; \
++			j=$$(echo $$i | sed -e 's/\.a//'); ln -sf $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$j.a $$j_pic.a ); \
++		fi; \
++	done;
 +	@if [ -n "$(SHARED_LIBS)" ]; then \
 +		tmp="$(SHARED_LIBS)"; \
 +		for i in $${tmp:-x}; \
 +		do \
 +			if [ -f "$$i" -o -f "$$i.a" ]; then \
-+				echo installing $$i; \
++			(       echo installing $$i; \
 +				cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
 +				chmod 555 $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new; \
-+				mv -f $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i; \
++				mv -f $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i.new $(INSTALL_PREFIX)$(INSTALLTOP)/lib/$$i ); \
 +			fi; \
 +		done; \
-+		here="`pwd`"; \
-+		cd $(INSTALL_PREFIX)$(INSTALLTOP)/lib; \
-+		set $(MAKE); \
-+		$$1 -f $$here/Makefile link-shared; \
++		(	here="`pwd`"; \
++			cd $(INSTALL_PREFIX)$(INSTALLTOP)/lib; \
++			set $(MAKE); \
++			$$1 -f $$here/Makefile link-shared ); \
 +	fi
 +	cp openssl.pc $(INSTALL_PREFIX)$(INSTALLTOP)/lib/pkgconfig
 +
