@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.de,v 1.13 2002/10/30 00:43:32 woglinde Exp $
+# $Id: INSTALL.de,v 1.14 2003/01/18 02:22:08 obi Exp $
 #
 # Urheber:
 # --------
@@ -15,6 +15,9 @@
 # Inhalt dieses Dokuments sind die noetigen Schritte zur installation einer
 # Entwicklungsumgebung fuer Embedded PowerPC / Linux auf einem GNU System.
 #
+
+Readers capable of understanding English should prefer reading INSTALL.en,
+because the document you are currently staring at might sometimes be outdated.
 
 Prerequisiten:
 --------------
@@ -43,15 +46,13 @@ Hier die Kommandos zum Bauen des cdk:
 -------------------------------------
 
  - Als normaler Benutzer, beispielsweise "tuxbox" folgendes eingeben:
-   (Wenn cvs nach einem Passwort fragt, einfach <Enter> druecken.)
 
 mkdir $HOME/tuxbox-cvs
 cd $HOME/tuxbox-cvs
-cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox login
 cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co -r rel_1_0_0 .
 cd cdk
 ./autogen.sh
-./configure --prefix=/dbox2 --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode
+./configure --prefix=$HOME/dbox2 --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode
 
 
  - Wer alle vorhandenen Source-Pakete auf einmal runterladen will, der kann
@@ -59,15 +60,6 @@ cd cdk
    (nicht empfohlen!):
 
 make download
-
-
- - Dann das Installationsverzeichnis anlegen (wie in prefix angegeben).
-   Wichtig: Wenn das Installationsprefix ausserhalb des Home-Verzeichnisses
-   liegt auf keinen Fall chown vergessen, nachdem man es als superuser
-   angelegt hat:
-
-mkdir /dbox2
-chown tuxbox /dbox2
 
 
  - Um alles zu bauen, was das Makefile hergibt: (wieder als normaler Benutzer)

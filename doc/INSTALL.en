@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.7 2003/01/18 02:13:38 obi Exp $
+# $Id: INSTALL.en,v 1.8 2003/01/18 02:22:08 obi Exp $
 #
 # Author:
 # --------
@@ -49,10 +49,6 @@ Prerequistes:
 
    mkdir $HOME/tuxbox-cvs
    cd $HOME/tuxbox-cvs
-   cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox login
-
- - CVS will ask for a password. Press <enter> to send an empty password.
-   Then enter the following command:
 
    (if you prefer the latest unstable development versions)
    cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co -P .
