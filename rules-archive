@@ -77,7 +77,7 @@ vdr-1.2.1.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 gdb-5.3.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
 ltrace_0.3.26.tar.gz;ftp://ftp.debian.org/debian/pool/main/l/ltrace
 strace_4.4-1.tar.gz;http://belnet.dl.sourceforge.net/sourceforge/strace
-nano-1.0.7.tar.gz;http://www.nano-editor.org/dist/v1.0
+nano-1.2.2.tar.gz;http://www.nano-editor.org/dist/v1.2
 
 #
 # java
