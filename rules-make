@@ -35,7 +35,7 @@ procps;010114;procps-010114;procps-010114.tar.gz:procps.diff;extract:procps-0101
 # contrib libs
 #
 libboost;1.29.0;boost_1_29_0;boost_1_29_0.tar.gz;extract:boost_1_29_0.tar.gz
-libcommoncplusplus;1.0.6;commoncpp2-1.0.6;commoncpp2-1.0.6.tar.gz:libcommoncplusplus.diff;extract:commoncpp2-1.0.6.tar.gz;patch:libcommoncplusplus.diff
+libcommoncplusplus;1.0.8;commoncpp2-1.0.8;commoncpp2-1.0.8.tar.gz:libcommoncplusplus.diff;extract:commoncpp2-1.0.8.tar.gz;patch:libcommoncplusplus.diff
 libcrypto;0.9.7;openssl-0.9.7;openssl-0.9.7.tar.gz:libcrypto.diff;extract:openssl-0.9.7.tar.gz;patch:libcrypto.diff
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.bz2:libcurl.diff;extract:curl-7.10.1.tar.bz2;patch:libcurl.diff
 libdirectfb;0.9.16;DirectFB-0.9.16;DirectFB-0.9.16.tar.gz;extract:DirectFB-0.9.16.tar.gz
