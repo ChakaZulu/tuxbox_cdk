@@ -161,8 +161,13 @@ if test "$targetruleset" = "flash"; then
 	fi
 	AC_PATH_PROG(MKJFFS2,mkjffs2,no)
 	if test "$MKJFFS2" = "no"; then
-		AC_MSG_WARN(can't build jffs2)
-		MKJFFS2=/bin/false
+		AC_PATH_PROG(MKFSJFFS2,mkfs.jffs2,no)
+		if test "$MKFSJFFS2" = "no"; then
+			AC_MSG_WARN(can't build jffs2)
+			MKJFFS2=/bin/false
+		else
+			MKJFFS2=$MKFSJFFS2
+		fi
 	fi
 fi
 

@@ -992,21 +992,19 @@ endif
 if TARGETRULESET_FLASH
 rebuild-flash:
 	-rm $(flashprefix)/.flash
-	make flash-compress
+	make flash-lib
 
 $(flashprefix)/.flash: .busybox .driver .modutils
 	-rm -rf $(flashprefix)/root
-	-rm -rf $(flashprefix)/var
 	install -d $(flashprefix)/root/bin
 	install -d $(flashprefix)/root/dev
 	install -d $(flashprefix)/root/lib/tuxbox
 	install -d $(flashprefix)/root/proc
 	install -d $(flashprefix)/root/sbin
 	install -d $(flashprefix)/root/share/tuxbox
-	install -d $(flashprefix)/root/var
+	install -d $(flashprefix)/root/var/tuxbox/config
+	install -d $(flashprefix)/root/var/tuxbox/ucodes
 	install -d $(flashprefix)/root/tmp
-	install -d $(flashprefix)/var/tuxbox/config
-	install -d $(flashprefix)/var/tuxbox/ucodes
 	make -C etc install targetprefix=$(flashprefix)/root
 
 	$(INSTALL) $(targetprefix)/bin/busybox $(flashprefix)/root/bin
@@ -1017,6 +1015,7 @@ $(flashprefix)/.flash: .busybox .driver .modutils
 	for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -a $$i $(flashprefix)/root/sbin/ ; done
 
 	cp -a $(targetprefix)/lib/modules $(flashprefix)/root/lib/
+	cp -a $(bootprefix)/kernel-cdk $(flashprefix)/root/linux
 	@touch $(flashprefix)/.flash
 
 flash-ftpd: $(flashprefix)/.part_ftpd
@@ -1066,7 +1065,7 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash $(flashprefix)/.part_msttf 
 	$(INSTALL) $(targetprefix)/bin/sectionsd $(flashprefix)/root/bin
 
 	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
-	$(INSTALL) -d $(flashprefix)/var/tuxbox/config/zapit
+	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/zapit
 
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	cp -a $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
@@ -1092,7 +1091,7 @@ flash-fx2: $(flashprefix)/.part_fx2
 $(flashprefix)/.part_fx2: $(flashprefix)/.flash .fx2
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
 	cp -a $(targetprefix)/lib/tuxbox/plugins/* $(flashprefix)/root/lib/tuxbox/plugins
-	$(INSTALL) -m644 $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/var/tuxbox/config
+	$(INSTALL) -m644 $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/root/var/tuxbox/config
 	@touch $(flashprefix)/.part_fx2
 
 flash-lib: $(flashprefix)/.lib
@@ -1113,17 +1112,28 @@ $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_*)
 	done
 	@strip --remove-section=.comment --remove-section=.note `find $(flashprefix)/root/bin/ -path "*bin/?*"` 2>/dev/null || /bin/true
 	@strip --remove-section=.comment --remove-section=.note --strip-unneeded `find $(flashprefix)/root/lib/tuxbox -name "*.so"` 2>/dev/null || /bin/true
+	@chmod u+rwX,go+rX-w -R $(flashprefix)/root/
 	@touch $(flashprefix)/.lib
 
-flash-compress: $(flashprefix)/root.img $(flashprefix)/var.img
+flash-compress: $(flashprefix)/root-cramfs.img $(flashprefix)/var-jffs2.img
 
-$(flashprefix)/root.img: $(flashprefix)/.lib
-	@chmod u+rwX,go+rX-w -R $(flashprefix)/root/
-	@$(FAKEROOT) $(MKCRAMFS) -n "TuxBox-`date +%Y%m%d`" $(flashprefix)/root/ $(flashprefix)/root.img
+flash-compress-complete-jffs2: $(flashprefix)/root-jffs2.img
 
-$(flashprefix)/var.img: $(flashprefix)/.lib
-	@chmod u+rwX,go+rX-w -R $(flashprefix)/var/
-	@#$(FAKEROOT) $(MKJFFS2) $(flashprefix)/var/ $(flashprefix)/var.img
+$(flashprefix)/root-cramfs.img: $(flashprefix)/.lib
+	@install -d $(flashprefix)/temp
+	@cp -a $(flashprefix)/root/* $(flashprefix)/temp/
+	@rm -rf $(flashprefix)/temp/var/
+	@$(FAKEROOT) $(MKCRAMFS) -n "TuxBox-`date +%Y%m%d`" $(flashprefix)/temp/ $(flashprefix)/root-cramfs.img
+	@rm -rf $(flashprefix)/temp/
+
+$(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
+	@install -d $(flashprefix)/temp
+	@cp -a $(flashprefix)/root/var $(flashprefix)/temp/
+	@$(FAKEROOT) $(MKJFFS2) -b -e 131072 -o $(flashprefix)/var-jffs2.img -r $(flashprefix)/temp/
+	@rm -rf $(flashprefix)/temp/
+
+$(flashprefix)/root-jffs2.img: $(flashprefix)/.lib
+	@$(FAKEROOT) $(MKJFFS2) -b -e 131072 -o $(flashprefix)/root-jffs2.img -r $(flashprefix)/root/
 endif
 
 #######################
@@ -1162,6 +1172,9 @@ distclean-local:
 	-rm .dvbstream .dvbtext .dvbtune
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
+if TARGETRULESET_FLASH
+	-rm -rf $(flashprefix)
+endif
 
 @ARCHIVE@
 
