@@ -980,7 +980,8 @@ $(DEPDIR)/nano: bootstrap libncurses @DEPENDS_nano@
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix= && \
+			--prefix=  \
+			--includedir=$(targetprefix)/include && \
 		$(MAKE) all && \
 		@INSTALL_nano@
 	@CLEANUP_nano@
