@@ -15,8 +15,8 @@
 uboot;1.1.1;u-boot-1.1.1;u-boot-1.1.1.tar.bz2:u-boot-1.1.1.diff;extract:u-boot-1.1.1.tar.bz2;patch:u-boot-1.1.1.diff
 linux;2.4.27-dbox2;linux-2.4.27;linux-2.4.27.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.27-dbox2-mtd.diff.bz2;remove:linux;extract:linux-2.4.27.tar.bz2;patch:linux-2.4.27-dbox2.diff;patch:linux-2.4.27-dbox2-shift.diff;patch:linux-2.4.27-dbox2-keyboard.diff;patch:linux-2.4.27-dbox2-v4l2.diff;patch:linux-2.4.27-dbox2-cramfs.diff;patch:linux-2.4.27-dbox2-mtd.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.27/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs1.3r3-patch;link:linux-2.4.27:linux
 binutils;2.14.90.0.5;binutils-2.14.90.0.5;binutils-2.14.90.0.5.tar.bz2;extract:binutils-2.14.90.0.5.tar.bz2
-bootstrap_gcc;3.3.4;gcc-3.3.4;gcc-core-3.3.4.tar.bz2:gcc-core.diff;extract:gcc-core-3.3.4.tar.bz2;patch:gcc-core.diff
-gcc;3.3.4;gcc-3.3.4;gcc-core-3.3.4.tar.bz2:gcc-g++-3.3.4.tar.bz2;extract:gcc-core-3.3.4.tar.bz2;extract:gcc-g++-3.3.4.tar.bz2
+bootstrap_gcc;3.3.5;gcc-3.3.5;gcc-core-3.3.5.tar.bz2:gcc-core.diff;extract:gcc-core-3.3.5.tar.bz2;patch:gcc-core.diff
+gcc;3.3.5;gcc-3.3.5;gcc-core-3.3.5.tar.bz2:gcc-g++-3.3.5.tar.bz2;extract:gcc-core-3.3.5.tar.bz2;extract:gcc-g++-3.3.5.tar.bz2
 glibc;2.3.2;glibc-2.3.2;glibc-2.3.2.tar.bz2:glibc-linuxthreads-2.3.2.tar.bz2:glibc-2.3.2.diff;extract:glibc-2.3.2.tar.bz2;dirextract:glibc-linuxthreads-2.3.2.tar.bz2;patch:glibc-2.3.2.diff
 uclibc;0.9.11;uClibc-0.9.11;uClibc-0.9.11.tar.bz2:uclibc-0.9.11.diff;extract:uClibc-0.9.11.tar.bz2;patch:uclibc-0.9.11.diff
 watchdog;5.2.4;watchdog-5.2.4.orig;watchdog_5.2.4.orig.tar.gz:watchdog.diff;extract:watchdog_5.2.4.orig.tar.gz;patch:watchdog.diff
@@ -55,7 +55,7 @@ libmad;0.15.0b;libmad-0.15.0b;libmad-0.15.0b.tar.gz:libmad.diff;extract:libmad-0
 libid3tag;0.15.0b;libid3tag-0.15.0b;libid3tag-0.15.0b.tar.gz:libid3tag.diff;extract:libid3tag-0.15.0b.tar.gz;patch:libid3tag.diff
 libncurses;5.3;ncurses-5.3;ncurses-5.3.tar.gz;extract:ncurses-5.3.tar.gz
 libpcap;0.7.2;libpcap-0.7.2;libpcap-0.7.2.tar.gz;extract:libpcap-0.7.2.tar.gz;patch:libpcap.diff
-libpng;1.2.6;libpng-1.2.6;libpng-1.2.6.tar.bz2:libpng.diff;extract:libpng-1.2.6.tar.bz2;patch:libpng.diff
+libpng;1.2.7;libpng-1.2.7;libpng-1.2.7.tar.bz2:libpng.diff;extract:libpng-1.2.7.tar.bz2;patch:libpng.diff
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.6;SDL-1.2.6;SDL-1.2.6.tar.gz:sdl.diff;extract:SDL-1.2.6.tar.gz;patch:sdl.diff
 libsigc;1.2.5;libsigc++-1.2.5;libsigc++-1.2.5.tar.gz;extract:libsigc++-1.2.5.tar.gz
