@@ -23,7 +23,7 @@ gcc;3.1;gcc-3.1;gcc-core-3.1.tar.gz:gcc-g++-3.1.tar.gz:gcc.diff;extract:gcc-core
 #
 # root
 #
-busybox;0.60.3;busybox-0.60.3;busybox-0.60.3.tar.gz:busybox.diff;extract:busybox-0.60.3.tar.gz;patch:busybox.diff
+busybox;0.60.3;busybox-0.60.3;busybox-0.60.3.tar.bz2:busybox.diff;extract:busybox-0.60.3.tar.bz2;patch:busybox.diff
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
 ifupdown;0.6.4;ifupdown-0.6.4-tuxbox.1;ifupdown-0.6.4-tuxbox.1.tar.bz2;extract:ifupdown-0.6.4-tuxbox.1.tar.bz2
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
