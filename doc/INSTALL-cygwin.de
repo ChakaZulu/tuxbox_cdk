@@ -25,12 +25,7 @@ cd cdk
 ./autogen.sh
 ./configure --prefix=/dbox2 --with-hostruleset=cygwin --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode
 
-An dieser Stelle MÜSST ihr euch das oben beschriebene ZIP-File von .tbn holen
-(falls ihr das ganze CDK bauen wollt), da Binary-Files im cvs (sinnloserweise)
-nicht erlaubt sind. Ihr braucht aber das mkimage.exe. Packt dieses File ins Verzeichnis
-cdkverzeichnis/Patches/cygwin/mkimage.exe aus. 
-
-Danach einmal das Script
+Jetzt EINMAL das Script
 
 ./run-cygwin.sh
 ausführen.
