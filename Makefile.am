@@ -220,7 +220,10 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 .busybox: .bootstrap .etc @DEPENDS_busybox@
 	@PREPARE_busybox@
 	cd @DIR_busybox@ && \
-		$(MAKE) CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
+		CFLAGS="" \
+		$(MAKE) \
+			CROSS=$(target)- \
+			CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
 		@INSTALL_busybox@
 	@CLEANUP_busybox@
 	touch .busybox
@@ -228,7 +231,10 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 .tinylogin: .bootstrap .busybox @DEPENDS_tinylogin@
 	@PREPARE_tinylogin@
 	cd @DIR_tinylogin@ && \
-		$(MAKE) CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
+		CFLAGS="" \
+		$(MAKE) \
+			CROSS=$(target)- \
+			CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
 		@INSTALL_tinylogin@
 	@CLEANUP_tinylogin@
 	touch .tinylogin
@@ -1197,12 +1203,12 @@ KERNELGCC = `if [ -f $(hostprefix)/bin/$(target)-gcc-2.95 ]; then echo $(target)
 
 .ppcboot: .bootstrap $(bootdir)/ppcboot/Makefile
 if HOSTRULESET_CYGWIN
-	$(MAKE) -C $(bootdir)/ppcboot dbox_config CYGWIN=1
+	$(MAKE) -C $(bootdir)/ppcboot dbox2_config CYGWIN=1
 	$(MAKE) -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CYGWIN=1
 	$(INSTALL) Patches/cygwin/mkimage.exe $(hostprefix)/bin
 else
-	$(MAKE) -C $(bootdir)/ppcboot dbox_config
-	$(MAKE) -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CC=$(KERNELGCC)
+	$(MAKE) -C $(bootdir)/ppcboot dbox2_config
+	$(MAKE) -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)-
 	$(INSTALL) $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
 endif
 	$(INSTALL) -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
