@@ -10,8 +10,84 @@ diff -Naur openssh-3.5p1/sshd_config openssh-3.5p1new/sshd_config
  #ListenAddress 0.0.0.0
  #ListenAddress ::
  
+--- openssh-3.5p1/Makefile.in	2002-07-14 19:02:21.000000000 +0200
++++ openssh-3.5p1new/Makefile.in	2002-10-26 22:18:43.000000000 +0200
+@@ -198,7 +198,7 @@
+ 	$(AUTORECONF)
+ 	(cd scard && $(MAKE) -f Makefile.in distprep)
+ 
+-install: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files host-key check-config
++install: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files host-key
+ install-nokeys: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files
+ 
+ check-config:
+@@ -217,19 +217,19 @@
+ 	$(srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/$(mansubdir)8
+ 	$(srcdir)/mkinstalldirs $(DESTDIR)$(libexecdir)
+ 	(umask 022 ; $(srcdir)/mkinstalldirs $(DESTDIR)$(PRIVSEP_PATH))
+-	$(INSTALL) -m 0755 -s ssh $(DESTDIR)$(bindir)/ssh
+-	$(INSTALL) -m 0755 -s scp $(DESTDIR)$(bindir)/scp
+-	$(INSTALL) -m 0755 -s ssh-add $(DESTDIR)$(bindir)/ssh-add
+-	$(INSTALL) -m 0755 -s ssh-agent $(DESTDIR)$(bindir)/ssh-agent
+-	$(INSTALL) -m 0755 -s ssh-keygen $(DESTDIR)$(bindir)/ssh-keygen
+-	$(INSTALL) -m 0755 -s ssh-keyscan $(DESTDIR)$(bindir)/ssh-keyscan
+-	$(INSTALL) -m 0755 -s sshd $(DESTDIR)$(sbindir)/sshd
++	$(INSTALL) -m 0755 ssh $(DESTDIR)$(bindir)/ssh
++	$(INSTALL) -m 0755 scp $(DESTDIR)$(bindir)/scp
++	$(INSTALL) -m 0755 ssh-add $(DESTDIR)$(bindir)/ssh-add
++	$(INSTALL) -m 0755 ssh-agent $(DESTDIR)$(bindir)/ssh-agent
++	$(INSTALL) -m 0755 ssh-keygen $(DESTDIR)$(bindir)/ssh-keygen
++	$(INSTALL) -m 0755 ssh-keyscan $(DESTDIR)$(bindir)/ssh-keyscan
++	$(INSTALL) -m 0755 sshd $(DESTDIR)$(sbindir)/sshd
+ 	if test ! -z "$(INSTALL_SSH_RAND_HELPER)" ; then \
+-		$(INSTALL) -m 0755 -s ssh-rand-helper $(DESTDIR)$(libexecdir)/ssh-rand-helper ; \
++		$(INSTALL) -m 0755 ssh-rand-helper $(DESTDIR)$(libexecdir)/ssh-rand-helper ; \
+ 	fi
+-	$(INSTALL) -m 4711 -s ssh-keysign $(DESTDIR)$(SSH_KEYSIGN)
+-	@NO_SFTP@$(INSTALL) -m 0755 -s sftp $(DESTDIR)$(bindir)/sftp
+-	@NO_SFTP@$(INSTALL) -m 0755 -s sftp-server $(DESTDIR)$(SFTP_SERVER)
++	$(INSTALL) -m 4711 ssh-keysign $(DESTDIR)$(SSH_KEYSIGN)
++	@NO_SFTP@$(INSTALL) -m 0755 sftp $(DESTDIR)$(bindir)/sftp
++	@NO_SFTP@$(INSTALL) -m 0755 sftp-server $(DESTDIR)$(SFTP_SERVER)
+ 	$(INSTALL) -m 644 ssh.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh.1
+ 	$(INSTALL) -m 644 scp.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/scp.1
+ 	$(INSTALL) -m 644 ssh-add.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh-add.1
+@@ -282,23 +282,16 @@
+ 	fi
+ 
+ host-key: ssh-keygen$(EXEEXT)
+-	@if [ -z "$(DESTDIR)" ] ; then \
+-		if [ -f "$(DESTDIR)$(sysconfdir)/ssh_host_key" ] ; then \
+-			echo "$(DESTDIR)$(sysconfdir)/ssh_host_key already exists, skipping." ; \
+-		else \
+-			./ssh-keygen -t rsa1 -f $(DESTDIR)$(sysconfdir)/ssh_host_key -N "" ; \
+-		fi ; \
+-		if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key ] ; then \
+-			echo "$(DESTDIR)$(sysconfdir)/ssh_host_dsa_key already exists, skipping." ; \
+-		else \
+-			./ssh-keygen -t dsa -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key -N "" ; \
+-		fi ; \
+-		if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key ] ; then \
+-			echo "$(DESTDIR)$(sysconfdir)/ssh_host_rsa_key already exists, skipping." ; \
+-		else \
+-			./ssh-keygen -t rsa -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key -N "" ; \
+-		fi ; \
+-	fi ;
++	if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key ] ; then \
++		echo "$(DESTDIR)$(sysconfdir)/ssh_host_dsa_key already exists, skipping." ; \
++	else \
++		ssh-keygen -t dsa -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key -N "" -b 2048 ; \
++	fi
++	if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key ] ; then \
++		echo "$(DESTDIR)$(sysconfdir)/ssh_host_rsa_key already exists, skipping." ; \
++	else \
++		ssh-keygen -t rsa -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key -N "" -b 2048 ; \
++	fi
+ 
+ host-key-force: ssh-keygen$(EXEEXT)
+ 	./ssh-keygen -t rsa1 -f $(DESTDIR)$(sysconfdir)/ssh_host_key -N ""
 --- openssh-3.5p1/configure.ac	2002-09-26 02:38:47.000000000 +0200
-+++ openssh-3.5p1new/configure.ac	2002-10-26 00:47:27.000000000 +0200
++++ openssh-3.5p1new/configure.ac	2002-10-26 22:11:18.000000000 +0200
 @@ -173,6 +173,7 @@
  	AC_DEFINE(WITH_ABBREV_NO_TTY)
  	;;
@@ -302,9 +378,10 @@ diff -Naur openssh-3.5p1/sshd_config openssh-3.5p1new/sshd_config
 -exit(0);
 -}
 -		],
- 		[ ac_cv_have_control_in_msghdr="yes" ],
+-		[ ac_cv_have_control_in_msghdr="yes" ],
 -		[ ac_cv_have_control_in_msghdr="no" ]
 -	)
++		[ ac_cv_have_control_in_msghdr="yes" ]
  ])
  if test "x$ac_cv_have_control_in_msghdr" = "xyes" ; then
  	AC_DEFINE(HAVE_CONTROL_IN_MSGHDR)
@@ -379,7 +456,7 @@ diff -Naur openssh-3.5p1/sshd_config openssh-3.5p1new/sshd_config
  )
  if test "$USES_LOGIN_CONF" != "yes" ; then
 --- openssh-3.5p1/configure	2002-10-04 03:31:56.000000000 +0200
-+++ openssh-3.5p1new/configure	2002-10-26 00:47:54.000000000 +0200
++++ openssh-3.5p1new/configure	2002-10-26 22:11:27.000000000 +0200
 @@ -4170,6 +4170,7 @@
  
  	;;
@@ -1471,7 +1548,7 @@ diff -Naur openssh-3.5p1/sshd_config openssh-3.5p1new/sshd_config
 -fi
 -rm -f core core.* *.core conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 -fi
-+		 ac_cv_have_control_in_msghdr="yes" ,
++		 ac_cv_have_control_in_msghdr="yes"
  
  fi
  echo "$as_me:$LINENO: result: $ac_cv_have_control_in_msghdr" >&5
@@ -1593,48 +1670,3 @@ diff -Naur openssh-3.5p1/sshd_config openssh-3.5p1new/sshd_config
  	fi
  
  fi;
---- openssh-3.5p1/Makefile.in	2002-07-14 19:02:21.000000000 +0200
-+++ openssh-3.5p1new/Makefile.in	2002-10-26 00:57:01.000000000 +0200
-@@ -198,7 +198,7 @@
- 	$(AUTORECONF)
- 	(cd scard && $(MAKE) -f Makefile.in distprep)
- 
--install: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files host-key check-config
-+install: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files host-key
- install-nokeys: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files
- 
- check-config:
-@@ -282,23 +282,16 @@
- 	fi
- 
- host-key: ssh-keygen$(EXEEXT)
--	@if [ -z "$(DESTDIR)" ] ; then \
--		if [ -f "$(DESTDIR)$(sysconfdir)/ssh_host_key" ] ; then \
--			echo "$(DESTDIR)$(sysconfdir)/ssh_host_key already exists, skipping." ; \
--		else \
--			./ssh-keygen -t rsa1 -f $(DESTDIR)$(sysconfdir)/ssh_host_key -N "" ; \
--		fi ; \
--		if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key ] ; then \
--			echo "$(DESTDIR)$(sysconfdir)/ssh_host_dsa_key already exists, skipping." ; \
--		else \
--			./ssh-keygen -t dsa -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key -N "" ; \
--		fi ; \
--		if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key ] ; then \
--			echo "$(DESTDIR)$(sysconfdir)/ssh_host_rsa_key already exists, skipping." ; \
--		else \
--			./ssh-keygen -t rsa -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key -N "" ; \
--		fi ; \
--	fi ;
-+	if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key ] ; then \
-+		echo "$(DESTDIR)$(sysconfdir)/ssh_host_dsa_key already exists, skipping." ; \
-+	else \
-+		ssh-keygen -t dsa -f $(DESTDIR)$(sysconfdir)/ssh_host_dsa_key -N "" -b 2048 ; \
-+	fi
-+	if [ -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key ] ; then \
-+		echo "$(DESTDIR)$(sysconfdir)/ssh_host_rsa_key already exists, skipping." ; \
-+	else \
-+		ssh-keygen -t rsa -f $(DESTDIR)$(sysconfdir)/ssh_host_rsa_key -N "" -b 2048 ; \
-+	fi
- 
- host-key-force: ssh-keygen$(EXEEXT)
- 	./ssh-keygen -t rsa1 -f $(DESTDIR)$(sysconfdir)/ssh_host_key -N ""
