@@ -18,6 +18,7 @@ core: .gcc
 	install -d $(targetprefix)/proc
 	install -d $(targetprefix)/include
 	install -d $(targetprefix)/lib
+	install -d $(targetprefix)/ucodes
 	install -d $(hostprefix)/$(TARGET)
 	install -d $(bootprefix)
 	-rm $(hostprefix)/$(TARGET)/include
