@@ -143,6 +143,10 @@ AC_ARG_WITH(gnuserver,
         [  --with-gnuserver=ADDRESS   the gnu server for gnu-stuff (without ftp://)],
         [gnuserver="$with_gnuserver"],[gnuserver="NONE"])
 
+AC_ARG_WITH(defaultserver,
+        [  --with-defaultserver=ADDRESS   the server that is taken if no server is given/works (without http://)],
+        [defaultserver="$with_defaultserver"],[defaultserver="NONE"])
+
 if test "$cvsdir" = "NONE"; then
 	if test "$appsdir" = "NONE"; then
 		appsdir="$buildprefix/apps"
@@ -172,7 +176,11 @@ else
 fi
 
 if test "$gnuserver" = "NONE"; then
-	gnuserver="ftp.gwdg.de/pub/misc/gnu"
+	gnuserver="ftp.gwdg.de/pub/misc/gnu/ftp/gnu"
+fi
+
+if test "$defaultserver" = "NONE"; then
+	defaultserver="tuxbox.berlios.de/pub/tuxbox/cdk/src"
 fi
 
 AC_MSG_CHECKING([for apps directory])
@@ -212,6 +220,7 @@ AC_SUBST(bootdir)
 AC_SUBST(driverdir)
 AC_SUBST(hostappsdir)
 AC_SUBST(gnuserver)
+AC_SUBST(defaultserver)
 
 if test "$TARGETRULESET" = "flash"; then
 	AC_PATH_PROG(MKLIBS,mklibs,no)
@@ -396,6 +405,7 @@ boot directory:		$bootdir
 driver directory:	$driverdir
 host apps directory:	$hostappsdir
 GNU server:		$gnuserver
+default server:		$defaultserver
 ])
 
 AC_CONFIG_FILES([
@@ -406,6 +416,11 @@ root/etc/init.d/Makefile
 root/etc/network/Makefile
 root/share/Makefile
 root/share/udhcpc/Makefile
+rules-archive.pl
+rules-downcheck.pl
 ])
+
+AC_CONFIG_COMMANDS([rules-archive-chmod],[chmod +x rules-archive.pl])
+AC_CONFIG_COMMANDS([rules-downcheck-chmod],[chmod +x rules-downcheck.pl])
 
 AC_OUTPUT

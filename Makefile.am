@@ -14,6 +14,15 @@ BUILDENV := \
 all: core libs root boot apps devel
 extra: java contrib_apps fun dvb_apps
 
+# This rule script checks if all archives are present at the given address but
+# does NOT download them.
+#
+# It takes some time so it's not useful to include it in a regular
+# build
+
+archivecheck:
+	@$(buildprefix)/rules-downcheck.pl
+
 #######################
 #
 #   core
@@ -1838,6 +1847,8 @@ distclean-local:
 	-$(MAKE) -C $(appsdir)/tuxbox/tools distclean
 	-$(MAKE) -C $(driverdir) distclean KERNEL_LOCATION=$(buildprefix)/linux
 	-rm Makefile-archive
+	-rm rules-archive.pl
+	-rm rules-downcheck.pl
 	-rm $(DEPDIR) -rf
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
@@ -1859,7 +1870,7 @@ else
 endif
 
 EXTRA_DIST = \
-	rules.pl rules-archive.pl \
+	rules.pl rules-archive.pl.in rules-downcheck.pl.in \
 	rules-archive \
 	rules-install rules-install-flash \
 	rules-make rules-make-cygwin
