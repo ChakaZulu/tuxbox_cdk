@@ -1,23 +1,13 @@
-diff -ruN libsigc++-1.0.4.old/ac_thread.sh libsigc++-1.0.4/ac_thread.sh
---- libsigc++-1.0.4.old/ac_thread.sh	Thu Jan  1 01:00:00 1970
-+++ libsigc++-1.0.4/ac_thread.sh	Mon Apr  8 21:58:59 2002
-@@ -0,0 +1,7 @@
-+ac_thread_cond_attr_size=4
-+ac_thread_cond_impl_size=12
-+ac_thread_mutex_attr_size=4
-+ac_thread_mutex_impl_size=24
-+ac_thread_thread_attr_size=4
-+ac_thread_thread_impl_size=4
-+ac_thread_key_impl_size=4
-diff -ruN libsigc++-1.0.4.old/configure.in libsigc++-1.0.4/configure.in
---- libsigc++-1.0.4.old/configure.in	Mon Oct 22 04:02:46 2001
-+++ libsigc++-1.0.4/configure.in	Mon Apr  8 21:59:12 2002
-@@ -585,7 +585,7 @@
- ],
- [
- AC_MSG_RESULT(cross)
--  if test ! -f ac_thread.h; then
-+  if test ! -f ac_thread.sh; then
-     echo '
- ac_thread_cond_attr_size=
- ac_thread_cond_impl_size=
+diff -Naur org/sigc++/signal.cc libsigc++-1.2.1/sigc++/signal.cc
+--- org/sigc++/signal.cc        2002-10-18 18:52:35.000000000 +0200
++++ libsigc++-1.2.1/sigc++/signal.cc    2002-11-18 04:36:28.000000000 +0100
+@@ -117,7 +117,8 @@
+ 
+       if(i->defered_)
+       {
+-        begin_->parent_ = 0;
++        if (begin_)
++          begin_->parent_ = 0;
+         i->unreference();
+       }
+
