@@ -1,0 +1,46 @@
+#
+# $Id: readme.squashfs,v 1.1 2004/02/22 15:16:59 lucgas Exp $
+#
+# This document describes the steps needed to set up a squashfs 
+# system(mix) for your dbox2
+# Copyright (c) 2002-2004 Andreas Oberritter <obi@tuxbox.org>
+#
+# Permission is granted to copy, distribute and/or modify this document
+# under the terms of the GNU Free Documentation License, Version 1.2
+# or any later version published by the Free Software Foundation;
+# with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+# A copy of the license is included in cdk/common-licenses/FDL-1.2
+#
+# This document is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+
+You need just to replace the files what you in this dir found with the 
+original one.
+
+dbox2-flash.c in linux/drivers/mtd/maps
+dbox2.h in boot/u-boot/include/configs
+You need to have your logos in jffs2 because u-boot is to stupid 
+to know what squashfs is.Compile your own u-boot,flfs,kernel and make
+your Image ready to go.Bevor you create your image change your flashmanage.pl 
+like this:
+my %partdef = 
+( 
+	0 => [ "ppcboot", 0, 0x20000 ], 
+	1 => [ "cramfs", 0x20000, 0x0a0000 ], 
+	2 => [ "root",  0x0c0000, 0x560000],
+	3 => [ "jffs2",  0x620000, 0x1c0000],
+); 
+
+Now create your Image and have fun:
+
+./mkcramfs -n "0106220222004" cramfs cramfs.img
+
+mkfs.jffs2 -b -e 131072 -p -o jffs2.img -r /jffs2/
+
+mksquashfs root squashfs.img -be
+
+./flashmanage.pl -i finalimage.img -o build --part ppcboot=squashed-flfs.img --part cramfs=cramfs.img --part root=squashfs.img --part jffs2=jffs2.img
+
+Big thx an mixvt for his help and support!
