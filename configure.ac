@@ -225,8 +225,8 @@ AC_SUBST(defaultserver)
 if test "$TARGETRULESET" = "flash"; then
 	AC_PATH_PROG(MKLIBS,mklibs,no)
 	if test "$MKLIBS" = "no"; then
-		AC_MSG_WARN(can't build libs)
-		MKLIBS=/bin/false
+		AC_MSG_WARN(using tuxbox mklibs)
+		MKLIBS="$hostappsdir/mklibs/mklibs.py"
 	fi
 	AC_PATH_PROG(FAKEROOT,fakeroot,no)
 	if test "$FAKEROOT" = "no"; then
@@ -247,6 +247,11 @@ if test "$TARGETRULESET" = "flash"; then
 		else
 			MKJFFS2=$MKFSJFFS2
 		fi
+	fi
+	AC_PATH_PROG(MKSQUASHFS,mksquashfs,no)
+	if test "$MKSQUASHFS" = "no"; then
+		AC_MSG_WARN(can't build squashfs)
+		MKSQUASHFS=/bin/false
 	fi
 fi
 
