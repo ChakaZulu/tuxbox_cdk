@@ -942,6 +942,7 @@ java: .kaffeh .kaffe
 	@PREPARE_kaffeh@
 	cd @DIR_kaffeh@ && \
 		./configure \
+			--host=$(build) \
 			--prefix=$(hostprefix) \
 			--disable-dependency-tracking \
 			--without-x \
