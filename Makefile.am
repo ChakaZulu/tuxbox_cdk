@@ -1641,12 +1641,12 @@ distclean-local:
 	-rm .directories .linuxdir .binutils .glibc .gcc .rpcgen
 	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
 	-rm .libdb2 .libcommoncplusplus .libcrypto .libcurl .libffi .libfreetype
-	-rm .libncurses .libjpeg .libnet .libnids .libpcap .libpng .libpopt
+	-rm .libncurses .libjpeg .libmad .libnet .libnids .libpcap .libpng .libpopt
 	-rm .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
 	-rm .cabextract .msttf
 	-rm .gdb .ksymoops .ltrace .strace .nano
 	-rm .kaffeh .kaffe
-	-rm .mad .scummvm
+	-rm .scummvm
 	-rm .ppcboot .linuxkernel .driver
 	-rm .camd .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .tools .tuxtxt .zapit
@@ -1654,6 +1654,7 @@ distclean-local:
 	-rm .liblcddisplay .libmd5sum .libmpegtools .libdboxnet .libucodes
 	-rm .console_data .console_tools .dsniff .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
 	-rm .dvbstream .dvbtext .dvbtune
+	-rm .misc_libs .plugins .tuxbox_libs .tuxbox_tools
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 if TARGETRULESET_FLASH
