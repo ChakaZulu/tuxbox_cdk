@@ -138,7 +138,8 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 			--enable-threads \
 			--disable-nls \
 			--nfp && \
-		make all install
+		make all && \
+		@INSTALL_gcc@
 	rm -rf $(hostprefix)/$(target)/sys-include/limits.h
 	@CLEANUP_gcc@
 	touch .gcc

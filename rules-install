@@ -13,7 +13,7 @@ linux
 binutils;make:install
 bootstrap_gcc
 glibc;make:install:install_root=TARGET
-gcc
+gcc;make:install
 
 #
 # minimal root
