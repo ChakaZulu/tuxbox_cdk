@@ -1288,7 +1288,7 @@ endif
 
 CONFIGURE = \
 	./autogen.sh && \
-	CC=$(target)-gcc CXX=$(target)-g++ CFLAGS="" CXXFLAGS="" \
+	CC=$(target)-gcc CXX=$(target)-g++ CFLAGS="$(TARGET_CFLAGS)" CXXFLAGS="$(TARGET_CXXFLAGS)" \
 	./configure $(CONFIGURE_OPTS) $(CONFIGURE_OPTS_MAINTAINER) $(CONFIGURE_OPTS_DEBUG)
 
 # dvb/svbsnoop
@@ -1303,7 +1303,7 @@ $(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
 $(appsdir)/dvb/zapit/Makefile: .bootstrap
 	cd $(appsdir)/dvb/zapit && $(CONFIGURE)
 
-.zapit: .camd .libxmltree
+.zapit: .camd .misc_libs
 	$(MAKE) -C $(appsdir)/dvb/zapit all install
 	touch .zapit
 

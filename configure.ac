@@ -36,15 +36,16 @@ AC_ARG_WITH(targetruleset,
 	[  --with-targetruleset=NAME target ruleset [[standard,flash]]],
 	[targetruleset="$withval"],[targetruleset="standard"])
 
-TARGET_CFLAGS="-Os -mcpu=823 -pipe"
-TARGET_CXXFLAGS="-Os -mcpu=823 -pipe"
-
 if test "$targetruleset" = "standard"; then
-	INSTALLRULESETFILE=""
+	TARGET_CFLAGS="-O2 -mcpu=823 -pipe"
+	TARGET_CXXFLAGS="-O2 -mcpu=823 -pipe"
 	TARGET_LDFLAGS=""
+	INSTALLRULESETFILE=""
 elif test "$targetruleset" = "flash"; then
-	INSTALLRULESETFILE="-flash"
+	TARGET_CFLAGS="-Os -mcpu=823 -pipe"
+	TARGET_CXXFLAGS="-Os -mcpu=823 -pipe"
 	TARGET_LDFLAGS="-s"
+	INSTALLRULESETFILE="-flash"
 else
 	AC_MSG_ERROR([invalid targetruleset "$targetruleset", choose on from standard or flash]);
 fi
