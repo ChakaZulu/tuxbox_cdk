@@ -165,16 +165,29 @@ root: .busybox .tinylogin .modutils .etc
 .gdb: .gcc .libncurses @DEPENDS_gdb@
 	@PREPARE_gdb@
 	cd @DIR_gdb@ && \
-		LD_LIBRARY_PATH=$(libdir) ./configure \
+		LD_LIBRARY_PATH=$(libdir) \
+		./configure \
 	                --build=`./config.guess` \
 	                --host=$(TARGET) \
 	                --target=$(TARGET) \
 	                --nfp \
 	                --disable-sim \
 	                --prefix=$(targetprefix) && \
-	@INSTALL_gdb@
+		make all && \
+		@INSTALL_gdb@
+	@CLEANUP_gdb@
 	touch .gdb
 
+.inetd: .gcc @DEPENDS_inetd@
+	@PREPARE_inetd@
+	touch @DIR_inetd@/MCONFIG
+	cd @DIR_inetd@/inetd && \
+		CC=$(TARGET)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		make all && \
+		install -m644 inetd $(targetprefix)/sbin
+	@CLEANUP_inetd@
+	touch .inetd
 
 #######################
 #
@@ -346,12 +359,13 @@ boot: .ppcboot .linuxkernel .driver
 	@PREPARE_cabextract@
 	cd @DIR_cabextract@ && \
 		./configure \
-			--prefix=$(hostprefix)
-	make -C @DIR_cabextract@ all install
+			--prefix=$(hostprefix) && \
+		make all && \
+		@INSTALL_cabextract@
 	@CLEANUP_cabextract@
 	touch .cabextract
 
-.msttf: @DEPENDS_msttf@
+.msttf: .cabextract @DEPENDS_msttf@
 	@PREPARE_msttf@
 	install -d $(FONTDIR)
 	install -m 0644 @DIR_msttf@/AriBlk.TTF $(FONTDIR)/Arial_Black.ttf
@@ -434,8 +448,9 @@ distclean-local:
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .tinylogin .modutils
 	-rm .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
-	-rm .msttf
+	-rm .cabextract .msttf
 	-rm .ppcboot .linuxkernel
+	-rm .gdb .inetd
 	-rm .fx2 .edvb .neutrino .lcdmenu .stream .tools .zapit
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)

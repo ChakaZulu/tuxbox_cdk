@@ -156,6 +156,7 @@ TUXBOX_RULES_MAKE(msttf)
 # additional
 #
 TUXBOX_RULES_MAKE(gdb)
+TUXBOX_RULES_MAKE(inetd)
 
 #
 # internal

@@ -38,10 +38,12 @@ libz;make:install
 #
 # msttf
 #
-cabextract
+cabextract;make:install
 msttf
 
 #
 # additional
 #
-gdb;make;make:install
+gdb;make:install
+inetd
+
