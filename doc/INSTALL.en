@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.5 2002/08/15 07:44:16 obi Exp $
+# $Id: INSTALL.en,v 1.6 2002/10/19 00:58:09 Jolt Exp $
 #
 # Author:
 # --------
@@ -54,7 +54,7 @@ Prerequistes:
  - CVS will ask for a password. Press <enter> to send an empty password.
    Then enter the following command:
 
-   cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co .
+   cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z3 co -r rel_1_0_0 .
 
 2. Generating the Makefiles:
 ----------------------------
