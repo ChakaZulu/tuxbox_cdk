@@ -607,7 +607,7 @@ libs_optional: \
 			--without-x \
 			--enable-video-fbcon \
 			--disable-video-photon \
-			--enable-video-directfb \
+			--disable-video-directfb \
 			--disable-video-ps2gs \
 			--disable-video-ggi \
 			--disable-video-svga \
