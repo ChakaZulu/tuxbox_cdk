@@ -42,13 +42,13 @@ libcommoncplusplus;0.99.7;commoncpp2-0.99.7;commoncpp2-0.99.7.tar.gz:libcommoncp
 libcrypto;0.9.6g;openssl-0.9.6g;openssl-0.9.6g.tar.gz:libcrypto.diff;extract:openssl-0.9.6g.tar.gz;patch:libcrypto.diff
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.bz2:libcurl.diff;extract:curl-7.10.1.tar.bz2;patch:libcurl.diff
 libdirectfb;0.9.15;DirectFB-0.9.15;DirectFB-0.9.15.tar.gz;extract:DirectFB-0.9.15.tar.gz
-libdirectfbpp;0.9.13;DFB++-0.9.13;DFB++-0.9.13.tar.gz;extract:DFB++-0.9.13.tar.gz
+libdirectfbpp;0.9.15;DFB++-0.9.15;DFB++-0.9.15.tar.gz;extract:DFB++-0.9.15.tar.gz
 libdvbpsi;0.1.2;libdvbpsi-0.1.2;libdvbpsi-0.1.2.tar.gz;extract:libdvbpsi-0.1.2.tar.gz
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
 libfreetype;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2;extract:freetype-2.0.9.tar.bz2;patch:libfreetype.diff
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff
 libmad;0.14.2b;mad-0.14.2b;mad-0.14.2b.tar.gz;extract:mad-0.14.2b.tar.gz;patch:mad.diff
-libncurses;5.2;ncurses-5.2;ncurses-5.2.tar.gz:ncurses.diff;extract:ncurses-5.2.tar.gz;patch:ncurses.diff
+libncurses;5.3;ncurses-5.3;ncurses-5.3.tar.gz;extract:ncurses-5.3.tar.gz
 libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;patch:libpcap.diff
 libpng;1.2.5;libpng-1.2.5;libpng-1.2.5.tar.gz:libpng.diff;extract:libpng-1.2.5.tar.gz;patch:libpng.diff
 libpopt;1.6.4;popt-1.6.4;popt-1.6.4.tar.gz;extract:popt-1.6.4.tar.gz

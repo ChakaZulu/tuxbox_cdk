@@ -420,7 +420,7 @@ libs_optional: \
 	@PREPARE_libdirectfbpp@
 	cd @DIR_libdirectfbpp@ && \
 		@BUILDENV_libdirectfbpp@ \
-		./configure \
+		./autogen.sh \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= && \
