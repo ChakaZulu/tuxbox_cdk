@@ -747,8 +747,14 @@ endif
 	@if [ ! -f $(hostprefix)/bin/mkimage ]; then \
 		make .ppcboot; \
 	fi
-	make -C @DIR_linux@ dep zImage modules CROSS_COMPILE=$(target)-
-	make -C @DIR_linux@ modules_install INSTALL_MOD_PATH=$(targetprefix)
+	make -C @DIR_linux@ zImage modules \
+		ARCH=ppc \
+		CROSS_COMPILE=$(target)-
+	make -C @DIR_linux@ modules_install \
+		ARCH=ppc \
+		CROSS_COMPILE=$(target)- \
+		DEPMOD=/bin/true \
+		INSTALL_MOD_PATH=$(targetprefix)
 	$(hostprefix)/bin/mkimage \
 		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
 		-a 00000000 -e 00000000 \
