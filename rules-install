@@ -35,6 +35,8 @@ libncurses;make:install.libs:install.includes
 libjpeg;make:install-lib:install-headers
 libpng;make:install:prefix=TARGET
 libqt;install:src/moc/moc:HOST/bin
+libreadline;make:install
+libsdl;make:install;link:TARGET/bin/sdl-config:HOST/bin/sdl-config
 libxml2;make:install;link:TARGET/bin/xml2-config:HOST/bin/xml2-config
 libz;make:install
 
@@ -49,10 +51,6 @@ msttf
 #
 gdb;make:install
 strace;make:install
-
-#
-# misc apps
-#
 nano;make:install
 
 #
@@ -60,3 +58,9 @@ nano;make:install
 #
 kaffe;make:install
 kaffeh;make:install
+
+#
+# fun stuff
+#
+scummvm;install:scummvm:TARGET/bin
+

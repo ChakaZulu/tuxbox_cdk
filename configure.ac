@@ -169,6 +169,8 @@ TUXBOX_RULES_MAKE(libncurses)
 TUXBOX_RULES_MAKE(libjpeg)
 TUXBOX_RULES_MAKE(libpng)
 TUXBOX_RULES_MAKE(libqt)
+TUXBOX_RULES_MAKE(libreadline)
+TUXBOX_RULES_MAKE(libsdl)
 TUXBOX_RULES_MAKE(libxml2)
 TUXBOX_RULES_MAKE(libz)
 
@@ -192,6 +194,11 @@ TUXBOX_RULES_MAKE(nano)
 #
 TUXBOX_RULES_MAKE(kaffe)
 TUXBOX_RULES_MAKE(kaffeh)
+
+#
+# fun stuff
+#
+TUXBOX_RULES_MAKE(scummvm)
 
 #
 # internal

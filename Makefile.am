@@ -322,6 +322,59 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libxml2
 	@CLEANUP_libqt@
 	touch .libqt
 
+.libreadline: .bootstrap @DEPENDS_libreadline@
+	@PREPARE_libreadline@
+	cd @DIR_libreadline@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		make shared && \
+		@INSTALL_libreadline@
+	@CLEANUP_libreadline@
+	touch .libreadline
+
+.libsdl: .bootstrap @DEPENDS_libsdl@
+	@PREPARE_libsdl@
+	cd @DIR_libsdl@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--disable-cdrom \
+			--disable-alsa \
+			--disable-openbsdaudio \
+			--disable-esd \
+			--disable-arts \
+			--disable-nas \
+			--disable-diskaudio \
+			--disable-nasm \
+			--disable-nanox \
+			--disable-video-x11 \
+			--without-x \
+			--enable-video-fbcon \
+			--disable-video-photon \
+			--disable-video-directfb \
+			--disable-video-ps2gs \
+			--disable-video-ggi \
+			--disable-video-svga \
+			--disable-video-vgl \
+			--disable-video-aalib \
+			--disable-video-dummy \
+			--disable-video-opengl \
+			--disable-stdio-redirect \
+			--disable-directx && \
+		make all && \
+		@INSTALL_libsdl@
+	@CLEANUP_libsdl@
+	touch .libsdl
+
 .libxml2: .bootstrap @DEPENDS_libxml2@
 	@PREPARE_libxml2@
 	cd @DIR_libxml2@ && \
@@ -475,6 +528,23 @@ java: .kaffeh .kaffe
 		@INSTALL_kaffe@
 	@CLEANUP_kaffe@
 	touch .kaffe
+
+#######################
+#
+#   fun stuff
+#
+
+.scummvm: .bootstrap .libreadline .libsdl @DEPENDS_scummvm@
+	@PREPARE_scummvm@
+	cd @DIR_scummvm@ && \
+		make \
+			CC=$(target)-g++ \
+			CFLAGS="$(TARGET_CFLAGS)" \
+			LDFLAGS="$(TAGET_LDFLAGS)" \
+			DEFINES=-DUNIX && \
+		@INSTALL_scummvm@
+	@CLEANUP_scummvm@
+	touch .scummvm
 
 #######################
 #
@@ -657,14 +727,14 @@ distclean-local:
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .tinylogin .modutils .inetd .telnetd 
-	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
+	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libreadline .libsdl .libxml2 .libz
 	-rm .cabextract .msttf
-	-rm .tools
 	-rm .gdb .strace .nano
 	-rm .kaffeh .kaffe
+	-rm .scummvm
 	-rm .ppcboot .linuxkernel .driver
 	-rm .dvbsnoop .edvb .lcars .lcdmenu .neutrino .stream
-	-rm .fx2 .sections .zapit
+	-rm .fx2 .sections .tools .zapit
 	-rm .liblcddisplay .libmd5sum .libnet .libucodes
 	-rm .dvbstream
 	-rm -rf $(targetprefix)

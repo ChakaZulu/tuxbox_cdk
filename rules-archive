@@ -22,7 +22,7 @@ glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnu
 busybox-0.60.2.tar.gz;ftp://busybox.net/busybox
 tinylogin-0.80.tar.gz;ftp://oss.lineo.com/tinylogin
 modutils-2.4.13.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
-# netkibase includes inetd
+# netkit-base includes inetd
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
@@ -39,6 +39,8 @@ qt-embedded-2.3.0.tar.gz;ftp://ftp.trolltech.com/qt/source
 libxml2-2.4.10.tar.gz;ftp://xmlsoft.org
 zlib.tar.gz;http://www.gzip.org/zlib.tar.gz
 libffi-1.20.tar.gz;ftp://sourceware.cygnus.com/pub/libffi
+SDL-1.2.3.tar.gz;http://www.libsdl.org/release
+readline-4.2a.tar.gz;ftp://ftp.gnu.org/gnu/readline
 
 #
 # msttf
@@ -53,9 +55,15 @@ courie32.exe;http://www.microsoft.com/typography/downloads
 #
 gdb-5.0.tar.gz;ftp://ftp.freenet.de/pub/ftp.gnu.org/gnu/gdb
 strace-4.2.tar.gz;http://prdownloads.sourceforge.net/strace
+nano-1.0.7.tar.gz;http://www.nano-editor.org/dist/v1.0
 
 #
-# misc apps
+# java
 #
-nano-1.0.7.tar.gz;http://www.nano-editor.org/dist/v1.0
 kaffe-1.0.6.tar.gz;http://www.kaffe.org/ftp/pub/kaffe
+
+#
+# fun
+#
+scummvm-20020128.tar.bz2;http://scummvm.sourceforge.net/daily
+
