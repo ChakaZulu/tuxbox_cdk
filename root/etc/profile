@@ -7,7 +7,7 @@ export PATH="/sbin:/bin"
 
 export TUXBOX_VERSION
 export TUXBOX_CAPABILITIES
-export TUXBOX_MANUFACTURER
+export TUXBOX_VENDOR
 export TUXBOX_MODEL
 
 # timezone, only applicable for middle europe

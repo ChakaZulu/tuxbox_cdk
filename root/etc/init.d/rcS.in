@@ -25,10 +25,17 @@ modprobe tuxbox
 
 modprobe dvb-core
 
-# D-BOX2
-if [ $TUXBOX_MODEL -eq 1 ]; then
+VENDOR=`/bin/tuxinfo -m`
+VENDOR_ID=`/bin/tuxinfo -i -d`
+MODEL=`/bin/tuxinfo -M`
+MODEL_ID=`/bin/tuxinfo -I -d`
 
-	echo "D-BOX2 detected..."
+echo "Detected STB:"
+echo "  Vendor: $VENDOR"
+echo "  Model: $MODEL"
+
+# D-BOX2
+if [ $MODEL_ID -eq 1 ]; then
 
 	# I2C core
 	modprobe dbox2_i2c
@@ -39,16 +46,16 @@ if [ $TUXBOX_MODEL -eq 1 ]; then
 
 	# Frontends
 	# Nokia
-	if [ $TUXBOX_MANUFACTURER -eq 1 ]; then
+	if [ $VENDOR_ID -eq 1 ]; then
 		modprobe ves1820
 		modprobe ves1x93 board_type=2
 		modprobe ves1x93 board_type=3
 	# Sagem
-	elif [ $TUXBOX_MANUFACTURER -eq 2 ]; then
+	elif [ $VENDOR_ID -eq 2 ]; then
 		modprobe at76c651
 		modprobe ves1x93 board_type=4
 	# Philips
-	elif [ $TUXBOX_MANUFACTURER -eq 3 ]; then
+	elif [ $VENDOR_ID -eq 3 ]; then
 		modprobe tda8044h
 	fi
 
@@ -72,9 +79,7 @@ if [ $TUXBOX_MODEL -eq 1 ]; then
 	modprobe dbox2_fp_napi
 
 # Dreambox DM 7000
-elif [ $TUXBOX_MODEL -eq 2 ]; then
-
-	echo "Dreambox DM 7000 detected..."
+elif [ $MODEL_ID -eq 2 ]; then
 
 	# I2C core
 
@@ -101,6 +106,10 @@ elif [ $TUXBOX_MODEL -eq 2 ]; then
 	modprobe stb_clip
 
 fi
+
+echo "" > /etc/issue.net
+echo "Willkomen auf Ihrer $VENDOR $MODEL - Kernel %r (%t)." >> /etc/issue.net
+echo "" >> /etc/issue.net
 
 # compatibility links
 ln -sf demux0 /dev/dvb/adapter0/demux1
