@@ -1114,6 +1114,20 @@ driver-clean:
 		KERNEL_LOCATION=$(buildprefix)/linux
 	rm .driver
 
+$(driverdir)/directfb/Makefile: .bootstrap .libdirectfb
+	cd $(driverdir)/directfb && \
+	@BUILDENV_libdirectfb@ \
+	./autogen.sh \
+		--build=$(build) \
+		--host=$(target) \
+		--prefix= \
+		--enable-maintainer-mode \
+		--with-kernel-source=$(buildprefix)/@DIR_linux@
+
+.directfb_gtx: $(driverdir)/directfb/Makefile
+	$(MAKE) -C $(driverdir)/directfb all install DESTDIR=$(targetprefix)
+	touch .directfb_gtx
+
 #######################
 #
 #   own applications
