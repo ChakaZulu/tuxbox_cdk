@@ -3,12 +3,14 @@ SUBDIRS = init.d
 EXTRA_DIST = \
 	fstab.in group host.conf hostname hosts inetd.conf inittab issue.net \
 	mime.types modules.conf.in nsswitch.conf passwd profile protocols \
-	resolv.conf services termcap thttpd.conf
+	resolv.conf services termcap thttpd.conf \
+	cables.xml satellites.xml
 
 FILES = \
 	fstab group host.conf hostname hosts inetd.conf inittab issue.net \
 	mime.types modules.conf nsswitch.conf passwd profile protocols \
-	resolv.conf services termcap thttpd.conf
+	resolv.conf services termcap thttpd.conf \
+	cables.xml satellites.xml
 
 all-local: $(FILES)
 
