@@ -1,6 +1,6 @@
 --- linux/include/linux/fb.h.old	2002-12-28 21:38:02.000000000 +0100
 +++ linux/include/linux/fb.h	2002-12-28 21:40:53.000000000 +0100
-@@ -108,6 +108,10 @@
+@@ -110,6 +110,10 @@
  #define FB_ACCEL_NEOMAGIC_NM2380 98	/* NeoMagic NM2380              */
  
  
