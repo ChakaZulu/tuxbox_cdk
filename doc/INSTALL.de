@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.de,v 1.5 2002/05/02 10:22:57 waldi Exp $
+# $Id: INSTALL.de,v 1.6 2002/05/25 19:17:37 happydude Exp $
 #
 # Urheber:
 # --------
@@ -29,7 +29,7 @@ Prerequisiten:
  - bunzip2
  - gunzip
  - patch
- - infocmp (aus ncurses)
+ - infocmp (aus ncurses bzw. ncurses-devel)
  - gcc >= 2.95, jedoch nicht 2.96
  - g++ >= 2.95, jedoch nicht 2.96
  - yacc
