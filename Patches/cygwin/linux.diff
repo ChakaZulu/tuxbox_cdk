@@ -6,7 +6,7 @@ diff -Naur linux-2.4.21/Makefile linux-2.4.21/Makefile_cygwin
  .PHONY: _modinst_post
  _modinst_post: _modinst_post_pcmcia
 -	if [ -r System.map ]; then $(DEPMOD) -ae -F System.map $(depmod_opts) $(KERNELRELEASE); fi
-+	if [ -r System.map ]; then $(DEPMOD) -ae -F System.map $(depmod_opts) $(KERNELRELEASE); fi 
++#	if [ -r System.map ]; then $(DEPMOD) -ae -F System.map $(depmod_opts) $(KERNELRELEASE); fi 
 
  # Backwards compatibilty symlinks for people still using old versions
  # of pcmcia-cs with hard coded pathnames on insmod.  Remove
