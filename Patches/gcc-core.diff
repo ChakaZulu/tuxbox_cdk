@@ -15,21 +15,3 @@ diff -urN gcc-3.2.2.orig/gcc/config/rs6000/linux.h gcc-3.2.2/gcc/config/rs6000/l
  
  enum { SIGNAL_FRAMESIZE = 64 };
  #endif
-@@ -87,7 +90,7 @@
- #define MD_FALLBACK_FRAME_STATE_FOR(CONTEXT, FS, SUCCESS)		\
-   do {									\
-     unsigned char *pc_ = (CONTEXT)->ra;					\
--    struct sigcontext *sc_;						\
-+    struct sigcontext_struct *sc_;						\
-     long new_cfa_;							\
-     int i_;								\
- 									\
-@@ -102,7 +105,7 @@
-       {									\
- 	struct sigframe {						\
- 	  char gap[SIGNAL_FRAMESIZE];					\
--	  struct sigcontext sigctx;					\
-+	  struct sigcontext_struct sigctx;					\
- 	} *rt_ = (CONTEXT)->cfa;					\
- 	sc_ = &rt_->sigctx;						\
-       }									\
