@@ -1,0 +1,15 @@
+diff -Naur nano-1.0.7/nano.h nano-1.0.7new/nano.h
+--- nano-1.0.7/nano.h	2002-11-18 02:44:13.000000000 +0100
++++ nano-1.0.7new/nano.h	2002-11-18 02:44:34.000000000 +0100
+@@ -40,9 +40,9 @@
+ #include <slcurses.h>
+ #define KEY_DC 0x113
+ #elif defined(HAVE_NCURSES_H)
+-#include <ncurses.h>
++#include <ncurses/ncurses.h>
+ #else /* Uh oh */
+-#include <curses.h> 
++#include <ncurses/curses.h> 
+ #endif /* CURSES_H */
+ 
+ #ifdef HAVE_LIBINTL_H
