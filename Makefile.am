@@ -367,6 +367,16 @@ libs_optional: \
 	@CLEANUP_libdirectfbpp@
 	touch $@
 
+.libdvb: .bootstrap @DEPENDS_libdvb@
+	@PREPARE_libdvb@
+	cd @DIR_libdvb@ && \
+		$(MAKE) libdvb.a libdvbci.a libdvbmpegtools.a \
+		$(BUILDENV) \
+		CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/dvb/include -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" && \
+		@INSTALL_libdvb@
+	@CLEANUP_libdvb@
+	touch $@
+
 .libdvbpsi: .bootstrap @DEPENDS_libdvbpsi@
 	@PREPARE_libdvbpsi@
 	cd @DIR_libdvbpsi@ && \
