@@ -459,6 +459,20 @@ libs_optional: \
 	@CLEANUP_libgmp@
 	touch $@
 
+.libid3tag: .bootstrap .libz @DEPENDS_libid3tag@
+        @PREPARE_libid3tag@
+        cd @DIR_libid3tag@ && \
+                $(BUILDENV) \
+                ./configure \
+                        --build=$(build) \
+                        --host=$(target) \
+                        --prefix= \
+                        --enable-shared=yes && \
+                $(MAKE) all && \
+                @INSTALL_libid3tag@
+        @CLEANUP_libid3tag@
+        touch $@
+
 .libjpeg: .bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libjpeg@
 	cd @DIR_libjpeg@ && \
@@ -473,23 +487,21 @@ libs_optional: \
 	touch $@
 
 .libmad: .bootstrap .libz @DEPENDS_libmad@
-	@PREPARE_libmad@
-	cd @DIR_libmad@ && \
-		$(BUILDENV) \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix= \
-			--enable-shared=yes \
-			--disable-nls \
-			--without-esd \
-			--enable-speed \
-			--enable-fpm=ppc \
-			--enable-sso && \
-		$(MAKE) all && \
-		@INSTALL_libmad@
-	@CLEANUP_libmad@
-	touch $@
+        @PREPARE_libmad@
+        cd @DIR_libmad@ && \
+                $(BUILDENV) \
+                ./configure \
+                        --build=$(build) \
+                        --host=$(target) \
+                        --prefix= \
+                        --enable-shared=yes \
+                        --enable-speed \
+                        --enable-fpm=ppc \
+                        --enable-sso && \
+                $(MAKE) all && \
+                @INSTALL_libmad@
+        @CLEANUP_libmad@
+        touch $@
 
 .libncurses: .bootstrap @DEPENDS_libncurses@
 	@PREPARE_libncurses@
@@ -1602,7 +1614,7 @@ distclean-local:
 	-rm .root .busybox .ftpd .inetd .modutils .procps .watchdog
 	-rm .libboost .libcommoncplusplus .libcrypto .libcurl
 	-rm .libdirectfb .libdirectfbpp .libdvb .libdvbpsi .libexpat .libffi .libfreetype
-	-rm .libncurses .libjpeg .libmad .libpcap .libpng
+	-rm .libncurses .libid3tag .libjpeg .libmad .libpcap .libpng
 	-rm .libreadline .libsdl .libsigc .libxml2 .libz
 	-rm .gdb .gdb-remote .ltrace .strace .nano
 	-rm .kaffeh .kaffe
