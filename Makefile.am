@@ -1031,6 +1031,7 @@ fun: .mad .scummvm
 		CFLAGS="$(TARGET_CFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
+			--enable-shared=yes \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
