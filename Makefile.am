@@ -47,6 +47,7 @@ $(DEPDIR)/directories:
 	$(INSTALL) -d $(targetprefix)/sbin
 	$(INSTALL) -d $(targetprefix)/tmp
 	$(INSTALL) -d $(targetprefix)/var
+	$(INSTALL) -d $(targetprefix)/var/etc
 	$(INSTALL) -d $(targetprefix)/var/run
 	$(INSTALL) -d $(targetprefix)$(UCODEDIR)
 	$(INSTALL) -d $(hostprefix)/$(target)
