@@ -647,7 +647,7 @@ diff -Naur u-boot-1.1.1.orig/include/version.h u-boot-1.1.1/include/version.h
  
 -#define	U_BOOT_VERSION	"U-Boot 1.1.1"
 +#define	U_BOOT_VERSION		"U-Boot 1.1.1 (TuxBox)"
-+#define U_BOOT_VERSION_SHORT	"U-Boot"
++#define U_BOOT_VERSION_SHORT	"U-Boot 1.1.1"
  
  #endif	/* __VERSION_H__ */
 diff -Naur u-boot-1.1.1.orig/lib_generic/crc32.c u-boot-1.1.1/lib_generic/crc32.c
