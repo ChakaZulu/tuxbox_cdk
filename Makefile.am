@@ -1198,7 +1198,7 @@ $(appsdir)/dvb/config/config.status:
 # dvb/dvbsnoop
 
 $(appsdir)/dvb/dvbsnoop/config.status: .bootstrap
-	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE)
+	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE) CPPFLAGS="$(CPPFLAGS) -I$(driverdir)/dvb/include"
 
 .dvbsnoop: $(appsdir)/dvb/dvbsnoop/config.status
 	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
