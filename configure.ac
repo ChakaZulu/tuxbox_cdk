@@ -136,6 +136,29 @@ AC_SUBST(appsdir)
 AC_SUBST(bootdir)
 AC_SUBST(driverdir)
 
+if test "$targetruleset" = "flash"; then
+	AC_PATH_PROG(PYTHON,python,no)
+	if test "$PYTHON" = "no"; then
+		AC_MSG_WARN(can't build lib dir)
+		PYTHON=/bin/false
+	fi
+	AC_PATH_PROG(FAKEROOT,fakeroot,no)
+	if test "$FAKEROOT" = "no"; then
+		AC_MSG_WARN(can't build images with uid 0 as non-root)
+		FAKEROOT=
+	fi
+	AC_PATH_PROG(MKCRAMFS,mkcramfs,no)
+	if test "$MKCRAMFS" = "no"; then
+		AC_MSG_WARN(can't build cramfs)
+		MKCRAMFS=/bin/false
+	fi
+	AC_PATH_PROG(MKJFFS2,mkjffs2,no)
+	if test "$MKJFFS2" = "no"; then
+		AC_MSG_WARN(can't build jffs2)
+		MKJFFS2=/bin/false
+	fi
+fi
+
 FONTDIR="/share/fonts"
 AC_SUBST(FONTDIR)
 UCODEDIR="/var/tuxbox/ucodes"
