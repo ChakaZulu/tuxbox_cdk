@@ -115,10 +115,7 @@ AC_SUBST(RULESET)
 #
 KERNELVERSION=`${srcdir}/rules-make.pl ${srcdir}/rules-make${RULESETFILE} linux version`
 AC_SUBST(KERNELVERSION)
-DEPENDS_linuxdir=`${srcdir}/rules-make.pl ${srcdir}/rules-make${RULESETFILE} linux depend`
-AC_SUBST(DEPENDS_linuxdir)
-PREPARE_linuxdir=`${srcdir}/rules-make.pl ${srcdir}/rules-make${RULESETFILE} linux prepare`
-AC_SUBST(PREPARE_linuxdir)
+TUXBOX_RULES_MAKE(linux)
 TUXBOX_RULES_MAKE_EXDIR(binutils)
 TUXBOX_RULES_MAKE_EXDIR(bootstrap_gcc)
 TUXBOX_RULES_MAKE_EXDIR(glibc)

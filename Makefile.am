@@ -15,6 +15,7 @@ bootstrap: .gcc
 	install -d $(targetprefix)/include
 	install -d $(targetprefix)/lib
 	install -d $(hostprefix)/$(TARGET)
+	install -d $(bootprefix)
 	-rm $(hostprefix)/$(TARGET)/include
 	-rm $(hostprefix)/$(TARGET)/lib
 	ln -s $(targetprefix)/include $(hostprefix)/$(TARGET)/include
@@ -24,8 +25,8 @@ bootstrap: .gcc
 	ln -s $(buildprefix)/linux-$(KERNELVERSION)/include/linux $(hostprefix)/$(TARGET)/include
 	touch .directories
 
-.linuxdir: .directories @DEPENDS_linuxdir@
-	@PREPARE_linuxdir@
+.linuxdir: .directories @DEPENDS_linux@
+	@PREPARE_linux@
 	cat Patches/linux-$(KERNELVERSION).dbox.config > linux-$(KERNELVERSION)/.config
 	make -C linux-$(KERNELVERSION) oldconfig
 	make -C linux-$(KERNELVERSION) include/linux/version.h
@@ -233,6 +234,30 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 
 #######################
 #
+#   own boot
+#
+
+.ppcboot: .gcc $(bootdir)/ppcboot/Makefile
+	make -C $(bootdir)/ppcboot dbox_config
+	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(TARGET)-
+	install -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
+	install $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
+	make -C $(bootdir)/ppcboot distclean
+	touch .ppcboot
+
+.linuxkernel: .gcc .ppcboot
+	make -C @DIR_linux@ dep zImage modules CROSS_COMPILE=$(TARGET)-
+	make -C @DIR_linux@ modules_install INSTALL_MOD_PATH=$(targetprefix)
+	$(hostprefix)/bin/mkimage \
+		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
+		-a 00000000 -e 00000000 \
+		-d @DIR_linux@/arch/ppc/coffboot/vmlinux.gz \
+		$(bootprefix)/kernel
+	make -C @DIR_linux@ clean
+	touch .linuxkernel
+
+#######################
+#
 #   own applications
 #
 
@@ -263,7 +288,9 @@ distclean-local:
 	-rm -rf $(hostprefix)
 	-rm -f linux
 	-rm -rf linux-$(KERNELVERSION)
-	cd $(appsdir) && make distclean
+	-make -C $(appsdir) distclean
+	-make -C $(bootdir)/ppcboot distclean
+	-make -C $(driverdir) clean
 
 include Makefile-archive
 
