@@ -945,6 +945,9 @@ $(DEPDIR)/lufs: bootstrap @DEPENDS_lufs@
 	@PREPARE_lufs@
 	cd @DIR_lufs@ && \
 		$(BUILDENV) \
+		aclocal && \
+		libtoolize --force && \
+		autoconf && \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
