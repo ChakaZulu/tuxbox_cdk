@@ -1,6 +1,6 @@
-diff -Naur linux-2.4.2.orig/Documentation/Configure.help linux-2.4.2/Documentation/Configure.help
+diff -urN linux-2.4.2.orig/Documentation/Configure.help linux-2.4.2/Documentation/Configure.help
 --- linux-2.4.2.orig/Documentation/Configure.help	Mon Feb 19 19:18:18 2001
-+++ linux-2.4.2/Documentation/Configure.help	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/Documentation/Configure.help	Sat Mar  2 19:06:54 2002
 @@ -15834,6 +15834,11 @@
    only supports one type or the other. However, there is very early
    work on support for CHRP, PReP and PowerMac's from a single binary.
@@ -13,9 +13,9 @@ diff -Naur linux-2.4.2.orig/Documentation/Configure.help linux-2.4.2/Documentati
  Power management support for PowerBooks
  CONFIG_PMAC_PBOOK
    This provides support for putting a PowerBook to sleep; it also
-diff -Naur linux-2.4.2.orig/Makefile linux-2.4.2/Makefile
+diff -urN linux-2.4.2.orig/Makefile linux-2.4.2/Makefile
 --- linux-2.4.2.orig/Makefile	Thu Feb 22 01:54:15 2001
-+++ linux-2.4.2/Makefile	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/Makefile	Sat Mar  2 19:06:54 2002
 @@ -5,7 +5,8 @@
  
  KERNELRELEASE=$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
@@ -53,9 +53,9 @@ diff -Naur linux-2.4.2.orig/Makefile linux-2.4.2/Makefile
  
  # Backwards compatibilty symlinks for people still using old versions
  # of pcmcia-cs with hard coded pathnames on insmod.  Remove
-diff -Naur linux-2.4.2.orig/arch/ppc/8xx_io/commproc.h linux-2.4.2/arch/ppc/8xx_io/commproc.h
+diff -urN linux-2.4.2.orig/arch/ppc/8xx_io/commproc.h linux-2.4.2/arch/ppc/8xx_io/commproc.h
 --- linux-2.4.2.orig/arch/ppc/8xx_io/commproc.h	Sat Feb 17 01:02:34 2001
-+++ linux-2.4.2/arch/ppc/8xx_io/commproc.h	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/arch/ppc/8xx_io/commproc.h	Sat Mar  2 19:06:54 2002
 @@ -513,8 +513,13 @@
  
  #define PA_ENET_RXD	((ushort)0x0004)	/* PA 13 */
@@ -82,9 +82,9 @@ diff -Naur linux-2.4.2.orig/arch/ppc/8xx_io/commproc.h linux-2.4.2/arch/ppc/8xx_
  
  #endif	/* CONFIG_TQM8xxL */
  
-diff -Naur linux-2.4.2.orig/arch/ppc/8xx_io/enet.c linux-2.4.2/arch/ppc/8xx_io/enet.c
+diff -urN linux-2.4.2.orig/arch/ppc/8xx_io/enet.c linux-2.4.2/arch/ppc/8xx_io/enet.c
 --- linux-2.4.2.orig/arch/ppc/8xx_io/enet.c	Fri Feb  9 20:29:44 2001
-+++ linux-2.4.2/arch/ppc/8xx_io/enet.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/arch/ppc/8xx_io/enet.c	Sat Mar  2 19:06:54 2002
 @@ -889,7 +889,7 @@
  	immap->im_ioport.iop_pcdir &= ~PC_ENET_TENA;
  #endif
@@ -94,9 +94,9 @@ diff -Naur linux-2.4.2.orig/arch/ppc/8xx_io/enet.c linux-2.4.2/arch/ppc/8xx_io/e
  	cp->cp_pbpar |= PB_ENET_TENA;
  	cp->cp_pbdir |= PB_ENET_TENA;
  #endif
-diff -Naur linux-2.4.2.orig/arch/ppc/8xx_io/uart.c linux-2.4.2/arch/ppc/8xx_io/uart.c
+diff -urN linux-2.4.2.orig/arch/ppc/8xx_io/uart.c linux-2.4.2/arch/ppc/8xx_io/uart.c
 --- linux-2.4.2.orig/arch/ppc/8xx_io/uart.c	Fri Feb  9 20:29:44 2001
-+++ linux-2.4.2/arch/ppc/8xx_io/uart.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/arch/ppc/8xx_io/uart.c	Sat Mar  2 19:06:54 2002
 @@ -2458,7 +2458,7 @@
  	__clear_user(&serial_driver,sizeof(struct tty_driver));
  	serial_driver.magic = TTY_DRIVER_MAGIC;
@@ -125,9 +125,9 @@ diff -Naur linux-2.4.2.orig/arch/ppc/8xx_io/uart.c linux-2.4.2/arch/ppc/8xx_io/u
  	for (bidx = 0; bidx < (sizeof(baud_table) / sizeof(int)); bidx++)
  		if (bd->bi_baudrate == baud_table[bidx])
  			break;
-diff -Naur linux-2.4.2.orig/arch/ppc/Makefile linux-2.4.2/arch/ppc/Makefile
+diff -urN linux-2.4.2.orig/arch/ppc/Makefile linux-2.4.2/arch/ppc/Makefile
 --- linux-2.4.2.orig/arch/ppc/Makefile	Tue Jan 23 00:41:14 2001
-+++ linux-2.4.2/arch/ppc/Makefile	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/arch/ppc/Makefile	Sat Mar  2 19:06:54 2002
 @@ -31,7 +31,11 @@
  endif
  
@@ -141,9 +141,9 @@ diff -Naur linux-2.4.2.orig/arch/ppc/Makefile linux-2.4.2/arch/ppc/Makefile
  endif
  
  ifdef CONFIG_PPC64BRIDGE
-diff -Naur linux-2.4.2.orig/arch/ppc/config.in linux-2.4.2/arch/ppc/config.in
+diff -urN linux-2.4.2.orig/arch/ppc/config.in linux-2.4.2/arch/ppc/config.in
 --- linux-2.4.2.orig/arch/ppc/config.in	Tue Jan 23 00:41:14 2001
-+++ linux-2.4.2/arch/ppc/config.in	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/arch/ppc/config.in	Sat Mar  2 19:06:54 2002
 @@ -65,6 +65,7 @@
  	 
    if [ "$CONFIG_TQM8xxL" = "y" ]; then
@@ -152,9 +152,9 @@ diff -Naur linux-2.4.2.orig/arch/ppc/config.in linux-2.4.2/arch/ppc/config.in
    fi
  fi
  
-diff -Naur linux-2.4.2.orig/arch/ppc/kernel/irq.c linux-2.4.2/arch/ppc/kernel/irq.c
+diff -urN linux-2.4.2.orig/arch/ppc/kernel/irq.c linux-2.4.2/arch/ppc/kernel/irq.c
 --- linux-2.4.2.orig/arch/ppc/kernel/irq.c	Fri Feb  9 20:29:44 2001
-+++ linux-2.4.2/arch/ppc/kernel/irq.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/arch/ppc/kernel/irq.c	Sat Mar  2 19:06:54 2002
 @@ -520,6 +520,15 @@
  		else if (irq_desc[irq].handler->enable)
  			irq_desc[irq].handler->enable(irq);
@@ -171,9 +171,9 @@ diff -Naur linux-2.4.2.orig/arch/ppc/kernel/irq.c linux-2.4.2/arch/ppc/kernel/ir
  	spin_unlock(&desc->lock);
  }
  
-diff -Naur linux-2.4.2.orig/arch/ppc/kernel/m8xx_setup.c linux-2.4.2/arch/ppc/kernel/m8xx_setup.c
+diff -urN linux-2.4.2.orig/arch/ppc/kernel/m8xx_setup.c linux-2.4.2/arch/ppc/kernel/m8xx_setup.c
 --- linux-2.4.2.orig/arch/ppc/kernel/m8xx_setup.c	Fri Feb  9 20:29:44 2001
-+++ linux-2.4.2/arch/ppc/kernel/m8xx_setup.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/arch/ppc/kernel/m8xx_setup.c	Sat Mar  2 19:06:54 2002
 @@ -140,6 +140,22 @@
  	printk("timebase_interrupt()\n");
  }
@@ -274,9 +274,9 @@ diff -Naur linux-2.4.2.orig/arch/ppc/kernel/m8xx_setup.c linux-2.4.2/arch/ppc/ke
  }
  
  /* The RTC on the MPC8xx is an internal register.
-diff -Naur linux-2.4.2.orig/arch/ppc/kernel/ppc_ksyms.c linux-2.4.2/arch/ppc/kernel/ppc_ksyms.c
+diff -urN linux-2.4.2.orig/arch/ppc/kernel/ppc_ksyms.c linux-2.4.2/arch/ppc/kernel/ppc_ksyms.c
 --- linux-2.4.2.orig/arch/ppc/kernel/ppc_ksyms.c	Tue Feb 13 22:15:04 2001
-+++ linux-2.4.2/arch/ppc/kernel/ppc_ksyms.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/arch/ppc/kernel/ppc_ksyms.c	Sat Mar  2 19:06:54 2002
 @@ -242,8 +242,8 @@
  EXPORT_SYMBOL(set_backlight_enable);
  EXPORT_SYMBOL(register_backlight_controller);
@@ -319,9 +319,28 @@ diff -Naur linux-2.4.2.orig/arch/ppc/kernel/ppc_ksyms.c linux-2.4.2/arch/ppc/ker
 +EXPORT_SYMBOL(cpmp);
 +EXPORT_SYMBOL(request_8xxirq);
 +#endif
-diff -Naur linux-2.4.2.orig/drivers/char/console.c linux-2.4.2/drivers/char/console.c
+diff -urN linux-2.4.2.orig/arch/ppc/kernel/time.c linux-2.4.2/arch/ppc/kernel/time.c
+--- linux-2.4.2.orig/arch/ppc/kernel/time.c	Tue Jan 23 00:41:15 2001
++++ linux-2.4.2/arch/ppc/kernel/time.c	Sat Mar  2 19:07:41 2002
+@@ -73,6 +73,7 @@
+ #endif /* CONFIG_SMP */
+ 
+ extern int do_sys_settimeofday(struct timeval *tv, struct timezone *tz);
++extern void m8xx_reset_watchdog(void);
+ 
+ /* keep track of when we need to update the rtc */
+ time_t last_rtc_update;
+@@ -306,6 +307,7 @@
+ 	sec = ppc_md.get_rtc_time();
+ 	elapsed = 0;
+ 	do {
++		m8xx_reset_watchdog();
+ 		old_stamp = stamp; 
+ 		old_sec = sec;
+ 		stamp = get_native_tbl();
+diff -urN linux-2.4.2.orig/drivers/char/console.c linux-2.4.2/drivers/char/console.c
 --- linux-2.4.2.orig/drivers/char/console.c	Fri Feb  9 20:30:22 2001
-+++ linux-2.4.2/drivers/char/console.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/char/console.c	Sat Mar  2 19:06:54 2002
 @@ -108,7 +108,13 @@
  #include "console_macros.h"
  
@@ -337,9 +356,9 @@ diff -Naur linux-2.4.2.orig/drivers/char/console.c linux-2.4.2/drivers/char/cons
  
  /* A bitmap for codes <32. A bit of 1 indicates that the code
   * corresponding to that bit number invokes some special action
-diff -Naur linux-2.4.2.orig/drivers/char/vt.c linux-2.4.2/drivers/char/vt.c
+diff -urN linux-2.4.2.orig/drivers/char/vt.c linux-2.4.2/drivers/char/vt.c
 --- linux-2.4.2.orig/drivers/char/vt.c	Fri Feb  9 20:30:22 2001
-+++ linux-2.4.2/drivers/char/vt.c	Fri Feb 15 14:46:02 2002
++++ linux-2.4.2/drivers/char/vt.c	Sat Mar  2 19:06:54 2002
 @@ -93,7 +93,7 @@
   * comments - KDMKTONE doesn't put the process to sleep.
   */
@@ -349,9 +368,9 @@ diff -Naur linux-2.4.2.orig/drivers/char/vt.c linux-2.4.2/drivers/char/vt.c
      || (defined(__mips__) && !defined(CONFIG_SGI_IP22)) \
      || (defined(__arm__) && defined(CONFIG_HOST_FOOTBRIDGE))
  
-diff -Naur linux-2.4.2.orig/drivers/input/keybdev.c linux-2.4.2/drivers/input/keybdev.c
+diff -urN linux-2.4.2.orig/drivers/input/keybdev.c linux-2.4.2/drivers/input/keybdev.c
 --- linux-2.4.2.orig/drivers/input/keybdev.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/input/keybdev.c	Fri Feb 15 14:43:02 2002
++++ linux-2.4.2/drivers/input/keybdev.c	Sat Mar  2 19:06:54 2002
 @@ -37,7 +37,7 @@
  #include <linux/module.h>
  #include <linux/kbd_kern.h>
@@ -361,9 +380,9 @@ diff -Naur linux-2.4.2.orig/drivers/input/keybdev.c linux-2.4.2/drivers/input/ke
  
  static int x86_sysrq_alt = 0;
  
-diff -Naur linux-2.4.2.orig/drivers/mtd/Config.in linux-2.4.2/drivers/mtd/Config.in
+diff -urN linux-2.4.2.orig/drivers/mtd/Config.in linux-2.4.2/drivers/mtd/Config.in
 --- linux-2.4.2.orig/drivers/mtd/Config.in	Mon Dec 11 23:57:58 2000
-+++ linux-2.4.2/drivers/mtd/Config.in	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/Config.in	Sat Mar  2 19:06:54 2002
 @@ -1,5 +1,5 @@
  
 -# $Id: No. :) $
@@ -463,9 +482,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/Config.in linux-2.4.2/drivers/mtd/Config
  fi
  
  endmenu
-diff -Naur linux-2.4.2.orig/drivers/mtd/GNUmakefile linux-2.4.2/drivers/mtd/GNUmakefile
+diff -urN linux-2.4.2.orig/drivers/mtd/GNUmakefile linux-2.4.2/drivers/mtd/GNUmakefile
 --- linux-2.4.2.orig/drivers/mtd/GNUmakefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/GNUmakefile	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/GNUmakefile	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,63 @@
 +# $Id: GNUmakefile,v 1.10 2002/01/03 15:00:54 dwmw2 Exp $
 +
@@ -530,9 +549,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/GNUmakefile linux-2.4.2/drivers/mtd/GNUm
 +include Makefile
 +
 +endif
-diff -Naur linux-2.4.2.orig/drivers/mtd/Makefile linux-2.4.2/drivers/mtd/Makefile
+diff -urN linux-2.4.2.orig/drivers/mtd/Makefile linux-2.4.2/drivers/mtd/Makefile
 --- linux-2.4.2.orig/drivers/mtd/Makefile	Fri Dec 29 23:07:22 2000
-+++ linux-2.4.2/drivers/mtd/Makefile	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/Makefile	Sat Mar  2 19:06:54 2002
 @@ -8,54 +8,58 @@
  # Note 2! The CFLAGS definitions are now inherited from the
  # parent makes..
@@ -627,9 +646,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/Makefile linux-2.4.2/drivers/mtd/Makefil
 +nftl.o: $(nftl-objs)
 +	$(LD) -r -o $@ $(nftl-objs)
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/Rules.make linux-2.4.2/drivers/mtd/Rules.make
+diff -urN linux-2.4.2.orig/drivers/mtd/Rules.make linux-2.4.2/drivers/mtd/Rules.make
 --- linux-2.4.2.orig/drivers/mtd/Rules.make	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/Rules.make	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/Rules.make	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,35 @@
 +# $Id: Rules.make,v 1.3 2001/09/25 22:51:40 dwmw2 Exp $
 +
@@ -666,9 +685,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/Rules.make linux-2.4.2/drivers/mtd/Rules
 +
 +TOPDIR := $(OLDTOPDIR)
 +include $(TOPDIR)/Rules.make
-diff -Naur linux-2.4.2.orig/drivers/mtd/afs.c linux-2.4.2/drivers/mtd/afs.c
+diff -urN linux-2.4.2.orig/drivers/mtd/afs.c linux-2.4.2/drivers/mtd/afs.c
 --- linux-2.4.2.orig/drivers/mtd/afs.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/afs.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/afs.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,233 @@
 +/*======================================================================
 +
@@ -903,9 +922,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/afs.c linux-2.4.2/drivers/mtd/afs.c
 +MODULE_AUTHOR("ARM Ltd");
 +MODULE_DESCRIPTION("ARM Firmware Suite partition parser");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.4.2.orig/drivers/mtd/amd_flash.c linux-2.4.2/drivers/mtd/amd_flash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/amd_flash.c linux-2.4.2/drivers/mtd/amd_flash.c
 --- linux-2.4.2.orig/drivers/mtd/amd_flash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/amd_flash.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/amd_flash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,1245 @@
 +/*
 + * MTD map driver for AMD compatible flash chips (non-CFI)
@@ -2152,9 +2171,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/amd_flash.c linux-2.4.2/drivers/mtd/amd_
 +
 +module_init(amd_flash_init);
 +module_exit(amd_flash_exit);
-diff -Naur linux-2.4.2.orig/drivers/mtd/armflash.c linux-2.4.2/drivers/mtd/armflash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/armflash.c linux-2.4.2/drivers/mtd/armflash.c
 --- linux-2.4.2.orig/drivers/mtd/armflash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/armflash.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/armflash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,520 @@
 +/*======================================================================
 +
@@ -2676,9 +2695,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/armflash.c linux-2.4.2/drivers/mtd/armfl
 +module_init(init_armflash);
 +module_exit(cleanup_armflash);
 +#endif
-diff -Naur linux-2.4.2.orig/drivers/mtd/bootldr.c linux-2.4.2/drivers/mtd/bootldr.c
+diff -urN linux-2.4.2.orig/drivers/mtd/bootldr.c linux-2.4.2/drivers/mtd/bootldr.c
 --- linux-2.4.2.orig/drivers/mtd/bootldr.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/bootldr.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/bootldr.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,219 @@
 +/*
 + * Read flash partition table from Compaq Bootloader
@@ -2899,9 +2918,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/bootldr.c linux-2.4.2/drivers/mtd/bootld
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Compaq Computer Corporation");
 +MODULE_DESCRIPTION("Parsing code for Compaq bootldr partitions");
-diff -Naur linux-2.4.2.orig/drivers/mtd/cfi_cmdset_0001.c linux-2.4.2/drivers/mtd/cfi_cmdset_0001.c
+diff -urN linux-2.4.2.orig/drivers/mtd/cfi_cmdset_0001.c linux-2.4.2/drivers/mtd/cfi_cmdset_0001.c
 --- linux-2.4.2.orig/drivers/mtd/cfi_cmdset_0001.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/cfi_cmdset_0001.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/cfi_cmdset_0001.c	Sat Mar  2 19:06:54 2002
 @@ -4,7 +4,15 @@
   *
   * (C) 2000 Red Hat. GPL'd
@@ -4626,9 +4645,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/cfi_cmdset_0001.c linux-2.4.2/drivers/mt
  {
  	inter_module_unregister(im_name);
  }
-diff -Naur linux-2.4.2.orig/drivers/mtd/cfi_cmdset_0002.c linux-2.4.2/drivers/mtd/cfi_cmdset_0002.c
+diff -urN linux-2.4.2.orig/drivers/mtd/cfi_cmdset_0002.c linux-2.4.2/drivers/mtd/cfi_cmdset_0002.c
 --- linux-2.4.2.orig/drivers/mtd/cfi_cmdset_0002.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/cfi_cmdset_0002.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/cfi_cmdset_0002.c	Sat Mar  2 19:06:54 2002
 @@ -1,12 +1,14 @@
  /*
   * Common Flash Interface support:
@@ -5699,9 +5718,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/cfi_cmdset_0002.c linux-2.4.2/drivers/mt
 +module_init(cfi_amdstd_init);
 +module_exit(cfi_amdstd_exit);
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/cfi_flagadm.c linux-2.4.2/drivers/mtd/cfi_flagadm.c
+diff -urN linux-2.4.2.orig/drivers/mtd/cfi_flagadm.c linux-2.4.2/drivers/mtd/cfi_flagadm.c
 --- linux-2.4.2.orig/drivers/mtd/cfi_flagadm.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/cfi_flagadm.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/cfi_flagadm.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,164 @@
 +/*
 + *  Copyright © 2001 Flaga hf. Medical Devices, Kári Davíðsson <kd@flaga.is>
@@ -5867,9 +5886,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/cfi_flagadm.c linux-2.4.2/drivers/mtd/cf
 +
 +module_init(init_flagadm);
 +module_exit(cleanup_flagadm);
-diff -Naur linux-2.4.2.orig/drivers/mtd/cfi_jedec.c linux-2.4.2/drivers/mtd/cfi_jedec.c
+diff -urN linux-2.4.2.orig/drivers/mtd/cfi_jedec.c linux-2.4.2/drivers/mtd/cfi_jedec.c
 --- linux-2.4.2.orig/drivers/mtd/cfi_jedec.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/cfi_jedec.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/cfi_jedec.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,285 @@
 +#include <linux/config.h>
 +#include <linux/module.h>
@@ -6156,9 +6175,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/cfi_jedec.c linux-2.4.2/drivers/mtd/cfi_
 +	return 0; 	/* ok */
 +}
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/cfi_probe.c linux-2.4.2/drivers/mtd/cfi_probe.c
+diff -urN linux-2.4.2.orig/drivers/mtd/cfi_probe.c linux-2.4.2/drivers/mtd/cfi_probe.c
 --- linux-2.4.2.orig/drivers/mtd/cfi_probe.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/cfi_probe.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/cfi_probe.c	Sat Mar  2 19:06:54 2002
 @@ -1,30 +1,42 @@
  /* 
     Common Flash Interface probe code.
@@ -6954,9 +6973,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/cfi_probe.c linux-2.4.2/drivers/mtd/cfi_
  {
  	inter_module_unregister(im_name);
  }
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/Config.in linux-2.4.2/drivers/mtd/chips/Config.in
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/Config.in linux-2.4.2/drivers/mtd/chips/Config.in
 --- linux-2.4.2.orig/drivers/mtd/chips/Config.in	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/Config.in	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/Config.in	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,56 @@
 +# drivers/mtd/chips/Config.in
 +
@@ -7014,9 +7033,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/Config.in linux-2.4.2/drivers/mtd/
 +
 +
 +endmenu
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/GNUmakefile linux-2.4.2/drivers/mtd/chips/GNUmakefile
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/GNUmakefile linux-2.4.2/drivers/mtd/chips/GNUmakefile
 --- linux-2.4.2.orig/drivers/mtd/chips/GNUmakefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/GNUmakefile	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/GNUmakefile	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,36 @@
 +# $Id: GNUmakefile,v 1.6 2001/09/02 18:57:01 dwmw2 Exp $
 +
@@ -7054,9 +7073,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/GNUmakefile linux-2.4.2/drivers/mt
 +include Makefile
 +
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/Makefile linux-2.4.2/drivers/mtd/chips/Makefile
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/Makefile linux-2.4.2/drivers/mtd/chips/Makefile
 --- linux-2.4.2.orig/drivers/mtd/chips/Makefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/Makefile	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/Makefile	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,30 @@
 +#
 +# linux/drivers/chips/Makefile
@@ -7088,9 +7107,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/Makefile linux-2.4.2/drivers/mtd/c
 +obj-$(CONFIG_MTD_ABSENT)	+= map_absent.o
 +
 +include $(TOPDIR)/Rules.make
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/amd_flash.c linux-2.4.2/drivers/mtd/chips/amd_flash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/amd_flash.c linux-2.4.2/drivers/mtd/chips/amd_flash.c
 --- linux-2.4.2.orig/drivers/mtd/chips/amd_flash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/amd_flash.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/amd_flash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,1382 @@
 +/*
 + * MTD map driver for AMD compatible flash chips (non-CFI)
@@ -8474,9 +8493,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/amd_flash.c linux-2.4.2/drivers/mt
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Jonas Holmberg <jonas.holmberg@axis.com>");
 +MODULE_DESCRIPTION("Old MTD chip driver for AMD flash chips");
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/cfi_cmdset_0001.c linux-2.4.2/drivers/mtd/chips/cfi_cmdset_0001.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/cfi_cmdset_0001.c linux-2.4.2/drivers/mtd/chips/cfi_cmdset_0001.c
 --- linux-2.4.2.orig/drivers/mtd/chips/cfi_cmdset_0001.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/cfi_cmdset_0001.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/cfi_cmdset_0001.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,1759 @@
 +/*
 + * Common Flash Interface support:
@@ -10237,9 +10256,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/cfi_cmdset_0001.c linux-2.4.2/driv
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org> et al.");
 +MODULE_DESCRIPTION("MTD chip driver for Intel/Sharp flash chips");
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/cfi_cmdset_0002.c linux-2.4.2/drivers/mtd/chips/cfi_cmdset_0002.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/cfi_cmdset_0002.c linux-2.4.2/drivers/mtd/chips/cfi_cmdset_0002.c
 --- linux-2.4.2.orig/drivers/mtd/chips/cfi_cmdset_0002.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/cfi_cmdset_0002.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/cfi_cmdset_0002.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,1133 @@
 +/*
 + * Common Flash Interface support:
@@ -11374,9 +11393,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/cfi_cmdset_0002.c linux-2.4.2/driv
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Crossnet Co. <info@crossnet.co.jp> et al.");
 +MODULE_DESCRIPTION("MTD chip driver for AMD/Fujitsu flash chips");
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/cfi_probe.c linux-2.4.2/drivers/mtd/chips/cfi_probe.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/cfi_probe.c linux-2.4.2/drivers/mtd/chips/cfi_probe.c
 --- linux-2.4.2.orig/drivers/mtd/chips/cfi_probe.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/cfi_probe.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/cfi_probe.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,341 @@
 +/* 
 +   Common Flash Interface probe code.
@@ -11719,9 +11738,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/cfi_probe.c linux-2.4.2/drivers/mt
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org> et al.");
 +MODULE_DESCRIPTION("Probe code for CFI-compliant flash chips");
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/chipreg.c linux-2.4.2/drivers/mtd/chips/chipreg.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/chipreg.c linux-2.4.2/drivers/mtd/chips/chipreg.c
 --- linux-2.4.2.orig/drivers/mtd/chips/chipreg.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/chipreg.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/chipreg.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,96 @@
 +/*
 + * $Id: chipreg.c,v 1.12 2001/10/02 15:29:53 dwmw2 Exp $
@@ -11819,9 +11838,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/chipreg.c linux-2.4.2/drivers/mtd/
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("Core routines for registering and invoking MTD chip drivers");
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/gen_probe.c linux-2.4.2/drivers/mtd/chips/gen_probe.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/gen_probe.c linux-2.4.2/drivers/mtd/chips/gen_probe.c
 --- linux-2.4.2.orig/drivers/mtd/chips/gen_probe.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/gen_probe.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/gen_probe.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,299 @@
 +/*
 + * Routines common to all CFI-type probes.
@@ -12122,9 +12141,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/gen_probe.c linux-2.4.2/drivers/mt
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("Helper routines for flash chip probe code");
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/jedec.c linux-2.4.2/drivers/mtd/chips/jedec.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/jedec.c linux-2.4.2/drivers/mtd/chips/jedec.c
 --- linux-2.4.2.orig/drivers/mtd/chips/jedec.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/jedec.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/jedec.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,893 @@
 +
 +/* JEDEC Flash Interface.
@@ -13019,9 +13038,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/jedec.c linux-2.4.2/drivers/mtd/ch
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Jason Gunthorpe <jgg@deltatee.com> et al.");
 +MODULE_DESCRIPTION("Old MTD chip driver for JEDEC-compliant flash chips");
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/jedec_probe.c linux-2.4.2/drivers/mtd/chips/jedec_probe.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/jedec_probe.c linux-2.4.2/drivers/mtd/chips/jedec_probe.c
 --- linux-2.4.2.orig/drivers/mtd/chips/jedec_probe.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/jedec_probe.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/jedec_probe.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,927 @@
 +/* 
 +   Common Flash Interface probe code.
@@ -13950,9 +13969,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/jedec_probe.c linux-2.4.2/drivers/
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Erwin Authried <eauth@softsys.co.at> et al.");
 +MODULE_DESCRIPTION("Probe code for JEDEC-compliant flash chips");
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/map_absent.c linux-2.4.2/drivers/mtd/chips/map_absent.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/map_absent.c linux-2.4.2/drivers/mtd/chips/map_absent.c
 --- linux-2.4.2.orig/drivers/mtd/chips/map_absent.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/map_absent.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/map_absent.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,116 @@
 +/*
 + * Common code to handle absent "placeholder" devices
@@ -14070,9 +14089,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/map_absent.c linux-2.4.2/drivers/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Resilience Corporation - Eric Brower <ebrower@resilience.com>");
 +MODULE_DESCRIPTION("Placeholder MTD chip driver for 'absent' chips");
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/map_ram.c linux-2.4.2/drivers/mtd/chips/map_ram.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/map_ram.c linux-2.4.2/drivers/mtd/chips/map_ram.c
 --- linux-2.4.2.orig/drivers/mtd/chips/map_ram.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/map_ram.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/map_ram.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,137 @@
 +/*
 + * Common code to handle map devices which are simple RAM
@@ -14211,9 +14230,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/map_ram.c linux-2.4.2/drivers/mtd/
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("MTD chip driver for RAM chips");
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/map_rom.c linux-2.4.2/drivers/mtd/chips/map_rom.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/map_rom.c linux-2.4.2/drivers/mtd/chips/map_rom.c
 --- linux-2.4.2.orig/drivers/mtd/chips/map_rom.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/map_rom.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/map_rom.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,93 @@
 +/*
 + * Common code to handle map devices which are simple ROM
@@ -14308,9 +14327,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/map_rom.c linux-2.4.2/drivers/mtd/
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("MTD chip driver for ROM chips");
-diff -Naur linux-2.4.2.orig/drivers/mtd/chips/sharp.c linux-2.4.2/drivers/mtd/chips/sharp.c
+diff -urN linux-2.4.2.orig/drivers/mtd/chips/sharp.c linux-2.4.2/drivers/mtd/chips/sharp.c
 --- linux-2.4.2.orig/drivers/mtd/chips/sharp.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/chips/sharp.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/chips/sharp.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,593 @@
 +/*
 + * MTD chip driver for pre-CFI Sharp flash chips
@@ -14905,9 +14924,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/chips/sharp.c linux-2.4.2/drivers/mtd/ch
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Schleef <ds@schleef.org>");
 +MODULE_DESCRIPTION("Old MTD chip driver for pre-CFI Sharp flash chips");
-diff -Naur linux-2.4.2.orig/drivers/mtd/cstm_cfi_jedec.c linux-2.4.2/drivers/mtd/cstm_cfi_jedec.c
+diff -urN linux-2.4.2.orig/drivers/mtd/cstm_cfi_jedec.c linux-2.4.2/drivers/mtd/cstm_cfi_jedec.c
 --- linux-2.4.2.orig/drivers/mtd/cstm_cfi_jedec.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/cstm_cfi_jedec.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/cstm_cfi_jedec.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,339 @@
 +/*
 + * $Id: cstm_cfi_jedec.c,v 1.5 2001/03/17 19:18:42 dwmw2 Exp $
@@ -15248,9 +15267,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/cstm_cfi_jedec.c linux-2.4.2/drivers/mtd
 +
 +module_init(init_cstm_cfi_jedec);
 +module_exit(cleanup_cstm_cfi_jedec);
-diff -Naur linux-2.4.2.orig/drivers/mtd/dc21285.c linux-2.4.2/drivers/mtd/dc21285.c
+diff -urN linux-2.4.2.orig/drivers/mtd/dc21285.c linux-2.4.2/drivers/mtd/dc21285.c
 --- linux-2.4.2.orig/drivers/mtd/dc21285.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/dc21285.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/dc21285.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,193 @@
 +/*
 + * MTD map driver for flash on the DC21285 (the StrongARM-110 companion chip)
@@ -15445,9 +15464,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/dc21285.c linux-2.4.2/drivers/mtd/dc2128
 +
 +module_init(init_dc21285);
 +module_exit(cleanup_dc21285);
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/Config.in linux-2.4.2/drivers/mtd/devices/Config.in
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/Config.in linux-2.4.2/drivers/mtd/devices/Config.in
 --- linux-2.4.2.orig/drivers/mtd/devices/Config.in	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/Config.in	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/Config.in	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,55 @@
 +# drivers/mtd/maps/Config.in
 +
@@ -15504,9 +15523,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/Config.in linux-2.4.2/drivers/mt
 +
 +
 +endmenu
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/GNUmakefile linux-2.4.2/drivers/mtd/devices/GNUmakefile
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/GNUmakefile linux-2.4.2/drivers/mtd/devices/GNUmakefile
 --- linux-2.4.2.orig/drivers/mtd/devices/GNUmakefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/GNUmakefile	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/GNUmakefile	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,32 @@
 +# $Id: GNUmakefile,v 1.4 2001/06/23 19:34:05 dwmw2 Exp $
 +
@@ -15540,9 +15559,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/GNUmakefile linux-2.4.2/drivers/
 +include Makefile
 +
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/Makefile linux-2.4.2/drivers/mtd/devices/Makefile
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/Makefile linux-2.4.2/drivers/mtd/devices/Makefile
 --- linux-2.4.2.orig/drivers/mtd/devices/Makefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/Makefile	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/Makefile	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,25 @@
 +#
 +# linux/drivers/devices/Makefile
@@ -15569,9 +15588,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/Makefile linux-2.4.2/drivers/mtd
 +obj-$(CONFIG_MTD_BLKMTD)	+= blkmtd.o
 +
 +include $(TOPDIR)/Rules.make
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/blkmtd.c linux-2.4.2/drivers/mtd/devices/blkmtd.c
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/blkmtd.c linux-2.4.2/drivers/mtd/devices/blkmtd.c
 --- linux-2.4.2.orig/drivers/mtd/devices/blkmtd.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/blkmtd.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/blkmtd.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,1313 @@
 +/* 
 + * $Id: blkmtd.c,v 1.7 2001/11/10 17:06:30 spse Exp $
@@ -16886,9 +16905,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/blkmtd.c linux-2.4.2/drivers/mtd
 +
 +module_init(init_blkmtd);
 +module_exit(cleanup_blkmtd);
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/doc1000.c linux-2.4.2/drivers/mtd/devices/doc1000.c
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/doc1000.c linux-2.4.2/drivers/mtd/devices/doc1000.c
 --- linux-2.4.2.orig/drivers/mtd/devices/doc1000.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/doc1000.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/doc1000.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,595 @@
 +/*======================================================================
 +
@@ -17485,9 +17504,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/doc1000.c linux-2.4.2/drivers/mt
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("MTD driver for DiskOnChip 1000");
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/doc2000.c linux-2.4.2/drivers/mtd/devices/doc2000.c
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/doc2000.c linux-2.4.2/drivers/mtd/devices/doc2000.c
 --- linux-2.4.2.orig/drivers/mtd/devices/doc2000.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/doc2000.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/doc2000.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,1174 @@
 +
 +/*
@@ -18663,9 +18682,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/doc2000.c linux-2.4.2/drivers/mt
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org> et al.");
 +MODULE_DESCRIPTION("MTD driver for DiskOnChip 2000 and Millennium");
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/doc2001.c linux-2.4.2/drivers/mtd/devices/doc2001.c
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/doc2001.c linux-2.4.2/drivers/mtd/devices/doc2001.c
 --- linux-2.4.2.orig/drivers/mtd/devices/doc2001.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/doc2001.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/doc2001.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,880 @@
 +
 +/*
@@ -19547,9 +19566,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/doc2001.c linux-2.4.2/drivers/mt
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org> et al.");
 +MODULE_DESCRIPTION("Alternative driver for DiskOnChip Millennium");
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/docecc.c linux-2.4.2/drivers/mtd/devices/docecc.c
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/docecc.c linux-2.4.2/drivers/mtd/devices/docecc.c
 --- linux-2.4.2.orig/drivers/mtd/devices/docecc.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/docecc.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/docecc.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,524 @@
 +/*
 + * ECC algorithm for M-systems disk on chip. We use the excellent Reed
@@ -20075,9 +20094,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/docecc.c linux-2.4.2/drivers/mtd
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Fabrice Bellard <fabrice.bellard@netgem.com>");
 +MODULE_DESCRIPTION("ECC code for correcting errors detected by DiskOnChip 2000 and Millennium ECC hardware");
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/docprobe.c linux-2.4.2/drivers/mtd/devices/docprobe.c
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/docprobe.c linux-2.4.2/drivers/mtd/devices/docprobe.c
 --- linux-2.4.2.orig/drivers/mtd/devices/docprobe.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/docprobe.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/docprobe.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,286 @@
 +
 +/* Linux driver for Disk-On-Chip devices			*/
@@ -20365,9 +20384,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/docprobe.c linux-2.4.2/drivers/m
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("Probe code for DiskOnChip 2000 and Millennium devices");
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/lart.c linux-2.4.2/drivers/mtd/devices/lart.c
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/lart.c linux-2.4.2/drivers/mtd/devices/lart.c
 --- linux-2.4.2.orig/drivers/mtd/devices/lart.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/lart.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/lart.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,716 @@
 +
 +/*
@@ -21085,9 +21104,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/lart.c linux-2.4.2/drivers/mtd/d
 +MODULE_DESCRIPTION("MTD driver for Intel 28F160F3 on LART board");
 +
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/mtdram.c linux-2.4.2/drivers/mtd/devices/mtdram.c
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/mtdram.c linux-2.4.2/drivers/mtd/devices/mtdram.c
 --- linux-2.4.2.orig/drivers/mtd/devices/mtdram.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/mtdram.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/mtdram.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,177 @@
 +/*
 + * mtdram - a test mtd device
@@ -21266,9 +21285,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/mtdram.c linux-2.4.2/drivers/mtd
 +MODULE_AUTHOR("Alexander Larsson <alexl@redhat.com>");
 +MODULE_DESCRIPTION("Simulated MTD driver for testing");
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/pmc551.c linux-2.4.2/drivers/mtd/devices/pmc551.c
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/pmc551.c linux-2.4.2/drivers/mtd/devices/pmc551.c
 --- linux-2.4.2.orig/drivers/mtd/devices/pmc551.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/pmc551.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/pmc551.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,856 @@
 +/*
 + * $Id: pmc551.c,v 1.19 2001/10/02 15:05:13 dwmw2 Exp $
@@ -22126,9 +22145,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/pmc551.c linux-2.4.2/drivers/mtd
 +
 +module_init(init_pmc551);
 +module_exit(cleanup_pmc551);
-diff -Naur linux-2.4.2.orig/drivers/mtd/devices/slram.c linux-2.4.2/drivers/mtd/devices/slram.c
+diff -urN linux-2.4.2.orig/drivers/mtd/devices/slram.c linux-2.4.2/drivers/mtd/devices/slram.c
 --- linux-2.4.2.orig/drivers/mtd/devices/slram.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/devices/slram.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/devices/slram.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,338 @@
 +/*======================================================================
 +
@@ -22468,9 +22487,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/devices/slram.c linux-2.4.2/drivers/mtd/
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Jochen Schaeuble <psionic@psionic.de>");
 +MODULE_DESCRIPTION("MTD driver for uncached system RAM");
-diff -Naur linux-2.4.2.orig/drivers/mtd/doc1000.c linux-2.4.2/drivers/mtd/doc1000.c
+diff -urN linux-2.4.2.orig/drivers/mtd/doc1000.c linux-2.4.2/drivers/mtd/doc1000.c
 --- linux-2.4.2.orig/drivers/mtd/doc1000.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/doc1000.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/doc1000.c	Sat Mar  2 19:06:54 2002
 @@ -1,6 +1,6 @@
  /*======================================================================
  
@@ -22518,9 +22537,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/doc1000.c linux-2.4.2/drivers/mtd/doc100
  module_init(init_doc1000);
  module_exit(cleanup_doc1000);
 -#endif
-diff -Naur linux-2.4.2.orig/drivers/mtd/doc2000.c linux-2.4.2/drivers/mtd/doc2000.c
+diff -urN linux-2.4.2.orig/drivers/mtd/doc2000.c linux-2.4.2/drivers/mtd/doc2000.c
 --- linux-2.4.2.orig/drivers/mtd/doc2000.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/doc2000.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/doc2000.c	Sat Mar  2 19:06:54 2002
 @@ -4,7 +4,7 @@
   * (c) 1999 Machine Vision Holdings, Inc.
   * (c) 1999, 2000 David Woodhouse <dwmw2@infradead.org>
@@ -22582,9 +22601,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/doc2000.c linux-2.4.2/drivers/mtd/doc200
  		       len, mtd->erasesize);
  
  	docptr = this->virtadr;
-diff -Naur linux-2.4.2.orig/drivers/mtd/doc2001.c linux-2.4.2/drivers/mtd/doc2001.c
+diff -urN linux-2.4.2.orig/drivers/mtd/doc2001.c linux-2.4.2/drivers/mtd/doc2001.c
 --- linux-2.4.2.orig/drivers/mtd/doc2001.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/doc2001.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/doc2001.c	Sat Mar  2 19:06:54 2002
 @@ -4,7 +4,7 @@
   * (c) 1999 Machine Vision Holdings, Inc.
   * (c) 1999, 2000 David Woodhouse <dwmw2@infradead.org>
@@ -22629,9 +22648,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/doc2001.c linux-2.4.2/drivers/mtd/doc200
  		/* There was an error
  		   FIXME: implement Bad Block Replacement (in nftl.c ??) */
  		instr->state = MTD_ERASE_FAILED;
-diff -Naur linux-2.4.2.orig/drivers/mtd/docecc.c linux-2.4.2/drivers/mtd/docecc.c
+diff -urN linux-2.4.2.orig/drivers/mtd/docecc.c linux-2.4.2/drivers/mtd/docecc.c
 --- linux-2.4.2.orig/drivers/mtd/docecc.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/docecc.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/docecc.c	Sat Mar  2 19:06:54 2002
 @@ -31,7 +31,7 @@
  #include <linux/miscdevice.h>
  #include <linux/pci.h>
@@ -22641,9 +22660,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/docecc.c linux-2.4.2/drivers/mtd/docecc.
  #include <linux/sched.h>
  #include <linux/init.h>
  #include <linux/types.h>
-diff -Naur linux-2.4.2.orig/drivers/mtd/docprobe.c linux-2.4.2/drivers/mtd/docprobe.c
+diff -urN linux-2.4.2.orig/drivers/mtd/docprobe.c linux-2.4.2/drivers/mtd/docprobe.c
 --- linux-2.4.2.orig/drivers/mtd/docprobe.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/docprobe.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/docprobe.c	Sat Mar  2 19:06:54 2002
 @@ -41,7 +41,6 @@
  */
  #define DOC_SINGLE_DRIVER
@@ -22661,9 +22680,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/docprobe.c linux-2.4.2/drivers/mtd/docpr
  #include <linux/sched.h>
  #include <linux/init.h>
  #include <linux/types.h>
-diff -Naur linux-2.4.2.orig/drivers/mtd/elan-104nc.c linux-2.4.2/drivers/mtd/elan-104nc.c
+diff -urN linux-2.4.2.orig/drivers/mtd/elan-104nc.c linux-2.4.2/drivers/mtd/elan-104nc.c
 --- linux-2.4.2.orig/drivers/mtd/elan-104nc.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/elan-104nc.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/elan-104nc.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,277 @@
 +/* elan-104nc.c -- MTD map driver for Arcom Control Systems ELAN-104NC
 + 
@@ -22942,9 +22961,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/elan-104nc.c linux-2.4.2/drivers/mtd/ela
 +
 +module_init(init_elan_104nc);
 +module_exit(cleanup_elan_104nc);
-diff -Naur linux-2.4.2.orig/drivers/mtd/ftl.c linux-2.4.2/drivers/mtd/ftl.c
+diff -urN linux-2.4.2.orig/drivers/mtd/ftl.c linux-2.4.2/drivers/mtd/ftl.c
 --- linux-2.4.2.orig/drivers/mtd/ftl.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/ftl.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/ftl.c	Sat Mar  2 19:06:54 2002
 @@ -1,10 +1,10 @@
  /* This version ported to the Linux-MTD system by dwmw2@infradead.org
 + * $Id: ftl.c,v 1.42 2001/11/20 11:42:33 dwmw2 Exp $
@@ -23394,9 +23413,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/ftl.c linux-2.4.2/drivers/mtd/ftl.c
 +MODULE_LICENSE("Dual MPL/GPL");
 +MODULE_AUTHOR("David Hinds <dhinds@sonic.net>");
 +MODULE_DESCRIPTION("Support code for Flash Translation Layer, used on PCMCIA devices and M-Systems DiskOnChip 1000");
-diff -Naur linux-2.4.2.orig/drivers/mtd/initcalls.c linux-2.4.2/drivers/mtd/initcalls.c
+diff -urN linux-2.4.2.orig/drivers/mtd/initcalls.c linux-2.4.2/drivers/mtd/initcalls.c
 --- linux-2.4.2.orig/drivers/mtd/initcalls.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/initcalls.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/initcalls.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,123 @@
 +/*
 + * $Id: initcalls.c,v 1.3 2001/03/26 20:08:19 kd Exp $
@@ -23521,9 +23540,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/initcalls.c linux-2.4.2/drivers/mtd/init
 +#endif
 +}
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/iq80310.c linux-2.4.2/drivers/mtd/iq80310.c
+diff -urN linux-2.4.2.orig/drivers/mtd/iq80310.c linux-2.4.2/drivers/mtd/iq80310.c
 --- linux-2.4.2.orig/drivers/mtd/iq80310.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/iq80310.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/iq80310.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,134 @@
 +/*
 + * $Id: iq80310.c,v 1.2 2001/03/26 18:08:44 nico Exp $
@@ -23659,9 +23678,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/iq80310.c linux-2.4.2/drivers/mtd/iq8031
 +module_init(init_iq80310);
 +module_exit(cleanup_iq80310);
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/jedec.c linux-2.4.2/drivers/mtd/jedec.c
+diff -urN linux-2.4.2.orig/drivers/mtd/jedec.c linux-2.4.2/drivers/mtd/jedec.c
 --- linux-2.4.2.orig/drivers/mtd/jedec.c	Tue Jul  4 19:10:05 2000
-+++ linux-2.4.2/drivers/mtd/jedec.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/jedec.c	Sat Mar  2 19:06:54 2002
 @@ -11,7 +11,7 @@
   * not going to guess how to send commands to them, plus I expect they will
   * all speak CFI..
@@ -24130,9 +24149,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/jedec.c linux-2.4.2/drivers/mtd/jedec.c
 +
 +module_init(jedec_probe_init);
 +module_exit(jedec_probe_exit);
-diff -Naur linux-2.4.2.orig/drivers/mtd/map_ram.c linux-2.4.2/drivers/mtd/map_ram.c
+diff -urN linux-2.4.2.orig/drivers/mtd/map_ram.c linux-2.4.2/drivers/mtd/map_ram.c
 --- linux-2.4.2.orig/drivers/mtd/map_ram.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/map_ram.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/map_ram.c	Sat Mar  2 19:06:54 2002
 @@ -1,7 +1,7 @@
  /*
   * Common code to handle map devices which are simple RAM
@@ -24159,9 +24178,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/map_ram.c linux-2.4.2/drivers/mtd/map_ra
  	map->fldrv_destroy = mapram_nop;
  	mtd->priv = map;
  	mtd->name = map->name;
-diff -Naur linux-2.4.2.orig/drivers/mtd/map_rom.c linux-2.4.2/drivers/mtd/map_rom.c
+diff -urN linux-2.4.2.orig/drivers/mtd/map_rom.c linux-2.4.2/drivers/mtd/map_rom.c
 --- linux-2.4.2.orig/drivers/mtd/map_rom.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/map_rom.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/map_rom.c	Sat Mar  2 19:06:54 2002
 @@ -1,7 +1,7 @@
  /*
   * Common code to handle map devices which are simple ROM
@@ -24204,9 +24223,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/map_rom.c linux-2.4.2/drivers/mtd/map_ro
  {
  	inter_module_unregister(im_name);
  }
-diff -Naur linux-2.4.2.orig/drivers/mtd/mapped.c linux-2.4.2/drivers/mtd/mapped.c
+diff -urN linux-2.4.2.orig/drivers/mtd/mapped.c linux-2.4.2/drivers/mtd/mapped.c
 --- linux-2.4.2.orig/drivers/mtd/mapped.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/mapped.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/mapped.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,672 @@
 +// Description                                                          /*{{{*/
 +// $Id: mapped.c,v 1.10 2000/11/21 08:43:04 dwmw2 Exp $
@@ -24880,9 +24899,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/mapped.c linux-2.4.2/drivers/mtd/mapped.
 +}
 +									/*}}}*/
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/Config.in linux-2.4.2/drivers/mtd/maps/Config.in
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/Config.in linux-2.4.2/drivers/mtd/maps/Config.in
 --- linux-2.4.2.orig/drivers/mtd/maps/Config.in	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/Config.in	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/Config.in	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,78 @@
 +# drivers/mtd/maps/Config.in
 +
@@ -24962,9 +24981,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/Config.in linux-2.4.2/drivers/mtd/m
 +dep_tristate '  PCI MTD driver' CONFIG_MTD_PCI $CONFIG_MTD $CONFIG_PCI
 +
 +endmenu
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/GNUmakefile linux-2.4.2/drivers/mtd/maps/GNUmakefile
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/GNUmakefile linux-2.4.2/drivers/mtd/maps/GNUmakefile
 --- linux-2.4.2.orig/drivers/mtd/maps/GNUmakefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/GNUmakefile	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/GNUmakefile	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,43 @@
 +# $Id: GNUmakefile,v 1.8 2001/06/23 19:32:20 dwmw2 Exp $
 +
@@ -25009,9 +25028,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/GNUmakefile linux-2.4.2/drivers/mtd
 +
 +include Makefile
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/Makefile linux-2.4.2/drivers/mtd/maps/Makefile
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/Makefile linux-2.4.2/drivers/mtd/maps/Makefile
 --- linux-2.4.2.orig/drivers/mtd/maps/Makefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/Makefile	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/Makefile	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,41 @@
 +#
 +# linux/drivers/maps/Makefile
@@ -25054,9 +25073,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/Makefile linux-2.4.2/drivers/mtd/ma
 +obj-$(CONFIG_MTD_PB1000)        += pb1xxx-flash.o
 +
 +include $(TOPDIR)/Rules.make
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/amd766rom.c linux-2.4.2/drivers/mtd/maps/amd766rom.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/amd766rom.c linux-2.4.2/drivers/mtd/maps/amd766rom.c
 --- linux-2.4.2.orig/drivers/mtd/maps/amd766rom.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/amd766rom.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/amd766rom.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,245 @@
 +/*
 + * amd766rom.c
@@ -25303,9 +25322,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/amd766rom.c linux-2.4.2/drivers/mtd
 +MODULE_AUTHOR("Eric Biederman <ebiederman@lnxi.com>");
 +MODULE_DESCRIPTION("MTD map driver for BIOS chips on the AMD766 southbridge");
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/cdb89712.c linux-2.4.2/drivers/mtd/maps/cdb89712.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/cdb89712.c linux-2.4.2/drivers/mtd/maps/cdb89712.c
 --- linux-2.4.2.orig/drivers/mtd/maps/cdb89712.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/cdb89712.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/cdb89712.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,333 @@
 +/*
 + * Flash on Cirrus CDB89712
@@ -25640,9 +25659,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/cdb89712.c linux-2.4.2/drivers/mtd/
 +MODULE_AUTHOR("Ray L");
 +MODULE_DESCRIPTION("ARM CDB89712 map driver");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/cfi_flagadm.c linux-2.4.2/drivers/mtd/maps/cfi_flagadm.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/cfi_flagadm.c linux-2.4.2/drivers/mtd/maps/cfi_flagadm.c
 --- linux-2.4.2.orig/drivers/mtd/maps/cfi_flagadm.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/cfi_flagadm.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/cfi_flagadm.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,184 @@
 +/*
 + *  Copyright © 2001 Flaga hf. Medical Devices, Kári Davíðsson <kd@flaga.is>
@@ -25828,9 +25847,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/cfi_flagadm.c linux-2.4.2/drivers/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Kári Davíðsson <kd@flaga.is>");
 +MODULE_DESCRIPTION("MTD map driver for Flaga digital module");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/cstm_mips_ixx.c linux-2.4.2/drivers/mtd/maps/cstm_mips_ixx.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/cstm_mips_ixx.c linux-2.4.2/drivers/mtd/maps/cstm_mips_ixx.c
 --- linux-2.4.2.orig/drivers/mtd/maps/cstm_mips_ixx.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/cstm_mips_ixx.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/cstm_mips_ixx.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,314 @@
 +/*
 + * $Id: cstm_mips_ixx.c,v 1.5 2001/10/02 15:05:14 dwmw2 Exp $
@@ -26146,9 +26165,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/cstm_mips_ixx.c linux-2.4.2/drivers
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Alice Hennessy <ahennessy@mvista.com>");
 +MODULE_DESCRIPTION("MTD map driver for ITE 8172G and Globespan IVR boards");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/dbox2-flash.c linux-2.4.2/drivers/mtd/maps/dbox2-flash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/dbox2-flash.c linux-2.4.2/drivers/mtd/maps/dbox2-flash.c
 --- linux-2.4.2.orig/drivers/mtd/maps/dbox2-flash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/dbox2-flash.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/dbox2-flash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,163 @@
 +/*
 + * $Id: dbox2-flash.c,v 1.4 2001/10/02 15:05:14 dwmw2 Exp $
@@ -26313,9 +26332,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/dbox2-flash.c linux-2.4.2/drivers/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Kári Davíðsson <kd@flaga.is>");
 +MODULE_DESCRIPTION("MTD map driver for Nokia/Sagem D-Box 2 board");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/dc21285.c linux-2.4.2/drivers/mtd/maps/dc21285.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/dc21285.c linux-2.4.2/drivers/mtd/maps/dc21285.c
 --- linux-2.4.2.orig/drivers/mtd/maps/dc21285.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/dc21285.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/dc21285.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,198 @@
 +/*
 + * MTD map driver for flash on the DC21285 (the StrongARM-110 companion chip)
@@ -26515,9 +26534,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/dc21285.c linux-2.4.2/drivers/mtd/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Nicolas Pitre <nico@cam.org>");
 +MODULE_DESCRIPTION("MTD map driver for DC21285 boards");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/dilnetpc.c linux-2.4.2/drivers/mtd/maps/dilnetpc.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/dilnetpc.c linux-2.4.2/drivers/mtd/maps/dilnetpc.c
 --- linux-2.4.2.orig/drivers/mtd/maps/dilnetpc.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/dilnetpc.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/dilnetpc.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,437 @@
 +/* dilnetpc.c -- MTD map driver for SSV DIL/Net PC Boards "DNP" and "ADNP"
 + *
@@ -26956,9 +26975,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/dilnetpc.c linux-2.4.2/drivers/mtd/
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Sysgo Real-Time Solutions GmbH");
 +MODULE_DESCRIPTION("MTD map driver for SSV DIL/NetPC DNP & ADNP");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/elan-104nc.c linux-2.4.2/drivers/mtd/maps/elan-104nc.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/elan-104nc.c linux-2.4.2/drivers/mtd/maps/elan-104nc.c
 --- linux-2.4.2.orig/drivers/mtd/maps/elan-104nc.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/elan-104nc.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/elan-104nc.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,277 @@
 +/* elan-104nc.c -- MTD map driver for Arcom Control Systems ELAN-104NC
 + 
@@ -27237,9 +27256,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/elan-104nc.c linux-2.4.2/drivers/mt
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Arcom Control Systems Ltd.");
 +MODULE_DESCRIPTION("MTD map driver for Arcom Control Systems ELAN-104NC");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/epxa10db-flash.c linux-2.4.2/drivers/mtd/maps/epxa10db-flash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/epxa10db-flash.c linux-2.4.2/drivers/mtd/maps/epxa10db-flash.c
 --- linux-2.4.2.orig/drivers/mtd/maps/epxa10db-flash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/epxa10db-flash.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/epxa10db-flash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,219 @@
 +/*
 + * Flash memory access on EPXA based devices
@@ -27460,9 +27479,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/epxa10db-flash.c linux-2.4.2/driver
 +MODULE_AUTHOR("Clive Davies");
 +MODULE_DESCRIPTION("Altera epxa10db mtd flash map");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/ich2rom.c linux-2.4.2/drivers/mtd/maps/ich2rom.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/ich2rom.c linux-2.4.2/drivers/mtd/maps/ich2rom.c
 --- linux-2.4.2.orig/drivers/mtd/maps/ich2rom.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/ich2rom.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/ich2rom.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,302 @@
 +/*
 + * ich2rom.c
@@ -27766,9 +27785,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/ich2rom.c linux-2.4.2/drivers/mtd/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Eric Biederman <ebiederman@lnxi.com>");
 +MODULE_DESCRIPTION("MTD map driver for BIOS chips on the ICH2 southbridge");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/integrator-flash.c linux-2.4.2/drivers/mtd/maps/integrator-flash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/integrator-flash.c linux-2.4.2/drivers/mtd/maps/integrator-flash.c
 --- linux-2.4.2.orig/drivers/mtd/maps/integrator-flash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/integrator-flash.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/integrator-flash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,303 @@
 +/*======================================================================
 +
@@ -28073,9 +28092,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/integrator-flash.c linux-2.4.2/driv
 +MODULE_AUTHOR("ARM Ltd");
 +MODULE_DESCRIPTION("ARM Integrator CFI map driver");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/iq80310.c linux-2.4.2/drivers/mtd/maps/iq80310.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/iq80310.c linux-2.4.2/drivers/mtd/maps/iq80310.c
 --- linux-2.4.2.orig/drivers/mtd/maps/iq80310.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/iq80310.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/iq80310.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,172 @@
 +/*
 + * $Id: iq80310.c,v 1.9 2002/01/01 22:45:02 rmk Exp $
@@ -28249,9 +28268,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/iq80310.c linux-2.4.2/drivers/mtd/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Nicolas Pitre <nico@cam.org>");
 +MODULE_DESCRIPTION("MTD map driver for Intel XScale IQ80310 evaluation board");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/l440gx.c linux-2.4.2/drivers/mtd/maps/l440gx.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/l440gx.c linux-2.4.2/drivers/mtd/maps/l440gx.c
 --- linux-2.4.2.orig/drivers/mtd/maps/l440gx.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/l440gx.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/l440gx.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,207 @@
 +/*
 + * $Id: l440gx.c,v 1.8 2002/01/10 20:27:40 eric Exp $
@@ -28460,9 +28479,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/l440gx.c linux-2.4.2/drivers/mtd/ma
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("MTD map driver for BIOS chips on Intel L440GX motherboards");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/mbx860.c linux-2.4.2/drivers/mtd/maps/mbx860.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/mbx860.c linux-2.4.2/drivers/mtd/maps/mbx860.c
 --- linux-2.4.2.orig/drivers/mtd/maps/mbx860.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/mbx860.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/mbx860.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,144 @@
 +/*
 + * $Id: mbx860.c,v 1.1 2001/11/18 19:43:09 dwmw2 Exp $
@@ -28608,9 +28627,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/mbx860.c linux-2.4.2/drivers/mtd/ma
 +MODULE_AUTHOR("Anton Todorov <a.todorov@emness.com>");
 +MODULE_DESCRIPTION("MTD map driver for Motorola MBX860 board");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/netsc520.c linux-2.4.2/drivers/mtd/maps/netsc520.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/netsc520.c linux-2.4.2/drivers/mtd/maps/netsc520.c
 --- linux-2.4.2.orig/drivers/mtd/maps/netsc520.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/netsc520.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/netsc520.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,190 @@
 +/* netsc520.c -- MTD map driver for AMD NetSc520 Demonstration Board
 + *
@@ -28802,9 +28821,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/netsc520.c linux-2.4.2/drivers/mtd/
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Mark Langsdorf <mark.langsdorf@amd.com>");
 +MODULE_DESCRIPTION("MTD map driver for AMD NetSc520 Demonstration Board");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/nora.c linux-2.4.2/drivers/mtd/maps/nora.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/nora.c linux-2.4.2/drivers/mtd/maps/nora.c
 --- linux-2.4.2.orig/drivers/mtd/maps/nora.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/nora.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/nora.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,204 @@
 +/*
 + * $Id: nora.c,v 1.21 2001/10/02 15:05:14 dwmw2 Exp $
@@ -29010,9 +29029,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/nora.c linux-2.4.2/drivers/mtd/maps
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Red Hat, Inc. - David Woodhouse <dwmw2@cambridge.redhat.com>");
 +MODULE_DESCRIPTION("MTD map driver for Nora board");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/ocelot.c linux-2.4.2/drivers/mtd/maps/ocelot.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/ocelot.c linux-2.4.2/drivers/mtd/maps/ocelot.c
 --- linux-2.4.2.orig/drivers/mtd/maps/ocelot.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/ocelot.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/ocelot.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,202 @@
 +/*
 + * $Id: ocelot.c,v 1.6 2001/10/02 15:05:14 dwmw2 Exp $
@@ -29216,9 +29235,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/ocelot.c linux-2.4.2/drivers/mtd/ma
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Red Hat, Inc. - David Woodhouse <dwmw2@cambridge.redhat.com>");
 +MODULE_DESCRIPTION("MTD map driver for Momenco Ocelot board");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/octagon-5066.c linux-2.4.2/drivers/mtd/maps/octagon-5066.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/octagon-5066.c linux-2.4.2/drivers/mtd/maps/octagon-5066.c
 --- linux-2.4.2.orig/drivers/mtd/maps/octagon-5066.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/octagon-5066.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/octagon-5066.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,284 @@
 +// $Id: octagon-5066.c,v 1.19 2001/10/02 15:05:14 dwmw2 Exp $
 +/* ######################################################################
@@ -29504,9 +29523,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/octagon-5066.c linux-2.4.2/drivers/
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Jason Gunthorpe <jgg@deltatee.com>, David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("MTD map driver for Octagon 5066 Single Board Computer");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/pb1xxx-flash.c linux-2.4.2/drivers/mtd/maps/pb1xxx-flash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/pb1xxx-flash.c linux-2.4.2/drivers/mtd/maps/pb1xxx-flash.c
 --- linux-2.4.2.orig/drivers/mtd/maps/pb1xxx-flash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/pb1xxx-flash.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/pb1xxx-flash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,169 @@
 +/*
 + * Flash memory access on Alchemy Pb1xxx boards
@@ -29677,9 +29696,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/pb1xxx-flash.c linux-2.4.2/drivers/
 +MODULE_AUTHOR("Pete Popov");
 +MODULE_DESCRIPTION("Pb1xxx CFI map driver");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/pci.c linux-2.4.2/drivers/mtd/maps/pci.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/pci.c linux-2.4.2/drivers/mtd/maps/pci.c
 --- linux-2.4.2.orig/drivers/mtd/maps/pci.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/pci.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/pci.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,385 @@
 +/*
 + *  linux/drivers/mtd/maps/pci.c
@@ -30066,9 +30085,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/pci.c linux-2.4.2/drivers/mtd/maps/
 +MODULE_DESCRIPTION("Generic PCI map driver");
 +MODULE_DEVICE_TABLE(pci, mtd_pci_ids);
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/physmap.c linux-2.4.2/drivers/mtd/maps/physmap.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/physmap.c linux-2.4.2/drivers/mtd/maps/physmap.c
 --- linux-2.4.2.orig/drivers/mtd/maps/physmap.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/physmap.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/physmap.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,126 @@
 +/*
 + * $Id: physmap.c,v 1.16 2002/01/10 20:27:41 eric Exp $
@@ -30196,9 +30215,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/physmap.c linux-2.4.2/drivers/mtd/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("Generic configurable MTD map driver");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/pnc2000.c linux-2.4.2/drivers/mtd/maps/pnc2000.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/pnc2000.c linux-2.4.2/drivers/mtd/maps/pnc2000.c
 --- linux-2.4.2.orig/drivers/mtd/maps/pnc2000.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/pnc2000.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/pnc2000.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,135 @@
 +/*
 + *	pnc2000.c - mapper for Photron PNC-2000 board.
@@ -30335,9 +30354,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/pnc2000.c linux-2.4.2/drivers/mtd/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Crossnet Co. <info@crossnet.co.jp>");
 +MODULE_DESCRIPTION("MTD map driver for Photron PNC-2000 board");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/rpxlite.c linux-2.4.2/drivers/mtd/maps/rpxlite.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/rpxlite.c linux-2.4.2/drivers/mtd/maps/rpxlite.c
 --- linux-2.4.2.orig/drivers/mtd/maps/rpxlite.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/rpxlite.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/rpxlite.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,114 @@
 +/*
 + * $Id: rpxlite.c,v 1.15 2001/10/02 15:05:14 dwmw2 Exp $
@@ -30453,9 +30472,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/rpxlite.c linux-2.4.2/drivers/mtd/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Arnold Christensen <AKC@pel.dk>");
 +MODULE_DESCRIPTION("MTD map driver for RPX Lite and CLLF boards");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/sa1100-flash.c linux-2.4.2/drivers/mtd/maps/sa1100-flash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/sa1100-flash.c linux-2.4.2/drivers/mtd/maps/sa1100-flash.c
 --- linux-2.4.2.orig/drivers/mtd/maps/sa1100-flash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/sa1100-flash.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/sa1100-flash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,921 @@
 +/*
 + * Flash memory access on SA11x0 based devices
@@ -31378,9 +31397,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/sa1100-flash.c linux-2.4.2/drivers/
 +MODULE_AUTHOR("Nicolas Pitre");
 +MODULE_DESCRIPTION("SA1100 CFI map driver");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/sbc_gxx.c linux-2.4.2/drivers/mtd/maps/sbc_gxx.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/sbc_gxx.c linux-2.4.2/drivers/mtd/maps/sbc_gxx.c
 --- linux-2.4.2.orig/drivers/mtd/maps/sbc_gxx.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/sbc_gxx.c	Fri Feb 15 14:41:15 2002
++++ linux-2.4.2/drivers/mtd/maps/sbc_gxx.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,277 @@
 +/* sbc_gxx.c -- MTD map driver for Arcom Control Systems SBC-MediaGX,
 +                SBC-GXm and SBC-GX1 series boards.
@@ -31659,9 +31678,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/sbc_gxx.c linux-2.4.2/drivers/mtd/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Arcom Control Systems Ltd.");
 +MODULE_DESCRIPTION("MTD map driver for SBC-GXm and SBC-GX1 series boards");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/sc520cdp.c linux-2.4.2/drivers/mtd/maps/sc520cdp.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/sc520cdp.c linux-2.4.2/drivers/mtd/maps/sc520cdp.c
 --- linux-2.4.2.orig/drivers/mtd/maps/sc520cdp.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/sc520cdp.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/maps/sc520cdp.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,347 @@
 +/* sc520cdp.c -- MTD map driver for AMD SC520 Customer Development Platform
 + *
@@ -32010,9 +32029,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/sc520cdp.c linux-2.4.2/drivers/mtd/
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Sysgo Real-Time Solutions GmbH");
 +MODULE_DESCRIPTION("MTD map driver for AMD SC520 Customer Development Platform");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/solutionengine.c linux-2.4.2/drivers/mtd/maps/solutionengine.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/solutionengine.c linux-2.4.2/drivers/mtd/maps/solutionengine.c
 --- linux-2.4.2.orig/drivers/mtd/maps/solutionengine.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/solutionengine.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/maps/solutionengine.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,156 @@
 +/*
 + * $Id: solutionengine.c,v 1.4 2001/11/07 01:20:59 jsiegel Exp $
@@ -32170,9 +32189,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/solutionengine.c linux-2.4.2/driver
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("MTD map driver for Hitachi SolutionEngine (and similar) boards");
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/sun_uflash.c linux-2.4.2/drivers/mtd/maps/sun_uflash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/sun_uflash.c linux-2.4.2/drivers/mtd/maps/sun_uflash.c
 --- linux-2.4.2.orig/drivers/mtd/maps/sun_uflash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/sun_uflash.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/maps/sun_uflash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,226 @@
 +/* $Id: sun_uflash.c,v 1.4 2001/10/02 15:05:14 dwmw2 Exp $
 + *
@@ -32400,9 +32419,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/sun_uflash.c linux-2.4.2/drivers/mt
 +
 +module_init(uflash_init);
 +module_exit(uflash_cleanup);
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/tqm8xxl.c linux-2.4.2/drivers/mtd/maps/tqm8xxl.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/tqm8xxl.c linux-2.4.2/drivers/mtd/maps/tqm8xxl.c
 --- linux-2.4.2.orig/drivers/mtd/maps/tqm8xxl.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/tqm8xxl.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/maps/tqm8xxl.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,315 @@
 +/*
 + * Handle mapping of the flash memory access routines 
@@ -32719,9 +32738,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/tqm8xxl.c linux-2.4.2/drivers/mtd/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Kirk Lee <kirk@hpc.ee.ntu.edu.tw>");
 +MODULE_DESCRIPTION("MTD map driver for TQM8xxL boards");
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/tsunami_flash.c linux-2.4.2/drivers/mtd/maps/tsunami_flash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/tsunami_flash.c linux-2.4.2/drivers/mtd/maps/tsunami_flash.c
 --- linux-2.4.2.orig/drivers/mtd/maps/tsunami_flash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/tsunami_flash.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/maps/tsunami_flash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,110 @@
 +/*
 + * tsunami_flash.c
@@ -32833,9 +32852,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/tsunami_flash.c linux-2.4.2/drivers
 +
 +module_init(init_tsunami_flash);
 +module_exit(cleanup_tsunami_flash);
-diff -Naur linux-2.4.2.orig/drivers/mtd/maps/vmax301.c linux-2.4.2/drivers/mtd/maps/vmax301.c
+diff -urN linux-2.4.2.orig/drivers/mtd/maps/vmax301.c linux-2.4.2/drivers/mtd/maps/vmax301.c
 --- linux-2.4.2.orig/drivers/mtd/maps/vmax301.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/maps/vmax301.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/maps/vmax301.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,239 @@
 +// $Id: vmax301.c,v 1.24 2001/10/02 15:05:14 dwmw2 Exp $
 +/* ######################################################################
@@ -33076,9 +33095,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/maps/vmax301.c linux-2.4.2/drivers/mtd/m
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("MTD map driver for Tempustech VMAX SBC301 board");
-diff -Naur linux-2.4.2.orig/drivers/mtd/mixmem.c linux-2.4.2/drivers/mtd/mixmem.c
+diff -urN linux-2.4.2.orig/drivers/mtd/mixmem.c linux-2.4.2/drivers/mtd/mixmem.c
 --- linux-2.4.2.orig/drivers/mtd/mixmem.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/mixmem.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/mixmem.c	Sat Mar  2 19:06:54 2002
 @@ -4,6 +4,8 @@
   *
   * Author: Gergely Madarasz <gorgo@itc.hu> 
@@ -33097,9 +33116,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/mixmem.c linux-2.4.2/drivers/mtd/mixmem.
  #include <linux/ioport.h>
  #include <asm/io.h>
  #include <linux/init.h>
-diff -Naur linux-2.4.2.orig/drivers/mtd/mtdblock.c linux-2.4.2/drivers/mtd/mtdblock.c
+diff -urN linux-2.4.2.orig/drivers/mtd/mtdblock.c linux-2.4.2/drivers/mtd/mtdblock.c
 --- linux-2.4.2.orig/drivers/mtd/mtdblock.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/mtdblock.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/mtdblock.c	Sat Mar  2 19:06:54 2002
 @@ -1,7 +1,7 @@
  /* 
   * Direct MTD block device access
@@ -33379,9 +33398,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/mtdblock.c linux-2.4.2/drivers/mtd/mtdbl
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Nicolas Pitre <nico@cam.org> et al.");
 +MODULE_DESCRIPTION("Caching read/erase/writeback block device emulation access to MTD devices");
-diff -Naur linux-2.4.2.orig/drivers/mtd/mtdblock_ro.c linux-2.4.2/drivers/mtd/mtdblock_ro.c
+diff -urN linux-2.4.2.orig/drivers/mtd/mtdblock_ro.c linux-2.4.2/drivers/mtd/mtdblock_ro.c
 --- linux-2.4.2.orig/drivers/mtd/mtdblock_ro.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/mtdblock_ro.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/mtdblock_ro.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,300 @@
 +/*
 + * $Id: mtdblock_ro.c,v 1.12 2001/11/20 11:42:33 dwmw2 Exp $
@@ -33683,9 +33702,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/mtdblock_ro.c linux-2.4.2/drivers/mtd/mt
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Erwin Authried <eauth@softsys.co.at> et al.");
 +MODULE_DESCRIPTION("Simple read-only block device emulation access to MTD devices");
-diff -Naur linux-2.4.2.orig/drivers/mtd/mtdchar-compat.c linux-2.4.2/drivers/mtd/mtdchar-compat.c
+diff -urN linux-2.4.2.orig/drivers/mtd/mtdchar-compat.c linux-2.4.2/drivers/mtd/mtdchar-compat.c
 --- linux-2.4.2.orig/drivers/mtd/mtdchar-compat.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/mtdchar-compat.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/mtdchar-compat.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,587 @@
 +/*
 + * $Id: mtdchar-compat.c,v 1.2 2001/10/02 15:05:11 dwmw2 Exp $
@@ -34274,9 +34293,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/mtdchar-compat.c linux-2.4.2/drivers/mtd
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("Direct character-device access to MTD devices");
-diff -Naur linux-2.4.2.orig/drivers/mtd/mtdchar.c linux-2.4.2/drivers/mtd/mtdchar.c
+diff -urN linux-2.4.2.orig/drivers/mtd/mtdchar.c linux-2.4.2/drivers/mtd/mtdchar.c
 --- linux-2.4.2.orig/drivers/mtd/mtdchar.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/mtdchar.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/mtdchar.c	Sat Mar  2 19:06:54 2002
 @@ -1,13 +1,11 @@
  /*
 - * $Id: mtdchar.c,v 1.21.2.3 2001/01/09 00:18:31 dwmw2 Exp $
@@ -34663,9 +34682,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/mtdchar.c linux-2.4.2/drivers/mtd/mtdcha
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("Direct character-device access to MTD devices");
-diff -Naur linux-2.4.2.orig/drivers/mtd/mtdcore.c linux-2.4.2/drivers/mtd/mtdcore.c
+diff -urN linux-2.4.2.orig/drivers/mtd/mtdcore.c linux-2.4.2/drivers/mtd/mtdcore.c
 --- linux-2.4.2.orig/drivers/mtd/mtdcore.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/mtdcore.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/mtdcore.c	Sat Mar  2 19:06:54 2002
 @@ -1,5 +1,5 @@
  /*
 - * $Id: mtdcore.c,v 1.27 2000/12/10 01:10:09 dwmw2 Exp $
@@ -34728,9 +34747,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/mtdcore.c linux-2.4.2/drivers/mtd/mtdcor
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 +MODULE_DESCRIPTION("Core MTD registration and access routines");
-diff -Naur linux-2.4.2.orig/drivers/mtd/mtdpart.c linux-2.4.2/drivers/mtd/mtdpart.c
+diff -urN linux-2.4.2.orig/drivers/mtd/mtdpart.c linux-2.4.2/drivers/mtd/mtdpart.c
 --- linux-2.4.2.orig/drivers/mtd/mtdpart.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/mtdpart.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/mtdpart.c	Sat Mar  2 19:06:54 2002
 @@ -5,7 +5,7 @@
   *
   * This code is GPL
@@ -34968,9 +34987,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/mtdpart.c linux-2.4.2/drivers/mtd/mtdpar
 +MODULE_AUTHOR("Nicolas Pitre <nico@cam.org>");
 +MODULE_DESCRIPTION("Generic support for partitioning of MTD devices");
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/mtdram.c linux-2.4.2/drivers/mtd/mtdram.c
+diff -urN linux-2.4.2.orig/drivers/mtd/mtdram.c linux-2.4.2/drivers/mtd/mtdram.c
 --- linux-2.4.2.orig/drivers/mtd/mtdram.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/mtdram.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/mtdram.c	Sat Mar  2 19:06:54 2002
 @@ -1,7 +1,7 @@
 -/* 
 +/*
@@ -35159,9 +35178,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/mtdram.c linux-2.4.2/drivers/mtd/mtdram.
  module_init(init_mtdram);
  module_exit(cleanup_mtdram);
 -#endif
-diff -Naur linux-2.4.2.orig/drivers/mtd/nand/Config.in linux-2.4.2/drivers/mtd/nand/Config.in
+diff -urN linux-2.4.2.orig/drivers/mtd/nand/Config.in linux-2.4.2/drivers/mtd/nand/Config.in
 --- linux-2.4.2.orig/drivers/mtd/nand/Config.in	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/nand/Config.in	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nand/Config.in	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,18 @@
 +# drivers/mtd/nand/Config.in
 +
@@ -35181,9 +35200,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nand/Config.in linux-2.4.2/drivers/mtd/n
 +fi
 +
 +endmenu
-diff -Naur linux-2.4.2.orig/drivers/mtd/nand/GNUmakefile linux-2.4.2/drivers/mtd/nand/GNUmakefile
+diff -urN linux-2.4.2.orig/drivers/mtd/nand/GNUmakefile linux-2.4.2/drivers/mtd/nand/GNUmakefile
 --- linux-2.4.2.orig/drivers/mtd/nand/GNUmakefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/nand/GNUmakefile	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nand/GNUmakefile	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,26 @@
 +# $Id: GNUmakefile,v 1.1 2001/04/19 23:57:02 dwmw2 Exp $
 +
@@ -35211,9 +35230,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nand/GNUmakefile linux-2.4.2/drivers/mtd
 +include Makefile
 +
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/nand/Makefile linux-2.4.2/drivers/mtd/nand/Makefile
+diff -urN linux-2.4.2.orig/drivers/mtd/nand/Makefile linux-2.4.2/drivers/mtd/nand/Makefile
 --- linux-2.4.2.orig/drivers/mtd/nand/Makefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/nand/Makefile	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nand/Makefile	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,16 @@
 +#
 +# linux/drivers/nand/Makefile
@@ -35231,9 +35250,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nand/Makefile linux-2.4.2/drivers/mtd/na
 +obj-$(CONFIG_MTD_NAND_SPIA)	+= spia.o
 +
 +include $(TOPDIR)/Rules.make
-diff -Naur linux-2.4.2.orig/drivers/mtd/nand/nand.c linux-2.4.2/drivers/mtd/nand/nand.c
+diff -urN linux-2.4.2.orig/drivers/mtd/nand/nand.c linux-2.4.2/drivers/mtd/nand/nand.c
 --- linux-2.4.2.orig/drivers/mtd/nand/nand.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/nand/nand.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nand/nand.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,1377 @@
 +/*
 + *  drivers/mtd/nand.c
@@ -36612,9 +36631,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nand/nand.c linux-2.4.2/drivers/mtd/nand
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Steven J. Hill <sjhill@cotw.com");
 +MODULE_DESCRIPTION("Generic NAND flash driver code");
-diff -Naur linux-2.4.2.orig/drivers/mtd/nand/nand_ecc.c linux-2.4.2/drivers/mtd/nand/nand_ecc.c
+diff -urN linux-2.4.2.orig/drivers/mtd/nand/nand_ecc.c linux-2.4.2/drivers/mtd/nand/nand_ecc.c
 --- linux-2.4.2.orig/drivers/mtd/nand/nand_ecc.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/nand/nand_ecc.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nand/nand_ecc.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,209 @@
 +/*
 + *  drivers/mtd/nand_ecc.c
@@ -36825,9 +36844,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nand/nand_ecc.c linux-2.4.2/drivers/mtd/
 +
 +EXPORT_SYMBOL(nand_calculate_ecc);
 +EXPORT_SYMBOL(nand_correct_data);
-diff -Naur linux-2.4.2.orig/drivers/mtd/nand/spia.c linux-2.4.2/drivers/mtd/nand/spia.c
+diff -urN linux-2.4.2.orig/drivers/mtd/nand/spia.c linux-2.4.2/drivers/mtd/nand/spia.c
 --- linux-2.4.2.orig/drivers/mtd/nand/spia.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/nand/spia.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nand/spia.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,160 @@
 +/*
 + *  drivers/mtd/nand/spia.c
@@ -36989,9 +37008,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nand/spia.c linux-2.4.2/drivers/mtd/nand
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Steven J. Hill <sjhill@cotw.com");
 +MODULE_DESCRIPTION("Board-specific glue layer for NAND flash on SPIA board");
-diff -Naur linux-2.4.2.orig/drivers/mtd/nand.c linux-2.4.2/drivers/mtd/nand.c
+diff -urN linux-2.4.2.orig/drivers/mtd/nand.c linux-2.4.2/drivers/mtd/nand.c
 --- linux-2.4.2.orig/drivers/mtd/nand.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/nand.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nand.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,1369 @@
 +/*
 + *  drivers/mtd/nand.c
@@ -38362,9 +38381,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nand.c linux-2.4.2/drivers/mtd/nand.c
 +}
 +
 +EXPORT_SYMBOL(nand_scan);
-diff -Naur linux-2.4.2.orig/drivers/mtd/nand_ecc.c linux-2.4.2/drivers/mtd/nand_ecc.c
+diff -urN linux-2.4.2.orig/drivers/mtd/nand_ecc.c linux-2.4.2/drivers/mtd/nand_ecc.c
 --- linux-2.4.2.orig/drivers/mtd/nand_ecc.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/nand_ecc.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nand_ecc.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,204 @@
 +/*
 + *  drivers/mtd/nand_ecc.c
@@ -38570,9 +38589,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nand_ecc.c linux-2.4.2/drivers/mtd/nand_
 +	/* Should never happen */
 +	return -1;
 +}
-diff -Naur linux-2.4.2.orig/drivers/mtd/nftl.c linux-2.4.2/drivers/mtd/nftl.c
+diff -urN linux-2.4.2.orig/drivers/mtd/nftl.c linux-2.4.2/drivers/mtd/nftl.c
 --- linux-2.4.2.orig/drivers/mtd/nftl.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/nftl.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nftl.c	Sat Mar  2 19:06:54 2002
 @@ -1,56 +1,13 @@
  /* Linux driver for NAND Flash Translation Layer      */
  /* (c) 1999 Machine Vision Holdings, Inc.             */
@@ -38807,9 +38826,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nftl.c linux-2.4.2/drivers/mtd/nftl.c
  }
  
  module_init(init_nftl);
-diff -Naur linux-2.4.2.orig/drivers/mtd/nftlcore.c linux-2.4.2/drivers/mtd/nftlcore.c
+diff -urN linux-2.4.2.orig/drivers/mtd/nftlcore.c linux-2.4.2/drivers/mtd/nftlcore.c
 --- linux-2.4.2.orig/drivers/mtd/nftlcore.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/nftlcore.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nftlcore.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,1103 @@
 +/* Linux driver for NAND Flash Translation Layer      */
 +/* (c) 1999 Machine Vision Holdings, Inc.             */
@@ -39914,9 +39933,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nftlcore.c linux-2.4.2/drivers/mtd/nftlc
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>, Fabrice Bellard <fabrice.bellard@netgem.com> et al.");
 +MODULE_DESCRIPTION("Support code for NAND Flash Translation Layer, used on M-Systems DiskOnChip 2000 and Millennium");
-diff -Naur linux-2.4.2.orig/drivers/mtd/nftlmount.c linux-2.4.2/drivers/mtd/nftlmount.c
+diff -urN linux-2.4.2.orig/drivers/mtd/nftlmount.c linux-2.4.2/drivers/mtd/nftlmount.c
 --- linux-2.4.2.orig/drivers/mtd/nftlmount.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/nftlmount.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nftlmount.c	Sat Mar  2 19:06:54 2002
 @@ -4,7 +4,7 @@
   * Author: Fabrice Bellard (fabrice.bellard@netgem.com) 
   * Copyright (C) 2000 Netgem S.A.
@@ -40167,9 +40186,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nftlmount.c linux-2.4.2/drivers/mtd/nftl
  
  	/* check erase mark. */
  	if (MTD_READOOB(nftl->mtd, block * nftl->EraseSize + SECTORSIZE + 8, 8, 
-diff -Naur linux-2.4.2.orig/drivers/mtd/nora.c linux-2.4.2/drivers/mtd/nora.c
+diff -urN linux-2.4.2.orig/drivers/mtd/nora.c linux-2.4.2/drivers/mtd/nora.c
 --- linux-2.4.2.orig/drivers/mtd/nora.c	Mon Dec 11 23:57:58 2000
-+++ linux-2.4.2/drivers/mtd/nora.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/nora.c	Sat Mar  2 19:06:54 2002
 @@ -1,5 +1,5 @@
  /*
 - * $Id: nora.c,v 1.17 2000/12/03 19:32:21 dwmw2 Exp $
@@ -40188,9 +40207,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/nora.c linux-2.4.2/drivers/mtd/nora.c
  		
  		add_mtd_device(&nora_mtds[2]);
  		add_mtd_device(&nora_mtds[0]);
-diff -Naur linux-2.4.2.orig/drivers/mtd/octagon-5066.c linux-2.4.2/drivers/mtd/octagon-5066.c
+diff -urN linux-2.4.2.orig/drivers/mtd/octagon-5066.c linux-2.4.2/drivers/mtd/octagon-5066.c
 --- linux-2.4.2.orig/drivers/mtd/octagon-5066.c	Sat Feb 17 01:02:36 2001
-+++ linux-2.4.2/drivers/mtd/octagon-5066.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/octagon-5066.c	Sat Mar  2 19:06:54 2002
 @@ -1,4 +1,4 @@
 -// $Id: octagon-5066.c,v 1.12.2.1 2001/02/15 10:12:48 dwmw2 Exp $
 +// $Id: octagon-5066.c,v 1.15 2001/03/17 16:17:35 dwmw2 Exp $
@@ -40227,9 +40246,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/octagon-5066.c linux-2.4.2/drivers/mtd/o
  		if (oct5066_mtd[i]) {
  			oct5066_mtd[i]->module = THIS_MODULE;
  			add_mtd_device(oct5066_mtd[i]);
-diff -Naur linux-2.4.2.orig/drivers/mtd/physmap.c linux-2.4.2/drivers/mtd/physmap.c
+diff -urN linux-2.4.2.orig/drivers/mtd/physmap.c linux-2.4.2/drivers/mtd/physmap.c
 --- linux-2.4.2.orig/drivers/mtd/physmap.c	Mon Dec 11 23:57:58 2000
-+++ linux-2.4.2/drivers/mtd/physmap.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/physmap.c	Sat Mar  2 19:06:54 2002
 @@ -1,5 +1,5 @@
  /*
 - * $Id: physmap.c,v 1.8 2000/11/27 08:50:22 dwmw2 Exp $
@@ -40312,9 +40331,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/physmap.c linux-2.4.2/drivers/mtd/physma
  {
  	if (mymtd) {
  		del_mtd_device(mymtd);
-diff -Naur linux-2.4.2.orig/drivers/mtd/pmc551.c linux-2.4.2/drivers/mtd/pmc551.c
+diff -urN linux-2.4.2.orig/drivers/mtd/pmc551.c linux-2.4.2/drivers/mtd/pmc551.c
 --- linux-2.4.2.orig/drivers/mtd/pmc551.c	Sat Feb 17 01:02:36 2001
-+++ linux-2.4.2/drivers/mtd/pmc551.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/pmc551.c	Sat Mar  2 19:06:54 2002
 @@ -1,5 +1,5 @@
  /*
 - * $Id: pmc551.c,v 1.11 2000/11/23 13:40:12 dwmw2 Exp $
@@ -40382,9 +40401,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/pmc551.c linux-2.4.2/drivers/mtd/pmc551.
  module_init(init_pmc551);
  module_exit(cleanup_pmc551);
 -#endif
-diff -Naur linux-2.4.2.orig/drivers/mtd/pnc2000.c linux-2.4.2/drivers/mtd/pnc2000.c
+diff -urN linux-2.4.2.orig/drivers/mtd/pnc2000.c linux-2.4.2/drivers/mtd/pnc2000.c
 --- linux-2.4.2.orig/drivers/mtd/pnc2000.c	Mon Dec 11 23:57:58 2000
-+++ linux-2.4.2/drivers/mtd/pnc2000.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/pnc2000.c	Sat Mar  2 19:06:54 2002
 @@ -5,7 +5,7 @@
   *
   * This code is GPL
@@ -40425,9 +40444,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/pnc2000.c linux-2.4.2/drivers/mtd/pnc200
 -module_exit(cleanup_pnc);
 +module_init(init_pnc2000);
 +module_exit(cleanup_pnc2000);
-diff -Naur linux-2.4.2.orig/drivers/mtd/redboot.c linux-2.4.2/drivers/mtd/redboot.c
+diff -urN linux-2.4.2.orig/drivers/mtd/redboot.c linux-2.4.2/drivers/mtd/redboot.c
 --- linux-2.4.2.orig/drivers/mtd/redboot.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/redboot.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/redboot.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,162 @@
 +/*
 + * $Id: redboot.c,v 1.6 2001/10/25 09:16:06 dwmw2 Exp $
@@ -40591,9 +40610,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/redboot.c linux-2.4.2/drivers/mtd/redboo
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Red Hat, Inc. - David Woodhouse <dwmw2@cambridge.redhat.com>");
 +MODULE_DESCRIPTION("Parsing code for RedBoot Flash Image System (FIS) tables");
-diff -Naur linux-2.4.2.orig/drivers/mtd/rpxlite.c linux-2.4.2/drivers/mtd/rpxlite.c
+diff -urN linux-2.4.2.orig/drivers/mtd/rpxlite.c linux-2.4.2/drivers/mtd/rpxlite.c
 --- linux-2.4.2.orig/drivers/mtd/rpxlite.c	Sun Feb  4 19:05:30 2001
-+++ linux-2.4.2/drivers/mtd/rpxlite.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/rpxlite.c	Sat Mar  2 19:06:54 2002
 @@ -1,5 +1,5 @@
  /*
 - * $Id: rpxlite.c,v 1.8 2000/12/09 22:00:31 dwmw2 Exp $
@@ -40621,9 +40640,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/rpxlite.c linux-2.4.2/drivers/mtd/rpxlit
  		add_mtd_device(mymtd);
  		return 0;
  	}
-diff -Naur linux-2.4.2.orig/drivers/mtd/sa1100-flash.c linux-2.4.2/drivers/mtd/sa1100-flash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/sa1100-flash.c linux-2.4.2/drivers/mtd/sa1100-flash.c
 --- linux-2.4.2.orig/drivers/mtd/sa1100-flash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/sa1100-flash.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/sa1100-flash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,534 @@
 +/*
 + * Flash memory access on SA11x0 based devices
@@ -41159,9 +41178,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/sa1100-flash.c linux-2.4.2/drivers/mtd/s
 +
 +module_init(sa1100_mtd_init);
 +module_exit(sa1100_mtd_cleanup);
-diff -Naur linux-2.4.2.orig/drivers/mtd/sbc_mediagx.c linux-2.4.2/drivers/mtd/sbc_mediagx.c
+diff -urN linux-2.4.2.orig/drivers/mtd/sbc_mediagx.c linux-2.4.2/drivers/mtd/sbc_mediagx.c
 --- linux-2.4.2.orig/drivers/mtd/sbc_mediagx.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/sbc_mediagx.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/sbc_mediagx.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,250 @@
 +/* sbc_mediagx.c -- MTD map driver for Arcom Control Systems SBC-MediaGX
 + 
@@ -41413,9 +41432,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/sbc_mediagx.c linux-2.4.2/drivers/mtd/sb
 +
 +module_init(init_sbc_mediagx);
 +module_exit(cleanup_sbc_mediagx);
-diff -Naur linux-2.4.2.orig/drivers/mtd/sc520cdp.c linux-2.4.2/drivers/mtd/sc520cdp.c
+diff -urN linux-2.4.2.orig/drivers/mtd/sc520cdp.c linux-2.4.2/drivers/mtd/sc520cdp.c
 --- linux-2.4.2.orig/drivers/mtd/sc520cdp.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/sc520cdp.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/sc520cdp.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,163 @@
 +/* sc520cdp.c -- MTD map driver for AMD SC520 Customer Development Platform
 + *
@@ -41580,9 +41599,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/sc520cdp.c linux-2.4.2/drivers/mtd/sc520
 +
 +module_init(init_sc520cdp);
 +module_exit(cleanup_sc520cdp);
-diff -Naur linux-2.4.2.orig/drivers/mtd/sharp.c linux-2.4.2/drivers/mtd/sharp.c
+diff -urN linux-2.4.2.orig/drivers/mtd/sharp.c linux-2.4.2/drivers/mtd/sharp.c
 --- linux-2.4.2.orig/drivers/mtd/sharp.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/sharp.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/sharp.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,474 @@
 +/*
 + * MTD map driver for pre-CFI Sharp flash chips
@@ -42058,9 +42077,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/sharp.c linux-2.4.2/drivers/mtd/sharp.c
 +module_cleanup(sharp_cleanup);
 +
 +
-diff -Naur linux-2.4.2.orig/drivers/mtd/slram.c linux-2.4.2/drivers/mtd/slram.c
+diff -urN linux-2.4.2.orig/drivers/mtd/slram.c linux-2.4.2/drivers/mtd/slram.c
 --- linux-2.4.2.orig/drivers/mtd/slram.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/slram.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/slram.c	Sat Mar  2 19:06:54 2002
 @@ -1,6 +1,6 @@
  /*======================================================================
  
@@ -42134,9 +42153,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/slram.c linux-2.4.2/drivers/mtd/slram.c
  module_init(init_slram);
  module_exit(cleanup_slram);
 -#endif
-diff -Naur linux-2.4.2.orig/drivers/mtd/spia.c linux-2.4.2/drivers/mtd/spia.c
+diff -urN linux-2.4.2.orig/drivers/mtd/spia.c linux-2.4.2/drivers/mtd/spia.c
 --- linux-2.4.2.orig/drivers/mtd/spia.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/spia.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/spia.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,129 @@
 +/*
 + *  drivers/mtd/spia.c
@@ -42267,9 +42286,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/spia.c linux-2.4.2/drivers/mtd/spia.c
 +}
 +module_exit(spia_cleanup);
 +#endif
-diff -Naur linux-2.4.2.orig/drivers/mtd/sun_uflash.c linux-2.4.2/drivers/mtd/sun_uflash.c
+diff -urN linux-2.4.2.orig/drivers/mtd/sun_uflash.c linux-2.4.2/drivers/mtd/sun_uflash.c
 --- linux-2.4.2.orig/drivers/mtd/sun_uflash.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/drivers/mtd/sun_uflash.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/sun_uflash.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,224 @@
 +/* $Id: sun_uflash.c,v 1.1 2001/03/17 12:13:54 dwmw2 Exp $
 + *
@@ -42495,9 +42514,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/sun_uflash.c linux-2.4.2/drivers/mtd/sun
 +
 +module_init(uflash_init);
 +module_exit(uflash_cleanup);
-diff -Naur linux-2.4.2.orig/drivers/mtd/vmax301.c linux-2.4.2/drivers/mtd/vmax301.c
+diff -urN linux-2.4.2.orig/drivers/mtd/vmax301.c linux-2.4.2/drivers/mtd/vmax301.c
 --- linux-2.4.2.orig/drivers/mtd/vmax301.c	Fri Feb  9 20:30:23 2001
-+++ linux-2.4.2/drivers/mtd/vmax301.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/drivers/mtd/vmax301.c	Sat Mar  2 19:06:54 2002
 @@ -1,4 +1,4 @@
 -// $Id: vmax301.c,v 1.15 2000/11/27 08:50:22 dwmw2 Exp $
 +// $Id: vmax301.c,v 1.19 2001/03/17 16:18:29 dwmw2 Exp $
@@ -42534,9 +42553,9 @@ diff -Naur linux-2.4.2.orig/drivers/mtd/vmax301.c linux-2.4.2/drivers/mtd/vmax30
  		return -ENXIO;
  	}
  
-diff -Naur linux-2.4.2.orig/fs/Config.in linux-2.4.2/fs/Config.in
+diff -urN linux-2.4.2.orig/fs/Config.in linux-2.4.2/fs/Config.in
 --- linux-2.4.2.orig/fs/Config.in	Mon Jan 15 21:42:32 2001
-+++ linux-2.4.2/fs/Config.in	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/Config.in	Sat Mar  2 19:06:54 2002
 @@ -30,6 +30,7 @@
  if [ "$CONFIG_JFFS_FS" != "n" ] ; then
  	int 'JFFS debugging verbosity (0 = quiet, 3 = noisy)' CONFIG_JFFS_FS_VERBOSE 0
@@ -42545,9 +42564,9 @@ diff -Naur linux-2.4.2.orig/fs/Config.in linux-2.4.2/fs/Config.in
  tristate 'Compressed ROM file system support' CONFIG_CRAMFS
  tristate 'Simple RAM-based file system support' CONFIG_RAMFS
  
-diff -Naur linux-2.4.2.orig/fs/Makefile linux-2.4.2/fs/Makefile
+diff -urN linux-2.4.2.orig/fs/Makefile linux-2.4.2/fs/Makefile
 --- linux-2.4.2.orig/fs/Makefile	Mon Jan 15 21:42:32 2001
-+++ linux-2.4.2/fs/Makefile	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/Makefile	Sat Mar  2 19:06:54 2002
 @@ -51,6 +51,7 @@
  subdir-$(CONFIG_UFS_FS)		+= ufs
  subdir-$(CONFIG_EFS_FS)		+= efs
@@ -42556,9 +42575,9 @@ diff -Naur linux-2.4.2.orig/fs/Makefile linux-2.4.2/fs/Makefile
  subdir-$(CONFIG_AFFS_FS)	+= affs
  subdir-$(CONFIG_ROMFS_FS)	+= romfs
  subdir-$(CONFIG_QNX4FS_FS)	+= qnx4
-diff -Naur linux-2.4.2.orig/fs/binfmt_elf.c linux-2.4.2/fs/binfmt_elf.c
+diff -urN linux-2.4.2.orig/fs/binfmt_elf.c linux-2.4.2/fs/binfmt_elf.c
 --- linux-2.4.2.orig/fs/binfmt_elf.c	Fri Feb  9 20:29:44 2001
-+++ linux-2.4.2/fs/binfmt_elf.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/binfmt_elf.c	Sat Mar  2 19:06:54 2002
 @@ -163,7 +163,9 @@
  	sp -= 3*2;
  	NEW_AUX_ENT(0, AT_HWCAP, hwcap);
@@ -42569,9 +42588,9 @@ diff -Naur linux-2.4.2.orig/fs/binfmt_elf.c linux-2.4.2/fs/binfmt_elf.c
  
  	if (exec) {
  		sp -= 10*2;
-diff -Naur linux-2.4.2.orig/fs/jffs/GNUmakefile linux-2.4.2/fs/jffs/GNUmakefile
+diff -urN linux-2.4.2.orig/fs/jffs/GNUmakefile linux-2.4.2/fs/jffs/GNUmakefile
 --- linux-2.4.2.orig/fs/jffs/GNUmakefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs/GNUmakefile	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs/GNUmakefile	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,34 @@
 +# GNUmakefile for JFFS build outside kernel tree
 +# $Id: GNUmakefile,v 1.1 2001/09/23 23:13:05 dwmw2 Exp $
@@ -42607,9 +42626,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs/GNUmakefile linux-2.4.2/fs/jffs/GNUmakefile
 +
 +
 +endif
-diff -Naur linux-2.4.2.orig/fs/jffs/Makefile linux-2.4.2/fs/jffs/Makefile
+diff -urN linux-2.4.2.orig/fs/jffs/Makefile linux-2.4.2/fs/jffs/Makefile
 --- linux-2.4.2.orig/fs/jffs/Makefile	Fri Dec 29 23:07:23 2000
-+++ linux-2.4.2/fs/jffs/Makefile	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs/Makefile	Sat Mar  2 19:06:54 2002
 @@ -1,7 +1,7 @@
  #
  # Makefile for the linux Journalling Flash FileSystem (JFFS) routines.
@@ -42658,9 +42677,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs/Makefile linux-2.4.2/fs/jffs/Makefile
  
  include $(TOPDIR)/Rules.make
 +
-diff -Naur linux-2.4.2.orig/fs/jffs/inode-v22.c linux-2.4.2/fs/jffs/inode-v22.c
+diff -urN linux-2.4.2.orig/fs/jffs/inode-v22.c linux-2.4.2/fs/jffs/inode-v22.c
 --- linux-2.4.2.orig/fs/jffs/inode-v22.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs/inode-v22.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs/inode-v22.c	Sat Mar  2 19:06:54 2002
 @@ -0,0 +1,1965 @@
 +/*
 + * JFFS -- Journalling Flash File System, Linux implementation.
@@ -44627,9 +44646,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs/inode-v22.c linux-2.4.2/fs/jffs/inode-v22.c
 +	kmem_cache_destroy(node_cache);
 +}
 +#endif
-diff -Naur linux-2.4.2.orig/fs/jffs/inode-v23.c linux-2.4.2/fs/jffs/inode-v23.c
+diff -urN linux-2.4.2.orig/fs/jffs/inode-v23.c linux-2.4.2/fs/jffs/inode-v23.c
 --- linux-2.4.2.orig/fs/jffs/inode-v23.c	Fri Feb  9 20:29:44 2001
-+++ linux-2.4.2/fs/jffs/inode-v23.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs/inode-v23.c	Sat Mar  2 19:06:55 2002
 @@ -10,12 +10,12 @@
   * the Free Software Foundation; either version 2 of the License, or
   * (at your option) any later version.
@@ -45522,9 +45541,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs/inode-v23.c linux-2.4.2/fs/jffs/inode-v23.c
 +MODULE_DESCRIPTION("The Journalling Flash File System");
 +MODULE_AUTHOR("Axis Communications AB.");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.4.2.orig/fs/jffs/intrep.c linux-2.4.2/fs/jffs/intrep.c
+diff -urN linux-2.4.2.orig/fs/jffs/intrep.c linux-2.4.2/fs/jffs/intrep.c
 --- linux-2.4.2.orig/fs/jffs/intrep.c	Fri Feb  9 20:29:44 2001
-+++ linux-2.4.2/fs/jffs/intrep.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs/intrep.c	Sat Mar  2 19:06:55 2002
 @@ -10,8 +10,7 @@
   * the Free Software Foundation; either version 2 of the License, or
   * (at your option) any later version.
@@ -46909,9 +46928,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs/intrep.c linux-2.4.2/fs/jffs/intrep.c
  
  		D3(printk (KERN_NOTICE "g_c_thread(): down biglock\n"));
  		down(&fmc->biglock);
-diff -Naur linux-2.4.2.orig/fs/jffs/intrep.h linux-2.4.2/fs/jffs/intrep.h
+diff -urN linux-2.4.2.orig/fs/jffs/intrep.h linux-2.4.2/fs/jffs/intrep.h
 --- linux-2.4.2.orig/fs/jffs/intrep.h	Mon Dec 11 22:26:54 2000
-+++ linux-2.4.2/fs/jffs/intrep.h	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs/intrep.h	Sat Mar  2 19:06:55 2002
 @@ -10,15 +10,18 @@
   * the Free Software Foundation; either version 2 of the License, or
   * (at your option) any later version.
@@ -46934,9 +46953,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs/intrep.h linux-2.4.2/fs/jffs/intrep.h
  __u32 jffs_checksum(const void *data, int size);
  
  void jffs_cleanup_control(struct jffs_control *c);
-diff -Naur linux-2.4.2.orig/fs/jffs/jffs_fm.c linux-2.4.2/fs/jffs/jffs_fm.c
+diff -urN linux-2.4.2.orig/fs/jffs/jffs_fm.c linux-2.4.2/fs/jffs/jffs_fm.c
 --- linux-2.4.2.orig/fs/jffs/jffs_fm.c	Fri Feb  9 20:29:44 2001
-+++ linux-2.4.2/fs/jffs/jffs_fm.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs/jffs_fm.c	Sat Mar  2 19:06:55 2002
 @@ -10,7 +10,7 @@
   * the Free Software Foundation; either version 2 of the License, or
   * (at your option) any later version.
@@ -47380,9 +47399,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs/jffs_fm.c linux-2.4.2/fs/jffs/jffs_fm.c
  	D(printk("        %u, /* flash_size  */\n", fmc->flash_size));
  	D(printk("        %u, /* used_size  */\n", fmc->used_size));
  	D(printk("        %u, /* dirty_size  */\n", fmc->dirty_size));
-diff -Naur linux-2.4.2.orig/fs/jffs/jffs_fm.h linux-2.4.2/fs/jffs/jffs_fm.h
+diff -urN linux-2.4.2.orig/fs/jffs/jffs_fm.h linux-2.4.2/fs/jffs/jffs_fm.h
 --- linux-2.4.2.orig/fs/jffs/jffs_fm.h	Mon Dec 11 22:26:54 2000
-+++ linux-2.4.2/fs/jffs/jffs_fm.h	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs/jffs_fm.h	Sat Mar  2 19:06:55 2002
 @@ -10,7 +10,7 @@
   * the Free Software Foundation; either version 2 of the License, or
   * (at your option) any later version.
@@ -47430,9 +47449,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs/jffs_fm.h linux-2.4.2/fs/jffs/jffs_fm.h
  void jffs_cleanup_fmcontrol(struct jffs_fmcontrol *fmc);
  
  int jffs_fmalloc(struct jffs_fmcontrol *fmc, __u32 size,
-diff -Naur linux-2.4.2.orig/fs/jffs/jffs_proc.c linux-2.4.2/fs/jffs/jffs_proc.c
+diff -urN linux-2.4.2.orig/fs/jffs/jffs_proc.c linux-2.4.2/fs/jffs/jffs_proc.c
 --- linux-2.4.2.orig/fs/jffs/jffs_proc.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs/jffs_proc.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs/jffs_proc.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,269 @@
 +/*
 + * JFFS -- Journaling Flash File System, Linux implementation.
@@ -47703,9 +47722,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs/jffs_proc.c linux-2.4.2/fs/jffs/jffs_proc.c
 +	/* Return length */
 +	return len;
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs/jffs_proc.h linux-2.4.2/fs/jffs/jffs_proc.h
+diff -urN linux-2.4.2.orig/fs/jffs/jffs_proc.h linux-2.4.2/fs/jffs/jffs_proc.h
 --- linux-2.4.2.orig/fs/jffs/jffs_proc.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs/jffs_proc.h	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs/jffs_proc.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,28 @@
 +/*
 + * JFFS -- Journaling Flash File System, Linux implementation.
@@ -47735,15 +47754,15 @@ diff -Naur linux-2.4.2.orig/fs/jffs/jffs_proc.h linux-2.4.2/fs/jffs/jffs_proc.h
 +int jffs_unregister_jffs_proc_dir(struct jffs_control *c);
 +
 +#endif /* __LINUX_JFFS_PROC_H__ */
-diff -Naur linux-2.4.2.orig/fs/jffs2/.cvsignore linux-2.4.2/fs/jffs2/.cvsignore
+diff -urN linux-2.4.2.orig/fs/jffs2/.cvsignore linux-2.4.2/fs/jffs2/.cvsignore
 --- linux-2.4.2.orig/fs/jffs2/.cvsignore	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/.cvsignore	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/.cvsignore	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1 @@
 +*.flags
 \ No newline at end of file
-diff -Naur linux-2.4.2.orig/fs/jffs2/CVS/Entries linux-2.4.2/fs/jffs2/CVS/Entries
+diff -urN linux-2.4.2.orig/fs/jffs2/CVS/Entries linux-2.4.2/fs/jffs2/CVS/Entries
 --- linux-2.4.2.orig/fs/jffs2/CVS/Entries	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/CVS/Entries	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/CVS/Entries	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,35 @@
 +/.cvsignore/1.1/Tue Feb 13 10:46:44 2001//
 +/Makefile/1.22/Mon Apr 23 21:20:47 2001//
@@ -47780,25 +47799,25 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/CVS/Entries linux-2.4.2/fs/jffs2/CVS/Entrie
 +/zlib.c/1.1/Wed Feb 28 10:09:45 2001/-ko/
 +/zlib.h/1.1/Wed Feb 28 10:09:45 2001/-ko/
 +D
-diff -Naur linux-2.4.2.orig/fs/jffs2/CVS/Entries.Log linux-2.4.2/fs/jffs2/CVS/Entries.Log
+diff -urN linux-2.4.2.orig/fs/jffs2/CVS/Entries.Log linux-2.4.2/fs/jffs2/CVS/Entries.Log
 --- linux-2.4.2.orig/fs/jffs2/CVS/Entries.Log	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/CVS/Entries.Log	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/CVS/Entries.Log	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,2 @@
 +A D/compressors////
 +A D/test////
-diff -Naur linux-2.4.2.orig/fs/jffs2/CVS/Repository linux-2.4.2/fs/jffs2/CVS/Repository
+diff -urN linux-2.4.2.orig/fs/jffs2/CVS/Repository linux-2.4.2/fs/jffs2/CVS/Repository
 --- linux-2.4.2.orig/fs/jffs2/CVS/Repository	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/CVS/Repository	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/CVS/Repository	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1 @@
 +mtd/fs/jffs2
-diff -Naur linux-2.4.2.orig/fs/jffs2/CVS/Root linux-2.4.2/fs/jffs2/CVS/Root
+diff -urN linux-2.4.2.orig/fs/jffs2/CVS/Root linux-2.4.2/fs/jffs2/CVS/Root
 --- linux-2.4.2.orig/fs/jffs2/CVS/Root	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/CVS/Root	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/CVS/Root	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1 @@
 +:pserver:anoncvs@cvs.infradead.org:/home/cvs
-diff -Naur linux-2.4.2.orig/fs/jffs2/GNUmakefile linux-2.4.2/fs/jffs2/GNUmakefile
+diff -urN linux-2.4.2.orig/fs/jffs2/GNUmakefile linux-2.4.2/fs/jffs2/GNUmakefile
 --- linux-2.4.2.orig/fs/jffs2/GNUmakefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/GNUmakefile	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/GNUmakefile	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,38 @@
 +# GNUmakefile for JFFS2 build outside kernel tree
 +# $Id: GNUmakefile,v 1.2 2002/01/03 14:57:56 dwmw2 Exp $
@@ -47838,9 +47857,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/GNUmakefile linux-2.4.2/fs/jffs2/GNUmakefil
 +
 +
 +endif
-diff -Naur linux-2.4.2.orig/fs/jffs2/Makefile linux-2.4.2/fs/jffs2/Makefile
+diff -urN linux-2.4.2.orig/fs/jffs2/Makefile linux-2.4.2/fs/jffs2/Makefile
 --- linux-2.4.2.orig/fs/jffs2/Makefile	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/Makefile	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/Makefile	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,40 @@
 +#
 +# Makefile for the linux Journalling Flash FileSystem (JFFS) routines.
@@ -47882,9 +47901,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/Makefile linux-2.4.2/fs/jffs2/Makefile
 +	$(LD) -r -o $@ $(comprmod-objs)
 +
 +include $(TOPDIR)/Rules.make
-diff -Naur linux-2.4.2.orig/fs/jffs2/TODO linux-2.4.2/fs/jffs2/TODO
+diff -urN linux-2.4.2.orig/fs/jffs2/TODO linux-2.4.2/fs/jffs2/TODO
 --- linux-2.4.2.orig/fs/jffs2/TODO	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/TODO	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/TODO	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,20 @@
 +$Id: TODO,v 1.3 2001/03/01 23:26:48 dwmw2 Exp $
 +
@@ -47906,9 +47925,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/TODO linux-2.4.2/fs/jffs2/TODO
 +	ECC data in rather than just the CRC we're using ATM.
 + - test, test, test
 +
-diff -Naur linux-2.4.2.orig/fs/jffs2/background.c linux-2.4.2/fs/jffs2/background.c
+diff -urN linux-2.4.2.orig/fs/jffs2/background.c linux-2.4.2/fs/jffs2/background.c
 --- linux-2.4.2.orig/fs/jffs2/background.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/background.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/background.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,172 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -48082,9 +48101,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/background.c linux-2.4.2/fs/jffs2/backgroun
 +	else 
 +		return 0;
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/build.c linux-2.4.2/fs/jffs2/build.c
+diff -urN linux-2.4.2.orig/fs/jffs2/build.c linux-2.4.2/fs/jffs2/build.c
 --- linux-2.4.2.orig/fs/jffs2/build.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/build.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/build.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,257 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -48343,9 +48362,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/build.c linux-2.4.2/fs/jffs2/build.c
 +	//	jffs2_free_inode_cache(ic);
 +	return ret;
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/compr.c linux-2.4.2/fs/jffs2/compr.c
+diff -urN linux-2.4.2.orig/fs/jffs2/compr.c linux-2.4.2/fs/jffs2/compr.c
 --- linux-2.4.2.orig/fs/jffs2/compr.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/compr.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/compr.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,143 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -48490,9 +48509,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/compr.c linux-2.4.2/fs/jffs2/compr.c
 +	}
 +	return 0;
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/compr_rtime.c linux-2.4.2/fs/jffs2/compr_rtime.c
+diff -urN linux-2.4.2.orig/fs/jffs2/compr_rtime.c linux-2.4.2/fs/jffs2/compr_rtime.c
 --- linux-2.4.2.orig/fs/jffs2/compr_rtime.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/compr_rtime.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/compr_rtime.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,128 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -48622,9 +48641,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/compr_rtime.c linux-2.4.2/fs/jffs2/compr_rt
 +}		   
 +
 +
-diff -Naur linux-2.4.2.orig/fs/jffs2/compr_rubin.c linux-2.4.2/fs/jffs2/compr_rubin.c
+diff -urN linux-2.4.2.orig/fs/jffs2/compr_rubin.c linux-2.4.2/fs/jffs2/compr_rubin.c
 --- linux-2.4.2.orig/fs/jffs2/compr_rubin.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/compr_rubin.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/compr_rubin.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,327 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -48953,9 +48972,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/compr_rubin.c linux-2.4.2/fs/jffs2/compr_ru
 +
 +	rubin_do_decompress(256, bits, data_in+8, cpage_out, sourcelen-8, dstlen);
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/compr_rubin.h linux-2.4.2/fs/jffs2/compr_rubin.h
+diff -urN linux-2.4.2.orig/fs/jffs2/compr_rubin.h linux-2.4.2/fs/jffs2/compr_rubin.h
 --- linux-2.4.2.orig/fs/jffs2/compr_rubin.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/compr_rubin.h	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/compr_rubin.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,28 @@
 +/* Rubin encoder/decoder header       */
 +/* work started at   : aug   3, 1994  */
@@ -48985,9 +49004,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/compr_rubin.h linux-2.4.2/fs/jffs2/compr_ru
 +void end_rubin (struct rubin_state *);
 +void init_decode (struct rubin_state *, int div, int *bits);
 +int decode (struct rubin_state *, long, long);
-diff -Naur linux-2.4.2.orig/fs/jffs2/compr_zlib.c linux-2.4.2/fs/jffs2/compr_zlib.c
+diff -urN linux-2.4.2.orig/fs/jffs2/compr_zlib.c linux-2.4.2/fs/jffs2/compr_zlib.c
 --- linux-2.4.2.orig/fs/jffs2/compr_zlib.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/compr_zlib.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/compr_zlib.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,172 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -49161,24 +49180,24 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/compr_zlib.c linux-2.4.2/fs/jffs2/compr_zli
 +	}
 +	inflateEnd(&strm);
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/compressors/CVS/Entries linux-2.4.2/fs/jffs2/compressors/CVS/Entries
+diff -urN linux-2.4.2.orig/fs/jffs2/compressors/CVS/Entries linux-2.4.2/fs/jffs2/compressors/CVS/Entries
 --- linux-2.4.2.orig/fs/jffs2/compressors/CVS/Entries	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/compressors/CVS/Entries	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/compressors/CVS/Entries	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1 @@
 +D
-diff -Naur linux-2.4.2.orig/fs/jffs2/compressors/CVS/Repository linux-2.4.2/fs/jffs2/compressors/CVS/Repository
+diff -urN linux-2.4.2.orig/fs/jffs2/compressors/CVS/Repository linux-2.4.2/fs/jffs2/compressors/CVS/Repository
 --- linux-2.4.2.orig/fs/jffs2/compressors/CVS/Repository	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/compressors/CVS/Repository	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/compressors/CVS/Repository	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1 @@
 +mtd/fs/jffs2/compressors
-diff -Naur linux-2.4.2.orig/fs/jffs2/compressors/CVS/Root linux-2.4.2/fs/jffs2/compressors/CVS/Root
+diff -urN linux-2.4.2.orig/fs/jffs2/compressors/CVS/Root linux-2.4.2/fs/jffs2/compressors/CVS/Root
 --- linux-2.4.2.orig/fs/jffs2/compressors/CVS/Root	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/compressors/CVS/Root	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/compressors/CVS/Root	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1 @@
 +:pserver:anoncvs@cvs.infradead.org:/home/cvs
-diff -Naur linux-2.4.2.orig/fs/jffs2/comprtest.c linux-2.4.2/fs/jffs2/comprtest.c
+diff -urN linux-2.4.2.orig/fs/jffs2/comprtest.c linux-2.4.2/fs/jffs2/comprtest.c
 --- linux-2.4.2.orig/fs/jffs2/comprtest.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/comprtest.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/comprtest.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,307 @@
 +/* $Id: comprtest.c,v 1.4 2001/02/21 14:03:20 dwmw2 Exp $ */
 +
@@ -49487,9 +49506,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/comprtest.c linux-2.4.2/fs/jffs2/comprtest.
 +		printk("Compression good for %d bytes\n", d);
 +	return 1;
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/crc32.c linux-2.4.2/fs/jffs2/crc32.c
+diff -urN linux-2.4.2.orig/fs/jffs2/crc32.c linux-2.4.2/fs/jffs2/crc32.c
 --- linux-2.4.2.orig/fs/jffs2/crc32.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/crc32.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/crc32.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,97 @@
 +/*
 + *  COPYRIGHT (C) 1986 Gary S. Brown.  You may use this program, or
@@ -49588,9 +49607,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/crc32.c linux-2.4.2/fs/jffs2/crc32.c
 +	0x5d681b02L, 0x2a6f2b94L, 0xb40bbe37L, 0xc30c8ea1L, 0x5a05df1bL,
 +	0x2d02ef8dL
 +};
-diff -Naur linux-2.4.2.orig/fs/jffs2/crc32.h linux-2.4.2/fs/jffs2/crc32.h
+diff -urN linux-2.4.2.orig/fs/jffs2/crc32.h linux-2.4.2/fs/jffs2/crc32.h
 --- linux-2.4.2.orig/fs/jffs2/crc32.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/crc32.h	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/crc32.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,21 @@
 +#ifndef CRC32_H
 +#define CRC32_H
@@ -49613,9 +49632,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/crc32.h linux-2.4.2/fs/jffs2/crc32.h
 +}
 +
 +#endif
-diff -Naur linux-2.4.2.orig/fs/jffs2/dir.c linux-2.4.2/fs/jffs2/dir.c
+diff -urN linux-2.4.2.orig/fs/jffs2/dir.c linux-2.4.2/fs/jffs2/dir.c
 --- linux-2.4.2.orig/fs/jffs2/dir.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/dir.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/dir.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,951 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -50568,9 +50587,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/dir.c linux-2.4.2/fs/jffs2/dir.c
 +	return ret;
 +}
 +
-diff -Naur linux-2.4.2.orig/fs/jffs2/erase.c linux-2.4.2/fs/jffs2/erase.c
+diff -urN linux-2.4.2.orig/fs/jffs2/erase.c linux-2.4.2/fs/jffs2/erase.c
 --- linux-2.4.2.orig/fs/jffs2/erase.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/erase.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/erase.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,345 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -50917,9 +50936,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/erase.c linux-2.4.2/fs/jffs2/erase.c
 +	}
 +	spin_unlock_bh(&c->erase_completion_lock);
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/file.c linux-2.4.2/fs/jffs2/file.c
+diff -urN linux-2.4.2.orig/fs/jffs2/file.c linux-2.4.2/fs/jffs2/file.c
 --- linux-2.4.2.orig/fs/jffs2/file.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/file.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/file.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,540 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -51461,9 +51480,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/file.c linux-2.4.2/fs/jffs2/file.c
 +	D1(printk(KERN_DEBUG "jffs2_commit_write() returning %d. nrpages is %ld\n",writtenlen?writtenlen:ret, inode->i_mapping->nrpages));
 +	return writtenlen?writtenlen:ret;
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/gc.c linux-2.4.2/fs/jffs2/gc.c
+diff -urN linux-2.4.2.orig/fs/jffs2/gc.c linux-2.4.2/fs/jffs2/gc.c
 --- linux-2.4.2.orig/fs/jffs2/gc.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/gc.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/gc.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,660 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -52125,22 +52144,22 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/gc.c linux-2.4.2/fs/jffs2/gc.c
 +	return ret;
 +}
 +
-diff -Naur linux-2.4.2.orig/fs/jffs2/histo.h linux-2.4.2/fs/jffs2/histo.h
+diff -urN linux-2.4.2.orig/fs/jffs2/histo.h linux-2.4.2/fs/jffs2/histo.h
 --- linux-2.4.2.orig/fs/jffs2/histo.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/histo.h	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/histo.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,3 @@
 +/* This file provides the bit-probabilities for the input file */
 +#define BIT_DIVIDER 629 
 +static int bits[9] = { 179,167,183,165,159,198,178,119,}; /* ia32 .so files */
-diff -Naur linux-2.4.2.orig/fs/jffs2/histo_mips.h linux-2.4.2/fs/jffs2/histo_mips.h
+diff -urN linux-2.4.2.orig/fs/jffs2/histo_mips.h linux-2.4.2/fs/jffs2/histo_mips.h
 --- linux-2.4.2.orig/fs/jffs2/histo_mips.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/histo_mips.h	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/histo_mips.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,2 @@
 +#define BIT_DIVIDER_MIPS 1043 
 +static int bits_mips[8] = { 277,249,290,267,229,341,212,241}; /* mips32 */
-diff -Naur linux-2.4.2.orig/fs/jffs2/ioctl.c linux-2.4.2/fs/jffs2/ioctl.c
+diff -urN linux-2.4.2.orig/fs/jffs2/ioctl.c linux-2.4.2/fs/jffs2/ioctl.c
 --- linux-2.4.2.orig/fs/jffs2/ioctl.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/ioctl.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/ioctl.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,47 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -52189,9 +52208,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/ioctl.c linux-2.4.2/fs/jffs2/ioctl.c
 +	return -EINVAL;
 +}
 +	
-diff -Naur linux-2.4.2.orig/fs/jffs2/malloc.c linux-2.4.2/fs/jffs2/malloc.c
+diff -urN linux-2.4.2.orig/fs/jffs2/malloc.c linux-2.4.2/fs/jffs2/malloc.c
 --- linux-2.4.2.orig/fs/jffs2/malloc.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/malloc.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/malloc.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,220 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -52413,9 +52432,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/malloc.c linux-2.4.2/fs/jffs2/malloc.c
 +	kmem_cache_free(inode_cache_slab, x);
 +}
 +
-diff -Naur linux-2.4.2.orig/fs/jffs2/nodelist.c linux-2.4.2/fs/jffs2/nodelist.c
+diff -urN linux-2.4.2.orig/fs/jffs2/nodelist.c linux-2.4.2/fs/jffs2/nodelist.c
 --- linux-2.4.2.orig/fs/jffs2/nodelist.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/nodelist.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/nodelist.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,358 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -52775,9 +52794,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/nodelist.c linux-2.4.2/fs/jffs2/nodelist.c
 +	}
 +}
 +	
-diff -Naur linux-2.4.2.orig/fs/jffs2/nodelist.h linux-2.4.2/fs/jffs2/nodelist.h
+diff -urN linux-2.4.2.orig/fs/jffs2/nodelist.h linux-2.4.2/fs/jffs2/nodelist.h
 --- linux-2.4.2.orig/fs/jffs2/nodelist.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/nodelist.h	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/nodelist.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,354 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -53133,9 +53152,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/nodelist.h linux-2.4.2/fs/jffs2/nodelist.h
 +void jffs2_erase_pending_blocks(struct jffs2_sb_info *c);
 +void jffs2_mark_erased_blocks(struct jffs2_sb_info *c);
 +void jffs2_erase_pending_trigger(struct jffs2_sb_info *c);
-diff -Naur linux-2.4.2.orig/fs/jffs2/nodemgmt.c linux-2.4.2/fs/jffs2/nodemgmt.c
+diff -urN linux-2.4.2.orig/fs/jffs2/nodemgmt.c linux-2.4.2/fs/jffs2/nodemgmt.c
 --- linux-2.4.2.orig/fs/jffs2/nodemgmt.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/nodemgmt.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/nodemgmt.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,380 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -53517,9 +53536,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/nodemgmt.c linux-2.4.2/fs/jffs2/nodemgmt.c
 +		return;
 +	}
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/os-linux.h linux-2.4.2/fs/jffs2/os-linux.h
+diff -urN linux-2.4.2.orig/fs/jffs2/os-linux.h linux-2.4.2/fs/jffs2/os-linux.h
 --- linux-2.4.2.orig/fs/jffs2/os-linux.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/os-linux.h	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/os-linux.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,104 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -53625,9 +53644,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/os-linux.h linux-2.4.2/fs/jffs2/os-linux.h
 +
 +
 +#endif /* __JFFS2_OS_LINUX_H__ */
-diff -Naur linux-2.4.2.orig/fs/jffs2/pushpull.c linux-2.4.2/fs/jffs2/pushpull.c
+diff -urN linux-2.4.2.orig/fs/jffs2/pushpull.c linux-2.4.2/fs/jffs2/pushpull.c
 --- linux-2.4.2.orig/fs/jffs2/pushpull.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/pushpull.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/pushpull.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,88 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -53717,9 +53736,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/pushpull.c linux-2.4.2/fs/jffs2/pushpull.c
 +	return pp->ofs;
 +}
 +     
-diff -Naur linux-2.4.2.orig/fs/jffs2/pushpull.h linux-2.4.2/fs/jffs2/pushpull.h
+diff -urN linux-2.4.2.orig/fs/jffs2/pushpull.h linux-2.4.2/fs/jffs2/pushpull.h
 --- linux-2.4.2.orig/fs/jffs2/pushpull.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/pushpull.h	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/pushpull.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,53 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -53774,9 +53793,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/pushpull.h linux-2.4.2/fs/jffs2/pushpull.h
 +int pulledbits(struct pushpull *);
 +
 +#endif /* __PUSHPULL_H__ */
-diff -Naur linux-2.4.2.orig/fs/jffs2/read.c linux-2.4.2/fs/jffs2/read.c
+diff -urN linux-2.4.2.orig/fs/jffs2/read.c linux-2.4.2/fs/jffs2/read.c
 --- linux-2.4.2.orig/fs/jffs2/read.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/read.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/read.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,157 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -53935,9 +53954,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/read.c linux-2.4.2/fs/jffs2/read.c
 +
 +	return ret;
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/readinode.c linux-2.4.2/fs/jffs2/readinode.c
+diff -urN linux-2.4.2.orig/fs/jffs2/readinode.c linux-2.4.2/fs/jffs2/readinode.c
 --- linux-2.4.2.orig/fs/jffs2/readinode.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/readinode.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/readinode.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,494 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -54433,9 +54452,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/readinode.c linux-2.4.2/fs/jffs2/readinode.
 +	//	}
 +};
 +
-diff -Naur linux-2.4.2.orig/fs/jffs2/scan.c linux-2.4.2/fs/jffs2/scan.c
+diff -urN linux-2.4.2.orig/fs/jffs2/scan.c linux-2.4.2/fs/jffs2/scan.c
 --- linux-2.4.2.orig/fs/jffs2/scan.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/scan.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/scan.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,686 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -55123,9 +55142,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/scan.c linux-2.4.2/fs/jffs2/scan.c
 +	*ofs += PAD(rd.totlen);
 +	return 0;
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/super.c linux-2.4.2/fs/jffs2/super.c
+diff -urN linux-2.4.2.orig/fs/jffs2/super.c linux-2.4.2/fs/jffs2/super.c
 --- linux-2.4.2.orig/fs/jffs2/super.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/super.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/super.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,355 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -55482,9 +55501,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/super.c linux-2.4.2/fs/jffs2/super.c
 +
 +module_init(init_jffs2_fs);
 +module_exit(exit_jffs2_fs);
-diff -Naur linux-2.4.2.orig/fs/jffs2/symlink.c linux-2.4.2/fs/jffs2/symlink.c
+diff -urN linux-2.4.2.orig/fs/jffs2/symlink.c linux-2.4.2/fs/jffs2/symlink.c
 --- linux-2.4.2.orig/fs/jffs2/symlink.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/symlink.c	Fri Feb 15 14:41:16 2002
++++ linux-2.4.2/fs/jffs2/symlink.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,105 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -55591,9 +55610,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/symlink.c linux-2.4.2/fs/jffs2/symlink.c
 +	kfree(buf);
 +	return ret;
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/CVS/Entries linux-2.4.2/fs/jffs2/test/CVS/Entries
+diff -urN linux-2.4.2.orig/fs/jffs2/test/CVS/Entries linux-2.4.2/fs/jffs2/test/CVS/Entries
 --- linux-2.4.2.orig/fs/jffs2/test/CVS/Entries	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/CVS/Entries	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/CVS/Entries	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,11 @@
 +/compr_rubin.h/1.1/Mon Feb 19 10:21:30 2001//
 +/histo.cc/1.1/Mon Feb 26 11:57:30 2001//
@@ -55606,19 +55625,19 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/test/CVS/Entries linux-2.4.2/fs/jffs2/test/
 +/pushpull.h/1.2/Mon Feb 19 11:20:43 2001//
 +/rtime.h/1.1/Mon Feb 19 10:21:30 2001//
 +D
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/CVS/Repository linux-2.4.2/fs/jffs2/test/CVS/Repository
+diff -urN linux-2.4.2.orig/fs/jffs2/test/CVS/Repository linux-2.4.2/fs/jffs2/test/CVS/Repository
 --- linux-2.4.2.orig/fs/jffs2/test/CVS/Repository	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/CVS/Repository	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/CVS/Repository	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1 @@
 +mtd/fs/jffs2/test
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/CVS/Root linux-2.4.2/fs/jffs2/test/CVS/Root
+diff -urN linux-2.4.2.orig/fs/jffs2/test/CVS/Root linux-2.4.2/fs/jffs2/test/CVS/Root
 --- linux-2.4.2.orig/fs/jffs2/test/CVS/Root	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/CVS/Root	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/CVS/Root	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1 @@
 +:pserver:anoncvs@cvs.infradead.org:/home/cvs
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/compr_rubin.h linux-2.4.2/fs/jffs2/test/compr_rubin.h
+diff -urN linux-2.4.2.orig/fs/jffs2/test/compr_rubin.h linux-2.4.2/fs/jffs2/test/compr_rubin.h
 --- linux-2.4.2.orig/fs/jffs2/test/compr_rubin.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/compr_rubin.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/compr_rubin.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,13 @@
 +/* Rubin encoder/decoder header       */
 +/* work started at   : aug   3, 1994  */
@@ -55633,9 +55652,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/test/compr_rubin.h linux-2.4.2/fs/jffs2/tes
 +void end_rubin (void);
 +void init_decod (void);
 +int decode (long, long);
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/histo.cc linux-2.4.2/fs/jffs2/test/histo.cc
+diff -urN linux-2.4.2.orig/fs/jffs2/test/histo.cc linux-2.4.2/fs/jffs2/test/histo.cc
 --- linux-2.4.2.orig/fs/jffs2/test/histo.cc	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/histo.cc	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/histo.cc	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,80 @@
 +#include <stdio.h>
 +#include <stdlib.h>
@@ -55718,39 +55737,39 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/test/histo.cc linux-2.4.2/fs/jffs2/test/his
 +	printf("};\n");
 +}
 \ No newline at end of file
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/histo.h linux-2.4.2/fs/jffs2/test/histo.h
+diff -urN linux-2.4.2.orig/fs/jffs2/test/histo.h linux-2.4.2/fs/jffs2/test/histo.h
 --- linux-2.4.2.orig/fs/jffs2/test/histo.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/histo.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/histo.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,2 @@
 +#define BIT_DIVIDER 1043 
 +static int bits[9] = { 277,249,290,267,229,341,212,241,};
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/histo1.h linux-2.4.2/fs/jffs2/test/histo1.h
+diff -urN linux-2.4.2.orig/fs/jffs2/test/histo1.h linux-2.4.2/fs/jffs2/test/histo1.h
 --- linux-2.4.2.orig/fs/jffs2/test/histo1.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/histo1.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/histo1.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,2 @@
 +#define BIT_DIVIDER 755 
 +static int bits[9] = { 108,125,128,93,84,89,119,94,};
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/histo2.h linux-2.4.2/fs/jffs2/test/histo2.h
+diff -urN linux-2.4.2.orig/fs/jffs2/test/histo2.h linux-2.4.2/fs/jffs2/test/histo2.h
 --- linux-2.4.2.orig/fs/jffs2/test/histo2.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/histo2.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/histo2.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,2 @@
 +#define BIT_DIVIDER 504 
 +static int bits[9] = { 250,210,239,238,233,307,237,144,};
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/histo_html.h linux-2.4.2/fs/jffs2/test/histo_html.h
+diff -urN linux-2.4.2.orig/fs/jffs2/test/histo_html.h linux-2.4.2/fs/jffs2/test/histo_html.h
 --- linux-2.4.2.orig/fs/jffs2/test/histo_html.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/histo_html.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/histo_html.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,2 @@
 +#define BIT_DIVIDER 631 
 +static int bits[9] = { 268,247,324,252,199,529,436,1, };
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/histo_text.h linux-2.4.2/fs/jffs2/test/histo_text.h
+diff -urN linux-2.4.2.orig/fs/jffs2/test/histo_text.h linux-2.4.2/fs/jffs2/test/histo_text.h
 --- linux-2.4.2.orig/fs/jffs2/test/histo_text.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/histo_text.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/histo_text.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,2 @@
 +#define BIT_DIVIDER 1187 
 +static int bits[9] = { 518,418,533,414,310,1069,822,1, };
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/main.c linux-2.4.2/fs/jffs2/test/main.c
+diff -urN linux-2.4.2.orig/fs/jffs2/test/main.c linux-2.4.2/fs/jffs2/test/main.c
 --- linux-2.4.2.orig/fs/jffs2/test/main.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/main.c	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/main.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,56 @@
 +#include <stdio.h>
 +
@@ -55808,9 +55827,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/test/main.c linux-2.4.2/fs/jffs2/test/main.
 +	fclose(file);
 +}
 +
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/pushpull.h linux-2.4.2/fs/jffs2/test/pushpull.h
+diff -urN linux-2.4.2.orig/fs/jffs2/test/pushpull.h linux-2.4.2/fs/jffs2/test/pushpull.h
 --- linux-2.4.2.orig/fs/jffs2/test/pushpull.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/pushpull.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/pushpull.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,11 @@
 +#define  PPBUFSIZ   2048
 +void pushinit(unsigned char *buffer, unsigned int max);
@@ -55823,9 +55842,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/test/pushpull.h linux-2.4.2/fs/jffs2/test/p
 +int pullblk(int bitsinblk);
 +void pullexit(void);
 +int pulledbits(void);
-diff -Naur linux-2.4.2.orig/fs/jffs2/test/rtime.h linux-2.4.2/fs/jffs2/test/rtime.h
+diff -urN linux-2.4.2.orig/fs/jffs2/test/rtime.h linux-2.4.2/fs/jffs2/test/rtime.h
 --- linux-2.4.2.orig/fs/jffs2/test/rtime.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/test/rtime.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/test/rtime.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,8 @@
 +#define __u32 int
 +
@@ -55835,9 +55854,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/test/rtime.h linux-2.4.2/fs/jffs2/test/rtim
 +
 +void rtime_decompress(unsigned char *data_in, unsigned char *cpage_out,
 +		      __u32 srclen, __u32 destlen);
-diff -Naur linux-2.4.2.orig/fs/jffs2/write.c linux-2.4.2/fs/jffs2/write.c
+diff -urN linux-2.4.2.orig/fs/jffs2/write.c linux-2.4.2/fs/jffs2/write.c
 --- linux-2.4.2.orig/fs/jffs2/write.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/write.c	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/write.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,322 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -56161,9 +56180,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/write.c linux-2.4.2/fs/jffs2/write.c
 +	f->inocache->nodes = raw;
 +	return fd;
 +}
-diff -Naur linux-2.4.2.orig/fs/jffs2/zlib.c linux-2.4.2/fs/jffs2/zlib.c
+diff -urN linux-2.4.2.orig/fs/jffs2/zlib.c linux-2.4.2/fs/jffs2/zlib.c
 --- linux-2.4.2.orig/fs/jffs2/zlib.c	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/zlib.c	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/zlib.c	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,5371 @@
 +/*
 + * This file is derived from various .h and .c files from the zlib-1.0.4
@@ -61536,9 +61555,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/zlib.c linux-2.4.2/fs/jffs2/zlib.c
 +    return (s2 << 16) | s1;
 +}
 +/* --- adler32.c */
-diff -Naur linux-2.4.2.orig/fs/jffs2/zlib.h linux-2.4.2/fs/jffs2/zlib.h
+diff -urN linux-2.4.2.orig/fs/jffs2/zlib.h linux-2.4.2/fs/jffs2/zlib.h
 --- linux-2.4.2.orig/fs/jffs2/zlib.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/fs/jffs2/zlib.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/fs/jffs2/zlib.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,1010 @@
 +/*	$Id: zlib.h,v 1.2 1997/12/23 10:47:44 paulus Exp $	*/
 +
@@ -62550,9 +62569,9 @@ diff -Naur linux-2.4.2.orig/fs/jffs2/zlib.h linux-2.4.2/fs/jffs2/zlib.h
 +
 +#endif /* _ZLIB_H */
 +/* --- zlib.h */
-diff -Naur linux-2.4.2.orig/include/asm-ppc/8xx_rtc.h linux-2.4.2/include/asm-ppc/8xx_rtc.h
+diff -urN linux-2.4.2.orig/include/asm-ppc/8xx_rtc.h linux-2.4.2/include/asm-ppc/8xx_rtc.h
 --- linux-2.4.2.orig/include/asm-ppc/8xx_rtc.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/include/asm-ppc/8xx_rtc.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/asm-ppc/8xx_rtc.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,30 @@
 +/*
 + * Machine dependent access functions for RTC registers.
@@ -62584,9 +62603,9 @@ diff -Naur linux-2.4.2.orig/include/asm-ppc/8xx_rtc.h linux-2.4.2/include/asm-pp
 +
 +#endif /* __ASM_PPC_8XXRTC_H */
 +#endif /* __KERNEL__ */
-diff -Naur linux-2.4.2.orig/include/asm-ppc/bitops.h linux-2.4.2/include/asm-ppc/bitops.h
+diff -urN linux-2.4.2.orig/include/asm-ppc/bitops.h linux-2.4.2/include/asm-ppc/bitops.h
 --- linux-2.4.2.orig/include/asm-ppc/bitops.h	Sun Nov 12 03:23:10 2000
-+++ linux-2.4.2/include/asm-ppc/bitops.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/asm-ppc/bitops.h	Sat Mar  2 19:06:55 2002
 @@ -35,10 +35,10 @@
  	unsigned long mask = 1 << (nr & 0x1f);
  	unsigned long *p = ((unsigned long *)addr) + (nr >> 5);
@@ -62671,9 +62690,9 @@ diff -Naur linux-2.4.2.orig/include/asm-ppc/bitops.h linux-2.4.2/include/asm-ppc
  	bne	1b"
  	SMP_MB
  	: "=&r" (old), "=&r" (t), "=m" (*p)
-diff -Naur linux-2.4.2.orig/include/asm-ppc/checksum.h linux-2.4.2/include/asm-ppc/checksum.h
+diff -urN linux-2.4.2.orig/include/asm-ppc/checksum.h linux-2.4.2/include/asm-ppc/checksum.h
 --- linux-2.4.2.orig/include/asm-ppc/checksum.h	Sun Nov 12 03:23:10 2000
-+++ linux-2.4.2/include/asm-ppc/checksum.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/asm-ppc/checksum.h	Sat Mar  2 19:06:55 2002
 @@ -83,11 +83,11 @@
  						   unsigned short proto,
  						   unsigned int sum) 
@@ -62691,9 +62710,9 @@ diff -Naur linux-2.4.2.orig/include/asm-ppc/checksum.h linux-2.4.2/include/asm-p
  	"
  	: "=r" (sum)
  	: "r" (daddr), "r"(saddr), "r"((proto<<16)+len), "0"(sum));
-diff -Naur linux-2.4.2.orig/include/asm-ppc/pgtable.h linux-2.4.2/include/asm-ppc/pgtable.h
+diff -urN linux-2.4.2.orig/include/asm-ppc/pgtable.h linux-2.4.2/include/asm-ppc/pgtable.h
 --- linux-2.4.2.orig/include/asm-ppc/pgtable.h	Tue Jan 23 00:41:15 2001
-+++ linux-2.4.2/include/asm-ppc/pgtable.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/asm-ppc/pgtable.h	Sat Mar  2 19:06:55 2002
 @@ -418,11 +418,11 @@
  {
  	unsigned long old, tmp;
@@ -62711,9 +62730,9 @@ diff -Naur linux-2.4.2.orig/include/asm-ppc/pgtable.h linux-2.4.2/include/asm-pp
  	bne-	1b"
  	: "=&r" (old), "=&r" (tmp), "=m" (*p)
  	: "r" (p), "r" (clr), "r" (set), "m" (*p)
-diff -Naur linux-2.4.2.orig/include/asm-ppc/system.h linux-2.4.2/include/asm-ppc/system.h
+diff -urN linux-2.4.2.orig/include/asm-ppc/system.h linux-2.4.2/include/asm-ppc/system.h
 --- linux-2.4.2.orig/include/asm-ppc/system.h	Sun Nov 12 03:23:11 2000
-+++ linux-2.4.2/include/asm-ppc/system.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/asm-ppc/system.h	Sat Mar  2 19:06:55 2002
 @@ -131,9 +131,9 @@
  {
  	unsigned long prev;
@@ -62744,9 +62763,9 @@ diff -Naur linux-2.4.2.orig/include/asm-ppc/system.h linux-2.4.2/include/asm-ppc
  	bne-	1b\n"
  #ifdef CONFIG_SMP
  "	sync\n"
-diff -Naur linux-2.4.2.orig/include/asm-ppc/tqm8xxL.h linux-2.4.2/include/asm-ppc/tqm8xxL.h
+diff -urN linux-2.4.2.orig/include/asm-ppc/tqm8xxL.h linux-2.4.2/include/asm-ppc/tqm8xxL.h
 --- linux-2.4.2.orig/include/asm-ppc/tqm8xxL.h	Sun Nov 12 03:23:11 2000
-+++ linux-2.4.2/include/asm-ppc/tqm8xxL.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/asm-ppc/tqm8xxL.h	Sat Mar  2 19:06:55 2002
 @@ -39,9 +39,17 @@
  /* Configuration options for TQ Systems TQM850L mini module
   */
@@ -62765,9 +62784,9 @@ diff -Naur linux-2.4.2.orig/include/asm-ppc/tqm8xxL.h linux-2.4.2/include/asm-pp
  #define	TQM_IMAP_SIZE	(64 * 1024)	/* size of mapped area */
  
  #define	TQM_CLOCKRATE	50		/* 50 MHz Clock */
-diff -Naur linux-2.4.2.orig/include/linux/8xx_rtc.h linux-2.4.2/include/linux/8xx_rtc.h
+diff -urN linux-2.4.2.orig/include/linux/8xx_rtc.h linux-2.4.2/include/linux/8xx_rtc.h
 --- linux-2.4.2.orig/include/linux/8xx_rtc.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/include/linux/8xx_rtc.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/8xx_rtc.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,90 @@
 +#ifndef _PPC_8XX_RTC_H
 +#define _PPC_8XX_RTC_H
@@ -62859,9 +62878,9 @@ diff -Naur linux-2.4.2.orig/include/linux/8xx_rtc.h linux-2.4.2/include/linux/8x
 +#endif
 +
 +#endif /* _MC146818RTC_H */
-diff -Naur linux-2.4.2.orig/include/linux/jffs.h linux-2.4.2/include/linux/jffs.h
+diff -urN linux-2.4.2.orig/include/linux/jffs.h linux-2.4.2/include/linux/jffs.h
 --- linux-2.4.2.orig/include/linux/jffs.h	Wed Aug  9 23:06:12 2000
-+++ linux-2.4.2/include/linux/jffs.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/jffs.h	Sat Mar  2 19:06:55 2002
 @@ -10,7 +10,7 @@
   * the Free Software Foundation; either version 2 of the License, or
   * (at your option) any later version.
@@ -62902,9 +62921,9 @@ diff -Naur linux-2.4.2.orig/include/linux/jffs.h linux-2.4.2/include/linux/jffs.
  extern long no_jffs_control;
  extern long no_jffs_raw_inode;
  extern long no_jffs_node_ref;
-diff -Naur linux-2.4.2.orig/include/linux/jffs2.h linux-2.4.2/include/linux/jffs2.h
+diff -urN linux-2.4.2.orig/include/linux/jffs2.h linux-2.4.2/include/linux/jffs2.h
 --- linux-2.4.2.orig/include/linux/jffs2.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/include/linux/jffs2.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/jffs2.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,164 @@
 +/*
 + * JFFS2 -- Journalling Flash File System, Version 2.
@@ -63070,9 +63089,9 @@ diff -Naur linux-2.4.2.orig/include/linux/jffs2.h linux-2.4.2/include/linux/jffs
 +};
 +
 +#endif /* __LINUX_JFFS2_H__ */
-diff -Naur linux-2.4.2.orig/include/linux/jffs2_fs_i.h linux-2.4.2/include/linux/jffs2_fs_i.h
+diff -urN linux-2.4.2.orig/include/linux/jffs2_fs_i.h linux-2.4.2/include/linux/jffs2_fs_i.h
 --- linux-2.4.2.orig/include/linux/jffs2_fs_i.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/include/linux/jffs2_fs_i.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/jffs2_fs_i.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,58 @@
 +/* $Id: jffs2_fs_i.h,v 1.7 2001/03/25 22:36:12 dwmw2 Exp $ */
 +
@@ -63132,9 +63151,9 @@ diff -Naur linux-2.4.2.orig/include/linux/jffs2_fs_i.h linux-2.4.2/include/linux
 +
 +#endif /* _JFFS2_FS_I */
 +
-diff -Naur linux-2.4.2.orig/include/linux/jffs2_fs_sb.h linux-2.4.2/include/linux/jffs2_fs_sb.h
+diff -urN linux-2.4.2.orig/include/linux/jffs2_fs_sb.h linux-2.4.2/include/linux/jffs2_fs_sb.h
 --- linux-2.4.2.orig/include/linux/jffs2_fs_sb.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/include/linux/jffs2_fs_sb.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/jffs2_fs_sb.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,75 @@
 +/* $Id: jffs2_fs_sb.h,v 1.13 2001/03/20 17:43:56 dwmw2 Exp $ */
 +
@@ -63211,9 +63230,9 @@ diff -Naur linux-2.4.2.orig/include/linux/jffs2_fs_sb.h linux-2.4.2/include/linu
 +#define JFFS2_SB_INFO(sb) ((struct jffs2_sb_info *) &(sb)->u)
 +#define OFNI_BS_2SFFJ(c)  ((struct super_block *) ( ((char *)c) - ((char *)(&((struct super_block *)NULL)->u)) ) )
 +#endif /* _JFFS2_FB_SB */
-diff -Naur linux-2.4.2.orig/include/linux/mtd/cfi.h linux-2.4.2/include/linux/mtd/cfi.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/cfi.h linux-2.4.2/include/linux/mtd/cfi.h
 --- linux-2.4.2.orig/include/linux/mtd/cfi.h	Mon Dec 11 22:16:46 2000
-+++ linux-2.4.2/include/linux/mtd/cfi.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/cfi.h	Sat Mar  2 19:06:55 2002
 @@ -1,14 +1,161 @@
  
  /* Common Flash Interface structures 
@@ -63565,9 +63584,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/cfi.h linux-2.4.2/include/linux/mt
 +
  
  #endif /* __MTD_CFI_H__ */
-diff -Naur linux-2.4.2.orig/include/linux/mtd/cfi_endian.h linux-2.4.2/include/linux/mtd/cfi_endian.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/cfi_endian.h linux-2.4.2/include/linux/mtd/cfi_endian.h
 --- linux-2.4.2.orig/include/linux/mtd/cfi_endian.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/include/linux/mtd/cfi_endian.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/cfi_endian.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,51 @@
 +/*
 + * $Id: cfi_endian.h,v 1.10 2001/06/18 11:00:46 abz Exp $
@@ -63620,9 +63639,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/cfi_endian.h linux-2.4.2/include/l
 +#else
 +#error No CFI endianness defined
 +#endif
-diff -Naur linux-2.4.2.orig/include/linux/mtd/compatmac.h linux-2.4.2/include/linux/mtd/compatmac.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/compatmac.h linux-2.4.2/include/linux/mtd/compatmac.h
 --- linux-2.4.2.orig/include/linux/mtd/compatmac.h	Mon Dec 11 22:16:42 2000
-+++ linux-2.4.2/include/linux/mtd/compatmac.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/compatmac.h	Sat Mar  2 19:06:55 2002
 @@ -2,7 +2,7 @@
  /*
   * mtd/include/compatmac.h
@@ -63983,9 +64002,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/compatmac.h linux-2.4.2/include/li
 +#endif
 +
 +#endif /* __LINUX_MTD_COMPATMAC_H__ */
-diff -Naur linux-2.4.2.orig/include/linux/mtd/doc2000.h linux-2.4.2/include/linux/mtd/doc2000.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/doc2000.h linux-2.4.2/include/linux/mtd/doc2000.h
 --- linux-2.4.2.orig/include/linux/mtd/doc2000.h	Mon Dec 11 23:57:58 2000
-+++ linux-2.4.2/include/linux/mtd/doc2000.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/doc2000.h	Sat Mar  2 19:06:55 2002
 @@ -2,7 +2,7 @@
  /* Linux driver for Disk-On-Chip 2000       */
  /* (c) 1999 Machine Vision Holdings, Inc.   */
@@ -64034,9 +64053,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/doc2000.h linux-2.4.2/include/linu
  };
  
  int doc_decode_ecc(unsigned char sector[512], unsigned char ecc1[6]);
-diff -Naur linux-2.4.2.orig/include/linux/mtd/flashchip.h linux-2.4.2/include/linux/mtd/flashchip.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/flashchip.h linux-2.4.2/include/linux/mtd/flashchip.h
 --- linux-2.4.2.orig/include/linux/mtd/flashchip.h	Mon Dec 11 22:16:46 2000
-+++ linux-2.4.2/include/linux/mtd/flashchip.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/flashchip.h	Sat Mar  2 19:06:55 2002
 @@ -6,7 +6,7 @@
   *
   * (C) 2000 Red Hat. GPLd.
@@ -64064,9 +64083,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/flashchip.h linux-2.4.2/include/li
  	FL_UNKNOWN
  } flstate_t;
  
-diff -Naur linux-2.4.2.orig/include/linux/mtd/ftl.h linux-2.4.2/include/linux/mtd/ftl.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/ftl.h linux-2.4.2/include/linux/mtd/ftl.h
 --- linux-2.4.2.orig/include/linux/mtd/ftl.h	Sun Feb  4 19:05:30 2001
-+++ linux-2.4.2/include/linux/mtd/ftl.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/ftl.h	Sat Mar  2 19:06:55 2002
 @@ -1,4 +1,7 @@
  /*
 + * $Id: ftl.h,v 1.5 2001/06/02 20:35:51 dwmw2 Exp $
@@ -64086,9 +64105,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/ftl.h linux-2.4.2/include/linux/mt
   * above.  If you wish to allow the use of your version of this file
   * only under the terms of the GPL and not to allow others to use
   * your version of this file under the MPL, indicate your decision by
-diff -Naur linux-2.4.2.orig/include/linux/mtd/gen_probe.h linux-2.4.2/include/linux/mtd/gen_probe.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/gen_probe.h linux-2.4.2/include/linux/mtd/gen_probe.h
 --- linux-2.4.2.orig/include/linux/mtd/gen_probe.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/include/linux/mtd/gen_probe.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/gen_probe.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,23 @@
 +/*
 + * (C) 2001, 2001 Red Hat, Inc.
@@ -64113,18 +64132,18 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/gen_probe.h linux-2.4.2/include/li
 +struct mtd_info *mtd_do_chip_probe(struct map_info *map, struct chip_probe *cp);
 +
 +#endif /* __LINUX_MTD_GEN_PROBE_H__ */
-diff -Naur linux-2.4.2.orig/include/linux/mtd/iflash.h linux-2.4.2/include/linux/mtd/iflash.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/iflash.h linux-2.4.2/include/linux/mtd/iflash.h
 --- linux-2.4.2.orig/include/linux/mtd/iflash.h	Tue Jul  4 19:10:52 2000
-+++ linux-2.4.2/include/linux/mtd/iflash.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/iflash.h	Sat Mar  2 19:06:55 2002
 @@ -1,4 +1,4 @@
 -/* iflash.h $revision$ $date$ (David Hinds) */
 +/* $Id: iflash.h,v 1.2 2000/11/13 18:01:54 dwmw2 Exp $ */
  
  #ifndef __MTD_IFLASH_H__
  #define __MTD_IFLASH_H__
-diff -Naur linux-2.4.2.orig/include/linux/mtd/jedec.h linux-2.4.2/include/linux/mtd/jedec.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/jedec.h linux-2.4.2/include/linux/mtd/jedec.h
 --- linux-2.4.2.orig/include/linux/mtd/jedec.h	Tue Jul  4 19:10:52 2000
-+++ linux-2.4.2/include/linux/mtd/jedec.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/jedec.h	Sat Mar  2 19:06:55 2002
 @@ -7,7 +7,7 @@
   *
   * See the AMD flash databook for information on how to operate the interface.
@@ -64142,9 +64161,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/jedec.h linux-2.4.2/include/linux/
 -extern const struct JEDECTable *jedec_idtoinf(__u8 mfr,__u8 id);
  
  #endif
-diff -Naur linux-2.4.2.orig/include/linux/mtd/list.h linux-2.4.2/include/linux/mtd/list.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/list.h linux-2.4.2/include/linux/mtd/list.h
 --- linux-2.4.2.orig/include/linux/mtd/list.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/include/linux/mtd/list.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/list.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,154 @@
 +#ifndef _LINUX_LIST_H
 +#define _LINUX_LIST_H
@@ -64300,9 +64319,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/list.h linux-2.4.2/include/linux/m
 +#endif /* __KERNEL__ */
 +
 +#endif
-diff -Naur linux-2.4.2.orig/include/linux/mtd/map.h linux-2.4.2/include/linux/mtd/map.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/map.h linux-2.4.2/include/linux/mtd/map.h
 --- linux-2.4.2.orig/include/linux/mtd/map.h	Fri Feb  9 20:29:44 2001
-+++ linux-2.4.2/include/linux/mtd/map.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/map.h	Sat Mar  2 19:06:55 2002
 @@ -1,6 +1,6 @@
  
  /* Overhauled routines for dealing with different mmap regions of flash */
@@ -64385,9 +64404,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/map.h linux-2.4.2/include/linux/mt
  	kfree(mtd);
  }
  
-diff -Naur linux-2.4.2.orig/include/linux/mtd/mtd.h linux-2.4.2/include/linux/mtd/mtd.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/mtd.h linux-2.4.2/include/linux/mtd/mtd.h
 --- linux-2.4.2.orig/include/linux/mtd/mtd.h	Fri Dec 29 23:07:24 2000
-+++ linux-2.4.2/include/linux/mtd/mtd.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/mtd.h	Sat Mar  2 19:06:55 2002
 @@ -1,5 +1,5 @@
  
 -/* $Id: mtd.h,v 1.26 2000/10/30 17:18:04 sjhill Exp $ */
@@ -64536,9 +64555,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/mtd.h linux-2.4.2/include/linux/mt
  
  	/* iovec-based read/write methods. We need these especially for NAND flash,
  	   with its limited number of write cycles per erase.
-diff -Naur linux-2.4.2.orig/include/linux/mtd/nand_ecc.h linux-2.4.2/include/linux/mtd/nand_ecc.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/nand_ecc.h linux-2.4.2/include/linux/mtd/nand_ecc.h
 --- linux-2.4.2.orig/include/linux/mtd/nand_ecc.h	Thu Jan  1 01:00:00 1970
-+++ linux-2.4.2/include/linux/mtd/nand_ecc.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/nand_ecc.h	Sat Mar  2 19:06:55 2002
 @@ -0,0 +1,28 @@
 +/*
 + *  drivers/mtd/nand_ecc.h
@@ -64568,9 +64587,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/nand_ecc.h linux-2.4.2/include/lin
 + * Detect and correct a 1 bit error for 256 byte block
 + */
 +int nand_correct_data (u_char *dat, u_char *read_ecc, u_char *calc_ecc);
-diff -Naur linux-2.4.2.orig/include/linux/mtd/nftl.h linux-2.4.2/include/linux/mtd/nftl.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/nftl.h linux-2.4.2/include/linux/mtd/nftl.h
 --- linux-2.4.2.orig/include/linux/mtd/nftl.h	Mon Dec 11 23:57:58 2000
-+++ linux-2.4.2/include/linux/mtd/nftl.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/nftl.h	Sat Mar  2 19:06:55 2002
 @@ -2,7 +2,7 @@
  /* Defines for NAND Flash Translation Layer  */
  /* (c) 1999 Machine Vision Holdings, Inc.    */
@@ -64588,9 +64607,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/nftl.h linux-2.4.2/include/linux/m
  
  #endif /* __KERNEL__ */
  
-diff -Naur linux-2.4.2.orig/include/linux/mtd/partitions.h linux-2.4.2/include/linux/mtd/partitions.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/partitions.h linux-2.4.2/include/linux/mtd/partitions.h
 --- linux-2.4.2.orig/include/linux/mtd/partitions.h	Mon Dec 11 23:57:58 2000
-+++ linux-2.4.2/include/linux/mtd/partitions.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/partitions.h	Sat Mar  2 19:06:55 2002
 @@ -5,7 +5,7 @@
   *
   * This code is GPL
@@ -64639,9 +64658,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/partitions.h linux-2.4.2/include/l
  
  
  int add_mtd_partitions(struct mtd_info *, struct mtd_partition *, int);
-diff -Naur linux-2.4.2.orig/include/linux/mtd/pmc551.h linux-2.4.2/include/linux/mtd/pmc551.h
+diff -urN linux-2.4.2.orig/include/linux/mtd/pmc551.h linux-2.4.2/include/linux/mtd/pmc551.h
 --- linux-2.4.2.orig/include/linux/mtd/pmc551.h	Mon Dec 11 22:16:45 2000
-+++ linux-2.4.2/include/linux/mtd/pmc551.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/mtd/pmc551.h	Sat Mar  2 19:06:55 2002
 @@ -1,5 +1,5 @@
  /*
 - * $Id: pmc551.h,v 1.3 2000/10/30 20:03:23 major Exp $
@@ -64694,9 +64713,9 @@ diff -Naur linux-2.4.2.orig/include/linux/mtd/pmc551.h linux-2.4.2/include/linux
  
  #endif /* __MTD_PMC551_H__ */
  
-diff -Naur linux-2.4.2.orig/include/linux/sched.h linux-2.4.2/include/linux/sched.h
+diff -urN linux-2.4.2.orig/include/linux/sched.h linux-2.4.2/include/linux/sched.h
 --- linux-2.4.2.orig/include/linux/sched.h	Thu Feb 22 01:09:58 2001
-+++ linux-2.4.2/include/linux/sched.h	Fri Feb 15 14:41:17 2002
++++ linux-2.4.2/include/linux/sched.h	Sat Mar  2 19:06:55 2002
 @@ -534,7 +534,8 @@
  extern unsigned long volatile jiffies;
  extern unsigned long itimer_ticks;
