@@ -13,6 +13,12 @@ fi
 AC_CANONICAL_TARGET
 AC_SUBST(target)
 
+AC_ARG_ENABLE(libcrypto,
+	AC_HELP_STRING([--disable-libcrypto], [.libcrypto will not be build by 'make all' (reduces the size of some other libs]),
+	,[enable_libcrypto=yes])
+
+AM_CONDITIONAL(WITH_LIBCRYPTO,test "$enable_libcrypto" = "yes")
+
 AC_ARG_WITH(hardwareruleset,
 	[  --with-hardwareruleset=NAME  hardware ruleset [[dbox2,dreambox]]],
 	[HARDWARERULESET="$withval"],[HARDWARERULESET="dbox2"])

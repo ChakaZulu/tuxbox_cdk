@@ -287,7 +287,10 @@ endif
 #
 
 libs: \
-	.libcrypto .libcurl .libdirectfb .libdirectfbpp .libdvbpsi \
+if WITH_LIBCRYPTO
+	.libcrypto \
+endif
+	.libcurl .libdirectfb .libdirectfbpp .libdvbpsi \
 	.libfreetype .libjpeg .libmad .libid3tag .libncurses .libpng \
 	.libreadline .libsdl .libsigc .libz .libdvb
 
