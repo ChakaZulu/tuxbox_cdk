@@ -6,6 +6,7 @@ diff -urN vsftpd-1.0.1.orig/Makefile vsftpd-1.0.1/Makefile
 -CC 	=	gcc
  INSTALL	=	install
  IFLAGS  = -idirafter dummyinc
+ #CFLAGS = -g
 -CFLAGS	=	-O2 -Wall -W -Wshadow #-pedantic -Werror -Wconversion
 +CFLAGS	=	-Os -Wall -W -mcpu=823 -mmultiple -mstring -meabi -msoft-float
  
@@ -17,7 +18,7 @@ diff -urN vsftpd-1.0.1.orig/Makefile vsftpd-1.0.1/Makefile
 diff -urN vsftpd-1.0.1.orig/sysdeputil.c vsftpd-1.0.1/sysdeputil.c
 --- vsftpd-1.0.1.orig/sysdeputil.c	Tue Nov 13 22:12:54 2001
 +++ vsftpd-1.0.1/sysdeputil.c	Fri Mar  1 23:01:53 2002
-@@ -39,10 +39,10 @@
+@@ -46,10 +46,10 @@
  #undef VSF_SYSDEP_HAVE_HPUX_SETPROCTITLE
  #undef VSF_SYSDEP_HAVE_MAP_ANON
  #undef VSF_SYSDEP_NEED_OLD_FD_PASSING
@@ -27,9 +28,9 @@ diff -urN vsftpd-1.0.1.orig/sysdeputil.c vsftpd-1.0.1/sysdeputil.c
  #define VSF_SYSDEP_HAVE_USERSHELL
 -#define VSF_SYSDEP_HAVE_LIBCAP
 +#undef VSF_SYSDEP_HAVE_LIBCAP
+ #define VSF_SYSDEP_HAVE_UTMPX
  
- /* BEGIN config */
- #if defined(__linux__) && !defined(__ia64__) && !defined(__s390__)
+ #define __USE_GNU
 diff -urN vsftpd-1.0.1.orig/vsftpd-dbox2.conf vsftpd-1.0.1/vsftpd-dbox2.conf
 --- vsftpd-1.0.1.orig/vsftpd-dbox2.conf	Thu Jan  1 01:00:00 1970
 +++ vsftpd-1.0.1/vsftpd-dbox2.conf	Fri Mar  1 23:13:43 2002
