@@ -237,7 +237,8 @@ root_optional: \
 	@PREPARE_ftpd@
 	cd @DIR_ftpd@ && \
 		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		$(MAKE) && \
 		@INSTALL_ftpd@
 	@CLEANUP_ftpd@
@@ -248,7 +249,8 @@ root_optional: \
 	cd @DIR_ifupdown@ && \
 		$(MAKE) all \
 		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" && \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" && \
 		@INSTALL_ifupdown@
 	@CLEANUP_ifupdown@
 	touch .ifupdown
@@ -258,7 +260,8 @@ root_optional: \
 	touch @DIR_inetd@/MCONFIG
 	cd @DIR_inetd@/inetd && \
 		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		$(MAKE) all && \
 		@INSTALL_inetd@
 	@CLEANUP_inetd@
@@ -267,13 +270,12 @@ root_optional: \
 .modutils: .bootstrap @DEPENDS_modutils@
 	@PREPARE_modutils@
 	cd @DIR_modutils@ && \
-		CC=$(target)-gcc CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_modutils@ \
 		BUILDCC=$(CC) BUILDCFLAGS="-O2" \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--disable-root-check \
 			--disable-strip && \
 		$(MAKE) && \
@@ -285,12 +287,10 @@ root_optional: \
 	@PREPARE_netkit_telnet@
 	touch @DIR_netkit_telnet@/MCONFIG
 	cd @DIR_netkit_telnet@ && \
-		CXX=$(target)-g++ \
-		CXXFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_netkit_telnet@ \
 		LIBS="-lncurses" \
 		$(MAKE) -C telnet && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_netkit_telnet@ \
 		LIBS="-lutil" \
 		$(MAKE) -C telnetd && \
 		@INSTALL_netkit_telnet@
@@ -300,8 +300,7 @@ root_optional: \
 .portmap: .bootstrap @DEPENDS_portmap@
 	@PREPARE_portmap@
 	cd @DIR_portmap@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_portmap@ \
 		$(MAKE) && \
 		@INSTALL_portmap@
 	@CLEANUP_portmap@
@@ -310,8 +309,8 @@ root_optional: \
 .procps: .bootstrap .libncurses @DEPENDS_procps@
 	@PREPARE_procps@
 	cd @DIR_procps@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" CURSES="-I$(targetprefix) -lncurses"\
+		@BUILDENV_procps@ \
+		CURSES="-I$(targetprefix) -lncurses" \
 		$(MAKE) && \
 		@INSTALL_procps@
 	@CLEANUP_procps@
@@ -331,9 +330,7 @@ root_optional: \
 .watchdog: .bootstrap @DEPENDS_watchdog@
 	@PREPARE_watchdog@
 	cd @DIR_watchdog@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_watchdog@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -351,26 +348,26 @@ root_optional: \
 #
 
 libs: \
-	.libcrypto .libcurl .libdvbpsi .libffi .libfreetype .libjpeg \
-	.libmad .libncurses .libpng .libreadline .libsdl .libsigc .libz 
+	.libcrypto .libcurl .libdirectfb .libdvbpsi \
+	.libfreetype .libjpeg .libmad .libncurses .libpng \
+	.libreadline .libsdl .libsigc .libz
 
 libs_optional: \
-	.libcommoncplusplus .libdb2 .libnet .libnids .libpcap .libpopt \
-	.libqt .libxml2 .libxmlparse .libxmlwrapp
+	.libcommoncplusplus .libdb2 .libffi .libnet \
+	.libnids .libpcap .libpopt .libxml2
 
 .libcommoncplusplus: .bootstrap .libxml2 @DEPENDS_libcommoncplusplus@
 	@PREPARE_libcommoncplusplus@
 	cd @DIR_libcommoncplusplus@ &&\
-		CC=$(target)-gcc \
-		CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libcommoncplusplus@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
+		rm -f $(hostprefix)/bin/ccgnu2-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < ccgnu2-config > $(hostprefix)/bin/ccgnu2-config && \
+		chmod 755 $(hostprefix)/bin/ccgnu2-config && \
 		@INSTALL_libcommoncplusplus@
 	@CLEANUP_libcommoncplusplus@
 	touch .libcommoncplusplus
@@ -387,17 +384,16 @@ libs_optional: \
 .libcurl: .bootstrap @DEPENDS_libcurl@
 	@PREPARE_libcurl@
 	cd @DIR_libcurl@ && \
-		CC=$(target)-gcc \
-		CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libcurl@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--with-random && \
 		$(MAKE) all && \
+		rm -f $(hostprefix)/bin/curl-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < curl-config > $(hostprefix)/bin/curl-config && \
+		chmod 755 $(hostprefix)/bin/curl-config && \
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
 	touch .libcurl
@@ -407,11 +403,7 @@ libs_optional: \
 	cd @DIR_libdb2@/dist && \
 		chmod 755 configure && \
 		autoconf && \
-		CC=$(target)-gcc \
-		CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libdb2@ \
 		CROSS_COMPILE=$(target)- \
 		./configure \
 			--build=$(build) \
@@ -427,23 +419,22 @@ libs_optional: \
 .libdirectfb: .bootstrap .libfreetype .libjpeg .libpng .libz @DEPENDS_libdirectfb@
 	@PREPARE_libdirectfb@
 	cd @DIR_libdirectfb@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
+		@BUILDENV_libdirectfb@ \
 		CPPFLAGS="-I$(driverdir)/include" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
-		NM=$(target)-nm \
 		./autogen.sh \
 			--build=$(build) \
 			--host=$(target) \
-			--disable-sdl \
-			--disable-jpeg \
+			--prefix= \
 			--disable-avifile \
-			--prefix= && \
+			--disable-jpeg \
+			--disable-sdl && \
 		$(MAKE) all && \
 		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb-config > $(hostprefix)/bin/directfb-config && \
 		chmod 755 $(hostprefix)/bin/directfb-config && \
 		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb.pc > directfb.pc.tmp && \
 		mv directfb.pc.tmp directfb.pc && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb-internal.pc > directfb-internal.pc.tmp && \
+		mv directfb-internal.pc.tmp directfb-internal.pc && \
 		@INSTALL_libdirectfb@
 	@CLEANUP_libdirectfb@
 	touch .libdirectfb
@@ -451,9 +442,7 @@ libs_optional: \
 .libdvbpsi: .bootstrap @DEPENDS_libdvbpsi@
 	@PREPARE_libdvbpsi@
 	cd @DIR_libdvbpsi@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libdvbpsi@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -466,15 +455,11 @@ libs_optional: \
 .libffi: .bootstrap @DEPENDS_libffi@
 	@PREPARE_libffi@
 	cd @DIR_libffi@ && \
-		CC=$(target)-gcc \
-		CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libffi@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_libffi@
 	@CLEANUP_libffi@
@@ -483,11 +468,15 @@ libs_optional: \
 .libfreetype: .bootstrap @DEPENDS_libfreetype@
 	@PREPARE_libfreetype@
 	cd @DIR_libfreetype@ && \
-		$(MAKE) \
-			CC=$(target)-gcc \
-			CFLAGS="$(TARGET_CFLAGS)" \
-			CFG="--build=${build} --host=${target} --prefix=${targetprefix}" && \
+		@BUILDENV_libfreetype@ \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
 		$(MAKE) all && \
+		rm -f $(hostprefix)/bin/freetype-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < builds/unix/freetype-config > $(hostprefix)/bin/freetype-config && \
+		chmod 755 $(hostprefix)/bin/freetype-config && \
 		@INSTALL_libfreetype@
 	@CLEANUP_libfreetype@
 	touch .libfreetype
@@ -495,11 +484,11 @@ libs_optional: \
 .libjpeg: .bootstrap @DEPENDS_libjpeg@
 	@PREPARE_libjpeg@
 	cd @DIR_libjpeg@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libjpeg@ \
 		./configure \
+			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) libjpeg.so.6 && \
 		@INSTALL_libjpeg@
 	@CLEANUP_libjpeg@
@@ -508,14 +497,12 @@ libs_optional: \
 .libmad: .bootstrap .libz @DEPENDS_libmad@
 	@PREPARE_libmad@
 	cd @DIR_libmad@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libmad@ \
 		./configure \
-			--enable-shared=yes \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
+			--enable-shared=yes \
 			--disable-nls \
 			--without-esd \
 			--enable-speed \
@@ -529,11 +516,7 @@ libs_optional: \
 .libncurses: .bootstrap @DEPENDS_libncurses@
 	@PREPARE_libncurses@
 	cd @DIR_libncurses@ && \
-		CC=$(target)-gcc \
-		CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libncurses@ \
 		BUILD_CC=$(CC) \
 		./configure \
 			--build=$(build) \
@@ -549,6 +532,7 @@ libs_optional: \
 			--disable-rpath \
 			--without-cxx-binding \
 			--with-fallbacks='linux vt100 xterm' && \
+		$(MAKE) all && \
 		@INSTALL_libncurses@
 	@CLEANUP_libncurses@
 	touch .libncurses
@@ -556,11 +540,7 @@ libs_optional: \
 .libnet: .bootstrap @DEPENDS_libnet@
 	@PREPARE_libnet@
 	cd @DIR_libnet@ && \
-		CC=$(target)-gcc \
-		AR=$(target)-ar \
-		RANLIB=$(target)-ranlib \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libnet@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -575,14 +555,11 @@ libs_optional: \
 .libnids: .bootstrap .libnet @DEPENDS_libnids@
 	@PREPARE_libnids@
 	cd @DIR_libnids@ && \
-		CC=$(target)-gcc \
-		RANLIB=$(target)-ranlib \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libnids@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_libnids@
 	@CLEANUP_libnids@
@@ -591,13 +568,12 @@ libs_optional: \
 .libpcap: .bootstrap @DEPENDS_libpcap@
 	@PREPARE_libpcap@
 	cd @DIR_libpcap@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libpcap@ \
 		./configure \
+			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
-			--with-pcap=linux \
-			--build=$(build) && \
+			--prefix= \
+			--with-pcap=linux && \
 		$(MAKE) all && \
 		@INSTALL_libpcap@
 	@CLEANUP_libpcap@
@@ -606,7 +582,10 @@ libs_optional: \
 .libpng: .bootstrap .libz @DEPENDS_libpng@
 	@PREPARE_libpng@
 	cd @DIR_libpng@ && \
-		 $(MAKE) all CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS) -DPNG_DEBUG=0" prefix="$(targetprefix)" && \
+		$(MAKE) libpng.a libpng12.so libpng.pc libpng-config \
+	 		@BUILDENV_libpng@ \
+			CPPFLAGS="-DPNG_DEBUG=0" \
+			prefix=$(targetprefix) && \
 		@INSTALL_libpng@
 	@CLEANUP_libpng@
 	touch .libpng
@@ -614,11 +593,11 @@ libs_optional: \
 .libpopt: .bootstrap @DEPENDS_libpopt@
 	@PREPARE_libpopt@
 	cd @DIR_libpopt@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libpopt@ \
 		./configure \
+			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix)\
+			--prefix= \
 			--with-pic \
 			--disable-nls && \
 		$(MAKE) all && \
@@ -626,38 +605,16 @@ libs_optional: \
 	@CLEANUP_libpopt@
 	touch .libpopt
 
-#
-# qt embedded (current only moc)
-#
-.libqt: .bootstrap .libfreetype .libjpeg .libpng .libz @DEPENDS_libqt@
-	@PREPARE_libqt@
-	cd @DIR_libqt@ && \
-		QTDIR=`pwd` \
-		./configure \
-			-platform linux-x86-g++ \
-			-xplatform linux-powerpc-g++ \
-			-system-zlib \
-			-system-jpeg \
-			-system-libpng \
-			-qconfig dbox \
-			-qvfb \
-			-depths 4,8,16,24,32 && \
-		$(MAKE) -C src/moc QTDIR=`pwd` && \
-		@INSTALL_libqt@
-	@CLEANUP_libqt@
-	touch .libqt
-
 .libreadline: .bootstrap @DEPENDS_libreadline@
 	@PREPARE_libreadline@
-	cd @DIR_libreadline@ && autoconf &&\
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+	cd @DIR_libreadline@ && \
+		autoconf && \
+		@BUILDENV_libreadline@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
-		$(MAKE) shared && \
+			--prefix= && \
+		$(MAKE) all && \
 		@INSTALL_libreadline@
 	@CLEANUP_libreadline@
 	touch .libreadline
@@ -665,14 +622,7 @@ libs_optional: \
 .libsdl: .bootstrap .libdirectfb @DEPENDS_libsdl@
 	@PREPARE_libsdl@
 	cd @DIR_libsdl@ && \
-		CC=$(target)-gcc \
-		CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
-		NM=$(target)-nm \
-		RANLIB=$(target)-ranlib \
-		PKG_CONFIG_PATH=$(targetprefix)/lib/pkgconfig \
+		@BUILDENV_libsdl@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -710,17 +660,15 @@ libs_optional: \
 .libsigc: .bootstrap @DEPENDS_libsigc@
 	@PREPARE_libsigc@
 	cd @DIR_libsigc@ && \
-		CC=$(target)-gcc \
-		CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libsigc@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--disable-checks && \
 		$(MAKE) all && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < sigc++-1.2.pc > sigc++-1.2.pc.tmp && \
+		mv sigc++-1.2.pc.tmp sigc++-1.2.pc && \
 		@INSTALL_libsigc@
 	@CLEANUP_libsigc@
 	touch .libsigc
@@ -728,67 +676,43 @@ libs_optional: \
 .libxml2: .bootstrap @DEPENDS_libxml2@
 	@PREPARE_libxml2@
 	cd @DIR_libxml2@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libxml2@ \
 		./configure \
+			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
-			--without-html-dir --with-threads --without-ftp --without-http --without-html \
-			--without-catalog --without-docbook --with-xpath --without-xptr \
-			--without-xinclude --without-iconv --without-debug --without-mem-debug \
+			--prefix= \
+			--without-html-dir \
+			--with-threads \
+			--without-ftp \
+			--without-http \
+			--without-html \
+			--without-catalog \
+			--without-docbook \
+			--with-xpath \
+			--without-xptr \
+			--without-xinclude \
+			--without-iconv \
+			--without-debug \
+			--without-mem-debug \
 			--without-python && \
 		$(MAKE) all && \
+		rm -f $(hostprefix)/bin/xml2-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < xml2-config > $(hostprefix)/bin/xml2-config && \
+		chmod 755 $(hostprefix)/bin/xml2-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < libxml-2.0.pc > libxml-2.0.pc.tmp && \
+		mv libxml-2.0.pc.tmp libxml-2.0.pc && \
 		@INSTALL_libxml2@
 	@CLEANUP_libxml2@
 	touch .libxml2
 
-.libxmlparse: .bootstrap @DEPENDS_libxmlparse@
-	@PREPARE_libxmlparse@
-	cd @DIR_libxmlparse@ && \
-		aclocal -I . && \
-		libtoolize --automake --force && \
-		autoconf && \
-		automake --add-missing --force-missing && \
-		CC=$(target)-gcc \
-		CXX=$(target)-g++ \
-		RANLIB=$(target)-ranlib \
-		NM=$(target)-nm \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix=$(targetprefix) \
-			--enable-ambiguous \
-			--enable-libstdcpp3 && \
-		$(MAKE) all && \
-		@INSTALL_libxmlparse@
-	@CLEANUP_libxmlparse@
-	touch .libxmlparse
-
-.libxmlwrapp: .bootstrap .libxml2 @DEPENDS_libxmlwrapp@
-	@PREPARE_libxmlwrapp@
-	cd @DIR_libxmlwrapp@ && \
-		CXX=$(target)-g++ \
-		CXXFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure.pl \
-			--disable-examples \
-			--prefix $(targetprefix) && \
-		$(MAKE) all && \
-		@INSTALL_libxmlwrapp@
-	@CLEANUP_libxmlwrapp@
-	touch .libxmlwrapp
-
 .libz: .bootstrap @DEPENDS_libz@
 	@PREPARE_libz@
 	cd @DIR_libz@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_libz@ \
 		./configure \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--shared && \
-		$(MAKE) libz.so.1.1.4 && \
+		$(MAKE) all && \
 		@INSTALL_libz@
 	@CLEANUP_libz@
 	touch .libz
@@ -804,9 +728,7 @@ contrib_apps_optional: .dsniff .pump .thttpd
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
 	cd @DIR_console_data@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_console_data@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -819,9 +741,7 @@ contrib_apps_optional: .dsniff .pump .thttpd
 .console_tools: .bootstrap .console_data @DEPENDS_console_tools@
 	@PREPARE_console_tools@
 	cd @DIR_console_tools@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_console_tools@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -834,11 +754,7 @@ contrib_apps_optional: .dsniff .pump .thttpd
 .directfb_examples: .bootstrap .libdirectfb @DEPENDS_directfb_examples@
 	@PREPARE_directfb_examples@
 	cd @DIR_directfb_examples@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
-		NM=$(target)-nm \
-		PKG_CONFIG_PATH=$(targetprefix)/lib/pkgconfig \
+		@BUILDENV_directfb_examples@
 		./autogen.sh \
 			--build=$(build) \
 			--host=$(target) \
@@ -851,10 +767,7 @@ contrib_apps_optional: .dsniff .pump .thttpd
 .dsniff: .bootstrap .libnet .libnids .libdb2 .rpcgen @DEPENDS_dsniff@
 	@PREPARE_dsniff@
 	cd @DIR_dsniff@ && \
-		CC=$(target)-gcc \
-		RANLIB=$(target)-ranlib \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_dsniff@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -869,9 +782,7 @@ contrib_apps_optional: .dsniff .pump .thttpd
 	@PREPARE_fbset@
 	cd @DIR_fbset@ && \
 		$(MAKE) \
-			CC=$(target)-gcc \
-			CFLAGS="$(TARGET_CFLAGS)" \
-			LDFLAGS="$(TARGET_LDFLAGS)" && \
+			@BUILDENV_fbset@ && \
 		@INSTALL_fbset@
 	@CLEANUP_fbset@
 	touch .fbset
@@ -879,9 +790,7 @@ contrib_apps_optional: .dsniff .pump .thttpd
 .lirc: .bootstrap @DEPENDS_lirc@
 	@PREPARE_lirc@
 	cd @DIR_lirc@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_lirc@ \
 		mknod=/bin/true \
 		./configure \
 			--build=$(build) \
@@ -913,9 +822,7 @@ contrib_apps_optional: .dsniff .pump .thttpd
 .pump: .bootstrap .libpopt @DEPENDS_pump@
 	@PREPARE_pump@
 	cd @DIR_pump@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_pump@ \
 		$(MAKE) all && \
 		@INSTALL_pump@
 	@CLEANUP_pump@
@@ -924,9 +831,7 @@ contrib_apps_optional: .dsniff .pump .thttpd
 .ssh: .bootstrap .libcrypto .libz @DEPENDS_ssh@
 	@PREPARE_ssh@
 	cd @DIR_ssh@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_ssh@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -947,7 +852,8 @@ contrib_apps_optional: .dsniff .pump .thttpd
 	@PREPARE_tcpdump@
 	cd @DIR_tcpdump@ && \
 		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS) -I$(targetprefix)/include -L$(targetprefix)/lib" LDFLAGS="$(TARGET_LDFLAGS) -L$(targetprefix)/lib"  \
+		CFLAGS="$(TARGET_CFLAGS) -I$(targetprefix)/include -L$(targetprefix)/lib" \
+		LDFLAGS="$(TARGET_LDFLAGS) -L$(targetprefix)/lib"  \
 		./configure \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
@@ -961,9 +867,7 @@ contrib_apps_optional: .dsniff .pump .thttpd
 .thttpd: @DEPENDS_thttpd@
 	@PREPARE_thttpd@
 	cd @DIR_thttpd@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_thttpd@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -976,9 +880,7 @@ contrib_apps_optional: .dsniff .pump .thttpd
 .xrc: .bootstrap .lirc @DEPENDS_xrc@
 	@PREPARE_xrc@
 	cd @DIR_xrc@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_xrc@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -993,32 +895,6 @@ contrib_apps_optional: .dsniff .pump .thttpd
 
 #######################
 #
-# msttf
-#
-
-.cabextract: .bootstrap @DEPENDS_cabextract@
-	@PREPARE_cabextract@
-	cd @DIR_cabextract@ && \
-		CC=$(CC) CFLAGS="$(CFLAGS)" \
-		./configure \
-			--prefix=$(hostprefix) && \
-		$(MAKE) all && \
-		@INSTALL_cabextract@
-	@CLEANUP_cabextract@
-	touch .cabextract
-
-.msttf: .bootstrap .cabextract @DEPENDS_msttf@
-	@PREPARE_msttf@
-	$(INSTALL) -d $(targetprefix)$(FONTDIR)
-	$(INSTALL) -m 0644 @DIR_msttf@/AriBlk.TTF $(targetprefix)$(FONTDIR)/Arial_Black.ttf
-	$(INSTALL) -m 0644 @DIR_msttf@/Arial.TTF $(targetprefix)$(FONTDIR)/Arial.ttf
-	$(INSTALL) -m 0644 @DIR_msttf@/Arialbd.TTF $(targetprefix)$(FONTDIR)/Arial_Bold.ttf
-	$(INSTALL) -m 0644 @DIR_msttf@/Ariali.TTF $(targetprefix)$(FONTDIR)/Arial_Italic.ttf
-	@CLEANUP_msttf@
-	touch .msttf
-
-#######################
-#
 #   development tools
 #
 
@@ -1028,16 +904,14 @@ devel_optional: .gdb-remote .ksymoops
 .gdb: .bootstrap .libncurses @DEPENDS_gdb@
 	@PREPARE_gdb@
 	cd @DIR_gdb@ && \
+		@BUILDENV_gdb@ \
 		LD_LIBRARY_PATH=$(libdir) \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--target=$(target) \
 			--nfp \
 			--disable-sim \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_gdb@
 	@CLEANUP_gdb@
@@ -1060,20 +934,18 @@ devel_optional: .gdb-remote .ksymoops
 .ksymoops: .bootstrap @DEPENDS_ksymoops@
 	@PREPARE_ksymoops@
 	cd @DIR_ksymoops@ && \
-	$(MAKE) CC=$(target)-gcc DEF_MAP="\\\"/boot/System.map-*r\\\"" DEF_VMLINUX="\\\"/boot/vmlinux-*r\\\"" &&\
-	@INSTALL_ksymoops@
+		$(MAKE) CC=$(target)-gcc DEF_MAP="\\\"/boot/System.map-*r\\\"" DEF_VMLINUX="\\\"/boot/vmlinux-*r\\\"" && \
+		@INSTALL_ksymoops@
 	@CLEANUP_ksymoops@
 	touch .ksymoops
 
 .ltrace: .bootstrap @DEPENDS_ltrace@
 	@PREPARE_ltrace@
 	cd @DIR_ltrace@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_ltrace@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--target=$(target) \
 			--prefix= && \
 		$(MAKE) clean all LD=$(target)-ld && \
 		@INSTALL_ltrace@
@@ -1083,13 +955,11 @@ devel_optional: .gdb-remote .ksymoops
 .strace: .bootstrap @DEPENDS_strace@
 	@PREPARE_strace@
 	cd @DIR_strace@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_strace@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--target=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_strace@
 	@CLEANUP_strace@
@@ -1098,10 +968,11 @@ devel_optional: .gdb-remote .ksymoops
 .nano: .bootstrap @DEPENDS_nano@
 	@PREPARE_nano@
 	cd @DIR_nano@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_nano@ \
 		./configure \
-			--prefix=$(targetprefix) && \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_nano@
 	@CLEANUP_nano@
@@ -1133,14 +1004,11 @@ java: .kaffeh .kaffe
 .kaffe: .bootstrap .kaffeh .libffi @DEPENDS_kaffe@
 	@PREPARE_kaffe@
 	cd @DIR_kaffe@ && \
-		CC=$(target)-gcc CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_kaffe@ \
 		./configure \
+			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
-			--libexecdir=$(targetprefix)/bin \
-			--enable-feedback \
-			--with-stats \
+			--prefix= \
 			--disable-dependency-tracking \
 			--without-x \
 			--without-suncompat \
@@ -1161,13 +1029,12 @@ fun: .gnuboy .scummvm .sdldoom
 	@PREPARE_gnuboy@
 	cd @DIR_gnuboy@ && \
 		autoconf && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/include" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_gnuboy@ \
+		CPPFLAGS="-I$(driverdir)/include" \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_gnuboy@
 	@CLEANUP_gnuboy@
@@ -1177,9 +1044,7 @@ fun: .gnuboy .scummvm .sdldoom
 	@PREPARE_scummvm@
 	cd @DIR_scummvm@ && \
 		$(MAKE) \
-			CC=$(target)-g++ \
-			CFLAGS="$(TARGET_CFLAGS)" \
-			LDFLAGS="$(TAGET_LDFLAGS)" \
+			@BUILDENV_scummvm@ \
 			DEFINES="-DUNIX" && \
 		@INSTALL_scummvm@
 	@CLEANUP_scummvm@
@@ -1188,13 +1053,11 @@ fun: .gnuboy .scummvm .sdldoom
 .sdldoom: .bootstrap .libsdl @DEPENDS_sdldoom@
 	@PREPARE_sdldoom@
 	cd @DIR_sdldoom@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" \
+		@BUILDENV_sdldoom@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--target=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_sdldoom@
 	@CLEANUP_sdldoom@
@@ -1211,9 +1074,8 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@PREPARE_dvbdate@
 	cd @DIR_dvbdate@ && \
 		$(MAKE) dvbdate \
-			CC=$(target)-gcc \
-			CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/include" \
-			LDFLAGS="$(TARGET_LDFLAGS)" && \
+			@BUILDENV_dvbdate@ \
+			CPPFLAGS="-I$(driverdir)/include" \
 		@INSTALL_dvbdate@
 	@CLEANUP_dvbdate@
 	touch .dvbdate
@@ -1241,9 +1103,8 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@PREPARE_dvbtune@
 	cd @DIR_dvbtune@ && \
 		$(MAKE) \
-			CC=$(target)-gcc \
-			CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/include" \
-			LDFLAGS="$(TARGET_LDFLAGS)" && \
+			@BUILDENV_dvbtune@ \
+			CPPFLAGS="-I$(driverdir)/include" \
 		@INSTALL_dvbtune@
 	@CLEANUP_dvbtune@
 	touch .dvbtune
@@ -1251,11 +1112,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 .vls: .bootstrap .libdvbpsi @DEPENDS_vls@
 	@PREPARE_vls@
 	cd @DIR_vls@ && \
-		CC=$(target)-gcc \
-		CXX=$(target)-g++ \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CXXFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		@BUILDENV_vls@ \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -1376,7 +1233,7 @@ CONFIGURE = \
 	CXXFLAGS="-Wall $(TARGET_CXXFLAGS)" \
 	./configure $(CONFIGURE_OPTS) $(CONFIGURE_OPTS_MAINTAINER) $(CONFIGURE_OPTS_DEBUG)
 
-# dvb/svbsnoop
+# dvb/dvbsnoop
 
 $(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
 	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE)
@@ -1730,8 +1587,7 @@ distclean-local:
 	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
 	-rm .libcommoncplusplus .libcrypto .libcurl .libdb2 .libdvbpsi .libffi .libfreetype
 	-rm .libncurses .libjpeg .libmad .libnet .libnids .libpcap .libpng .libpopt
-	-rm .libqt .libreadline .libsdl .libsigc .libxml2 .libxmlwrapp .libz
-	-rm .cabextract .msttf
+	-rm .libreadline .libsdl .libsigc .libxml2 .libz
 	-rm .gdb .ksymoops .ltrace .strace .nano
 	-rm .kaffeh .kaffe
 	-rm .gnuboy .scummvm .sdldoom

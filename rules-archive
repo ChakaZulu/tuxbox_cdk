@@ -10,29 +10,29 @@
 # core
 #
 linux-2.4.19.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
-linux-dbox2-2.4.19-2.diff.bz2;
+linux-dbox2-2.4.19-2.diff.bz2
 binutils-2.13.90.0.4.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
 gcc-core-2.95.3.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-2.95.3
 gcc-core-3.2.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.2
 gcc-g++-3.2.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.2
 glibc-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 glibc-linuxthreads-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
-uClibc-0.9.11.tar.bz2;
+uClibc-0.9.11.tar.bz2
 watchdog_5.2.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/w/watchdog
 
 #
 # root
 #
 busybox-0.60.4.tar.bz2;ftp://busybox.net/busybox
-ifupdown-0.6.4-tuxbox.1.tar.bz2;
+ifupdown-0.6.4-tuxbox.1.tar.bz2
 modutils-2.4.20.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
-portmap-5.tar.bz2;
-procps-3.0.5.tar.gz;;http://procps.sf.net/
+portmap-5.tar.bz2
+procps-3.0.5.tar.gz;;http://procps.sf.net
 tinylogin-1.2.tar.gz;ftp://oss.lineo.com/tinylogin
-vsftpd-1.0.1.tar.gz;ftp://ferret.lmh.ox.ac.uk/pub/linux/
+vsftpd-1.0.1.tar.gz;ftp://ferret.lmh.ox.ac.uk/pub/linux
 
 #
 # contrib libs
@@ -44,7 +44,6 @@ ncurses-5.2.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
 libpng-1.2.5.tar.gz;http://www.libpng.org/pub/png/src
 popt-1.6.4.tar.gz;ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x
-qt-embedded-2.3.0.tar.gz;ftp://ftp.trolltech.com/qt/source
 libxml2-2.4.22.tar.bz2;ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml
 zlib-1.1.4.tar.bz2;ftp://ftp.info-zip.org/pub/infozip/zlib
 libffi-1.20.tar.gz;ftp://sourceware.cygnus.com/pub/libffi
@@ -52,14 +51,12 @@ SDL-1.2.5.tar.gz;http://www.libsdl.org/release
 readline-4.3.tar.gz;ftp://ftp.gnu.org/gnu/readline
 libsigc++-1.1.13.tar.gz;http://switch.dl.sourceforge.net/sourceforge/libsigc
 libpcap-0.7.1.tar.gz;http://www.tcpdump.org/release
-xmlwrapp-0.2.1.tar.gz;http://pmade.org/pjones/software/xmlwrapp/download
 commoncpp2-0.99.7.tar.gz;ftp://ftp.gnu.org/gnu/commonc++
 libdvbpsi-0.1.2.tar.gz;http://www.videolan.org/pub/videolan/libdvbpsi/0.1.2
-xmlparse_0.9.3.tar.bz2;http://private.addcom.de/morus_walter/xmlparse
 libnet-1.0.2a.tar.gz;http://www.packetfactory.net/libnet/dist/deprecated
 libnids-1.16.tar.gz;http://www.packetfactory.net/Projects/Libnids/dist
 db-2.7.7.tar.gz;http://www.sleepycat.com/update/snapshot
-DirectFB-20021024.tar.bz2;
+DirectFB-20021024.tar.bz2
 
 #
 # contrib apps
@@ -68,22 +65,14 @@ console-data_1999.08.29.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/c/cons
 console-tools-0.2.3.tar.gz;http://switch.dl.sourceforge.net/sourceforge/lct
 dsniff-2.4b1.tar.gz;http://monkey.org/~dugsong/dsniff/beta
 fbset-2.1.tar.gz;http://home.tvd.be/cr26864/Linux/fbdev
-lirc-0.6.6.tar.bz2;http://mars.wiwi.uni-halle.de/lirc/software/
-pump-0.8.11.tar.bz2;
+lirc-0.6.6.tar.bz2;http://mars.wiwi.uni-halle.de/lirc/software
+pump-0.8.11.tar.bz2
 openssh-3.5p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 tcpdump-3.7.1.tar.gz;http://www.tcpdump.org/release
 xrc-0.6.3.tar.gz;http://switch.dl.sourceforge.net/sourceforge/lirc
 thttpd-2.23beta1.tar.gz;http://www.acme.com/software/thttpd
 lsof_4.65_src.tar.bz2
-DirectFB-examples-20021024.tar.bz2;
-
-#
-# msttf
-#
-cabextract-0.5.tar.gz;http://www.kyz.uklinux.net/downloads
-arialb32.exe;http://nuoriso.hel.fi/__files/ms_truetype_core_fonts_for_the_web/Win95-98-NT
-arial32.exe;http://nuoriso.hel.fi/__files/ms_truetype_core_fonts_for_the_web/Win95-98-NT
-courie32.exe;http://nuoriso.hel.fi/__files/ms_truetype_core_fonts_for_the_web/Win95-98-NT
+DirectFB-examples-20021024.tar.bz2
 
 #
 # development tools
@@ -105,15 +94,15 @@ kaffe-1.0.6.tar.gz;ftp://ftp.kaffe.org/pub/kaffe/v1.0.x-production
 gnuboy-1.0.3.tar.gz;http://gnuboy.unix-fu.org/src
 mad-0.14.2b.tar.gz;ftp://ftp.mars.org/pub/mpeg
 scummvm-20020717.tar.bz2;http://scummvm.sourceforge.net/daily
-sdldoom-1.10.tar.gz;ftp://ftp2.3ddownloads.com/89958/doomworld/ports/sdldoom-1.10.tar.gz
+sdldoom-1.10.tar.gz;ftp://ftp2.3ddownloads.com/89958/doomworld/ports
 
 
 #
 # dvb apps
 #
-dvbdate-20020918.tar.bz2;
-dvbstream-20020918.tar.bz2;
+dvbdate-20020918.tar.bz2
+dvbstream-20020918.tar.bz2
 dvbtext-0.1.tar.gz;http://www.linuxstb.org/dvbtext
-dvbtune-20020918.tar.bz2;
+dvbtune-20020918.tar.bz2
 vls-0.4.0.tar.bz2;http://www.videolan.org/pub/videolan/vls/0.4.0
 
