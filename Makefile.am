@@ -572,7 +572,7 @@ distclean-local:
 	-rm .gdb .strace
 	-rm .nano
 	-rm .ppcboot .linuxkernel
-	-rm .dvbsnoop .dvbstream .edvb .lcars .lcdmenu .neutrino .stream
+	-rm .dvbsnoop .edvb .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .zapit
 	-rm .liblcddisplay .libmd5sum .libucodes
 	-rm .dvbstream
