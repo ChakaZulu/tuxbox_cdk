@@ -136,7 +136,7 @@ if TARGETRULESET_FLASH
 GLIBC_EXTRA_FLAGS="--enable-kernel=$(KERNELVERSION)"
 endif
 
-$(DEPDIR)/glibc: $(DEPDIR) @DEPENDS_glibc@
+$(DEPDIR)/glibc: @DEPENDS_glibc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		$(MAKE) bootstrap_gcc; \
 	elif [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
