@@ -302,7 +302,7 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 #
 
 libs: \
-	.libcommoncplusplus libcrypto .libcurl .libffi .libfreetype .libjpeg \
+	.libcommoncplusplus .libcrypto .libcurl .libffi .libfreetype .libjpeg \
 	.libncurses .libpng .libreadline .libsdl .libsigc .libz 
 
 .libcommoncplusplus: .bootstrap @DEPENDS_libcommoncplusplus@
