@@ -92,6 +92,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 			--enable-languages="c" \
 			--disable-shared \
 			--disable-nls \
+			--disable-threads \
 			--nfp && \
 		make all install
 	rm -rf $(hostprefix)/$(target)/sys-include
@@ -1254,7 +1255,7 @@ endif
 	make -C $(appsdir)/lcars all install
 	touch .lcars
 
-.lcdmenu: $(appsdir)/Makefile .liblcddisplay .msttf
+.lcdmenu: $(appsdir)/Makefile .liblcddisplay
 	make -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
