@@ -17,7 +17,6 @@ open (RULES, "< $filename") or die "Can't open \"$filename\", fix your CDK insta
 while (<RULES>){
     s/#.*//;
     next if /^(\s)*$/;
-    split (/;/,$_);
     chomp;
     # replace gnuserver
     s/\$\(gnuserver\)/$gnuserver/;
@@ -29,12 +28,12 @@ my @errors;
 my $errcnt=0;
 my $pcnt=1;
 foreach (@entries) {
-    @_ = split (/;/,$_);
+    @_ = split (/;/);
     if (scalar(@_)==1){	# no path, use default
 	push @_,$defaultpath;
     }
     
-    my $archive = $_[0];
+    my $archive = @_[0];
     shift (@_);
     
     print $pcnt++.".: $archive\n";
@@ -63,6 +62,6 @@ if (!$errcnt) {
 print "\n\nSummary\n-------\n$errcnt error".(($errcnt>1)?"s":"")." occured:\n\n";
 foreach(@errors){
     if (m/--/){ print "--------------------------------------------------------------------------------\n"; }
-    print $_;
+    print;
 }
 
