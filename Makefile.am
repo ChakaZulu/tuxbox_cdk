@@ -405,11 +405,9 @@ $(DEPDIR)/libdirectfbpp: bootstrap libdirectfb @DEPENDS_libdirectfbpp@
 	@PREPARE_libdirectfbpp@
 	cd @DIR_libdirectfbpp@ && \
 		$(BUILDENV) \
-		LDFLAGS="-L$(targetprefix)/lib" \
 		./autogen.sh \
 			--build=$(build) \
 			--host=$(target) \
-			--libdir="$(targetprefix)/lib" \
 			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_libdirectfbpp@
