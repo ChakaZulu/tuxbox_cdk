@@ -1066,8 +1066,8 @@ endif
 		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
 		-a 00000000 -e 00000000 \
 		-d @DIR_linux@/arch/ppc/boot/images/vmlinux.gz \
-		$(bootprefix)/kernel-cdk;
-
+		$(bootprefix)/kernel-cdk
+	chmod 644 $(bootprefix)/kernel-cdk
 	$(INSTALL) -m644 @DIR_linux@/vmlinux $(targetprefix)/boot/vmlinux-$(KERNELVERSION)
 	$(INSTALL) -m644 @DIR_linux@/System.map $(targetprefix)/boot/System.map-$(KERNELVERSION)
 
@@ -1320,11 +1320,13 @@ flash-lcars-all: flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-telnet
 
 rebuild-flash:
 	-rm -rf $(flashprefix)/root
-	-rm -rf $(flashprefix)/.flash
+	-rm -f $(flashprefix)/.flash
 	$(MAKE) flash-lib
 
 $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
-	-rm -rf $(flashprefix)/root
+	if [ -d $(flashprefix)/root ]; then
+		echo "directory $(flashprefix)/root already exists. please remove manually." && false
+	fi
 	$(INSTALL) -d $(flashprefix)/root/bin
 	$(INSTALL) -d $(flashprefix)/root/boot
 	$(INSTALL) -d $(flashprefix)/root/dev
