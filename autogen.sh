@@ -1,14 +1,12 @@
 #!/bin/sh
-# Run this to generate all the initial makefiles, etc.
-# (basically ripped directly from enlightenment's autogen.sh)
 
 package="tuxbox-cdk"
 
 srcdir=`dirname $0`
+test -z "$srcdir" && srcdir=.
 
+cd "$srcdir"
 DIE=0
-
-ACLOCAL_FLAGS="-I ."
 
 (autoconf --version) < /dev/null > /dev/null 2>&1 || {
 	echo
@@ -43,8 +41,8 @@ fi
 
 echo "Generating configuration files for $package, please wait...."
 
-echo "  aclocal $ACLOCAL_FLAGS"
-aclocal $ACLOCAL_FLAGS
+echo "  aclocal"
+aclocal
 echo "  libtoolize --automake"
 libtoolize --automake
 echo "  autoconf"
