@@ -59,3 +59,7 @@ modprobe avia_gt_vbi
 modprobe dvb_net
 modprobe lcd
 
+mkdir /dev/ost
+for i in audio ca demux dvr frontend net sec video; do ln -sf ../dvb/card0/${i}0 /dev/ost/${i}; ln -sf ../dvb/card0/${i}0 /dev/ost/${i}0; done
+for i in demux dvr; do ln -sf ${i}0 /dev/dvb/card0/${i}1; ln -sf ../dvb/card0/${i}1 /dev/ost/${i}1; done
+
