@@ -40,7 +40,7 @@ freetype-2.0.9.tar.bz2;http://telia.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.2.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
 libpng-1.0.14.tar.gz;http://www.libpng.org/pub/png/src
-popt-1.6.4.tar.gz;
+popt-1.6.4.tar.gz;ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x
 qt-embedded-2.3.0.tar.gz;ftp://ftp.trolltech.com/qt/source
 libxml2-2.4.22.tar.bz2;ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml
 zlib-1.1.4.tar.bz2;ftp://ftp.info-zip.org/pub/infozip/zlib
