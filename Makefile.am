@@ -150,8 +150,8 @@ root: .busybox .tinylogin .modutils .etc
 	touch .modutils
 
 .etc: .busybox .tinylogin .modutils
-	cp -rf ./etc/* $(targetprefix)/etc
-	find $(targetprefix)/etc -type d -name "CVS" -exec rm -rf {} \;
+	cp -Rf ./etc $(targetprefix)
+	find $(targetprefix)/etc -type d -name "CVS" -exec rm -rf {} \; || /bin/true
 	chmod 755 $(targetprefix)/etc/init.d/*
 	touch .etc
 
