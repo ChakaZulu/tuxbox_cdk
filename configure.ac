@@ -163,7 +163,7 @@ fi
 AC_MSG_CHECKING([for driver directory])
 if test ! -f "$driverdir/Makefile" ; then
 	driverdir=no
-	AC_MSG_ERROR([no])
+	AC_MSG_RESULT([no])
 else
 	AC_MSG_RESULT([yes])
 fi
