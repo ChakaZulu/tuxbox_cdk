@@ -1379,7 +1379,8 @@ $(appsdir)/dvb/tools/config.status: bootstrap misc_libs
 	cd $(appsdir)/dvb/tools && $(CONFIGURE)
 
 $(DEPDIR)/dvb_tools: $(appsdir)/dvb/tools/config.status
-	$(MAKE) -C $(appsdir)/dvb/tools all install
+	$(MAKE) -C $(appsdir)/dvb/tools all install\
+	CFLAGS="$(TARGET_CFLAGS) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE"
 	touch $@
 
 # misc/libs
