@@ -177,7 +177,7 @@ etc) slower (perhaps by 50%). Recommended for most small systems. */
 
 /* This is used by the scp binary when used as a client binary. If you're
  * not using the Dropbear client, you'll need to change it */
-// #define _PATH_SSH_PROGRAM "/usr/bin/dbclient"
+#define _PATH_SSH_PROGRAM "/sbin/dbclient"
 
 /* Multi-purpose binary configuration has now moved. Look at the top
  * of the Makefile for instructions, or INSTALL */

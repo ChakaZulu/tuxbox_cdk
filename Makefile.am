@@ -929,8 +929,14 @@ $(DEPDIR)/dropbear: bootstrap libz @DEPENDS_dropbear@
 			--disable-wtmp \
 			--disable-wtmpx && \
 		cp ../Patches/dropbear-options.h options.h && \
-		$(MAKE) PROGRAMS="dropbear" && \
-		$(MAKE) install PROGRAMS="dropbear" DESTDIR=$(targetprefix)
+		$(MAKE) PROGRAMS="dropbear dbclient scp" MULTI=1 && \
+		$(MAKE) install PROGRAMS="dropbear dbclient scp" MULTI=1 DESTDIR=$(targetprefix) && \
+		rm -f $(targetprefix)/sbin/dropbear && \
+		rm -f $(targetprefix)/sbin/dbclient && \
+		rm -f $(targetprefix)/bin/scp && \
+		ln -s $(targetprefix)/bin/dropbearmulti $(targetprefix)/sbin/dropbear && \
+		ln -s $(targetprefix)/bin/dropbearmulti $(targetprefix)/sbin/dbclient && \
+		ln -s $(targetprefix)/bin/dropbearmulti $(targetprefix)/bin/scp
 	@CLEANUP_dropbear@
 	touch $@
 
@@ -1769,8 +1775,14 @@ flash-dropbear: $(flashprefix)/.part_dropbear
 
 $(flashprefix)/.part_dropbear: $(flashprefix)/.flash dropbear dropbearkey
 	$(INSTALL) -d $(flashprefix)/root/etc/dropbear
-	$(INSTALL) $(targetprefix)/sbin/dropbear $(flashprefix)/root/sbin
-	cp -ap $(targetprefix)/etc/dropbear/* $(flashprefix)/root/etc/dropbear
+	$(INSTALL) $(targetprefix)/bin/dropbearmulti $(flashprefix)/root/bin
+	rm -f $(flashprefix)/root/sbin/dropbear
+	rm -f $(flashprefix)/root/sbin/dbclient
+	rm -f $(flashprefix)/root/bin/scp
+	ln -s ../bin/dropbearmulti $(flashprefix)/root/sbin/dropbear
+	ln -s ../bin/dropbearmulti $(flashprefix)/root/sbin/dbclient
+	ln -s ../bin/dropbearmulti $(flashprefix)/root/bin/scp
+	cp -ap $(flashprefix)/etc/dropbear/* $(flashprefix)/root/etc/dropbear
 	@touch $@
 
 flash-dvb-tools: $(flashprefix)/.part_dvb_tools
