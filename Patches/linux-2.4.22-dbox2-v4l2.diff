@@ -1,6 +1,6 @@
-diff -Naur linux-2.4.22-pre9-dbox2/drivers/media/video/Makefile linux-2.4.22-pre9-dbox2-2/drivers/media/video/Makefile
---- linux-2.4.22-pre9-dbox2/drivers/media/video/Makefile	2003-06-13 16:51:34.000000000 +0200
-+++ linux-2.4.22-pre9-dbox2-2/drivers/media/video/Makefile	2003-07-30 16:47:46.000000000 +0200
+diff -urN linux-2.4.22/drivers/media/video/Makefile linux-2.4.22-v4l2/drivers/media/video/Makefile
+--- linux-2.4.22/drivers/media/video/Makefile	Fri Jun 13 16:51:34 2003
++++ linux-2.4.22-v4l2/drivers/media/video/Makefile	Sat Jul 12 10:14:34 2003
 @@ -25,13 +25,14 @@
  # All of the (potential) objects that export symbols.
  # This list comes from 'grep -l EXPORT_SYMBOL *.[hc]'.
@@ -18,10 +18,10 @@ diff -Naur linux-2.4.22-pre9-dbox2/drivers/media/video/Makefile linux-2.4.22-pre
  
  obj-$(CONFIG_BUS_I2C) += i2c-old.o
  obj-$(CONFIG_VIDEO_BT848) += bttv.o msp3400.o tvaudio.o \
-diff -Naur linux-2.4.22-pre9-dbox2/drivers/media/video/v4l1-compat.c linux-2.4.22-pre9-dbox2-2/drivers/media/video/v4l1-compat.c
---- linux-2.4.22-pre9-dbox2/drivers/media/video/v4l1-compat.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.22-pre9-dbox2-2/drivers/media/video/v4l1-compat.c	2003-07-30 16:47:46.000000000 +0200
-@@ -0,0 +1,1042 @@
+diff -urN linux-2.4.22/drivers/media/video/v4l1-compat.c linux-2.4.22-v4l2/drivers/media/video/v4l1-compat.c
+--- linux-2.4.22/drivers/media/video/v4l1-compat.c	Thu Jan  1 01:00:00 1970
++++ linux-2.4.22-v4l2/drivers/media/video/v4l1-compat.c	Sat Jul 12 10:14:34 2003
+@@ -0,0 +1,976 @@
 +/*
 + *	Video for Linux Two
 + *	Backward Compatibility Layer
@@ -223,66 +223,29 @@ diff -Naur linux-2.4.22-pre9-dbox2/drivers/media/video/v4l1-compat.c linux-2.4.2
 +	return palette;
 +}
 +
-+/*  Do an 'in' (wait for input) select on a single file descriptor  */
-+/*  This stuff plaigarized from linux/fs/select.c     */
-+#define __FD_IN(fds, n)	(fds->in + n)
-+#define BIT(i)		(1UL << ((i)&(__NFDBITS-1)))
-+#define SET(i,m)	(*(m) |= (i))
-+extern int do_select(int n, fd_set_bits *fds, long *timeout);
-+
-+
-+static int
-+simple_select(struct file *file)
++static int poll_one(struct file *file)
 +{
-+	fd_set_bits fds;
-+	char *bits;
-+	long timeout;
-+	int i, fd, n, ret, size;
-+
-+	for (i = 0; i < current->files->max_fds; ++i)
-+		if (file == current->files->fd[i])
++	int retval = 1;
++	poll_table wait_table, *table;
++	
++	poll_initwait(&wait_table);
++	table = &wait_table;
++	for (;;) {
++		int mask;
++		set_current_state(TASK_INTERRUPTIBLE);
++		mask = file->f_op->poll(file, table);
++		if (mask & POLLIN)
 +			break;
-+	if (i == current->files->max_fds)
-+		return -EINVAL;
-+	fd = i;
-+	n = fd + 1;
-+
-+	timeout = MAX_SCHEDULE_TIMEOUT;
-+	/*
-+	 * We need 6 bitmaps (in/out/ex for both incoming and outgoing),
-+	 * since we used fdset we need to allocate memory in units of
-+	 * long-words. 
-+	 */
-+	ret = -ENOMEM;
-+	size = FDS_BYTES(n);
-+	bits = kmalloc(6 * size, GFP_KERNEL);
-+	if (!bits)
-+		goto out_nofds;
-+	fds.in      = (unsigned long *)  bits;
-+	fds.out     = (unsigned long *) (bits +   size);
-+	fds.ex      = (unsigned long *) (bits + 2*size);
-+	fds.res_in  = (unsigned long *) (bits + 3*size);
-+	fds.res_out = (unsigned long *) (bits + 4*size);
-+	fds.res_ex  = (unsigned long *) (bits + 5*size);
-+
-+	/*  All zero except our one file descriptor bit, for input  */
-+	memset(bits, 0, 6 * size);
-+	SET(BIT(fd), __FD_IN((&fds), fd / __NFDBITS));
-+
-+	ret = do_select(n, &fds, &timeout);
-+
-+	if (ret < 0)
-+		goto out;
-+	if (!ret) {
-+		ret = -ERESTARTNOHAND;
-+		if (signal_pending(current))
-+			goto out;
-+		ret = 0;
++		table = NULL;
++		if (signal_pending(current)) {
++			retval = -ERESTARTSYS;
++			break;
++		}
++		schedule();
 +	}
-+out:
-+	kfree(bits);
-+out_nofds:
-+	return ret;
++	current->state = TASK_RUNNING;
++	poll_freewait(&wait_table);
++	return retval;
 +}
 +
 +static int count_inputs(struct inode         *inode,
@@ -341,10 +304,9 @@ diff -Naur linux-2.4.22-pre9-dbox2/drivers/media/video/v4l1-compat.c linux-2.4.2
 +			   void			*arg,
 +			   v4l2_kioctl          drv)
 +{
-+	int	             err = -ENOIOCTLCMD;
++	int err;
 +
-+	switch (cmd)
-+	{
++	switch (cmd) {
 +	case VIDIOCGCAP:	/* capability */
 +	{
 +		struct video_capability *cap = arg;
@@ -900,56 +862,10 @@ diff -Naur linux-2.4.22-pre9-dbox2/drivers/media/video/v4l1-compat.c linux-2.4.2
 +		break;
 +	}
 +#if 0
-+	case VIDIOCGMBUF: /*  get mmap parameters  */
-+	{
-+		struct video_mbuf		*mbuf = arg;
-+		struct v4l2_requestbuffers	reqbuf2;
-+		struct v4l2_buffer		buf2;
-+		struct v4l2_format		fmt2, fmt2o;
-+		struct v4l2_capability		cap2;
-+		int				i;
-+
-+		/*  Set the format to maximum dimensions  */
-+		if ((err = drv(inode, file, VIDIOC_QUERYCAP, &cap2)) < 0)
-+			break;
-+		fmt2o.type = V4L2_BUF_TYPE_CAPTURE;
-+		if ((err = drv(inode, file, VIDIOC_G_FMT, &fmt2o)) < 0)
-+			break;
-+		fmt2 = fmt2o;
-+		fmt2.fmt.pix.width = cap2.maxwidth;
-+		fmt2.fmt.pix.height = cap2.maxheight;
-+		fmt2.fmt.pix.flags |= V4L2_FMT_FLAG_INTERLACED;
-+		if ((err = drv(inode, file, VIDIOC_S_FMT, &fmt2)) < 0)
-+			break;
-+		reqbuf2.count = 2; /* v4l always used two buffers */
-+		reqbuf2.type = V4L2_BUF_TYPE_CAPTURE | V4L2_BUF_REQ_CONTIG;
-+		err = drv(inode, file, VIDIOC_REQBUFS, &reqbuf2);
-+		if (err < 0 || reqbuf2.count < 2 || reqbuf2.type
-+		    != (V4L2_BUF_TYPE_CAPTURE | V4L2_BUF_REQ_CONTIG))
-+		{/*	Driver doesn't support v4l back-compatibility  */
-+			fmt2o.fmt.pix.flags |= V4L2_FMT_FLAG_INTERLACED;
-+			drv(inode, file, VIDIOC_S_FMT, &fmt2o);
-+			reqbuf2.count = 1;
-+			reqbuf2.type = V4L2_BUF_TYPE_CAPTURE;
-+			err = drv(inode, file, VIDIOC_REQBUFS, &reqbuf2);
-+			if (err < 0)
-+			{
-+				err = -EINVAL;
-+				break;
-+			}
-+			printk(KERN_INFO"V4L2: Device \"%s\" doesn't support"
-+			       " v4l memory mapping\n", vfl->name);
-+		}
-+		buf2.index = 0;
-+		buf2.type = V4L2_BUF_TYPE_CAPTURE;
-+		err = drv(inode, file, VIDIOC_QUERYBUF, &buf2);
-+		mbuf->size = buf2.length * reqbuf2.count;
-+		mbuf->frames = reqbuf2.count;
-+		memset(mbuf->offsets, 0, sizeof(mbuf->offsets));
-+		for (i = 0; i < mbuf->frames; ++i)
-+			mbuf->offsets[i] = i * buf2.length;
-+		break;
-+	}
++	case VIDIOCGMBUF:
++		/* v4l2 drivers must implement that themself.  The
++		   mmap() differences can't be translated fully
++		   transparent, thus there is no point to try that */
 +#endif
 +	case VIDIOCMCAPTURE: /*  capture a frame  */
 +	{
@@ -1023,7 +939,7 @@ diff -Naur linux-2.4.22-pre9-dbox2/drivers/media/video/v4l1-compat.c linux-2.4.2
 +			(V4L2_BUF_FLAG_QUEUED | V4L2_BUF_FLAG_DONE))
 +		       == V4L2_BUF_FLAG_QUEUED)
 +		{
-+			err = simple_select(file);
++			err = poll_one(file);
 +			if (err < 0 ||	/* error or sleep was interrupted  */
 +			    err == 0)	/* timeout? Shouldn't occur.  */
 +				break;
@@ -1040,18 +956,36 @@ diff -Naur linux-2.4.22-pre9-dbox2/drivers/media/video/v4l1-compat.c linux-2.4.2
 +		} while (err == 0 && buf2.index != *i);
 +		break;
 +	}
-+	case VIDIOCGUNIT: /*  get related device minors  */
-+		/*  No translation  */
-+		break;
-+	case VIDIOCGCAPTURE: /*    */
-+		/*  No translation, yet...  */
-+		printk(KERN_INFO"v4l1-compat: VIDIOCGCAPTURE not implemented."
-+		       " Send patches to bdirks@pacbell.net :-)\n");
-+		break;
-+	case VIDIOCSCAPTURE: /*    */
-+		/*  No translation, yet...  */
-+		printk(KERN_INFO"v4l1-compat: VIDIOCSCAPTURE not implemented."
-+		       " Send patches to bdirks@pacbell.net :-)\n");
++
++	case VIDIOCGVBIFMT: /* query VBI data capture format */
++	{
++		struct vbi_format      *fmt = arg;
++		struct v4l2_format      fmt2;
++		
++		memset(&fmt2, 0, sizeof(fmt2));
++		fmt2.type = V4L2_BUF_TYPE_VBI_CAPTURE;
++		
++		err = drv(inode, file, VIDIOC_G_FMT, &fmt2);
++		if (err < 0) {
++			dprintk("VIDIOCMCAPTURE / VIDIOC_G_FMT: %d\n", err);
++			break;
++		}
++		memset(fmt, 0, sizeof(*fmt));
++		fmt->samples_per_line = fmt2.fmt.vbi.samples_per_line;
++		fmt->sampling_rate    = fmt2.fmt.vbi.sampling_rate;
++		fmt->sample_format    = VIDEO_PALETTE_RAW;
++		fmt->start[0]         = fmt2.fmt.vbi.start[0];
++		fmt->count[0]         = fmt2.fmt.vbi.count[0];
++		fmt->start[1]         = fmt2.fmt.vbi.start[1];
++		fmt->count[1]         = fmt2.fmt.vbi.count[1];
++		if (fmt2.fmt.vbi.flags & VBI_UNSYNC)
++			fmt->flags   |= V4L2_VBI_UNSYNC;
++		if (fmt2.fmt.vbi.flags & VBI_INTERLACED)
++			fmt->flags   |= V4L2_VBI_INTERLACED;
++                break;
++	}
++	default:
++		err = -ENOIOCTLCMD;
 +		break;
 +	}
 +	return err;
@@ -1064,9 +998,9 @@ diff -Naur linux-2.4.22-pre9-dbox2/drivers/media/video/v4l1-compat.c linux-2.4.2
 + * c-basic-offset: 8
 + * End:
 + */
-diff -Naur linux-2.4.22-pre9-dbox2/drivers/media/video/v4l2-common.c linux-2.4.22-pre9-dbox2-2/drivers/media/video/v4l2-common.c
---- linux-2.4.22-pre9-dbox2/drivers/media/video/v4l2-common.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.22-pre9-dbox2-2/drivers/media/video/v4l2-common.c	2003-07-30 16:47:46.000000000 +0200
+diff -urN linux-2.4.22/drivers/media/video/v4l2-common.c linux-2.4.22-v4l2/drivers/media/video/v4l2-common.c
+--- linux-2.4.22/drivers/media/video/v4l2-common.c	Thu Jan  1 01:00:00 1970
++++ linux-2.4.22-v4l2/drivers/media/video/v4l2-common.c	Sat Jul 12 10:14:34 2003
 @@ -0,0 +1,211 @@
 +/*
 + *	Video for Linux Two
@@ -1279,9 +1213,45 @@ diff -Naur linux-2.4.22-pre9-dbox2/drivers/media/video/v4l2-common.c linux-2.4.2
 + * c-basic-offset: 8
 + * End:
 + */
-diff -Naur linux-2.4.22-pre9-dbox2/include/linux/videodev2.h linux-2.4.22-pre9-dbox2-2/include/linux/videodev2.h
---- linux-2.4.22-pre9-dbox2/include/linux/videodev2.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.22-pre9-dbox2-2/include/linux/videodev2.h	2003-07-30 16:47:46.000000000 +0200
+diff -urN linux-2.4.22/include/linux/videodev.h linux-2.4.22-v4l2/include/linux/videodev.h
+--- linux-2.4.22/include/linux/videodev.h	Fri Jun 13 16:51:39 2003
++++ linux-2.4.22-v4l2/include/linux/videodev.h	Sat Jul 12 10:14:34 2003
+@@ -4,7 +4,7 @@
+ #include <linux/types.h>
+ #include <linux/version.h>
+ 
+-#if 0
++#if 1
+ /*
+  * v4l2 is still work-in-progress, integration planed for 2.5.x
+  *   v4l2 project homepage:   http://www.thedirks.org/v4l2/
+@@ -20,6 +20,7 @@
+ 
+ #include <linux/poll.h>
+ #include <linux/devfs_fs_kernel.h>
++#include <linux/mm.h>
+ 
+ struct video_device
+ {
+@@ -30,6 +31,7 @@
+ 	int hardware;
+ 	int minor;
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)
+ 	/* old, obsolete interface -- dropped in 2.5.x, don't use it */
+ 	int (*open)(struct video_device *, int mode);
+ 	void (*close)(struct video_device *);
+@@ -39,6 +41,7 @@
+ 	int (*ioctl)(struct video_device *, unsigned int , void *);
+ 	int (*mmap)(struct video_device *, const char *, unsigned long);
+ 	int (*initialize)(struct video_device *);       
++#endif
+ 
+  	/* new interface -- we will use file_operations directly
+  	 * like soundcore does. */
+diff -urN linux-2.4.22/include/linux/videodev2.h linux-2.4.22-v4l2/include/linux/videodev2.h
+--- linux-2.4.22/include/linux/videodev2.h	Thu Jan  1 01:00:00 1970
++++ linux-2.4.22-v4l2/include/linux/videodev2.h	Sat Jul 12 10:14:34 2003
 @@ -0,0 +1,861 @@
 +#ifndef __LINUX_VIDEODEV2_H
 +#define __LINUX_VIDEODEV2_H
@@ -2144,45 +2114,9 @@ diff -Naur linux-2.4.22-pre9-dbox2/include/linux/videodev2.h linux-2.4.22-pre9-d
 + * c-basic-offset: 8
 + * End:
 + */
-diff -Naur linux-2.4.22-pre9-dbox2/include/linux/videodev.h linux-2.4.22-pre9-dbox2-2/include/linux/videodev.h
---- linux-2.4.22-pre9-dbox2/include/linux/videodev.h	2003-07-25 16:11:49.000000000 +0200
-+++ linux-2.4.22-pre9-dbox2-2/include/linux/videodev.h	2003-07-30 16:47:46.000000000 +0200
-@@ -4,7 +4,7 @@
- #include <linux/types.h>
- #include <linux/version.h>
- 
--#if 0
-+#if 1
- /*
-  * v4l2 is still work-in-progress, integration planed for 2.5.x
-  *   v4l2 project homepage:   http://www.thedirks.org/v4l2/
-@@ -20,6 +20,7 @@
- 
- #include <linux/poll.h>
- #include <linux/devfs_fs_kernel.h>
-+#include <linux/mm.h>
- 
- struct video_device
- {
-@@ -30,6 +31,7 @@
- 	int hardware;
- 	int minor;
- 
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)
- 	/* old, obsolete interface -- dropped in 2.5.x, don't use it */
- 	int (*open)(struct video_device *, int mode);
- 	void (*close)(struct video_device *);
-@@ -39,6 +41,7 @@
- 	int (*ioctl)(struct video_device *, unsigned int , void *);
- 	int (*mmap)(struct video_device *, const char *, unsigned long);
- 	int (*initialize)(struct video_device *);       
-+#endif
- 
-  	/* new interface -- we will use file_operations directly
-  	 * like soundcore does. */
-diff -Naur linux-2.4.22-pre9-dbox2/kernel/ksyms.c linux-2.4.22-pre9-dbox2-2/kernel/ksyms.c
---- linux-2.4.22-pre9-dbox2/kernel/ksyms.c	2003-07-20 21:38:36.000000000 +0200
-+++ linux-2.4.22-pre9-dbox2-2/kernel/ksyms.c	2003-07-30 16:47:46.000000000 +0200
+diff -urN linux-2.4.22/kernel/ksyms.c linux-2.4.22-v4l2/kernel/ksyms.c
+--- linux-2.4.22/kernel/ksyms.c	Sat Jul 12 10:09:03 2003
++++ linux-2.4.22-v4l2/kernel/ksyms.c	Sat Jul 12 10:14:34 2003
 @@ -288,6 +288,7 @@
  EXPORT_SYMBOL(dcache_dir_fsync);
  EXPORT_SYMBOL(dcache_readdir);

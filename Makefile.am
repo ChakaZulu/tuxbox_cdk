@@ -62,7 +62,7 @@ endif
 		$(MAKE) .directories; \
 	fi
 	@PREPARE_linux@
-	cat Patches/linux-dbox2.config > @DIR_linux@/.config
+	cat Patches/linux-2.4.22-dbox2.config > @DIR_linux@/.config
 	$(MAKE) -C @DIR_linux@ oldconfig \
 		ARCH=ppc
 	$(MAKE) -C @DIR_linux@ include/linux/version.h \
