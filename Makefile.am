@@ -376,7 +376,8 @@ libs_optional: \
 	cd @DIR_libdirectfb@ && \
 		@BUILDENV_libdirectfb@ \
 		CPPFLAGS="-I$(driverdir)/include" \
-		./configure \
+		CCASFLAGS="-I$(buildprefix)/@DIR_linux@/arch/ppc" \
+		./autogen.sh \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \

@@ -52,7 +52,7 @@ libsigc++-1.2.2.tar.gz;http://switch.dl.sourceforge.net/sourceforge/libsigc
 libpcap-0.7.1.tar.gz;http://www.tcpdump.org/release
 commoncpp2-1.0.6.tar.gz;ftp://ftp.gnu.org/gnu/commonc++
 libdvbpsi-0.1.2.tar.gz;http://www.videolan.org/pub/videolan/libdvbpsi/0.1.2
-DirectFB-0.9.15.tar.gz;http://www.directfb.org/download/DirectFB
+DirectFB-0.9.16cvs.tar.gz;http://www.directfb.org/download/DirectFB
 DFB++-0.9.15.tar.gz;http://www.directfb.org/download/DirectFB
 boost_1_29_0.tar.gz;http://boost.sourceforge.net/release
 
