@@ -1,10 +1,10 @@
 #
-# $Id: INSTALL.en,v 1.19 2003/10/05 22:33:43 obi Exp $
+# $Id: INSTALL.en,v 1.20 2004/01/02 00:29:28 obi Exp $
 #
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
 #
-# Copyright (c) 2002-2003 Andreas Oberritter <obi@tuxbox.org>
+# Copyright (c) 2002-2004 Andreas Oberritter <obi@tuxbox.org>
 #
 # Permission is granted to copy, distribute and/or modify this document
 # under the terms of the GNU Free Documentation License, Version 1.2
@@ -56,18 +56,24 @@ II. Getting the sources:
 
  - Enter the following commands:
 
-   mkdir $HOME/tuxbox-cvs
-   cd $HOME/tuxbox-cvs
+   you@pc:~$ mkdir $HOME/tuxbox-cvs
+   you@pc:~$ cd $HOME/tuxbox-cvs
+   you@pc:~/tuxbox-cvs$ export CVS_RSH=ssh
+   you@pc:~/tuxbox-cvs$ cvs -danoncvs@cvs.tuxbox.org:/cvs/tuxbox -z3 co -P .
+   anoncvs@cvs.tuxbox.org's password: anoncvs
 
-   (if you prefer the latest unstable development versions)
-   cvs -d:pserver:anonymous@cvs.tuxbox.org:/cvs/tuxbox -z3 co -P .
+   Note: There is a dot at the end of the cvs command line
+	 and, yes, it actually belongs to the command.
 
-   (if you prefer older maybe more stable versions)
-   cvs -d:pserver:anonymous@cvs.tuxbox.org:/cvs/tuxbox -z3 co -P -r rel_1_0_0 .
+ - Remember that you do not ever have to fetch the complete cvs tree again,
+   if you don't delete it. You can update the tree by typing:
 
-   Note: Some people tend to become blind when it comes to viewing trailing
-         dots. There are dots at the end of the cvs command line because they
-	 belong to the command. Don't skip them!
+   you@pc:~/tuxbox-cvs$ export CVS_RSH=ssh
+   you@pc:~/tuxbox-cvs$ cvs -danoncvs@cvs.tuxbox.org:/cvs/tuxbox -z3 up -dP
+   anoncvs@cvs.tuxbox.org's password: anoncvs
+
+   Please do that, even if you have a broadband internet connection, to
+   reduce our traffic costs. Thank you!
 
 ------------------------------------------------------------------------------
 III. Generating the Makefiles:
@@ -75,9 +81,11 @@ III. Generating the Makefiles:
 
  - Enter the following commands:
 
-   cd cdk
-   ./autogen.sh
-   ./configure --prefix=$HOME/dbox2 --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode
+   you@pc:~/tuxbox-cvs$ cd cdk
+   you@pc:~/tuxbox-cvs/cdk$ ./autogen.sh
+   you@pc:~/tuxbox-cvs/cdk$ ./configure --enable-maintainer-mode \
+                                        --prefix=$HOME/dbox2 \
+                                        --with-cvsdir=$HOME/tuxbox-cvs
 
 ------------------------------------------------------------------------------
 IV. Building the CDK:
@@ -85,22 +93,22 @@ IV. Building the CDK:
 
  - Enter the following command (see Makefile.am for other make targets):
 
-   make all
+   you@pc:~/tuxbox-cvs/cdk$ make all
 
  - This step should always complete without errors. If it does not then please
-   report at https://tuxbox.org/forum/viewforum.php?f=7
+   report at https://tuxbox.org/forum/
 
  - If you want to try building additional programs which are usually not
    needed for using tuxbox applications, then enter
 
-   make extra
+   you@pc:~/tuxbox-cvs/cdk$ make extra
 
  - These programs are hardly maintained, so they might sometimes fail to
    build. If you encounter errors, then please report them to the address
    mentioned above, but do not expect to get the problems fixed quickly if you
-   do not post the solution to the problem.
+   do not provide a solution to the problem.
 
  - Note that you can skip single make targets by typing
-   
-   touch .package_name
+
+   you@pc:~/tuxbox-cvs/cdk$ touch .package_name
 
