@@ -56,6 +56,7 @@ if [ $TUXBOX_MODEL -eq 1 ]; then
 	modprobe avs
 	modprobe saa7126
 	modprobe cam
+	modprobe lcd
 
 	# A/V
 	modprobe avia_gt
@@ -70,8 +71,6 @@ if [ $TUXBOX_MODEL -eq 1 ]; then
 	modprobe avia_gt_napi
 	modprobe dbox2_fp_napi
 
-	modprobe lcd
-
 # Dreambox DM 7000
 elif [ $TUXBOX_MODEL -eq 2 ]; then
 
@@ -80,15 +79,26 @@ elif [ $TUXBOX_MODEL -eq 2 ]; then
 	# I2C core
 
 	# Frontprozessor
+	modprobe dreambox_fp
 
 	# Frontends
 	modprobe alps_bsru6
-	modprobe alps_tdme7
+#	modprobe alps_tdme7
 	modprobe philips_1216
 	
 	# Misc IO
+	modprobe ir-hw
+	modprobe dreambox_rc_input
+	modprobe avs
+	modprobe lcd
 
 	# A/V
+	modprobe stb_td
+	modprobe stb_fb
+	modprobe stb_denc
+	modprobe stb_aud
+	modprobe stb_vg
+	modprobe stb_clip
 
 fi
 
