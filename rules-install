@@ -37,4 +37,4 @@ libz;make:install
 #
 # additional
 #
-gdb;make:install
+gdb;make;make:install
