@@ -50,7 +50,7 @@ sub process_make_depends (@)
     {
       $output .= "Archive/" . $_ . " ";
     }
-    elsif ( $_ =~ m#\.(config|diff)$# )
+    elsif ( $_ =~ m#\.(config|diff|patch)$# )
     {
       $output .= "Patches/" . $_ . " ";
     }
