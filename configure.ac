@@ -74,7 +74,12 @@ if test -z "$CFLAGS" ; then
 fi
 
 if test -z "$TARGET_CFLAGS" -o -z "$TARGET_CXXFLAGS"; then
-	TARGET_CFLAGS="-msoft-float -mmultiple -mstring -meabi"
+	if test "$HARDWARERULESET" = "dbox2"; then
+		TARGET_CFLAGS="-mcpu=823"
+	elif test "$HARDWARERULESET" = "dreambox"; then
+		TARGET_CFLAGS="-mcpu=403 -Wa,-m405"
+	fi
+	TARGET_CFLAGS="$TARGET_CFLAGS -mmultiple -mstring -meabi"
 	if test "$TARGETRULESET" = "standard"; then
 		TARGET_CFLAGS="$TARGET_CFLAGS -O3 -g -pipe"
 		TARGET_LDFLAGS=""
