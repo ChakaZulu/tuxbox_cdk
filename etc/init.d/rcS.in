@@ -53,13 +53,7 @@ modprobe avs
 modprobe dbox2_fp
 modprobe saa7126
 
-modprobe dvb_copy
-modprobe dvbdev
-modprobe dmxdev
-modprobe dvb_demux
-modprobe dvb_frontend
-modprobe dvb_i2c
-modprobe dvb_net
+modprobe dvb-core
 modprobe tuner
 modprobe cam
 modprobe cam_napi
