@@ -1638,7 +1638,8 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma
 	cp -pa $(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/unmrs.pfa \
 		$(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/etc/init.d/start_enigma $(flashprefix)/root/etc/init.d
-	$(INSTALL) $(targetprefix)/root/etc/timezone.xml $(flashprefix)/root/etc
+	$(INSTALL) $(targetprefix)/etc/timezone.xml $(flashprefix)/root/etc
+	cp -pa $(targetprefix)/share/zoneinfo $(flashprefix)/root/share
 	ln -sf /var/etc/localtime $(flashprefix)/root/etc 
 	@touch $@
 
