@@ -1237,11 +1237,15 @@ $(appsdir)/tuxbox/tools/config.status: .bootstrap .tuxbox_libs
 #
 
 if TARGETRULESET_FLASH
-flash-all: flash-network flash-apps
+flash-all: flash-neutrino flash-enigma flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-ssh flash-sshd flash-lib
 
-flash-network: flash-ftpd flash-telnetd flash-ssh flash-sshd
+flash-ssl: flash-ssh flash-sshd flash-lib
 
-flash-apps: flash-neutrino flash-enigma flash-lcars flash-lcdmenu flash-plugins
+flash-enigma-all: flash-enigma flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-lib
+
+flash-neutrino-all: flash-neutrino flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-lib
+
+flash-lcars-all: flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-telnetd flash-lib
 
 rebuild-flash:
 	-rm -rf $(flashprefix)/root
@@ -1261,13 +1265,14 @@ $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/ucodes
 	$(INSTALL) -d $(flashprefix)/root/tmp
-	$(MAKE) -C etc install targetprefix=$(flashprefix)/root
+	$(MAKE) -C root install targetprefix=$(flashprefix)/root
 	cp -pa $(bootprefix)/kernel-cdk $(flashprefix)/root/vmlinuz
 	echo "version=0106`date +%Y%m%d%H%M`" > $(flashprefix)/root/.version
 	echo "comment=Erstellt von `id -un`" >> $(flashprefix)/root/.version
 	$(INSTALL) $(targetprefix)/bin/busybox $(flashprefix)/root/bin
 	for i in `find $(targetprefix)/bin/ -lname "*busybox"` ; do cp -ap $$i $(flashprefix)/root/bin/ ; done
 	$(INSTALL) $(targetprefix)/bin/switch $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/tuxinfo $(flashprefix)/root/bin
 	if [ -e $(targetprefix)/bin/eraseall ] ; then \
 		$(INSTALL) $(targetprefix)/bin/eraseall $(flashprefix)/root/bin ; \
 	fi
@@ -1281,6 +1286,10 @@ $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
 	$(INSTALL) $(targetprefix)/sbin/depmod $(flashprefix)/root/sbin
 	for i in `find $(targetprefix)/sbin/ -lname "*insmod"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
 	ln -s ../../boot $(flashprefix)/root/var/tuxbox/boot
+	ln -s ../lib $(flashprefix)/root/var/lib
+	ln -s ../tmp $(flashprefix)/root/var/tmp
+	ln -s ../tmp $(flashprefix)/root/var/run
+	ln -s var/tmp $(flashprefix)/root/root
 	@touch $(flashprefix)/.flash
 
 flash-ftpd: $(flashprefix)/.part_ftpd
@@ -1291,7 +1300,7 @@ $(flashprefix)/.part_ftpd: $(flashprefix)/.flash $(flashprefix)/.part_inetd .ftp
 	$(INSTALL) $(targetprefix)/sbin/in.ftpd $(flashprefix)/root/sbin
 	@touch $(flashprefix)/.part_ftpd
 
-$(flashprefix)/.part_inetd: $(flashprefix)/.flash $(flashprefix)/.part_network .inetd
+$(flashprefix)/.part_inetd: $(flashprefix)/.flash
 	$(INSTALL) $(targetprefix)/sbin/inetd $(flashprefix)/root/sbin
 	@touch $(flashprefix)/.part_inetd
 
@@ -1303,7 +1312,7 @@ $(flashprefix)/.part_telnetd: $(flashprefix)/.flash $(flashprefix)/.part_inetd .
 
 flash-ssh: $(flashprefix)/.part_ssh
 
-$(flashprefix)/.part_ssh: $(flashprefix)/.flash $(flashprefix)/.part_network .ssh
+$(flashprefix)/.part_ssh: $(flashprefix)/.flash $(flashprefix)/.ssh
 	$(INSTALL) -d $(flashprefix)/root/etc/ssh
 	$(INSTALL) $(targetprefix)/bin/ssh $(targetprefix)/bin/scp \
 		$(targetprefix)/bin/sftp $(flashprefix)/root/bin
@@ -1312,7 +1321,7 @@ $(flashprefix)/.part_ssh: $(flashprefix)/.flash $(flashprefix)/.part_network .ss
 
 flash-sshd: $(flashprefix)/.part_sshd
 
-$(flashprefix)/.part_sshd: $(flashprefix)/.flash $(flashprefix)/.part_network .ssh
+$(flashprefix)/.part_sshd: $(flashprefix)/.flash $(flashprefix)/.ssh
 	$(INSTALL) -d $(flashprefix)/root/etc/ssh
 	$(INSTALL) -d $(flashprefix)/root/libexec
 	$(INSTALL) -d $(flashprefix)/root/share/empty
@@ -1352,9 +1361,11 @@ flash-enigma: $(flashprefix)/.part_enigma
 $(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
 	$(INSTALL) $(targetprefix)/bin/enigma $(flashprefix)/root/bin
 	cp -pa $(targetprefix)/share/tuxbox/enigma $(flashprefix)/root/share/tuxbox
+	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
-	cp -pa $(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/v5loxica*.ttf $(targetprefix)/share/fonts/unmrs.pfa \
+	cp -pa $(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/micron*.ttf $(targetprefix)/share/fonts/v5loxica*.ttf $(targetprefix)/share/fonts/unmrs.pfa \
 		$(flashprefix)/root/share/fonts
+	cp -pa $(targetprefix)/etc/init.d/start_enigma $(flashprefix)/root/etc/init.d
 	@touch $(flashprefix)/.part_enigma
 
 flash-lcars: $(flashprefix)/.part_lcars
@@ -1405,15 +1416,15 @@ $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 
 	@chmod u+rwX,go+rX -R $(flashprefix)/root/
 	@touch $(flashprefix)/.lib
 
-flash-mix-cramfs: $(flashprefix)/root-cramfs.img
+flash-cramfs: $(flashprefix)/root-cramfs.img
 
-flash-mix-jffs2: $(flashprefix)/var-jffs2.img
+flash-var-jffs2: $(flashprefix)/var-jffs2.img
 
-flash-mix-image: $(flashprefix)/mix-cramfs-jffs2.img
+flash-root-jffs2: $(flashprefix)/root-jffs2.img
 
-flash-jffs2-root: $(flashprefix)/root-jffs2.img
+flash-cramfsimage: $(flashprefix)/cramfsjffs2.img
 
-flash-jffs2-image: $(flashprefix)/only-jffs2.img
+flash-jffs2image: $(flashprefix)/jffs2only.img
 
 $(flashprefix)/root-cramfs.img: $(flashprefix)/.lib
 	@rm -fr $(flashprefix)/cramfs
@@ -1457,19 +1468,19 @@ $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
 	@$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/jffs2/ -o $(flashprefix)/var-jffs2.img
 	@rm -rf $(flashprefix)/jffs2
 
-$(flashprefix)/mix-cramfs-jffs2.img: $(flashprefix)/root-cramfs.img $(flashprefix)/var-jffs2.img $(flashprefix)/mix-ppcboot-flfs.img
-	@$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/mix-cramfs-jffs2.img -o build \
-		--part ppcboot=$(flashprefix)/mix-ppcboot-flfs.img \
+$(flashprefix)/cramfsjffs2.img: $(flashprefix)/root-cramfs.img $(flashprefix)/var-jffs2.img $(flashprefix)/cramfs-flfs.img
+	@$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/cramfsjffs2.img -o build \
+		--part ppcboot=$(flashprefix)/cramfs-flfs.img \
 		--part root=$(flashprefix)/root-cramfs.img \
 		--part var=$(flashprefix)/var-jffs2.img
 
 $(flashprefix)/root-jffs2.img: $(flashprefix)/.lib
-	@$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/root/ -o $(flashprefix)/root-jffs2.img
+	@$(FAKEROOT) $(MKJFFS2) -b -e 0x20000 --pad=0x7c0000 -r $(flashprefix)/root/ -o $(flashprefix)/root-jffs2.img
 
-$(flashprefix)/only-jffs2.img: $(flashprefix)/.lib $(flashprefix)/jffs2-ppcboot-flfs.img
-	@$(FAKEROOT) $(MKJFFS2) -b -e 131072 --pad=8126464 -r $(flashprefix)/root/ -o $(flashprefix)/root-jffs2.tmp
-	@cat $(flashprefix)/jffs2-ppcboot-flfs.img > $(flashprefix)/only-jffs2.img
-	@cat $(flashprefix)/root-jffs2.tmp >> $(flashprefix)/only-jffs2.img
+$(flashprefix)/jffs2only.img: $(flashprefix)/.lib $(flashprefix)/jffs2-flfs.img
+	@$(FAKEROOT) $(MKJFFS2) -b -e 0x20000 --pad=0x7c0000 -r $(flashprefix)/root/ -o $(flashprefix)/root-jffs2.tmp
+	@cat $(flashprefix)/jffs2-flfs.img > $(flashprefix)/jffs2only.img
+	@cat $(flashprefix)/root-jffs2.tmp >> $(flashprefix)/jffs2only.img
 	@rm -f  $(flashprefix)/root-jffs2.tmp
 endif
 
