@@ -51,7 +51,7 @@ commoncpp2-1.0.8.tar.gz;ftp://ftp.gnu.org/gnu/commonc++
 libdvbpsi-0.1.2.tar.gz;http://www.videolan.org/pub/videolan/libdvbpsi/0.1.2
 DirectFB-0.9.17.tar.gz;http://www.directfb.org/download/DirectFB
 DFB++-0.9.15.tar.gz;http://www.directfb.org/download/DirectFB
-boost_1_29_0.tar.gz;http://boost.sourceforge.net/release
+boost_1_30_0.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/boost
 tremor-20030128.tar.bz2;
 fribidi-0.10.4.tar.bz2;
 expat-1.95.6.tar.gz;http://belnet.dl.sourceforge.net/sourceforge/expat
