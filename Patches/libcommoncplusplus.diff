@@ -1,0 +1,23 @@
+diff -Naur commoncpp2-0.99.7.orig/configure commoncpp2-0.99.7/configure
+--- commoncpp2-0.99.7.orig/configure	Mon Aug  5 19:34:58 2002
++++ commoncpp2-0.99.7/configure	Sun Oct 27 01:56:08 2002
+@@ -5527,19 +5527,6 @@
+ 
+ 
+ 
+-if test "$prefix" != "/usr" ; then
+-	if test -d "$prefix" ; then
+-		bprefix="$prefix"
+-	else
+-		bprefix=/usr/local
+-	fi
+-	if test -d $bprefix/include ; then
+-		CXXFLAGS="$CXXFLAGS -I$bprefix/include"
+-	fi
+-	if test -d $bprefix/lib ; then
+-		LIBS="$LIBS -L$bprefix/lib"
+-	fi
+-fi
+ 
+ 
+ 	

@@ -132,10 +132,6 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_bootstrap_gcc_2_95@
 
-.rpcgen: .bootstrap
-	$(RPCGEN) -h -o $(targetprefix)/include/rpcsvc/yppasswd.h $(targetprefix)/include/rpcsvc/yppasswd.x
-	touch .rpcgen
-
 .glibc: @DEPENDS_glibc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		$(MAKE) bootstrap_gcc; \
@@ -366,7 +362,7 @@ libs_optional: \
 			--prefix= && \
 		$(MAKE) all && \
 		rm -f $(hostprefix)/bin/ccgnu2-config && \
-		sed -e "s,^prefix=,prefix=$(targetprefix)," < ccgnu2-config > $(hostprefix)/bin/ccgnu2-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < src/ccgnu2-config > $(hostprefix)/bin/ccgnu2-config && \
 		chmod 755 $(hostprefix)/bin/ccgnu2-config && \
 		@INSTALL_libcommoncplusplus@
 	@CLEANUP_libcommoncplusplus@
@@ -1523,7 +1519,7 @@ distclean-local:
 	-$(MAKE) -C $(appsdir) distclean
 	-rm Makefile-archive
 	-rm .bootstrap
-	-rm .directories .linuxdir .binutils .glibc .gcc .rpcgen
+	-rm .directories .linuxdir .binutils .glibc .gcc
 	-rm .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
 	-rm .libcommoncplusplus .libcrypto .libcurl .libdvbpsi .libffi .libfreetype
 	-rm .libncurses .libjpeg .libmad .libpcap .libpng .libpopt

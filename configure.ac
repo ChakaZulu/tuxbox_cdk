@@ -217,10 +217,6 @@ AC_SUBST(UCODEDIR)
 CLEANUP="rm -rf"
 AC_SUBST(CLEANUP)
 
-AC_PATH_PROG(RPCGEN,rpcgen,no)
-if test "$RPCGEN" = "no"; then
-	RPCGEN=/bin/false
-fi
 
 #
 # core
