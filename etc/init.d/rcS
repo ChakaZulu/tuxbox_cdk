@@ -34,6 +34,7 @@ test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
 ifconfig lo 127.0.0.1 up
 
 modprobe saa7126
+modprobe avs
 modprobe input
 modprobe keybdev
 modprobe mousedev
