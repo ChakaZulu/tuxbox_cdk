@@ -39,6 +39,7 @@ libcrypto;install:libcrypto.so.0.9.6:TARGET/lib;link:libcrypto.so.0.9.6:TARGET/l
 libcurl;make:install:DESTDIR=TARGET
 libcommoncplusplus;make:install:DESTDIR=TARGET
 libdirectfb;make:install:DESTDIR=TARGET
+libdirectfbpp;make:install:DESTDIR=TARGET
 libdvbpsi;make:install:DESTDIR=TARGET
 libffi;make:install:DESTDIR=TARGET
 libfreetype;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARGET/bin

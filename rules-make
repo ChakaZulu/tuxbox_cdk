@@ -41,7 +41,8 @@ tinylogin;1.2;tinylogin-1.2;tinylogin-1.2.tar.gz:tinylogin.diff;extract:tinylogi
 libcommoncplusplus;0.99.7;commoncpp2-0.99.7;commoncpp2-0.99.7.tar.gz:libcommoncplusplus.diff;extract:commoncpp2-0.99.7.tar.gz;patch:libcommoncplusplus.diff
 libcrypto;0.9.6g;openssl-0.9.6g;openssl-0.9.6g.tar.gz:libcrypto.diff;extract:openssl-0.9.6g.tar.gz;patch:libcrypto.diff
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.bz2:libcurl.diff;extract:curl-7.10.1.tar.bz2;patch:libcurl.diff
-libdirectfb;20021024;DirectFB;DirectFB-20021024.tar.bz2;extract:DirectFB-20021024.tar.bz2
+libdirectfb;0.9.14;DirectFB-0.9.14;DirectFB-0.9.14.tar.gz;extract:DirectFB-0.9.14.tar.gz
+libdirectfbpp;0.9.13;DFB++-0.9.13;DFB++-0.9.13.tar.gz;extract:DFB++-0.9.13.tar.gz
 libdvbpsi;0.1.2;libdvbpsi-0.1.2;libdvbpsi-0.1.2.tar.gz;extract:libdvbpsi-0.1.2.tar.gz
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
 libfreetype;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2;extract:freetype-2.0.9.tar.bz2;patch:libfreetype.diff
@@ -65,7 +66,7 @@ libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff;extract:zlib-1.1.4.tar.bz2;pa
 #
 console_data;1999.08.29;console-data-1999.08.29;console-data_1999.08.29.orig.tar.gz;extract:console-data_1999.08.29.orig.tar.gz
 console_tools;0.2.3;console-tools-0.2.3;console-tools-0.2.3.tar.gz:console-tools.diff;extract:console-tools-0.2.3.tar.gz;patch:console-tools.diff
-directfb_examples;20021024;DirectFB-examples;DirectFB-examples-20021024.tar.bz2;extract:DirectFB-examples-20021024.tar.bz2
+directfb_examples;0.9.14;DirectFB-examples-0.9.14;DirectFB-examples-0.9.14.tar.gz;extract:DirectFB-examples-0.9.14.tar.gz
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.diff
 lsof;4.65;lsof_4.65_src;lsof_4.65_src.tar.bz2:lsof.diff;extract:lsof_4.65_src.tar.bz2;patch:lsof.diff

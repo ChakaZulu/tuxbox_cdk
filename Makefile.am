@@ -343,7 +343,7 @@ root_optional: \
 #
 
 libs: \
-	.libcrypto .libcurl .libdirectfb .libdvbpsi \
+	.libcrypto .libcurl .libdirectfb .libdirectfbpp .libdvbpsi \
 	.libfreetype .libjpeg .libmad .libncurses .libpng \
 	.libreadline .libsdl .libsigc .libz
 
@@ -398,7 +398,7 @@ libs_optional: \
 	cd @DIR_libdirectfb@ && \
 		@BUILDENV_libdirectfb@ \
 		CPPFLAGS="-I$(driverdir)/include" \
-		./autogen.sh \
+		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
@@ -415,6 +415,23 @@ libs_optional: \
 		@INSTALL_libdirectfb@
 	@CLEANUP_libdirectfb@
 	touch .libdirectfb
+
+.libdirectfbpp: .bootstrap .libdirectfb @DEPENDS_libdirectfbpp@
+	@PREPARE_libdirectfbpp@
+	cd @DIR_libdirectfbpp@ && \
+		@BUILDENV_libdirectfbpp@ \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
+		$(MAKE) all && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < dfb++-config > $(hostprefix)/bin/dfb++-config && \
+		chmod 755 $(hostprefix)/bin/dfb++-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < dfb++.pc > dfb++.pc.tmp && \
+		mv dfb++.pc.tmp dfb++.pc && \
+		@INSTALL_libdirectfbpp@
+	@CLEANUP_libdirectfbpp@
+	touch .libdirectfbpp
 
 .libdvbpsi: .bootstrap @DEPENDS_libdvbpsi@
 	@PREPARE_libdvbpsi@
@@ -703,8 +720,8 @@ contrib_apps_optional: .pump .thttpd
 .directfb_examples: .bootstrap .libdirectfb @DEPENDS_directfb_examples@
 	@PREPARE_directfb_examples@
 	cd @DIR_directfb_examples@ && \
-		@BUILDENV_directfb_examples@
-		./autogen.sh \
+		@BUILDENV_directfb_examples@ \
+		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= && \
