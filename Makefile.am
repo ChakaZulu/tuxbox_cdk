@@ -1325,7 +1325,7 @@ rebuild-flash:
 
 $(flashprefix)/.flash: .busybox .driver .modutils .tuxbox_tools
 	if [ -d $(flashprefix)/root ]; then \
-		echo "directory $(flashprefix)/root already exists. please remove manually." && false \
+		echo "directory $(flashprefix)/root already exists. please remove manually." && false; \
 	fi
 	$(INSTALL) -d $(flashprefix)/root/bin
 	$(INSTALL) -d $(flashprefix)/root/boot
