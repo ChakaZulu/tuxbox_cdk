@@ -420,7 +420,7 @@ libs_optional: \
 	@PREPARE_libdirectfbpp@
 	cd @DIR_libdirectfbpp@ && \
 		@BUILDENV_libdirectfbpp@ \
-		./autogen.sh \
+		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= && \
@@ -1142,14 +1142,6 @@ CONFIGURE_OPTS = \
 	--host=$(target) \
 	--prefix=$(targetprefix) \
 	--with-driver=$(driverdir) \
-	--with-dvbincludes=$(driverdir)/include \
-	--with-target=cdk
-
-CONFIGURE_OPTS_NEW = \
-	--build=$(build) \
-	--host=$(target) \
-	--prefix=$(targetprefix) \
-	--with-driver=$(driverdir) \
 	--with-dvbincludes=$(driverdir)/dvb/include \
 	--with-target=cdk
 
@@ -1171,25 +1163,17 @@ CONFIGURE = \
 	CXXFLAGS="-Wall $(TARGET_CXXFLAGS)" \
 	./configure $(CONFIGURE_OPTS) $(CONFIGURE_OPTS_MAINTAINER) $(CONFIGURE_OPTS_DEBUG)
 
-CONFIGURE_NEW = \
-	./autogen.sh && \
-	CC=$(target)-gcc \
-	CXX=$(target)-g++ \
-	CFLAGS="-Wall $(TARGET_CFLAGS)" \
-	CXXFLAGS="-Wall $(TARGET_CXXFLAGS)" \
-	./configure $(CONFIGURE_OPTS_NEW) $(CONFIGURE_OPTS_MAINTAINER) $(CONFIGURE_OPTS_DEBUG)
-
 # dvb/dvbsnoop
 
 $(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
-	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE_NEW)
+	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE)
 
 .dvbsnoop: $(appsdir)/dvb/dvbsnoop/Makefile
 	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
 	touch .dvbsnoop
 
 $(appsdir)/dvb/zapit/Makefile: .bootstrap .tuxbox_tools .misc_libs
-	cd $(appsdir)/dvb/zapit && $(CONFIGURE_NEW) --with-neutrino-source=$(appsdir)/tuxbox/neutrino
+	cd $(appsdir)/dvb/zapit && $(CONFIGURE) --with-neutrino-source=$(appsdir)/tuxbox/neutrino
 
 .zapit: $(appsdir)/dvb/zapit/Makefile
 	$(MAKE) -C $(appsdir)/dvb/zapit all install
@@ -1198,7 +1182,7 @@ $(appsdir)/dvb/zapit/Makefile: .bootstrap .tuxbox_tools .misc_libs
 # dvb/tools
 
 $(appsdir)/dvb/tools/Makefile: .bootstrap .misc_libs
-	cd $(appsdir)/dvb/tools && $(CONFIGURE_NEW)
+	cd $(appsdir)/dvb/tools && $(CONFIGURE)
 
 .dvb_tools: $(appsdir)/dvb/tools/Makefile .inetd
 	$(MAKE) -C $(appsdir)/dvb/tools all install
@@ -1243,7 +1227,7 @@ $(appsdir)/tuxbox/funstuff/Makefile: .bootstrap
 # tuxbox/lcars
 
 $(appsdir)/tuxbox/lcars/Makefile: .bootstrap .libcurl .libfreetype .plugins
-	cd $(appsdir)/tuxbox/lcars && $(CONFIGURE_NEW)
+	cd $(appsdir)/tuxbox/lcars && $(CONFIGURE)
 
 .lcars: $(appsdir)/tuxbox/lcars/Makefile
 	$(MAKE) -C $(appsdir)/tuxbox/lcars all install
@@ -1270,7 +1254,7 @@ $(appsdir)/tuxbox/libs/Makefile: .bootstrap .libfreetype
 # tuxbox/neutrino
 
 $(appsdir)/tuxbox/neutrino/Makefile: .bootstrap .libcurl .libfreetype .misc_libs .tuxbox_libs .zapit .plugins
-	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE_NEW)
+	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
 
 .neutrino: $(appsdir)/tuxbox/neutrino/Makefile
 	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install
@@ -1279,7 +1263,7 @@ $(appsdir)/tuxbox/neutrino/Makefile: .bootstrap .libcurl .libfreetype .misc_libs
 # tuxbox/plugins
 
 $(appsdir)/tuxbox/plugins/Makefile: .bootstrap
-	cd $(appsdir)/tuxbox/plugins && $(CONFIGURE_NEW)
+	cd $(appsdir)/tuxbox/plugins && $(CONFIGURE)
 
 .plugins: $(appsdir)/tuxbox/plugins/Makefile
 	$(MAKE) -C $(appsdir)/tuxbox/plugins all install
@@ -1288,7 +1272,7 @@ $(appsdir)/tuxbox/plugins/Makefile: .bootstrap
 # tuxbox/tools
 
 $(appsdir)/tuxbox/tools/Makefile: .bootstrap
-	cd $(appsdir)/tuxbox/tools && $(CONFIGURE_NEW)
+	cd $(appsdir)/tuxbox/tools && $(CONFIGURE)
 
 .tuxbox_tools: $(appsdir)/tuxbox/tools/Makefile
 	$(MAKE) -C $(appsdir)/tuxbox/tools all install
