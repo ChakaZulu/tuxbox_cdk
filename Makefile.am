@@ -397,10 +397,12 @@ libs: \
 	@PREPARE_libdvbpsi@
 	cd @DIR_libdvbpsi@ && \
 		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
+			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_libdvbpsi@
 	@CLEANUP_libdvbpsi@
