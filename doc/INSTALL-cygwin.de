@@ -19,8 +19,8 @@ Folgende Packages sind *nicht* zu installieren:
 mkdir $HOME/tuxbox-cvs
 mkdir /dbox2
 cd $HOME/tuxbox-cvs
-cvs -d:pserver:anonymous@sheep.berlios.de:/cvsroot/tuxbox login
-cvs -d:pserver:anonymous@sheep.berlios.de:/cvsroot/tuxbox -z9 co .
+cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox login
+cvs -d:pserver:anonymous@cvs.berlios.de:/cvsroot/tuxbox -z9 co .
 cd cdk
 ./autogen.sh
 ./configure --prefix=/dbox2 --with-hostruleset=cygwin --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode
