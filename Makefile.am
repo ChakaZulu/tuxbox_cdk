@@ -333,6 +333,10 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	make -C $(appsdir)/stream all install
 	touch .stream
 
+.tools: $(appsdir)/Makefile
+	make -C $(appsdir)/tools all install
+	touch .tools
+
 #######################
 #
 #   internal
@@ -344,7 +348,7 @@ distclean-local:
 	-rm .busybox
 	-rm .libcurl .libfreetype .libncurses .libjpeg .libpng .libqt .libxml2 .libz
 	-rm .ppcboot .linuxkernel
-	-rm .libfx2 .fx2 .edvb .neutrino .lcdmenu .stream
+	-rm .libfx2 .fx2 .edvb .neutrino .lcdmenu .stream .tools
 	-rm -rf $(targetprefix)
 	-rm -rf $(hostprefix)
 	-make -C $(appsdir) distclean
