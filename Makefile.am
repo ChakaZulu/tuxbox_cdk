@@ -1614,7 +1614,7 @@ distclean-local:
 	-rm .root .busybox .ftpd .inetd .modutils .procps .watchdog
 	-rm .libboost .libcommoncplusplus .libcrypto .libcurl
 	-rm .libdirectfb .libdirectfbpp .libdvb .libdvbpsi .libexpat .libffi .libfreetype
-	-rm .libncurses .libid3tag .libjpeg .libmad .libpcap .libpng
+	-rm .libfribidi .libncurses .libid3tag .libjpeg .libmad .libpcap .libpng
 	-rm .libreadline .libsdl .libsigc .libxml2 .libz
 	-rm .gdb .gdb-remote .ltrace .strace .nano
 	-rm .kaffeh .kaffe
