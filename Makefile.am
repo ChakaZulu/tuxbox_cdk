@@ -436,6 +436,7 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 
 .edvb: $(appsdir)/Makefile .fx2 .tools
 	make -C $(appsdir)/edvb all install
+	install -d $(targetprefix)/var/elitedvb
 	touch .edvb
 
 .fx2: $(appsdir)/Makefile
@@ -444,6 +445,7 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 
 .lcars: $(appsdir)/Makefile .fx2
 	make -C $(appsdir)/lcars all install
+	install -d $(targetprefix)/var/lcars
 	touch .lcars
 
 .lcdmenu: $(appsdir)/Makefile
@@ -468,6 +470,7 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 
 .zapit: $(appsdir)/Makefile
 	make -C $(appsdir)/zapit all install
+	install -d $(targetprefix)/var/zapit
 	touch .zapit
 
 
