@@ -181,7 +181,7 @@ else
 fi
 
 if test "$gnuserver" = "NONE"; then
-	gnuserver="ftp.gnu.org/gnu"
+	gnuserver="ftp.gwdg.de/pub/misc/gcc"
 fi
 
 AC_MSG_CHECKING([for apps directory])
