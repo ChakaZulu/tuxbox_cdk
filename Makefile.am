@@ -462,7 +462,7 @@ libs_optional: \
 .libid3tag: .bootstrap .libz @DEPENDS_libid3tag@
 	@PREPARE_libid3tag@
 	cd @DIR_libid3tag@ && \
-                $(BUILDENV) \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
