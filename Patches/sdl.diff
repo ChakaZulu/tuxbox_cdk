@@ -321,17 +321,3 @@ diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.h SDL-1.2.4/src/vi
  #define saved_kbd_mode		(this->hidden->saved_kbd_mode)
  #define saved_kbd_termios	(this->hidden->saved_kbd_termios)
  #define mouse_fd		(this->hidden->mouse_fd)
---- SDL-1.2.5/src/video/SDL_stretch.c.old	2002-03-06 12:23:03.000000000 +0100
-+++ SDL-1.2.5/src/video/SDL_stretch.c	2003-05-24 21:03:37.000000000 +0200
-@@ -261,9 +261,8 @@
- 			break;
- 		    default:
- #ifdef __GNUC__
--			__asm__ __volatile__ ("
--				call _copy_row
--			"
-+			__asm__ __volatile__ (
-+			" call _copy_row"
- 			: "=&D" (u1), "=&S" (u2)
- 			: "0" (dstp), "1" (srcp)
- 			: "memory" );

@@ -44,7 +44,7 @@ libpng-1.2.5.tar.bz2;ftp://swrinde.nde.swri.edu/pub/png/src
 libxml2-2.4.30.tar.gz;http://remote-admin.info/dbox2
 zlib-1.1.4.tar.bz2;ftp://ftp.info-zip.org/pub/infozip/zlib
 libffi-1.20.tar.gz;ftp://sourceware.cygnus.com/pub/libffi
-SDL-1.2.5.tar.gz;http://www.libsdl.org/release
+SDL-1.2.6.tar.gz;http://www.libsdl.org/release
 readline-4.3.tar.gz;ftp://$(gnuserver)/readline
 libsigc++-1.2.5.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/libsigc
 libpcap-0.7.1.tar.gz;http://www.tcpdump.org/release
