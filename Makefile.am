@@ -303,7 +303,7 @@ root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tin
 
 libs: \
 	.libcrypto .libcurl .libffi .libfreetype .libjpeg .libncurses \
-	.libpng .libreadline .libsdl .libsigc .libz
+	.libpng .libreadline .libsdl .libsigc .libz .libcommoncplusplus
 
 .libcrypto: .bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
@@ -328,6 +328,21 @@ libs: \
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
 	touch .libcurl
+
+.libcommoncplusplus: .bootstrap @DEPENDS_libcommoncplusplus@
+	@PREPARE_libcommoncplusplus@
+	cd @DIR_libcommoncplusplus@ && \
+		CC=$(target)-gcc CXX=$(target)-g++ \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--prefix=$(targetprefix) && \
+		make all && \
+		@INSTALL_libcommoncplusplus@
+	@CLEANUP_libcommoncplusplus@
+	touch .libcommoncplusplus
 
 .libffi: .bootstrap @DEPENDS_libffi@
 	@PREPARE_libffi@
@@ -779,7 +794,8 @@ devel: .gdb .strace .nano
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure \
-			--prefix=$(targetprefix) && \
+			--prefix=$(targetprefix) \
+			--static && \
 		make all && \
 		@INSTALL_nano@
 	@CLEANUP_nano@
@@ -864,7 +880,7 @@ fun: .mad .scummvm
 			LDFLAGS="$(TAGET_LDFLAGS)" \
 			DEFINES="-DUNIX" && \
 		@INSTALL_scummvm@
-	@CLEANUP_scummvm@
+	#@CLEANUP_scummvm@
 	touch .scummvm
 
 #######################

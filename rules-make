@@ -52,6 +52,7 @@ libsigc;1.0.4;libsigc++-1.0.4;libsigc++-1.0.4.tar.gz:libsigc.diff;extract:libsig
 libxml2;2.4.22;libxml2-2.4.22;libxml2-2.4.22.tar.bz2;extract:libxml2-2.4.22.tar.bz2
 libxmlwrapp;0.2.1;xmlwrapp-0.2.1;xmlwrapp-0.2.1.tar.gz;extract:xmlwrapp-0.2.1.tar.gz
 libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff;extract:zlib-1.1.4.tar.bz2;patch:zlib.diff
+libcommoncplusplus;1.9.7;CommonC++-1.9.7;CommonC++-1.9.7.tar.gz;extract:CommonC++-1.9.7.tar.gz
 
 #
 # contrib apps
