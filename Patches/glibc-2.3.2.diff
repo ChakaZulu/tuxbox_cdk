@@ -538,3 +538,59 @@ diff -Naur glibc-2.3.2/sysdeps/powerpc/powerpc32/memset.S glibc-2.3.2.patched/sy
  {
    va_list arg;
    int done;
+diff -purN glibc-2.3.2.orig/sysdeps/powerpc/nofpu/sim-full.c glibc-2.3.2/sysdeps/powerpc/nofpu/sim-full.c
+--- glibc-2.3.2.orig/sysdeps/powerpc/nofpu/sim-full.c	2002-10-19 16:06:29.000000000 -0400
++++ glibc-2.3.2/sysdeps/powerpc/nofpu/sim-full.c	2003-05-14 15:10:42.000000000 -0400
+@@ -24,11 +24,14 @@
+ 
+ /* Global to store sticky exceptions.  */
+-int __sim_exceptions;
++int __sim_exceptions __attribute__ ((nocommon));
++libc_hidden_data_def (__sim_exceptions);
+ 
+ /* By default, no exceptions should trap.  */
+ int __sim_disabled_exceptions = 0xffffffff;
++libc_hidden_data_def (__sim_disabled_exceptions);
+ 
+-int __sim_round_mode;
++int __sim_round_mode __attribute__ ((nocommon));
++libc_hidden_data_def (__sim_round_mode);
+ 
+ void
+ __simulate_exceptions (int x)
+diff -purN glibc-2.3.2.orig/sysdeps/powerpc/nofpu/soft-supp.h glibc-2.3.2/sysdeps/powerpc/nofpu/soft-supp.h
+--- glibc-2.3.2.orig/sysdeps/powerpc/nofpu/soft-supp.h	2002-10-19 16:06:29.000000000 -0400
++++ glibc-2.3.2/sysdeps/powerpc/nofpu/soft-supp.h	2003-05-14 15:09:53.000000000 -0400
+@@ -27,7 +27,11 @@ typedef union
+ } fenv_union_t;
+ 
+ 
+-extern int __sim_exceptions attribute_hidden;
+-extern int __sim_disabled_exceptions attribute_hidden;
+-extern int __sim_round_mode attribute_hidden;
++extern int __sim_exceptions;
++libc_hidden_proto (__sim_exceptions);
++extern int __sim_disabled_exceptions;
++libc_hidden_proto (__sim_disabled_exceptions);
++extern int __sim_round_mode;
++libc_hidden_proto (__sim_round_mode);
++
+ extern void __simulate_exceptions (int x) attribute_hidden;
+diff -urp glibc-2.3.2.orig/sysdeps/powerpc/soft-fp/sfp-machine.h glibc-2.3.2/sysdeps/powerpc/soft-fp/sfp-machine.h
+--- glibc-2.3.2.orig/sysdeps/powerpc/soft-fp/sfp-machine.h	2002-10-17 18:36:14.000000000 -0400
++++ glibc-2.3.2/sysdeps/powerpc/soft-fp/sfp-machine.h	2003-05-14 16:48:13.000000000 -0400
+@@ -52,7 +52,11 @@
+ #define FP_HANDLE_EXCEPTIONS  __simulate_exceptions (_fex)
+ #define FP_ROUNDMODE          __sim_round_mode
+ 
+-extern int __sim_exceptions attribute_hidden;
+-extern int __sim_disabled_exceptions attribute_hidden;
+-extern int __sim_round_mode attribute_hidden;
++extern int __sim_exceptions;
++libc_hidden_proto (__sim_exceptions);
++extern int __sim_disabled_exceptions;
++libc_hidden_proto (__sim_disabled_exceptions);
++extern int __sim_round_mode;
++libc_hidden_proto (__sim_round_mode);
++
+ extern void __simulate_exceptions (int x) attribute_hidden;
