@@ -1668,9 +1668,9 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash neutrino root
 	cp -pa $(targetprefix)/var/tuxbox/config/zapit $(flashprefix)/root/var/tuxbox/config
 	@touch $@
 
-flash-enigma: $(flashprefix)/.part_enigma root
+flash-enigma: $(flashprefix)/.part_enigma
 
-$(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma
+$(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma root
 	$(INSTALL) $(targetprefix)/bin/enigma $(flashprefix)/root/bin
 	cp -pa $(targetprefix)/share/tuxbox/enigma $(flashprefix)/root/share/tuxbox
 	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
