@@ -1063,7 +1063,7 @@ endif
 	$(INSTALL) -d $(targetprefix)/lib/modules/$(KERNELVERSION)/misc
 	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
-		CROSS_COMPILE=$(target)- CC=$(KERNELGCC) \
+		CROSS_COMPILE=$(target)- \
 		INSTALL_MOD_PATH=$(targetprefix)
 	$(MAKE) -C $(driverdir) install \
 		KERNEL_LOCATION=$(buildprefix)/linux \
