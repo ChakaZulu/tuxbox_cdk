@@ -3,14 +3,12 @@ SUBDIRS = init.d network
 EXTRA_DIST = \
 	fstab.in group host.conf hostname hosts inetd.conf inittab \
 	mime.types modules.conf.in nsswitch.conf passwd profile protocols \
-	resolv.conf services termcap \
-	cables.xml satellites.xml
+	resolv.conf services termcap
 
 FILES = \
 	fstab group host.conf hostname hosts inetd.conf inittab \
 	mime.types modules.conf nsswitch.conf passwd profile protocols \
-	resolv.conf services termcap \
-	cables.xml satellites.xml
+	resolv.conf services termcap
 
 all-local: $(FILES)
 

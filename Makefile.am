@@ -1139,6 +1139,15 @@ CONFIGURE = \
 	CXXFLAGS="-Wall $(TARGET_CXXFLAGS)" \
 	./configure $(CONFIGURE_OPTS) $(CONFIGURE_OPTS_MAINTAINER) $(CONFIGURE_OPTS_DEBUG)
 
+# dvb/config
+
+$(appsdir)/dvb/config/config.status:
+	cd $(appsdir)/dvb/config && $(CONFIGURE)
+
+.config: $(appsdir)/dvb/config/config.status
+	$(MAKE) -C $(appsdir)/dvb/config all install
+	touch .config
+
 # dvb/dvbsnoop
 
 $(appsdir)/dvb/dvbsnoop/config.status: .bootstrap
@@ -1153,7 +1162,7 @@ $(appsdir)/dvb/dvbsnoop/config.status: .bootstrap
 $(appsdir)/dvb/zapit/config.status: .bootstrap .tuxbox_tools .misc_libs
 	cd $(appsdir)/dvb/zapit && $(CONFIGURE)
 
-.zapit: $(appsdir)/dvb/zapit/config.status
+.zapit: $(appsdir)/dvb/zapit/config.status .config
 	$(MAKE) -C $(appsdir)/dvb/zapit all install
 	touch .zapit
 
@@ -1189,7 +1198,7 @@ $(appsdir)/misc/tools/config.status: .bootstrap
 $(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libmad .libpng .libsigc .misc_libs .tuxbox_libs .plugins
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE)
 
-.enigma: $(appsdir)/tuxbox/enigma/config.status .tuxbox_tools
+.enigma: $(appsdir)/tuxbox/enigma/config.status .tuxbox_tools .config
 	$(MAKE) -C $(appsdir)/tuxbox/enigma all install
 	touch .enigma
 
