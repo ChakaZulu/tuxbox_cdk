@@ -40,7 +40,7 @@ freetype-2.1.4.tar.bz2;http://belnet.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.3.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
 libpng-1.2.5.tar.gz;http://www.libpng.org/pub/png/src
-libxml2-2.4.30.tar.gz;ftp://xmlsoft.org
+libxml2-2.4.30.tar.gz;http://remote-admin.info/dbox2
 zlib-1.1.4.tar.bz2;ftp://ftp.info-zip.org/pub/infozip/zlib
 libffi-1.20.tar.gz;ftp://sourceware.cygnus.com/pub/libffi
 SDL-1.2.5.tar.gz;http://www.libsdl.org/release
