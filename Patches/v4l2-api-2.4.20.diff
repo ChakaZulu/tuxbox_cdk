@@ -1322,7 +1322,7 @@ add v4l2 API to the linux kernel
  
 --- linux-2.4.20/include/linux/videodev2.h	2002-12-11 11:04:12.000000000 +0100
 +++ linux/include/linux/videodev2.h	2002-12-18 14:56:33.000000000 +0100
-@@ -0,0 +1,859 @@
+@@ -0,0 +1,861 @@
 +#ifndef __LINUX_VIDEODEV2_H
 +#define __LINUX_VIDEODEV2_H
 +/*
@@ -1338,7 +1338,9 @@ add v4l2 API to the linux kernel
 + *		Justin Schoeman
 + *		et al.
 + */
++#ifdef __KERNEL__
 +#include <linux/time.h> /* need struct timeval */
++#endif
 +
 +/*
 + *	M I S C E L L A N E O U S
