@@ -44,7 +44,7 @@ libffi;make:install
 libfreetype;make:install;link:TARGET/bin/freetype-config:HOST/bin/freetype-config
 libjpeg;make:install-lib:install-headers
 libmad;make:install
-libncurses;make:install.libs:install.includes
+libncurses;make:install.libs:install.includes:DESTDIR=TARGET
 libnet;make:install;install:-m755:libnet-config:TARGET/bin/libnet-config;link:TARGET/bin/libnet-config:HOST/bin/libnet-config
 libnids;make:install
 libpcap;make:install
