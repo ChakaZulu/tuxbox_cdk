@@ -24,7 +24,6 @@ sub load ($$$)
       chomp;
       my @rule = split ( /;/, $_ );
 
-      print "get: $_\n";
       next if not defined $rule[0];
       return @rule if $rule[0] eq $package;
 
