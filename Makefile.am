@@ -146,7 +146,8 @@ bootstrap_gcc: .binutils .linuxdir @DEPENDS_bootstrap_gcc@
 	touch .modutils
 
 .etc: .busybox .tinylogin .modutils
-	cd $(targetprefix)/etc && patch -p1 < $(buildprefix)/Patches/etc.diff
+	cp -rf ./etc/* $(targetprefix)/etc
+	find $(targetprefix)/etc -type d -name "CVS" -exec rm -rf {} \;
 	chmod 755 $(targetprefix)/etc/init.d/*
 	touch .etc
 
