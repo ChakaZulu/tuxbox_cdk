@@ -1,5 +1,0 @@
-#!/bin/sh
-# Aus Sicherheitsgruenden zuerst loeschen
-rm -f /var/run/ppp.online
-echo "$3" >/var/run/ppp.online
-rm -f /var/run/ppp.offline
