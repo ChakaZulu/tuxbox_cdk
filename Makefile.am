@@ -354,7 +354,7 @@ OPTIONAL_LIBCRYPTO = libcrypto
 endif
 
 libs: \
-	$(OPTIONAL_LIBCRYPTO) libcurl libdirectfb libdirectfbpp libdvbpsi \
+	$(OPTIONAL_LIBCRYPTO) libcurl libdirectfb libdirectfbpp libppdirectfb libdvbpsi \
 	libfreetype libjpeg libmad libid3tag libncurses libpng \
 	libreadline libsdl libsigc libz libdvb
 
@@ -475,6 +475,22 @@ $(DEPDIR)/libdirectfbpp: bootstrap libdirectfb @DEPENDS_libdirectfbpp@
 	mv $(targetprefix)/lib/libdfb++.la $(targetprefix)/lib/libdfb++.la.old
 	sed -e "s, /lib, $(targetprefix)/lib,g" < $(targetprefix)/lib/libdfb++.la.old >$(targetprefix)/lib/libdfb++.la
 	rm -f $(targetprefix)/lib/libdfb++.la.old
+	touch $@
+
+$(DEPDIR)/libppdirectfb: bootstrap libdirectfb @DEPENDS_libppdirectfb@
+	@PREPARE_libppdirectfb@
+	cd @DIR_libppdirectfb@ && \
+		$(BUILDENV) \
+		./autogen.sh \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
+		$(MAKE) all && \
+		@INSTALL_libppdirectfb@
+	@CLEANUP_libppdirectfb@
+	mv $(targetprefix)/lib/lib++dfb.la $(targetprefix)/lib/lib++dfb.la.old
+	sed -e "s, /lib, $(targetprefix)/lib,g" < $(targetprefix)/lib/lib++dfb.la.old >$(targetprefix)/lib/lib++dfb.la
+	rm -f $(targetprefix)/lib/lib++dfb.la.old
 	touch $@
 
 $(DEPDIR)/libdvb: bootstrap @DEPENDS_libdvb@
