@@ -1,5 +1,5 @@
 #
-# $Id: FAQ.en,v 1.4 2003/05/29 10:01:30 obi Exp $
+# $Id: FAQ.en,v 1.5 2003/09/30 07:08:44 obi Exp $
 #
 # Frequently Asked Questions about the Cross Development Kit
 #
@@ -10,6 +10,10 @@
 # or any later version published by the Free Software Foundation;
 # with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 # A copy of the license is included in cdk/common-licenses/FDL-1.2
+#
+# This document is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 
 Q: Why is there no configure script?

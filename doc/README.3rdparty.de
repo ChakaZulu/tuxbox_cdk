@@ -1,5 +1,8 @@
 #
-# $Id: README.3rdparty.de,v 1.5 2003/07/11 00:30:16 obi Exp $
+# $Id: README.3rdparty.de,v 1.6 2003/09/30 07:08:44 obi Exp $
+#
+# Inhalt dieses Dokuments sind die noetigen Schritte zum hinzufuegen
+# von 3rd party programmen zum CDK.
 #
 # Copyright (c) 2002-2003 Andreas Oberritter <obi@tuxbox.org>
 #
@@ -9,8 +12,9 @@
 # with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 # A copy of the license is included in cdk/common-licenses/FDL-1.2
 # 
-# Inhalt dieses Dokuments sind die noetigen Schritte zum hinzufuegen
-# von 3rd party programmen zum CDK.
+# This document is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 
 Und so baut man neue Tools in das cdk ein:

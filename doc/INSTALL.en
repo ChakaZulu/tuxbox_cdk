@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.17 2003/08/05 11:21:34 obi Exp $
+# $Id: INSTALL.en,v 1.18 2003/09/30 07:08:44 obi Exp $
 #
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
@@ -11,6 +11,10 @@
 # or any later version published by the Free Software Foundation;
 # with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 # A copy of the license is included in cdk/common-licenses/FDL-1.2
+#
+# This document is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 
 ------------------------------------------------------------------------------
