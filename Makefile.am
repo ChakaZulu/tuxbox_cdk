@@ -1129,6 +1129,13 @@ $(flashprefix)/root: .busybox .driver .modutils
 	cp -a $(bootprefix)/kernel-cdk $(flashprefix)/root/vmlinuz
 	@touch $(flashprefix)/.flash
 
+$(flashprefix)/.part_network: $(flashprefix)/.flash .ifupdown .pump
+	$(INSTALL) -d $(flashprefix)/root/etc/network
+	cp -a $(targetprefix)/etc/network/* $(flashprefix)/root/etc/network
+	$(INSTALL) $(targetprefix)/sbin/ifup $(targetprefix)/sbin/ifdown \
+		$(targetprefix)/sbin/pump $(flashprefix)/root/sbin
+	@touch $(flashprefix)/.part_network
+
 flash-ftpd: $(flashprefix)/.part_ftpd
 
 $(flashprefix)/.part_ftpd: $(flashprefix)/.flash $(flashprefix)/.part_inetd .ftpd
@@ -1136,15 +1143,6 @@ $(flashprefix)/.part_ftpd: $(flashprefix)/.flash $(flashprefix)/.part_inetd .ftp
 	$(INSTALL) $(targetprefix)/sbin/in.ftpd $(flashprefix)/root/sbin
 	$(INSTALL) -d $(flashprefix)/root/share/empty
 	@touch $(flashprefix)/.part_ftpd
-
-$(flashprefix)/.part_network: $(flashprefix)/.flash .ifupdown
-	$(INSTALL) -d $(flashprefix)/root/etc/network
-	cp -a $(targetprefix)/etc/network/* $(flashprefix)/root/etc/network
-	$(INSTALL) $(targetprefix)/sbin/ifup $(targetprefix)/sbin/ifdown \
-		$(flashprefix)/root/sbin
-	@touch $(flashprefix)/.part_network
-
-flash-telnetd: $(flashprefix)/.part_telnetd
 
 $(flashprefix)/.part_inetd: $(flashprefix)/.flash $(flashprefix)/.part_network .inetd
 	$(INSTALL) $(targetprefix)/sbin/inetd $(flashprefix)/root/sbin
