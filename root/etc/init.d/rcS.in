@@ -26,7 +26,7 @@ modprobe tuxbox
 modprobe dvb-core
 
 # D-BOX2
-if [ $TUXBOX_MODEL -eq 1]; then
+if [ $TUXBOX_MODEL -eq 1 ]; then
 
 	# I2C core
 	modprobe dbox2_i2c
