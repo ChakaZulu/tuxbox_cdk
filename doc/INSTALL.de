@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.de,v 1.9 2002/08/03 14:52:53 obi Exp $
+# $Id: INSTALL.de,v 1.10 2002/08/15 07:44:16 obi Exp $
 #
 # Urheber:
 # --------
@@ -36,6 +36,7 @@ Prerequisiten:
  - yacc
  - flex
  - bison
+ - pkg-config
 
 
 Hier die Kommandos zum Bauen des cdk:
