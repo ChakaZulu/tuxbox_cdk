@@ -693,7 +693,7 @@ libs: \
 #   contrib apps
 #
 
-contrib_apps: .console_tools .fbset .lirc .ssh .tcpdump .xrc .thttpd
+contrib_apps: .console_tools .fbset .lirc .ssh .tcpdump .xrc
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -1266,7 +1266,7 @@ endif
 	$(MAKE) -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
-.neutrino: .thttpd .libconfigfile .libcramfs .libdboxnet .liblcddisplay .libmd5sum .libucodes .sections .zapit
+.neutrino: .thttpd .libconfigfile .libcramfs .libdboxnet .liblcddisplay .libmd5sum .libucodes .sections .zapit .thttpd
 	$(MAKE) -C $(appsdir)/mczap all install
 	touch .neutrino
 
