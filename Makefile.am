@@ -281,7 +281,7 @@ root_optional: \
 libs: \
 	.libcrypto .libcurl .libdirectfb .libdirectfbpp .libdvbpsi \
 	.libfreetype .libjpeg .libmad .libncurses .libpng \
-	.libreadline .libsdl .libsigc .libz
+	.libreadline .libsdl .libsigc .libz .libdvb
 
 libs_optional: \
 	.libcommoncplusplus .libffi \

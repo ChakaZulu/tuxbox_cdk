@@ -9,7 +9,7 @@ diff -Naur bzip2-1.0.2/Makefile-libbz2_so bzip2-1.0.2-patched/Makefile-libbz2_so
  BIGFILES=-D_FILE_OFFSET_BITS=64
  CFLAGS=-fpic -fPIC -Wall -Winline -O2 -fomit-frame-pointer -fno-strength-reduce $(BIGFILES)
  
-@@ -42,3 +41,18 @@
+@@ -42,3 +41,17 @@
  	$(CC) $(CFLAGS) -c decompress.c
  bzlib.o: bzlib.c
  	$(CC) $(CFLAGS) -c bzlib.c
@@ -24,7 +24,6 @@ diff -Naur bzip2-1.0.2/Makefile-libbz2_so bzip2-1.0.2-patched/Makefile-libbz2_so
 +	if ( test ! -d $(PREFIX)/lib ) ; then mkdir -p $(PREFIX)/lib ; fi
 +	cp -f libbz2.so.1.0.2 $(PREFIX)/lib
 +	chmod a+r $(PREFIX)/lib/libbz2.so.1.0.2
-+	rm -f $(PREFIX)/lib/libbz2.so.1
-+	ln -s $(PREFIX)/lib/libbz2.so.1.0.2 $(PREFIX)/lib/libbz2.so.1
-+	rm -f $(PREFIX)/lib/libbz2.so
-+	ln -s $(PREFIX)/lib/libbz2.so.1.0.2 $(PREFIX)/lib/libbz2.so
++	ln -sf libbz2.so.1.0.2 $(PREFIX)/lib/libbz2.so.1.0
++	ln -sf libbz2.so.1.0.2 $(PREFIX)/lib/libbz2.so.1
++	ln -sf libbz2.so.1.0.2 $(PREFIX)/lib/libbz2.so
