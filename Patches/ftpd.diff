@@ -7,7 +7,7 @@ diff -urN vsftpd-1.0.1.orig/Makefile vsftpd-1.0.1/Makefile
  INSTALL	=	install
  IFLAGS  = -idirafter dummyinc
 -CFLAGS	=	-O2 -Wall -W -Wshadow #-pedantic -Werror -Wconversion
-+CFLAGS	=	-Os -Wall -W
++CFLAGS	=	-Os -Wall -W -mcpu=823 -mmultiple -mstring -meabi -msoft-float
  
 -LIBS	=	`./vsf_findlibs.sh`
 +LIBS	=	-lcrypt

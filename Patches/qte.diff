@@ -97,8 +97,8 @@ diff -Naur qt/configs/linux-powerpc-g++-shared qt-2.3.0/configs/linux-powerpc-g+
 +SYSCONF_LINK_LIB_STATIC	= rm -f $(DESTDIR)$(SYSCONF_LINK_TARGET_STATIC) ; \
 +				 $(SYSCONF_AR) $(DESTDIR)$(SYSCONF_LINK_TARGET_STATIC) $(OBJECTS) $(OBJMOC) 
 +# Compiling application source
-+SYSCONF_CXXFLAGS	= -pipe -fshared-data -DQWS -D_GNU_SOURCE -fomit-frame-pointer -fno-exceptions -fno-rtti -Os
-+SYSCONF_CFLAGS		= -pipe -fshared-data -Os -D_GNU_SOURCE -fomit-frame-pointer
++SYSCONF_CXXFLAGS	= -pipe -fshared-data -DQWS -D_GNU_SOURCE -fomit-frame-pointer -fno-exceptions -fno-rtti -Os -mcpu=823 -mmultiple -mstring -meabi -msoft-float
++SYSCONF_CFLAGS		= -pipe -fshared-data -Os -D_GNU_SOURCE -fomit-frame-pointer -mcpu=823 -mmultiple -mstring -meabi -msoft-float
 +# Default link type (static linking is still be used where required)
 +SYSCONF_LINK_LIB	= $(SYSCONF_LINK_LIB_SHARED)
 +SYSCONF_LINK_TARGET	= $(SYSCONF_LINK_TARGET_SHARED)
