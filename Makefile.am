@@ -200,9 +200,15 @@ $(DEPDIR)/gcc: @DEPENDS_gcc@
 #   root
 #
 
+if TARGETRULESET_FLASH
+root: \
+	rootdirectories busybox ftpd \
+	procps watchdog
+else
 root: \
 	rootdirectories busybox ftpd modutils \
 	procps watchdog
+endif
 
 root_optional: \
 	portmap mrouted
@@ -1671,6 +1677,7 @@ $(flashprefix)/.part_plugins: $(flashprefix)/.flash plugins
 	cp -pa $(targetprefix)/share/fonts/tuxtxt?.fon $(flashprefix)/root/share/fonts/
 	cp -pa $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/root/var/tuxbox/config/
 	cp -pa $(targetprefix)/var/tuxbox/config/tuxtxt/tuxtxt.conf $(flashprefix)/root/var/tuxbox/config/tuxtxt/
+	cp -pa $(targetprefix)/share/tuxbox/sokoban $(flashprefix)/root/share/tuxbox/
 	@touch $@
 
 flash-lcdmenu: $(flashprefix)/.part_lcdmenu
