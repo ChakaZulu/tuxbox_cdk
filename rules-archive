@@ -39,7 +39,7 @@ curl-7.9.1.tar.bz2;http://curl.haxx.se/download
 freetype-2.0.9.tar.bz2;http://telia.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.2.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
-libpng-1.0.12.tar.gz;http://www.libpng.org/pub/png/src
+libpng-1.0.14.tar.gz;http://www.libpng.org/pub/png/src
 popt-1.6.4.tar.gz;
 qt-embedded-2.3.0.tar.gz;ftp://ftp.trolltech.com/qt/source
 libxml2-2.4.22.tar.bz2;ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml

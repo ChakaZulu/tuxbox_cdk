@@ -43,7 +43,7 @@ libfreetype;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2;extract:freetype-2.0.9.t
 libncurses;5.2;ncurses-5.2;ncurses-5.2.tar.gz:ncurses.diff;extract:ncurses-5.2.tar.gz;patch:ncurses.diff
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff
 libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;patch:libpcap.diff
-libpng;1.0.12;libpng-1.0.12;libpng-1.0.12.tar.gz:libpng-1.0.12.diff;extract:libpng-1.0.12.tar.gz;patch:libpng-1.0.12.diff
+libpng;1.0.14;libpng-1.0.14;libpng-1.0.14.tar.gz:libpng.diff;extract:libpng-1.0.14.tar.gz;patch:libpng.diff
 libpopt;1.6.4;popt-1.6.4;popt-1.6.4.tar.gz;extract:popt-1.6.4.tar.gz
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff
 libreadline;4.2a;readline-4.2a;readline-4.2a.tar.gz;extract:readline-4.2a.tar.gz
