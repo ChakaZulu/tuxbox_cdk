@@ -1,0 +1,42 @@
+diff -Naur mad-0.14.2b/ltconfig mad-0.14.2b_patched/ltconfig
+--- mad-0.14.2b/ltconfig	Mon Aug 20 21:14:52 2001
++++ mad-0.14.2b_patched/ltconfig	Thu Aug 22 02:05:35 2002
+@@ -1860,6 +1860,7 @@
+   library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so${major} ${libname}.so'
+   soname_spec='${libname}${release}.so$major'
+   shlibpath_var=LD_LIBRARY_PATH
++  hardcode_into_libs=yes
+   ;;
+ 
+ hpux9* | hpux10* | hpux11*)
+@@ -1924,19 +1925,18 @@
+   finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
+   shlibpath_var=LD_LIBRARY_PATH
+   shlibpath_overrides_runpath=no
+-  deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [LM]SB (shared object|dynamic lib )'
+-  file_magic_cmd=/usr/bin/file
+-  file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
++  # This implies no fast_install, which is unacceptable.
++  # Some rework will be needed to allow for fast_install
++  # before this can be enabled.
++  hardcode_into_libs=yes
+ 
+-  if test -f /lib/ld.so.1; then
+-    dynamic_linker='GNU ld.so'
+-  else
+-    # Only the GNU ld.so supports shared libraries on MkLinux.
+-    case "$host_cpu" in
+-    powerpc*) dynamic_linker=no ;;
+-    *) dynamic_linker='Linux ld.so' ;;
+-    esac
+-  fi
++  # We used to test for /lib/ld.so.1 and disable shared libraries on
++  # powerpc, because MkLinux only supported shared libraries with the
++  # GNU dynamic linker.  Since this was broken with cross compilers,
++  # most powerpc-linux boxes support dynamic linking these days and
++  # people can always --disable-shared, the test was removed, and we
++  # assume the GNU/Linux dynamic linker is in use.
++  dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
+ netbsd*)
