@@ -1,6 +1,15 @@
 diff -Naur busybox-1.00-pre7/init/init.c busybox-1.00-pre7-dbox2/init/init.c
 --- busybox-1.00-pre7/init/init.c	2003-09-26 12:45:55.000000000 +0200
 +++ busybox-1.00-pre7-dbox2/init/init.c	2004-02-22 16:13:00.000000000 +0100
+@@ -376,7 +376,7 @@
+ 	while ((fd = open(console, O_RDONLY | O_NONBLOCK)) < 0 && tried < 2) {
+ 		/* Can't open selected console -- try
+ 			logical system console and VT_MASTER */
+-		safe_strncpy(console, (tried == 0 ? _PATH_CONSOLE : CURRENT_VC),
++		safe_strncpy(console, (tried == 0 ? _PATH_CONSOLE : "/dev/tty0"),
+ 							sizeof(console));
+ 		tried++;
+ 	}
 @@ -629,15 +629,12 @@
  
  	pid = run(a);
@@ -21,15 +30,6 @@ diff -Naur busybox-1.00-pre7/init/init.c busybox-1.00-pre7-dbox2/init/init.c
  	}
  	return wpid;
  }
-@@ -376,7 +381,7 @@
- 	while ((fd = open(console, O_RDONLY | O_NONBLOCK)) < 0 && tried < 2) {
- 		/* Can't open selected console -- try
- 			logical system console and VT_MASTER */
--		safe_strncpy(console, (tried == 0 ? _PATH_CONSOLE : CURRENT_VC),
-+		safe_strncpy(console, (tried == 0 ? _PATH_CONSOLE : "/dev/tty0"),
- 							sizeof(console));
- 		tried++;
- 	}
 diff -Naur busybox-1.00-pre7/libbb/messages.c busybox-1.00-pre7-dbox2/libbb/messages.c
 --- busybox-1.00-pre7/libbb/messages.c	2003-09-02 04:36:11.000000000 +0200
 +++ busybox-1.00-pre7-dbox2/libbb/messages.c	2004-02-22 16:11:11.000000000 +0100
