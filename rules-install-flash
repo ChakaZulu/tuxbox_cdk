@@ -17,7 +17,7 @@ libcrypto;install:libcrypto.so.0.9.6:TARGET/lib;link:libcrypto.so.0.9.6:TARGET/l
 libfreetype;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARGET/bin;archive:TARGET/lib/libfreetype_pic.a:objs/*.lo
 libncurses;make:install.libs:DESTDIR=TARGET;archive:TARGET/lib/libncurses_pic.a:obj_s/*.o
 libpng;make:install:prefix=TARGET;archive:TARGET/lib/libpng_pic.a:*.o
-libz;make:libz;make:install:prefix=TARGET;archive:TARGET/lib/libz_pic.a:*.o
+libz;make:install:prefix=TARGET;archive:TARGET/lib/libz_pic.a:*.o
 
 #
 # include
