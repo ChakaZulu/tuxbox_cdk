@@ -12,6 +12,10 @@ echo "Lade saa7126"
 $INSMOD $MODDIR/misc/saa7126.o board=0 debug=0
 #modprobe saa7126
 
+echo "Lade event"
+$INSMOD $MODDIR/misc/event.o
+#modprobe event
+
 echo "Lade fp"
 $INSMOD $MODDIR/misc/fp.o debug=0 useimap=0
 #modprobe fp
