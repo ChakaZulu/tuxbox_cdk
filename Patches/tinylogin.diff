@@ -44,3 +44,16 @@ diff -urN tinylogin-0.80.orig/applets.h tinylogin-0.80/applets.h
  #endif
  #if !defined(PROTOTYPES) && !defined(MAKE_LINKS)
  	{0, NULL, 0, 0, NULL}
+diff -Naur Archive/tinylogin-0.80/Makefile tinylogin-0.80/Makefile
+--- Archive/tinylogin-0.80/Makefile     2000-12-26 22:24:55.000000000 +0100
++++ tinylogin-0.80/Makefile     2002-08-18 15:26:16.000000000 +0200
+@@ -39,6 +39,8 @@
+ # Most people will want to leave this set to false.
+ USE_SYSTEM_PWD_GRP = false
+
++CFLAGS =
++
+ # GNU libc needs libcrypt, but libc5 wants it compiled out...
+ LIBRARIES = -lcrypt
+
+
