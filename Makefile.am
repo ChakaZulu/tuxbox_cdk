@@ -415,8 +415,9 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz
 			--host=$(target) \
 			--prefix=$(targetprefix) \
 			--without-html-dir --with-threads --without-ftp --without-http --without-html \
-			--without-catalog --without-docbook --without-xpath --without-xptr \
-			--without-xinclude --without-iconv --without-debug --without-mem-debug && \
+			--without-catalog --without-docbook --with-xpath --without-xptr \
+			--without-xinclude --without-iconv --without-debug --without-mem-debug \
+			--without-python && \
 		make all && \
 		@INSTALL_libxml2@
 	@CLEANUP_libxml2@
@@ -689,7 +690,7 @@ endif
 #   own applications
 #
 
-apps: .dvbsnoop .edvb .enigma .fx2 .lcars .lcdmenu .neutrino .stream .tuxtxt
+apps: .dvbsnoop .edvb .enigma .fx2 .lcars .lcdmenu .libxml2 .neutrino .stream .tuxtxt
 
 if MAINTAINER_MODE
 $(appsdir)/configure: $(appsdir)/configure.ac

@@ -43,7 +43,7 @@ libpng;1.0.12;libpng-1.0.12;libpng-1.0.12.tar.gz;extract:libpng-1.0.12.tar.gz
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff
 libreadline;4.2a;readline-4.2a;readline-4.2a.tar.gz;extract:readline-4.2a.tar.gz
 libsdl;1.2.3;SDL-1.2.3;SDL-1.2.3.tar.gz:sdl.diff;extract:SDL-1.2.3.tar.gz;patch:sdl.diff
-libxml2;2.4.10;libxml2-2.4.10;libxml2-2.4.10.tar.gz;extract:libxml2-2.4.10.tar.gz
+libxml2;2.4.19;libxml2-2.4.19;libxml2-2.4.19.tar.gz;extract:libxml2-2.4.19.tar.gz
 libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff;extract:zlib-1.1.4.tar.bz2;patch:zlib.diff
 
 #
