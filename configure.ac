@@ -147,7 +147,7 @@ TUXBOX_RULES_MAKE(libz)
 #
 # msttf
 #
-FONTDIR="\${datadir}/fonts"
+FONTDIR="\${targetprefix}/share/fonts"
 AC_SUBST(FONTDIR)
 TUXBOX_RULES_MAKE(cabextract)
 TUXBOX_RULES_MAKE(msttf)
