@@ -1069,7 +1069,9 @@ endif
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		BIN_DEST=$(targetprefix)/bin \
 		INSTALL_MOD_PATH=$(targetprefix) \
+		HARDWARE=$(HARDWARERULESET) \
 		install
+
 if MAINTAINER_MODE
 else
 	$(MAKE) -C $(driverdir) \
@@ -1079,9 +1081,10 @@ endif
 	touch .driver
 
 driver-clean:
-	$(MAKE) -C $(driverdir) clean \
-		KERNEL_LOCATION=$(buildprefix)/linux
-	rm .driver
+	$(MAKE) -C $(driverdir) \
+		KERNEL_LOCATION=$(buildprefix)/linux \
+		distclean
+	-rm .driver
 
 $(driverdir)/directfb/Makefile: .bootstrap .libdirectfb
 	cd $(driverdir)/directfb && \
