@@ -1,12 +1,7 @@
 diff -Naur tinylogin-1.2/Config.h tinylogin-1.2new/Config.h
 --- tinylogin-1.2/Config.h	2002-06-23 04:47:53.000000000 +0200
-+++ tinylogin-1.2new/Config.h	2002-10-12 17:47:56.000000000 +0200
-@@ -7,12 +7,12 @@
- #define CONFIG_ADDGROUP
- #define CONFIG_DELUSER
- #define CONFIG_DELGROUP
--#define CONFIG_GETTY
-+//#define CONFIG_GETTY
++++ tinylogin-1.2new/Config.h	2002-10-14 03:11:12.000000000 +0200
+@@ -11,8 +11,8 @@
  #define CONFIG_LOGIN
  #define CONFIG_PASSWD
  #define CONFIG_SU
@@ -45,7 +40,7 @@ diff -Naur tinylogin-1.2/Config.h tinylogin-1.2new/Config.h
  //---------------------------------------------------
 diff -Naur tinylogin-1.2/include/applets.h tinylogin-1.2new/include/applets.h
 --- tinylogin-1.2/include/applets.h	2002-06-23 04:15:02.000000000 +0200
-+++ tinylogin-1.2new/include/applets.h	2002-10-12 17:47:56.000000000 +0200
++++ tinylogin-1.2new/include/applets.h	2002-10-14 03:11:04.000000000 +0200
 @@ -62,7 +62,7 @@
  	APPLET(login, login_main, _BB_DIR_BIN, _BB_SUID_NEVER)
  #endif
@@ -66,7 +61,7 @@ diff -Naur tinylogin-1.2/include/applets.h tinylogin-1.2new/include/applets.h
  	{ 0,NULL,0 }
 diff -Naur tinylogin-1.2/install.sh tinylogin-1.2new/install.sh
 --- tinylogin-1.2/install.sh	2002-06-23 05:04:08.000000000 +0200
-+++ tinylogin-1.2new/install.sh	2002-10-12 17:49:28.000000000 +0200
++++ tinylogin-1.2new/install.sh	2002-10-14 03:11:04.000000000 +0200
 @@ -1,13 +1,5 @@
  #!/bin/sh
  
@@ -91,7 +86,7 @@ diff -Naur tinylogin-1.2/install.sh tinylogin-1.2new/install.sh
  exit 0
 diff -Naur tinylogin-1.2/Makefile tinylogin-1.2new/Makefile
 --- tinylogin-1.2/Makefile	2002-06-23 05:04:50.000000000 +0200
-+++ tinylogin-1.2new/Makefile	2002-10-12 17:47:56.000000000 +0200
++++ tinylogin-1.2new/Makefile	2002-10-14 03:11:04.000000000 +0200
 @@ -68,6 +68,8 @@
  # Do not enable this for production builds...
  DOEFENCE  = false
