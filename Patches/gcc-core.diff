@@ -1,17 +1,25 @@
 diff -urN gcc-3.2.2.orig/gcc/config/rs6000/linux.h gcc-3.2.2/gcc/config/rs6000/linux.h
 --- gcc-3.2.2.orig/gcc/config/rs6000/linux.h	2003-01-23 23:19:42.000000000 +0100
 +++ gcc-3.2.2/gcc/config/rs6000/linux.h	2003-02-08 14:53:52.000000000 +0100
-@@ -78,8 +78,11 @@
+@@ -93,7 +93,11 @@
     state data appropriately.  See unwind-dw2.c for the structs.  */
  
  #ifdef IN_LIBGCC2
 -#include <signal.h>
--#include <sys/ucontext.h>
 +#include <linux/types.h>
 +#include <asm/sigcontext.h>
 +#include <asm/siginfo.h>
 +#include <asm/signal.h>
 +#include <asm/ucontext.h>
  
- enum { SIGNAL_FRAMESIZE = 64 };
- #endif
+ /* During the 2.5 kernel series the kernel ucontext was changed, but
+    the new layout is compatible with the old one, so we just define
+@@ -103,7 +103,7 @@
+   unsigned long     uc_flags;
+   struct ucontext  *uc_link;
+   stack_t           uc_stack;
+-  struct sigcontext_struct uc_mcontext;
++  struct sigcontext uc_mcontext;
+   sigset_t          uc_sigmask;
+ };
+ 

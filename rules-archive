@@ -13,8 +13,8 @@ linux-2.4.25.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.ker
 linux-2.4.25-cifs24.103.diff.bz2;http://tuxbox.berlios.de/pub/tuxbox/cdk/src
 linux-2.4.25-dbox2-mtd.diff.bz2;http://tuxbox.berlios.de/pub/tuxbox/cdk/src
 binutils-2.14.90.0.5.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
-gcc-core-3.2.3.tar.bz2;ftp://$(gnuserver)/gcc/gcc-3.2.3
-gcc-g++-3.2.3.tar.bz2;ftp://$(gnuserver)/gcc/gcc-3.2.3
+gcc-core-3.3.3.tar.bz2;ftp://$(gnuserver)/gcc/gcc-3.3.3
+gcc-g++-3.3.3.tar.bz2;ftp://$(gnuserver)/gcc/gcc-3.3.3
 glibc-2.2.5.tar.bz2;ftp://$(gnuserver)/glibc
 glibc-linuxthreads-2.2.5.tar.bz2;ftp://$(gnuserver)/glibc
 uClibc-0.9.11.tar.bz2
