@@ -24,7 +24,7 @@ watchdog_5.2.4.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/w/watchdog
 # root
 #
 busybox-1.00-pre8.tar.bz2;http://www.busybox.net/downloads
-module-init-tools-3.0-pre5.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/module-init-tools
+module-init-tools-3.0.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/module-init-tools
 modutils-2.4.26.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
