@@ -194,10 +194,10 @@ bootstrap_gcc_2_95: @DEPENDS_bootstrap_gcc_2_95@
 
 #######################
 #
-#   minimal root
+#   root
 #
 
-root: .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
+root: .etc .busybox .ftpd .ifupdown .inetd .modutils .netkit_telnet .procps .tinylogin
 
 .etc:
 	make -C etc install
@@ -235,6 +235,16 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 		@INSTALL_modutils@
 	@CLEANUP_modutils@
 	touch .modutils
+
+.ifupdown: .bootstrap @DEPENDS_ifupdown@
+	@PREPARE_ifupdown@
+	cd @DIR_ifupdown@ && \
+		make all \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" && \
+		@INSTALL_ifupdown@
+	@CLEANUP_ifupdown@
+	touch .ifupdown
 
 .inetd: .bootstrap @DEPENDS_inetd@
 	@PREPARE_inetd@

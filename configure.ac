@@ -193,15 +193,16 @@ TUXBOX_RULES_MAKE_EXDIR(gcc)
 TUXBOX_RULES_MAKE(uclibc)
 
 #
-# minimal root
+# root
 #
 TUXBOX_RULES_MAKE(busybox)
-TUXBOX_RULES_MAKE(tinylogin)
-TUXBOX_RULES_MAKE(modutils)
-TUXBOX_RULES_MAKE(inetd)
 TUXBOX_RULES_MAKE(ftpd)
+TUXBOX_RULES_MAKE(ifupdown)
+TUXBOX_RULES_MAKE(inetd)
+TUXBOX_RULES_MAKE(modutils)
 TUXBOX_RULES_MAKE(netkit_telnet)
 TUXBOX_RULES_MAKE(procps)
+TUXBOX_RULES_MAKE(tinylogin)
 
 #
 # contrib libs

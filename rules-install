@@ -18,16 +18,17 @@ uclibc;make:install:DEVEL_PREFIX=TARGET;install:-m644:lib/libc.a:TARGET/lib/libc
 gcc;make:install
 
 #
-# minimal root
+# root
 #
 busybox;make:install:PREFIX=TARGET
-tinylogin;make:install:PREFIX=TARGET
-modutils;make:install-bin
-inetd;install:-m755:inetd:TARGET/sbin
 ftpd;install:-m755:vsftpd:TARGET/sbin/in.ftpd;install:-m644:vsftpd-dbox2.conf:TARGET/etc/vsftpd.conf;install:-d:TARGET/share/empty
-rsh;make:install:PREFIX=TARGET
+ifupdown;make:install:BASEDIR=TARGET
+inetd;install:-m755:inetd:TARGET/sbin
+modutils;make:install-bin
 netkit_telnet;install:-m755:telnet/telnet:TARGET/bin/telnet;install:-m755:telnetd/telnetd:TARGET/sbin/in.telnetd
 procps;install:-m755:top:ps/ps:TARGET/bin
+rsh;make:install:PREFIX=TARGET
+tinylogin;make:install:PREFIX=TARGET
 
 #
 # contrib libs
