@@ -1,4 +1,4 @@
-SUBDIRS = init.d
+SUBDIRS = init.d network
 
 EXTRA_DIST = \
 	fstab.in group host.conf hostname hosts inetd.conf inittab \

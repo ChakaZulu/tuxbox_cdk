@@ -4,7 +4,6 @@ PATH=/sbin:/bin
 
 hostname -F /etc/hostname
 mount -a
-echo -n >/etc/network/ifstate
 ifup -a
 
 test -x /sbin/inetd && inetd
@@ -114,9 +113,7 @@ elif [ $MODEL_ID -eq 2 ]; then
 
 fi
 
-echo "" > /etc/issue.net
 echo "Willkomen auf Ihrer $VENDOR $MODEL - Kernel %r (%t)." >> /etc/issue.net
-echo "" >> /etc/issue.net
 
 # compatibility links
 ln -sf demux0 /dev/dvb/adapter0/demux1

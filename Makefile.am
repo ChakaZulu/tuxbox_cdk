@@ -179,7 +179,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 #
 
 root: \
-	.etc .busybox .ftpd .inetd .modutils \
+	.root .busybox .ftpd .inetd .modutils \
 	.netkit_telnet .procps .watchdog
 
 root_optional: \
@@ -196,9 +196,9 @@ root_optional: \
 	@CLEANUP_busybox@
 	touch .busybox
 
-.etc:
-	$(MAKE) -C etc install
-	touch .etc
+.root:
+	$(MAKE) -C root install
+	touch .root
 
 .ftpd: .bootstrap .inetd @DEPENDS_ftpd@
 	@PREPARE_ftpd@
