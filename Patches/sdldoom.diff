@@ -1,11 +1,12 @@
---- Archive/sdldoom-1.10/doomdef.h	1999-12-21 06:16:09.000000000 +0100
-+++ sdldoom-1.10/doomdef.h	2002-07-26 03:19:03.000000000 +0200
-@@ -109,7 +109,7 @@
- // So there.
- #define SCREENWIDTH  320
- //SCREEN_MUL*BASE_WIDTH //320
--#define SCREENHEIGHT 200
-+#define SCREENHEIGHT 240
- //(int)(SCREEN_MUL*BASE_WIDTH*INV_ASPECT_RATIO) //200
- 
- 
+diff -uNr Archive/sdldoom-1.10/i_video.c sdldoom-1.10/i_video.c
+--- Archive/sdldoom-1.10/i_video.c	1999-12-21 06:16:17.000000000 +0100
++++ sdldoom-1.10/i_video.c	2002-07-26 03:00:34.000000000 +0200
+@@ -450,7 +450,7 @@
+         I_Error("Smallest available mode (%dx%d) is too large!",
+ 						video_w, video_h);
+     }
+-    screen = SDL_SetVideoMode(video_w, video_h, 8, video_flags);
++    screen = SDL_SetVideoMode(320, 240, 8, video_flags);
+     if ( screen == NULL ) {
+         I_Error("Could not set %dx%d video mode: %s", video_w, video_h,
+ 							SDL_GetError());
