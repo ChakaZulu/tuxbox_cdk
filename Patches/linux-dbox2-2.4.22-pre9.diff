@@ -1,67 +1,3 @@
-diff -Naur linux-2.4.22-pre9/arch/ppc/boot/common/misc-simple.c linux-2.4.22-pre9-dbox2/arch/ppc/boot/common/misc-simple.c
---- linux-2.4.22-pre9/arch/ppc/boot/common/misc-simple.c	2003-07-20 21:38:33.000000000 +0200
-+++ linux-2.4.22-pre9-dbox2/arch/ppc/boot/common/misc-simple.c	2003-07-30 15:01:22.000000000 +0200
-@@ -60,6 +60,7 @@
- 
- unsigned long com_port;
- unsigned long initrd_size = 0;
-+unsigned long initrd_loc;
- 
- /* The linker tells us various locations in the image */
- extern char __image_begin, __image_end;
-@@ -148,6 +149,20 @@
- 		puts("initrd at:     ");
- 		puthex((unsigned long)(&__ramdisk_begin));
- 		puts(" "); puthex((unsigned long)(&__ramdisk_end));puts("\n");
-+
-+	/* Make sure we have the initrd placed after everything. */
-+		if ((_ALIGN((unsigned long)(zimage_size) + (1 << 20) - 1,
-+			(1 << 20))) <= (unsigned long)(&__ramdisk_end)) {
-+			initrd_loc = _ALIGN((unsigned long)(initrd_size) +
-+					(2 << 20) - 1, (2 << 20));
-+			 memcpy((void *)initrd_loc, &__ramdisk_begin,
-+					 initrd_size);
-+			 puts("relocated to:  "); puthex(initrd_loc);
-+			 puts(" "); puthex(initrd_loc + initrd_size);
-+			 puts("\n");
-+		} else {
-+			initrd_loc = (unsigned long)(&__ramdisk_begin);
-+	        }
- 	}
- 
- 	avail_ram = (char *)0x00400000;
-diff -Naur linux-2.4.22-pre9/arch/ppc/boot/prep/misc.c linux-2.4.22-pre9-dbox2/arch/ppc/boot/prep/misc.c
---- linux-2.4.22-pre9/arch/ppc/boot/prep/misc.c	2003-07-20 21:38:33.000000000 +0200
-+++ linux-2.4.22-pre9-dbox2/arch/ppc/boot/prep/misc.c	2003-07-30 15:01:22.000000000 +0200
-@@ -54,6 +54,7 @@
- RESIDUAL hold_resid_buf;
- RESIDUAL *hold_residual = &hold_resid_buf;
- unsigned long initrd_size = 0;
-+unsigned long initrd_loc;
- unsigned long orig_MSR;
- 
- char *zimage_start;
-@@ -290,6 +291,20 @@
- 		puts("initrd at:     ");
- 		puthex((unsigned long)(&__ramdisk_begin));
- 		puts(" "); puthex((unsigned long)(&__ramdisk_end));puts("\n");
-+
-+	/* Make sure we have the initrd placed after everything. */
-+		if ((_ALIGN((unsigned long)(zimage_size) + (1 << 20) - 1,
-+			(1 << 20))) <= (unsigned long)(&__ramdisk_end)) {
-+			initrd_loc = _ALIGN((unsigned long)(initrd_size) +
-+					(2 << 20) - 1, (2 << 20));
-+			 memcpy((void *)initrd_loc, &__ramdisk_begin,
-+					 initrd_size);
-+			 puts("relocated to:  "); puthex(initrd_loc);
-+			 puts(" "); puthex(initrd_loc + initrd_size);
-+			 puts("\n");
-+		} else {
-+			initrd_loc = (unsigned long)(&__ramdisk_begin);
-+	        }
- 	}
- 
- 	avail_ram = (char *)0x00400000;
 diff -Naur linux-2.4.22-pre9/arch/ppc/boot/simple/embed_config.c linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/embed_config.c
 --- linux-2.4.22-pre9/arch/ppc/boot/simple/embed_config.c	2003-07-30 12:17:27.000000000 +0200
 +++ linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/embed_config.c	2003-07-30 15:01:22.000000000 +0200
@@ -78,70 +14,6 @@ diff -Naur linux-2.4.22-pre9/arch/ppc/boot/simple/embed_config.c linux-2.4.22-pr
 +}
 +#endif
 \ Kein Zeilenumbruch am Dateiende.
-diff -Naur linux-2.4.22-pre9/arch/ppc/boot/simple/misc-embedded.c linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/misc-embedded.c
---- linux-2.4.22-pre9/arch/ppc/boot/simple/misc-embedded.c	2003-06-13 16:51:31.000000000 +0200
-+++ linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/misc-embedded.c	2003-07-30 15:01:22.000000000 +0200
-@@ -89,6 +89,7 @@
- 	char *cp;
- 	int zimage_size;
- 	unsigned long initrd_size;
-+	unsigned long initrd_loc;
- 
- 	/* First, capture the embedded board information.  Then
- 	 * initialize the serial console port.
-@@ -149,6 +150,20 @@
- 		puts("initrd at:     ");
- 		puthex((unsigned long)(&__ramdisk_begin));
- 		puts(" "); puthex((unsigned long)(&__ramdisk_end));puts("\n");
-+
-+	/* Make sure we have the initrd placed after everything. */
-+		if ((_ALIGN((unsigned long)(zimage_size) + (1 << 20) - 1,
-+			(1 << 20))) <= (unsigned long)(&__ramdisk_end)) {
-+			initrd_loc = _ALIGN((unsigned long)(initrd_size) +
-+					(2 << 20) - 1, (2 << 20));
-+			 memcpy((void *)initrd_loc, &__ramdisk_begin,
-+					 initrd_size);
-+			 puts("relocated to:  "); puthex(initrd_loc);
-+			 puts(" "); puthex(initrd_loc + initrd_size);
-+			 puts("\n");
-+		} else {
-+			initrd_loc = (unsigned long)(&__ramdisk_begin);
-+	        }
- 	}
- 
- 	/*
-diff -Naur linux-2.4.22-pre9/arch/ppc/boot/simple/misc-spruce.c linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/misc-spruce.c
---- linux-2.4.22-pre9/arch/ppc/boot/simple/misc-spruce.c	2003-07-20 21:38:33.000000000 +0200
-+++ linux-2.4.22-pre9-dbox2/arch/ppc/boot/simple/misc-spruce.c	2003-07-30 15:01:22.000000000 +0200
-@@ -56,6 +56,7 @@
- char *cmd_line = cmd_buf;
- 
- unsigned long initrd_size = 0;
-+unsigned long initrd_loc;
- 
- char *zimage_start;
- int zimage_size;
-@@ -344,6 +345,20 @@
- 		puts("initrd at:     ");
- 		puthex((unsigned long)(&__ramdisk_begin));
- 		puts(" "); puthex((unsigned long)(&__ramdisk_end));puts("\n");
-+
-+	/* Make sure we have the initrd placed after everything. */
-+		if ((_ALIGN((unsigned long)(zimage_size) + (1 << 20) - 1,
-+			(1 << 20))) <= (unsigned long)(&__ramdisk_end)) {
-+			initrd_loc = _ALIGN((unsigned long)(initrd_size) +
-+					(2 << 20) - 1, (2 << 20));
-+			 memcpy((void *)initrd_loc, &__ramdisk_begin,
-+					 initrd_size);
-+			 puts("relocated to:  "); puthex(initrd_loc);
-+			 puts(" "); puthex(initrd_loc + initrd_size);
-+			 puts("\n");
-+		} else {
-+			initrd_loc = (unsigned long)(&__ramdisk_begin);
-+	        }
- 	}
- 
- 	avail_ram = (char *)0x00400000;
 diff -Naur linux-2.4.22-pre9/arch/ppc/config.in linux-2.4.22-pre9-dbox2/arch/ppc/config.in
 --- linux-2.4.22-pre9/arch/ppc/config.in	2003-07-25 04:49:04.000000000 +0200
 +++ linux-2.4.22-pre9-dbox2/arch/ppc/config.in	2003-07-30 15:01:22.000000000 +0200
@@ -217,25 +89,6 @@ diff -Naur linux-2.4.22-pre9/arch/ppc/kernel/m8xx_setup.c linux-2.4.22-pre9-dbox
  	/* Unlock the SCCR. */
  	((volatile immap_t *)IMAP_ADDR)->im_clkrstk.cark_sccrk = ~KAPWR_KEY;
  	((volatile immap_t *)IMAP_ADDR)->im_clkrstk.cark_sccrk = KAPWR_KEY;
-@@ -133,6 +155,18 @@
- 	/* Force all 8xx processors to use divide by 16 processor clock. */
- 	((volatile immap_t *)IMAP_ADDR)->im_clkrst.car_sccr |= 0x02000000;
- 
-+#ifdef CONFIG_DBOX2
-+	if ((binfo->bi_intfreq < 1000000) || (binfo->bi_busfreq < 1000000)) {
-+	    printk("WARNING: Frequency is not in HZ. Please consider using a newer bootloader!\n");
-+	    printk("WARNING: OLD intfreq = %d busfreq = %d\n", binfo->bi_intfreq, binfo->bi_busfreq);
-+
-+	    binfo->bi_intfreq *= 1000000;
-+	    binfo->bi_busfreq *= 1000000;
-+
-+	    printk("WARNING: NEW intfreq = %d busfreq = %d\n", binfo->bi_intfreq, binfo->bi_busfreq);
-+	}
-+#endif
-+
- 	/* Processor frequency is MHz.
- 	 * The value 'fp' is the number of decrementer ticks per second.
- 	 */
 @@ -184,6 +218,42 @@
  	if (request_irq(DEC_INTERRUPT, timebase_interrupt, 0, "tbint",
  				NULL) != 0)
@@ -282,12 +135,11 @@ diff -Naur linux-2.4.22-pre9/arch/ppc/kernel/m8xx_setup.c linux-2.4.22-pre9-dbox
 diff -Naur linux-2.4.22-pre9/arch/ppc/kernel/ppc_ksyms.c linux-2.4.22-pre9-dbox2/arch/ppc/kernel/ppc_ksyms.c
 --- linux-2.4.22-pre9/arch/ppc/kernel/ppc_ksyms.c	2003-06-13 16:51:31.000000000 +0200
 +++ linux-2.4.22-pre9-dbox2/arch/ppc/kernel/ppc_ksyms.c	2003-07-30 15:01:22.000000000 +0200
-@@ -343,6 +343,10 @@
+@@ -343,6 +343,9 @@
  EXPORT_SYMBOL(cpm_install_handler);
  EXPORT_SYMBOL(cpm_free_handler);
  EXPORT_SYMBOL(m8xx_cpm_hostalloc);
 +#ifdef CONFIG_DBOX2
-+EXPORT_SYMBOL(m8xx_cpm_setbrg);
 +EXPORT_SYMBOL(m8xx_cpm_dpalloc);
 +#endif /* CONFIG_DBOX2 */
  #endif /* CONFIG_8xx */
@@ -307,34 +159,16 @@ diff -Naur linux-2.4.22-pre9/arch/ppc/kernel/time.c linux-2.4.22-pre9-dbox2/arch
  /* keep track of when we need to update the rtc */
  time_t last_rtc_update;
  extern rwlock_t xtime_lock;
-@@ -320,6 +324,11 @@
+@@ -320,6 +324,9 @@
  		sec = ppc_md.get_rtc_time();
  		elapsed = 0;
  		do {
-+
 +#ifdef CONFIG_DBOX2
 +			m8xx_reset_watchdog();
 +#endif
-+
  			old_stamp = stamp;
  			old_sec = sec;
  			stamp = get_native_tbl();
-diff -Naur linux-2.4.22-pre9/arch/ppc/Makefile linux-2.4.22-pre9-dbox2/arch/ppc/Makefile
---- linux-2.4.22-pre9/arch/ppc/Makefile	2003-06-27 19:19:00.000000000 +0200
-+++ linux-2.4.22-pre9-dbox2/arch/ppc/Makefile	2003-07-30 15:01:22.000000000 +0200
-@@ -30,7 +30,11 @@
- endif
- 
- ifdef CONFIG_8xx
--CFLAGS := $(CFLAGS) -mcpu=860
-+  ifdef CONFIG_DBOX2
-+    CFLAGS := $(CFLAGS) -mcpu=823
-+  else
-+    CFLAGS := $(CFLAGS) -mcpu=860
-+  endif
- endif
- 
- ifdef CONFIG_PPC64BRIDGE
 diff -Naur linux-2.4.22-pre9/arch/ppc/platforms/dbox2.h linux-2.4.22-pre9-dbox2/arch/ppc/platforms/dbox2.h
 --- linux-2.4.22-pre9/arch/ppc/platforms/dbox2.h	1970-01-01 01:00:00.000000000 +0100
 +++ linux-2.4.22-pre9-dbox2/arch/ppc/platforms/dbox2.h	2003-07-30 15:01:22.000000000 +0200
@@ -363,17 +197,6 @@ diff -Naur linux-2.4.22-pre9/arch/ppc/platforms/dbox2.h linux-2.4.22-pre9-dbox2/
 +#define NR_8259_INTS	0
 +
 +#endif	/* __MACH_DBOX2_H */
-diff -Naur linux-2.4.22-pre9/arch/ppc64/config.in linux-2.4.22-pre9-dbox2/arch/ppc64/config.in
---- linux-2.4.22-pre9/arch/ppc64/config.in	2003-07-25 04:49:04.000000000 +0200
-+++ linux-2.4.22-pre9-dbox2/arch/ppc64/config.in	2003-07-30 15:01:22.000000000 +0200
-@@ -8,6 +8,7 @@
- define_bool CONFIG_GENERIC_BUST_SPINLOCK n
- define_bool CONFIG_GENERIC_ISA_DMA y
- define_bool CONFIG_HAVE_DEC_LOCK y
-+define_bool CONFIG_PPC_ISATIMER y
- 
- mainmenu_name "64 bit PowerPC Linux Kernel Configuration"
- 
 diff -Naur linux-2.4.22-pre9/drivers/char/console.c linux-2.4.22-pre9-dbox2/drivers/char/console.c
 --- linux-2.4.22-pre9/drivers/char/console.c	2002-11-29 00:53:12.000000000 +0100
 +++ linux-2.4.22-pre9-dbox2/drivers/char/console.c	2003-07-30 15:01:22.000000000 +0200
@@ -496,15 +319,6 @@ diff -Naur linux-2.4.22-pre9/drivers/mtd/maps/dbox2-flash.c linux-2.4.22-pre9-db
 diff -Naur linux-2.4.22-pre9/drivers/video/Config.in linux-2.4.22-pre9-dbox2/drivers/video/Config.in
 --- linux-2.4.22-pre9/drivers/video/Config.in	2003-06-13 16:51:37.000000000 +0200
 +++ linux-2.4.22-pre9-dbox2/drivers/video/Config.in	2003-07-30 15:01:22.000000000 +0200
-@@ -73,7 +73,7 @@
-       dep_bool '  Apple "valkyrie" display support' CONFIG_FB_VALKYRIE $CONFIG_ALL_PPC
-       bool '  Chips 65550 display support' CONFIG_FB_CT65550
-       bool '  IMS Twin Turbo display support' CONFIG_FB_IMSTT
--      bool '  S3 Trio display support' CONFIG_FB_S3TRIO
-+      dep_bool '  S3 Trio display support' CONFIG_FB_S3TRIO $CONFIG_ALL_PPC
-       tristate '  VGA 16-color graphics console' CONFIG_FB_VGA16
-    fi
-    if [ "$CONFIG_PARISC" = "y" ]; then
 @@ -248,6 +248,7 @@
        tristate '    VGA 16-color planar support' CONFIG_FBCON_VGA_PLANES
        tristate '    VGA characters/attributes support' CONFIG_FBCON_VGA
@@ -724,17 +538,6 @@ diff -Naur linux-2.4.22-pre9/drivers/video/fbcon-cfb8.c linux-2.4.22-pre9-dbox2/
  }
  
  
-diff -Naur linux-2.4.22-pre9/drivers/video/radeon.h linux-2.4.22-pre9-dbox2/drivers/video/radeon.h
---- linux-2.4.22-pre9/drivers/video/radeon.h	2003-07-13 17:46:09.000000000 +0200
-+++ linux-2.4.22-pre9-dbox2/drivers/video/radeon.h	2003-07-30 15:01:22.000000000 +0200
-@@ -418,7 +418,6 @@
- #define MDLL_CKO                                   0x000f
- #define MDLL_RDCKA                                 0x0010
- #define MCLK_CNTL                                  0x0012
--#define AGP_PLL_CNTL                               0x000b
- #define PLL_TEST_CNTL                              0x0013
- #define SCLK_MORE_CNTL				   0x0035
- #define CLK_PWRMGT_CNTL                            0x0014
 diff -Naur linux-2.4.22-pre9/fs/Config.in linux-2.4.22-pre9-dbox2/fs/Config.in
 --- linux-2.4.22-pre9/fs/Config.in	2003-07-15 04:48:41.000000000 +0200
 +++ linux-2.4.22-pre9-dbox2/fs/Config.in	2003-07-30 15:01:22.000000000 +0200
@@ -851,24 +654,3 @@ diff -Naur linux-2.4.22-pre9/include/video/fbcon.h linux-2.4.22-pre9-dbox2/inclu
  };
  
  /* drivers/video/fbcon.c */
-diff -Naur linux-2.4.22-pre9/Makefile linux-2.4.22-pre9-dbox2/Makefile
---- linux-2.4.22-pre9/Makefile	2003-07-30 12:17:27.000000000 +0200
-+++ linux-2.4.22-pre9-dbox2/Makefile	2003-07-30 15:02:30.000000000 +0200
-@@ -1,7 +1,7 @@
- VERSION = 2
- PATCHLEVEL = 4
- SUBLEVEL = 22
--EXTRAVERSION = -pre9
-+EXTRAVERSION = -pre9-dbox2
- 
- KERNELRELEASE=$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
- 
-@@ -469,7 +469,7 @@
- 	cd .. && tar cf - linux/ | gzip -9 > backup.gz
- 	sync
- 
--sgmldocs: 
-+sgmldocs:
- 	chmod 755 $(TOPDIR)/scripts/docgen
- 	chmod 755 $(TOPDIR)/scripts/gen-all-syms
- 	chmod 755 $(TOPDIR)/scripts/kernel-doc
