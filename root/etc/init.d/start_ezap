@@ -1,10 +1,5 @@
 #!/bin/sh
 
-INSMOD="/sbin/insmod"
-
-echo "Lade lcd"
-$INSMOD /lib/modules/`uname -r`/misc/lcd.o
-
 echo "Starte ezap"
 /bin/ezap
 /sbin/halt

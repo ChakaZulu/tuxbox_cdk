@@ -1,17 +1,10 @@
 #!/bin/sh
 
-export INSMOD="/sbin/insmod"
-
-killall -9 startmenu
-
 echo "Lade sectionsd"
 /bin/sectionsd
 
 echo "Lade zapit"
 /bin/zapit
-
-echo "Lade lcd"
-$INSMOD /lib/modules/`uname -r`/misc/lcd.o
 
 echo "Lade lcdd"
 /bin/lcdd

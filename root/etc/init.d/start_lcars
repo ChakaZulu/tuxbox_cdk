@@ -1,10 +1,4 @@
 #!/bin/sh
 
-INSMOD="/sbin/insmod"
-
-echo "Lade lcd"
-$INSMOD /lib/modules/`uname -r`/misc/lcd.o
-
-
 echo "Starte lcars"
 /bin/lcars 0 repeat=on old=on
