@@ -1593,9 +1593,13 @@ $(flashprefix)/.part_sshd: $(flashprefix)/.flash ssh
 flash-dvb-tools: $(flashprefix)/.part_dvb_tools
 
 $(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash dvb_tools
+	$(INSTALL) $(targetprefix)/sbin/fserver $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streampes $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streamsec $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
+	$(target)-strip -s $(flashprefix)/root/sbin/fserver
+	$(target)-strip -s $(flashprefix)/root/sbin/streamfile
+	$(target)-strip -s $(flashprefix)/root/sbin/stream*
 	@touch $@
 
 flash-neutrino: $(flashprefix)/.part_neutrino
@@ -1668,6 +1672,9 @@ $(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash lcd
 flash-lib: $(flashprefix)/.lib
 
 $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 2>/dev/null)
+	if [ -e $(flashprefix)/.part_neutrino ] ; then \
+	$(INSTALL) $(targetprefix)/sbin/streamfile $(flashprefix)/root/sbin ; \
+	fi
 	find $(flashprefix)/root/lib -maxdepth 1 -type f -o -type l | xargs rm -f
 	cp -pa $(targetprefix)/lib/libnss_dns-?.*.so $(flashprefix)/root/lib
 	cp -pa $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
