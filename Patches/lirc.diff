@@ -1,5 +1,5 @@
 diff -ru lirc-0.6.6/acconfig.h lirc-0.6.6.new/acconfig.h
---- lirc-0.6.6/acconfig.h	Sat Jul 27 11:17:08 2002
+-- lirc-0.6.6/acconfig.h	Sat Jul 27 11:17:08 2002
 +++ lirc-0.6.6.new/acconfig.h	Mon Oct 21 20:26:13 2002
 @@ -168,7 +168,8 @@
  
@@ -168,4 +168,16 @@ diff -ru lirc-0.6.6/daemons/lircd.c lirc-0.6.6.new/daemons/lircd.c
 +//	(void) ftruncate(fileno(pidfile),ftell(pidfile));
  	daemonized=1;
  }
- 
+
+--- lirc-0.6.6/configure       Fri Apr  4 14:15:06 2003
++++ lirc-0.6.6.new/configure   Fri Apr  4 14:15:27 2003
+@@ -9615,8 +9615,6 @@
+
+ if test "$driver" = "none"; then
+   lirc_driver=none
+-  hw_module=""
+-  HW_DEFAULT="hw_null"
+ fi
+
+ if test "$driver" = "any"; then
+
