@@ -177,7 +177,7 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 		@INSTALL_tinylogin@
 	@CLEANUP_tinylogin@
 	touch .tinylogin
-	
+
 .modutils: .bootstrap @DEPENDS_modutils@
 	@PREPARE_modutils@
 	cd @DIR_modutils@ && \
@@ -242,8 +242,8 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 		@INSTALL_procps@
 	@CLEANUP_procps@
 	touch .procps
-		 
-		
+
+
 #######################
 #
 #   contrib libs
@@ -282,14 +282,14 @@ libs: \
 	cd @DIR_libffi@ && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-                ./configure \
+		./configure \
 			--host=$(target) \
 			--prefix=$(targetprefix) && \
 		make all && \
 		@INSTALL_libffi@
 	@CLEANUP_libffi@
 	touch .libffi
-	
+
 .libfreetype: .bootstrap @DEPENDS_libfreetype@
 	@PREPARE_libfreetype@
 	cd @DIR_libfreetype@ && \
@@ -473,7 +473,7 @@ libs: \
 #   contrib apps
 #
 
-contrib_apps: .console_data .console_tools .fbset .ssh
+contrib_apps: .console_data .console_tools .fbset .lirc .ssh
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -515,6 +515,26 @@ contrib_apps: .console_data .console_tools .fbset .ssh
 		@INSTALL_fbset@
 	@CLEANUP_fbset@
 	touch .fbset
+
+.lirc: .bootstrap @DEPENDS_lirc@
+	@PREPARE_lirc@
+	cd @DIR_lirc@ && \
+		CC=$(target)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		mknod=/bin/true \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--with-devdir=$(targetprefix)/dev \
+			--with-driver=serial \
+			--with-kerneldir=$(buildprefix)/linux-$(KERNELVERSION) \
+			--with-moduledir=$(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
+			--without-x && \
+		@INSTALL_lirc@
+	@CLEANUP_lirc@
+	touch .lirc
 
 .ssh: .bootstrap .libcrypto .libz @DEPENDS_ssh@
 	@PREPARE_ssh@

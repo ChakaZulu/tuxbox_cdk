@@ -184,7 +184,7 @@ TUXBOX_RULES_MAKE_EXDIR(binutils)
 TUXBOX_RULES_MAKE_EXDIR(bootstrap_gcc)
 TUXBOX_RULES_MAKE_EXDIR(glibc)
 TUXBOX_RULES_MAKE_EXDIR(gcc)
-  
+
 #
 # minimal root
 #
@@ -219,6 +219,7 @@ TUXBOX_RULES_MAKE(libz)
 TUXBOX_RULES_MAKE(console_data)
 TUXBOX_RULES_MAKE(console_tools)
 TUXBOX_RULES_MAKE(fbset)
+TUXBOX_RULES_MAKE(lirc)
 TUXBOX_RULES_MAKE(ssh)
 
 #
