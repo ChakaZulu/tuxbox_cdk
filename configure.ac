@@ -268,7 +268,6 @@ TUXBOX_RULES_MAKE(uclibc)
 #
 TUXBOX_RULES_MAKE(busybox)
 TUXBOX_RULES_MAKE(ftpd)
-TUXBOX_RULES_MAKE(inetd)
 TUXBOX_RULES_MAKE(module_init_tools)
 TUXBOX_RULES_MAKE(modutils)
 TUXBOX_RULES_MAKE(netkit_telnet)

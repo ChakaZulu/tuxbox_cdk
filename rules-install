@@ -23,7 +23,6 @@ watchdog;make:install:DESTDIR=TARGET
 #
 busybox;make:install:PREFIX=TARGET
 ftpd;install:-m755:vsftpd:TARGET/sbin/in.ftpd;install:-m644:vsftpd-dbox2.conf:TARGET/etc/vsftpd.conf;install:-d:TARGET/share/empty
-inetd;install:-m755:inetd:TARGET/sbin
 module_init_tools;make:install:DESTDIR=TARGET
 modutils;make:install-bin:sbindir=TARGET/sbin
 netkit_telnet;install:-m755:telnet/telnet:TARGET/bin/telnet;install:-m755:telnetd/telnetd:TARGET/sbin/in.telnetd
