@@ -1615,15 +1615,14 @@ $(flashprefix)/.part_sshd: $(flashprefix)/.flash ssh
 flash-dvb-tools: $(flashprefix)/.part_dvb_tools
 
 $(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash dvb_tools
-	$(INSTALL) $(targetprefix)/sbin/fserver $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streampes $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streamsec $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
-	$(INSTALL) $(targetprefix)/sbin/streamfile $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/udpstreampes $(flashprefix)/root/sbin
 	$(target)-strip -s $(flashprefix)/root/sbin/fserver
 	$(target)-strip -s $(flashprefix)/root/sbin/streamfile
 	$(target)-strip -s $(flashprefix)/root/sbin/stream*
+	$(target)-strip -s $(flashprefix)/root/sbin/udpstreampes
 	@touch $@
 
 flash-neutrino: $(flashprefix)/.part_neutrino
