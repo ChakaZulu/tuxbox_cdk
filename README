@@ -1,5 +1,5 @@
 #
-#  $Id: README,v 1.5 2001/12/13 04:53:22 obi Exp $
+#  $Id: README,v 1.6 2001/12/14 02:41:37 obi Exp $
 #
 
 Folgende tools werden lokal benoetigt bevor das bauen los geht:
@@ -11,7 +11,7 @@ Folgende tools werden lokal benoetigt bevor das bauen los geht:
  - make
  - makeinfo (gehoert zu texinfo)
  - tar
- - bunzip
+ - bunzip2
  - gunzip
  - patch
  - infocmp (gehoert zu ncurses)
@@ -34,6 +34,11 @@ cvs -d:pserver:anonymous@cvs.tuxbox.berlios.de:/cvsroot/tuxbox -z9 co .
 cd cdk
 ./autogen.sh
 ./configure --prefix=/dbox2 --with-cvsdir=$HOME/tuxbox-cvs
+
+Wenn hier irgendwas schief geht, was ihr euch nicht erklaeren koennt, weil ihr alle
+Versionen ueberprueft habt und keinen Quatsch eingetippt habt, dann probiert mal einfach
+configure.in zu erstellen (touch configure.in). bei suse 7.3 hilft das scheibar wegen
+einem bug in suse. das ist zwar haeslich und nich sinn der sache, aber das hat geholfen.
 
 
  - Dann als root das Installationsverzeichnis anlegen (wie in prefix angegeben):
