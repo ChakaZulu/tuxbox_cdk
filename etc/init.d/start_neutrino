@@ -21,4 +21,4 @@ echo "Starting nhttpd"
 /bin/nhttpd &
 
 echo "Starte Neutrino"
-/bin/neutrino -z
+/bin/neutrino
