@@ -367,7 +367,6 @@ libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
-			--disable-cdrom \
 			--disable-alsa \
 			--disable-openbsdaudio \
 			--disable-esd \
@@ -581,7 +580,7 @@ java: .kaffeh .kaffe
 			CC=$(target)-g++ \
 			CFLAGS="$(TARGET_CFLAGS)" \
 			LDFLAGS="$(TAGET_LDFLAGS)" \
-			DEFINES=-DUNIX && \
+			DEFINES="-DUNIX" && \
 		@INSTALL_scummvm@
 	@CLEANUP_scummvm@
 	touch .scummvm
