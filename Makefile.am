@@ -1,6 +1,6 @@
 TARGET = powerpc-tuxbox-linux-gnu
 
-PATH = $(hostprefix)/bin:$(PATH)
+PATH := $(hostprefix)/bin:$(PATH)
 
 all: core libs root apps boot
 
