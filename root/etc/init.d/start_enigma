@@ -1,3 +1,21 @@
 #!/bin/sh
 camd2
-enigma
+touch /tmp/.enigma
+while [ -e /tmp/.enigma ]
+do
+	/bin/enigma
+	case "$?" in
+		0)
+			echo "Shutdown"
+			rm /tmp/.enigma
+			/sbin/halt
+			;;
+		2)
+			echo "Restart"
+			;;
+		*)
+			rm /tmp/.enigma
+			/sbin/reboot
+			;;
+		esac
+done
