@@ -356,7 +356,7 @@ libs: \
 
 libs_optional: \
 	libcommoncplusplus libffi \
-	libpcap libxml2 giflib
+	libpcap libxml2 libungif
 
 $(DEPDIR)/libboost: bootstrap @DEPENDS_libboost@
 	@PREPARE_libboost@
@@ -794,19 +794,18 @@ $(DEPDIR)/libglib: bootstrap @DEPENDS_libglib@
 	@CLEANUP_libglib@
 	touch $@
 
-$(DEPDIR)/giflib: bootstrap @DEPENDS_giflib@
-	@PREPARE_giflib@
-	cd @DIR_giflib@ && \
+$(DEPDIR)/libungif: bootstrap @DEPENDS_libungif@
+	@PREPARE_libungif@
+	cd @DIR_libungif@ && \
 		$(BUILDENV) \
 		./configure \
 			--host=$(target) \
 			--build=$(build) \
 			--prefix=$(targetprefix) \
-			--enable-shared  \
-			--sharedstatedir=$(targetprefix)/lib \
-		$(MAKE) all && \
-		@INSTALL_giflib@
-	@CLEANUP_giflib@
+			--without-x && \
+		$(MAKE) && \
+		@INSTALL_libungif@
+	@CLEANUP_libungif@
 	touch $@
 
 #######################
@@ -1535,7 +1534,7 @@ $(DEPDIR)/misc_tools: $(appsdir)/misc/tools/config.status
 
 # tuxbox/enigma
 
-$(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad libid3tag libpng libsigc libtuxbox misc_libs plugins libjpeg giflib
+$(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad libid3tag libpng libsigc libtuxbox misc_libs plugins libjpeg libungif
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE)
 
 $(DEPDIR)/enigma: $(appsdir)/tuxbox/enigma/config.status tuxbox_tools config

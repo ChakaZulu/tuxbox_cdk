@@ -59,7 +59,7 @@ libvorbisidec;rewrite-pkgconfig:vorbisidec.pc;make:install:DESTDIR=TARGET;instal
 libxml2;rewrite-pkgconfig:libxml-2.0.pc;make:install:DESTDIR=TARGET
 libz;make:install:prefix=TARGET
 libglib;make:install
-giflib;make:install
+libungif;make:install:DESTDIR=TARGET
 
 #
 # contrib apps
