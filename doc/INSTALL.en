@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.3 2002/05/25 19:17:50 happydude Exp $
+# $Id: INSTALL.en,v 1.4 2002/08/03 14:49:59 obi Exp $
 #
 # Author:
 # --------
@@ -24,14 +24,14 @@ Prerequistes:
  - libtool >= 1.4
  - gettext >= 0.10.38
  - make >= 3.79
- - makeinfo (aus texinfo)
+ - makeinfo (texinfo)
  - tar
  - bunzip2
  - gunzip
  - patch
- - infocmp (aus ncurses bzw. ncurses-devel)
- - gcc >= 2.95, jedoch nicht 2.96
- - g++ >= 2.95, jedoch nicht 2.96
+ - infocmp (ncurses-bin)
+ - gcc 2.95 or >= 3.0
+ - g++ 2.95 or >= 3.0
  - yacc
  - flex
  - bison
@@ -64,8 +64,8 @@ Prerequistes:
    ./autogen.sh
    ./configure --prefix=$HOME/dbox2 --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode
 
-3. Getting 3rd party sources (optional):
-----------------------------------------
+3. Getting 3rd party sources (optional, not recommended):
+---------------------------------------------------------
 
  - Enter the following command:
 
