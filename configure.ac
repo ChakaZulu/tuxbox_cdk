@@ -353,4 +353,6 @@ root/etc/fstab
 root/etc/modules.conf
 root/etc/init.d/rcS
 root/etc/init.d/start_sshd
+root/share/Makefile
+root/share/udhcpc/Makefile
 ])

@@ -1,2 +1,2 @@
-SUBDIRS = etc
+SUBDIRS = etc share
 

@@ -17,7 +17,10 @@ all-local: $(FILES)
 install-data-local: $(FILES)
 	install -d $(targetprefix)/etc
 	@for i in $(FILES) ; do \
-		install -m644 $$i $(targetprefix)/etc ; \
+		if [ "$(FORCE)" -o ! -e $(targetprefix)/etc/$$i ] ; then \
+			echo "install -m644 $$i $(targetprefix)/etc" ; \
+			install -m644 $$i $(targetprefix)/etc ; \
+		fi ; \
 	done
 
 distclean-local:

@@ -493,11 +493,215 @@ diff -u -r1.8 Config.in
 Index: networking/ifupdown.c
 ===================================================================
 RCS file: /var/cvs/busybox/networking/ifupdown.c,v
-retrieving revision 1.17
-diff -u -r1.17 ifupdown.c
---- networking/ifupdown.c	14 Jan 2003 23:26:57 -0000	1.17
-+++ networking/ifupdown.c	19 Jan 2003 20:26:13 -0000
-@@ -1010,7 +1010,7 @@
+retrieving revision 1.16
+retrieving revision 1.18
+diff -u -r1.16 -r1.18
+--- networking/ifupdown.c	13 Jan 2003 21:40:37 -0000	1.16
++++ networking/ifupdown.c	20 Jan 2003 23:50:59 -0000	1.18
+@@ -604,27 +604,28 @@
+ 
+ #endif	/* ifdef CONFIG_FEATURE_IFUPDOWN_IPV4 */
+ 
+-static char *next_word(char *buf, char *word, int maxlen)
++static char *next_word(char **buf)
+ {
+-	if (!buf)
+-		return NULL;
+-	if (!*buf)
+-		return NULL;
++	unsigned short length;
++	char *word;
+ 
+-	while (!isspace(*buf) && *buf) {
+-		if (maxlen-- > 1)
+-			*word++ = *buf;
+-		buf++;
+-	}
+-	if (maxlen > 0) {
+-		*word = '\0';
++	if ((buf == NULL) || (*buf == NULL) || (**buf == '\0')) {
++		return NULL;
+ 	}
+ 
+-	while (isspace(*buf) && *buf) {
+-		buf++;
+-	}
++	/* Skip over leading whitespace */
++	word = *buf + strspn(*buf, " \t\n");
+ 
+-	return buf;
++	/* Find the length of this word */
++	length = strcspn(word, " \t\n");
++	if (length == 0) {
++		return(NULL);
++	}
++	*buf = word + length;
++	**buf = '\0';
++	(*buf)++;
++
++	return word;
+ }
+ 
+ static address_family_t *get_address_family(address_family_t *af[], char *name)
+@@ -675,44 +676,34 @@
+ 
+ static interfaces_file_t *read_interfaces(char *filename)
+ {
+-	interface_defn_t *currif = NULL;
+-	interfaces_file_t *defn;
+ #ifdef CONFIG_FEATURE_IFUPDOWN_MAPPING
+ 	mapping_defn_t *currmap = NULL;
+ #endif
++	interface_defn_t *currif = NULL;
++	interfaces_file_t *defn;
+ 	FILE *f;
+-	char firstword[80];
+-	char *buf = NULL;
+-	char *rest;
+-//	int line;
++	char *firstword;
++	char *buf;
+ 
+ 	enum { NONE, IFACE, MAPPING } currently_processing = NONE;
+ 
+ 	defn = xmalloc(sizeof(interfaces_file_t));
+-//	defn->max_autointerfaces = defn->n_autointerfaces = 0;
+ 	defn->autointerfaces = NULL;
+ 	defn->mappings = NULL;
+ 	defn->ifaces = NULL;
+-	f = fopen(filename, "r");
+-	if (f == NULL) {
+-		return NULL;
+-	}
++
++	f = xfopen(filename, "r");
+ 
+ 	while ((buf = get_line_from_file(f)) != NULL) {
+-		char *end;
++		char *buf_ptr = buf;
+ 
++		/* Ignore comments */
+ 		if (buf[0] == '#') {
+ 			continue;
+ 		}
+-		end = last_char_is(buf, '\n');
+-		if (end) {
+-			*end = '\0';
+-		}
+-		while ((end = last_char_is(buf, ' ')) != NULL) {
+-			*end = '\0';
+-		}
+-		rest = next_word(buf, firstword, 80);
+-		if (rest == NULL) {
++
++		firstword = next_word(&buf_ptr);
++		if (firstword == NULL) {
+ 			continue;	/* blank line */
+ 		}
+ 
+@@ -723,7 +714,7 @@
+ 			currmap->n_matches = 0;
+ 			currmap->match = NULL;
+ 
+-			while ((rest = next_word(rest, firstword, 80))) {
++			while ((firstword = next_word(&buf_ptr)) != NULL) {
+ 				if (currmap->max_matches == currmap->n_matches) {
+ 					currmap->max_matches = currmap->max_matches * 2 + 1;
+ 					currmap->match = xrealloc(currmap->match, sizeof(currmap->match) * currmap->max_matches);
+@@ -747,9 +738,9 @@
+ 			currently_processing = MAPPING;
+ 		} else if (strcmp(firstword, "iface") == 0) {
+ 			{
+-				char iface_name[80];
+-				char address_family_name[80];
+-				char method_name[80];
++				char *iface_name;
++				char *address_family_name;
++				char *method_name;
+ 				address_family_t *addr_fams[] = {
+ #ifdef CONFIG_FEATURE_IFUPDOWN_IPV4
+ 					&addr_inet,
+@@ -764,17 +755,16 @@
+ 				};
+ 
+ 				currif = xmalloc(sizeof(interface_defn_t));
++				iface_name = next_word(&buf_ptr);
++				address_family_name = next_word(&buf_ptr);
++				method_name = next_word(&buf_ptr);
+ 
+-				rest = next_word(rest, iface_name, 80);
+-				rest = next_word(rest, address_family_name, 80);
+-				rest = next_word(rest, method_name, 80);
+-
+-				if (rest == NULL) {
++				if (buf_ptr == NULL) {
+ 					error_msg("too few parameters for line \"%s\"", buf);
+ 					return NULL;
+ 				}
+ 
+-				if (rest[0] != '\0') {
++				if (buf_ptr[0] != '\0') {
+ 					error_msg("too many parameters \"%s\"", buf);
+ 					return NULL;
+ 				}
+@@ -816,7 +806,7 @@
+ 			}
+ 			currently_processing = IFACE;
+ 		} else if (strcmp(firstword, "auto") == 0) {
+-			while ((rest = next_word(rest, firstword, 80))) {
++			while ((firstword = next_word(&buf_ptr)) != NULL) {
+ 
+ 				/* Check the interface isnt already listed */
+ 				if (find_list_string(defn->autointerfaces, firstword)) {
+@@ -833,7 +823,7 @@
+ 			{
+ 				int i;
+ 
+-				if (xstrlen(rest) == 0) {
++				if (xstrlen(buf_ptr) == 0) {
+ 					error_msg("option with empty value \"%s\"", buf);
+ 					return NULL;
+ 				}
+@@ -858,7 +848,7 @@
+ 					currif->option = opt;
+ 				}
+ 				currif->option[currif->n_options].name = xstrdup(firstword);
+-				currif->option[currif->n_options].value = xstrdup(rest);
++				currif->option[currif->n_options].value = xstrdup(next_word(&buf_ptr));
+ 				if (!currif->option[currif->n_options].name) {
+ 					perror(filename);
+ 					return NULL;
+@@ -876,14 +866,14 @@
+ 						error_msg("duplicate script in mapping \"%s\"", buf);
+ 						return NULL;
+ 					} else {
+-						currmap->script = xstrdup(rest);
++						currmap->script = xstrdup(next_word(&buf_ptr));
+ 					}
+ 				} else if (strcmp(firstword, "map") == 0) {
+ 					if (currmap->max_mappings == currmap->n_mappings) {
+ 						currmap->max_mappings = currmap->max_mappings * 2 + 1;
+ 						currmap->mapping = xrealloc(currmap->mapping, sizeof(char *) * currmap->max_mappings);
+ 					}
+-					currmap->mapping[currmap->n_mappings] = xstrdup(rest);
++					currmap->mapping[currmap->n_mappings] = xstrdup(next_word(&buf_ptr));
+ 					currmap->n_mappings++;
+ 				} else {
+ 					error_msg("misplaced option \"%s\"", buf);
+@@ -897,10 +887,10 @@
+ 				return NULL;
+ 			}
+ 		}
++		free(buf);
+ 	}
+ 	if (ferror(f) != 0) {
+-		perror_msg("%s", filename);
+-		return NULL;
++		perror_msg_and_die("%s", filename);
+ 	}
+ 	fclose(f);
+ 
+@@ -1020,7 +1010,7 @@
  
  	buf = xmalloc(xstrlen(opt) + 19);
  	sprintf(buf, "/etc/network/if-%s.d", opt);
@@ -506,6 +710,16 @@ diff -u -r1.17 ifupdown.c
  	free(buf);
  	return (1);
  }
+@@ -1230,9 +1220,6 @@
+ 	}			
+ 
+ 	defn = read_interfaces(interfaces);
+-	if (!defn) {
+-		error_msg_and_die("couldn't read interfaces file \"%s\"", interfaces);
+-	}
+ 
+ 	if (no_act) {
+ 		state_fp = fopen(statefile, "r");
 Index: networking/telnetd.c
 ===================================================================
 RCS file: /var/cvs/busybox/networking/telnetd.c,v
@@ -853,11 +1067,11 @@ diff -u -r1.4 -r1.5
 Index: include/applets.h
 ===================================================================
 RCS file: /var/cvs/busybox/include/applets.h,v
-retrieving revision 1.88
-retrieving revision 1.89
-diff -u -r1.88 -r1.89
---- include/applets.h	14 Jan 2003 21:41:12 -0000	1.88
-+++ include/applets.h	19 Jan 2003 12:55:11 -0000	1.89
+retrieving revision 1.87
+retrieving revision 1.90
+diff -u -r1.87 -r1.90
+--- include/applets.h	9 Jan 2003 10:06:00 -0000	1.87
++++ include/applets.h	23 Jan 2003 05:59:31 -0000	1.90
 @@ -41,6 +41,11 @@
    #define APPLET_ODDNAME(a,b,c,d,e) {a,b,c,d},
  #endif
@@ -870,3 +1084,321 @@ diff -u -r1.88 -r1.89
  
  
  #ifdef CONFIG_TEST
+@@ -267,22 +272,22 @@
+ 	APPLET(insmod, insmod_main, _BB_DIR_SBIN, _BB_SUID_NEVER)
+ #endif
+ #ifdef CONFIG_IP
+-	APPLET(ip, ip_main, _BB_DIR_SBIN, _BB_SUID_NEVER)
++	APPLET(ip, ip_main, _BB_DIR_BIN, _BB_SUID_NEVER)
+ #endif
+ #ifdef CONFIG_IPCALC
+ 	APPLET(ipcalc, ipcalc_main, _BB_DIR_BIN, _BB_SUID_NEVER)
+ #endif
+ #ifdef CONFIG_IPADDRESS
+-	APPLET(ipaddr, ipaddr_main, _BB_DIR_SBIN, _BB_SUID_NEVER)
++	APPLET(ipaddr, ipaddr_main, _BB_DIR_BIN, _BB_SUID_NEVER)
+ #endif
+ #ifdef CONFIG_IPLINK
+-	APPLET(iplink, iplink_main, _BB_DIR_SBIN, _BB_SUID_NEVER)
++	APPLET(iplink, iplink_main, _BB_DIR_BIN, _BB_SUID_NEVER)
+ #endif
+ #ifdef CONFIG_IPROUTE
+-	APPLET(iproute, iproute_main, _BB_DIR_SBIN, _BB_SUID_NEVER)
++	APPLET(iproute, iproute_main, _BB_DIR_BIN, _BB_SUID_NEVER)
+ #endif
+ #ifdef CONFIG_IPTUNNEL
+-	APPLET(iptunnel, iptunnel_main, _BB_DIR_SBIN, _BB_SUID_NEVER)
++	APPLET(iptunnel, iptunnel_main, _BB_DIR_BIN, _BB_SUID_NEVER)
+ #endif
+ #ifdef CONFIG_KILL
+ 	APPLET(kill, kill_main, _BB_DIR_BIN, _BB_SUID_NEVER)
+@@ -592,6 +597,9 @@
+ #endif
+ #ifdef CONFIG_UUENCODE
+ 	APPLET(uuencode, uuencode_main, _BB_DIR_USR_BIN, _BB_SUID_NEVER)
++#endif
++#ifdef CONFIG_VCONFIG
++	APPLET(vconfig, vconfig_main, _BB_DIR_SBIN, _BB_SUID_NEVER)
+ #endif
+ #ifdef CONFIG_VI
+ 	APPLET(vi, vi_main, _BB_DIR_BIN, _BB_SUID_NEVER)
+Index: include/usage.h
+===================================================================
+RCS file: /var/cvs/busybox/include/usage.h,v
+retrieving revision 1.142
+diff -u -r1.142 usage.h
+--- include/usage.h	23 Jan 2003 05:59:31 -0000	1.142
++++ include/usage.h	24 Jan 2003 19:23:09 -0000
+@@ -2076,6 +2076,14 @@
+ 	"Telnet is used to establish interactive communication with another\n"\
+ 	"computer over a network using the TELNET protocol."
+ 
++#ifdef CONFIG_FEATURE_TELNETD_INETD
++#define telnetd_trivial_usage \
++	"(inetd mode) [OPTION]"
++#define telnetd_full_usage \
++	"Telnetd uses incoming TELNET connections via inetd.\n"\
++	"Options:\n" \
++	"\t-l LOGIN\texec LOGIN on connect (default /bin/sh)"
++#else
+ #define telnetd_trivial_usage \
+ 	"[OPTION]"
+ #define telnetd_full_usage \
+@@ -2083,6 +2091,7 @@
+ 	"Options:\n" \
+ 	"\t-p PORT\tlisten for connections on PORT (default 23)\n"\
+ 	"\t-l LOGIN\texec LOGIN on connect (default /bin/sh)"
++#endif
+ 
+ #define test_trivial_usage \
+ 	"EXPRESSION\n  or   [ EXPRESSION ]"
+Index: networking/Config.in
+===================================================================
+RCS file: /var/cvs/busybox/networking/Config.in,v
+retrieving revision 1.10
+diff -u -r1.10 Config.in
+--- networking/Config.in	23 Jan 2003 05:59:32 -0000	1.10
++++ networking/Config.in	24 Jan 2003 19:23:10 -0000
+@@ -146,7 +146,7 @@
+ if ! (CONFIG_IP && CONFIG_IPADDR)
+ 	config CONFIG_FEATURE_IP_ADDRESS
+ 		bool "  address"
+-		default n
++		default y
+ 		depends on CONFIG_IP
+ 		help
+ 		  Please submit a patch to add help text for this item.
+@@ -188,7 +188,7 @@
+ if !(CONFIG_IP && CONFIG_IPTUNNEL)
+ 	config CONFIG_FEATURE_IP_TUNNEL
+ 		bool "  tunnel"
+-		default y
++		default n
+ 		depends on CONFIG_IP
+ 		help
+ 		  Please submit a patch to add help text for this item.
+Index: networking/libiproute/iproute.c
+===================================================================
+RCS file: /var/cvs/busybox/networking/libiproute/iproute.c,v
+retrieving revision 1.8
+diff -u -r1.8 iproute.c
+--- networking/libiproute/iproute.c	16 Dec 2002 07:37:20 -0000	1.8
++++ networking/libiproute/iproute.c	24 Jan 2003 19:23:12 -0000
+@@ -19,6 +19,8 @@
+ 
+ #include <stdlib.h>
+ #include <string.h>
++#include <fcntl.h>
++#include <unistd.h>
+ 
+ #include "rt_names.h"
+ #include "utils.h"
+@@ -33,6 +35,8 @@
+ static struct
+ {
+ 	int tb;
++	int flushed;
++	char *flushb;
+ 	int flushp;
+ 	int flushe;
+ 	struct rtnl_handle *rth;
+@@ -51,6 +55,16 @@
+ 	inet_prefix msrc;
+ } filter;
+ 
++static int flush_update(void)
++{
++	if (rtnl_send(filter.rth, filter.flushb, filter.flushp) < 0) {
++		perror("Failed to send flush request\n");
++		return -1;
++	}
++	filter.flushp = 0;
++	return 0;
++}
++
+ static int print_route(struct sockaddr_nl *who, struct nlmsghdr *n, void *arg)
+ {
+ 	FILE *fp = (FILE*)arg;
+@@ -67,6 +81,8 @@
+ 			n->nlmsg_len, n->nlmsg_type, n->nlmsg_flags);
+ 		return 0;
+ 	}
++	if (filter.flushb && n->nlmsg_type != RTM_NEWROUTE)
++		return 0;
+ 	len -= NLMSG_LENGTH(sizeof(*r));
+ 	if (len < 0) {
+ 		error_msg("wrong nlmsg len %d", len);
+@@ -128,6 +144,30 @@
+ 	memset(tb, 0, sizeof(tb));
+ 	parse_rtattr(tb, RTA_MAX, RTM_RTA(r), len);
+ 
++	if (filter.flushb &&
++	    r->rtm_family == AF_INET6 &&
++	    r->rtm_dst_len == 0 &&
++	    r->rtm_type == RTN_UNREACHABLE &&
++	    tb[RTA_PRIORITY] &&
++	    *(int*)RTA_DATA(tb[RTA_PRIORITY]) == -1)
++		return 0;
++
++	if (filter.flushb) {
++		struct nlmsghdr *fn;
++		if (NLMSG_ALIGN(filter.flushp) + n->nlmsg_len > filter.flushe) {
++			if (flush_update())
++				return -1;
++		}
++		fn = (struct nlmsghdr*)(filter.flushb + NLMSG_ALIGN(filter.flushp));
++		memcpy(fn, n, n->nlmsg_len);
++		fn->nlmsg_type = RTM_DELROUTE;
++		fn->nlmsg_flags = NLM_F_REQUEST;
++		fn->nlmsg_seq = ++filter.rth->seq;
++		filter.flushp = (((char*)fn) + n->nlmsg_len) - filter.flushb;
++		filter.flushed++;
++		return 0;
++	}
++
+ 	if (n->nlmsg_type == RTM_DELROUTE) {
+ 		fprintf(fp, "Deleted ");
+ 	}
+@@ -393,6 +433,29 @@
+ 	return sendto(rth->fd, (void*)&req, sizeof(req), 0, (struct sockaddr*)&nladdr, sizeof(nladdr));
+ }
+ 
++static int iproute_flush_cache(void)
++{
++#define ROUTE_FLUSH_PATH "/proc/sys/net/ipv4/route/flush"
++
++	int len;
++	int flush_fd = open (ROUTE_FLUSH_PATH, O_WRONLY);
++	char *buffer = "-1";
++
++	if (flush_fd < 0) {
++		fprintf (stderr, "Cannot open \"%s\"\n", ROUTE_FLUSH_PATH);
++		return -1;
++	}
++
++	len = strlen (buffer);
++
++	if ((write (flush_fd, (void *)buffer, len)) < len) {
++		fprintf (stderr, "Cannot flush routing cache\n");
++		return -1;
++	}
++	close(flush_fd);
++	return 0;
++}
++
+ static void iproute_reset_filter(void)
+ {
+ 	memset(&filter, 0, sizeof(filter));
+@@ -400,7 +463,7 @@
+ 	filter.msrc.bitlen = -1;
+ }
+ 
+-static int iproute_list(int argc, char **argv)
++static int iproute_list_or_flush(int argc, char **argv, int flush)
+ {
+ 	int do_ipv6 = preferred_family;
+ 	struct rtnl_handle rth;
+@@ -410,6 +473,11 @@
+ 	iproute_reset_filter();
+ 	filter.tb = RT_TABLE_MAIN;
+ 
++	if (flush && argc <= 0) {
++		fprintf(stderr, "\"ip route flush\" requires arguments.\n");
++		return -1;
++	}
++
+ 	while (argc > 0) {
+ 		if (matches(*argv, "protocol") == 0) {
+ 			int prot = 0;
+@@ -496,6 +564,46 @@
+ 		}
+ 	}
+ 
++	if (flush) {
++		int round = 0;
++		char flushb[4096-512];
++
++		if (filter.tb == -1) {
++			if (do_ipv6 != AF_INET6)
++				iproute_flush_cache();
++			if (do_ipv6 == AF_INET)
++				return 0;
++		}
++
++		filter.flushb = flushb;
++		filter.flushp = 0;
++		filter.flushe = sizeof(flushb);
++		filter.rth = &rth;
++
++		for (;;) {
++			if (rtnl_wilddump_request(&rth, do_ipv6, RTM_GETROUTE) < 0) {
++				perror("Cannot send dump request");
++				return -1;
++			}
++			filter.flushed = 0;
++			if (rtnl_dump_filter(&rth, print_route, stdout, NULL, NULL) < 0) {
++				error_msg("Flush terminated\n");
++				return -1;
++			}
++			if (filter.flushed == 0) {
++				if (round == 0) {
++					if (filter.tb != -1 || do_ipv6 == AF_INET6)
++						fprintf(stderr, "Nothing to flush.\n");
++				}
++				fflush(stdout);
++				return 0;
++			}
++			round++;
++			if (flush_update() < 0)
++				exit(1);
++		}
++	}
++
+ 	if (filter.tb != -1) {
+ 		if (rtnl_wilddump_request(&rth, do_ipv6, RTM_GETROUTE) < 0) {
+ 			perror_msg_and_die("Cannot send dump request");
+@@ -686,7 +794,7 @@
+ int do_iproute(int argc, char **argv)
+ {
+ 	const char *ip_route_commands[] = { "add", "append", "change", "chg",
+-		"delete", "get", "list", "show", "prepend", "replace", "test", 0 };
++		"delete", "get", "list", "show", "prepend", "replace", "test", "flush", 0 };
+ 	unsigned short command_num = 6;
+ 	unsigned int flags = 0;
+ 	int cmd = RTM_NEWROUTE;
+@@ -712,13 +820,15 @@
+ 			return iproute_get(argc-1, argv+1);
+ 		case 6: /* list */
+ 		case 7: /* show */
+-			return iproute_list(argc-1, argv+1);
++			return iproute_list_or_flush(argc-1, argv+1, 0);
+ 		case 8: /* prepend */
+ 			flags = NLM_F_CREATE;
+ 		case 9: /* replace */
+ 			flags = NLM_F_CREATE|NLM_F_REPLACE;
+ 		case 10: /* test */
+ 			flags = NLM_F_EXCL;
++		case 11: /* flush */
++			return iproute_list_or_flush(argc-1, argv+1, 1);
+ 		default:
+ 			error_msg_and_die("Unknown command %s", *argv);
+ 	}
+Index: networking/udhcp/dhcpc.c
+===================================================================
+RCS file: /var/cvs/busybox/networking/udhcp/dhcpc.c,v
+retrieving revision 1.7
+diff -u -r1.7 dhcpc.c
+--- networking/udhcp/dhcpc.c	21 Jan 2003 22:39:34 -0000	1.7
++++ networking/udhcp/dhcpc.c	24 Jan 2003 19:23:12 -0000
+@@ -59,7 +59,11 @@
+ #define LISTEN_RAW 2
+ static int listen_mode;
+ 
++#ifdef CONFIG_INSTALL_NO_USR
++#define DEFAULT_SCRIPT	"/share/udhcpc/default.script"
++#else
+ #define DEFAULT_SCRIPT	"/usr/share/udhcpc/default.script"
++#endif
+ 
+ struct client_config_t client_config = {
+ 	/* Default options. */
