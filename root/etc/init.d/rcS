@@ -22,6 +22,11 @@ echo "fpREV: $fpREV"
 echo "DEMOD: $DEMOD"
 
 modprobe saa7126
+modprobe input
+modprobe keybdev
+modprobe mousedev
+modprobe joydev
+modprobe evdev
 modprobe dvb_frontend
 modprobe dvb
 modprobe tuner
