@@ -57,7 +57,7 @@ console-data_1999.08.29.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/c/cons
 console-tools-0.2.3.tar.gz;http://prdownloads.sourceforge.net/lct
 fbset-2.1.tar.gz;http://home.tvd.be/cr26864/Linux/fbdev
 lirc-0.6.5.tar.bz2;http://belnet.dl.sourceforge.net/sourceforge/lirc
-openssh-3.0.2p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
+openssh-3.3p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 tcpdump-3.7.1.tar.gz;http://www.tcpdump.org/release
 xrc-0.6.3.tar.gz;http://belnet.dl.sourceforge.net/sourceforge/lirc
 

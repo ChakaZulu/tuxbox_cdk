@@ -12,7 +12,7 @@
 #
 # core
 #
-linux;2.4.2;linux-2.4.2;linux-2.4.2.tar.bz2:linux-2.4.2.dbox.diff;remove:linux;extract:linux-2.4.2.tar.bz2;move:linux:linux-2.4.2;patch:linux-2.4.2.dbox.diff;link:linux-2.4.2:linux
+linux;2.4.19-pre10;linux;
 binutils;2.12.90.0.7;binutils-2.12.90.0.7;binutils-2.12.90.0.7.tar.bz2;extract:binutils-2.12.90.0.7.tar.bz2
 bootstrap_gcc;3.1;gcc-3.1;gcc-core-3.1.tar.gz:gcc-core.diff;extract:gcc-core-3.1.tar.gz;patch:gcc-core.diff
 bootstrap_gcc_2_95;2.95.3;gcc-2.95.3;gcc-core-2.95.3.tar.gz;extract:gcc-core-2.95.3.tar.gz
@@ -59,7 +59,7 @@ console_data;1999.08.29;console-data-1999.08.29;console-data_1999.08.29.orig.tar
 console_tools;0.2.3;console-tools-0.2.3;console-tools-0.2.3.tar.gz:console-tools.diff;extract:console-tools-0.2.3.tar.gz;patch:console-tools.diff
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.6.5;lirc-0.6.5;lirc-0.6.5.tar.bz2;extract:lirc-0.6.5.tar.bz2
-ssh;3.0.2p1;openssh-3.0.2p1;openssh-3.0.2p1.tar.gz:ssh.diff;extract:openssh-3.0.2p1.tar.gz;patch:ssh.diff
+ssh;3.3p1;openssh-3.3p1;openssh-3.3p1.tar.gz:ssh.diff;extract:openssh-3.3p1.tar.gz;patch:ssh.diff
 tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
 xrc;0.6.3;xrc-0.6.3;xrc-0.6.3.tar.gz:xrc.diff;extract:xrc-0.6.3.tar.gz;patch:xrc.diff
 
