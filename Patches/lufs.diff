@@ -1,0 +1,226 @@
+diff -Naur lufs-0.9.7-orig/configure.in lufs-0.9.7/configure.in
+--- lufs-0.9.7-orig/configure.in	2004-12-18 03:12:41.000000000 +0100
++++ lufs-0.9.7/configure.in	2004-12-18 03:20:15.000000000 +0100
+@@ -7,7 +7,7 @@
+ AM_INIT_AUTOMAKE(lufs,0.9.7)
+ 
+ dnl "static" FSs
+-opt_fs="localfs locasefs ftpfs gnetfs"
++opt_fs="ftpfs"
+ 
+ AC_ARG_ENABLE(kernel-support,
+     [  --enable-kernel-support enable building of the kernel module (default=yes)],
+diff -Naur lufs-0.9.7-orig/include/lufs/fs.h lufs-0.9.7/include/lufs/fs.h
+--- lufs-0.9.7-orig/include/lufs/fs.h	2003-03-08 22:45:29.000000000 +0100
++++ lufs-0.9.7/include/lufs/fs.h	2004-12-18 13:37:29.000000000 +0100
+@@ -47,7 +47,7 @@
+ 
+ 
+ struct directory* lu_cache_mkdir(char*);
+-int lu_cache_add2dir(struct directory*, char*, char*, struct lufs_fattr*);
++int lu_cache_add2dir(struct directory*, const char*, char*, struct lufs_fattr*);
+ int lu_cache_lookup(struct dir_cache*, char*, char*, struct lufs_fattr*, char*, int);
+ void lu_cache_add_dir(struct dir_cache*, struct directory*);
+ void lu_cache_killdir(struct directory*);
+@@ -81,11 +81,13 @@
+ #include <iostream>
+ 
+ #ifdef DEBUG
+-#define TRACE(x) 	cout<<std::hex<<"["<<getpid()<<"]("<<__func__<<")"<<x<<"\n"
+-#define WARN(x)		cerr<<std::hex<<"["<<getpid()<<"]("<<__func__<<")"<<x<<"\n"
+-#define ERROR(x)	cerr<<std::hex<<"["<<getpid()<<"]("<<__func__<<")"<<x<<"\n"
++#define TRACE(x) 	std::cout<<std::hex<<"["<<getpid()<<"]("<<__func__<<")"<<x<<"\n"
++#define PTRACE(x) 	std::cout<<std::hex<<"["<<getpid()<<"]("<<__PRETTY_FUNCTION__<<")"<<x<<"\n"
++#define WARN(x)		std::cerr<<std::hex<<"["<<getpid()<<"]("<<__func__<<")"<<x<<"\n"
++#define ERROR(x)	std::cerr<<std::hex<<"["<<getpid()<<"]("<<__func__<<")"<<x<<"\n"
+ #else
+ #define TRACE(x...)	do{}while(0)
++#define PTRACE(x...)	do{}while(0)
+ #define WARN(x...)	do{}while(0)
+ #define ERROR(x...)	cerr<<x<<"\n"
+ #endif
+diff -Naur lufs-0.9.7-orig/filesystems/ftpfs/ftpfs.cpp lufs-0.9.7/filesystems/ftpfs/ftpfs.cpp
+--- lufs-0.9.7-orig/filesystems/ftpfs/ftpfs.cpp	2004-12-18 03:12:41.000000000 +0100
++++ lufs-0.9.7/filesystems/ftpfs/ftpfs.cpp	2004-12-08 16:11:34.000000000 +0100
+@@ -189,10 +189,10 @@
+ 	 port = 21;
+ 
+      if(!(user = lu_opt_getchar(cfg, "MOUNT", "username")))
+-	 user = "anonymous";
++	 user = "";
+ 
+      if(!(pass = lu_opt_getchar(cfg, "MOUNT", "password")))
+-	 pass = "user@sourceforge.net";
++	 pass = "";
+ 
+     conn = new FTPConnection(active, (char*)lu_opt_getchar(cfg, "MOUNT", "host"), port, (char*)user, (char*)pass);
+     ftpsys = NULL;
+diff -Naur lufs-0.9.7-orig/filesystems/ftpfs/ftplib.cpp lufs-0.9.7/filesystems/ftpfs/ftplib.cpp
+--- lufs-0.9.7-orig/filesystems/ftpfs/ftplib.cpp	2004-12-18 03:12:41.000000000 +0100
++++ lufs-0.9.7/filesystems/ftpfs/ftplib.cpp	2004-12-04 03:50:45.000000000 +0100
+@@ -307,7 +307,7 @@
+ 	close_data();
+ 	memset(&addr, 0, sizeof(struct sockaddr_in));
+ 	addr.sin_addr.s_addr = INADDR_ANY;
+-	addr.sin_port = 0;
++	addr.sin_port = htons(0);
+ 	addr.sin_family = AF_INET;
+ 
+ 	if((ssock = socket(PF_INET, SOCK_STREAM, 0)) < 0){
+@@ -342,12 +342,12 @@
+ 	}
+ 
+ 	sprintf(buf, "PORT %u,%u,%u,%u,%u,%u",
+-		ctrl.sin_addr.s_addr & 0xff,
+-		(ctrl.sin_addr.s_addr >> 8) & 0xff,
+-		(ctrl.sin_addr.s_addr >> 16) & 0xff,
+-		(ctrl.sin_addr.s_addr >> 24) & 0xff,
+-		ntohs(addr.sin_port) >> 8,
+-		ntohs(addr.sin_port) & 0xff);
++		((ctrl.sin_addr.s_addr >> 24) & 0xff),
++		((ctrl.sin_addr.s_addr >> 16) & 0xff),
++		((ctrl.sin_addr.s_addr >> 8) & 0xff),
++		(ctrl.sin_addr.s_addr & 0xff),
++		(ntohs(addr.sin_port) >> 8),
++		(ntohs(addr.sin_port) & 0xff));
+ 	TRACE("cmd: " << buf);
+ 
+ 	if((res = execute(string(buf), 200, 1)) < 0){
+@@ -416,8 +416,8 @@
+     TRACE("buf: " << buf);
+     TRACE("(i0,i1,i2,i3,p0,p1)=("<<(int)i0<<","<<(int)i1<<","<<(int)i2<<","<<(int)i3<<","<<(int)p0<<","<<(int)p1<<")");
+ 
+-    *ip = ntohl((unsigned)i0 + (((unsigned)i1) << 8) + (((unsigned)i2) << 16) + (((unsigned)i3) << 24));
+-    *port = ntohs((unsigned)p0 + (((unsigned)p1) << 8));
++    *ip = ntohl((unsigned)i3 + (((unsigned)i2) << 8) + (((unsigned)i1) << 16) + (((unsigned)i0) << 24));
++    *port = ntohs((unsigned)p1 + (((unsigned)p0) << 8));
+ 
+     TRACE("IP: " << *ip << "(" << inet_ntoa(*(struct in_addr*)ip) << ")");
+     TRACE("port: " << *port);
+diff -Naur lufs-0.9.7-orig/filesystems/ftpfs/ftpsys_netware.cpp lufs-0.9.7/filesystems/ftpfs/ftpsys_netware.cpp
+--- lufs-0.9.7-orig/filesystems/ftpfs/ftpsys_netware.cpp	2004-12-18 03:12:41.000000000 +0100
++++ lufs-0.9.7/filesystems/ftpfs/ftpsys_netware.cpp	2004-12-04 03:06:06.000000000 +0100
+@@ -94,11 +94,11 @@
+     tt = time(NULL);
+     memcpy(&tm, gmtime(&tt), sizeof(struct tm));
+     tm.tm_sec = tm.tm_min = tm.tm_hour = 0;
+-    if(strchr(year, ':'))
++/*    if(strchr(year, ':'))
+ 	strptime(date, "%H:%M,%b,%d", &tm);
+     else
+ 	strptime(date, "%Y,%b,%d", &tm);
+-
++*/
+     if(!strcmp(cred->user, user))
+ 	own = 1;
+     
+diff -Naur lufs-0.9.7-orig/filesystems/ftpfs/ftpsys_unix.cpp lufs-0.9.7/filesystems/ftpfs/ftpsys_unix.cpp
+--- lufs-0.9.7-orig/filesystems/ftpfs/ftpsys_unix.cpp	2004-12-18 03:12:41.000000000 +0100
++++ lufs-0.9.7/filesystems/ftpfs/ftpsys_unix.cpp	2004-12-04 03:06:28.000000000 +0100
+@@ -93,11 +93,11 @@
+     tt = time(NULL);
+     gmtime_r(&tt, &tm);
+     tm.tm_sec = tm.tm_min = tm.tm_hour = 0;
+-    if(strchr(year, ':'))
++/*    if(strchr(year, ':'))
+ 	strptime(date, "%H:%M,%b,%d", &tm);
+     else
+ 	strptime(date, "%Y,%b,%d", &tm);
+-
++*/
+     memset(fattr, 0, sizeof(struct lufs_fattr));
+ 
+     strtol(user, &c, 10);
+diff -Naur lufs-0.9.7-orig/filesystems/ftpfs/ftpsys_windows.cpp lufs-0.9.7/filesystems/ftpfs/ftpsys_windows.cpp
+--- lufs-0.9.7-orig/filesystems/ftpfs/ftpsys_windows.cpp	2004-12-18 03:12:41.000000000 +0100
++++ lufs-0.9.7/filesystems/ftpfs/ftpsys_windows.cpp	2004-12-04 03:06:48.000000000 +0100
+@@ -91,7 +91,7 @@
+     gmtime_r(&tt, &tm);
+     tm.tm_sec = 0;
+ 
+-    strptime(datetime, "%m-%e-%y  %I:%M%p", &tm);
++//    strptime(datetime, "%m-%e-%y  %I:%M%p", &tm);
+ 
+     memset(fattr, 0, sizeof(struct lufs_fattr));
+ 
+diff -Naur lufs-0.9.7-orig/lufsd/daemon.c lufs-0.9.7/lufsd/daemon.c
+--- lufs-0.9.7-orig/lufsd/daemon.c	2004-12-18 03:12:41.000000000 +0100
++++ lufs-0.9.7/lufsd/daemon.c	2004-12-08 16:26:01.000000000 +0100
+@@ -49,11 +49,11 @@
+ #include "fsctl.h"
+ 
+ #define CONFIG_FILE1	"/etc/lufsd.conf"
+-#define CONFIG_FILE2	"~/.lufs/lufsd.conf"
++#define CONFIG_FILE2	"/var/etc/lufsd.conf"
+ 
+ const char *exec_paths[]={
+-    "/usr/local/bin/lufsmnt",
+-    "/usr/bin/lufsmnt",
++    "/tmp/lufsmnt",
++    "/bin/lufsmnt",
+     "/sbin/lufsmnt",
+     NULL
+ };
+diff -Naur lufs-0.9.7-orig/lufsd/dircache.c lufs-0.9.7/lufsd/dircache.c
+--- lufs-0.9.7-orig/lufsd/dircache.c	2004-12-18 03:12:41.000000000 +0100
++++ lufs-0.9.7/lufsd/dircache.c	2004-12-08 16:14:30.000000000 +0100
+@@ -427,7 +427,7 @@
+ }
+ 
+ int
+-lu_cache_add2dir(struct directory *d, char *fname, char *link, struct lufs_fattr *fattr){
++lu_cache_add2dir(struct directory *d, const char *fname, char *link, struct lufs_fattr *fattr){
+     struct direntry *de;
+ 
+     TRACE("adding %s->%s to %s", fname, link, d->d_name);
+diff -Naur lufs-0.9.7-orig/lufsd/fsctl.c lufs-0.9.7/lufsd/fsctl.c
+--- lufs-0.9.7-orig/lufsd/fsctl.c	2004-12-18 03:12:41.000000000 +0100
++++ lufs-0.9.7/lufsd/fsctl.c	2004-12-08 16:15:04.000000000 +0100
+@@ -133,7 +133,7 @@
+     chunk = strlen(srch_str) + 64;
+     readlen = BUF_SIZE - chunk - 1;
+ 
+-    memset(buf, 32, chunk);
++    memset(buf, '\n', chunk);
+     offset = 0;
+ 
+     do{
+@@ -181,7 +181,7 @@
+     chunk = strlen(srch_str) + 64;
+     readlen = BUF_SIZE - chunk - 1;
+ 
+-    memset(buf, 32, chunk);
++    memset(buf, '\n', chunk);
+     offset = 0;
+ 
+     do{
+diff -Naur lufs-0.9.7-orig/util/lufsmnt.c lufs-0.9.7/util/lufsmnt.c
+--- lufs-0.9.7-orig/util/lufsmnt.c	2004-12-18 03:12:41.000000000 +0100
++++ lufs-0.9.7/util/lufsmnt.c	2004-12-11 03:01:55.000000000 +0100
+@@ -14,6 +14,7 @@
+ #include <sys/stat.h>
+ 
+ #define ERROR(x...)	fprintf(stderr, x)
++#define _PATH_MOUNTED	"/tmp/mtab"
+ 
+ static void
+ help(){
+diff -Naur lufs-0.9.7-orig/filesystems/Makefile.in lufs-0.9.7/filesystems/Makefile.in
+--- lufs-0.9.7-orig/filesystems/Makefile.in	2003-10-29 23:48:28.000000000 +0100
++++ lufs-0.9.7/filesystems/Makefile.in	2004-12-18 14:45:19.000000000 +0100
+@@ -458,7 +458,6 @@
+ 
+ install-exec-hook:
+ 	@echo "filesystems post install configuration..."
+-	ldconfig
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
+diff -Naur lufs-0.9.7-orig/filesystems/Makefile.am lufs-0.9.7/filesystems/Makefile.am
+--- lufs-0.9.7-orig/filesystems/Makefile.am	2003-05-29 04:56:31.000000000 +0200
++++ lufs-0.9.7/filesystems/Makefile.am	2004-12-18 15:00:39.000000000 +0100
+@@ -5,4 +5,3 @@
+ 
+ install-exec-hook:
+ 	@echo "filesystems post install configuration..."
+-	ldconfig

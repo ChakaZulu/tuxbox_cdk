@@ -798,7 +798,7 @@ $(DEPDIR)/libglib: bootstrap @DEPENDS_libglib@
 #   contrib apps
 #
 
-contrib_apps: bzip2 console_data console_tools fbset lirc lsof ssh tcpdump
+contrib_apps: bzip2 console_data console_tools fbset lirc lsof ssh tcpdump lufs
 
 $(DEPDIR)/bzip2: bootstrap @DEPENDS_bzip2@
 	@PREPARE_bzip2@
@@ -939,6 +939,20 @@ $(DEPDIR)/vdr: bootstrap @DEPENDS_vdr@
 		$(MAKE) plugins PREFIX=$(prefix) DRIVERDIR=$(driverdir) && \
 		@INSTALL_vdr@
 	@CLEANUP_vdr@
+	touch $@
+
+$(DEPDIR)/lufs: bootstrap @DEPENDS_lufs@
+	@PREPARE_lufs@
+	cd @DIR_lufs@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--disable-kernel-support && \
+		$(MAKE) all && \
+		@INSTALL_lufs@
+	@CLEANUP_lufs@
 	touch $@
 
 

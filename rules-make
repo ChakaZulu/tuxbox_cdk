@@ -13,7 +13,7 @@
 # core
 #
 uboot;1.1.1;u-boot-1.1.1;u-boot-1.1.1.tar.bz2:u-boot-1.1.1.diff;extract:u-boot-1.1.1.tar.bz2;patch:u-boot-1.1.1.diff
-linux;2.4.27-dbox2;linux-2.4.27;linux-2.4.27.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.27-dbox2-mtd.diff.bz2;remove:linux;extract:linux-2.4.27.tar.bz2;patch:linux-2.4.27-dbox2.diff;patch:linux-2.4.27-dbox2-shift.diff;patch:linux-2.4.27-dbox2-keyboard.diff;patch:linux-2.4.27-dbox2-v4l2.diff;patch:linux-2.4.27-dbox2-cramfs.diff;patch:linux-2.4.27-dbox2-mtd.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.27/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs2.0r2-patch;link:linux-2.4.27:linux
+linux;2.4.27-dbox2;linux-2.4.27;linux-2.4.27.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.27-dbox2-mtd.diff.bz2;remove:linux;extract:linux-2.4.27.tar.bz2;patch:linux-2.4.27-dbox2.diff;patch:linux-2.4.27-dbox2-shift.diff;patch:linux-2.4.27-dbox2-keyboard.diff;patch:linux-2.4.27-dbox2-v4l2.diff;patch:linux-2.4.27-dbox2-cramfs.diff;patch:linux-2.4.27-dbox2-lufs.diff;patch:linux-2.4.27-dbox2-mtd.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.27/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs2.0r2-patch;link:linux-2.4.27:linux
 binutils;2.14.90.0.5;binutils-2.14.90.0.5;binutils-2.14.90.0.5.tar.bz2;extract:binutils-2.14.90.0.5.tar.bz2
 bootstrap_gcc;3.3.5;gcc-3.3.5;gcc-core-3.3.5.tar.bz2:gcc-core.diff;extract:gcc-core-3.3.5.tar.bz2;patch:gcc-core.diff
 gcc;3.3.5;gcc-3.3.5;gcc-core-3.3.5.tar.bz2:gcc-g++-3.3.5.tar.bz2;extract:gcc-core-3.3.5.tar.bz2;extract:gcc-g++-3.3.5.tar.bz2
@@ -77,6 +77,7 @@ lsof;4.72;lsof_4.72;lsof_4.72.tar.gz:lsof.diff;extract:lsof_4.72.tar.gz
 ssh;3.8p1;openssh-3.8p1;openssh-3.8p1.tar.gz:ssh.diff;extract:openssh-3.8p1.tar.gz;patch:ssh.diff
 tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz:tcpdump.diff;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
 vdr;1.2.6;vdr-1.2.6;vdr-1.2.6.tar.bz2:vdr.diff;extract:vdr-1.2.6.tar.bz2;patch:vdr.diff
+lufs;0.9.7;lufs-0.9.7;lufs-0.9.7.tar.gz:lufs.diff;extract:lufs-0.9.7.tar.gz;patch:lufs.diff
 
 #
 # msttf
