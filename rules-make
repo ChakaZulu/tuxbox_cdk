@@ -26,7 +26,7 @@ watchdog;5.2;watchdog-5.2.orig;watchdog_5.2.orig.tar.gz:watchdog.diff;extract:wa
 busybox;cvs20030303;busybox-cvs.20030303;busybox-cvs.20030303.tar.bz2:busybox.config;extract:busybox-cvs.20030303.tar.bz2
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
-modutils;2.4.21;modutils-2.4.21;modutils-2.4.21.tar.bz2;extract:modutils-2.4.21.tar.bz2
+modutils;2.4.21;modutils-2.4.21;modutils-2.4.21.tar.bz2:modutils.diff;extract:modutils-2.4.21.tar.bz2;patch:modutils.diff
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
 portmap;5;portmap-5;portmap-5.tar.bz2:portmap-5.diff;extract:portmap-5.tar.bz2;patch:portmap-5.diff
 procps;010114;procps-010114;procps-010114.tar.gz:procps.diff;extract:procps-010114.tar.gz;patch:procps.diff

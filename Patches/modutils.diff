@@ -1,0 +1,11 @@
+--- modutils-2.4.21/genksyms/Makefile.in.old	2003-05-22 00:01:35.000000000 +0200
++++ modutils-2.4.21/genksyms/Makefile.in	2003-05-22 00:01:17.000000000 +0200
+@@ -25,7 +25,7 @@
+ 	$(CC) $(CFLAGS) $(PARSERCFLAGS) $(DEFS) -c -o $@ $<
+ 
+ lex.c: lex.l parse.h
+-	flex -o$@ -d $^
++	flex -l -o$@ -d $^
+ 
+ crc32.tab: makecrc32.c
+ 	$(BUILDCC) $(BUILDCFLAGS) -o makecrc32 $^
