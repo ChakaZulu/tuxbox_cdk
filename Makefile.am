@@ -1820,6 +1820,11 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash neutrino root
 	sed -e 's/neutrino/neutrino -u -f/' $(targetprefix)/etc/init.d/start_neutrino > \
 		$(flashprefix)/root/etc/init.d/start_neutrino ;
 	chmod 755 $(flashprefix)/root/etc/init.d/start_neutrino ;
+	cp -pa $(appsdir)/tuxbox/enigma/data/fonts/bluebold.ttf $(flashprefix)/root/share/fonts
+	cp -pa $(appsdir)/tuxbox/enigma/data/fonts/bluehigh.ttf $(flashprefix)/root/share/fonts
+	cp -pa $(appsdir)/tuxbox/enigma/data/fonts/md_khmurabi_10.ttf $(flashprefix)/root/share/fonts
+	cp -pa $(appsdir)/tuxbox/enigma/data/fonts/pakenham.ttf $(flashprefix)/root/share/fonts
+	cp -pa $(appsdir)/tuxbox/enigma/data/fonts/unmrs.pfa $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/share/fonts/12.pcf.gz $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/share/fonts/14B.pcf.gz $(flashprefix)/root/share/fonts
@@ -2044,7 +2049,8 @@ $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
 	$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/jffs2/ -o $(flashprefix)/var-jffs2.img
 	rm -rf $(flashprefix)/jffs2
 
-$(flashprefix)/.rojffs2neutrino: flash-neutrino flash-ftpd flash-plugins flash-lib $(flashprefix)/.root-roimg $(flashprefix)/var-jffs2.img $(flashprefix)/.cramfs-flfs $(flashprefix)/.squashfs-flfs
+$(flashprefix)/.rojffs2neutrino: flash-neutrino flash-ftpd flash-plugins \
+flash-dvb-tools flash-ftpfs flash-lib $(flashprefix)/.root-roimg $(flashprefix)/var-jffs2.img $(flashprefix)/.cramfs-flfs $(flashprefix)/.squashfs-flfs
 	$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/cramfsjffs2neutrino_1x.img -o build \
 		--part ppcboot=$(flashprefix)/cramfs-flfs1x.img \
 		--part root=$(flashprefix)/root-cramfs.img \
