@@ -520,6 +520,19 @@ libs: \
 	@CLEANUP_libxml2@
 	touch .libxml2
 
+.libxmlwrapp: .bootstrap .libxml2 @DEPENDS_libxmlwrapp@
+	@PREPARE_libxmlwrapp@
+	cd @DIR_libxmlwrapp@ && \
+		CXX=$(target)-g++ \
+		CXXFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure.pl \
+			--disable-examples \
+			--prefix $(targetprefix) && \
+		make all && \
+		@INSTALL_libxmlwrapp@
+	@CLEANUP_libxmlwrapp@
+	touch .libxmlwrapp
+
 .libz: .bootstrap @DEPENDS_libz@
 	@PREPARE_libz@
 	cd @DIR_libz@ && \
