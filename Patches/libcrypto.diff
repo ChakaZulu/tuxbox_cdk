@@ -1,20 +1,20 @@
-diff -Naur openssl-0.9.6d.org/Configure openssl-0.9.6d/Configure
---- openssl-0.9.6d.org/Configure	Sat Jun  8 01:48:27 2002
-+++ openssl-0.9.6d/Configure	Sat Jun  8 01:50:22 2002
-@@ -493,6 +493,9 @@
- ##### Sony NEWS-OS 4.x
- "newsos4-gcc","gcc:-O -DB_ENDIAN -DNEWS4::(unknown):-lmld -liberty:BN_LLONG RC4_CHAR RC4_CHUNK DES_PTR DES_RISC1 DES_UNROLL BF_PTR::::",
+diff -Naur openssl-0.9.7.org/Configure openssl-0.9.7/Configure
+--- openssl-0.9.7.org/Configure	2002-12-28 02:35:11.000000000 +0100
++++ openssl-0.9.7/Configure	2002-12-31 17:13:04.000000000 +0100
+@@ -562,6 +562,9 @@
+ ##### OS/2 EMX
+ "OS2-EMX", "gcc::::::::",
  
 +##### TuxBox
 +"tuxbox","powerpc-tuxbox-linux-gnu-gcc:-DB_ENDIAN -DTERMIO -O3 -mcpu=823 -mmultiple -mstring -meabi -msoft-float -fomit-frame-pointer -Wall::-D_REENTRANT:-ldl:BN_LLONG DES_UNROLL DES_RISC2 DES_PTR MD2_CHAR RC4_INDEX::::::::::dlfcn:linux-shared:-fPIC",
 +
  ##### VxWorks for various targets
- "vxworks-ppc405","ccppc:-g -msoft-float -mlongcall -DVXWORKS -DCPU=PPC405 -I\$(WIND_BASE)/target/h:::-r:::::",
- 
-diff -Naur openssl-0.9.6d.org/Makefile.org openssl-0.9.6d/Makefile.org
---- openssl-0.9.6d.org/Makefile.org	Sat Jun  8 01:48:28 2002
-+++ openssl-0.9.6d/Makefile.org	Sat Jun  8 01:54:10 2002
-@@ -261,10 +261,9 @@
+ "vxworks-ppc405","ccppc:-g -msoft-float -mlongcall -DCPU=PPC405 -I\$(WIND_BASE)/target/h:::VXWORKS:-r:::::",
+ "vxworks-ppc750","ccppc:-ansi -nostdinc -DPPC750 -D_REENTRANT -fvolatile -fno-builtin -fno-for-scope -fsigned-char -Wall -msoft-float -mlongcall -DCPU=PPC604 -I\$(WIND_BASE)/target/h \$(DEBUG_FLAG):::VXWORKS:-r:::::",
+diff -Naur openssl-0.9.7.org/Makefile.org openssl-0.9.7/Makefile.org
+--- openssl-0.9.7.org/Makefile.org	2002-12-30 00:03:16.000000000 +0100
++++ openssl-0.9.7/Makefile.org	2002-12-31 17:13:04.000000000 +0100
+@@ -271,10 +271,9 @@
  	libs='-L. ${SHLIBDEPS}'; for i in ${SHLIBDIRS}; do \
  	( set -x; ${CC} ${SHARED_LDFLAGS} \
  		-shared -o lib$$i.so.${SHLIB_MAJOR}.${SHLIB_MINOR} \
@@ -27,11 +27,10 @@ diff -Naur openssl-0.9.6d.org/Makefile.org openssl-0.9.6d/Makefile.org
  	libs="$$libs -l$$i"; \
  	done
  
-@@ -670,6 +669,20 @@
- 			cd $(INSTALL_PREFIX)$(INSTALLTOP)/lib; \
- 			make -f $$here/Makefile link-shared ); \
+@@ -420,6 +419,20 @@
+ 		done; \
  	fi
-+
+ 
 +install_cdk:
 +	@for i in $(EXHEADER) ;\
 +	do \
@@ -45,6 +44,7 @@ diff -Naur openssl-0.9.6d.org/Makefile.org openssl-0.9.6d/Makefile.org
 +		$(MAKE) INSTALL_PREFIX='${INSTALL_PREFIX}' INSTALLTOP='${INSTALLTOP}' install ); \
 +	fi; \
 +	done	
- 
- install_docs:
- 	@$(PERL) $(TOP)/util/mkdir-p.pl \
++
+ # This assumes that GNU utilities are *not* used
+ # HP-UX includes the full pathname of libs we depend on, so we would get
+ # ./libcrypto (with ./ as path information) compiled into libssl, hence
