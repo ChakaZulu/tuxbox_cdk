@@ -32,7 +32,7 @@ netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.di
 portmap;5;portmap-5;portmap-5.tar.bz2:portmap-5.diff;extract:portmap-5.tar.bz2;patch:portmap-5.diff
 procps;010114;procps-010114;procps-010114.tar.gz:procps-010114.diff;extract:procps-010114.tar.gz;patch:procps-010114.diff
 rsh;0.17;netkit-rsh-0.17;netkit-rsh-0.17.tar.gz;extract:netkit-rsh-0.17.tar.gz
-tinylogin;0.80;tinylogin-0.80;tinylogin-0.80.tar.gz:tinylogin.diff;extract:tinylogin-0.80.tar.gz;patch:tinylogin.diff
+tinylogin;1.2;tinylogin-1.2;tinylogin-1.2.tar.gz:tinylogin.diff;extract:tinylogin-1.2.tar.gz;patch:tinylogin.diff
 
 #
 # contrib libs
