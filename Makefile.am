@@ -1708,7 +1708,8 @@ $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 
 		`find $(flashprefix)/root/lib/tuxbox/ -name "*.so" -type f` \
 		`find $(flashprefix)/root/sbin/ -path "*sbin/?*"`
 	$(target)-strip --remove-section=.comment --remove-section=.note \
-		`find $(flashprefix)/root/bin/ -path "*bin/?*"` 2>/dev/null || /bin/true
+		`find $(flashprefix)/root/bin/ -path "*bin/?*"` \
+		`find $(flashprefix)/root/sbin/ -path "*sbin/?*"` 2>/dev/null || /bin/true
 	$(target)-strip --remove-section=.comment --remove-section=.note --strip-unneeded \
 		`find $(flashprefix)/root/lib/tuxbox -name "*.so"` 2>/dev/null || /bin/true
 	$(target)-strip $(flashprefix)/root/lib/* 2>/dev/null || /bin/true
