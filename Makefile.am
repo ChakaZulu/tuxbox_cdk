@@ -964,7 +964,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	cd @DIR_dvbdate@ && \
 		$(MAKE) dvbdate \
 			@BUILDENV_dvbdate@ \
-			CPPFLAGS="-I$(driverdir)/include" && \
+			CPPFLAGS="-I$(driverdir)/dvb/include" && \
 		@INSTALL_dvbdate@
 	@CLEANUP_dvbdate@
 	touch .dvbdate
@@ -973,7 +973,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	@PREPARE_dvbstream@
 	cd @DIR_dvbstream@ && \
 		$(MAKE) dvbstream rtpfeed\
-			INCS="-I$(driverdir)/include" \
+			INCS="-I$(driverdir)/dvb/include -DNEWSTRUCT" \
 			CC=$(target)-gcc \
 			CFLAGS="$(TARGET_CFLAGS) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" && \
 		@INSTALL_dvbstream@
@@ -1539,17 +1539,17 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .etc .busybox .ftpd .inetd .modutils .netkit_telnet .procps .watchdog
+	-rm .root .busybox .ftpd .inetd .modutils .netkit_telnet .procps .watchdog
 	-rm .libboost .libcommoncplusplus .libcrypto .libcurl
 	-rm .libdirectfb .libdirectfbpp .libdvbpsi .libffi .libfreetype
 	-rm .libncurses .libjpeg .libmad .libpcap .libpng
 	-rm .libreadline .libsdl .libsigc .libxml2 .libz
-	-rm .gdb .ksymoops .ltrace .strace .nano
+	-rm .gdb .gdb-remote .ksymoops .ltrace .strace .nano
 	-rm .kaffeh .kaffe
 	-rm .gnuboy .scummvm .sdldoom
 	-rm .ppcboot .linuxkernel .driver
-	-rm .dvbsnoop .enigma .lcars .lcdmenu .neutrino .dvb_tools .zapit
-	-rm .console_data .console_tools .fbset .lirc .ssh .tcpdump
+	-rm .dvbsnoop .config .enigma .lcars .lcdmenu .neutrino .dvb_tools .zapit
+	-rm .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	-rm .misc_libs .misc_tools .plugins .tuxbox_libs .tuxbox_tools
 	-rm -rf $(targetprefix)
