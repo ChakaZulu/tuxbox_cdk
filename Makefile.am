@@ -23,10 +23,13 @@ core: directories binutils linuxdir glibc gcc
 
 VPATH = $(DEPDIR)
 
-$(DEPDIR):
-	mkdir $(DEPDIR)
+depdir:
+	if [ ! -d $(DEPDIR) ]; then \
+		mkdir $(DEPDIR); \
+	fi
 
-$(DEPDIR)/bootstrap: $(DEPDIR)
+$(DEPDIR)/bootstrap:
+	$(MAKE) depdir
 	@if [ ! -f glibc ]; then \
 		$(MAKE) glibc gcc; \
 	elif [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
@@ -34,7 +37,8 @@ $(DEPDIR)/bootstrap: $(DEPDIR)
 	fi
 	touch $@
 
-$(DEPDIR)/directories: $(DEPDIR)
+$(DEPDIR)/directories:
+	$(MAKE) depdir
 	$(INSTALL) -d $(targetprefix)/bin
 	$(INSTALL) -d $(targetprefix)/boot
 	$(INSTALL) -d $(targetprefix)/dev
@@ -63,7 +67,8 @@ if TARGETRULESET_FLASH
 endif
 	touch $@
 
-$(DEPDIR)/linuxdir: $(DEPDIR) @DEPENDS_linux@
+$(DEPDIR)/linuxdir: @DEPENDS_linux@
+	$(MAKE) depdir
 	@if [ ! -d $(targetprefix)/bin ]; then \
 		$(MAKE) directories; \
 	fi
@@ -79,7 +84,8 @@ endif
 		ARCH=ppc
 	touch $@
 
-$(DEPDIR)/binutils: $(DEPDIR) @DEPENDS_binutils@
+$(DEPDIR)/binutils: @DEPENDS_binutils@
+	$(MAKE) depdir
 	@if [ ! -h linux ]; then \
 		$(MAKE) linuxdir; \
 	fi
@@ -202,7 +208,7 @@ $(DEPDIR)/gcc: @DEPENDS_gcc@
 #
 
 root: \
-	root busybox ftpd modutils \
+	rootdirectories busybox ftpd modutils \
 	procps watchdog
 
 root_optional: \
@@ -223,7 +229,7 @@ endif
 	@CLEANUP_busybox@
 	touch $@
 
-$(DEPDIR)/root:
+$(DEPDIR)/rootdirectories:
 	$(MAKE) -C root install
 	touch $@
 
