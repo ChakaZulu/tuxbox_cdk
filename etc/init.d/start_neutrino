@@ -3,7 +3,6 @@ sectionsd
 timerd
 camd2
 zapit
-# lcdd
 controld
 nhttpd
 neutrino
