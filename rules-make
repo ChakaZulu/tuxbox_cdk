@@ -25,7 +25,7 @@ gcc;3.1;gcc-3.1;gcc-core-3.1.tar.gz:gcc-g++-3.1.tar.gz:gcc.diff;extract:gcc-core
 #
 busybox;0.60.2;busybox-0.60.2;busybox-0.60.2.tar.gz:busybox-0.60.2.diff;extract:busybox-0.60.2.tar.gz;patch:busybox-0.60.2.diff
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
-ifupdown;0.6.4;ifupdown-0.6.4-tuxbox;ifupdown-0.6.4-tuxbox.tar.bz2;extract:ifupdown-0.6.4-tuxbox.tar.bz2
+ifupdown;0.6.4;ifupdown-0.6.4-tuxbox.1;ifupdown-0.6.4-tuxbox.1.tar.bz2;extract:ifupdown-0.6.4-tuxbox.1.tar.bz2
 inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar.gz
 modutils;2.4.16;modutils-2.4.16;modutils-2.4.16.tar.bz2;extract:modutils-2.4.16.tar.bz2
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
