@@ -37,7 +37,7 @@ tinylogin;1.2;tinylogin-1.2;tinylogin-1.2.tar.gz:tinylogin.diff;extract:tinylogi
 # contrib libs
 #
 libboost;1.29.0;boost_1_29_0;boost_1_29_0.tar.gz;extract:boost_1_29_0.tar.gz
-libcommoncplusplus;0.99.7;commoncpp2-0.99.7;commoncpp2-0.99.7.tar.gz:libcommoncplusplus.diff;extract:commoncpp2-0.99.7.tar.gz;patch:libcommoncplusplus.diff
+libcommoncplusplus;1.0.6;commoncpp2-1.0.6;commoncpp2-1.0.6.tar.gz:libcommoncplusplus.diff;extract:commoncpp2-1.0.6.tar.gz;patch:libcommoncplusplus.diff
 libcrypto;0.9.6g;openssl-0.9.6g;openssl-0.9.6g.tar.gz:libcrypto.diff;extract:openssl-0.9.6g.tar.gz;patch:libcrypto.diff
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.bz2:libcurl.diff;extract:curl-7.10.1.tar.bz2;patch:libcurl.diff
 libdirectfb;0.9.15;DirectFB-0.9.15;DirectFB-0.9.15.tar.gz;extract:DirectFB-0.9.15.tar.gz
