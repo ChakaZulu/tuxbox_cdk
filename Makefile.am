@@ -336,8 +336,11 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
+		rm -f $(hostprefix)/bin/ccgnu2-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < src/ccgnu2-config > $(hostprefix)/bin/ccgnu2-config && \
+		chmod 755 $(hostprefix)/bin/ccgnu2-config && \
 		@INSTALL_libcommoncplusplus@
 	@CLEANUP_libcommoncplusplus@
 	touch .libcommoncplusplus
@@ -358,9 +361,12 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--with-random && \
 		$(MAKE) all && \
+		rm -f $(hostprefix)/bin/curl-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < curl-config > $(hostprefix)/bin/curl-config && \
+		chmod 755 $(hostprefix)/bin/curl-config && \
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
 	touch .libcurl
@@ -373,11 +379,17 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--disable-avifile \
 			--disable-jpeg \
 			--disable-sdl && \
 		$(MAKE) all && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb-config > $(hostprefix)/bin/directfb-config && \
+		chmod 755 $(hostprefix)/bin/directfb-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb.pc > directfb.pc.tmp && \
+		mv directfb.pc.tmp directfb.pc && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb-internal.pc > directfb-internal.pc.tmp && \
+		mv directfb-internal.pc.tmp directfb-internal.pc && \
 		@INSTALL_libdirectfb@
 	@CLEANUP_libdirectfb@
 	touch .libdirectfb
@@ -389,8 +401,12 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < dfb++-config > $(hostprefix)/bin/dfb++-config && \
+		chmod 755 $(hostprefix)/bin/dfb++-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < dfb++.pc > dfb++.pc.tmp && \
+		mv dfb++.pc.tmp dfb++.pc && \
 		@INSTALL_libdirectfbpp@
 	@CLEANUP_libdirectfbpp@
 	touch .libdirectfbpp
@@ -402,7 +418,7 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_libdvbpsi@
 	@CLEANUP_libdvbpsi@
@@ -415,7 +431,7 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_libffi@
 	@CLEANUP_libffi@
@@ -428,8 +444,11 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
+		rm -f $(hostprefix)/bin/freetype-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < builds/unix/freetype-config > $(hostprefix)/bin/freetype-config && \
+		chmod 755 $(hostprefix)/bin/freetype-config && \
 		@INSTALL_libfreetype@
 	@CLEANUP_libfreetype@
 	touch .libfreetype
@@ -441,7 +460,7 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) libjpeg.so.6 && \
 		@INSTALL_libjpeg@
 	@CLEANUP_libjpeg@
@@ -454,7 +473,7 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--enable-shared=yes \
 			--disable-nls \
 			--without-esd \
@@ -473,8 +492,7 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
-			--with-default-terminfo-dir=/share/terminfo \
+			--prefix= \
 			--with-terminfo-dirs=/share/terminfo \
 			--disable-big-core \
 			--without-debug \
@@ -500,7 +518,7 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--with-pcap=linux && \
 		$(MAKE) all && \
 		@INSTALL_libpcap@
@@ -525,7 +543,7 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--with-pic \
 			--disable-nls && \
 		$(MAKE) all && \
@@ -541,7 +559,7 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_libreadline@
 	@CLEANUP_libreadline@
@@ -554,7 +572,7 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--disable-alsa \
 			--disable-openbsdaudio \
 			--disable-esd \
@@ -578,6 +596,9 @@ libs_optional: \
 			--disable-stdio-redirect \
 			--disable-directx && \
 		$(MAKE) all && \
+		rm -f $(hostprefix)/bin/sdl-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < sdl-config > $(hostprefix)/bin/sdl-config && \
+		chmod 755 $(hostprefix)/bin/sdl-config && \
 		@INSTALL_libsdl@
 	@CLEANUP_libsdl@
 	touch .libsdl
@@ -589,9 +610,11 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--disable-checks && \
 		$(MAKE) all && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < sigc++-1.2.pc > sigc++-1.2.pc.tmp && \
+		mv sigc++-1.2.pc.tmp sigc++-1.2.pc && \
 		@INSTALL_libsigc@
 	@CLEANUP_libsigc@
 	touch .libsigc
@@ -603,7 +626,7 @@ libs_optional: \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--without-html-dir \
 			--with-threads \
 			--without-ftp \
@@ -619,6 +642,11 @@ libs_optional: \
 			--without-mem-debug \
 			--without-python && \
 		$(MAKE) all && \
+		rm -f $(hostprefix)/bin/xml2-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < xml2-config > $(hostprefix)/bin/xml2-config && \
+		chmod 755 $(hostprefix)/bin/xml2-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < libxml-2.0.pc > libxml-2.0.pc.tmp && \
+		mv libxml-2.0.pc.tmp libxml-2.0.pc && \
 		@INSTALL_libxml2@
 	@CLEANUP_libxml2@
 	touch .libxml2
@@ -628,7 +656,7 @@ libs_optional: \
 	cd @DIR_libz@ && \
 		@BUILDENV_libz@ \
 		./configure \
-			--prefix=$(targetprefix) \
+			--prefix= \
 			--shared && \
 		$(MAKE) all && \
 		@INSTALL_libz@
