@@ -395,6 +395,7 @@ $(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz @DEPENDS_libdir
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
+			--disable-debug \
 			--enable-linux-input \
 			--disable-sdl \
 			--with-gfxdrivers=none && \
