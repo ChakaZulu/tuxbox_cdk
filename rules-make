@@ -105,10 +105,12 @@ mad;0.14.2b;mad-0.14.2b;mad-0.14.2b.tar.gz;extract:mad-0.14.2b.tar.gz;patch:mad.
 scummvm;20020717;scummvm;scummvm-20020717.tar.bz2:scummvm.diff;extract:scummvm-20020717.tar.bz2;patch:scummvm.diff
 sdldoom;1.10;sdldoom-1.10;sdldoom-1.10.tar.gz;extract:sdldoom-1.10.tar.gz;patch:sdldoom.diff
 
+#
 # dvb apps
 #
-dvbstream;0.4pre2;dvbstream-0.4pre2;dvbstream-0.4pre2.tar.gz;extract:dvbstream-0.4pre2.tar.gz
+dvbdate;20020918;dvbdate;dvbdate-20020918.tar.bz2;extract:dvbdate-20020918.tar.bz2
+dvbstream;20020918;dvbstream;dvbstream-20020918.tar.bz2;extract:dvbstream-20020918.tar.bz2
 dvbtext;0.1;dvbtext-0.1;dvbtext-0.1.tar.gz;extract:dvbtext-0.1.tar.gz
-dvbtune;0.3;dvbtune-0.3;dvbtune-0.3.tar.gz;extract:dvbtune-0.3.tar.gz
+dvbtune;20020918;dvbtune;dvbtune-20020918.tar.bz2;extract:dvbtune-20020918.tar.bz2
 vls;0.3.3;vls-0.3.3;vls-0.3.3.tar.bz2:vls.diff;extract:vls-0.3.3.tar.bz2;patch:vls.diff
 

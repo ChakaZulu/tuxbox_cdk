@@ -103,7 +103,8 @@ sdldoom;make:install
 #
 # dvb apps
 #
-dvbstream;install:-m755:dvbstream:TARGET/bin
+dvbdate;install:-m755:dvbdate:TARGET/bin
+dvbstream;install:-m755:dvbstream:rtpfeed:TARGET/bin
 dvbtext;install:-m755:dvbtext:TARGET/bin
 dvbtune;install:-m755:dvbtune:TARGET/bin
 vls;make:install

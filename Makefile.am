@@ -1093,12 +1093,23 @@ fun: .mad .scummvm
 #  DVB apps
 #
 
-dvb_apps: .dvbstream .dvbtext .dvbtune
+dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune
+
+.dvbdate: .bootstrap @DEPENDS_dvbdate@
+	@PREPARE_dvbdate@
+	cd @DIR_dvbdate@ && \
+		$(MAKE) dvbdate \
+			CC=$(target)-gcc \
+			CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/include" \
+			LDFLAGS="$(TARGET_LDFLAGS)" && \
+		@INSTALL_dvbdate@
+	@CLEANUP_dvbdate@
+	touch .dvbdate
 
 .dvbstream: .bootstrap @DEPENDS_dvbstream@
 	@PREPARE_dvbstream@
 	cd @DIR_dvbstream@ && \
-		$(MAKE) dvbstream \
+		$(MAKE) dvbstream rtpfeed\
 			INCS="-I$(driverdir)/include" \
 			CC=$(target)-gcc \
 			CFLAGS="$(TARGET_CFLAGS) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" && \
@@ -1119,7 +1130,8 @@ dvb_apps: .dvbstream .dvbtext .dvbtune
 	cd @DIR_dvbtune@ && \
 		$(MAKE) \
 			CC=$(target)-gcc \
-			CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/include" && \
+			CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/include" \
+			LDFLAGS="$(TARGET_LDFLAGS)" && \
 		@INSTALL_dvbtune@
 	@CLEANUP_dvbtune@
 	touch .dvbtune

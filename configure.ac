@@ -313,6 +313,7 @@ TUXBOX_RULES_MAKE(sdldoom)
 #
 # dvb apps
 #
+TUXBOX_RULES_MAKE(dvbdate)
 TUXBOX_RULES_MAKE(dvbstream)
 TUXBOX_RULES_MAKE(dvbtext)
 TUXBOX_RULES_MAKE(dvbtune)
