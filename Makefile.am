@@ -1,6 +1,6 @@
 TARGET = powerpc-tuxbox-linux-gnu
 
-PATH := $(hostprefix)/bin:$(PATH)
+PATH = $(hostprefix)/bin:$(PATH)
 
 all: core libs root apps boot
 
@@ -19,6 +19,9 @@ core: .gcc
 	install -d $(targetprefix)/include
 	install -d $(targetprefix)/lib
 	install -d $(targetprefix)/ucodes
+	install -d $(targetprefix)/var
+	install -d $(targetprefix)/var/zapit
+	install -d $(targetprefix)/tmp
 	install -d $(hostprefix)/$(TARGET)
 	install -d $(bootprefix)
 	-rm $(hostprefix)/$(TARGET)/include
