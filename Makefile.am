@@ -1243,7 +1243,7 @@ else
 endif
 	touch $@
 
-$(DEPDIR)/uboot_cdk $(DEPDIR)/uboot_1x_flash $(DEPDIR)/uboot_2x_flash $(DEPDIR)/uboot_yadd: bootstrap @DEPENDS_uboot@
+$(DEPDIR)/uboot_cdk $(DEPDIR)/uboot_squashfs $(DEPDIR)/uboot_cramfs $(DEPDIR)/uboot_yadd: bootstrap @DEPENDS_uboot@
 	@PREPARE_uboot@
 
 	cp -pR $(bootdir)/u-boot-tuxbox/* @DIR_uboot@
