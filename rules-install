@@ -46,4 +46,5 @@ msttf
 #
 gdb;make:install
 inetd
+telnetd
 

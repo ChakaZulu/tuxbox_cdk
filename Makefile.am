@@ -189,6 +189,18 @@ root: .busybox .tinylogin .modutils .etc
 	@CLEANUP_inetd@
 	touch .inetd
 
+.telnetd: .gcc @DEPENDS_telnetd@
+	@PREPARE_telnetd@
+	touch @DIR_telnetd@/MCONFIG
+	cd @DIR_telnetd@/telnetd && \
+		CC=$(TARGET)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LIBS=-lutil \
+		make all && \
+		install -m644 telnetd $(targetprefix)/sbin/in.telnetd
+	@CLEANUP_telnetd@
+	touch .telnetd
+
 #######################
 #
 #   contrib libs
