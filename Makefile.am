@@ -688,7 +688,7 @@ libs_optional: \
 #   contrib apps
 #
 
-contrib_apps: .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump .xrc
+contrib_apps: .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
 contrib_apps_optional: .pump .thttpd
 
 .console_data: .bootstrap @DEPENDS_console_data@
@@ -828,21 +828,6 @@ contrib_apps_optional: .pump .thttpd
 		@INSTALL_thttpd@
 	@CLEANUP_thttpd@
 	touch .thttpd
-
-.xrc: .bootstrap .lirc @DEPENDS_xrc@
-	@PREPARE_xrc@
-	cd @DIR_xrc@ && \
-		@BUILDENV_xrc@ \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix=$(targetprefix) \
-			--disable-qpe \
-			--disable-qt-embedded \
-			--without-x && \
-		@INSTALL_xrc@
-	@CLEANUP_xrc@
-	touch .xrc
 
 
 #######################
@@ -1546,7 +1531,7 @@ distclean-local:
 	-rm .gnuboy .scummvm .sdldoom
 	-rm .ppcboot .linuxkernel .driver
 	-rm .camd .dvbsnoop .enigma .lcars .lcdmenu .neutrino .stream .zapit
-	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump .xrc .thttpd
+	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump .thttpd
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	-rm .misc_libs .misc_tools .plugins .tuxbox_libs .tuxbox_tools
 	-rm -rf $(targetprefix)
