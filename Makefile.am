@@ -498,7 +498,7 @@ endif
 	make -C $(appsdir)/lcdmenu all install
 	touch .lcdmenu
 
-.neutrino: $(appsdir)/Makefile .fx2 .sections .zapit .libmd5sum .libucodes .liblcddisplay .msttf
+.neutrino: $(appsdir)/Makefile .fx2 .liblcddisplay .libmd5sum .libnet .libucodes .msttf .sections .zapit
 	make -C $(appsdir)/mczap all install
 	touch .neutrino
 
@@ -531,10 +531,13 @@ endif
 	make -C $(appsdir)/libmd5sum all install
 	touch .libmd5sum
 
+.libnet: $(appsdir)/Makefile
+	make -C $(appsdir)/libnet all install
+	touch .libnet
+
 .libucodes: $(appsdir)/Makefile
 	make -C $(appsdir)/libucodes all install
 	touch .libucodes
-
 
 #######################
 #
@@ -574,7 +577,7 @@ distclean-local:
 	-rm .ppcboot .linuxkernel
 	-rm .dvbsnoop .edvb .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .zapit
-	-rm .liblcddisplay .libmd5sum .libucodes
+	-rm .liblcddisplay .libmd5sum .libnet .libucodes
 	-rm .dvbstream
 	-rm .driver
 	-rm -rf $(targetprefix)
