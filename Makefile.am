@@ -1143,7 +1143,7 @@ $(driverdir)/directfb/Makefile: .bootstrap .libdirectfb
 #   own applications
 #
 
-apps: .dvbsnoop .enigma .lcars .lcdmenu .neutrino .plugins .dvb_tools
+apps: .dvbsnoop .enigma .lcars .lcd .neutrino .plugins .dvb_tools
 
 CONFIGURE_OPTS = \
 	--build=$(build) \
@@ -1266,8 +1266,8 @@ $(appsdir)/tuxbox/lcars/config.status: .bootstrap .libcurl .libfreetype .plugins
 $(appsdir)/tuxbox/lcd/config.status: .bootstrap .libfreetype .misc_libs .tuxbox_libs
 	cd $(appsdir)/tuxbox/lcd && $(CONFIGURE)
 
-.lcdmenu: $(appsdir)/tuxbox/lcd/config.status
-	$(MAKE) -C $(appsdir)/tuxbox/lcd/lcdmenu all install
+.lcd: $(appsdir)/tuxbox/lcd/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/lcd all install
 	touch $@
 
 # tuxbox/libs
@@ -1487,7 +1487,7 @@ $(flashprefix)/.part_plugins: $(flashprefix)/.flash .plugins
 
 flash-lcdmenu: $(flashprefix)/.part_lcdmenu
 
-$(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash .lcdmenu
+$(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash .lcd
 	$(INSTALL) $(targetprefix)/bin/lcdmenu $(flashprefix)/root/bin
 	cp -pa $(targetprefix)/var/tuxbox/config/lcdmenu.conf $(flashprefix)/root/var/tuxbox/config
 	@touch $@
@@ -1629,7 +1629,7 @@ distclean-local:
 	-rm .kaffeh .kaffe
 	-rm .gnuboy .scummvm .sdldoom
 	-rm .u-boot .linuxkernel .driver
-	-rm .dvbsnoop .config .enigma .lcars .lcdmenu .neutrino .dvb_tools .zapit
+	-rm .dvbsnoop .config .enigma .lcars .lcd .neutrino .dvb_tools .zapit
 	-rm .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	-rm .misc_libs .misc_tools .plugins .libtuxbox .tuxbox_libs .tuxbox_tools
