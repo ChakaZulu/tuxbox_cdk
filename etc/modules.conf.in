@@ -22,7 +22,6 @@ alias avia_gt_napi avia_gt_dmx
 
 if $mID = "01"
   options avia_gt chip_type=1
-  alias avia_gt_fb gtx_fb
 else
   options avia_gt chip_type=0
 endif
