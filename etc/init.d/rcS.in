@@ -25,6 +25,10 @@ depmod -ae
 modprobe i2c-8xx
 modprobe info
 
+if [ -e /tmp/dbox.sh ]; then
+        rm -f /tmp/dbox.sh
+fi
+
 . /etc/profile
 echo "mID: $mID"
 echo "feID: $feID"
@@ -52,5 +56,6 @@ modprobe avia_gt_fb
 modprobe avia_gt_oss
 modprobe avia_gt_napi
 modprobe avia_gt_vbi
+modprobe dvb_net
 modprobe lcd
 
