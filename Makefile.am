@@ -149,7 +149,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 #   minimal root
 #
 
-root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd .top
+root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd .procps
 
 .etc:
 	make -C etc install
@@ -221,15 +221,16 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd .top
 	@CLEANUP_telnetd@
 	touch .telnetd
 
-.top: .bootstrap .libncurses @DEPENDS_top@
+.procps: .bootstrap .libncurses @DEPENDS_top@
 	@PREPARE_top@
 	cd @DIR_top@ && \
+		patch -p1 < ../Patches/procps-010114.diff && \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
 		make top && \
 		@INSTALL_top@
 	@CLEANUP_top@
-	touch .top
+	touch .procps
 		 
 		
 #######################
@@ -805,7 +806,7 @@ distclean-local:
 	-rm Makefile-archive
 	-rm .bootstrap
 	-rm .directories .linuxdir .binutils .glibc .gcc
-	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd .top
+	-rm .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd .procps
 	-rm .libcurl .libffi .libfreetype .libncurses .libjpeg .libpng .libqt .libreadline .libsdl .libxml2 .libz
 	-rm .cabextract .msttf
 	-rm .gdb .strace .nano

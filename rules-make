@@ -28,7 +28,7 @@ inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar
 ftpd;1.0.1;vsftpd-1.0.1;vsftpd-1.0.1.tar.gz:ftpd.diff;extract:vsftpd-1.0.1.tar.gz;patch:ftpd.diff
 rsh;0.17;netkit-rsh-0.17;netkit-rsh-0.17.tar.gz;extract:netkit-rsh-0.17.tar.gz
 telnetd;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz;extract:netkit-telnet-0.17.tar.gz
-top;010114;procps-010114;procps-010114.tar.gz;extract:procps-010114.tar.gz
+procps;010114;procps-010114;procps-010114.tar.gz;extract:procps-010114.tar.gz
 
 #
 # contrib libs
