@@ -60,7 +60,7 @@ libsdl;1.2.6;SDL-1.2.6;SDL-1.2.6.tar.gz:sdl.diff;extract:SDL-1.2.6.tar.gz;patch:
 libsigc;1.2.5;libsigc++-1.2.5;libsigc++-1.2.5.tar.gz;extract:libsigc++-1.2.5.tar.gz
 libvorbisidec;20030128;tremor-20030128;tremor-20030128.tar.bz2;extract:tremor-20030128.tar.bz2
 libxml2;2.4.30;libxml2-2.4.30;libxml2-2.4.30.tar.gz;extract:libxml2-2.4.30.tar.gz
-libz;1.2.1;zlib-1.2.1;zlib-1.2.1.tar.bz2:zlib.diff;extract:zlib-1.2.1.tar.bz2
+libz;1.2.1;zlib-1.2.1;zlib-1.2.1.tar.bz2;extract:zlib-1.2.1.tar.bz2
 
 #
 # contrib apps

@@ -16,7 +16,7 @@ gcc;3.2.3;gcc-3.2.3;gcc-core-3.2.3.tar.bz2:gcc-g++-3.2.3.tar.bz2;extract:gcc-cor
 # contrib libs
 #
 libfreetype;2.1.4;freetype-2.1.4;freetype-2.1.4.tar.bz2;extract:freetype-2.1.4.tar.bz2;patch:libfreetype.diff;patch:cygwin/freetype.diff
-libz;1.2.1;zlib-1.2.1;zlib-1.2.1.tar.bz2:zlib.diff:cygwin/zlib.diff;extract:zlib-1.2.1.tar.bz2;patch:cygwin/zlib.diff
+libz;1.2.1;zlib-1.2.1;zlib-1.2.1.tar.bz2:cygwin/zlib.diff;extract:zlib-1.2.1.tar.bz2;patch:cygwin/zlib.diff
 
 #
 # java
