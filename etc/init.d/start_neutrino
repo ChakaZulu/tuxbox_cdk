@@ -1,6 +1,6 @@
 #!/bin/sh
-timerd
 sectionsd
+timerd
 camd2
 zapit
 lcdd
