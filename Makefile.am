@@ -1272,6 +1272,13 @@ $(appsdir)/tuxbox/tools/config.status: .bootstrap .plugins .libtuxbox
 	$(MAKE) -C $(appsdir)/tuxbox/tools all install
 	touch $@
 
+$(hostappsdir)/config.status: .bootstrap
+	cd $(hostappsdir) && $(CONFIGURE)
+
+.hostapps_cross: $(hostappsdir)/config.status
+	$(MAKE) -C $(hostappsdir)
+	touch $@
+
 #######################
 #
 #   flash
