@@ -51,7 +51,7 @@ libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch
 libmad;0.15.0b;libmad-0.15.0b;libmad-0.15.0b.tar.gz:libmad.diff;extract:libmad-0.15.0b.tar.gz;patch:libmad.diff
 libid3tag;0.15.0b;libid3tag-0.15.0b;libid3tag-0.15.0b.tar.gz:libid3tag.diff;extract:libid3tag-0.15.0b.tar.gz;patch:libid3tag.diff
 libncurses;5.3;ncurses-5.3;ncurses-5.3.tar.gz;extract:ncurses-5.3.tar.gz
-libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;patch:libpcap.diff
+libpcap;0.7.2;libpcap-0.7.2;libpcap-0.7.2.tar.gz;extract:libpcap-0.7.2.tar.gz;patch:libpcap.diff
 libpng;1.2.5;libpng-1.2.5;libpng-1.2.5.tar.bz2:libpng.diff;extract:libpng-1.2.5.tar.bz2;patch:libpng.diff
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.6;SDL-1.2.6;SDL-1.2.6.tar.gz:sdl.diff;extract:SDL-1.2.6.tar.gz;patch:sdl.diff
