@@ -1,32 +1,33 @@
-diff -urN openssl-0.9.6c.orig/Configure openssl-0.9.6c/Configure
---- openssl-0.9.6c.orig/Configure	Thu Dec  6 14:11:39 2001
-+++ openssl-0.9.6c/Configure	Thu May  2 13:15:20 2002
-@@ -480,6 +480,9 @@
+diff -Naur openssl-0.9.6d.org/Configure openssl-0.9.6d/Configure
+--- openssl-0.9.6d.org/Configure	Sat Jun  8 01:48:27 2002
++++ openssl-0.9.6d/Configure	Sat Jun  8 01:50:22 2002
+@@ -493,6 +493,9 @@
  ##### Sony NEWS-OS 4.x
  "newsos4-gcc","gcc:-O -DB_ENDIAN -DNEWS4::(unknown):-lmld -liberty:BN_LLONG RC4_CHAR RC4_CHUNK DES_PTR DES_RISC1 DES_UNROLL BF_PTR::::",
  
 +##### TuxBox
 +"tuxbox","powerpc-tuxbox-linux-gnu-gcc:-DB_ENDIAN -DTERMIO -Os -fomit-frame-pointer -Wall::-D_REENTRANT:-ldl:BN_LLONG DES_UNROLL DES_RISC2 DES_PTR MD2_CHAR RC4_INDEX::::::::::dlfcn:linux-shared:-fPIC",
 +
- );
+ ##### VxWorks for various targets
+ "vxworks-ppc405","ccppc:-g -msoft-float -mlongcall -DVXWORKS -DCPU=PPC405 -I\$(WIND_BASE)/target/h:::-r:::::",
  
- my @WinTargets=qw(VC-NT VC-WIN32 VC-WIN16 VC-W31-16 VC-W31-32 VC-MSDOS BC-32
-diff -urN openssl-0.9.6c.orig/Makefile.org openssl-0.9.6c/Makefile.org
---- openssl-0.9.6c.orig/Makefile.org	Wed Nov 14 11:44:11 2001
-+++ openssl-0.9.6c/Makefile.org	Thu May  2 13:27:28 2002
-@@ -256,9 +256,8 @@
- do_gnu-shared:
+diff -Naur openssl-0.9.6d.org/Makefile.org openssl-0.9.6d/Makefile.org
+--- openssl-0.9.6d.org/Makefile.org	Sat Jun  8 01:48:28 2002
++++ openssl-0.9.6d/Makefile.org	Sat Jun  8 01:54:10 2002
+@@ -261,10 +261,9 @@
  	libs='-L. ${SHLIBDEPS}'; for i in ${SHLIBDIRS}; do \
- 	( set -x; ${CC}  -shared -o lib$$i.so.${SHLIB_MAJOR}.${SHLIB_MINOR} \
+ 	( set -x; ${CC} ${SHARED_LDFLAGS} \
+ 		-shared -o lib$$i.so.${SHLIB_MAJOR}.${SHLIB_MINOR} \
 -		-Wl,-soname=lib$$i.so.${SHLIB_MAJOR}.${SHLIB_MINOR} \
++		-Wl,-soname=lib$$i.so.${SHLIB_MAJOR} \
+ 		-Wl,-Bsymbolic \
 -		-Wl,--whole-archive lib$$i.a \
 -		-Wl,--no-whole-archive $$libs ${EX_LIBS} -lc ) || exit 1; \
-+		-Wl,-soname=lib$$i.so.${SHLIB_MAJOR} \
 +		-Wl,--whole-archive lib$$i.a -Wl,--no-whole-archive ) || exit 1; \
  	libs="$$libs -l$$i"; \
  	done
  
-@@ -608,6 +607,20 @@
+@@ -670,6 +669,20 @@
  			cd $(INSTALL_PREFIX)$(INSTALLTOP)/lib; \
  			make -f $$here/Makefile link-shared ); \
  	fi
@@ -43,7 +44,7 @@ diff -urN openssl-0.9.6c.orig/Makefile.org openssl-0.9.6c/Makefile.org
 +		(cd $$i; echo "installing $$i..."; \
 +		$(MAKE) INSTALL_PREFIX='${INSTALL_PREFIX}' INSTALLTOP='${INSTALLTOP}' install ); \
 +	fi; \
-+	done
++	done	
  
  install_docs:
  	@$(PERL) $(TOP)/util/mkdir-p.pl \
