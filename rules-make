@@ -71,7 +71,7 @@ lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.d
 lsof;4.65;lsof_4.65_src;lsof_4.65_src.tar.bz2:lsof.diff;extract:lsof_4.65_src.tar.bz2;patch:lsof.diff
 pump;0.8.11;pump-0.8.11;pump-0.8.11.tar.bz2:pump.diff;extract:pump-0.8.11.tar.bz2;patch:pump.diff
 ssh;3.5p1;openssh-3.5p1;openssh-3.5p1.tar.gz:ssh.diff;extract:openssh-3.5p1.tar.gz;patch:ssh.diff
-tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
+tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz:tcpdump.diff;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
 xrc;0.6.3;xrc-0.6.3;xrc-0.6.3.tar.gz:xrc.diff;extract:xrc-0.6.3.tar.gz;patch:xrc.diff
 thttpd;2.23beta1;thttpd-2.23beta1;thttpd-2.23beta1.tar.gz;extract:thttpd-2.23beta1.tar.gz;patch:thttpd.diff
 

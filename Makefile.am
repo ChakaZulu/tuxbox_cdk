@@ -776,15 +776,15 @@ contrib_apps_optional: .pump
 .tcpdump: .bootstrap .libpcap @DEPENDS_tcpdump@
 	@PREPARE_tcpdump@
 	cd @DIR_tcpdump@ && \
-		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS) -I$(targetprefix)/include -L$(targetprefix)/lib" \
-		LDFLAGS="$(TARGET_LDFLAGS) -L$(targetprefix)/lib"  \
+		@BUILDENV_tcpdump@ \
 		./configure \
+			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) \
-			--libdir=$(targetprefix)/lib \
-			--build=$(build) && \
-		$(MAKE) && \
+			--prefix= \
+			--disable-smb \
+			--disable-ipv6 \
+			--without-crypto && \
+		$(MAKE) all && \
 		@INSTALL_tcpdump@
 	@CLEANUP_tcpdump@
 	touch .tcpdump

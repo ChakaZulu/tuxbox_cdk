@@ -65,7 +65,7 @@ lirc;make:install
 lsof;install:-m755:lsof:TARGET/sbin
 pump;make:install:DEST=TARGET
 ssh;make:install:DESTDIR=TARGET
-tcpdump;make:install
+tcpdump;make:install:DESTDIR=TARGET
 xrc;make:install
 thttpd;make:install
 
