@@ -689,7 +689,7 @@ libs_optional: \
 #
 
 contrib_apps: .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdump
-contrib_apps_optional: .pump .thttpd
+contrib_apps_optional: .pump
 
 .console_data: .bootstrap @DEPENDS_console_data@
 	@PREPARE_console_data@
@@ -815,19 +815,6 @@ contrib_apps_optional: .pump .thttpd
 		@INSTALL_tcpdump@
 	@CLEANUP_tcpdump@
 	touch .tcpdump
-
-.thttpd: @DEPENDS_thttpd@
-	@PREPARE_thttpd@
-	cd @DIR_thttpd@ && \
-		@BUILDENV_thttpd@ \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix=$(targetprefix) && \
-		$(MAKE) all && \
-		@INSTALL_thttpd@
-	@CLEANUP_thttpd@
-	touch .thttpd
 
 
 #######################
@@ -1153,6 +1140,14 @@ CONFIGURE_OPTS = \
 	--with-dvbincludes=$(driverdir)/include \
 	--with-target=cdk
 
+CONFIGURE_OPTS_NEW = \
+	--build=$(build) \
+	--host=$(target) \
+	--prefix=$(targetprefix) \
+	--with-driver=$(driverdir) \
+	--with-dvbincludes=$(driverdir)/dvb/include \
+	--with-target=cdk
+
 if MAINTAINER_MODE
 CONFIGURE_OPTS_MAINTAINER = \
 	--enable-maintainer-mode
@@ -1171,10 +1166,18 @@ CONFIGURE = \
 	CXXFLAGS="-Wall $(TARGET_CXXFLAGS)" \
 	./configure $(CONFIGURE_OPTS) $(CONFIGURE_OPTS_MAINTAINER) $(CONFIGURE_OPTS_DEBUG)
 
+CONFIGURE_NEW = \
+	./autogen.sh && \
+	CC=$(target)-gcc \
+	CXX=$(target)-g++ \
+	CFLAGS="-Wall $(TARGET_CFLAGS)" \
+	CXXFLAGS="-Wall $(TARGET_CXXFLAGS)" \
+	./configure $(CONFIGURE_OPTS_NEW) $(CONFIGURE_OPTS_MAINTAINER) $(CONFIGURE_OPTS_DEBUG)
+
 # dvb/dvbsnoop
 
 $(appsdir)/dvb/dvbsnoop/Makefile: .bootstrap
-	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE)
+	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE_NEW)
 
 .dvbsnoop: $(appsdir)/dvb/dvbsnoop/Makefile
 	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
@@ -1531,7 +1534,7 @@ distclean-local:
 	-rm .gnuboy .scummvm .sdldoom
 	-rm .ppcboot .linuxkernel .driver
 	-rm .camd .dvbsnoop .enigma .lcars .lcdmenu .neutrino .stream .zapit
-	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump .thttpd
+	-rm .console_data .console_tools .fbset .lirc .pump .ssh .tcpdump
 	-rm .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	-rm .misc_libs .misc_tools .plugins .tuxbox_libs .tuxbox_tools
 	-rm -rf $(targetprefix)
