@@ -311,8 +311,8 @@ root_optional: \
 	@PREPARE_procps@
 	cd @DIR_procps@ && \
 		CC=$(target)-gcc \
-		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" \
-		$(MAKE) top ps && \
+		CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" CURSES="-I$(targetprefix) -lncurses"\
+		$(MAKE) && \
 		@INSTALL_procps@
 	@CLEANUP_procps@
 	touch .procps
@@ -436,6 +436,8 @@ libs_optional: \
 			--build=$(build) \
 			--host=$(target) \
 			--disable-sdl \
+			--disable-jpeg \
+			--disable-avifile \
 			--prefix= && \
 		$(MAKE) all && \
 		sed -e "s,^prefix=,prefix=$(targetprefix)," < directfb-config > $(hostprefix)/bin/directfb-config && \
@@ -604,7 +606,7 @@ libs_optional: \
 .libpng: .bootstrap .libz @DEPENDS_libpng@
 	@PREPARE_libpng@
 	cd @DIR_libpng@ && \
-		$(MAKE) all CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS) -DPNG_DEBUG=0" && \
+		 $(MAKE) all CC=$(target)-gcc CFLAGS="$(TARGET_CFLAGS) -DPNG_DEBUG=0" prefix="$(targetprefix)" && \
 		@INSTALL_libpng@
 	@CLEANUP_libpng@
 	touch .libpng

@@ -30,7 +30,7 @@ netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 portmap-5.tar.bz2;
-procps-010114.tar.gz;http://www.cs.uml.edu/~acahalan/procps/
+procps-3.0.5.tar.gz;;http://procps.sf.net/
 tinylogin-1.2.tar.gz;ftp://oss.lineo.com/tinylogin
 vsftpd-1.0.1.tar.gz;ftp://ferret.lmh.ox.ac.uk/pub/linux/
 
@@ -42,7 +42,7 @@ curl-7.10.1.tar.bz2;http://curl.haxx.se/download
 freetype-2.0.9.tar.bz2;http://telia.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.2.tar.gz;ftp://ftp.gnu.org/gnu/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/jpeg
-libpng-1.0.14.tar.gz;http://www.libpng.org/pub/png/src
+libpng-1.2.5.tar.gz;http://www.libpng.org/pub/png/src
 popt-1.6.4.tar.gz;ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x
 qt-embedded-2.3.0.tar.gz;ftp://ftp.trolltech.com/qt/source
 libxml2-2.4.22.tar.bz2;ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml
@@ -70,11 +70,11 @@ dsniff-2.4b1.tar.gz;http://monkey.org/~dugsong/dsniff/beta
 fbset-2.1.tar.gz;http://home.tvd.be/cr26864/Linux/fbdev
 lirc-0.6.6.tar.bz2;http://mars.wiwi.uni-halle.de/lirc/software/
 pump-0.8.11.tar.bz2;
-openssh-3.4p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
+openssh-3.5p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 tcpdump-3.7.1.tar.gz;http://www.tcpdump.org/release
 xrc-0.6.3.tar.gz;http://switch.dl.sourceforge.net/sourceforge/lirc
 thttpd-2.23beta1.tar.gz;http://www.acme.com/software/thttpd
-lsof_4.64_src.tar.bz2;
+lsof_4.65_src.tar.bz2
 DirectFB-examples-20021024.tar.bz2;
 
 #

@@ -31,7 +31,7 @@ inetd;0.17;netkit-base-0.17;netkit-base-0.17.tar.gz;extract:netkit-base-0.17.tar
 modutils;2.4.20;modutils-2.4.20;modutils-2.4.20.tar.bz2;extract:modutils-2.4.20.tar.bz2
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
 portmap;5;portmap-5;portmap-5.tar.bz2:portmap-5.diff;extract:portmap-5.tar.bz2;patch:portmap-5.diff
-procps;010114;procps-010114;procps-010114.tar.gz:procps-010114.diff;extract:procps-010114.tar.gz;patch:procps-010114.diff
+procps;3.0.5;procps-3.0.5;procps-3.0.5.tar.gz;extract:procps-3.0.5.tar.gz;patch:procps.diff
 rsh;0.17;netkit-rsh-0.17;netkit-rsh-0.17.tar.gz;extract:netkit-rsh-0.17.tar.gz
 tinylogin;1.2;tinylogin-1.2;tinylogin-1.2.tar.gz:tinylogin.diff;extract:tinylogin-1.2.tar.gz;patch:tinylogin.diff
 
@@ -52,7 +52,7 @@ libncurses;5.2;ncurses-5.2;ncurses-5.2.tar.gz:ncurses.diff;extract:ncurses-5.2.t
 libnet;1.0.2a;Libnet-1.0.2a;libnet-1.0.2a.tar.gz:libnet.diff;extract:libnet-1.0.2a.tar.gz;patch:libnet.diff
 libnids;1.16;libnids-1.16;libnids-1.16.tar.gz;extract:libnids-1.16.tar.gz
 libpcap;0.7.1;libpcap-0.7.1;libpcap-0.7.1.tar.gz;extract:libpcap-0.7.1.tar.gz;patch:libpcap.diff
-libpng;1.0.14;libpng-1.0.14;libpng-1.0.14.tar.gz:libpng.diff;extract:libpng-1.0.14.tar.gz;patch:libpng.diff
+libpng;1.2.5;libpng-1.2.5;libpng-1.2.5.tar.gz:libpng.diff;extract:libpng-1.2.5.tar.gz;patch:libpng.diff
 libpopt;1.6.4;popt-1.6.4;popt-1.6.4.tar.gz;extract:popt-1.6.4.tar.gz
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
@@ -72,9 +72,9 @@ directfb_examples;20021024;DirectFB-examples;DirectFB-examples-20021024.tar.bz2;
 dsniff;2.4b1;dsniff-2.4;dsniff-2.4b1.tar.gz:dsniff.diff;extract:dsniff-2.4b1.tar.gz;patch:dsniff.diff
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.diff
-lsof;4.64;lsof_4.64_src;lsof_4.64_src.tar.bz2:lsof.diff;extract:lsof_4.64_src.tar.bz2;patch:lsof.diff
+lsof;4.65;lsof_4.65_src;lsof_4.65_src.tar.bz2:lsof.diff;extract:lsof_4.65_src.tar.bz2;patch:lsof.diff
 pump;0.8.11;pump-0.8.11;pump-0.8.11.tar.bz2:pump.diff;extract:pump-0.8.11.tar.bz2;patch:pump.diff
-ssh;3.4p1;openssh-3.4p1;openssh-3.4p1.tar.gz:ssh.diff;extract:openssh-3.4p1.tar.gz;patch:ssh.diff
+ssh;3.5p1;openssh-3.5p1;openssh-3.5p1.tar.gz:ssh.diff;extract:openssh-3.5p1.tar.gz;patch:ssh.diff
 tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
 xrc;0.6.3;xrc-0.6.3;xrc-0.6.3.tar.gz:xrc.diff;extract:xrc-0.6.3.tar.gz;patch:xrc.diff
 thttpd;2.23beta1;thttpd-2.23beta1;thttpd-2.23beta1.tar.gz;extract:thttpd-2.23beta1.tar.gz;patch:thttpd.diff
