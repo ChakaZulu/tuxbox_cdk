@@ -337,7 +337,7 @@ diff -Naur linux-2.4.22-pre9/drivers/video/fbcon.c linux-2.4.22-pre9-dbox2/drive
 +
 +#ifdef CONFIG_FBCON_SHIFT
 +	nr_cols = p->var.xres/fontwidth(p) - 2*p->shift_x;
-+	nr_cols = p->var.yres/fontheight(p) - 2*p->shift_y;
++	nr_rows = p->var.yres/fontheight(p) - 2*p->shift_y;
 +#else /* CONFIG_FBCON_SHIFT */
      
      nr_cols = p->var.xres/fontwidth(p);
