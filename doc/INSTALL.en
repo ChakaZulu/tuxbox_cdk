@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.18 2003/09/30 07:08:44 obi Exp $
+# $Id: INSTALL.en,v 1.19 2003/10/05 22:33:43 obi Exp $
 #
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
@@ -29,13 +29,12 @@ I. Prerequistes:
  - make >= 3.79
  - makeinfo (texinfo)
  - tar
- - bunzip2
- - gunzip
+ - bunzip2 (bzip2)
+ - gunzip (gzip)
  - patch
  - infocmp (ncurses-bin / ncurses-devel)
  - gcc 2.95 or >= 3.0
  - g++ 2.95 or >= 3.0
- - yacc
  - flex
  - bison
  - pkg-config
