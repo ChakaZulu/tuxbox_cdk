@@ -55,16 +55,16 @@ if test "$prefix" = "NONE"; then
 fi
 
 AC_ARG_WITH(targetprefix,
-	[  --with-targetprefix=DIR prefix for target files [[PREFIX/target]]],
-	[targetprefix="$with_targetprefix"],[targetprefix="${prefix}/target"])
+	[  --with-targetprefix=DIR prefix for target files [[PREFIX/cdkroot]]],
+	[targetprefix="$with_targetprefix"],[targetprefix="${prefix}/cdkroot"])
 
 AC_ARG_WITH(hostprefix,
-	[  --with-hostprefix=DIR   prefix for host files [[PREFIX/host]]],
-	[hostprefix="$with_hostprefix"],[hostprefix="${prefix}/host"])
+	[  --with-hostprefix=DIR   prefix for host files [[PREFIX/cdk]]],
+	[hostprefix="$with_hostprefix"],[hostprefix="${prefix}/cdk"])
 
 AC_ARG_WITH(bootprefix,
-	[  --with-bootprefix=DIR   prefix for boot files [[PREFIX/boot]]],
-	[bootprefix="$with_bootprefix"],[bootprefix="${prefix}/boot"])
+	[  --with-bootprefix=DIR   prefix for boot files [[PREFIX/tftpboot]]],
+	[bootprefix="$with_bootprefix"],[bootprefix="${prefix}/tftpboot"])
 
 buildprefix=`pwd`
 AC_SUBST(targetprefix)
