@@ -56,7 +56,7 @@ tremor-20030128.tar.bz2;
 fribidi-0.10.4.tar.bz2;
 expat-1.95.6.tar.gz;http://belnet.dl.sourceforge.net/sourceforge/expat
 libdvb-0.4.1.tar.gz;http://www.metzlerbros.org/dvb
-gmp-4.1.2.tar.gz;ftp://ftp.informatik.rwth-aachen.de/pub/gnu/gmp
+gmp-4.1.2.tar.bz2;ftp://ftp.informatik.rwth-aachen.de/pub/gnu/gmp
 
 #
 # contrib apps
