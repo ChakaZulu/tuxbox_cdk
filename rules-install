@@ -47,7 +47,7 @@ libjpeg;make:install-lib:libdir=TARGET/lib:includedir=TARGET/include
 libmad;make:install:DESTDIR=TARGET
 libncurses;make:install.libs:DESTDIR=TARGET
 libnet;make:install;install:-m755:libnet-config:TARGET/bin/libnet-config;link:TARGET/bin/libnet-config:HOST/bin/libnet-config
-libnids;make:install:DESTDIR=TARGET
+libnids;make:install:install_prefix=TARGET
 libpcap;make:install:DESTDIR=TARGET
 libpng;make:install-static:install-shared:install-config:prefix=TARGET;link:TARGET/bin/libpng-config:HOST/bin/libpng-config
 libpopt;make:install:DESTDIR=TARGET

@@ -560,7 +560,7 @@ libs_optional: \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= && \
-		$(MAKE) all && \
+		$(MAKE) -C src all && \
 		@INSTALL_libnids@
 	@CLEANUP_libnids@
 	touch .libnids
