@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.8 2003/01/18 02:22:08 obi Exp $
+# $Id: INSTALL.en,v 1.9 2003/01/20 22:25:38 obi Exp $
 #
 # Author:
 # --------
@@ -80,7 +80,7 @@ Prerequistes:
    make all
 
  - This step should always complete without errors. If it does not then
-   please report at https://tuxbox.berlios.de/forum/viewforum.php?f=7
+   please report at http://tuxbox.berlios.de/forum/viewforum.php?f=7
 
  - If you want to try building additional programs which are usually not
    needed for using tuxbox applications, then enter
