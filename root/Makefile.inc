@@ -1,5 +1,5 @@
-RECURSIVE_TARGETS =
-RECURSIVE_TARGETS += install-flash-recursive
+RECURSIVE_TARGETS = all-recursive install-data-recursive install-exec-recursive \
+	install-recursive installcheck-recursive installdirs-recursive
 
 install-flash: 
 	@if [ "$(SUBDIRS)" ]; then $(MAKE) install-flash-recursive; else $(MAKE) install-flash-am; fi
