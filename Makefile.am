@@ -723,7 +723,7 @@ contrib_apps: .console_data .console_tools .fbset .lirc .ssh .tcpdump .xrc .thtt
 	@CLEANUP_console_tools@
 	touch .console_tools
 
-.dsniff: .bootstrap .libnet .libnids .rpcgen @DEPENDS_dsniff@
+.dsniff: .bootstrap .libnet .libnids .libdb2 .rpcgen @DEPENDS_dsniff@
 	@PREPARE_dsniff@
 	cd @DIR_dsniff@ && \
 		CC=$(target)-gcc \
