@@ -7,8 +7,6 @@ mount -a
 echo -n >/etc/network/ifstate
 ifup -a
 
-test -O /bin/tinylogin || chown root.root /bin/tinylogin
-
 test -x /sbin/inetd && inetd
 
 if test -x /sbin/sshd ; then
