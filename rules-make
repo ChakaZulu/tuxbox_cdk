@@ -19,7 +19,6 @@ gcc;3.2.1;gcc-3.2.1;gcc-core-3.2.1.tar.gz:gcc-g++-3.2.1.tar.gz;extract:gcc-core-
 glibc;2.2.5;glibc-2.2.5;glibc-2.2.5.tar.bz2:glibc-linuxthreads-2.2.5.tar.bz2:glibc.diff;extract:glibc-2.2.5.tar.bz2;dirextract:glibc-linuxthreads-2.2.5.tar.bz2;patch:glibc.diff
 uclibc;0.9.11;uClibc-0.9.11;uClibc-0.9.11.tar.bz2:uclibc-0.9.11.diff;extract:uClibc-0.9.11.tar.bz2;patch:uclibc-0.9.11.diff
 watchdog;5.2;watchdog-5.2.orig;watchdog_5.2.orig.tar.gz:watchdog.diff;extract:watchdog_5.2.orig.tar.gz;patch:watchdog.diff
-videodevX;20020330;videodevX;videodevX-20020330.tgz;extract:videodevX-20020330.tgz
 
 #
 # root

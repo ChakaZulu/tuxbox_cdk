@@ -16,7 +16,6 @@ gcc;make:install
 glibc;make:install:install_root=TARGET
 uclibc;make:install:DEVEL_PREFIX=TARGET;install:-m644:lib/libc.a:TARGET/lib/libc_pic.a;install:-m644:lib/libcrypt.a:TARGET/lib/libcrypt_pic.a;install:-m644:lib/libm.a:TARGET/lib/libm_pic.a;
 watchdog;make:install:DESTDIR=TARGET
-videodevX;install:-d:TARGET/lib/modules/$(KERNELVERSION)/misc;install:v4l_compat.o:videodevX.o:TARGET/lib/modules/$(KERNELVERSION)/misc;install:videodev.h:$(buildprefix)/linux/include/linux/videodev.h
 
 #
 # root

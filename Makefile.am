@@ -1042,7 +1042,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 #   own kernel and driver
 #
 
-boot: .ppcboot .linuxkernel .videodevX .driver
+boot: .ppcboot .linuxkernel .driver
 
 KERNELGCC = `if [ -f $(hostprefix)/bin/$(target)-gcc-2.95 ]; then echo $(target)-gcc-2.95; else echo $(target)-gcc; fi`
 
@@ -1089,18 +1089,6 @@ else
 	$(MAKE) -C @DIR_linux@ clean
 endif
 	touch .linuxkernel
-
-.videodevX: .bootstrap .linuxkernel @DEPENDS_videodevX@
-	@PREPARE_videodevX@
-	cd @DIR_videodevX@ && sed -e "s,^RUNNING.*$$,RUNNING := $(targetprefix)/lib/modules/$(KERNELVERSION)/build," \
-	-e "s,^KERNEL_DIR.*$$,KERNEL_DIR := $(buildprefix)/linux," \
-	-e "s,^INSTALL_MOD_PATH.*$$,INSTALL_MOD_PATH := $(targetprefix)," \
-	< Makefile > Makefile.tmp && mv Makefile.tmp Makefile && \
-	$(MAKE) && \
-	@INSTALL_videodevX@
-	@CLEANUP_videodevX@
-	touch .videdevX
-	
 
 .driver: .bootstrap .linuxkernel
 	$(INSTALL) -d $(targetprefix)/bin

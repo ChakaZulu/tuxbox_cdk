@@ -18,7 +18,7 @@ glibc-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/gli
 glibc-linuxthreads-2.2.5.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
 uClibc-0.9.11.tar.bz2
 watchdog_5.2.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/w/watchdog
-videodevX-20020330.tgz;ftp://ftp.thedirks.org/pub/v4l2/kernel2.4/videodevX
+
 #
 # root
 #
