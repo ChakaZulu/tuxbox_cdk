@@ -83,6 +83,7 @@ lsof_4.72.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof
 DirectFB-examples-0.9.18.tar.gz;http://www.directfb.org/download/DirectFB
 vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/lufs
+dropbear-0.44.tar.gz;http://matt.ucc.asn.au/dropbear/releases
 
 #
 # development tools

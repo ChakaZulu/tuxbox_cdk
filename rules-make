@@ -79,6 +79,7 @@ ssh;3.8p1;openssh-3.8p1;openssh-3.8p1.tar.gz:ssh.diff;extract:openssh-3.8p1.tar.
 tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz:tcpdump.diff;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
 vdr;1.2.6;vdr-1.2.6;vdr-1.2.6.tar.bz2:vdr.diff;extract:vdr-1.2.6.tar.bz2;patch:vdr.diff
 lufs;0.9.7;lufs-0.9.7;lufs-0.9.7.tar.gz:lufs.diff;extract:lufs-0.9.7.tar.gz;patch:lufs.diff
+dropbear;0.44;dropbear-0.44;dropbear-0.44.tar.gz;extract:dropbear-0.44.tar.gz
 
 #
 # msttf
