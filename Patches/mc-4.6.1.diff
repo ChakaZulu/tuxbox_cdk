@@ -1,0 +1,12 @@
+diff -Naur mc-4.6.1-pre1.orig/Makefile.in mc-4.6.1-pre1/Makefile.in
+--- mc-4.6.1-pre1.orig/Makefile.in	2003-12-24 18:15:08.000000000 +0100
++++ mc-4.6.1-pre1/Makefile.in	2004-03-15 14:58:14.000000000 +0100
+@@ -240,7 +240,7 @@
+ sysconfdir = @sysconfdir@
+ target_alias = @target_alias@
+ AUTOMAKE_OPTIONS = 1.5
+-SUBDIRS = intl po m4 vfs slang edit src lib doc syntax
++SUBDIRS = intl po m4 vfs slang edit src lib syntax
+ EXTRA_DIST = FAQ HACKING INSTALL.FAST MAINTAINERS README.QNX TODO
+ noinst_DATA = mc.spec
+ dist_noinst_SCRIPTS = build-glib1.sh build-glib2.sh

@@ -304,6 +304,7 @@ TUXBOX_RULES_MAKE(libsigc)
 TUXBOX_RULES_MAKE(libvorbisidec)
 TUXBOX_RULES_MAKE(libxml2)
 TUXBOX_RULES_MAKE(libz)
+TUXBOX_RULES_MAKE(libglib)
 
 #
 # contrib apps
@@ -333,6 +334,8 @@ TUXBOX_RULES_MAKE(insight)
 TUXBOX_RULES_MAKE(ltrace)
 TUXBOX_RULES_MAKE(strace)
 TUXBOX_RULES_MAKE(nano)
+TUXBOX_RULES_MAKE(mc)
+
 
 #
 # java

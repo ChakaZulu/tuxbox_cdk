@@ -712,6 +712,22 @@ $(DEPDIR)/libz: bootstrap @DEPENDS_libz@
 	@CLEANUP_libz@
 	touch $@
 
+$(DEPDIR)/libglib: bootstrap @DEPENDS_libglib@
+	@PREPARE_libglib@
+	cd @DIR_libglib@ && \
+		$(BUILDENV) \
+		aclocal && \
+		libtoolize --force && \
+		autoconf && \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) &&\
+		$(MAKE) all && \
+		@INSTALL_libglib@
+	@CLEANUP_libglib@
+	touch $@
+
 #######################
 #
 #   contrib apps
@@ -952,6 +968,23 @@ $(DEPDIR)/nano: bootstrap libncurses @DEPENDS_nano@
 		@INSTALL_nano@
 	@CLEANUP_nano@
 	touch $@
+
+$(DEPDIR)/mc: bootstrap libglib libncurses @DEPENDS_mc@
+	@PREPARE_mc@
+	cd @DIR_mc@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--without-gpm-mouse \
+			--with-screen=ncurses \
+			--without-x && \
+		$(MAKE) all && \
+		@INSTALL_mc@
+	@CLEANUP_mc@
+	touch $@
+
 
 #######################
 #

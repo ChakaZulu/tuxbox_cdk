@@ -57,6 +57,7 @@ libsigc;rewrite-pkgconfig:sigc++-1.2.pc;make:install:DESTDIR=TARGET
 libvorbisidec;make:install:DESTDIR=TARGET
 libxml2;rewrite-pkgconfig:libxml-2.0.pc;make:install:DESTDIR=TARGET
 libz;make:install:prefix=TARGET
+libglib;make:install
 
 #
 # contrib apps
@@ -86,6 +87,7 @@ insight;make:install-gdb:prefix=TARGET
 ltrace;make:install:DESTDIR=TARGET
 strace;make:install:prefix=TARGET
 nano;make:install:DESTDIR=TARGET
+mc;make:install:prefix=TARGET
 
 #
 # java

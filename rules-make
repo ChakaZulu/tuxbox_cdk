@@ -61,6 +61,7 @@ libsigc;1.2.5;libsigc++-1.2.5;libsigc++-1.2.5.tar.gz;extract:libsigc++-1.2.5.tar
 libvorbisidec;20030128;tremor-20030128;tremor-20030128.tar.bz2;extract:tremor-20030128.tar.bz2
 libxml2;2.4.30;libxml2-2.4.30;libxml2-2.4.30.tar.gz;extract:libxml2-2.4.30.tar.gz
 libz;1.2.1;zlib-1.2.1;zlib-1.2.1.tar.bz2;extract:zlib-1.2.1.tar.bz2
+libglib;2.0.7;glib-2.0.7;glib-2.0.7.tar.gz:glib-2.0.7.diff;extract:glib-2.0.7.tar.gz;patch:glib-2.0.7.diff
 
 #
 # contrib apps
@@ -90,6 +91,7 @@ insight;6.0;insight-6.0;insight-6.0.tar.bz2;extract:insight-6.0.tar.bz2
 ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz;extract:ltrace_0.3.26.tar.gz;patch:ltrace.diff
 strace;4.4.98;strace-4.4.98;strace-4.4.98.tar.bz2;extract:strace-4.4.98.tar.bz2
 nano;1.2.2;nano-1.2.2;nano-1.2.2.tar.gz:nano.diff;extract:nano-1.2.2.tar.gz;patch:nano.diff
+mc;4.6.1-pre1;mc-4.6.1-pre1;mc-4.6.1-pre1.tar.gz:mc-4.6.1.diff;extract:mc-4.6.1-pre1.tar.gz;patch:mc-4.6.1.diff
 
 #
 # java
