@@ -185,7 +185,7 @@ root: \
 root_optional: \
 	.portmap
 
-.busybox: .bootstrap .etc @DEPENDS_busybox@
+.busybox: .bootstrap @DEPENDS_busybox@
 	@PREPARE_busybox@
 	cd @DIR_busybox@ && \
 		CFLAGS="" \
