@@ -1227,7 +1227,7 @@ $(appsdir)/misc/tools/config.status: .bootstrap
 
 # tuxbox/enigma
 
-$(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libfribidi .libmad .libpng .libsigc .libtuxbox .misc_libs .plugins
+$(appsdir)/tuxbox/enigma/config.status: .bootstrap .libfreetype .libfribidi .libmad .libid3tag .libpng .libsigc .libtuxbox .misc_libs .plugins
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE)
 
 .enigma: $(appsdir)/tuxbox/enigma/config.status .tuxbox_tools .config
