@@ -1318,6 +1318,15 @@ $(appsdir)/dvb/libdvb++/config.status: .bootstrap
 	$(MAKE) -C $(appsdir)/dvb/libdvb++ all install
 	touch $@
 
+# dvb/libdvbsi++
+
+$(appsdir)/dvb/libdvbsi++/config.status: .bootstrap
+	cd $(appsdir)/dvb/libdvbsi++ && $(CONFIGURE) CPPFLAGS="$(CPPFLAGS) -I$(driverdir)/dvb/include"
+
+.libdvbsi++: $(appsdir)/dvb/libdvbsi++/config.status
+	$(MAKE) -C $(appsdir)/dvb/libdvbsi++ all install
+	touch $@
+
 # dvb/zapit
 
 $(appsdir)/dvb/zapit/config.status: .bootstrap .misc_libs
@@ -1723,6 +1732,7 @@ distclean-local:
 	-$(MAKE) -C $(appsdir)/dvb/configtools distclean
 	-$(MAKE) -C $(appsdir)/dvb/dvbsnoop distclean
 	-$(MAKE) -C $(appsdir)/dvb/dvb/libdvb++ distclean
+	-$(MAKE) -C $(appsdir)/dvb/dvb/libdvbsi++ distclean
 	-$(MAKE) -C $(appsdir)/dvb/tools distclean
 	-$(MAKE) -C $(appsdir)/dvb/zapit distclean
 	-$(MAKE) -C $(appsdir)/misc/libs distclean
