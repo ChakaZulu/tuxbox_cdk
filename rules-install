@@ -82,6 +82,7 @@ msttf
 # development tools
 #
 gdb;make:install
+ksymoops;make:install:INSTALL_PREFIX=TARGET
 ltrace;make:install:DESTDIR=TARGET
 strace;make:install
 nano;make:install
