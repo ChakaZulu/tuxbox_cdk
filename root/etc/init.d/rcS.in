@@ -40,7 +40,7 @@ test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
 
 modprobe avs
 modprobe dbox2_fp
-modprobe dbox2_fp_rc
+modprobe dbox2_fp_input
 modprobe saa7126
 
 modprobe dvb-core
