@@ -1,7 +1,16 @@
-diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.4/src/video/fbcon/SDL_fbevents.c
 --- Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c	2002-03-06 12:23:03.000000000 +0100
-+++ SDL-1.2.4/src/video/fbcon/SDL_fbevents.c	2002-08-19 05:25:25.000000000 +0200
-@@ -240,11 +240,15 @@
++++ SDL-1.2.4/src/video/fbcon/SDL_fbevents.c	2002-08-21 21:20:00.000000000 +0200
+@@ -69,6 +69,9 @@
+ static Uint16 keymap_temp[128]; /* only used at startup */
+ static SDL_keysym *TranslateKey(int scancode, SDL_keysym *keysym);
+ 
++static long keytimer;
++static int oldkey;
++
+ /* Ugh, we have to duplicate the kernel's keysym mapping code...
+    Oh, it's not so bad. :-)
+ 
+@@ -240,11 +243,20 @@
  			close(keyboard_fd);
  		}
  	}
@@ -13,11 +22,16 @@ diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.4/src/v
  
  int FB_OpenKeyboard(_THIS)
  {
++	struct timezone tz;
++	struct timeval tv;
 +	rc_fd = open("/dev/dbox/rc0", O_RDONLY);
++	gettimeofday(&tv, &tz);
++	keytimer = (tv.tv_sec * 1000) + (int)(tv.tv_usec / 1000) + 3600000;
++	oldkey = -1;
  	/* Open only if not already opened */
   	if ( keyboard_fd < 0 ) {
  		static const char * const tty0[] = { "/dev/tty0", "/dev/vc/0", NULL };
-@@ -883,14 +887,47 @@
+@@ -883,14 +895,76 @@
  	SDL_mutexV(hw_lock);
  }
  
@@ -30,6 +44,8 @@ diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.4/src/v
  	int scancode;
  	SDL_keysym keysym;
 +	unsigned short read_code = 0;
++	struct timezone tz;
++	struct timeval tv;
  
 +	if (what == 1)
 +	{
@@ -37,6 +53,13 @@ diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.4/src/v
 +		if ((read_code & 0xff00) != 0x5c00) // we have a new remote control with cyclic codes
 +			read_code %= 0x40;
 +		keysym.sym = 27;
++	}
++	if (what == 2)
++	{
++		read_code = oldkey;
++	}
++	if (what == 1 || what == 2)
++	{
 +		if (read_code == 24) // dbox
 +			keysym.sym = 27; // escape
 +		else if (read_code == 14) // ok
@@ -51,22 +74,42 @@ diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.4/src/v
 +                        keysym.sym = 275; //
 +		else if (read_code == 19) // red
 +                        keysym.sym = 306; // strg
-+		pressed = SDL_PRESSED;
++		else if (read_code == 17) // green
++                        keysym.sym = 32; // space
++		else
++			what = 2;
 +		keysym.scancode = K(KT_ASCII,13);
 +	  
 +	        keysym.mod = KMOD_NONE;
 +	        keysym.unicode = 0;
-+		posted += SDL_PrivateKeyboard(pressed, &keysym);
-+		pressed = SDL_RELEASED;
-+		posted += SDL_PrivateKeyboard(pressed, &keysym);
 +	}
-+	else if (what == 0)
++	if (what == 1)
++	{
++		if (oldkey != read_code)
++		{
++			pressed = SDL_RELEASED;
++	                posted += SDL_PrivateKeyboard(pressed, &keysym);
++		}
++		pressed = SDL_PRESSED;
++		posted += SDL_PrivateKeyboard(pressed, &keysym);
++		gettimeofday(&tv, &tz);
++		keytimer = (tv.tv_sec * 1000) + (int)(tv.tv_usec / 1000);
++		oldkey = read_code;
++		//pressed = SDL_RELEASED;
++		//posted += SDL_PrivateKeyboard(pressed, &keysym);
++	}
++	if (what == 2)
++	{
++		pressed = SDL_RELEASED;
++                posted += SDL_PrivateKeyboard(pressed, &keysym);
++	}
++	if (what == 0)
 +	{
 +	
  	nread = read(keyboard_fd, keybuf, BUFSIZ);
  	for ( i=0; i<nread; ++i ) {
  		scancode = keybuf[i] & 0x7F;
-@@ -900,7 +937,7 @@
+@@ -900,7 +974,7 @@
  			pressed = SDL_PRESSED;
  		}
  		TranslateKey(scancode, &keysym);
@@ -75,7 +118,7 @@ diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.4/src/v
  		switch (keysym.sym) {
  		    case SDLK_F1:
  		    case SDLK_F2:
-@@ -920,12 +957,14 @@
+@@ -920,12 +994,14 @@
  				}
  				break;
  			}
@@ -91,7 +134,26 @@ diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.4/src/v
  }
  
  void FB_PumpEvents(_THIS)
-@@ -945,6 +984,12 @@
+@@ -933,8 +1009,18 @@
+ 	fd_set fdset;
+ 	int max_fd;
+ 	static struct timeval zero;
++	struct timezone tz;
++	struct timeval tv;
++	long currenttime;
+ 
+ 	do {
++		gettimeofday(&tv, &tz);
++                currenttime = (tv.tv_sec * 1000) + (int)(tv.tv_usec / 1000);
++		if (currenttime - keytimer > 150)
++		{
++			keytimer += 3600000;
++			handle_keyboard(this, 2);
++		}
+ 		posted = 0;
+ 
+ 		FD_ZERO(&fdset);
+@@ -945,6 +1031,12 @@
  				max_fd = keyboard_fd;
  			}
  		}
@@ -104,7 +166,7 @@ diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.4/src/v
  		if ( mouse_fd >= 0 ) {
  			FD_SET(mouse_fd, &fdset);
  			if ( max_fd < mouse_fd ) {
-@@ -954,9 +999,14 @@
+@@ -954,9 +1046,14 @@
  		if ( select(max_fd+1, &fdset, NULL, NULL, &zero) > 0 ) {
  			if ( keyboard_fd >= 0 ) {
  				if ( FD_ISSET(keyboard_fd, &fdset) ) {
