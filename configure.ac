@@ -100,13 +100,13 @@ if test "$cvsdir" = "NONE"; then
 	fi
 else
 	if test "$appsdir" = "NONE"; then
-		appsdir="$cvs/apps"
+		appsdir="$cvsdir/apps"
 	fi
 	if test "$bootdir" = "NONE"; then
-		bootdir="$cvs/boot"
+		bootdir="$cvsdir/boot"
 	fi
 	if test "$driverdir" = "NONE"; then
-		driverdir="$cvs/driver"
+		driverdir="$cvsdir/driver"
 	fi
 fi
 
