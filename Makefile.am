@@ -471,13 +471,13 @@ boot: .ppcboot .linuxkernel .driver
 .linuxkernel: .linuxdir .gcc .ppcboot
 	make -C @DIR_linux@ dep zImage modules CROSS_COMPILE=$(target)-
 	make -C @DIR_linux@ modules_install INSTALL_MOD_PATH=$(targetprefix)
-	test -f @DIR_linux@/arch/ppc/coffboot/vmlinux.gz || \
+	test -f @DIR_linux@/arch/ppc/coffboot/vmlinux.gz && \
 		$(hostprefix)/bin/mkimage \
 			-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
 			-a 00000000 -e 00000000 \
 			-d @DIR_linux@/arch/ppc/coffboot/vmlinux.gz \
 			$(bootprefix)/kernel-cdk
-	test -f @DIR_linux@/arch/ppc/boot/images/vmlinux.gz || \
+	test -f @DIR_linux@/arch/ppc/boot/images/vmlinux.gz && \
 		$(hostprefix)/bin/mkimage \
 			 -n 'dbox2' -A ppc -O linux -T kernel -C gzip \
 			 -a 00000000 -e 00000000 \
