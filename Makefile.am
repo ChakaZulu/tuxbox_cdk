@@ -32,11 +32,10 @@ core: .directories .binutils .linuxdir .glibc .gcc
 	install -d $(bootprefix)
 	-rm $(hostprefix)/$(target)/include
 	-rm $(hostprefix)/$(target)/lib
-	ln -s $(targetprefix)/include $(hostprefix)/$(target)/include
-	ln -s $(targetprefix)/lib $(hostprefix)/$(target)/lib
-	install -d $(hostprefix)/$(target)/sys-include
-	ln -s $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
-	ln -s $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include
+	-ln -s $(targetprefix)/include $(hostprefix)/$(target)/include
+	-ln -s $(targetprefix)/lib $(hostprefix)/$(target)/lib
+	-ln -s $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
+	-ln -s $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include
 	touch .directories
 
 .linuxdir: @DEPENDS_linux@
@@ -45,12 +44,14 @@ core: .directories .binutils .linuxdir .glibc .gcc
 	fi
 	@PREPARE_linux@
 	cat Patches/linux-$(KERNELVERSION).dbox.config > linux-$(KERNELVERSION)/.config
-	make -C linux-$(KERNELVERSION) ARCH=ppc oldconfig
-	make -C linux-$(KERNELVERSION) ARCH=ppc include/linux/version.h
+	make -C @DIR_linux@ oldconfig \
+		ARCH=ppc
+	make -C @DIR_linux@ include/linux/version.h \
+		ARCH=ppc
 	touch .linuxdir
 
 .binutils: @DEPENDS_binutils@
-	@if [ ! -d linux-$(KERNELVERSION) ]; then \
+	@if [ ! -h linux ]; then \
 		make .linuxdir; \
 	fi
 	@PREPARE_binutils@
@@ -73,6 +74,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 		make .binutils; \
 	fi
 	@PREPARE_bootstrap_gcc@
+	install -d $(hostprefix)/$(target)/sys-include
 	cp -pR $(buildprefix)/linux-$(KERNELVERSION)/include/asm $(hostprefix)/$(target)/sys-include/
 	cd @DIR_bootstrap_gcc@ && \
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
@@ -88,7 +90,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 			--disable-nls \
 			--nfp && \
 		make all install
-	rm -rf $(hostprefix)/$(target)/sys-include/asm
+	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_bootstrap_gcc@
 
 .glibc: @DEPENDS_glibc@
@@ -124,6 +126,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 		make .glibc; \
 	fi
 	@PREPARE_gcc@
+	install -d $(hostprefix)/$(target)/sys-include
 	cp -p $(hostprefix)/$(target)/include/limits.h $(hostprefix)/$(target)/sys-include/
 	cd @DIR_gcc@ && \
 		CC=$(CC) CFLAGS="$(CFLAGS)" \
@@ -141,7 +144,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 			--nfp && \
 		make all && \
 		@INSTALL_gcc@
-	rm -rf $(hostprefix)/$(target)/sys-include/limits.h
+	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_gcc@
 	touch .gcc
 
@@ -156,7 +159,7 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 	make -C etc install
 	touch .etc
 
-.busybox: .bootstrap @DEPENDS_busybox@
+.busybox: .bootstrap .etc @DEPENDS_busybox@
 	@PREPARE_busybox@
 	cd @DIR_busybox@ && \
 		make CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
@@ -164,7 +167,7 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 	@CLEANUP_busybox@
 	touch .busybox
 
-.tinylogin: .bootstrap @DEPENDS_tinylogin@
+.tinylogin: .bootstrap .busybox @DEPENDS_tinylogin@
 	@PREPARE_tinylogin@
 	cd @DIR_tinylogin@ && \
 		make CROSS=$(target)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
@@ -210,7 +213,7 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .netkit_telnet .procps
 	@CLEANUP_ftpd@
 	touch .ftpd
 
-.netkit_telnet: .bootstrap .inetd .libncurses @DEPENDS_netkit_telnet@
+.netkit_telnet: .bootstrap .inetd .tinylogin .libncurses @DEPENDS_netkit_telnet@
 	@PREPARE_netkit_telnet@
 	touch @DIR_netkit_telnet@/MCONFIG
 	cd @DIR_netkit_telnet@ && \
@@ -734,9 +737,14 @@ boot: .ppcboot .linuxkernel .driver
 
 .ppcboot: .bootstrap $(bootdir)/ppcboot/Makefile
 	make -C $(bootdir)/ppcboot dbox_config
+if HOSTRULESET_CYGWIN
+	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)- CYGWIN=1
+	install Patches/cygwin/mkimage.exe $(hostprefix)/bin
+else
 	make -C $(bootdir)/ppcboot CROSS_COMPILE=$(target)-
-	install -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
 	install $(bootdir)/ppcboot/tools/mkimage $(hostprefix)/bin
+endif
+	install -m644 $(bootdir)/ppcboot/ppcboot $(bootprefix)
 if MAINTAINER_MODE
 else
 	make -C $(bootdir)/ppcboot distclean
@@ -796,7 +804,7 @@ $(appsdir)/configure: $(appsdir)/configure.ac
 	cd $(appsdir) && \
 		./autogen.sh
 
-$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libqt $(appsdir)/configure $(appsdir)/Makefile.am
+$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libqt .libsigc $(appsdir)/configure $(appsdir)/Makefile.am
 	cd $(appsdir) && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
 		./configure \
@@ -824,7 +832,7 @@ endif
 	make -C $(appsdir)/edvb all install
 	touch .edvb
 
-.enigma: $(appsdir)/Makefile .tools .libsigc
+.enigma: $(appsdir)/Makefile .tools
 	make -C $(appsdir)/enigma all install
 	touch .enigma
 

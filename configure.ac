@@ -30,6 +30,8 @@ else
 	AC_MSG_ERROR([invalid hostruleset "$hostruleset", choose on from standard or cygwin]);
 fi
 
+AM_CONDITIONAL(HOSTRULESET_CYGWIN,test "$targetruleset" = "cygwin")
+
 AC_ARG_WITH(targetruleset,
 	[  --with-targetruleset=NAME target ruleset [[standard,flash]]],
 	[targetruleset="$withval"],[targetruleset="standard"])
