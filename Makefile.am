@@ -1620,7 +1620,6 @@ $(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash dvb_tools
 	$(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/udpstreampes $(flashprefix)/root/sbin
 	$(target)-strip -s $(flashprefix)/root/sbin/fserver
-	$(target)-strip -s $(flashprefix)/root/sbin/streamfile
 	$(target)-strip -s $(flashprefix)/root/sbin/stream*
 	$(target)-strip -s $(flashprefix)/root/sbin/udpstreampes
 	@touch $@
