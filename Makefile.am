@@ -794,7 +794,7 @@ endif
 	make -C $(appsdir)/sections all install
 	touch .sections
 
-.stream: $(appsdir)/Makefile .inetd
+.stream: $(appsdir)/Makefile .inetd .libmpegtools
 	make -C $(appsdir)/stream all install
 	touch .stream
 
@@ -819,9 +819,13 @@ endif
 	make -C $(appsdir)/liblcddisplay all install
 	touch .liblcddisplay
 
-.libmd5sum:  $(appsdir)/Makefile
+.libmd5sum: $(appsdir)/Makefile
 	make -C $(appsdir)/libmd5sum all install
 	touch .libmd5sum
+
+.libmpegtools: $(appsdir)/Makefile
+	make -C $(appsdir)/libmpegtools all install
+	touch .libmpegtools
 
 .libnet: $(appsdir)/Makefile
 	make -C $(appsdir)/libnet all install
@@ -951,7 +955,7 @@ distclean-local:
 	-rm .ppcboot .linuxkernel .driver
 	-rm .dvbsnoop .edvb .enigma .lcars .lcdmenu .neutrino .stream
 	-rm .fx2 .sections .tools .tuxtxt .zapit
-	-rm .liblcddisplay .libmd5sum .libnet .libucodes
+	-rm .liblcddisplay .libmd5sum .libmpegtools .libnet .libucodes
 	-rm .console_data .console_tools .fbset .ssh
 	-rm .dvbstream .dvbtext .dvbtune
 	-rm -rf $(targetprefix)
