@@ -89,6 +89,7 @@ else
   die;
 }
 
+$output =~ s#TARGETNAME#\$\(target\)#g;
 $output =~ s#TARGET#\$\(targetprefix\)#g;
 $output =~ s#HOST#\$\(hostprefix\)#g;
 $output =~ s#BUILD#\$\(buildprefix\)#g;
