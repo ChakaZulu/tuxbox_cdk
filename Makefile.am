@@ -1056,7 +1056,7 @@ dvb_apps: .dvbdate .dvbstream .dvbtext .dvbtune .vls
 	cd @DIR_dvbtune@ && \
 		$(MAKE) \
 			@BUILDENV_dvbtune@ \
-			CPPFLAGS="-I$(driverdir)/include" \
+			CPPFLAGS="-I$(driverdir)/dvb/include -DNEWSTRUCT" && \
 		@INSTALL_dvbtune@
 	@CLEANUP_dvbtune@
 	touch .dvbtune
