@@ -22,6 +22,7 @@ fi
 @TARGETRULESET_FLASH_TRUE@test -f /var/lib/modules/`uname -r`/modules.dep || \
 depmod -ae
 
+modprobe i2c-8xx
 modprobe info
 
 . /etc/profile
@@ -36,7 +37,6 @@ echo "DEMOD: $DEMOD"
 
 test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
 
-modprobe i2c-8xx
 modprobe saa7126
 modprobe avs
 modprobe input
