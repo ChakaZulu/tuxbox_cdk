@@ -37,7 +37,7 @@ libcurl;make:install:DESTDIR=TARGET
 libcommoncplusplus;make:install:DESTDIR=TARGET
 libdirectfb;rewrite-pkgconfig:directfb.pc;rewrite-pkgconfig:directfb-internal.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libdirectfb.la
 libdirectfbpp;rewrite-pkgconfig:dfb++.pc;make:install:DESTDIR=TARGET
-libdvb;install:-m644:libdvb.a:libdvbci.a:libdvbmpegtools.a:TARGET/lib
+libdvb;make:install:INST_DIR=TARGET
 libdvbpsi;make:install:DESTDIR=TARGET
 libexpat;make:install:prefix=TARGET
 libffi;make:install:DESTDIR=TARGET
