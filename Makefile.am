@@ -1395,7 +1395,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash .enigma
 	$(INSTALL) $(targetprefix)/bin/enigma $(flashprefix)/root/bin
 	cp -a $(targetprefix)/share/tuxbox/enigma $(flashprefix)/root/share/tuxbox
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
-	cp -a $(targetprefix)/share/fonts/Marlett.ttf $(targetprefix)/share/fonts/unmrs.pfa \
+	cp -a $(targetprefix)/share/fonts/v5loxical.ttf $(targetprefix)/share/fonts/unmrs.pfa \
 		$(targetprefix)/share/fonts/blue*.ttf $(targetprefix)/share/fonts/v5loxica*.ttf \
 		$(flashprefix)/root/share/fonts
 	@touch $(flashprefix)/.part_enigma
