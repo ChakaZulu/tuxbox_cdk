@@ -7,36 +7,28 @@ options avia pal=1 debug=0 firmware=@UCODEDIR@
 options cam debug=0 firmware=@UCODEDIR@/cam-alpha.bin
 below cam avia
 
+options avs debug=0
 options graphic_core debug=0
 options graphic_dmx debug=0 ucode=@UCODEDIR@/ucode.bin
 options graphic_fb debug=0
+options saa7126 debug=0
 options tuner debug=0
 
 probeall graphic graphic_core graphic_fb graphic_dmx graphic_vbi graphic_capture graphic_pig
 
 if $DEMOD = "AT76C651"
-  options avs type=1 debug=0
-  options saa7126 board=2 debug=0
   alias tuner at76c651
   define GRAPHIC "enx"
 elseif $DEMOD = "TDA8044H"
-  options avs type=2 debug=0
-  options saa7126 board=1 debug=0
   alias tuner tda8044h
   define GRAPHIC "enx"
 elseif $DEMOD = "VES1820"
-  options avs type=0 debug=0
-  options saa7126 board=1 debug=0
   alias tuner ves1820
   define GRAPHIC "gtx"
 elseif $DEMOD = "VES1893"
-  options avs type=0 debug=0
-  options saa7126 board=1 debug=0
   alias tuner ves1893
   define GRAPHIC "gtx"
 elseif $DEMOD = "VES1993"
-  options avs type=2 debug=0
-  options saa7126 board=2 debug=0
   alias tuner ves1993
   define GRAPHIC "enx"
 else
