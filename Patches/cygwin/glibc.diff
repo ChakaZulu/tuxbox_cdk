@@ -75,6 +75,27 @@ diff -Naur glibc-2.2.5.org/Makerules glibc-2.2.5/Makerules
  	      ')' \
  	) > $@.new
  	mv -f $@.new $@
+diff -Naur glibc-2.3.2/linuxthreads/Makefile glibc-2.3.2.patched/linuxthreads/Makefile
+--- glibc-2.3.2/linuxthreads/Makefile	2003-02-22 02:01:16.000000000 +0100
++++ glibc-2.3.2.patched/linuxthreads/Makefile	2003-10-12 14:13:50.000000000 +0200
+@@ -114,7 +114,7 @@
+ install: $(inst_libdir)/libpthread.so
+ $(inst_libdir)/libpthread.so: $(common-objpfx)format.lds \
+ 			      $(objpfx)libpthread.so$(libpthread.so-version) \
+-			      $(inst_libdir)/$(patsubst %,$(libtype.oS),\
++			      $(inst_libdir)/$(patsubst %,$(libtype.ot),\
+ 							$(libprefix)pthread) \
+ 			      $(+force)
+ 	(echo '/* GNU ld script';\
+@@ -122,7 +122,7 @@
+ 	 echo '   the static library, so try that secondarily.  */';\
+ 	 cat $<; \
+ 	 echo 'GROUP ( $(inst_libdir)/libpthread.so$(libpthread.so-version)' \
+-	      '$(inst_libdir)/$(patsubst %,$(libtype.oS),$(libprefix)pthread)'\
++	      '$(inst_libdir)/$(patsubst %,$(libtype.ot),$(libprefix)pthread)'\
+ 	      ')' \
+ 	) > $@.new
+ 	mv -f $@.new $@ 
 diff -Naur glibc-2.2.5.org/sysdeps/sparc/sparc32/sparcv9/Makefile glibc-2.2.5/sysdeps/sparc/sparc32/sparcv9/Makefile
 --- glibc-2.2.5.org/sysdeps/sparc/sparc32/sparcv9/Makefile	Tue Apr 10 00:11:57 2001
 +++ glibc-2.2.5/sysdeps/sparc/sparc32/sparcv9/Makefile	Sun Mar  3 00:13:42 2002
