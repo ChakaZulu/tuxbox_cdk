@@ -1410,7 +1410,7 @@ $(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash .dvb_tools
 
 flash-neutrino: $(flashprefix)/.part_neutrino
 
-$(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino
+$(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino .root
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/lirc
 	$(INSTALL) $(targetprefix)/bin/controld $(targetprefix)/bin/neutrino \
@@ -1422,12 +1422,8 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash .neutrino
 	$(INSTALL) $(targetprefix)/bin/sectionsd $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/pzapit $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
-	if [ -e $(flashprefix)/root/bin/eraseall ] ; then \
-		sed -e 's/neutrino/neutrino -su -flash/' $(targetprefix)/etc/init.d/start_neutrino > \
-			$(flashprefix)/root/etc/init.d/start_neutrino ; \
-	else \
-		cp -pa $(targetprefix)/etc/init.d/start_neutrino $(flashprefix)/root/etc/init.d/ ; \
-	fi
+	sed -e 's/neutrino/neutrino -su -flash/' $(targetprefix)/etc/init.d/start_neutrino > \
+		$(flashprefix)/root/etc/init.d/start_neutrino ; \
 	cp -pa $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/var/tuxbox/config/zapit $(flashprefix)/root/var/tuxbox/config
 	@touch $@
