@@ -321,6 +321,10 @@ $(appsdir)/Makefile: .libcurl .libfreetype .libqt .libxml2
 	make -C $(appsdir)/mczap all install
 	touch .neutrino
 
+.lcars: $(appsdir)/Makefile .fx2
+	make -C $(appsdir)/lcars all install
+	touch .lcars
+
 
 #######################
 #
