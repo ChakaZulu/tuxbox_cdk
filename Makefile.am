@@ -233,6 +233,19 @@ endif
 	@CLEANUP_ftpd@
 	touch $@
 
+.module_init_tools: .bootstrap @DEPENDS_module_init_tools@
+	@PREPARE_module_init_tools@
+	cd @DIR_module_init_tools@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
+		$(MAKE) && \
+		@INSTALL_module_init_tools@
+	@CLEANUP_module_init_tools@
+	touch $@
+
 .modutils: .bootstrap @DEPENDS_modutils@
 	@PREPARE_modutils@
 	cd @DIR_modutils@ && \
