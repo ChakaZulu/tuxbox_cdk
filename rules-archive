@@ -10,7 +10,7 @@
 # core
 #
 linux-2.4.2.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
-binutils-2.11.92.0.12.3.tar.bz2;ftp://ftp.kernel.org/pub/linux/devel/binutils
+binutils-2.11.92.0.12.3.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
 gcc-core-3.0.3.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.0.3
 gcc-g++-3.0.3.tar.gz;ftp://ftp.gnu.org/gnu/gcc/gcc-3.0.3
 glibc-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnus.com/pub/glibc/releases
@@ -21,7 +21,7 @@ glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnu
 #
 busybox-0.60.1.tar.gz;ftp://busybox.net/busybox
 tinylogin-0.80.tar.gz;ftp://oss.lineo.com/tinylogin
-modutils-2.4.9.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4
+modutils-2.4.9.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
 # netkibase includes inetd
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
