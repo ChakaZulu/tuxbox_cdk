@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 
+my $head = "all:";
 my $output;
 
 open ( RULES, $ARGV[0] ) or die;
@@ -12,6 +13,7 @@ while ( <RULES> )
   {
     @_ = split ( /;/, $_ );
     my $file = $_[0];
+    $head .= " Archive/" . $file;
     $output .= "Archive/" . $file . ":\n\twget -c -P Archive http://tuxbox.berlios.de/pub/tuxbox/cdk/src/" . $file;
     shift @_;
     foreach ( @_ )
@@ -31,4 +33,4 @@ while ( <RULES> )
 
 close ( RULES );
 
-print $output . "\n";
+print $head . "\n\n" . $output . "\n";
