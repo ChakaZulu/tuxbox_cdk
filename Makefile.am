@@ -226,7 +226,7 @@ root: .etc .busybox .tinylogin .modutils .inetd .ftpd .telnetd
 #   contrib libs
 #
 
-libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libxml2 .libz
+libs: .libcurl .libffi .libfreetype .libjpeg .libncurses .libpng .libqt .libz
 
 .libcrypto: .bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
@@ -650,7 +650,7 @@ $(appsdir)/configure: $(appsdir)/configure.ac
 	cd $(appsdir) && \
 		./autogen.sh
 
-$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libqt .libxml2 $(appsdir)/configure $(appsdir)/Makefile.am
+$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libqt $(appsdir)/configure $(appsdir)/Makefile.am
 	cd $(appsdir) && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
 		./configure \
@@ -660,7 +660,7 @@ $(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libqt .libxml2 $(appsdir)
 			--with-target=$(APPSTARGET) \
 			--enable-maintainer-mode
 else
-$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libqt .libxml2
+$(appsdir)/Makefile: .bootstrap .libcurl .libfreetype .libqt
 	cd $(appsdir) && \
 		CC=$(target)-gcc CXX=$(target)-g++ \
 		./configure \
