@@ -1,22 +1,22 @@
-# Inittab fuer d-box und BusyBox
 ::sysinit:/etc/init.d/rcS
-# Eine askfirst console auf der 1. ser starten
+
+#tts/0::respawn:/bin/agetty -L tts/0 9600 vt102
+#vc/1::respawn:/bin/agetty 38400 vc/1
+#vc/2::respawn:/bin/agetty 38400 vc/2
+#vc/3::respawn:/bin/agetty 38400 vc/3
+#vc/4::respawn:/bin/agetty 38400 vc/4
+#vc/5::respawn:/bin/agetty 38400 vc/5
+#vc/6::respawn:/bin/agetty 38400 vc/6
+
+# this sucks
 ::askfirst:-/bin/sh
-#::askfirst:/bin/sash -a -p dbox2:
-# Eine Shell starten
-#::respawn:/bin/sh
-#ttyS0::respawn:/bin/sh
-#
-#tty2::askfirst:-/bin/sh
-#
-#tty4::respawn:/sbin/getty 38400 tty5
-#
-#::respawn:/sbin/getty -L ttyS0 9600 vt100
-#::respawn:/sbin/getty -L ttyS1 9600 vt100
-#::respawn:/sbin/getty -L ttyS00 9600 vt100
-#::respawn:/sbin/getty -L ttyS01 9600 vt100
-#::respawn:/sbin/getty -L ttyS1 9600 vt100
-#
-# Zeug das vor einem reboot ausgefuehrt wird
-::ctrlaltdel:/bin/switch -fnc 0
-#::ctrlaltdel:/sbin/swapoff -a
+#vc/1::askfirst:-/bin/sh
+vc/2::askfirst:-/bin/sh
+vc/3::askfirst:-/bin/sh
+vc/4::askfirst:-/bin/sh
+vc/5::askfirst:-/bin/sh
+vc/6::askfirst:-/bin/sh
+
+::restart:/sbin/init
+::ctrlaltdel:/sbin/reboot
+::shutdown:/bin/switch -fnc 0
