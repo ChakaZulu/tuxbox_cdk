@@ -15,7 +15,7 @@ gcc;3.2.2;gcc-3.2.2;gcc-core-3.2.2.tar.gz:gcc-g++-3.2.2.tar.gz;extract:gcc-core-
 #
 # contrib libs
 #
-libfreetype;2.1.4rc2;freetype-2.1.4rc2;freetype-2.1.4rc2.tar.bz2;extract:freetype-2.1.4rc2.tar.bz2;patch:cygwin/freetype.diff
+libfreetype;2.1.4;freetype-2.1.4;freetype-2.1.4.tar.bz2;extract:freetype-2.1.4.tar.bz2;patch:cygwin/freetype.diff
 libqt;2.3.0;qt-2.3.0;qt-embedded-2.3.0.tar.gz:qte.diff;extract:qt-embedded-2.3.0.tar.gz;patch:qte.diff;patch:cygwin/qte.diff
 libz;1.1.4;zlib-1.1.4;zlib-1.1.4.tar.bz2:zlib.diff:cygwin/zlib.diff;extract:zlib-1.1.4.tar.bz2;patch:zlib.diff;patch:cygwin/zlib.diff
 
