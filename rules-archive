@@ -79,6 +79,7 @@ vdr-1.2.2.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 # development tools
 #
 gdb-5.3.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
+insight-6.0.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
 ltrace_0.3.26.tar.gz;ftp://ftp.debian.org/debian/pool/main/l/ltrace
 strace-4.4.98.tar.bz2;http://belnet.dl.sourceforge.net/sourceforge/strace
 nano-1.2.2.tar.gz;http://www.nano-editor.org/dist/v1.2

@@ -81,6 +81,7 @@ msttf
 # development tools
 #
 gdb;make:install-gdb:prefix=TARGET
+insight;make:install-gdb:prefix=TARGET
 ltrace;make:install:DESTDIR=TARGET
 strace;make:install:prefix=TARGET
 nano;make:install:DESTDIR=TARGET

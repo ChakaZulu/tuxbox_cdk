@@ -836,7 +836,7 @@ contrib_apps: .bzip2 .console_data .console_tools .fbset .lirc .lsof .ssh .tcpdu
 #
 
 devel: .gdb .ltrace .strace .nano
-devel_optional: .gdb-remote
+devel_optional: .gdb-remote .insight
 
 .gdb: .bootstrap .libncurses @DEPENDS_gdb@
 	@PREPARE_gdb@
@@ -857,10 +857,9 @@ devel_optional: .gdb-remote
 	@CLEANUP_gdb@
 	touch $@
 
-.gdb-remote: .bootstrap @DEPENDS_gdb@
+.gdb-remote: @DEPENDS_gdb@
 	@PREPARE_gdb@
 	cd @DIR_gdb@ && \
-		LD_LIBRARY_PATH=$(libdir) \
 		./configure \
 			--build=$(build) \
 			--host=$(build) \
@@ -869,6 +868,19 @@ devel_optional: .gdb-remote
 		$(MAKE) all-gdb && \
 		$(MAKE) install-gdb
 	@CLEANUP_gdb@
+	touch $@
+
+.insight: @DEPENDS_insight@
+	@PREPARE_insight@
+	cd @DIR_insight@ && \
+		./configure \
+			--build=$(build) \
+			--host=$(build) \
+			--target=$(target) \
+			--prefix=$(hostprefix) && \
+		$(MAKE) all-gdb && \
+		$(MAKE) install-gdb
+	@CLEANUP_insight@
 	touch $@
 
 .ltrace: .bootstrap @DEPENDS_ltrace@
@@ -1630,7 +1642,7 @@ distclean-local:
 	-rm .libdirectfb .libdirectfbpp .libdvb .libdvbpsi .libexpat .libffi .libfreetype
 	-rm .libfribidi .libncurses .libid3tag .libjpeg .libmad .libpcap .libpng
 	-rm .libreadline .libsdl .libsigc .libxml2 .libz
-	-rm .gdb .gdb-remote .ltrace .strace .nano
+	-rm .gdb .gdb-remote .insight .ltrace .strace .nano
 	-rm .kaffeh .kaffe
 	-rm .gnuboy .scummvm .sdldoom
 	-rm .u-boot .linuxkernel .driver
