@@ -1,6 +1,6 @@
-diff -Naur linux-2.4.21/Makefile linux-2.4.21/Makefile_cygwin 
---- linux-2.4.21/Makefile   2002-06-04 11:57:07.000000000 +0200 
-+++ linux-2.4.21/Makefile_cygwin   2002-06-04 11:39:30.000000000 +0200 
+diff -Naur linux-2.4.22/Makefile linux-2.4.22/Makefile_cygwin 
+--- linux-2.4.22/Makefile   2002-06-04 11:57:07.000000000 +0200 
++++ linux-2.4.22/Makefile_cygwin   2002-06-04 11:39:30.000000000 +0200 
 @@ -419,7 +419,7 @@ 
  endif
  .PHONY: _modinst_post
@@ -19,9 +19,9 @@ diff -Naur linux-2.4.21/Makefile linux-2.4.21/Makefile_cygwin
  	scripts/mkdep -- init/*.c > .depend
  
  ifdef CONFIG_MODVERSIONS
- diff -Naur linux-2.4.21/arch/ppc/boot/simple/Makefile linux-2.4.21/arch/ppc/boot/simple/Makefile_org 
---- linux-2.4.21/arch/ppc/boot/simple/Makefile   2002-06-06 08:52:08.000000000 +0200 
-+++ linux-2.4.21/arch/ppc/boot/simple/Makefile_org   2002-06-06 08:55:00.000000000 +0200 
+ diff -Naur linux-2.4.22/arch/ppc/boot/simple/Makefile linux-2.4.22/arch/ppc/boot/simple/Makefile_org 
+--- linux-2.4.22/arch/ppc/boot/simple/Makefile   2002-06-06 08:52:08.000000000 +0200 
++++ linux-2.4.22/arch/ppc/boot/simple/Makefile_org   2002-06-06 08:55:00.000000000 +0200 
 @@ -105,7 +105,7 @@ 
  		--set-section-flags=.image=contents,alloc,load,readonly,data \
  		../common/dummy.o image.o
