@@ -1639,8 +1639,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma
 		$(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/etc/init.d/start_enigma $(flashprefix)/root/etc/init.d
 	$(INSTALL) $(targetprefix)/root/etc/timezone.xml $(flashprefix)/root/etc
-        ln -sf /var/etc/localtime $(flashprefix)/root/etc 
-
+	ln -sf /var/etc/localtime $(flashprefix)/root/etc 
 	@touch $@
 
 flash-lcars: $(flashprefix)/.part_lcars
