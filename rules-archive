@@ -47,7 +47,7 @@ SDL-1.2.5.tar.gz;http://www.libsdl.org/release
 readline-4.3.tar.gz;ftp://ftp.gnu.org/gnu/readline
 libsigc++-1.2.2.tar.gz;http://belnet.dl.sourceforge.net/sourceforge/libsigc
 libpcap-0.7.1.tar.gz;http://www.tcpdump.org/release
-commoncpp2-1.0.8.tar.gz;ftp://ftp.gnu.org/gnu/commonc++
+commoncpp2-1.0.9.tar.gz;ftp://ftp.gnu.org/gnu/commonc++
 libdvbpsi-0.1.2.tar.gz;http://www.videolan.org/pub/videolan/libdvbpsi/0.1.2
 DirectFB-0.9.17.tar.gz;http://www.directfb.org/download/DirectFB
 DFB++-0.9.15.tar.gz;http://www.directfb.org/download/DirectFB
