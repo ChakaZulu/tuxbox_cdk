@@ -20,6 +20,7 @@ glibc-linuxthreads-2.2.3.tar.bz2;ftp://ftp.funet.fi/pub/mirrors/sourceware.cygnu
 # minimal root
 #
 busybox-0.60.1.tar.gz
+modutils-2.4.9.tar.bz2
 
 #
 # contrib libs

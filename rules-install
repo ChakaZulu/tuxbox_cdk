@@ -18,7 +18,8 @@ gcc
 #
 # minimal root
 #
-busybox;make:install
+busybox;make:install:PREFIX=TARGET
+modutils;make:install-bin
 
 #
 # contrib libs

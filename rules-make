@@ -22,6 +22,7 @@ gcc;3.0.2;gcc-3.0.2;gcc-core-3.0.2.tar.gz:gcc-g++-3.0.2.tar.gz;extract:gcc-core-
 # minimal root
 #
 busybox;0.60.1;busybox-0.60.1;busybox-0.60.1.tar.gz:busybox.diff;extract:busybox-0.60.1.tar.gz;patch:busybox.diff
+modutils;2.4.9;modutils-2.4.9;modutils-2.4.9.tar.bz2;extract:modutils-2.4.9.tar.bz2
 
 #
 # contrib libs

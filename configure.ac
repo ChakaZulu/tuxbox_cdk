@@ -38,7 +38,7 @@ elif test "$targetruleset" = "flash"; then
 	TARGET_CXXFLAGS="-Os -mcpu=823"
 	TARGET_LDFLAGS="-s"
 	INSTALLRULESFILE="-flash"
-	appstarget="dbox2flash"
+	APPSTARGET="dbox2flash"
 else
 AC_MSG_ERROR([invalid ruleset "$targetruleset", choose on from [[flash]]]);
 fi
@@ -46,7 +46,7 @@ fi
 AC_SUBST(TARGET_CFLAGS)
 AC_SUBST(TARGET_CXXFLAGS)
 AC_SUBST(TARGET_LDFLAGS)
-AC_SUBST(appstarget)
+AC_SUBST(APPSTARGET)
 
 AC_PREFIX_DEFAULT(/dbox2)
 
@@ -130,6 +130,7 @@ TUXBOX_RULES_MAKE_EXDIR(gcc)
 # minimal root
 #
 TUXBOX_RULES_MAKE(busybox)
+TUXBOX_RULES_MAKE(modutils)
 
 #
 # contrib libs
