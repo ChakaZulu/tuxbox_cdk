@@ -51,7 +51,7 @@ libpng;make:install:prefix=TARGET
 libqt;install:src/moc/moc:HOST/bin
 libreadline;make:install
 libsdl;make:install;link:TARGET/bin/sdl-config:HOST/bin/sdl-config
-libsigc;make:install;link:TARGET/bin/sigc-config:HOST/bin/sigc-config
+libsigc;make:install
 libxml2;make:install;link:TARGET/bin/xml2-config:HOST/bin/xml2-config
 libxmlparse;make:install
 libxmlwrapp;make:install;link:TARGET/bin/xmlwrapp-config:HOST/bin/xmlwrapp-config
