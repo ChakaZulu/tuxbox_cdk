@@ -573,6 +573,31 @@ libs: \
 	@CLEANUP_libxml2@
 	touch .libxml2
 
+.libxmlparse: .bootstrap @DEPENDS_libxmlparse@
+	@PREPARE_libxmlparse@
+	cd @DIR_libxmlparse@ && \
+		aclocal -I . && \
+		libtoolize --automake --force && \
+		autoconf && \
+		automake --add-missing --force-missing && \
+		CC=$(target)-gcc \
+		CXX=$(target)-g++ \
+		RANLIB=$(target)-ranlib \
+		NM=$(target)-nm \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--enable-ambiguous \
+			--enable-libstdcpp3 && \
+		$(MAKE) all && \
+		@INSTALL_libxmlparse@
+	@CLEANUP_libxmlparse@
+	touch .libxmlparse
+
 .libxmlwrapp: .bootstrap .libxml2 @DEPENDS_libxmlwrapp@
 	@PREPARE_libxmlwrapp@
 	cd @DIR_libxmlwrapp@ && \
