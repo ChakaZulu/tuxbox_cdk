@@ -1,15 +1,7 @@
-diff -Naur tinylogin-0.80.orig/Config.h tinylogin-0.80/Config.h
---- tinylogin-0.80.orig/Config.h	Tue Dec 26 22:46:28 2000
-+++ tinylogin-0.80/Config.h	Mon Dec 10 16:59:01 2001
-@@ -5,13 +5,13 @@
- 
- #define TLG_ADDUSER
- #define TLG_ADDGROUP
--#define TLG_DELUSER
--#define TLG_DELGROUP
-+//#define TLG_DELUSER
-+//#define TLG_DELGROUP
- #define TLG_LOGIN
+diff -urN tinylogin-0.80.orig/Config.h tinylogin-0.80/Config.h
+--- tinylogin-0.80.orig/Config.h	Tue Dec 26 21:46:28 2000
++++ tinylogin-0.80/Config.h	Sun Dec 23 18:53:06 2001
+@@ -11,7 +11,7 @@
  #define TLG_SU
  //#define TLG_SULOGIN
  #define TLG_PASSWD
@@ -31,3 +23,24 @@ diff -Naur tinylogin-0.80.orig/Config.h tinylogin-0.80/Config.h
  //
  // Enable using md5 passwords
  //#define TLG_FEATURE_MD5_PASSWORDS
+diff -urN tinylogin-0.80.orig/applets.h tinylogin-0.80/applets.h
+--- tinylogin-0.80.orig/applets.h	Wed Dec 20 21:29:23 2000
++++ tinylogin-0.80/applets.h	Sun Dec 23 18:53:24 2001
+@@ -45,7 +45,7 @@
+ 	APPLET("login", login_main, _TLG_DIR_BIN, FALSE, login_usage)
+ #endif
+ #ifdef TLG_PASSWD
+-	APPLET("passwd", passwd_main, _TLG_DIR_USR_BIN, TRUE, passwd_usage)
++	APPLET("passwd", passwd_main, _TLG_DIR_BIN, TRUE, passwd_usage)
+ #endif
+ #ifdef TLG_SU
+ 	APPLET("su", su_main, _TLG_DIR_BIN, TRUE, su_usage)
+@@ -54,7 +54,7 @@
+ 	APPLET("sulogin", sulogin_main, _TLG_DIR_SBIN, FALSE, sulogin_usage)
+ #endif
+ #ifdef TLG_VLOCK
+-	APPLET("vlock", vlock_main, _TLG_DIR_USR_BIN, TRUE, vlock_usage)
++	APPLET("vlock", vlock_main, _TLG_DIR_BIN, TRUE, vlock_usage)
+ #endif
+ #if !defined(PROTOTYPES) && !defined(MAKE_LINKS)
+ 	{0, NULL, 0, 0, NULL}
