@@ -1,5 +1,5 @@
 #
-#  $Id: FAQ,v 1.1 2002/01/05 17:12:53 obi Exp $
+#  $Id: FAQ,v 1.2 2002/10/13 16:38:14 obi Exp $
 #
 #  Frequently Asked Questions about the Cross Development Kit
 #
@@ -22,4 +22,18 @@ Q: what is a good place to look for more answers to
    my problems with linux and d-box 2?
 A: the forum at http://tuxbox.berlios.de/forum/
    provides a very good search facility
+
+Q: How can I move files to a different location in
+   cvs without losing their history?
+A: 1) If the destination directory does not exist,
+      then create it using "cvs add". This makes sure
+      that your new directory has correct permissions.
+   2) On the cvs server's filesystem, copy the files
+      you want to move to the new location.
+   3) Use "cvs remove" to remove files from the old
+      location.
+   Do NOT move the files on the filesystem, just copy
+   and "cvs remove". Deleting cvs revision files on
+   the filesystem is a bad thing[tm].
+   To rename files just skip step 1.
 
