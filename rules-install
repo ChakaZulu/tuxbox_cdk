@@ -36,6 +36,12 @@ libxml2;make:install;link:TARGET/bin/xml2-config:HOST/bin/xml2-config
 libz;make:install
 
 #
+# msttf
+#
+cabextract
+msttf
+
+#
 # additional
 #
 gdb;make;make:install

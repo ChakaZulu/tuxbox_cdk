@@ -150,6 +150,8 @@ TUXBOX_RULES_MAKE(libz)
 FONTDIR="\${datadir}/fonts"
 AC_SUBST(FONTDIR)
 AC_DEFINE_UNQUOTED(FONTDIR,"${_targetdatadir}/fonts",[where to find the fonts])
+TUXBOX_RULES_MAKE(cabextract)
+TUXBOX_RULES_MAKE(msttf)
 
 #
 # additional

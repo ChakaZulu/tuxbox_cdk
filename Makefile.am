@@ -165,14 +165,14 @@ root: .busybox .tinylogin .modutils .etc
 	@PREPARE_gdb@
 	cd @DIR_gdb@ && \
 		LD_LIBRARY_PATH=$(libdir) ./configure \
-                        --build=`./config.guess` \
-                        --host=$(TARGET) \
-                        --target=$(TARGET) \
-                        --nfp \
-                        --disable-sim \
-                        --prefix=$(targetprefix) && \
-		@INSTALL_gdb@
-		touch .gdb
+	                --build=`./config.guess` \
+	                --host=$(TARGET) \
+	                --target=$(TARGET) \
+	                --nfp \
+	                --disable-sim \
+	                --prefix=$(targetprefix) && \
+	@INSTALL_gdb@
+	touch .gdb
 
 
 #######################
@@ -341,24 +341,28 @@ boot: .ppcboot .linuxkernel .driver
 #
 #  msttf
 #
-.msttf:
-	mkdir msttf
-	cd msttf && tar xzf ../Archive/cabextract-0.5.tar.gz || exit 1
-	cd msttf/cabextract-0.5 && ./configure || exit 0
-	make -C msttf/cabextract-0.5
-	cd msttf && cabextract-0.5/cabextract ../Archive/arialb32.exe
-	cd msttf && cabextract-0.5/cabextract ../Archive/arial32.exe
-	cd msttf && cabextract-0.5/cabextract ../Archive/courie32.exe
+.cabextract: @DEPENDS_cabextract@
+	@PREPARE_cabextract@
+	cd @DIR_cabextract@ && \
+		./configure \
+			--prefix=$(hostprefix)
+	make -C @DIR_cabextract@ all install
+	@CLEANUP_cabextract@
+	touch .cabextract
+
+.msttf: @DEPENDS_msttf@
+	@PREPARE_msttf@
 	install -d $(FONTDIR)
-	install -m 0644 msttf/AriBlk.TTF $(FONTDIR)/Arial_Black.ttf
-	install -m 0644 msttf/Arial.TTF $(FONTDIR)/Arial.ttf
-	install -m 0644 msttf/Arialbd.TTF $(FONTDIR)/Arial_Bold.ttf
-	install -m 0644 msttf/Arialbi.TTF $(FONTDIR)/Arial_Bold_Italic.ttf
-	install -m 0644 msttf/Ariali.TTF $(FONTDIR)/Arial_Italic.ttf
-	install -m 0644 msttf/cour.ttf $(FONTDIR)/Courier_New.ttf
-	install -m 0644 msttf/courbd.ttf $(FONTDIR)/Courier_New_Bold.ttf
-	install -m 0644 msttf/courbi.ttf $(FONTDIR)/Courier_New_Bold_Italic.ttf
-	install -m 0644 msttf/couri.ttf $(FONTDIR)/Courier_New_Italic.ttf
+	install -m 0644 @DIR_msttf@/AriBlk.TTF $(FONTDIR)/Arial_Black.ttf
+	install -m 0644 @DIR_msttf@/Arial.TTF $(FONTDIR)/Arial.ttf
+	install -m 0644 @DIR_msttf@/Arialbd.TTF $(FONTDIR)/Arial_Bold.ttf
+	install -m 0644 @DIR_msttf@/Arialbi.TTF $(FONTDIR)/Arial_Bold_Italic.ttf
+	install -m 0644 @DIR_msttf@/Ariali.TTF $(FONTDIR)/Arial_Italic.ttf
+	install -m 0644 @DIR_msttf@/cour.ttf $(FONTDIR)/Courier_New.ttf
+	install -m 0644 @DIR_msttf@/courbd.ttf $(FONTDIR)/Courier_New_Bold.ttf
+	install -m 0644 @DIR_msttf@/courbi.ttf $(FONTDIR)/Courier_New_Bold_Italic.ttf
+	install -m 0644 @DIR_msttf@/couri.ttf $(FONTDIR)/Courier_New_Italic.ttf
+	@CLEANUP_msttf@
 	touch .msttf
 
 #######################

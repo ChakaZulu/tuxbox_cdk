@@ -56,6 +56,10 @@ if ( $#ARGV >= 2 )
       {
         $output .= "Patches/" . $_ . " ";
       }
+      elsif ( $_ =~ m#\.exe# )
+      {
+        $output .= "Archive/" . $_ . " ";
+      }
       else
       {
         die "can't recognize type of archive " . $_;
@@ -90,6 +94,10 @@ if ( $#ARGV >= 2 )
         {
           $output .= "gunzip -cd Archive/" . $_[1] . " | tar -x";
         }
+        elsif ( $_[1] =~ m#\.exe# )
+        {
+          $output .= "cabextract Archive/" . $_[1];
+        }
         else
         {
           die "can't recognize type of archive " . $_[1];
@@ -106,6 +114,10 @@ if ( $#ARGV >= 2 )
         elsif ( $_[1] =~ m#\.tar\.gz# )
         {
           $output .= "gunzip -cd ../Archive/" . $_[1] . " | tar -x";
+        }
+        elsif ( $_[1] =~ m#\.exe# )
+        {
+          $output .= "cabextract ../Archive/" . $_[1];
         }
         else
         {
@@ -129,6 +141,10 @@ if ( $#ARGV >= 2 )
       elsif ( $_[0] eq "link" )
       {
         $output .= "( ln -s " . $_[1] . " " . $_[2] . " || /bin/true )";
+      }
+      elsif ( $_[0] eq "dircreate" )
+      {
+        $output .= "( mkdir -p $dir )";
       }
       else
       {

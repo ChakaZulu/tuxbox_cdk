@@ -39,9 +39,10 @@ libxml2;2.4.10;libxml2-2.4.10;libxml2-2.4.10.tar.gz;extract:libxml2-2.4.10.tar.g
 libz;1.1.3;zlib-1.1.3;zlib.tar.gz:zlib.diff;extract:zlib.tar.gz;patch:zlib.diff
 
 #
-#msttf
+# msttf
 #
-
+cabextract;0.5;cabextract-0.5;cabextract-0.5.tar.gz;extract:cabextract-0.5.tar.gz
+msttf;0.0;msttf;arial32.exe:arialb32.exe:courie32.exe;dircreate;dirextract:arial32.exe;dirextract:arialb32.exe;dirextract:courie32.exe
 
 #
 # additional
