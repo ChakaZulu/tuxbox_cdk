@@ -104,4 +104,4 @@ dvbtext;install:-m755:dvbtext:TARGET/bin
 dvbtune;install:-m755:dvbtune:TARGET/bin
 vls;make:install:DESTDIR=TARGET
 
->>>;rules-install-local
+>>?;rules-install-local

@@ -248,9 +248,9 @@ AC_SUBST(CLEANUP)
 #
 # core
 #
-KERNELVERSION=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} linux version`
 AC_SUBST(KERNELVERSION)
 TUXBOX_RULES_MAKE(linux)
+KERNELVERSION=$VERSION_linux
 TUXBOX_RULES_MAKE_EXDIR(binutils)
 TUXBOX_RULES_MAKE_EXDIR(bootstrap_gcc)
 TUXBOX_RULES_MAKE_EXDIR(glibc)

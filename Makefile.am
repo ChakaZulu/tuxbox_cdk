@@ -1543,15 +1543,17 @@ else
 endif
 
 EXTRA_DIST = \
-	rules-archive rules-archive.pl \
-	rules-install rules-install-flash rules-install.pl \
-	rules-make rules-make-cygwin rules-make.pl
+	rules.pl rules-archive.pl \
+	rules-archive \
+	rules-install rules-install-flash \
+	rules-make rules-make-cygwin
 
 ACLOCAL_AMFLAGS = -I .
 
 CONFIG_STATUS_DEPENDENCIES = \
-	$(top_srcdir)/rules-install $(top_srcdir)/rules-install-flash $(top_srcdir)/rules-install.pl \
-	$(top_srcdir)/rules-make $(top_srcdir)/rules-make-cygwin $(top_srcdir)/rules-make.pl \
+	$(top_srcdir)/rules.pl \
+	$(top_srcdir)/rules-install $(top_srcdir)/rules-install-flash \
+	$(top_srcdir)/rules-make $(top_srcdir)/rules-make-cygwin \
 	Makefile-archive
 
 -include ./Makefile.am.local

@@ -1,35 +1,35 @@
 AC_DEFUN([TUXBOX_RULES_MAKE],[
-DEPENDS_$1=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 depend`
+AC_MSG_CHECKING([$1 rules])
+eval `${srcdir}/rules.pl make ${srcdir}/rules-make${MAKERULESETFILE} $1 cdkoutput`
+INSTALL_$1=`${srcdir}/rules.pl install ${srcdir}/rules-install${INSTALLRULESETFILE} $1`
+CLEANUP_$1="rm -rf $DIR_$1"
+CLEANUP="$CLEANUP $DIR_$1"
 AC_SUBST(DEPENDS_$1)dnl
-PREPARE_$1=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 prepare`
-AC_SUBST(PREPARE_$1)dnl
-DIR_$1=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`
 AC_SUBST(DIR_$1)dnl
-INSTALL_$1=`${srcdir}/rules-install.pl ${srcdir}/rules-install${INSTALLRULESETFILE} $1`
-AC_SUBST(INSTALL_$1)dnl
-VERSION_$1=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 version`
+AC_SUBST(PREPARE_$1)dnl
 AC_SUBST(VERSION_$1)dnl
-CLEANUP_$1="rm -rf `${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`"
+AC_SUBST(INSTALL_$1)dnl
 AC_SUBST(CLEANUP_$1)dnl
-CLEANUP="$CLEANUP `${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`"
+AC_MSG_RESULT(done)
 ])
 
 AC_DEFUN([TUXBOX_RULES_MAKE_EXDIR],[
-DEPENDS_$1=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 depend`
-AC_SUBST(DEPENDS_$1)dnl
-PREPARE_$1="`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 prepare` && ( rm -rf build || /bin/true ) && mkdir build"
-AC_SUBST(PREPARE_$1)dnl
+AC_MSG_CHECKING([$1 rules])
+eval `${srcdir}/rules.pl make ${srcdir}/rules-make${MAKERULESETFILE} $1 cdkoutput`
+SOURCEDIR_$1=$DIR_$1
 DIR_$1="build"
-AC_SUBST(SOURCEDIR_$1)dnl
-SOURCEDIR_$1=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`
-AC_SUBST(DIR_$1)dnl
-CONFIGURE_$1="../`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`/configure"
-AC_SUBST(CONFIGURE_$1)dnl
-INSTALL_$1=`${srcdir}/rules-install.pl ${srcdir}/rules-install${INSTALLRULESETFILE} $1`
-AC_SUBST(INSTALL_$1)dnl
-VERSION_$1=`${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 version`
-AC_SUBST(VERSION_$1)dnl
-CLEANUP_$1="rm -rf `${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir` build"
+PREPARE_$1="$PREPARE_$1 && ( rm -rf build || /bin/true ) && mkdir build"
+CONFIGURE_$1="../$DIR_$1/configure"
+INSTALL_$1=`${srcdir}/rules.pl install ${srcdir}/rules-install${INSTALLRULESETFILE} $1`
+CLEANUP_$1="rm -rf $DIR_$1 build"
+CLEANUP="$CLEANUP $DIR_$1"
 AC_SUBST(CLEANUP_$1)dnl
-CLEANUP="$CLEANUP `${srcdir}/rules-make.pl ${srcdir}/rules-make${MAKERULESETFILE} $1 dir`"
+AC_SUBST(CONFIGURE_$1)dnl
+AC_SUBST(DEPENDS_$1)dnl
+AC_SUBST(DIR_$1)dnl
+AC_SUBST(INSTALL_$1)dnl
+AC_SUBST(PREPARE_$1)dnl
+AC_SUBST(SOURCEDIR_$1)dnl
+AC_SUBST(VERSION_$1)dnl
+AC_MSG_RESULT(done)
 ])
