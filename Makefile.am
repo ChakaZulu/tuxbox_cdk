@@ -1765,6 +1765,14 @@ $(flashprefix)/.part_sshd: $(flashprefix)/.flash ssh
 	$(INSTALL) $(targetprefix)/sbin/sshd $(flashprefix)/root/sbin
 	@touch $@
 
+flash-dropbear: $(flashprefix)/.part_dropbear
+
+$(flashprefix)/.part_dropbear: $(flashprefix)/.flash dropbear dropbearkey
+	$(INSTALL) -d $(flashprefix)/root/etc/dropbear
+	$(INSTALL) $(targetprefix)/sbin/dropbear $(flashprefix)/root/sbin
+	cp -ap $(targetprefix)/etc/dropbear/* $(flashprefix)/root/etc/dropbear
+	@touch $@
+
 flash-dvb-tools: $(flashprefix)/.part_dvb_tools
 
 $(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash dvb_tools
