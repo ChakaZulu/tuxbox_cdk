@@ -1,0 +1,105 @@
+diff -Naur --exclude '*.map' --exclude u-boot.stripped --exclude u-boot --exclude tools --exclude examples --exclude .depend --exclude '*.a' --exclude '*.o' u-boot-1.1.2/include/lcd.h u-boot-1.1.2-fixedcompile/include/lcd.h
+--- u-boot-1.1.2/include/lcd.h	2005-05-04 22:03:25.515521008 +0200
++++ u-boot-1.1.2-fixedcompile/include/lcd.h	2005-05-03 23:33:12.718911304 +0200
+@@ -41,8 +41,8 @@
+ extern void *lcd_base;		/* Start of framebuffer memory	*/
+ extern void *lcd_console_address;	/* Start of console buffer	*/
+ 
+-extern short console_col;
+-extern short console_row;
++static short console_col;
++static short console_row;
+ 
+ #if defined CONFIG_MPC823
+ /*
+diff -Naur --exclude '*.map' --exclude u-boot.stripped --exclude u-boot --exclude tools --exclude examples --exclude .depend --exclude '*.a' --exclude '*.o' u-boot-1.1.2/lib_ppc/board.c u-boot-1.1.2-fixedcompile/lib_ppc/board.c
+--- u-boot-1.1.2/lib_ppc/board.c	2004-12-31 10:32:54.000000000 +0100
++++ u-boot-1.1.2-fixedcompile/lib_ppc/board.c	2005-05-09 10:14:15.580588064 +0200
+@@ -466,8 +466,10 @@
+ 	 */
+ 	addr_sp -= 16;
+ 	addr_sp &= ~0xF;
+-	*((ulong *) addr_sp)-- = 0;
+-	*((ulong *) addr_sp)-- = 0;
++	*(ulong *) addr_sp = 0;
++	addr_sp -= sizeof(ulong);
++	*(ulong *) addr_sp = 0;
++	addr_sp -= sizeof(ulong);
+ 	debug ("Stack Pointer at: %08lx\n", addr_sp);
+ 
+ 	/*
+diff -Naur --exclude '*.map' --exclude u-boot.stripped --exclude u-boot --exclude tools --exclude examples --exclude .depend --exclude '*.a' --exclude '*.o' u-boot-1.1.2/net/net.c u-boot-1.1.2-fixedcompile/net/net.c
+--- u-boot-1.1.2/net/net.c	2005-05-04 22:03:25.518520552 +0200
++++ u-boot-1.1.2-fixedcompile/net/net.c	2005-05-03 22:01:07.923457184 +0200
+@@ -1503,7 +1503,10 @@
+ 
+ 	xsum = 0;
+ 	while (len-- > 0)
+-		xsum += *((ushort *)ptr)++;
++	{
++		xsum += *((ushort *)ptr);
++		ptr += sizeof(ushort);
++	}
+ 	xsum = (xsum & 0xffff) + (xsum >> 16);
+ 	xsum = (xsum & 0xffff) + (xsum >> 16);
+ 	return (xsum & 0xffff);
+diff -Naur --exclude '*.map' --exclude u-boot.stripped --exclude u-boot --exclude tools --exclude examples --exclude .depend --exclude '*.a' --exclude '*.o' u-boot-1.1.2/net/tftp.c u-boot-1.1.2-fixedcompile/net/tftp.c
+--- u-boot-1.1.2/net/tftp.c	2005-05-04 22:03:25.518520552 +0200
++++ u-boot-1.1.2-fixedcompile/net/tftp.c	2005-05-03 22:03:54.653110424 +0200
+@@ -117,7 +117,8 @@
+ 
+ 	case STATE_RRQ:
+ 		xp = pkt;
+-		*((ushort *)pkt)++ = htons(TFTP_RRQ);
++		*((ushort *)pkt) = htons(TFTP_RRQ);
++		pkt += sizeof(ushort);
+ 		strcpy ((char *)pkt, tftp_filename);
+ 		pkt += strlen(tftp_filename) + 1;
+ 		strcpy ((char *)pkt, "octet");
+@@ -135,15 +136,19 @@
+ 	case STATE_DATA:
+ 	case STATE_OACK:
+ 		xp = pkt;
+-		*((ushort *)pkt)++ = htons(TFTP_ACK);
+-		*((ushort *)pkt)++ = htons(TftpBlock);
++		*((ushort *)pkt) = htons(TFTP_ACK);
++		pkt += sizeof(ushort);
++		*((ushort *)pkt) = htons(TftpBlock);
++		pkt += sizeof(ushort);
+ 		len = pkt - xp;
+ 		break;
+ 
+ 	case STATE_TOO_LARGE:
+ 		xp = pkt;
+-		*((ushort *)pkt)++ = htons(TFTP_ERROR);
+-		*((ushort *)pkt)++ = htons(3);
++		*((ushort *)pkt) = htons(TFTP_ERROR);
++		pkt += sizeof(ushort);
++		*((ushort *)pkt) = htons(3);
++		pkt += sizeof(ushort);
+ 		strcpy ((char *)pkt, "File too large");
+ 		pkt += 14 /*strlen("File too large")*/ + 1;
+ 		len = pkt - xp;
+@@ -151,8 +156,10 @@
+ 
+ 	case STATE_BAD_MAGIC:
+ 		xp = pkt;
+-		*((ushort *)pkt)++ = htons(TFTP_ERROR);
+-		*((ushort *)pkt)++ = htons(2);
++		*((ushort *)pkt) = htons(TFTP_ERROR);
++		pkt += sizeof(ushort);
++		*((ushort *)pkt) = htons(2);
++		pkt += sizeof(ushort);
+ 		strcpy ((char *)pkt, "File has bad magic");
+ 		pkt += 18 /*strlen("File has bad magic")*/ + 1;
+ 		len = pkt - xp;
+@@ -180,7 +187,8 @@
+ 	}
+ 	len -= 2;
+ 	/* warning: don't use increment (++) in ntohs() macros!! */
+-	proto = *((ushort *)pkt)++;
++	proto = *((ushort *)pkt);
++	pkt += sizeof(ushort);
+ 	switch (ntohs(proto)) {
+ 
+ 	case TFTP_RRQ:
