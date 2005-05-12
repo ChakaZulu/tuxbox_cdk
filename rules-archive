@@ -80,6 +80,7 @@ fbset-2.1.tar.gz;http://home.tvd.be/cr26864/Linux/fbdev
 lirc-0.6.6.tar.bz2;http://unusedino.de/lirc/software
 openssh-3.8p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 tcpdump-3.7.1.tar.gz;http://www.tcpdump.org/release
+bonnie++-1.03a.tgz;http://www.coker.com.au/bonnie++
 lsof_4.72.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof
 DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/download/DirectFB-extra
 vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr

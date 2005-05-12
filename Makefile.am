@@ -833,7 +833,7 @@ $(DEPDIR)/libungif: bootstrap @DEPENDS_libungif@
 #   contrib apps
 #
 
-contrib_apps: bzip2 console_data console_tools fbset lirc lsof ssh tcpdump lufs
+contrib_apps: bzip2 console_data console_tools fbset lirc lsof ssh tcpdump lufs bonnie
 
 $(DEPDIR)/bzip2: bootstrap @DEPENDS_bzip2@
 	@PREPARE_bzip2@
@@ -1016,6 +1016,20 @@ $(DEPDIR)/tcpdump: bootstrap libpcap @DEPENDS_tcpdump@
 		$(MAKE) all && \
 		@INSTALL_tcpdump@
 	@CLEANUP_tcpdump@
+	touch $@
+
+$(DEPDIR)/bonnie: bootstrap @DEPENDS_bonnie@
+	@PREPARE_bonnie@
+	cd @DIR_bonnie@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(hostprefix) && \
+		$(MAKE) all WFLAGS= && \
+                $(target)-strip -s bonnie++ &&\
+		cp bonnie++ $(targetprefix)/sbin/bonnie
+	@CLEANUP_bonnie@
 	touch $@
 
 $(DEPDIR)/vdr: bootstrap @DEPENDS_vdr@
