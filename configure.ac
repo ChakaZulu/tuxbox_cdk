@@ -184,34 +184,39 @@ if test "$defaultserver" = "NONE"; then
 	defaultserver="tuxbox.berlios.de/pub/tuxbox/cdk/src"
 fi
 
+dircheck="ok"
 AC_MSG_CHECKING([for apps directory])
 if test ! -f "$appsdir/dvb/zapit/configure.ac" ; then
-	appsdir=no
-	AC_MSG_RESULT([no])
+	AC_MSG_WARN([appsdir $appsdir not found])
+	appsdir="missing"
+	dircheck="fail"
 else
 	AC_MSG_RESULT([yes])
 fi
 
 AC_MSG_CHECKING([for boot directory])
 if test ! -d "$bootdir/u-boot-tuxbox" ; then
-	bootdir=no
-	AC_MSG_RESULT([no])
+	AC_MSG_WARN([bootdir $bootdir not found])
+	bootdir="missing"
+	dircheck="fail"
 else
 	AC_MSG_RESULT([yes])
 fi
 
 AC_MSG_CHECKING([for driver directory])
 if test ! -f "$driverdir/Makefile" ; then
-	driverdir=no
-	AC_MSG_RESULT([no])
+	AC_MSG_WARN([driverdir $driverdir not found])
+	driverdir="missing"
+	dircheck="fail"
 else
 	AC_MSG_RESULT([yes])
 fi
 
 AC_MSG_CHECKING([for hostapps directory])
 if test ! -f "$hostappsdir/configure.ac" ; then
-	hostappsdir=no
-	AC_MSG_RESULT([no])
+	AC_MSG_WARN([hostappsdir $hostappsdir not found])
+	hostappsdir="missing"
+	dircheck="fail"
 else
 	AC_MSG_RESULT([yes])
 fi
@@ -420,6 +425,18 @@ host apps directory:	$hostappsdir
 GNU server:		$gnuserver
 default server:		$defaultserver
 ])
+
+if test "$dircheck" = "fail"; then
+AC_MSG_RESULT([
+******************************************************************
+*                       !!!WARNING!!!                            *
+* one or more of your CVS source directories could not be found, *
+* (for details see above), did you maybe supply an incorrect     *
+*  --with-cvsdir argument to configure?                          *
+*                       !!!WARNING!!!                            *
+******************************************************************
+])
+fi
 
 AC_CONFIG_FILES([
 Makefile
