@@ -42,7 +42,7 @@ libcommoncplusplus;1.0.13;commoncpp2-1.0.13;commoncpp2-1.0.13.tar.gz:libcommoncp
 libcrypto;0.9.7e;openssl-0.9.7e;openssl-0.9.7e.tar.gz:libcrypto.diff;extract:openssl-0.9.7e.tar.gz;patch:libcrypto.diff
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.gz:libcurl.diff;extract:curl-7.10.1.tar.gz;patch:libcurl.diff
 libdirectfb;0.9.22;DirectFB;DirectFB-0.9.22-cvs20050601.tar.bz2;extract:DirectFB-0.9.22-cvs20050601.tar.bz2
-libdirectfbpp;0.9.22;DFB++-0.9.22;DFB++-0.9.22-cvs20050216.tar.gz;extract:DFB++-0.9.22-cvs20050216.tar.gz
+libdirectfbpp;0.9.22;DFB++-0.9.22;DFB++-0.9.22-cvs20050601.tar.bz2;extract:DFB++-0.9.22-cvs20050601.tar.bz2
 libppdirectfb;0.9.22;++DFB;++DFB-0.9.22-cvs20050601.tar.bz2;extract:++DFB-0.9.22-cvs20050601.tar.bz2
 libdvb;0.5.5;libdvb-0.5.5;libdvb-0.5.5.tar.gz:libdvb.diff;extract:libdvb-0.5.5.tar.gz;patch:libdvb.diff
 libdvbpsi;0.1.3;libdvbpsi-0.1.3;libdvbpsi-0.1.3.tar.bz2;extract:libdvbpsi-0.1.3.tar.bz2
