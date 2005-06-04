@@ -1,0 +1,2599 @@
+diff -Naur linux-2.4.31/Documentation/Configure.help linux-2.4.31-lufs/Documentation/Configure.help
+--- linux-2.4.31/Documentation/Configure.help	2005-04-04 03:42:19.000000000 +0200
++++ linux-2.4.31-lufs/Documentation/Configure.help	2005-06-03 11:31:33.000000000 +0200
+@@ -17644,6 +17644,17 @@
+ 
+   Say N unless you are an XFS developer, or play one on TV.
+ 
++LUFS file system support (EXPERIMENTAL)
++CONFIG_LUFS_FS
++  LUFS is a userland file system framework providing a simple interface.
++
++  Besides the kernel support enabled by this option, you will also need
++  the lufsd daemon and file system modules availible from
++  http://lufs.sourceforge.net
++
++  Say Y here if you want to get access to a bunch of useful file systems
++  (sshfs, ftpfs, gnutellafs, gvfs, cardfs, cefs, etc).
++
+ Advanced partition selection
+ CONFIG_PARTITION_ADVANCED
+   Say Y here if you would like to use hard disks under Linux which
+diff -Naur linux-2.4.31/fs/Config.in linux-2.4.31-lufs/fs/Config.in
+--- linux-2.4.31/fs/Config.in	2004-11-17 12:54:21.000000000 +0100
++++ linux-2.4.31-lufs/fs/Config.in	2005-06-03 11:31:33.000000000 +0200
+@@ -154,6 +154,9 @@
+       # for fs/nls/Config.in
+       define_bool CONFIG_NCPFS_NLS n
+    fi
++
++   dep_tristate 'LUFS file system support (EXPERIMENTAL)' CONFIG_LUFS_FS $CONFIG_EXPERIMENTAL $CONFIG_UNIX
++
+    endmenu
+ 
+ else
+diff -Naur linux-2.4.31/fs/Makefile linux-2.4.31-lufs/fs/Makefile
+--- linux-2.4.31/fs/Makefile	2004-02-18 14:36:31.000000000 +0100
++++ linux-2.4.31-lufs/fs/Makefile	2005-06-03 11:31:33.000000000 +0200
+@@ -67,6 +67,7 @@
+ subdir-$(CONFIG_BEFS_FS)	+= befs
+ subdir-$(CONFIG_JFS_FS)		+= jfs
+ subdir-$(CONFIG_XFS_FS)		+= xfs
++subdir-$(CONFIG_LUFS_FS)	+= lufs
+ 
+ obj-$(CONFIG_BINFMT_AOUT)	+= binfmt_aout.o
+ obj-$(CONFIG_BINFMT_EM86)	+= binfmt_em86.o
+diff -Naur linux-2.4.31/fs/lufs/Makefile linux-2.4.31-lufs/fs/lufs/Makefile
+--- linux-2.4.31/fs/lufs/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.31-lufs/fs/lufs/Makefile	2005-06-03 11:31:33.000000000 +0200
+@@ -0,0 +1,20 @@
++#
++# Makefile for the linux userland filesystem routines.
++#
++# Note! Dependencies are done automagically by 'make dep', which also
++# removes any old dependencies. DON'T put your own dependencies here
++# unless it's something special (not a .c file).
++#
++# Note 2! The CFLAGS definitions are now in the main makefile.
++
++O_TARGET := lufs.o
++
++obj-y    := proc.o dir.o file.o symlink.o inode.o
++obj-m    := $(O_TARGET)
++
++# If you want debugging output, please uncomment the following lines
++# EXTRA_CFLAGS += -DLUFS_DEBUG
++# EXTRA_CFLAGS += -DLUFS_VERBOSE
++
++include $(TOPDIR)/Rules.make
++
+diff -Naur linux-2.4.31/fs/lufs/dir.c linux-2.4.31-lufs/fs/lufs/dir.c
+--- linux-2.4.31/fs/lufs/dir.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.31-lufs/fs/lufs/dir.c	2005-06-03 11:31:33.000000000 +0200
+@@ -0,0 +1,579 @@
++/*
++ * dir.c
++ * Copyright (C) 2002 Florin Malita <mali@go.ro>
++ *
++ * This file is part of LUFS, a free userspace filesystem implementation.
++ * See http://lufs.sourceforge.net/ for updates.
++ *
++ * LUFS is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * LUFS is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/version.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/ctype.h>
++
++#include <asm/uaccess.h>
++#include <asm/system.h>
++
++#include <linux/smp_lock.h>
++
++#include "lufs.h"
++#include "proc.h"
++
++
++extern struct inode* lu_iget(struct super_block*, struct lufs_fattr*);
++extern int lufs_notify_change(struct dentry*, struct iattr*);
++
++static int lu_readdir(struct file*, void*, filldir_t);
++
++static struct dentry *lu_lookup(struct inode*, struct dentry*);
++static int lu_mkdir(struct inode*, struct dentry*, int);
++static int lu_create(struct inode*, struct dentry*, int);
++static int lu_rmdir(struct inode*, struct dentry*);
++static int lu_rename(struct inode*, struct dentry*, struct inode*, struct dentry*);
++static int lu_unlink(struct inode*, struct dentry*);
++static int lu_link(struct dentry*, struct inode*, struct dentry*);
++static int lu_symlink(struct inode*, struct dentry*, const char*);
++
++struct file_operations lu_dir_operations = {
++    read:	generic_read_dir,
++    readdir:	lu_readdir,
++};
++
++struct inode_operations lu_dir_inode_operations = {
++    create:	lu_create,
++    lookup:	lu_lookup,
++    link:	lu_link,
++    unlink:	lu_unlink,
++    symlink:	lu_symlink,
++    mkdir:	lu_mkdir,
++    rmdir:	lu_rmdir,
++    rename:	lu_rename,
++    setattr:	lufs_notify_change,
++};
++
++static int lu_lookup_validate(struct dentry *dentry, int flags)
++{
++    struct inode *inode = dentry->d_inode;
++    unsigned long age = jiffies - dentry->d_time;
++    int res;
++    
++    TRACE("in\n");
++    
++    res = (age <= LU_MAXAGE);
++    TRACE("age: %lu, valid: %d\n", age, res);
++
++    if(!res)
++	res = (lu_revalidate_inode(dentry) == 0);
++
++    
++    if(inode){
++	lock_kernel();
++
++	if(is_bad_inode(inode))
++	    res = 0;
++	unlock_kernel();
++    }else
++	TRACE("no inode?!\n");
++
++    TRACE("out(res=%d)\n", res);
++
++    return res;
++}
++
++static int lu_delete_dentry(struct dentry *dentry)
++{
++    int res = 0;
++    
++    TRACE("in\n");
++    if(dentry->d_inode && is_bad_inode(dentry->d_inode))
++	res = 1;
++
++    TRACE("out\n");
++    return res;
++}
++
++struct dentry_operations lufs_dentry_operations = {
++    d_revalidate:	lu_lookup_validate,
++    d_delete:		lu_delete_dentry,
++};
++
++static int lu_readdir(struct file *f, void *dirent, filldir_t filldir)
++{
++    int res = -1;
++    char *c;
++    struct qstr qname;
++    unsigned long ino;
++    struct iovec siov[2], riov;
++    struct server_slot *slot;
++    unsigned short offset;
++    
++    TRACE("in\n");
++    
++    if((slot = lu_getslot(GET_INFO(f->f_dentry->d_sb))) == NULL)
++	return -ERESTARTSYS;
++
++    if(lu_getname(f->f_dentry, slot->s_buf, LU_MAXDATA) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++
++    TRACE("reading %s, offset %u...\n", slot->s_buf, (unsigned)f->f_pos);
++    res = 0;
++    
++    switch((unsigned int)f->f_pos){
++
++    case 0:
++	if(filldir(dirent, ".", 1, 0, f->f_dentry->d_inode->i_ino, DT_DIR) < 0)
++	    goto out;
++	f->f_pos++;
++
++    case 1:
++	if(filldir(dirent, "..", 2, 1, f->f_dentry->d_parent->d_inode->i_ino, DT_DIR) < 0)
++	    goto out;
++	f->f_pos++;
++
++    default:
++	offset = f->f_pos;
++	siov[0].iov_base = &offset;
++	siov[0].iov_len = sizeof(unsigned short);
++	siov[1].iov_base = slot->s_buf;
++	siov[1].iov_len = strlen(slot->s_buf) + 1;
++	riov.iov_base = slot->s_buf;
++	riov.iov_len = LU_MAXDATA;
++
++	if((res = lu_execute(GET_INFO(f->f_dentry->d_inode->i_sb), slot, PTYPE_READDIR, siov, 2, &riov, 1)) < 0){
++	    WARN("could not read directory content!\n");
++	    if(res == -ERESTARTSYS)
++		res = -EINTR;
++	    goto out;
++	}
++	if(PIS_ERROR(res)){
++	    WARN("server failure!\n");
++	    res = PERROR(res);
++	    goto out;
++	}
++	for(qname.name = slot->s_buf, c = strchr(slot->s_buf, '\n'); c != NULL; qname.name = c+1, c = strchr(c+1, '\n')){
++	    *c = 0;
++	    TRACE("direntry: %s.\n", qname.name);
++	    qname.len = strlen(qname.name);
++	    if((ino = find_inode_number(f->f_dentry, &qname)) == 0)
++		ino = iunique(f->f_dentry->d_sb, 2);
++	    if(filldir(dirent, qname.name, qname.len, f->f_pos, ino, DT_UNKNOWN) < 0)
++		break;
++	    f->f_pos++;	    
++	}
++    }
++
++    TRACE("out\n");
++ out:
++    lu_putslot(slot);
++    return res;
++}
++
++static struct dentry* lu_lookup(struct inode *dir, struct dentry *dentry)
++{
++    int res;
++    struct lufs_fattr fattr;
++    struct iovec siov, riov;
++    struct inode *inode;
++    struct server_slot *slot;
++
++    TRACE("in\n");
++
++    if((slot = lu_getslot(GET_INFO(dir->i_sb))) == NULL)
++	return ERR_PTR(-ERESTARTSYS);
++    
++    if((res = lu_getname(dentry, slot->s_buf, LU_MAXDATA)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++
++    TRACE("looking up %s\n", slot->s_buf);
++    
++    siov.iov_base = slot->s_buf;
++    siov.iov_len = strlen(slot->s_buf) + 1;
++    riov.iov_base = &fattr;
++    riov.iov_len = sizeof(struct lufs_fattr);
++
++    if((res = lu_execute(GET_INFO(dir->i_sb), slot, PTYPE_STAT, &siov, 1, &riov, 1)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("File not found...\n");
++	dentry->d_op = &lufs_dentry_operations;
++	dentry->d_time = jiffies;
++	d_add(dentry, NULL);
++	lu_putslot(slot);
++	return NULL;
++    }
++
++    lu_fixattrs(GET_INFO(dir->i_sb), &fattr);
++
++    if(dentry == dentry->d_parent)
++	fattr.f_ino = 2;
++    else 
++	fattr.f_ino = iunique(dentry->d_sb, 2);
++
++    if((inode = lu_iget(dir->i_sb, &fattr))){
++	dentry->d_op = &lufs_dentry_operations;
++	dentry->d_time = jiffies;
++	d_add(dentry, inode);
++    }
++    res = 0;
++
++ out:
++    lu_putslot(slot);
++
++    TRACE("out\n");
++    return ERR_PTR(res);
++}
++
++static int lu_instantiate(struct dentry *dentry, char *name, struct server_slot *slot)
++{
++    int res;
++    struct lufs_fattr fattr;
++    struct iovec siov, riov;
++    struct inode *inode;
++
++    TRACE("in\n");
++
++    TRACE("instantiating %s\n", name);
++    
++    siov.iov_base = name;
++    siov.iov_len = strlen(name) + 1;
++    riov.iov_base = &fattr;
++    riov.iov_len = sizeof(struct lufs_fattr);
++
++    if((res = lu_execute(GET_INFO(dentry->d_sb), slot, PTYPE_STAT, &siov, 1, &riov, 1)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("File not found...\n");
++	res = PERROR(res);
++	goto out;
++    }
++
++    lu_fixattrs(GET_INFO(dentry->d_sb), &fattr);
++
++    fattr.f_ino = iunique(dentry->d_sb, 2);
++    inode = lu_iget(dentry->d_sb, &fattr);
++
++    if(!inode){
++	res = -EACCES;
++	goto out;
++    }
++
++    d_instantiate(dentry, inode);
++    res = 0;
++
++  out:
++    TRACE("out\n");
++    return res;
++}
++
++static int lu_mkdir(struct inode *dir, struct dentry *dentry, int mode)
++{
++    int res;
++    struct server_slot *slot;
++    struct iovec iov[2];
++
++    TRACE("in\n");
++
++    if((slot = lu_getslot(GET_INFO(dentry->d_sb))) == NULL)
++	return -ERESTARTSYS;
++
++    if((res = lu_getname(dentry, slot->s_buf, LU_MAXDATA)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++    
++    iov[0].iov_base = &mode;
++    iov[0].iov_len = sizeof(mode);
++    iov[1].iov_base = slot->s_buf;
++    iov[1].iov_len = strlen(slot->s_buf) + 1;
++
++    if((res = lu_execute(GET_INFO(dentry->d_sb), slot, PTYPE_MKDIR, iov, 2, NULL, 0)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("Could not create directory.\n");
++	res = PERROR(res);
++	goto out;
++    }
++
++    res = lu_instantiate(dentry, slot->s_buf, slot);
++
++  out:
++    lu_putslot(slot);
++    
++    TRACE("out\n");
++    return res;
++}
++
++static int lu_create(struct inode *dir, struct dentry *dentry, int mode)
++{
++    int res;
++    struct server_slot *slot;
++    struct iovec iov[2];
++
++    TRACE("in\n");
++
++    if((slot = lu_getslot(GET_INFO(dentry->d_sb))) == NULL)
++	return -ERESTARTSYS;
++
++    if((res = lu_getname(dentry, slot->s_buf, LU_MAXDATA)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++    
++    iov[0].iov_base = &mode;
++    iov[0].iov_len = sizeof(mode);
++    iov[1].iov_base = slot->s_buf;
++    iov[1].iov_len = strlen(slot->s_buf) + 1;
++
++    if((res = lu_execute(GET_INFO(dentry->d_sb), slot, PTYPE_CREATE, iov, 2, NULL, 0)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("Could not create file.\n");
++	res = PERROR(res);
++	goto out;
++    }
++
++    res = lu_instantiate(dentry, slot->s_buf, slot);
++    
++  out:
++    lu_putslot(slot);
++
++    TRACE("out\n");
++    return res;
++}
++
++static int lu_rmdir(struct inode *dir, struct dentry *dentry)
++{
++    int res;
++    struct server_slot *slot;
++    struct iovec iov;
++
++    if(!d_unhashed(dentry))
++	return -EBUSY;    
++
++    TRACE("in\n");
++    
++    if((slot = lu_getslot(GET_INFO(dentry->d_sb))) == NULL)
++	return -ERESTARTSYS;
++
++    if((res = lu_getname(dentry, slot->s_buf, LU_MAXDATA)) < 0){
++	WARN("lu_getname failed!");
++	goto out;
++    }
++    
++    iov.iov_base = slot->s_buf;
++    iov.iov_len = strlen(slot->s_buf) + 1;
++
++    if((res = lu_execute(GET_INFO(dentry->d_sb), slot, PTYPE_RMDIR, &iov, 1, NULL, 0)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("rmdir failed!\n");
++	res = PERROR(res);
++	goto out;
++    }
++    res = 0;
++
++  out:
++    lu_putslot(slot);
++
++    TRACE("out\n");
++    return res;
++}
++
++static int lu_rename(struct inode *old_dir, struct dentry *old_dentry, struct inode *new_dir, struct dentry *new_dentry)
++{
++    struct server_slot *slot;
++    int res;
++    struct iovec iov[2];
++
++    TRACE("in\n");
++
++    if((slot = lu_getslot(GET_INFO(old_dentry->d_sb))) == NULL)
++	return -ERESTARTSYS;
++
++    if((res = lu_getname(old_dentry, slot->s_buf, LU_MAXPATHLEN)) < 0 ||
++       (res = lu_getname(new_dentry, &(slot->s_buf[LU_MAXPATHLEN]), LU_MAXPATHLEN)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++
++    iov[0].iov_base = slot->s_buf;
++    iov[0].iov_len = strlen(slot->s_buf) + 1;
++    iov[1].iov_base = &(slot->s_buf[LU_MAXPATHLEN]);
++    iov[1].iov_len = strlen(&(slot->s_buf[LU_MAXPATHLEN])) + 1;
++
++    if((res = lu_execute(GET_INFO(old_dentry->d_sb), slot, PTYPE_RENAME, iov, 2, NULL, 0)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("rename failed!\n");
++	res = PERROR(res);
++	goto out;
++    }
++    res = 0;
++
++  out:
++    lu_putslot(slot);
++
++    TRACE("out\n");
++    return res;
++}
++
++static int lu_unlink(struct inode *dir, struct dentry *dentry)
++{
++    int res;
++    struct server_slot *slot;
++    struct iovec iov;
++
++    TRACE("in\n");
++
++    if((slot = lu_getslot(GET_INFO(dentry->d_sb))) == NULL)
++	return -ERESTARTSYS;
++
++    if((res = lu_getname(dentry, slot->s_buf, LU_MAXPATHLEN)) < 0){
++	WARN("lu_getname failed!");
++	goto out;
++    }
++    
++    iov.iov_base = slot->s_buf;
++    iov.iov_len = strlen(slot->s_buf) + 1;
++
++    if((res = lu_execute(GET_INFO(dentry->d_sb), slot, PTYPE_UNLINK, &iov, 1, NULL, 0)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("unlink failed!\n");
++	res = PERROR(res);
++	goto out;
++    }
++    res = 0;
++
++  out:
++    lu_putslot(slot);
++
++    TRACE("out\n");
++    return res;
++}
++
++
++static int lu_link(struct dentry *old_dentry, struct inode *dir, struct dentry *dentry)
++{
++    int res;
++    struct server_slot *slot;
++    struct iovec iov[2];
++
++    TRACE("in\n");
++
++    if(S_ISDIR(old_dentry->d_inode->i_mode))
++	return -EPERM;
++
++    if(!(slot = lu_getslot(GET_INFO(old_dentry->d_sb))))
++	return -ERESTARTSYS;
++
++    if((res = lu_getname(old_dentry, slot->s_buf, LU_MAXPATHLEN)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++
++    if((res = lu_getname(dentry, &slot->s_buf[LU_MAXPATHLEN], LU_MAXPATHLEN)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++
++    iov[0].iov_base = slot->s_buf;
++    iov[0].iov_len = strlen(slot->s_buf) + 1;
++    iov[1].iov_base = &slot->s_buf[LU_MAXPATHLEN];
++    iov[1].iov_len = strlen(&slot->s_buf[LU_MAXPATHLEN]) + 1;
++
++    d_drop(dentry);
++
++    if((res = lu_execute(GET_INFO(old_dentry->d_sb), slot, PTYPE_LINK, iov, 2, NULL, 0)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("link failed!\n");
++	res = PERROR(res);
++	goto out;
++    }
++
++    res = 0;
++
++  out:
++    lu_putslot(slot);
++    TRACE("out\n");
++    return res;
++}
++
++static int lu_symlink(struct inode *dir, struct dentry *dentry, const char *symname)
++{
++    int res;
++    struct server_slot *slot;
++    struct iovec iov[2];
++
++    TRACE("in\n");
++    TRACE("symlink: %s\n", symname);
++    
++    if(strlen(symname) > LU_MAXPATHLEN - 1)
++	return -ENAMETOOLONG;
++
++    if(!(slot = lu_getslot(GET_INFO(dentry->d_sb))))
++	return -ERESTARTSYS;
++
++    if((res = lu_getname(dentry, slot->s_buf, LU_MAXPATHLEN)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++
++    TRACE("fname: %s\n", slot->s_buf);
++
++    strcpy(&slot->s_buf[LU_MAXPATHLEN], symname);
++
++    iov[0].iov_base = slot->s_buf;
++    iov[0].iov_len = strlen(slot->s_buf) + 1;
++    iov[1].iov_base = &slot->s_buf[LU_MAXPATHLEN];
++    iov[1].iov_len = strlen(&slot->s_buf[LU_MAXPATHLEN]) + 1;
++
++    d_drop(dentry);
++
++    if((res = lu_execute(GET_INFO(dentry->d_sb), slot, PTYPE_SYMLINK, iov, 2, NULL, 0)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("symlink failed!\n");
++	res = PERROR(res);
++	goto out;
++    }
++
++    res = 0;
++
++  out:
++    lu_putslot(slot);
++    TRACE("out\n");
++    return res;
++}
++
++
++
+diff -Naur linux-2.4.31/fs/lufs/file.c linux-2.4.31-lufs/fs/lufs/file.c
+--- linux-2.4.31/fs/lufs/file.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.31-lufs/fs/lufs/file.c	2005-06-03 11:31:33.000000000 +0200
+@@ -0,0 +1,338 @@
++/*
++ * file.c
++ * Copyright (C) 2002 Florin Malita <mali@go.ro>
++ *
++ * This file is part of LUFS, a free userspace filesystem implementation.
++ * See http://lufs.sourceforge.net/ for updates.
++ *
++ * LUFS is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * LUFS is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/version.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/pagemap.h>
++
++#include <asm/uaccess.h>
++#include <asm/system.h>
++
++#include <linux/smp_lock.h>
++
++#include "lufs.h"
++#include "proc.h"
++
++extern int lufs_notify_change(struct dentry*, struct iattr*);
++extern int lu_revalidate_inode(struct dentry*);
++
++static int lu_file_open(struct inode *inode, struct file *file)
++{
++    int res, gres;
++    struct server_slot *slot;
++    struct iovec iov[2];
++    unsigned flags;
++
++    TRACE("in\n");
++
++    if((gres = generic_file_open(inode, file)) < 0)
++	return gres;
++
++    TRACE("f_mode: %u, i_mode: %u\n", file->f_mode, inode->i_mode);
++    TRACE("f_flags: %u, i_flags: %u\n", file->f_flags, inode->i_flags);
++
++    if((slot = lu_getslot(GET_INFO(file->f_dentry->d_sb))) == NULL)
++	return gres;
++
++    if((res = lu_getname(file->f_dentry, slot->s_buf, LU_MAXDATA)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++
++    flags = file->f_flags & O_ACCMODE;
++    iov[0].iov_base = &flags;
++    iov[0].iov_len = sizeof(flags);
++    iov[1].iov_base = slot->s_buf;
++    iov[1].iov_len = strlen(slot->s_buf) + 1;
++
++    lu_execute(GET_INFO(file->f_dentry->d_sb), slot, PTYPE_OPEN, iov, 2, NULL, 0);
++
++out:
++    lu_putslot(slot);
++
++    TRACE("out\n");
++    return gres;
++}
++
++static int lu_file_release(struct inode *inode, struct file *file)
++{
++    int res;
++    struct server_slot *slot;
++    struct iovec iov;
++
++    TRACE("in\n");
++
++    if((slot = lu_getslot(GET_INFO(file->f_dentry->d_sb))) == NULL)
++	return -ERESTARTSYS;
++
++    if((res = lu_getname(file->f_dentry, slot->s_buf, LU_MAXPATHLEN)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++    
++    iov.iov_base = slot->s_buf;
++    iov.iov_len = strlen(slot->s_buf) + 1;
++
++    if((res = lu_execute(GET_INFO(file->f_dentry->d_sb), slot, PTYPE_RELEASE, &iov, 1, NULL, 0)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("release failed\n");
++	res = PERROR(res);
++	goto out;
++    }
++    
++    res = 0;
++
++out:
++    lu_putslot(slot);
++
++    TRACE("out\n");
++    return res;
++}
++
++static int lu_file_read(struct file *filp, char *buf, size_t count, loff_t *ppos)
++{
++    struct dentry *dentry = filp->f_dentry;
++    int res;
++
++    TRACE("in\n");
++
++    if(!(res = lu_revalidate_inode(dentry)))
++	res = generic_file_read(filp, buf, count, ppos);
++
++    TRACE("out\n");
++    
++    return res;
++}
++
++static int lu_file_readpage(struct file *f, struct page *p)
++{
++    int res;
++    struct iovec siov[3], riov;
++    long long offset;
++    unsigned long count;
++    struct server_slot *slot;
++
++    TRACE("in\n");
++
++    if((slot = lu_getslot(GET_INFO(f->f_dentry->d_sb))) == NULL)
++	return -ERESTARTSYS;
++
++    get_page(p);
++
++    if((res = lu_getname(f->f_dentry, slot->s_buf, LU_MAXDATA)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++
++    offset = p->index << PAGE_CACHE_SHIFT;
++    count = PAGE_SIZE;
++
++    siov[0].iov_base = &offset;
++    siov[0].iov_len = sizeof(offset);
++    siov[1].iov_base = &count;
++    siov[1].iov_len = sizeof(count);
++    siov[2].iov_base = slot->s_buf;
++    siov[2].iov_len = strlen(slot->s_buf) + 1;
++
++    riov.iov_base = page_address(p);
++    riov.iov_len = count;
++
++    if((res = lu_execute(GET_INFO(f->f_dentry->d_sb), slot, PTYPE_READ, siov, 3, &riov, 1)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("read failed\n");
++	res = PERROR(res);
++	goto out;
++    }
++    
++    flush_dcache_page(p);
++    SetPageUptodate(p);
++    res = 0;
++    
++  out:
++    lu_putslot(slot);
++    UnlockPage(p);
++    put_page(p);
++        
++    TRACE("out\n");
++    return res;
++}
++
++static int lu_file_writepage(struct page *p)
++{
++    TRACE("in\n");
++
++    TRACE("out\n");
++    return -1;
++}
++
++static int lu_file_preparewrite(struct file *f, struct page *p, unsigned offset, unsigned to)
++{
++    TRACE("in\n");
++
++    TRACE("out\n");
++
++    return 0;
++}
++
++static int lu_file_commitwrite(struct file *f, struct page *p, unsigned offset, unsigned to)
++{
++    int res;
++    struct server_slot *slot;
++    struct iovec iov[4];
++    char *buf;
++    long long off;
++    unsigned long cnt;
++
++    TRACE("in\n");
++
++    if((slot = lu_getslot(GET_INFO(f->f_dentry->d_sb))) == NULL)
++	return -ERESTARTSYS;
++
++    if((res = lu_getname(f->f_dentry, slot->s_buf, LU_MAXDATA)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out2;
++    }
++
++    lock_kernel();
++
++    buf = kmap(p) + offset;
++    cnt = to - offset;
++    off = offset + (((long long)p->index) << PAGE_CACHE_SHIFT);
++
++    iov[0].iov_base = &off;
++    iov[0].iov_len = sizeof(off);
++    iov[1].iov_base = &cnt;
++    iov[1].iov_len = sizeof(cnt);
++    iov[2].iov_base = slot->s_buf;
++    iov[2].iov_len = strlen(slot->s_buf) + 1;
++    iov[3].iov_base = buf;
++    iov[3].iov_len = cnt;
++
++    TRACE("write %s, offset %Ld, count %d\n", slot->s_buf, off, (int)cnt);
++
++    if((res = lu_execute(GET_INFO(f->f_dentry->d_sb), slot, PTYPE_WRITE, iov, 4, NULL, 0)) < 0)
++	goto out1;
++
++
++    if(PIS_ERROR(res)){
++	TRACE("write failed\n");
++	res = PERROR(res);
++	goto out1;
++    }
++
++    f->f_dentry->d_inode->i_mtime = f->f_dentry->d_inode->i_atime = CURRENT_TIME;
++    if(off + cnt > f->f_dentry->d_inode->i_size)
++	f->f_dentry->d_inode->i_size = off + cnt;
++
++    res = cnt;
++
++  out1:
++    kunmap(p);
++    unlock_kernel();
++  out2:
++    lu_putslot(slot);
++    TRACE("out\n");
++    return res;
++}
++
++static int lu_file_mmap(struct file *filp, struct vm_area_struct *vma)
++{
++    struct dentry *dentry = filp->f_dentry;
++    int res;
++
++    TRACE("in\n");
++
++    if(!(res = lu_revalidate_inode(dentry)))
++	res = generic_file_mmap(filp, vma);
++
++    TRACE("out\n");
++
++    return res;
++}
++
++static ssize_t lu_file_write(struct file *filp, const char *buf, size_t count, loff_t *ppos)
++{
++    struct dentry *dentry = filp->f_dentry;
++    ssize_t res;
++
++    TRACE("in\n");
++
++    if(!(res = lu_revalidate_inode(dentry)) && (count > 0))
++	res = generic_file_write(filp, buf, count, ppos);
++
++    TRACE("out\n");
++
++    return res;
++}
++
++/*
++ *  Without this function, fsync() returns EINVAL indicating that the
++ *  file is special (eg pipe or socket) and does not support
++ *  synchronization.
++ *
++ *  This causes, for example, Emacs to report "Writing file: Invalid
++ *  argument, <filename>" when saving a file to a lufs file system.
++ *
++ *  The opengroup spec states "It is explicitly intended that a null
++ *  implementation is permitted." This is therefore a quick but valid
++ *  hack to avoid this problem.
++ *
++ *  See http://www.moses.uklinux.net/patches/lki-3.html#ss3.4
++ *      http://www.opengroup.org/onlinepubs/007904975/functions/fsync.html
++ * 
++ *  James Marsh <marshj@cs.man.ac.uk> 22-Apr-2003 
++ */
++static int lu_file_fsync(struct file *filp, struct dentry *dentryp, int datasync)
++{    
++    return 0;
++}
++
++struct file_operations lu_file_operations = {
++    llseek:	generic_file_llseek,
++    read:	lu_file_read,
++    write:	lu_file_write,
++    mmap:	lu_file_mmap,
++    open:	lu_file_open,
++    release:	lu_file_release,
++    fsync:      lu_file_fsync
++};
++
++struct inode_operations lu_file_inode_operations = {
++    revalidate:	lu_revalidate_inode,
++    setattr:	lufs_notify_change,
++};
++
++struct address_space_operations lu_file_aops = {
++    readpage:	       	lu_file_readpage,
++    writepage:		lu_file_writepage,
++    prepare_write:	lu_file_preparewrite,
++    commit_write:	lu_file_commitwrite,
++};
++
++
++
+diff -Naur linux-2.4.31/fs/lufs/fs.h linux-2.4.31-lufs/fs/lufs/fs.h
+--- linux-2.4.31/fs/lufs/fs.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.31-lufs/fs/lufs/fs.h	2005-06-03 11:31:33.000000000 +0200
+@@ -0,0 +1,112 @@
++/*
++ * lufs.h
++ * Copyright (C) 2002 Florin Malita <mali@go.ro>
++ *
++ * This file is part of LUFS, a free userspace filesystem implementation.
++ * See http://lufs.sourceforge.net/ for updates.
++ *
++ * LUFS is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * LUFS is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef _LUFS_FS_H_
++#define _LUFS_FS_H_
++
++#include <sys/types.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++struct dir_cache;
++struct directory;
++struct lufs_fattr;
++struct file_system;
++struct list_head;
++struct dir_cache;
++
++#define MAX_LEN		64
++
++struct credentials{
++    char	user[MAX_LEN];
++    char	group[MAX_LEN];
++    uid_t	uid;
++    gid_t	gid;
++};
++
++
++struct directory* lu_cache_mkdir(char*);
++int lu_cache_add2dir(struct directory*, char*, char*, struct lufs_fattr*);
++int lu_cache_lookup(struct dir_cache*, char*, char*, struct lufs_fattr*, char*, int);
++void lu_cache_add_dir(struct dir_cache*, struct directory*);
++void lu_cache_killdir(struct directory*);
++
++int lu_check_to(int, int, int);
++int lu_atomic_read(int, char*, int, int);
++int lu_atomic_write(int, char*, int, int);
++
++int lu_opt_loadcfg(struct list_head*, char*);
++int lu_opt_parse(struct list_head*, char*, char*);
++int lu_opt_getint(struct list_head*, char*, char*, long int*, int);
++const char* lu_opt_getchar(struct list_head*, char*, char*);
++
++
++#ifdef __cplusplus
++} /* end of extern "C" { */
++#endif
++
++#ifdef TRACE
++#undef TRACE
++#endif
++#ifdef WARN
++#undef WARN
++#endif
++#ifdef ERROR
++#undef ERROR
++#endif
++
++#ifdef __cplusplus
++
++#include <iostream>
++
++#ifdef DEBUG
++#define TRACE(x) 	cout<<std::hex<<"["<<getpid()<<"]("<<__func__<<")"<<x<<"\n"
++#define WARN(x)		cerr<<std::hex<<"["<<getpid()<<"]("<<__func__<<")"<<x<<"\n"
++#define ERROR(x)	cerr<<std::hex<<"["<<getpid()<<"]("<<__func__<<")"<<x<<"\n"
++#else
++#define TRACE(x...)	do{}while(0)
++#define WARN(x...)	do{}while(0)
++#define ERROR(x...)	cerr<<x<<"\n"
++#endif
++
++#else
++
++#include <stdio.h>
++
++#ifdef DEBUG
++#define TRACE(x...)	do{fprintf(stdout, "[%x](%s) ", getpid(), __func__); fprintf(stdout, x); fprintf(stdout, "\n");}while(0)
++#define WARN(x...)	do{fprintf(stdout, "[%x](%s) ", getpid(), __func__); fprintf(stdout, x); fprintf(stdout, "\n");}while(0)
++#define ERROR(x...)	do{fprintf(stderr, "[%x](%s) ", getpid(), __func__); fprintf(stdout, x); fprintf(stdout, "\n");}while(0)
++#else
++#define TRACE(x...)	do{}while(0)
++#define WARN(x...)	do{}while(0)
++#define ERROR(x...)	do{fprintf(stderr, x); fprintf(stderr, "\n");}while(0)
++#endif
++
++#endif
++
++
++
++#endif
++
+diff -Naur linux-2.4.31/fs/lufs/inode.c linux-2.4.31-lufs/fs/lufs/inode.c
+--- linux-2.4.31/fs/lufs/inode.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.31-lufs/fs/lufs/inode.c	2005-06-03 11:31:33.000000000 +0200
+@@ -0,0 +1,519 @@
++/*
++ * inode.c
++ * Copyright (C) 2002 Florin Malita <mali@go.ro>
++ *
++ * This file is part of LUFS, a free userspace filesystem implementation.
++ * See http://lufs.sourceforge.net/ for updates.
++ *
++ * LUFS is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * LUFS is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/version.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/fs.h>
++#include <linux/slab.h>
++#include <linux/list.h>
++#include <linux/smp_lock.h>
++#include <linux/signal.h>
++#include <linux/sched.h>
++
++#include <asm/system.h>
++#include <asm/uaccess.h>
++
++#include "lufs.h"
++#include "proc.h"
++
++MODULE_AUTHOR("Florin Malita <mali@go.ro>");
++MODULE_DESCRIPTION("Linux Userland Filesystem");
++#ifdef MODULE_LICENSE
++MODULE_LICENSE("GPL");
++#endif
++
++extern struct file_operations lu_dir_operations, lu_file_operations;
++extern struct inode_operations lu_dir_inode_operations, lu_file_inode_operations, lu_symlink_inode_operations;
++extern struct address_space_operations lu_file_aops;
++extern struct dentry_operations lufs_dentry_operations;
++
++static void lu_delete_inode(struct inode*);
++static void lu_put_super(struct super_block*);
++static int  lu_statfs(struct super_block*, struct statfs*);
++
++static struct super_operations lu_sops = {
++    put_inode:		force_delete,
++    delete_inode:	lu_delete_inode,
++    put_super:		lu_put_super,
++    statfs:		lu_statfs,
++};
++
++static void parse_options(struct lufs_sb_info *server, char *opts)
++{
++    char *p, *q;
++    int len, i;
++
++    if(!opts)
++	return;
++
++    len = strlen(opts);
++
++    for(p = strtok(opts, ","); p; p = strtok(NULL, ",")){
++	if(strncmp(p, "server_socket=", 14) == 0){
++	    if(strlen(p+14) > UNIX_PATH_MAX)
++		goto ugly_opts;
++	    strcpy(server->server_socket, p+14);
++	    TRACE("server_socket: %s\n", server->server_socket);
++	}else 
++	if(strncmp(p, "uid=", 4) == 0){
++	    if(current->uid)
++		ERROR("only root can use uid option!\n");
++	    else{
++		if(strlen(p+4) > 5)
++		    goto ugly_opts;
++		q = p + 4;
++		server->config.uid = simple_strtoul(q, &q, 0);
++		TRACE("uid: %d\n", server->config.uid); 
++	    }
++	}else
++	if(strncmp(p, "gid=", 4) == 0){
++	    if(current->uid)
++		ERROR("only root can use gid option!\n");
++	    else{
++		if(strlen(p+4) > 5)
++		    goto ugly_opts;
++		q = p + 4;
++		server->config.gid = simple_strtoul(q, &q, 0);
++		TRACE("gid: %d\n", server->config.gid); 
++	    }
++	}else
++	if(strncmp(p, "fmask=", 6) == 0){
++	    if(strlen(p + 6) > 3)
++		goto ugly_opts;
++	    q = p + 6;
++	    server->config.fmode = (((q[0] - '0') << 6) + ((q[1] - '0') << 3) + (q[2] - '0')) & (S_IRWXU | S_IRWXG | S_IRWXO);
++	    TRACE("fmode: %d\n", server->config.fmode);
++	}else
++	if(strncmp(p, "dmask=", 6) == 0){
++	    if(strlen(p + 6) > 3)
++		goto ugly_opts;
++	    q = p + 6;
++	    server->config.dmode = (((q[0] - '0') << 6) + ((q[1] - '0') << 3) + (q[2] - '0')) & (S_IRWXU | S_IRWXG | S_IRWXO);
++	    TRACE("dmode: %d\n", server->config.dmode);
++	}else
++	if(strncmp(p, "root=", 5) == 0){
++	    if(strlen(p+5) >= UNIX_PATH_MAX - 1)
++		goto ugly_opts;
++	    strcpy(server->root, p+5);
++	    server->rootlen = strlen(server->root);
++	    
++	    if(server->root[server->rootlen - 1] == '/'){
++		server->root[server->rootlen - 1] = 0;
++		server->rootlen--;
++	    }
++			    
++	    TRACE("remote root: %s, len: %u\n", server->root, server->rootlen);
++	}else
++	if(strncmp(p, "channels=", 9) == 0){
++	    if(strlen(p+9) > 5)
++		goto ugly_opts;
++	    q = p + 9;
++	    server->config.channels = simple_strtoul(q, &q, 0);
++	    
++	    TRACE("channels: %u\n", server->config.channels);
++	}else
++	if(strncmp(p, "own_fs", 6) == 0){
++	    server->config.own_fs = 1;
++	    TRACE("forcing ownership\n");
++	}else
++	if(strncmp(p, "server_pid=", 11) == 0){
++	    if(strlen(p+11) > 7)
++		goto ugly_opts;
++	    q = p + 11;
++	    server->server_pid = simple_strtoul(q, &q, 0);
++
++	    TRACE("server_pid: %u\n", server->server_pid);
++	}
++	   
++    }
++
++    for(i = 0; i < len; i++)
++	if(!opts[i])
++	    opts[i] = ',';
++
++    return;
++
++  ugly_opts:
++    WARN("evil options!\n");
++}
++
++static void set_inode_attr(struct inode *inode, struct lufs_fattr *fattr)
++{
++    time_t last_time = inode->i_mtime;
++    loff_t last_sz = inode->i_size;
++
++    TRACE("in\n");
++    
++    inode->i_mode = fattr->f_mode;
++    inode->i_nlink = fattr->f_nlink;
++    inode->i_uid = fattr->f_uid;
++    inode->i_gid = fattr->f_gid;
++    inode->i_ctime = fattr->f_ctime;
++    inode->i_mtime = fattr->f_mtime;
++    inode->i_atime = fattr->f_atime;
++    inode->i_blksize = fattr->f_blksize;
++    inode->i_blocks = fattr->f_blocks;
++    inode->i_size = fattr->f_size;
++
++    inode->i_rdev = 0;
++
++    if(inode->i_mtime != last_time || inode->i_size != last_sz){
++	TRACE("inode changed...\n");
++	if(!S_ISDIR(inode->i_mode))
++	    invalidate_inode_pages(inode);
++    }
++
++    TRACE("out\n");
++}
++
++static int lu_do_stat(struct dentry *dentry, struct lufs_fattr *fattr)
++{
++    struct server_slot *slot;
++    struct iovec siov, riov;
++    int res;
++
++    TRACE("in\n");
++
++    if((slot = lu_getslot(GET_INFO(dentry->d_sb))) == NULL)
++	return -ERESTARTSYS;
++
++    if((res = lu_getname(dentry, slot->s_buf, LU_MAXDATA)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++
++    TRACE("stating %s...\n", slot->s_buf);
++
++    siov.iov_base = slot->s_buf;
++    siov.iov_len = strlen(slot->s_buf) + 1;
++    riov.iov_base = fattr;
++    riov.iov_len = sizeof(struct lufs_fattr);
++
++    if((res = lu_execute(GET_INFO(dentry->d_sb), slot, PTYPE_STAT, &siov, 1, &riov, 1)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	WARN("stat failed!\n");
++	res = PERROR(res);
++	goto out;
++    }
++
++    lu_fixattrs(GET_INFO(dentry->d_sb), fattr);
++
++    res = 0;
++
++  out:
++    TRACE("out\n");
++    lu_putslot(slot);
++    return res;
++}
++
++static int lu_refresh_inode(struct dentry *dentry)
++{
++    struct inode *inode = dentry->d_inode;
++    struct lufs_fattr fattr;
++    int res;
++
++    TRACE("in\n");
++
++    if((res = lu_do_stat(dentry, &fattr)) < 0)
++	return res;
++
++    dentry->d_time = jiffies;
++
++    if(!inode)
++	return 0;
++
++    if((inode->i_mode & S_IFMT) == (fattr.f_mode & S_IFMT))
++	set_inode_attr(inode, &fattr);
++    else{
++	WARN("inode changed mode, %x to %x\n", inode->i_mode, (unsigned int)fattr.f_mode);
++	TRACE("oops!\n");
++	
++	fattr.f_mode = inode->i_mode;
++	make_bad_inode(inode);
++	inode->i_mode = fattr.f_mode;
++
++	if(!S_ISDIR(inode->i_mode))
++	    invalidate_inode_pages(inode);
++	
++	return -EIO;
++    }
++
++    TRACE("out\n");
++    return 0;
++}
++
++int lu_revalidate_inode(struct dentry *dentry)
++{
++    int res = 0;
++
++    TRACE("in\n");
++
++    lock_kernel();
++    
++    if(time_before(jiffies, dentry->d_time + LU_MAXAGE)){
++	TRACE("up-to-date, age=%lu\n", jiffies - dentry->d_time);
++	goto out;
++    }
++
++    res = lu_refresh_inode(dentry);
++
++  out:
++    unlock_kernel();
++    return res;
++}
++
++int lufs_notify_change(struct dentry *dentry, struct iattr *iattr)
++{
++    struct server_slot *slot;
++    struct iovec iov[2];
++    struct lufs_fattr fattr;
++    int res;
++
++    TRACE("in\n");
++
++    if((res = lu_do_stat(dentry, &fattr)) < 0)
++	return res;
++
++    if((slot = lu_getslot(GET_INFO(dentry->d_sb))) == NULL)
++	return -ERESTARTSYS;
++
++    if((res = lu_getname(dentry, slot->s_buf, LU_MAXDATA)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++    
++    if(iattr->ia_valid & ATTR_MODE)
++	fattr.f_mode = iattr->ia_mode;
++    if(iattr->ia_valid & ATTR_UID)
++	fattr.f_uid  = iattr->ia_uid;
++    if(iattr->ia_valid & ATTR_GID)
++	fattr.f_gid  = iattr->ia_gid;
++    if(iattr->ia_valid & ATTR_SIZE)
++	fattr.f_size = iattr->ia_size;
++    if(iattr->ia_valid & ATTR_ATIME)
++	fattr.f_atime= iattr->ia_atime;
++    if(iattr->ia_valid & ATTR_MTIME)
++	fattr.f_mtime= iattr->ia_mtime;
++    if(iattr->ia_valid & ATTR_CTIME)
++	fattr.f_ctime= iattr->ia_ctime;
++
++    iov[0].iov_base = &fattr;
++    iov[0].iov_len = sizeof(struct lufs_fattr);
++    iov[1].iov_base = slot->s_buf;
++    iov[1].iov_len = strlen(slot->s_buf) + 1;
++
++    if((res = lu_execute(GET_INFO(dentry->d_sb), slot, PTYPE_SETATTR, iov, 2, NULL, 0)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	WARN("setattr failed!\n");
++	res = PERROR(res);
++	goto out;
++    }
++
++    res = 0;
++
++    lu_refresh_inode(dentry);
++
++  out:
++    TRACE("out\n");
++    lu_putslot(slot);
++    return res;
++}
++
++
++struct inode* lu_iget(struct super_block *sb, struct lufs_fattr *fattr)
++{
++    struct inode *res;
++
++    TRACE("in\n");
++    
++    res = new_inode(sb);
++    if(!res)
++	return NULL;
++    res->i_ino = fattr->f_ino;
++    set_inode_attr(res, fattr);
++
++    if(S_ISDIR(res->i_mode)){
++	TRACE("it's a dir.\n");
++	res->i_op = &lu_dir_inode_operations;
++	res->i_fop = &lu_dir_operations;
++    }else if(S_ISLNK(res->i_mode)){
++	TRACE("it's a link.\n");
++	res->i_op = &lu_symlink_inode_operations;
++    }else{
++	TRACE("it's a file.\n");
++	res->i_op = &lu_file_inode_operations;
++	res->i_fop = &lu_file_operations;
++	res->i_data.a_ops = &lu_file_aops;
++    }
++	
++    insert_inode_hash(res);
++    return res;
++}
++ 
++static int lu_statfs(struct super_block *sb, struct statfs *attr)
++{
++    TRACE("in\n");
++    
++    attr->f_type = LU_MAGIC;
++    attr->f_bsize = LU_BLOCKSIZE;
++    attr->f_blocks = 0;
++    attr->f_namelen = LU_MAXPATHLEN;
++    attr->f_files = -1;
++    attr->f_bavail = -1;
++
++    TRACE("out\n");
++    return 0;
++}
++
++static void lu_put_super(struct super_block *sb)
++{
++    struct siginfo info;
++
++    TRACE("in\n");
++
++    info.si_signo = SIGUSR1;
++    info.si_errno = 0;
++    info.si_code = SI_USER;
++    info.si_pid = current->pid;
++    info.si_uid = current->uid;
++    
++    kill_proc_info(SIGUSR1, &info, GET_INFO(sb)->server_pid);
++
++    lu_empty_slots(GET_INFO(sb));
++    kfree(GET_INFO(sb));
++    TRACE("out\n");
++}
++
++static void lu_delete_inode(struct inode *in)
++{
++    TRACE("in\n");
++    clear_inode(in);
++    TRACE("out\n");
++}
++
++static struct super_block* lu_read_super(struct super_block *sb, void *opts, int silent)
++{
++    struct lufs_sb_info *info;
++    struct server_slot *slot;
++    struct lufs_fattr root_attr;
++    struct inode *root_inode;
++
++    int i;
++
++    TRACE("in\n");
++    
++    if(!opts){
++	ERROR("need some options here!\n");
++	goto out;
++    }
++    
++    if((info = (struct lufs_sb_info*)kmalloc(sizeof(struct lufs_sb_info), GFP_KERNEL)) == NULL){
++	ERROR("kmalloc error!\n");
++	goto out;
++    }
++    memset(info, 0, sizeof(struct lufs_sb_info));
++    info->lock = RW_LOCK_UNLOCKED;
++    INIT_LIST_HEAD(&info->slots);
++
++    info->config.uid = current->uid;
++    info->config.gid = current->gid;    
++    info->config.channels = LU_NRSLOTS;
++    
++    parse_options(info, opts);
++    
++    if(!info->server_socket[0]){
++	ERROR("no server_socket specified!\n");
++	goto out_info;
++    }
++    
++    for(i = 0; i < info->config.channels; i++){
++	if((slot = kmalloc(sizeof(struct server_slot), GFP_KERNEL)) == NULL){
++	    ERROR("kmalloc error!\n");
++	    goto out_slots;
++	}
++	memset(slot, 0, sizeof(struct server_slot));
++	init_MUTEX(&slot->s_lock);
++	if((slot->s_buf = kmalloc(LU_MAXDATA, GFP_KERNEL)) == NULL){
++	    ERROR("kmalloc error!\n");
++	    goto out_slots;
++	}
++	list_add(&slot->s_list, &info->slots);
++    }
++
++    sb->u.generic_sbp = info;
++    sb->s_blocksize = LU_BLOCKSIZE;
++    sb->s_blocksize_bits = LU_BLOCKSIZEBITS;
++    sb->s_magic = LU_MAGIC;
++    sb->s_op = &lu_sops;
++    sb->s_flags = 0;
++    sb->s_maxbytes = ((((unsigned long long)1) << 32) << LU_BLOCKSIZEBITS) - 1;
++
++    TRACE("sb->s_maxbytes=%Ld\n",sb->s_maxbytes);
++
++    lu_lookup_root(info, &root_attr);
++    root_inode = lu_iget(sb, &root_attr);
++    if(!root_inode)
++	goto out_slots;
++    sb->s_root = d_alloc_root(root_inode);
++    if(!sb->s_root)
++	goto out_slots;
++
++    sb->s_root->d_op = &lufs_dentry_operations;
++    sb->s_root->d_time = jiffies;
++
++    TRACE("mount succeded: %s\n", info->server_socket);
++    return sb;
++
++ out_slots:
++    lu_empty_slots(info);
++ out_info:
++    kfree(info);
++ out:
++    ERROR("mount failed!\n");
++    return NULL;
++}
++
++static DECLARE_FSTYPE(lu_fs_type, "lufs", lu_read_super, 0);
++
++static int __init lu_init(void)
++{
++    EXPORT_NO_SYMBOLS;
++
++    VERBOSE("UserLand File System\n");
++    VERBOSE("Copyright (c) 2002, Florin Malita\n");
++    return register_filesystem(&lu_fs_type);
++}
++
++static void __exit lu_release(void)
++{
++    VERBOSE("Unregistering lufs...\n");
++    unregister_filesystem(&lu_fs_type);
++}
++
++module_init(lu_init);
++module_exit(lu_release);
+diff -Naur linux-2.4.31/fs/lufs/lufs.h linux-2.4.31-lufs/fs/lufs/lufs.h
+--- linux-2.4.31/fs/lufs/lufs.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.31-lufs/fs/lufs/lufs.h	2005-06-03 11:31:33.000000000 +0200
+@@ -0,0 +1,87 @@
++/*
++ * lufs.h
++ * Copyright (C) 2002 Florin Malita <mali@go.ro>
++ *
++ * This file is part of LUFS, a free userspace filesystem implementation.
++ * See http://lufs.sourceforge.net/ for updates.
++ *
++ * LUFS is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * LUFS is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef _LUFS_H_
++#define _LUFS_H_
++
++#include <linux/list.h>
++#include <linux/un.h>
++#include <linux/spinlock.h>
++
++#include "proto.h"
++
++#undef TRACE
++#undef WARN
++#undef VERBOSE
++#undef ERROR
++
++#ifdef LUFS_DEBUG
++#define TRACE(x...) 	do { printk(KERN_INFO "(%s) - ", __func__); printk(x); } while(0)
++#define WARN(x...) 	do { printk(KERN_ERR "(%s) - ", __func__); printk(x); } while(0)
++#else
++#define TRACE(x...) 	do {} while(0)
++#define WARN(x...)	do {} while(0)
++#endif
++
++#ifdef LUFS_VERBOSE
++#define VERBOSE(x...) 	do { printk(KERN_INFO "(%s) - ", __func__); printk(x); } while(0)
++#else
++#define VERBOSE(x...)	do {} while(0)
++#endif
++
++#define ERROR(x...) 	do { printk(KERN_ERR "(%s) - ", __func__); printk(x); } while(0)
++
++#define GET_INFO(sb)	((struct lufs_sb_info*)sb->u.generic_sbp)
++
++#define LU_MAXPATHLEN	1024
++#define LU_MAXTRIES	10
++#define LU_MAXIOVEC	5
++#define LU_NRSLOTS	3
++#define LU_MAGIC	0xfade
++#define LU_MAXAGE	HZ*5
++
++#define LU_DEF_UID	2
++#define LU_DEF_GID	2
++
++#define LU_BLOCKSIZE	512
++#define LU_BLOCKSIZEBITS	9
++
++struct lufs_config{
++    __kernel_uid_t 	uid;
++    __kernel_gid_t	gid;
++    __kernel_mode_t	fmode;
++    __kernel_mode_t	dmode;
++    unsigned 		channels;
++    int			own_fs;
++};
++
++struct lufs_sb_info{
++    struct list_head	slots;
++    struct lufs_config	config;
++    rwlock_t		lock;
++    char 		server_socket[UNIX_PATH_MAX];
++    pid_t		server_pid;
++    char		root[UNIX_PATH_MAX];
++    unsigned 		rootlen;
++};
++
++#endif
+diff -Naur linux-2.4.31/fs/lufs/proc.c linux-2.4.31-lufs/fs/lufs/proc.c
+--- linux-2.4.31/fs/lufs/proc.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.31-lufs/fs/lufs/proc.c	2005-06-03 11:31:33.000000000 +0200
+@@ -0,0 +1,517 @@
++/*
++ * proc.c
++ * Copyright (C) 2002 Florin Malita <mali@go.ro>
++ *
++ * This file is part of LUFS, a free userspace filesystem implementation.
++ * See http://lufs.sourceforge.net/ for updates.
++ *
++ * LUFS is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * LUFS is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/version.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/socket.h>
++#include <linux/un.h>
++#include <linux/types.h>
++#include <linux/list.h>
++#include <linux/locks.h>
++#include <linux/smp_lock.h>
++
++
++#include <asm/system.h>
++#include <asm/uaccess.h>
++
++#include <net/scm.h>
++#include <net/ip.h>
++
++#include "lufs.h"
++#include "proc.h"
++
++static int sock_send(struct socket *sock, struct iovec *iov, int len)
++{
++    struct msghdr msg = {
++	msg_name:	NULL,
++	msg_namelen:	0,
++	msg_iov:	iov,
++	msg_iovlen:	len,
++	msg_control:	NULL,
++	msg_controllen:	0,
++	msg_flags:	0
++    };
++    struct scm_cookie scm;
++    int res, i, size;
++    mm_segment_t fs;
++
++    for(i = 0, size = 0; i < len; i++)
++	size += iov[i].iov_len;
++    
++    fs = get_fs();
++    set_fs(get_ds());
++
++    if((res = scm_send(sock, &msg, &scm)) >= 0){
++	res = sock->ops->sendmsg(sock, &msg, size, &scm);
++	scm_destroy(&scm);
++    }
++    set_fs(fs);
++    return res;
++}
++
++static int sock_recv(struct socket *sock, struct iovec *iov, int len, int rsize, unsigned flags)
++{
++    struct msghdr msg = {
++	msg_name:	NULL,
++	msg_namelen:	0,
++	msg_iov:	iov,
++	msg_iovlen:	len,
++	msg_control:	NULL,
++	msg_controllen:	0
++    };
++    struct scm_cookie scm;
++    mm_segment_t fs;
++    int res, i, size;
++
++    for(i = 0, size = 0; i < len; i++)
++	size += iov[i].iov_len;
++
++    if(size < rsize){
++	VERBOSE("Trying to overflow old me?! Truncating...\n");
++	rsize = size;
++    }
++
++    fs = get_fs();
++    set_fs(get_ds());
++    
++    memset(&scm, 0, sizeof(scm));
++    
++    if((res = sock->ops->recvmsg(sock, &msg, rsize, flags, &scm)) >= 0){
++	scm_recv(sock, &msg, &scm, flags);
++    }
++
++    set_fs(fs);
++    return res;
++}
++
++static int sock_connect(char *path, struct socket **s)
++{
++    struct sockaddr_un addr;
++    int res;
++
++    if(strlen(path) > UNIX_PATH_MAX - 1){
++	WARN("unix domain path too long: %s", path);
++	return -1;
++    }
++
++    addr.sun_family = AF_UNIX;
++    strcpy(addr.sun_path, path);
++
++    if((res = sock_create(PF_UNIX, SOCK_STREAM, 0, s)) < 0){
++	WARN("failed to create a unix domain socket!\n");
++	return res;
++    }
++
++    if((res = (*s)->ops->connect(*s, (struct sockaddr*)&addr, sizeof(addr), 0)) < 0){
++	WARN("failed to connect the socket: %d!\n", res);
++	return res;
++    }
++    return 0;
++}
++
++static int slot_reconnect(struct lufs_sb_info *info, struct server_slot *slot)
++{
++    int res = 0, tries = 0;
++
++    if(slot->s_sock){
++	TRACE("closing socket.\n");
++	sock_release(slot->s_sock);
++	slot->s_sock = NULL;
++    }
++
++    while(tries++ < LU_MAXTRIES && (res = sock_connect(info->server_socket, &slot->s_sock)) < 0){
++	TRACE("retrying...\n");
++	sock_release(slot->s_sock);
++	slot->s_sock = NULL;
++    }
++
++    if(res >= 0){
++	TRACE("successfully reconnected.\n");
++    }
++
++    return res;
++}
++
++void lu_empty_slots(struct lufs_sb_info *info)
++{
++    struct server_slot *slot;
++
++    while(!list_empty(&info->slots)){
++	slot = list_entry(info->slots.next, struct server_slot, s_list);
++	if(slot->s_sock)
++	    sock_release(slot->s_sock);
++	list_del(&slot->s_list);
++	if(slot->s_buf)
++	    kfree(slot->s_buf);
++	kfree(slot);
++    }
++}
++
++static int do_execute(struct socket *sock, unsigned short cmd, unsigned short msglen, struct iovec *siov, unsigned short slen, struct iovec *riov, unsigned short rlen)
++{
++    struct lu_msg msg;
++    struct iovec iov;
++    int res;
++
++    TRACE("msg_len: %d\n", msglen);
++    
++    msg.msg_version = PVERSION;
++    msg.msg_type = cmd;
++    msg.msg_datalen = msglen;
++    msg.msg_pid = current->pid;
++
++    iov.iov_base = &msg;
++    iov.iov_len = sizeof(struct lu_msg);
++
++    if((res = sock_send(sock, &iov, 1)) < 0){
++	WARN("sock_send failed!\n");
++	return res;
++    }
++    
++    if((res = sock_send(sock, siov, slen)) < 0){
++	WARN("sock_send failed!\n");
++	return res;
++    }
++
++    iov.iov_base = &msg;
++    iov.iov_len = sizeof(struct lu_msg);
++    if((res = sock_recv(sock, &iov, 1, sizeof(struct lu_msg), 0)) < 0){
++	WARN("sock_recv failed!\n");
++	return res;
++    }
++    if(res != sizeof(struct lu_msg)){
++	WARN("Ayeeee, didn't read a whole header!\n");
++	return -EBUSY;
++    }
++    
++    if((msg.msg_datalen == 0))
++	return msg.msg_type;
++
++    if(riov == NULL){
++	WARN("Unexpected data!!! Getting out of sync...\n");
++	return -1;
++    }
++    
++    if((res = sock_recv(sock, riov, rlen, msg.msg_datalen, 0)) < 0){
++	WARN("sock_recv failed!\n");
++	return res;
++    }
++
++    return msg.msg_type;
++}
++
++struct server_slot* lu_getslot(struct lufs_sb_info *info)
++{
++    struct list_head *p, *nd_best = NULL;
++    struct server_slot *slot;
++    int gotlock = 0;
++
++    /* Look for a slot used by this process before */
++    read_lock(&info->lock);
++    list_for_each(p, &info->slots)
++	if(list_entry(p, struct server_slot, s_list)->s_lastpid == current->pid){
++	    TRACE("found a previous used slot for %u.\n", current->pid);
++	    if(down_trylock(&list_entry(p, struct server_slot, s_list)->s_lock) == 0){
++		gotlock = 1;
++		break;
++	    }
++	    TRACE("oops! I still hold the lock! forget this one...\n");
++	}else 
++	    if(!nd_best){
++		nd_best = p;
++	    }
++
++    /* if we couldn't find one, take the first not locked by us */	
++    if(p == &info->slots){
++	if(!nd_best){
++	    ERROR("deadlock: all locks owned by us!\n");
++	    read_unlock(&info->lock);
++	    return NULL;
++	}else
++	    p = nd_best;
++	
++    }
++    read_unlock(&info->lock);
++
++    slot = list_entry(p, struct server_slot, s_list);
++    
++    /* Get the lock on that slot */
++    if(!gotlock)
++	if(down_interruptible(&slot->s_lock))
++	    return NULL;
++
++    slot->s_lastpid = current->pid;
++
++    /* Move it to the tail */
++    write_lock(&info->lock);
++    list_del(p);
++    list_add_tail(p, &info->slots);
++    write_unlock(&info->lock);
++
++    return slot;
++}
++
++void lu_putslot(struct server_slot *slot)
++{
++    up(&slot->s_lock);
++}
++
++int lu_execute(struct lufs_sb_info *info, struct server_slot *slot, unsigned short cmd, struct iovec *siov, unsigned short slen, struct iovec *riov, unsigned short rlen)
++{
++    int res, i, msglen;
++    struct iovec bkup[LU_MAXIOVEC];
++
++    for(i = 0, msglen = 0; i < slen; i++){
++	bkup[i] = siov[i];
++	msglen += siov[i].iov_len;
++    }
++
++    if(slot->s_sock == NULL){
++	TRACE("slot not connected.\n");
++	if((res = slot_reconnect(info, slot)) < 0){
++	    ERROR("failed to connect!\n");
++	    goto out;
++	}
++    }
++
++    if((res = do_execute(slot->s_sock, cmd, msglen, siov, slen, riov, rlen)) < 0){
++	TRACE("do_execute failed!\n");
++
++	if(signal_pending(current) && (!sigismember(&current->pending.signal, SIGPIPE))){
++	    TRACE("interrupted by a signal. disconnecting this slot...\n");
++	    sock_release(slot->s_sock);
++	    slot->s_sock = NULL;
++	    goto out;
++	}
++	
++	if(sigismember(&current->pending.signal, SIGPIPE)){
++	    TRACE("got a SIGPIPE\n");
++	    sigdelset(&current->pending.signal, SIGPIPE);
++	    current->sigpending--;
++	}
++
++	if((res = slot_reconnect(info, slot)) < 0){
++	    ERROR("could't reconnect!\n");
++	    goto out;
++	}
++	    
++	for(i = 0; i < slen; i++)
++	    siov[i] = bkup[i];
++	        
++	if((res = do_execute(slot->s_sock, cmd, msglen, siov, slen, riov, rlen)) < 0){
++	    ERROR("error executing command!\n");
++	    goto out;
++	}
++    }
++    
++ out:
++    return res;
++}
++
++int lu_getname(struct dentry *d, char *name, int max)
++{
++    int len = 0;
++    struct dentry *p;
++    struct lufs_sb_info *info = GET_INFO(d->d_sb);
++    
++    for(p = d; p != p->d_parent; p = p->d_parent)
++	len += p->d_name.len + 1;
++
++    TRACE("root: %s, rootlen: %d, namelen: %d\n", info->root, info->rootlen, len);
++    
++    if(len + info->rootlen > max)
++	return -1;
++
++    strcpy(name, info->root);
++
++    if(len + info->rootlen == 0){
++	strcat(name, "/");
++    	goto out;
++    }
++    
++    len += info->rootlen;
++
++    name[len] = 0;
++    for(p = d; p != p->d_parent; p = p->d_parent){
++	len -= p->d_name.len;
++	strncpy(&(name[len]), p->d_name.name, p->d_name.len);
++	name[--len] = '/';
++    }
++
++out:
++    TRACE("name resolved to %s\n", name);
++    return 0;
++}
++
++int lu_getname_dumb(struct dentry *d, char *name, int max)
++{
++    int len = 0;
++    struct dentry *p;
++
++    for(p = d; p != p->d_parent; p = p->d_parent)
++	len += p->d_name.len + 1;
++
++    if(len > max)
++	return -1;
++
++    if(len == 0){
++	name[0] = '/';
++	name[1] = 0;
++	goto out;
++    }
++
++    name[len] = 0;
++    for(p = d; p != p->d_parent; p = p->d_parent){
++	len -= p->d_name.len;
++	strncpy(&(name[len]), p->d_name.name, p->d_name.len);
++	name[--len] = '/';
++    }
++
++out:
++    return 0;
++}
++
++static void init_root_dirent(struct lufs_sb_info *server, struct lufs_fattr *fattr)
++{
++    memset(fattr, 0, sizeof(struct lufs_fattr));
++    fattr->f_nlink = 1;
++    fattr->f_uid = server->config.uid;
++    fattr->f_gid = server->config.gid;
++    fattr->f_blksize = 512;
++    fattr->f_ino = 2;
++    fattr->f_mtime = CURRENT_TIME;
++    fattr->f_mode = S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR | S_IXGRP | S_IXOTH | S_IFDIR | server->config.dmode;
++    fattr->f_size = 512;
++    fattr->f_blocks = 1;
++}
++
++void lu_lookup_root(struct lufs_sb_info *server, struct lufs_fattr *fattr)
++{
++    struct server_slot *slot;
++    struct iovec siov, riov;
++    int res;
++
++    TRACE("in\n");
++
++    if((slot = lu_getslot(server)) == NULL){
++	init_root_dirent(server, fattr);
++	return;
++    }
++    
++    if(server->rootlen)
++	strcpy(slot->s_buf, server->root);
++    else
++	strcpy(slot->s_buf, "/");
++	
++    TRACE("stating root %s\n", slot->s_buf);
++
++    siov.iov_base = slot->s_buf;
++    siov.iov_len = strlen(slot->s_buf) + 1;
++    riov.iov_base = fattr;
++    riov.iov_len = sizeof(struct lufs_fattr);
++
++    if((res = lu_execute(server, slot, PTYPE_STAT, &siov, 1, &riov, 1)) < 0){
++	init_root_dirent(server, fattr);
++	goto out;
++    }
++
++    if(PIS_ERROR(res)){
++	WARN("stat failed!\n");
++	init_root_dirent(server, fattr);
++	goto out;
++    }
++
++    lu_fixattrs(server, fattr);
++
++    fattr->f_ino = 2;
++
++  out:
++    TRACE("out\n");
++    lu_putslot(slot);
++}
++
++void lu_fixattrs(struct lufs_sb_info *info, struct lufs_fattr *fattr)
++{
++
++    fattr->f_blksize = LU_BLOCKSIZE;
++    
++    if(S_ISREG(fattr->f_mode) || S_ISDIR(fattr->f_mode))
++	fattr->f_blocks = (fattr->f_size + LU_BLOCKSIZE - 1) / LU_BLOCKSIZE;
++    else
++	fattr->f_blocks = 0;
++
++    if(info->config.own_fs){
++
++	if(!fattr->f_uid)
++	    fattr->f_mode = (fattr->f_mode & ~S_IRWXU) | ((fattr->f_mode & S_IRWXO)*(S_IRWXU/S_IRWXO));
++
++	if(!fattr->f_gid)
++	    fattr->f_mode = (fattr->f_mode & ~S_IRWXG) | ((fattr->f_mode & S_IRWXO)*(S_IRWXG/S_IRWXO));
++	
++	fattr->f_uid = info->config.uid;
++	fattr->f_gid = info->config.gid;
++
++    }else{
++	
++	if(fattr->f_uid)
++	    fattr->f_uid = info->config.uid;
++	else
++	    fattr->f_uid = LU_DEF_UID;
++
++	if(fattr->f_gid)
++	    fattr->f_gid = info->config.gid;
++	else
++	    fattr->f_gid = LU_DEF_GID;
++    }
++
++    if(fattr->f_mode & S_IFDIR)
++	fattr->f_mode |= info->config.dmode;
++    else
++	fattr->f_mode |= info->config.fmode;
++}
++
++void lu_xlate_symlink(char *link, char *target, char *buf)
++{
++    int i;
++    char *c1, *c2 = link;
++
++    TRACE("translating %s->%s\n", link, target);
++
++    for(c1 = strchr(link, '/'); c1 && !strncmp(link, target, c1 - link); c2 = c1, c1 = strchr(c1 + 1, '/'));
++
++    TRACE("disjoint paths: %s, %s\n", c2, target + (c2 - link));
++
++    for(i = 0, c1 = c2; (c1 = strchr(c1 + 1, '/')); i++);
++
++    strcpy(buf, "./");
++    
++    for(; i > 0; i--)
++	strcat(buf, "../");
++
++    strcat(buf, target + (c2 - link) + 1);
++    
++    TRACE("absolute link resolved to %s\n", buf);
++   
++}
++
+diff -Naur linux-2.4.31/fs/lufs/proc.h linux-2.4.31-lufs/fs/lufs/proc.h
+--- linux-2.4.31/fs/lufs/proc.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.31-lufs/fs/lufs/proc.h	2005-06-03 11:31:33.000000000 +0200
+@@ -0,0 +1,51 @@
++/*
++ * proc.h
++ * Copyright (C) 2002 Florin Malita <mali@go.ro>
++ *
++ * This file is part of LUFS, a free userspace filesystem implementation.
++ * See http://lufs.sourceforge.net/ for updates.
++ *
++ * LUFS is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * LUFS is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef _LU_PROC_H_
++#define _LU_PROC_H_
++
++#include <linux/types.h>
++#include <linux/list.h>
++#include <linux/socket.h>
++
++struct server_slot{
++    struct socket	*s_sock;
++    struct semaphore 	s_lock;
++    struct list_head 	s_list;
++    pid_t 		s_lastpid;
++    char		*s_buf;
++};
++
++struct lufs_fattr;
++
++int lu_execute(struct lufs_sb_info*, struct server_slot*, unsigned short, struct iovec*, unsigned short, struct iovec*, unsigned short);
++void lu_empty_slots(struct lufs_sb_info*);
++int lu_getname(struct dentry*, char*, int);
++int lu_getname_dumb(struct dentry*, char*, int);
++struct server_slot* lu_getslot(struct lufs_sb_info*);
++void lu_putslot(struct server_slot*);
++int lu_revalidate_inode(struct dentry*);
++void lu_lookup_root(struct lufs_sb_info*, struct lufs_fattr*);
++void lu_fixattrs(struct lufs_sb_info*, struct lufs_fattr*);
++void lu_xlate_symlink(char*, char*, char*);
++
++#endif
+diff -Naur linux-2.4.31/fs/lufs/proto.h linux-2.4.31-lufs/fs/lufs/proto.h
+--- linux-2.4.31/fs/lufs/proto.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.31-lufs/fs/lufs/proto.h	2005-06-03 11:31:33.000000000 +0200
+@@ -0,0 +1,106 @@
++/*
++ * proto.h
++ * Copyright (C) 2002 Florin Malita <mali@go.ro>
++ *
++ * This file is part of LUFS, a free userspace filesystem implementation.
++ * See http://lufs.sourceforge.net/ for updates.
++ *
++ * LUFS is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * LUFS is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef _LU_PROTO_H_
++#define _LU_PROTO_H_
++
++#define LU_MAXDATA	4096
++
++#define PVERSION	0x02
++
++#define PTYPE_OK	0x00
++#define PTYPE_MOUNT	0x01
++#define PTYPE_READ	0x02
++#define PTYPE_WRITE	0x03
++#define PTYPE_READDIR	0x04
++#define PTYPE_STAT	0x05
++#define PTYPE_UMOUNT	0x06
++#define PTYPE_SETATTR	0x07
++#define PTYPE_MKDIR	0x08
++#define PTYPE_RMDIR	0x09
++#define PTYPE_CREATE	0x0A
++#define PTYPE_UNLINK	0x0B
++#define PTYPE_RENAME	0x0C
++#define PTYPE_OPEN	0x0D
++#define PTYPE_RELEASE	0x0E
++#define PTYPE_READLINK	0x0F
++#define PTYPE_LINK	0x10
++#define PTYPE_SYMLINK	0x11
++
++#define PTYPE_MAX	0x11
++
++
++#define PTYPE_ERROR	0x100
++
++#define PERROR(x)	(-(x & (PTYPE_ERROR - 1)) - 1)
++#define PIS_ERROR(x)	(x & PTYPE_ERROR)
++
++struct lu_msg {
++    unsigned short	msg_version;
++    unsigned short	msg_type;
++    unsigned short	msg_datalen;
++    unsigned short	msg_pid;
++};
++
++
++struct lufs_fattr{
++    unsigned long	f_ino;
++    unsigned long	f_mode;
++    unsigned long	f_nlink;
++    unsigned long	f_uid;
++    unsigned long	f_gid;
++    long long		f_size;
++    unsigned long	f_atime;
++    unsigned long	f_mtime;
++    unsigned long	f_ctime;
++    unsigned long	f_blksize;
++    unsigned long	f_blocks;
++};
++
++
++struct lufs_req_readdir{
++    unsigned short	offset;
++    char		dirname[0];
++};
++
++struct lufs_req_mkdir{
++    int		mode;
++    char	dirname[0];
++};
++
++struct lufs_req_rw{
++    long long		offset;
++    unsigned long	count;
++    char		name[0];
++};
++
++struct lufs_req_open{
++    unsigned 	mode;
++    char	name[0];
++};
++
++struct lufs_req_setattr{
++    struct lufs_fattr 	fattr;
++    char		name[0];
++};
++
++#endif
+diff -Naur linux-2.4.31/fs/lufs/symlink.c linux-2.4.31-lufs/fs/lufs/symlink.c
+--- linux-2.4.31/fs/lufs/symlink.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.31-lufs/fs/lufs/symlink.c	2005-06-03 11:31:33.000000000 +0200
+@@ -0,0 +1,185 @@
++/*
++ * symlink.c
++ * Copyright (C) 2002 Florin Malita <mali@go.ro>
++ *
++ * This file is part of LUFS, a free userspace filesystem implementation.
++ * See http://lufs.sourceforge.net/ for updates.
++ *
++ * LUFS is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * LUFS is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/version.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++
++#include <asm/uaccess.h>
++#include <asm/system.h>
++
++#include <linux/smp_lock.h>
++
++#include "lufs.h"
++#include "proc.h"
++
++extern int lufs_notify_change(struct dentry*, struct iattr*);
++
++static char failed_link[] = "invalid";
++
++static int lu_readlink(struct dentry *dentry, char *buffer, int bufflen)
++{
++    struct server_slot *slot;
++    struct iovec siov, riov;
++    int res;
++    char *cc = failed_link;
++
++    TRACE("in\n");
++
++    if((slot = lu_getslot(GET_INFO(dentry->d_sb))) == NULL)
++	return vfs_readlink(dentry, buffer, bufflen, cc);
++
++    if((res = lu_getname(dentry, slot->s_buf, LU_MAXDATA)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++
++    siov.iov_base = slot->s_buf;
++    siov.iov_len = strlen(slot->s_buf) + 1;
++    riov.iov_base = &slot->s_buf[LU_MAXPATHLEN];
++    riov.iov_len = LU_MAXPATHLEN;
++
++    if((res = lu_execute(GET_INFO(dentry->d_sb), slot, PTYPE_READLINK, &siov, 1, &riov, 1)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("read_link failed.\n");
++	res = PERROR(res);
++	goto out;
++    }
++
++    cc = &slot->s_buf[LU_MAXPATHLEN];
++    
++    TRACE("response: %s\n", cc);
++    
++    if(*cc == '/'){
++	if(GET_INFO(dentry->d_sb)->rootlen){
++	    if(strncmp(GET_INFO(dentry->d_sb)->root, cc, GET_INFO(dentry->d_sb)->rootlen)){
++		WARN("symlink outside mounted root!");
++		cc = failed_link;
++		goto out;
++	    }
++	    cc += GET_INFO(dentry->d_sb)->rootlen;
++	}
++
++	lu_xlate_symlink(slot->s_buf, slot->s_buf + LU_MAXPATHLEN, slot->s_buf);
++
++	cc = slot->s_buf;
++
++    }
++
++
++
++  out:
++    res = vfs_readlink(dentry, buffer, bufflen, cc);
++
++    lu_putslot(slot);
++
++    TRACE("out\n");
++    return res;
++}
++
++static int lu_followlink(struct dentry *dentry, struct nameidata *nd)
++{
++    struct server_slot *slot;
++    struct iovec siov, riov;
++    int res;
++    char *cc = failed_link;
++    char *tmp;
++    
++    TRACE("in\n");
++
++    if((slot = lu_getslot(GET_INFO(dentry->d_sb))) == NULL)
++	return vfs_follow_link(nd, cc);
++
++
++    if((res = lu_getname(dentry, slot->s_buf, LU_MAXDATA)) < 0){
++	WARN("lu_getname failed!\n");
++	goto out;
++    }
++
++    siov.iov_base = slot->s_buf;
++    siov.iov_len = strlen(slot->s_buf) + 1;
++    riov.iov_base = &slot->s_buf[LU_MAXPATHLEN];
++    riov.iov_len = LU_MAXPATHLEN;
++
++    if((res = lu_execute(GET_INFO(dentry->d_sb), slot, PTYPE_READLINK, &siov, 1, &riov, 1)) < 0)
++	goto out;
++
++    if(PIS_ERROR(res)){
++	TRACE("read_link failed.\n");
++	res = PERROR(res);
++	goto out;
++    }
++
++    cc = &slot->s_buf[LU_MAXPATHLEN];
++
++    if(*cc == '/'){
++	if(GET_INFO(dentry->d_sb)->rootlen){
++	    if(strncmp(GET_INFO(dentry->d_sb)->root, cc, GET_INFO(dentry->d_sb)->rootlen)){
++		WARN("symlink outside mounted root!");
++		cc = failed_link;
++		goto out;
++	    }
++	    cc += GET_INFO(dentry->d_sb)->rootlen;
++	}
++
++	lu_xlate_symlink(slot->s_buf, slot->s_buf + LU_MAXPATHLEN, slot->s_buf);
++
++	cc = slot->s_buf;
++
++    }
++
++  out:
++
++    /* vfs_follow_link somehow manages to call lookup_validate, so we need to 
++       release the slot, in case it's the only one, otherwise lu_lookup will 
++       fail (avoid a deadlock). bad, bad vfs_follow_link! you break the overall
++       beauty of no kmallocs... */
++
++    if((tmp = kmalloc(strlen(cc) + 1, GFP_KERNEL)) == NULL){
++	WARN("out of mem!\n");
++	tmp = failed_link;
++    }else    
++	strcpy(tmp, cc);
++
++    lu_putslot(slot);
++    res = vfs_follow_link(nd, tmp);
++
++    if(tmp != failed_link)
++	kfree(tmp);
++    
++    TRACE("out\n");
++    return res;
++}
++
++struct inode_operations lu_symlink_inode_operations = {
++    readlink:		lu_readlink,
++    follow_link:	lu_followlink,
++    setattr:		lufs_notify_change,
++};
++
++
++
++
++
