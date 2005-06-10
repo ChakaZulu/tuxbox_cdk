@@ -1,4 +1,7 @@
 #!/bin/sh
+
+# $Id: start_neutrino,v 1.23 2005/06/10 10:33:56 saruman Exp $
+
 date -s 010101001970
 sectionsd
 timerd
@@ -9,7 +12,6 @@ nhttpd
 neutrino
 
 pzapit -kill
-[ -e /tmp/tuxmaild.pid ] && kill $( cat /tmp/tuxmaild.pid )
 
 i=9
 while expr $i != 0 > /dev/null
@@ -17,7 +19,6 @@ do
 if pidof controld > /dev/null; then echo "Waiting for controld (max. $i seconds)"
 elif pidof timerd > /dev/null; then echo "Waiting for timerd (max. $i seconds)"
 elif pidof zapit > /dev/null; then echo "Waiting for zapit (max. $i seconds)"
-elif pidof tuxmaild > /dev/null; then echo "Waiting for tuxmaild (max. $i seconds)"
 else break;
 fi
 i=`expr $i - 1`
