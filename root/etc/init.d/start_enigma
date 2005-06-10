@@ -1,4 +1,7 @@
 #!/bin/sh
+
+# $Id: start_enigma,v 1.6 2005/06/10 10:49:13 saruman Exp $
+
 camd2
 unset TZ
 touch /tmp/.enigma
@@ -8,6 +11,7 @@ do
 	case "$?" in
 		0)
 			echo "Shutdown"
+			[ -e /tmp/tuxmaild.pid ] && kill $( cat /tmp/tuxmaild.pid )
 			rm /tmp/.enigma
 			/sbin/halt
 			;;
@@ -15,6 +19,7 @@ do
 			echo "Restart"
 			;;
 		*)
+			[ -e /tmp/tuxmaild.pid ] && kill $( cat /tmp/tuxmaild.pid )
 			rm /tmp/.enigma
 			/sbin/reboot
 			;;
