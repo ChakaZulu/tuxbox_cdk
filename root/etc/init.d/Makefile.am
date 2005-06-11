@@ -1,8 +1,8 @@
 EXTRA_DIST = \
-	rcS start start_enigma start_lcars start_neutrino start_sshd
+	rcS start start_enigma start_lcars start_neutrino start_sshd halt
 
 FILES_EXEC = \
-	rcS start start_enigma start_lcars start_neutrino start_sshd
+	rcS start start_enigma start_lcars start_neutrino start_sshd halt
 
 FILES_FLASH_RO_EXEC = \
 	rcS
