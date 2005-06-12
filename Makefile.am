@@ -73,9 +73,6 @@ $(DEPDIR)/directories:
 	-ln -s $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
 	-ln -s $(buildprefix)/linux/include/asm-generic $(hostprefix)/$(target)/include
 	-ln -s $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include
-	@if [ -e $(buildprefix)/linux/include/mtd ]; then \
-	    ln -s $(buildprefix)/linux/include/mtd $(hostprefix)/$(target)/include; \
-	fi
 if TARGETRULESET_FLASH
 	$(INSTALL) -d $(flashprefix)
 endif
@@ -95,6 +92,9 @@ endif
 		ARCH=ppc
 	$(MAKE) -C @DIR_linux@ include/linux/version.h \
 		ARCH=ppc
+	@if [ -e $(buildprefix)/linux/include/mtd ]; then \
+	    ln -sf $(buildprefix)/linux/include/mtd $(hostprefix)/$(target)/include; \
+	fi
 	touch $@
 
 $(DEPDIR)/binutils: @DEPENDS_binutils@
