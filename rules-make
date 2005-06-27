@@ -13,7 +13,7 @@
 # core
 #
 uboot;1.1.2;u-boot-1.1.2;u-boot-1.1.2.tar.bz2:u-boot-1.1.2.diff;extract:u-boot-1.1.2.tar.bz2;patch:u-boot-1.1.2.diff
-linux;2.4.31-dbox2;linux-2.4.31;linux-2.4.31.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.31-dbox2-mtd.diff.bz2;remove:linux;extract:linux-2.4.31.tar.bz2;patch:linux-2.4.31-dbox2.diff;patch:linux-2.4.31-dbox2-shift.diff;patch:linux-2.4.31-dbox2-keyboard.diff;patch:linux-2.4.31-dbox2-v4l2.diff;patch:linux-2.4.31-dbox2-cramfs.diff;patch:linux-2.4.31-dbox2-lufs.diff;patch:linux-2.4.31-dbox2-mtd.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.31/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs2.1r2-patch;link:linux-2.4.31:linux
+linux;2.4.31-dbox2;linux-2.4.31;linux-2.4.31.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.31-dbox2-mtd0305.diff.bz2;remove:linux;extract:linux-2.4.31.tar.bz2;patch:linux-2.4.31-dbox2.diff;patch:linux-2.4.31-dbox2-shift.diff;patch:linux-2.4.31-dbox2-keyboard.diff;patch:linux-2.4.31-dbox2-v4l2.diff;patch:linux-2.4.31-dbox2-cramfs.diff;patch:linux-2.4.31-dbox2-lufs.diff;patch:linux-2.4.31-dbox2-mtd0305.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.31/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs2.1r2-patch;link:linux-2.4.31:linux
 binutils;2.14.90.0.5;binutils-2.14.90.0.5;binutils-2.14.90.0.5.tar.bz2;extract:binutils-2.14.90.0.5.tar.bz2
 bootstrap_gcc;3.3.5;gcc-3.3.5;gcc-core-3.3.5.tar.bz2:gcc-core.diff;extract:gcc-core-3.3.5.tar.bz2;patch:gcc-core.diff
 gcc;3.3.5;gcc-3.3.5;gcc-core-3.3.5.tar.bz2:gcc-g++-3.3.5.tar.bz2;extract:gcc-core-3.3.5.tar.bz2;extract:gcc-g++-3.3.5.tar.bz2
