@@ -1902,6 +1902,7 @@ $(flashprefix)/.part_plugins: $(flashprefix)/.flash plugins
 	cp -pa $(targetprefix)/lib/tuxbox/plugins/*.cfg $(flashprefix)/root/lib/tuxbox/plugins/
 	cp -pa $(targetprefix)/lib/tuxbox/plugins/*.so $(flashprefix)/root/lib/tuxbox/plugins/
 	cp -pa $(targetprefix)/share/fonts/tuxtxt.ttf $(flashprefix)/root/share/fonts/
+	cp -pa $(targetprefix)/share/fonts/tuxtxt.otb $(flashprefix)/root/share/fonts/
 	cp -pa $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/root/var/tuxbox/config/
 	cp -pa $(targetprefix)/var/tuxbox/config/tuxtxt/tuxtxt.conf $(flashprefix)/root/var/tuxbox/config/tuxtxt/
 	cp -pa $(targetprefix)/share/tuxbox/sokoban $(flashprefix)/root/share/tuxbox/
