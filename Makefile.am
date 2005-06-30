@@ -2263,7 +2263,7 @@ endif
 @ARCHIVE@
 
 if MAINTAINER_MODE
-Makefile-archive: $(top_srcdir)/rules-archive
+Makefile-archive: $(top_srcdir)/rules-archive $(top_srcdir)/rules-archive.pl
 	$(top_srcdir)/rules-archive.pl $(top_srcdir)/rules-archive > Makefile-archive
 endif
 

@@ -28,6 +28,7 @@ while ( <RULES> )
       }
     }
     $output .= " || \\\n\twget -c -P Archive http://tuxbox.berlios.de/pub/tuxbox/cdk/src/" . $file;
+    $output .= "\n\t\@touch \$\@";
     $output .= "\n\n";
   }
 }
