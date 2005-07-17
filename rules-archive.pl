@@ -27,7 +27,14 @@ while ( <RULES> )
         $output .= " || \\\n\twget -c -P Archive " . $_ . "/" . $file;
       }
     }
-    $output .= " || \\\n\twget -c -P Archive http://tuxbox.berlios.de/pub/tuxbox/cdk/src/" . $file;
+    if ( $file =~ m/gz$/ )
+    {
+      $output .= " || \\\n\twget -c -P Archive ftp://ftp.berlios.de/pub/tuxbox/src/" . $file;
+    }
+    else
+    {
+      $output .= " || \\\n\twget -c -P Archive http://tuxbox.berlios.de/pub/tuxbox/cdk/src/" . $file;
+    }
     $output .= "\n\t\@touch \$\@";
     $output .= "\n\n";
   }
