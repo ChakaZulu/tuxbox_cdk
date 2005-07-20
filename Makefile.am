@@ -1805,7 +1805,7 @@ flash-plugin_dreamdata: $(flashprefix)/.part_plugin_dreamdata
 
 $(flashprefix)/.part_plugin_dreamdata: $(flashprefix)/.flash plugins mrouted
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
-	$(INSTALL) -d $(flashprefix)/root/var_init/tuxbox/config
+	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config
 	$(INSTALL) $(targetprefix)/lib/tuxbox/plugins/dreamdata.so $(flashprefix)/root/lib/tuxbox/plugins/
 	$(INSTALL) $(targetprefix)/lib/tuxbox/plugins/dreamdata.cfg $(flashprefix)/root/lib/tuxbox/plugins/
 	$(INSTALL) $(targetprefix)/var/tuxbox/config/dreamdata.xml $(flashprefix)/root/var/tuxbox/config/
