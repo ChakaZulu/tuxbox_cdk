@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: rcS.insmod,v 1.2 2005/01/30 22:41:28 alexh Exp $
+# $Id: rcS.insmod,v 1.3 2005/07/20 20:42:05 barf Exp $
 # Alles mounten
 mount -a
 
@@ -111,6 +111,7 @@ fi
   # Je nach Typ weitere Module laden
   if [ $VENDOR_ID -eq 1 ]; then
     #Nokia
+    $IM $MD/ves1820.o
     $IM $MD/ves1x93.o board_type=1
   elif [ $VENDOR_ID -eq 2 ]; then
     # Philips
