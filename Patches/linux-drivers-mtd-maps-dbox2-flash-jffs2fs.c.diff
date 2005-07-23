@@ -1,0 +1,19 @@
+--- ../maps/dbox2-flash.c	2005-07-19 21:28:26.000000000 +0200
++++ ../linux/drivers/mtd/maps/dbox2-flash.c	2005-07-23 18:40:58.446732552 +0200
+@@ -32,14 +32,8 @@
+ 	.mask_flags	= 0
+ 	},
+ 	{
+-	.name		= "root (Cramfs)",	
+-	.size		= 6528 * 1024, 
+-	.offset		= MTDPART_OFS_APPEND, 
+-	.mask_flags	= 0
+-	},
+-	{
+-	.name		= "var (JFFS2)",
+-	.size		= 1408 * 1024, 
++	.name		= "root (jffs2)",	
++	.size		= 7936 * 1024, 
+ 	.offset		= MTDPART_OFS_APPEND, 
+ 	.mask_flags	= 0
+ 	},

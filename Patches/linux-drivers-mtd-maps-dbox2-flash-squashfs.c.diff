@@ -1,0 +1,11 @@
+--- maps/dbox2-flash.c	2005-07-14 20:18:58.000000000 +0200
++++ /tuxbox/head/cdk/linux/drivers/mtd/maps/dbox2-flash.c	2005-07-17 13:05:51.650497512 +0200
+@@ -32,7 +32,7 @@
+ 	.mask_flags	= 0
+ 	},
+ 	{
+-	.name		= "root (Cramfs)",	
++	.name		= "root (Squashfs)",	
+ 	.size		= 6528 * 1024, 
+ 	.offset		= MTDPART_OFS_APPEND, 
+ 	.mask_flags	= 0
