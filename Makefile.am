@@ -85,6 +85,10 @@ $(DEPDIR)/linuxdir: @DEPENDS_linux@
 	@PREPARE_linux@
 if TARGETRULESET_FLASH
 	cat Patches/linux-$(KERNELVERSION).config-flash > @DIR_linux@/.config
+	@if [ ! -d maps ]; then \
+		mkdir maps; \
+	fi
+	cp linux/drivers/mtd/maps/dbox2-flash.c maps
 else
 	cat Patches/linux-$(KERNELVERSION).config > @DIR_linux@/.config
 endif
@@ -1707,114 +1711,609 @@ $(DEPDIR)/hostapps_cross: $(hostappsdir)/config.status
 	$(MAKE) -C $(hostappsdir)
 	touch $@
 
+################################################################
+toolcheck:
+	$(hostappsdir)/toolchecker/toolchecker.sh
+
+
+if TARGETRULESET_FLASH
 #######################
 #
 #   flash
 #
+################################################################
+#
+# Public flash targets
+#
+# flash-$gui-$rootfs-$chips
+#
+# Name for images/filesystems:
+#
+# $partition-$gui-$rootfilesystem.$type
 
-# TODO: fix the flash-* for the apps... they don't work anymore
-if TARGETRULESET_FLASH
-flash-all: flash-neutrino flash-enigma flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-ssh flash-sshd flash-lib
+# where 
+# $type in { cramfs, squashfs, jffs2fs, img1x, 2ximg2x, flfs1x, flfs2x }
+# $partition in { root, var } (empty by full images)
+# $gui in { neutrino, enigma } 
 
-flash-ssl: flash-ssh flash-sshd flash-lib
+# Public targets that build one or more images (*.img*x)
+## TODO: include all these in .PHONY
 
-flash-enigma-all: flash-enigma flash-lcdmenu flash-plugins flash-ftpd flash-lib
+flash-all-all-all: flash-neutrino-all-all flash-enigma-all-all
 
-flash-neutrino-all: flash-neutrino flash-lcdmenu flash-plugins flash-ftpd flash-dvb-tools flash-ftpfs flash-lib
+flash-all-cramfs-all: flash-neutrino-cramfs-all flash-enigma-cramfs-all
 
-flash-lcars-all: flash-lcars flash-lcdmenu flash-plugins flash-ftpd flash-lib
+flash-all-squashfs-all: flash-neutrino-squashfs-all flash-enigma-squashfs-all
 
-rebuild-flash:
-	-rm -rf $(flashprefix)/root
-	-rm -f $(flashprefix)/.flash
-	$(MAKE) flash-lib
+flash-all-jffs2fs-all: flash-neutrino-jffs2fs-all flash-enigma-jffs2fs-all
 
-$(flashprefix)/.flash: procps busybox driver tuxbox_tools lirc
-	if [ -d $(flashprefix)/root ]; then \
-		echo "directory $(flashprefix)/root already exists. please remove manually." && false; \
+
+flash-all-all-1x: flash-neutrino-all-1x flash-enigma-all-1x
+
+flash-all-all-2x: flash-neutrino-all-2x flash-enigma-all-2x
+
+flash-neutrino-all-1x: flash-neutrino-cramfs-1x flash-neutrino-squashfs-1x flash-neutrino-jffs2fs-1x
+
+flash-enigma-all-1x: flash-enigma-cramfs-1x flash-enigma-squashfs-1x flash-enigma-jffs2fs-1x
+
+flash-all-all-2x: flash-neutrino-all-2x flash-enigma-all-2x
+
+flash-neutrino-all-2x: flash-neutrino-cramfs-2x flash-neutrino-squashfs-2x flash-neutrino-jffs2fs-2x
+
+flash-enigma-all-2x: flash-enigma-cramfs-2x flash-enigma-squashfs-2x flash-enigma-jffs2fs-2x
+
+flash-neutrino-all-all: flash-neutrino-cramfs-all flash-neutrino-squashfs-all flash-neutrino-jffs2fs-all 
+
+flash-neutrino-cramfs-all: flash-neutrino-cramfs-1x flash-neutrino-cramfs-2x
+
+flash-neutrino-squashfs-all: flash-neutrino-squashfs-1x flash-neutrino-squashfs-2x
+
+flash-neutrino-jffs2fs-all: flash-neutrino-jffs2fs-1x flash-neutrino-jffs2fs-2x
+
+flash-enigma-all-all: flash-enigma-cramfs-all flash-enigma-squashfs-all flash-enigma-jffs2fs-all 
+
+flash-enigma-cramfs-all: flash-enigma-cramfs-1x flash-enigma-cramfs-2x
+
+flash-enigma-squashfs-all: flash-enigma-squashfs-1x flash-enigma-squashfs-2x
+
+flash-enigma-jffs2fs-all: flash-enigma-jffs2fs-1x flash-enigma-jffs2fs-2x
+
+flash-all-cramfs-1x: flash-enigma-cramfs-1x flash-neutrino-cramfs-1x 
+
+flash-all-cramfs-2x: flash-enigma-cramfs-2x flash-neutrino-cramfs-2x 
+
+flash-all-squashfs-1x: flash-enigma-squashfs-1x flash-neutrino-squashfs-1x 
+
+flash-all-squashfs-2x: flash-enigma-squashfs-2x flash-neutrino-squashfs-2x 
+
+flash-all-jffs2fs-1x: flash-enigma-jffs2fs-1x flash-neutrino-jffs2fs-1x 
+
+flash-all-jffs2fs-2x: flash-enigma-jffs2fs-2x flash-neutrino-jffs2fs-2x 
+
+################################################################
+# Legacy combatibility:
+# Depreciated, please do not use if possible.
+flash-all: flash-all-cramfs-all
+
+flash-neutrino flash-neutrino-all flash-cramfsneutrinoimages: flash-neutrino-cramfs-all
+
+flash-enigma: flash-all-all-all
+
+flash-enigma-all flash-enigma: flash-enigma-cramfs-all
+
+flash-cramfs flash-cramfsimages: flash-all-cramfs-all
+
+flash-squashfs flash-squashfsimages: flash-all-squashfs-all
+
+flash-squashfsneutrinoimages: flash-neutrino-squashfs-all
+
+flash-cramfsenigmaimages: flash-enigma-cramfs-all
+
+flash-squashfsenigmaimages: flash-enigma-squashfs-all
+
+flash-jffs2image: flash-neutrino-jffs2fs-all
+
+flash-dvb-tools flash-ftpd flash-ftpfs flash-lcars flash-lcars-all \
+flash-lcdmenu flash-lib flash-plugins flash-ssh flash-sshd rebuild-flash:
+	@echo Make target ``$@'' is no longer supported, see doc/README-flash.en
+	@false
+
+################################################################
+
+flash-neutrino-cramfs-1x: $(flashprefix)/.neutrino-cramfs.img1x_checked
+
+flash-neutrino-cramfs-2x: $(flashprefix)/.neutrino-cramfs.img2x_checked
+
+flash-neutrino-squashfs-1x: $(flashprefix)/.neutrino-squashfs.img1x_checked
+
+flash-neutrino-squashfs-2x: $(flashprefix)/.neutrino-squashfs.img2x_checked
+
+flash-neutrino-jffs2fs-1x: $(flashprefix)/.neutrino-jffs2fs.img1x_checked
+
+flash-neutrino-jffs2fs-2x: $(flashprefix)/.neutrino-jffs2fs.img2x_checked
+
+flash-enigma-cramfs-1x: $(flashprefix)/.enigma-cramfs.img1x_checked
+
+flash-enigma-cramfs-2x: $(flashprefix)/.enigma-cramfs.img2x_checked
+
+flash-enigma-squashfs-1x: $(flashprefix)/.enigma-squashfs.img1x_checked
+
+flash-enigma-squashfs-2x: $(flashprefix)/.enigma-squashfs.img2x_checked
+
+flash-enigma-jffs2fs-1x: $(flashprefix)/.enigma-jffs2fs.img1x_checked
+
+flash-enigma-jffs2fs-2x: $(flashprefix)/.enigma-jffs2fs.img2x_checked
+
+################################################################
+# Check generated images
+# For jffs2fs-images, we do not really care for the outcome
+# 
+$(flashprefix)/.%-jffs2fs.img1x_checked: $(flashprefix)/%-jffs2fs.img1x $(hostappsdir)/checkImage/checkImage
+	@echo jffs2fs-1x is cool
+	if $(hostappsdir)/checkImage/checkImage $<; then \
+		touch $@; \
+	else \
+		touch $@_bad; \
 	fi
-	$(INSTALL) -d $(flashprefix)/root/bin
-	$(INSTALL) -d $(flashprefix)/root/dev
-	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox
-	$(INSTALL) -d $(flashprefix)/root/mnt
-	$(INSTALL) -d $(flashprefix)/root/proc
-	$(INSTALL) -d $(flashprefix)/root/sbin
-	$(INSTALL) -d $(flashprefix)/root/share/tuxbox
-	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config
-	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/ucodes
-	$(INSTALL) -d $(flashprefix)/root/tmp
-	$(MAKE) -C root install targetprefix=$(flashprefix)/root
-	cp -pa $(bootprefix)/kernel-cdk $(flashprefix)/root/vmlinuz
-	echo "version=0200`date +%Y%m%d%H%M`" > $(flashprefix)/root/.version
-	echo "comment=Erstellt von `id -un`" >> $(flashprefix)/root/.version
-	$(INSTALL) $(targetprefix)/bin/busybox $(flashprefix)/root/bin
-	for i in `find $(targetprefix)/bin/ -lname "*busybox"` ; do cp -ap $$i $(flashprefix)/root/bin/ ; done
-	for i in `find $(targetprefix)/sbin/ -lname "*busybox"` ; do cp -pa $$i $(flashprefix)/root/sbin/ ; done
-	$(INSTALL) $(targetprefix)/bin/switch $(flashprefix)/root/bin
-	$(INSTALL) $(targetprefix)/bin/tuxinfo $(flashprefix)/root/bin
-	$(INSTALL) $(targetprefix)/sbin/lircd $(flashprefix)/root/sbin
+
+$(flashprefix)/.%-jffs2fs.img2x_checked: $(flashprefix)/%-jffs2fs.img2x $(hostappsdir)/checkImage/checkImage
+	@echo jffs2fs-2x is cool
+	if $(hostappsdir)/checkImage/checkImage $<; then \
+		touch $@; \
+	else \
+		touch $@_bad; \
+	fi
+
+$(flashprefix)/.%_checked: $(flashprefix)/% $(hostappsdir)/checkImage/checkImage
+	if $(hostappsdir)/checkImage/checkImage $<; then \
+		touch $@; \
+	else \
+		touch $@_bad; \
+		mv $< $<.bad; \
+	fi
+
+$(hostappsdir)/checkImage/checkImage:
+	make -C $(dir $@)
+
+################################################################
+# Targets for building user images (*.img*x)
+#
+# They all depend on two or three $partition-$gui.$fstype, defined in the
+# next section.
+# Here, `%' matches `1x' or `2x'
+
+# Note the difference between $partition-$gui-$fstype (directory) and 
+# $partition-$gui.$fstype (filesystem image of type $fstype).
+
+$(flashprefix)/neutrino-cramfs.img%: $(flashprefix)/cramfs.flfs% \
+		$(flashprefix)/root-neutrino.cramfs \
+		$(flashprefix)/var-neutrino.jffs2fs
+	$(hostappsdir)/flash/flashmanage.pl -i $@ -o build \
+		--part ppcboot=$< \
+		--part root=$(word 2,$+) \
+		--part var=$(word 3,$+)
+
+$(flashprefix)/neutrino-squashfs.img%: $(flashprefix)/squashfs.flfs% \
+		$(flashprefix)/root-neutrino.squashfs \
+		$(flashprefix)/var-neutrino.jffs2fs
+	$(hostappsdir)/flash/flashmanage.pl -i $@ -o build \
+		--part ppcboot=$< \
+		--part root=$(word 2,$+) \
+		--part var=$(word 3,$+)
+
+$(flashprefix)/neutrino-jffs2fs.img%: $(flashprefix)/jffs2fs.flfs% \
+		$(flashprefix)/root-neutrino.jffs2fs
+	cat $< $(word 2,$+) > $@
+
+$(flashprefix)/enigma-cramfs.img%: $(flashprefix)/cramfs.flfs% \
+		$(flashprefix)/root-enigma.cramfs \
+		$(flashprefix)/var-enigma.jffs2fs
+	$(hostappsdir)/flash/flashmanage.pl -i $@ -o build \
+		--part ppcboot=$< \
+		--part root=$(word 2,$+) \
+		--part var=$(word 3,$+)
+
+$(flashprefix)/enigma-squashfs.img%: $(flashprefix)/squashfs.flfs% \
+		$(flashprefix)/root-enigma.squashfs \
+		$(flashprefix)/var-enigma.jffs2fs
+	$(hostappsdir)/flash/flashmanage.pl -i $@ -o build \
+		--part ppcboot=$< \
+		--part root=$(word 2,$+) \
+		--part var=$(word 3,$+)
+
+$(flashprefix)/enigma-jffs2fs.img%: $(flashprefix)/jffs2fs.flfs% \
+		$(flashprefix)/root-enigma.jffs2fs
+	cat $< $(word 2,$+) > $@
+
+################################################################
+#
+#### Targets for building $partition-$gui.$fstype
+# All depend on directory, defined in the subsequent section
+
+####### var-$gui.jffs2fs
+$(flashprefix)/var-%.jffs2fs: $(flashprefix)/var-%
+	$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $< -o $@
+
+####### root-$gui.$fstype
+$(flashprefix)/root-%.cramfs: $(flashprefix)/root-%-cramfs
+	$(FAKEROOT) $(MKCRAMFS) -p -n "0106`date +%Y%m%d%H%M`" $< $@
+
+$(flashprefix)/root-%.squashfs: $(flashprefix)/root-%-squashfs
+	rm -f $@
+	$(FAKEROOT) $(MKSQUASHFS) $< $@ -be
+
+$(flashprefix)/root-%.jffs2fs: $(flashprefix)/root-%-jffs2fs
+	$(FAKEROOT) $(MKJFFS2)  -b -e 0x20000 --pad=0x7c0000 -r $< -o $@
+
+################ $fs-to-boot.flfs*x
+$(flashprefix)/cramfs.flfs1x $(flashprefix)/cramfs.flfs2x: $(hostappsdir)/mkflfs/mkflfs
+	@if [ -e $(bootdir)/u-boot-config/u-boot.config ]; then \
+	    rm $(bootdir)/u-boot-config/u-boot.config; \
+	fi 
+	ln -s $(bootdir)/u-boot-config/u-boot.cramfs.dbox2.h $(bootdir)/u-boot-config/u-boot.config
+	rm -f $(DEPDIR)/u-boot
+	rm -f $(bootprefix)/u-boot
+	$(MAKE) $(DEPDIR)/u-boot 
+	$(hostappsdir)/mkflfs/mkflfs 1x -o $(flashprefix)/cramfs.flfs1x $(bootprefix)/u-boot
+	$(hostappsdir)/mkflfs/mkflfs 2x -o $(flashprefix)/cramfs.flfs2x $(bootprefix)/u-boot
+
+$(flashprefix)/squashfs.flfs1x $(flashprefix)/squashfs.flfs2x: $(hostappsdir)/mkflfs/mkflfs
+	@if [ -e $(bootdir)/u-boot-config/u-boot.config ]; then \
+	    rm $(bootdir)/u-boot-config/u-boot.config; \
+	fi 
+	ln -s $(bootdir)/u-boot-config/u-boot.squashfs.dbox2.h $(bootdir)/u-boot-config/u-boot.config
+	rm -f $(DEPDIR)/u-boot
+	rm -f $(bootprefix)/u-boot
+	$(MAKE) $(DEPDIR)/u-boot 
+	$(hostappsdir)/mkflfs/mkflfs 1x -o $(flashprefix)/squashfs.flfs1x $(bootprefix)/u-boot
+	$(hostappsdir)/mkflfs/mkflfs 2x -o $(flashprefix)/squashfs.flfs2x $(bootprefix)/u-boot
+
+$(flashprefix)/jffs2fs.flfs1x $(flashprefix)/jffs2fs.flfs2x: $(hostappsdir)/mkflfs/mkflfs
+	@if [ -e $(bootdir)/u-boot-config/u-boot.config ]; then \
+	    rm $(bootdir)/u-boot-config/u-boot.config; \
+	fi 
+	ln -s $(bootdir)/u-boot-config/u-boot.jffs2.dbox2.h $(bootdir)/u-boot-config/u-boot.config
+	rm -f $(DEPDIR)/u-boot
+	rm -f $(bootprefix)/u-boot
+	$(MAKE) $(DEPDIR)/u-boot 
+	$(hostappsdir)/mkflfs/mkflfs 1x -o $(flashprefix)/jffs2fs.flfs1x $(bootprefix)/u-boot
+	$(hostappsdir)/mkflfs/mkflfs 2x -o $(flashprefix)/jffs2fs.flfs2x $(bootprefix)/u-boot
+
+################################################################
+# This section builds directories that can be used to create filesystems
+#
+# Pattern: $partition-$gui[-$filesystem]
+
+$(flashprefix)/var-neutrino: $(flashprefix)/root-neutrino-cramfs-p
+	rm -rf $@
+	cp -rd $</var $@
+	if [ ! -d $@/tuxbox/boot ] ; then \
+		$(INSTALL) -d $@/tuxbox/boot ; \
+	fi
+	if [ -e $(buildprefix)/defaultlogos/logo-fb -a -e $(buildprefix)/defaultlogos/logo-lcd  ] ; then \
+		 cp $(buildprefix)/defaultlogos/logo-fb $(buildprefix)/defaultlogos/logo-lcd $@/tuxbox/boot ; \
+	fi
+	$(INSTALL) -d $@/etc/init.d
+	for i in `find $</etc/init.d/ -name "start*"` ; do \
+		cp -rd $$i $@/etc/init.d/ ; \
+	done
+	cp -rd $</etc/resolv.conf $@/etc/resolv.conf
+	if [ -d $</etc/network ] ; then \
+		cp -rd $</etc/network $@/etc/network ; \
+	fi
+	if [ -d $</etc/ssh ] ; then \
+		cp -rd $</etc/ssh $@/etc/ssh ; \
+	fi
+	$(INSTALL) -d $@/plugins
+	$(INSTALL) -d $@/tuxbox/plugins
+	$(INSTALL) -d $@/bin
+	cp -p $</etc/passwd $@/etc/passwd
+	cp -p $</bin/camd2 $@/bin/camd2 
+	@if [ ! -e $</var/tuxbox/config/scart.conf ]; then \
+		cp -rd $(appsdir)/tuxbox/neutrino/daemons/controld/scart.conf $@/tuxbox/config ; \
+	fi
+	@TUXBOX_CUSTOMIZE@
+
+$(flashprefix)/var-enigma: $(flashprefix)/root-enigma-cramfs-p
+	rm -rf $@
+	cp -rd $</var $@
+	if [ ! -d $@/tuxbox/boot ] ; then \
+		$(INSTALL) -d $@/tuxbox/boot ; \
+	fi
+	if [ -e $(buildprefix)/defaultlogos/logo-fb -a -e $(buildprefix)/defaultlogos/logo-lcd  ] ; then \
+		cp $(buildprefix)/defaultlogos/logo-fb $(buildprefix)/defaultlogos/logo-lcd $@/tuxbox/boot ; \
+	fi
+	$(INSTALL) -d $@/etc/init.d
+	for i in `find $</etc/init.d/ -name "start*"` ; do \
+		cp -rd $$i $@/etc/init.d/ ; \
+	done
+	cp -rd $</etc/resolv.conf $@/etc/resolv.conf
+	if [ -d $</etc/network ] ; then \
+		cp -rd $</etc/network $@/etc/network ; \
+	fi
+	if [ -d $</etc/ssh ] ; then \
+		cp -rd $</etc/ssh $@/etc/ssh ; \
+	fi
+	$(INSTALL) -d $@/tuxbox/config/enigma
+	$(INSTALL) -d $@/plugins
+	$(INSTALL) -d $@/tuxbox/plugins
+	$(INSTALL) -d $@/bin
+	cp -p $</etc/passwd $@/etc/passwd
+	cp -p $</bin/camd2 $@/bin/camd2 
+	@if [ ! -e $</var/tuxbox/config/scart.conf ]; then \
+		cp -rd $(appsdir)/tuxbox/neutrino/daemons/controld/scart.conf $</var/tuxbox/config ; \
+	fi
+	@TUXBOX_CUSTOMIZE@
+
+$(flashprefix)/root-%-jffs2fs: $(flashprefix)/root-%-jffs2fs-p $(flashprefix)/root-%-jffs2fs-p/lib/ld.so.1
+	rm -rf $@
+	cp -rd $< $@
+	@if [ -e $(buildprefix)/root/etc/init.d/rcS.insmod ]; then \
+		mv $@/etc/init.d/rcS $</etc/init.d/rcS.modprobe && \
+		cp $(buildprefix)/root/etc/init.d/rcS.insmod $@/etc/init.d/rcS; \
+	fi
+	@if [ ! -d $@/var/tuxbox/boot ] ; then \
+		mkdir $@/var/tuxbox/boot; \
+	fi
+	if [ -e $(buildprefix)/defaultlogos/logo-fb -a -e $(buildprefix)/defaultlogos/logo-lcd  ] ; then \
+		cp $(buildprefix)/defaultlogos/logo-fb $(buildprefix)/defaultlogos/logo-lcd $@/var/tuxbox/boot ; \
+	fi
+	@TUXBOX_CUSTOMIZE@
+
+# Read-only-root mods
+$(flashprefix)/root-%: $(flashprefix)/root-%-p $(flashprefix)/root-%-p/lib/ld.so.1
+	@if [ -d $@ ] ; then \
+		rm -rf $@; \
+	fi
+	cp -dr $< $@
+	rm -fr $@/boot
+	rm -fr $@/var/*
+	echo "/dev/mtdblock/3     /var     jffs2     defaults     0 0" >> $@/etc/fstab
+	for i in `find $@/etc/init.d/ -name "start*"` ; do \
+		rm $$i ; ln -sf ../../var/etc/init.d/`basename $$i` $$i ; \
+	done
+	rm -f $@/etc/resolv.conf
+	ln -sf ../var/etc/resolv.conf $@/etc/resolv.conf
+	if [ -d $@/etc/network ] ; then \
+		rm -fr $@/etc/network ; \
+		ln -sf ../var/etc/network $@/etc/network ; \
+	fi
+	if [ -d $@/etc/ssh ] ; then \
+		rm -fr $@/etc/ssh ; \
+		ln -sf ../var/etc/ssh $@/etc/ssh ; \
+	fi
+	ln -sf /var/etc/issue.net $@/etc/issue.net
+	rm $@/etc/passwd
+	ln -sf /var/etc/passwd $@/etc/passwd
+	if [ -e $@/bin/camd2 ] ; then \
+		rm $@/bin/camd2 ;\
+	fi
+	ln -sf /var/bin/camd2 $@/bin/camd2
+	@if [ -e $(buildprefix)/root/etc/init.d/rcS.insmod ]; then \
+		mv $@/etc/init.d/rcS $@/etc/init.d/rcS.modprobe && \
+		cp $(buildprefix)/root/etc/init.d/rcS.insmod $@/etc/init.d/rcS; \
+	fi
+	@TUXBOX_CUSTOMIZE@
+
+%/lib/ld.so.1: %
+	find $</lib -maxdepth 1 -type f -o -type l | xargs rm -f
+	cp -rd $(targetprefix)/lib/libnss_dns-?.*.so $</lib
+	cp -rd $(targetprefix)/lib/libnss_files-?.*.so $</lib
+	$(MKLIBS) --target $(target) --ldlib ld.so.1 --libc-extras-dir $(targetprefix)/lib/libc_pic \
+		-d $</lib \
+		-D -L $(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins \
+		--root $< \
+		`find $</bin/ -path "*bin/?*"` \
+		`find $</lib/ -name "libnss_*"` \
+		`find $</lib/tuxbox/ -name "*.so" -type f` \
+		`find $</sbin/ -path "*sbin/?*"`
+	$(target)-strip --remove-section=.comment --remove-section=.note \
+		`find $</bin/ -path "*bin/?*"` \
+		`find $</sbin/ -path "*sbin/?*"` 2>/dev/null || /bin/true
+	$(target)-strip --remove-section=.comment --remove-section=.note --strip-unneeded \
+		`find $</lib/tuxbox -name "*.so"` 2>/dev/null || /bin/true
+	$(target)-strip $</lib/* 2>/dev/null || /bin/true
+	chmod u+rwX,go+rX -R $</
+	if [ -e $</lib/libfx2.so ]; then \
+	if [ -e $</lib/tuxbox/plugins/ ]; then \
+	rm -f $</lib/tuxbox/plugins/libfx2.so ; \
+	ln -s /lib/libfx2.so $</lib/tuxbox/plugins/libfx2.so ; \
+	fi ; \
+	fi
+	if [ -e $</bin/lufsd ]; then \
+	cp -rd $(targetprefix)/lib/liblufs-ftpfs* $</lib ; \
+	if [ -e $</lib/liblufs-ftpfs.2.0.0 ]; then \
+	rm -f $</lib/liblufs-ftpfs ; \
+	rm -f $</lib/liblufs-ftpfs.2 ; \
+	mv $</lib/liblufs-ftpfs.2.0.0 $</lib/liblufs-ftpfs.so.2.0.0 ; \
+	ln -s liblufs-ftpfs.so.2.0.0 $</lib/liblufs-ftpfs.so.2 ; \
+	ln -s liblufs-ftpfs.so.2.0.0 $</lib/liblufs-ftpfs.so ; \
+	fi ; \
+	if [ -e $</lib/liblufs-ftpfs.la ]; then \
+	rm -f $</lib/liblufs-ftpfs.la ; \
+	fi ; \
+	fi
+
+################################################################
+$(flashprefix)/root-neutrino-%-p: $(flashprefix)/root-% neutrino
+	rm -rf $@
+	cp -rd $< $@
+	$(INSTALL) -d $@/share/fonts
+	$(INSTALL) -d $@/share/iso-codes
+	$(INSTALL) -d $@/var/tuxbox/config/lirc
+	$(INSTALL) $(targetprefix)/bin/controld $(targetprefix)/bin/neutrino \
+		$(targetprefix)/bin/nhttpd $(targetprefix)/bin/timerd \
+		$@/bin
+	cp -rd $(targetprefix)/share/tuxbox/neutrino $(targetprefix)/share/tuxbox/lcdd \
+		$@/share/tuxbox
+	$(INSTALL) $(targetprefix)/bin/camd2 $@/bin
+	$(INSTALL) $(targetprefix)/bin/sectionsd $@/bin
+	$(INSTALL) $(targetprefix)/bin/pzapit $@/bin
+	$(INSTALL) $(targetprefix)/bin/satfind $@/bin
+	$(INSTALL) $(targetprefix)/bin/zapit $@/bin
+	cp $(targetprefix)/etc/init.d/start_neutrino $@/etc/init.d/start_neutrino
+	cp -rd $(appsdir)/tuxbox/enigma/data/fonts/bluebold.ttf $@/share/fonts
+	cp -rd $(appsdir)/tuxbox/enigma/data/fonts/bluehigh.ttf $@/share/fonts
+	cp -rd $(appsdir)/tuxbox/enigma/data/fonts/md_khmurabi_10.ttf $@/share/fonts
+	cp -rd $(appsdir)/tuxbox/enigma/data/fonts/pakenham.ttf $@/share/fonts
+	cp -rd $(appsdir)/tuxbox/enigma/data/fonts/unmrs.pfa $@/share/fonts
+	cp -rd $(targetprefix)/share/fonts/micron*.ttf $@/share/fonts
+	cp -rd $(targetprefix)/share/fonts/12.pcf.gz $@/share/fonts
+	cp -rd $(targetprefix)/share/fonts/14B.pcf.gz $@/share/fonts
+	cp -rd $(targetprefix)/share/fonts/15B.pcf.gz $@/share/fonts
+	cp -rd $(targetprefix)/share/iso-codes/iso-639.tab $@/share/iso-codes
+	cp -rd $(targetprefix)/var/tuxbox/config/zapit $@/var/tuxbox/config
+	cp -p $(targetprefix)/share/tuxbox/*.xml $@/share/tuxbox
+	@TUXBOX_CUSTOMIZE@
+
+$(flashprefix)/root-enigma-%-p: $(flashprefix)/root-% enigma
+	rm -rf $@
+	cp -rd $< $@
+	$(INSTALL) $(targetprefix)/bin/enigma $@/bin
+	cp -rd $(targetprefix)/share/tuxbox/enigma $@/share/tuxbox
+	$(INSTALL) $(targetprefix)/bin/camd2 $@/bin
+	$(INSTALL) -d $@/hdd/movie
+	$(INSTALL) -d $@/share/fonts
+	cp -rd $(targetprefix)/share/fonts/* $@/share/fonts 
+	cp -rd $(targetprefix)/etc/init.d/start_enigma $@/etc/init.d
+	$(INSTALL) $(targetprefix)/etc/timezone.xml $@/etc
+	cp -rd $(targetprefix)/share/zoneinfo $@/share
+	$(INSTALL) -d $@/var/etc
+	ln -sf /var/etc/localtime $@/etc
+	$(INSTALL) -d $@/share/locale
+	cp -rd $(appsdir)/tuxbox/enigma/po/locale.alias.image $@/share/locale/locale.alias
+	cd $@/lib && tar xjf $(appsdir)/tuxbox/enigma/po/locale.image.tar.bz2
+	cp -rd $(targetprefix)/share/locale/de $@/share/locale/
+	cp -rd $(targetprefix)/share/locale/fr $@/share/locale/
+	cp -rd $(targetprefix)/share/tuxbox/cables.xml $@/share/tuxbox
+	cp -rd $(targetprefix)/share/tuxbox/satellites.xml $@/share/tuxbox
+	@TUXBOX_CUSTOMIZE@
+
+################################################################
+$(flashprefix)/root-%: $(flashprefix)/root $(flashprefix)/vmlinuz-% $(flashprefix)/root/sbin/in.ftpd $(flashprefix)/root/sbin/streampes $(flashprefix)/root/bin/lufsd $(flashprefix)/root/lib/tuxbox/plugins 
+	rm -rf $@
+	cp -rd $< $@
+	cp $(word 2,$+) $@/vmlinuz
+	@TUXBOX_CUSTOMIZE@
+
+################################################################
+## flash-ftpd
+$(flashprefix)/root/sbin/in.ftpd: $(flashprefix)/root $(DEPDIR)/ftpd
+	$(INSTALL) -d $</share/empty
+	$(INSTALL) $(targetprefix)/etc/vsftpd.conf $</etc
+	$(INSTALL) $(targetprefix)/sbin/in.ftpd $</sbin
+	@TUXBOX_CUSTOMIZE@
+
+## flash-dvb-tools
+$(flashprefix)/root/sbin/streampes: $(flashprefix)/root $(DEPDIR)/dvb_tools $(DEPDIR)/zapit
+	$(INSTALL) $(targetprefix)/sbin/streamsec $</sbin
+	$(INSTALL) $(targetprefix)/sbin/streamts $</sbin
+	$(INSTALL) $(targetprefix)/sbin/udpstreampes $</sbin
+	$(INSTALL) $(targetprefix)/sbin/streampes $</sbin
+	@TUXBOX_CUSTOMIZE@
+
+## flash-ftpfs 
+$(flashprefix)/root/bin/lufsd: $(flashprefix)/root $(DEPDIR)/lufs
+	$(INSTALL) $(targetprefix)/bin/lufsmnt $</bin
+	$(INSTALL) $(targetprefix)/bin/lufsd $</bin
+	@TUXBOX_CUSTOMIZE@
+
+## flash-plugins
+$(flashprefix)/root/lib/tuxbox/plugins: $(flashprefix)/root plugins
+	$(INSTALL) -d $</lib/tuxbox/plugins
+	$(INSTALL) -d $</var/tuxbox/config/tuxtxt
+	$(INSTALL) $(targetprefix)/bin/tuxmaild $</bin
+	cp -rd $(targetprefix)/lib/tuxbox/plugins/*.cfg $</lib/tuxbox/plugins/
+	cp -rd $(targetprefix)/lib/tuxbox/plugins/*.so $</lib/tuxbox/plugins/
+	cp -rd $(targetprefix)/share/fonts/tuxtxt.ttf $</share/fonts/
+	cp -rd $(targetprefix)/share/fonts/tuxtxt.otb $</share/fonts/
+	cp -rd $(targetprefix)/var/tuxbox/config/games.cfg $</var/tuxbox/config/
+	cp -rd $(targetprefix)/var/tuxbox/config/tuxtxt/tuxtxt.conf $</var/tuxbox/config/tuxtxt/
+	cp -rd $(targetprefix)/share/tuxbox/sokoban $</share/tuxbox/
+
+$(flashprefix)/root: procps busybox driver tuxbox_tools lirc $(DEPDIR)/rootdirectories
+	rm -rf $@
+	$(INSTALL) -d $@/bin
+	$(INSTALL) -d $@/dev
+	$(INSTALL) -d $@/lib/tuxbox
+	$(INSTALL) -d $@/mnt
+	$(INSTALL) -d $@/proc
+	$(INSTALL) -d $@/sbin
+	$(INSTALL) -d $@/share/tuxbox
+	$(INSTALL) -d $@/share/fonts
+	$(INSTALL) -d $@/var/tuxbox/config
+	$(INSTALL) -d $@/var/tuxbox/ucodes
+	$(INSTALL) -d $@/tmp
+	$(MAKE) -C root install targetprefix=$@
+	echo "version=0200`date +%Y%m%d%H%M`" > $@/.version
+	echo "comment=Created by `id -un`" >> $@/.version
+	$(INSTALL) $(targetprefix)/bin/busybox $@/bin
+	for i in `find $(targetprefix)/bin/ -lname "*busybox"` ; do cp -rd $$i $@/bin/ ; done
+	for i in `find $(targetprefix)/sbin/ -lname "*busybox"` ; do cp -rd $$i $@/sbin/ ; done
+	$(INSTALL) $(targetprefix)/bin/switch $@/bin
+	$(INSTALL) $(targetprefix)/bin/tuxinfo $@/bin
+	$(INSTALL) $(targetprefix)/sbin/lircd $@/sbin
 	if [ -e $(targetprefix)/sbin/eraseall ] ; then \
-		$(INSTALL) $(targetprefix)/sbin/eraseall $(flashprefix)/root/sbin ; \
+		$(INSTALL) $(targetprefix)/sbin/eraseall $@/sbin ; \
 	fi
-	rm -f $(flashprefix)/root/etc/init.d/start_*
-	$(INSTALL) -d $(flashprefix)/root/lib/modules/$(KERNELVERSION)
-	cp -ap $(targetprefix)/lib/modules/$(KERNELVERSION)/kernel $(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
-		$(flashprefix)/root/lib/modules/$(KERNELVERSION)
-	ln -s /tmp $(flashprefix)/root/var/run
-	ln -s /var $(flashprefix)/root/root
-	@touch $@
+	rm -f $@/etc/init.d/start_*
+	$(INSTALL) -d $@/lib/modules/$(KERNELVERSION)
+	cp -rd $(targetprefix)/lib/modules/$(KERNELVERSION)/kernel $(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
+		$@/lib/modules/$(KERNELVERSION)
+	ln -s /tmp $@/var/run
+	ln -s /var $@/root
+	@TUXBOX_CUSTOMIZE@
 
-flash-ftpd: $(flashprefix)/.part_ftpd
+################################################################
+# Build different kernels for cramfs, squashfs, and jffs2fs
+$(flashprefix)/vmlinuz-cramfs: linuxdir
+	rm -f $(DEPDIR)/linuxkernel
+	cp maps/dbox2-flash.c linux/drivers/mtd/maps
+	$(MAKE) $(DEPDIR)/linuxkernel
+	cp $(bootprefix)/kernel-cdk $@
 
-$(flashprefix)/.part_ftpd: $(flashprefix)/.flash 
-	$(INSTALL) -d $(flashprefix)/root/share/empty
-	$(INSTALL) $(targetprefix)/etc/vsftpd.conf $(flashprefix)/root/etc
-	$(INSTALL) $(targetprefix)/sbin/in.ftpd $(flashprefix)/root/sbin
-	@touch $@
+$(flashprefix)/vmlinuz-%: linuxdir $(buildprefix)/Patches/linux-drivers-mtd-maps-dbox2-flash-%.c.diff
+	rm -f $(DEPDIR)/linuxkernel
+	cp maps/dbox2-flash.c linux/drivers/mtd/maps
+	(cd linux/drivers/mtd/maps; patch <  $(word 2,$+))
+	$(MAKE) $(DEPDIR)/linuxkernel
+	cp $(bootprefix)/kernel-cdk $@
 
-flash-telnetd: $(flashprefix)/.part_telnetd
+################################################################
+$(hostappsdir)/mkflfs/mkflfs:
+	cd $(hostappsdir)/mkflfs && \
+	gcc -o mkflfs mkflfs.c minilzo.c
 
-$(flashprefix)/.part_telnetd: $(flashprefix)/.flash
-	$(INSTALL) $(targetprefix)/sbin/telnetd $(flashprefix)/root/sbin
-	@touch $@
+################################################################
+# Targets, which are not executed by detault
 
-flash-ssh: $(flashprefix)/.part_ssh
-
-$(flashprefix)/.part_ssh: $(flashprefix)/.flash ssh
+$(flashprefix)/root/bin/ssh: $(flashprefix)/root $(DEPDIR)/ssh
 	$(INSTALL) -d $(flashprefix)/root/etc/ssh
 	$(INSTALL) $(targetprefix)/bin/ssh $(targetprefix)/bin/scp \
 		$(targetprefix)/bin/sftp $(flashprefix)/root/bin
-	cp -ap $(targetprefix)/etc/ssh/ssh_config $(flashprefix)/root/etc/ssh
-	@touch $@
+	cp -rd $(targetprefix)/etc/ssh/ssh_config $(flashprefix)/root/etc/ssh
 
-flash-sshd: $(flashprefix)/.part_sshd
-
-$(flashprefix)/.part_sshd: $(flashprefix)/.flash ssh
+$(flashprefix)/root/sbin/sshd: $(flashprefix)/root $(DEPDIR)/ssh
 	$(INSTALL) -d $(flashprefix)/root/etc/ssh
 	$(INSTALL) -d $(flashprefix)/root/libexec
 	$(INSTALL) -d $(flashprefix)/root/share/empty
 	$(INSTALL) $(targetprefix)/bin/ssh-keygen $(targetprefix)/bin/scp \
 		$(flashprefix)/root/bin
-	cp -ap $(targetprefix)/etc/ssh/* $(flashprefix)/root/etc/ssh
-	cp -ap $(targetprefix)/etc/init.d/start_sshd $(flashprefix)/root/etc/init.d/
+	cp -rd $(targetprefix)/etc/ssh/* $(flashprefix)/root/etc/ssh
+	cp -rd $(targetprefix)/etc/init.d/start_sshd $(flashprefix)/root/etc/init.d/
 	$(INSTALL) $(targetprefix)/libexec/sftp-server $(flashprefix)/root/libexec
 	$(INSTALL) $(targetprefix)/sbin/sshd $(flashprefix)/root/sbin
-	@touch $@
 
-flash-plugin_dreamdata: $(flashprefix)/.part_plugin_dreamdata
-
-$(flashprefix)/.part_plugin_dreamdata: $(flashprefix)/.flash plugins mrouted
+# Dreamdata (doesn't work)
+$(flashprefix)/root/bin/mrouted: $(flashprefix)/root plugins mrouted
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config
 	$(INSTALL) $(targetprefix)/lib/tuxbox/plugins/dreamdata.so $(flashprefix)/root/lib/tuxbox/plugins/
 	$(INSTALL) $(targetprefix)/lib/tuxbox/plugins/dreamdata.cfg $(flashprefix)/root/lib/tuxbox/plugins/
 	$(INSTALL) $(targetprefix)/var/tuxbox/config/dreamdata.xml $(flashprefix)/root/var/tuxbox/config/
 	$(INSTALL) $(targetprefix)/bin/mrouted $(flashprefix)/root/bin
-	@touch $@
 
-flash-dropbear: $(flashprefix)/.part_dropbear
-
-$(flashprefix)/.part_dropbear: $(flashprefix)/.flash dropbear dropbearkey
+$(flashprefix)/root/sbin/dropbear: $(flashprefix)/root dropbear dropbearkey
 	$(INSTALL) -d $(flashprefix)/root/etc/dropbear
 	$(INSTALL) $(targetprefix)/bin/dropbearmulti $(flashprefix)/root/bin
 	rm -f $(flashprefix)/root/sbin/dropbear
@@ -1823,413 +2322,61 @@ $(flashprefix)/.part_dropbear: $(flashprefix)/.flash dropbear dropbearkey
 	ln -s ../bin/dropbearmulti $(flashprefix)/root/sbin/dropbear
 	ln -s ../bin/dropbearmulti $(flashprefix)/root/sbin/dbclient
 	ln -s ../bin/dropbearmulti $(flashprefix)/root/bin/scp
-	cp -ap $(targetprefix)/etc/dropbear/* $(flashprefix)/root/etc/dropbear
-	@touch $@
+	cp -rd $(targetprefix)/etc/dropbear/* $(flashprefix)/root/etc/dropbear
 
-flash-dvb-tools: $(flashprefix)/.part_dvb_tools
-
-$(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash dvb_tools
-	$(INSTALL) $(targetprefix)/sbin/streampes $(flashprefix)/root/sbin
-	$(INSTALL) $(targetprefix)/sbin/streamsec $(flashprefix)/root/sbin
-	$(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
-	$(INSTALL) $(targetprefix)/sbin/udpstreampes $(flashprefix)/root/sbin
-	@touch $@
-
-flash-ftpfs: $(flashprefix)/.part_ftpfs
-
-$(flashprefix)/.part_ftpfs: $(flashprefix)/.flash lufs
-	$(INSTALL) $(targetprefix)/bin/lufsd $(flashprefix)/root/bin
-	$(INSTALL) $(targetprefix)/bin/lufsmnt $(flashprefix)/root/bin
-	@touch $@
-
-flash-neutrino: $(flashprefix)/.part_neutrino
-
-$(flashprefix)/.part_neutrino: $(flashprefix)/.flash neutrino root
-	$(INSTALL) -d $(flashprefix)/root/share/fonts
-	$(INSTALL) -d $(flashprefix)/root/share/iso-codes
-	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/lirc
-	$(INSTALL) $(targetprefix)/bin/controld $(targetprefix)/bin/neutrino \
-		$(targetprefix)/bin/nhttpd $(targetprefix)/bin/timerd \
-		$(flashprefix)/root/bin
-	cp -pa $(targetprefix)/share/tuxbox/neutrino $(targetprefix)/share/tuxbox/lcdd \
-		$(flashprefix)/root/share/tuxbox
-	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
-	$(INSTALL) $(targetprefix)/bin/sectionsd $(flashprefix)/root/bin
-	$(INSTALL) $(targetprefix)/bin/pzapit $(flashprefix)/root/bin
-	$(INSTALL) $(targetprefix)/bin/satfind $(flashprefix)/root/bin
-	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
-	sed -e 's/neutrino/neutrino -u -f/' $(targetprefix)/etc/init.d/start_neutrino > \
-		$(flashprefix)/root/etc/init.d/start_neutrino ;
-	chmod 755 $(flashprefix)/root/etc/init.d/start_neutrino ;
-	cp -pa $(appsdir)/tuxbox/enigma/data/fonts/bluebold.ttf $(flashprefix)/root/share/fonts
-	cp -pa $(appsdir)/tuxbox/enigma/data/fonts/bluehigh.ttf $(flashprefix)/root/share/fonts
-	cp -pa $(appsdir)/tuxbox/enigma/data/fonts/md_khmurabi_10.ttf $(flashprefix)/root/share/fonts
-	cp -pa $(appsdir)/tuxbox/enigma/data/fonts/pakenham.ttf $(flashprefix)/root/share/fonts
-	cp -pa $(appsdir)/tuxbox/enigma/data/fonts/unmrs.pfa $(flashprefix)/root/share/fonts
-	cp -pa $(targetprefix)/share/fonts/micron*.ttf $(flashprefix)/root/share/fonts
-	cp -pa $(targetprefix)/share/fonts/12.pcf.gz $(flashprefix)/root/share/fonts
-	cp -pa $(targetprefix)/share/fonts/14B.pcf.gz $(flashprefix)/root/share/fonts
-	cp -pa $(targetprefix)/share/fonts/15B.pcf.gz $(flashprefix)/root/share/fonts
-	cp -pa $(targetprefix)/share/iso-codes/iso-639.tab $(flashprefix)/root/share/iso-codes
-	cp -pa $(targetprefix)/var/tuxbox/config/zapit $(flashprefix)/root/var/tuxbox/config
-	@touch $@
-
-flash-enigma: $(flashprefix)/.part_enigma
-
-$(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma root
-	$(INSTALL) $(targetprefix)/bin/enigma $(flashprefix)/root/bin
-	cp -pa $(targetprefix)/share/tuxbox/enigma $(flashprefix)/root/share/tuxbox
-	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
-	$(INSTALL) -d $(flashprefix)/root/hdd/movie
-	$(INSTALL) -d $(flashprefix)/root/share/fonts
-	cp -pa $(targetprefix)/share/fonts/* $(flashprefix)/root/share/fonts 
-	cp -pa $(targetprefix)/etc/init.d/start_enigma $(flashprefix)/root/etc/init.d
-	$(INSTALL) $(targetprefix)/etc/timezone.xml $(flashprefix)/root/etc
-	cp -pa $(targetprefix)/share/zoneinfo $(flashprefix)/root/share
-	ln -sf /var/etc/localtime $(flashprefix)/root/etc
-	$(INSTALL) -d $(flashprefix)/root/share/locale
-	cp -pa $(appsdir)/tuxbox/enigma/po/locale.alias.image $(flashprefix)/root/share/locale/locale.alias
-	cd $(flashprefix)/root/lib && tar xjvf $(appsdir)/tuxbox/enigma/po/locale.image.tar.bz2
-	cp -pa $(targetprefix)/share/locale/de $(flashprefix)/root/share/locale/
-	cp -pa $(targetprefix)/share/locale/fr $(flashprefix)/root/share/locale/
-	@touch $@
-
-flash-lcars: $(flashprefix)/.part_lcars
-
-$(flashprefix)/.part_lcars: $(flashprefix)/.flash lcars
+$(flashprefix)/root/bin/lcars: $(flashprefix)/root lcars
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
 	$(INSTALL) $(targetprefix)/bin/lcars $(flashprefix)/root/bin
-	cp -pa $(targetprefix)/etc/init.d/start_lcars $(flashprefix)/root/etc/init.d/
-	cp -pa $(targetprefix)/share/fonts/ds9.ttf $(flashprefix)/root/share/fonts
-	cp -pa $(targetprefix)/var/tuxbox/config/lcars $(flashprefix)/root/var/tuxbox/config
-	@touch $@
+	cp -rd $(targetprefix)/etc/init.d/start_lcars $(flashprefix)/root/etc/init.d/
+	cp -rd $(targetprefix)/share/fonts/ds9.ttf $(flashprefix)/root/share/fonts
+	cp -rd $(targetprefix)/var/tuxbox/config/lcars $(flashprefix)/root/var/tuxbox/config
 
-flash-plugins: $(flashprefix)/.part_plugins
-
-$(flashprefix)/.part_plugins: $(flashprefix)/.flash plugins
-	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
-	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/tuxtxt
-	$(INSTALL) $(targetprefix)/bin/tuxmaild $(flashprefix)/root/bin
-	cp -pa $(targetprefix)/lib/tuxbox/plugins/*.cfg $(flashprefix)/root/lib/tuxbox/plugins/
-	cp -pa $(targetprefix)/lib/tuxbox/plugins/*.so $(flashprefix)/root/lib/tuxbox/plugins/
-	cp -pa $(targetprefix)/share/fonts/tuxtxt.ttf $(flashprefix)/root/share/fonts/
-	cp -pa $(targetprefix)/share/fonts/tuxtxt.otb $(flashprefix)/root/share/fonts/
-	cp -pa $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/root/var/tuxbox/config/
-	cp -pa $(targetprefix)/var/tuxbox/config/tuxtxt/tuxtxt.conf $(flashprefix)/root/var/tuxbox/config/tuxtxt/
-	cp -pa $(targetprefix)/share/tuxbox/sokoban $(flashprefix)/root/share/tuxbox/
-	@touch $@
-
-flash-lcdmenu: $(flashprefix)/.part_lcdmenu
-
-$(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash lcd
+$(flashprefix)/root/bin/lcdmenu: $(flashprefix)/root lcd
 	$(INSTALL) $(targetprefix)/bin/lcdmenu $(flashprefix)/root/bin
-	cp -pa $(targetprefix)/var/tuxbox/config/lcdmenu.conf $(flashprefix)/root/var/tuxbox/config
-	@touch $@
+	cp -rd $(targetprefix)/var/tuxbox/config/lcdmenu.conf $(flashprefix)/root/var/tuxbox/config
 
-flash-lib: $(flashprefix)/.lib
+################################################################ 
+# This .PRECIOUS-bizarreness is there to tell Make that these files are not
+# just "intermediate products", but are not to be deleted.  For the
+# directories, these are not really valuable, however, make tries to
+# delete them with rm, and this fails, generating error messages that
+# may be ugly or confusing.
 
-$(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 2>/dev/null)
-	find $(flashprefix)/root/lib -maxdepth 1 -type f -o -type l | xargs rm -f
-	cp -pa $(targetprefix)/lib/libnss_dns-?.*.so $(flashprefix)/root/lib
-	cp -pa $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
-	$(MKLIBS) --target $(target) --ldlib ld.so.1 --libc-extras-dir $(targetprefix)/lib/libc_pic \
-		-d $(flashprefix)/root/lib \
-		-D -L $(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins \
-		--root $(flashprefix)/root \
-		`find $(flashprefix)/root/bin/ -path "*bin/?*"` \
-		`find $(flashprefix)/root/lib/ -name "libnss_*"` \
-		`find $(flashprefix)/root/lib/tuxbox/ -name "*.so" -type f` \
-		`find $(flashprefix)/root/sbin/ -path "*sbin/?*"`
-	$(target)-strip --remove-section=.comment --remove-section=.note \
-		`find $(flashprefix)/root/bin/ -path "*bin/?*"` \
-		`find $(flashprefix)/root/sbin/ -path "*sbin/?*"` 2>/dev/null || /bin/true
-	$(target)-strip --remove-section=.comment --remove-section=.note --strip-unneeded \
-		`find $(flashprefix)/root/lib/tuxbox -name "*.so"` 2>/dev/null || /bin/true
-	$(target)-strip $(flashprefix)/root/lib/* 2>/dev/null || /bin/true
-	chmod u+rwX,go+rX -R $(flashprefix)/root/
-	if [ -e $(flashprefix)/root/lib/libfx2.so ]; then \
-	if [ -e $(flashprefix)/root/lib/tuxbox/plugins/ ]; then \
-	rm -f $(flashprefix)/root/lib/tuxbox/plugins/libfx2.so ; \
-	ln -s /lib/libfx2.so $(flashprefix)/root/lib/tuxbox/plugins/libfx2.so ; \
-	fi ; \
-	fi
-	if [ -e $(flashprefix)/root/bin/lufsd ]; then \
-	cp -pa $(targetprefix)/lib/liblufs-ftpfs* $(flashprefix)/root/lib ; \
-	if [ -e $(flashprefix)/root/lib/liblufs-ftpfs.2.0.0 ]; then \
-	rm -f $(flashprefix)/root/lib/liblufs-ftpfs ; \
-	rm -f $(flashprefix)/root/lib/liblufs-ftpfs.2 ; \
-	mv $(flashprefix)/root/lib/liblufs-ftpfs.2.0.0 $(flashprefix)/root/lib/liblufs-ftpfs.so.2.0.0 ; \
-	ln -s liblufs-ftpfs.so.2.0.0 $(flashprefix)/root/lib/liblufs-ftpfs.so.2 ; \
-	ln -s liblufs-ftpfs.so.2.0.0 $(flashprefix)/root/lib/liblufs-ftpfs.so ; \
-	fi ; \
-	if [ -e $(flashprefix)/root/lib/liblufs-ftpfs.la ]; then \
-	rm -f $(flashprefix)/root/lib/liblufs-ftpfs.la ; \
-	fi ; \
-	fi
-	@touch $@
+.PRECIOUS: \
+$(flashprefix)/neutrino-cramfs.img% $(flashprefix)/enigma-cramfs.img% \
+$(flashprefix)/neutrino-squashfs.img% $(flashprefix)/enigma-squashfs.img% \
+$(flashprefix)/neutrino-jffs2fs.img% $(flashprefix)/enigma-jffs2fs.img% \
+$(flashprefix)/root-%-jffs2fs  $(flashprefix)/root-% \
+$(flashprefix)/root-neutrino-%-p $(flashprefix)/root-enigma-%-p \
+$(flashprefix)/vmlinuz-%
+################################################################
+# flash-clean deletes everything created with the flash-* commands
+# flash-developerclean leaves the flfs-images and the vmlinuz-* files.
+# (This is sensible, while these files seldomly changes, and take rather
+# long to build.)
 
-flash-clean: 
-	@if [ -e $(flashprefix)/root-cramfs.img ]; then \
-	     rm $(flashprefix)/root-cramfs.img; \
-	fi
-	@if [ -e $(flashprefix)/root-squashfs.img ]; then \
-	     rm $(flashprefix)/root-squashfs.img; \
-	fi
-	@if [ -e $(flashprefix)/root ]; then \
-	     rm -rf $(flashprefix)/root; \
-	fi
-	@if [ -e $(flashprefix)/.flash ]; then \
-	     rm $(flashprefix)/.flash; \
-	fi
-	@if [ -e $(flashprefix)/.lib ]; then \
-	     rm $(flashprefix)/.lib; \
-	fi
-	@if [ -e $(flashprefix)/.part_ftpd ]; then \
-	     rm $(flashprefix)/.part_ftpd; \
-	fi
-	@if [ -e $(flashprefix)/.part_neutrino ]; then \
-	     rm $(flashprefix)/.part_neutrino; \
-	fi
-	@if [ -e $(flashprefix)/.part_enigma ]; then \
-	     rm $(flashprefix)/.part_enigma; \
-	fi
-	@if [ -e $(flashprefix)/.rojffs2neutrino ]; then \
-	     rm $(flashprefix)/.rojffs2neutrino; \
-	fi
-	@if [ -e $(flashprefix)/.rojffs2enigma ]; then \
-	     rm $(flashprefix)/.rojffs2enigma; \
-	fi
-	@if [ -e $(flashprefix)/.root-roimg ]; then \
-	     rm $(flashprefix)/.root-roimg; \
-	fi
+# flash-semiclean and flash-developerclean, are "homemade",
+# flash-clean and flash-mostlyclean have semantics like in the GNU
+# Makefile standards.
 
-flash-cramfs: $(flashprefix)/root-cramfs-neutrino.img
-	$(MAKE) flash-clean 
-	$(MAKE) $(flashprefix)/root-cramfs-enigma.img
+flash-semiclean:
+	rm -f $(flashprefix)/*.cramfs $(flashprefix)/*.squashfs \
+	$(flashprefix)/*.jffs2fs $(flashprefix)/.*-flfs \
+	$(flashprefix)/.*_checked* $(flashprefix)/.root-*
+	rm -rf $(flashprefix)/root* 
+	rm -rf $(flashprefix)/var*
 
-flash-squashfs: $(flashprefix)/root-squashfs-neutrino.img
-	$(MAKE) flash-clean 
-	$(MAKE) $(flashprefix)/root-squashfs-enigma.img
+flash-developerclean: flash-semiclean
+	rm -f $(flashprefix)/*.img*
 
-flash-cramfsimages: flash-cramfsneutrinoimages
-	$(MAKE) flash-clean 
-	$(MAKE) flash-cramfsenigmaimages
+flash-mostlyclean: flash-semiclean
+	rm -f $(flashprefix)/*.flfs*x $(flashprefix)/vmlinuz*
 
-flash-squashfsimages: flash-squashfsneutrinoimages
-	$(MAKE) flash-clean 
-	$(MAKE) flash-squashfsenigmaimages
+flash-clean: flash-mostlyclean
+	rm -f $(flashprefix)/*.img*
+endif ## TARGETRULESET_FLASH
 
-flash-cramfsneutrinoimages: $(flashprefix)/cramfsjffs2neutrino_1x.img $(flashprefix)/cramfsjffs2neutrino_2x.img
-
-flash-squashfsneutrinoimages: $(flashprefix)/squashfsjffs2neutrino_1x.img $(flashprefix)/squashfsjffs2neutrino_2x.img
-
-flash-cramfsenigmaimages: $(flashprefix)/cramfsjffs2enigma_1x.img $(flashprefix)/cramfsjffs2enigma_2x.img
-
-flash-squashfsenigmaimages: $(flashprefix)/squashfsjffs2enigma_1x.img $(flashprefix)/squashfsjffs2enigma_2x.img
-
-flash-var-jffs2: $(flashprefix)/var-jffs2.img
-
-flash-root-jffs2: $(flashprefix)/root-jffs2.img
-
-flash-jffs2image: $(flashprefix)/jffs2only.img
-
-$(flashprefix)/root-cramfs-neutrino.img: $(flashprefix)/.flash-roneutrinoroot
-	$(MAKE) flash-cramfsroot
-	mv $(flashprefix)/root-cramfs.img $(flashprefix)/root-cramfs-neutrino.img
-
-$(flashprefix)/root-squashfs-neutrino.img: $(flashprefix)/.flash-roneutrinoroot
-	$(MAKE) flash-squashfsroot
-	mv $(flashprefix)/root-squashfs.img $(flashprefix)/root-squashfs-neutrino.img
-
-$(flashprefix)/root-cramfs-enigma.img: $(flashprefix)/.flash-roenigmaroot
-	$(MAKE) flash-cramfsroot
-	mv $(flashprefix)/root-cramfs.img $(flashprefix)/root-cramfs-enigma.img
-
-$(flashprefix)/root-squashfs-enigma.img: $(flashprefix)/.flash-roenigmaroot
-	$(MAKE) flash-squashfsroot
-	mv $(flashprefix)/root-squashfs.img $(flashprefix)/root-squashfs-enigma.img
-
-$(flashprefix)/cramfsjffs2neutrino_1x.img: $(flashprefix)/root-cramfs-neutrino.img \
-		$(flashprefix)/var-jffs2.img $(flashprefix)/.cramfs-flfs
-	$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/cramfsjffs2neutrino_1x.img -o build \
-		--part ppcboot=$(flashprefix)/cramfs-flfs1x.img \
-		--part root=$(flashprefix)/root-cramfs-neutrino.img \
-		--part var=$(flashprefix)/var-jffs2.img
-
-$(flashprefix)/squashfsjffs2neutrino_1x.img: $(flashprefix)/root-squashfs-neutrino.img \
-		$(flashprefix)/var-jffs2.img $(flashprefix)/.squashfs-flfs
-	$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/squashfsjffs2neutrino_1x.img -o build \
-		--part ppcboot=$(flashprefix)/squashfs-flfs1x.img \
-		--part root=$(flashprefix)/root-squashfs-neutrino.img \
-		--part var=$(flashprefix)/var-jffs2.img
-
-$(flashprefix)/cramfsjffs2neutrino_2x.img: $(flashprefix)/root-cramfs-neutrino.img \
-		$(flashprefix)/var-jffs2.img $(flashprefix)/.cramfs-flfs
-	$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/cramfsjffs2neutrino_2x.img -o build \
-		--part ppcboot=$(flashprefix)/cramfs-flfs2x.img \
-		--part root=$(flashprefix)/root-cramfs-neutrino.img \
-		--part var=$(flashprefix)/var-jffs2.img
-
-$(flashprefix)/squashfsjffs2neutrino_2x.img: $(flashprefix)/root-squashfs-neutrino.img \
-		$(flashprefix)/var-jffs2.img $(flashprefix)/.squashfs-flfs
-	$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/squashfsjffs2neutrino_2x.img -o build \
-		--part ppcboot=$(flashprefix)/squashfs-flfs2x.img \
-		--part root=$(flashprefix)/root-squashfs-neutrino.img \
-		--part var=$(flashprefix)/var-jffs2.img
-
-$(flashprefix)/cramfsjffs2enigma_1x.img: $(flashprefix)/root-cramfs-enigma.img \
-		$(flashprefix)/var-jffs2.img $(flashprefix)/.cramfs-flfs
-	$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/cramfsjffs2enigma_1x.img -o build \
-		--part ppcboot=$(flashprefix)/cramfs-flfs1x.img \
-		--part root=$(flashprefix)/root-cramfs-enigma.img \
-		--part var=$(flashprefix)/var-jffs2.img
-
-$(flashprefix)/squashfsjffs2enigma_1x.img: $(flashprefix)/root-squashfs-enigma.img \
-		$(flashprefix)/var-jffs2.img $(flashprefix)/.squashfs-flfs
-	$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/squashfsjffs2enigma_1x.img -o build \
-		--part ppcboot=$(flashprefix)/squashfs-flfs1x.img \
-		--part root=$(flashprefix)/root-squashfs-enigma.img \
-		--part var=$(flashprefix)/var-jffs2.img
-
-$(flashprefix)/cramfsjffs2enigma_2x.img: $(flashprefix)/root-cramfs-enigma.img \
-		$(flashprefix)/var-jffs2.img $(flashprefix)/.cramfs-flfs
-	$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/cramfsjffs2enigma_2x.img -o build \
-		--part ppcboot=$(flashprefix)/cramfs-flfs2x.img \
-		--part root=$(flashprefix)/root-cramfs-enigma.img \
-		--part var=$(flashprefix)/var-jffs2.img
-
-$(flashprefix)/squashfsjffs2enigma_2x.img: $(flashprefix)/root-squashfs-enigma.img \
-		$(flashprefix)/var-jffs2.img $(flashprefix)/.squashfs-flfs
-	$(hostappsdir)/flash/flashmanage.pl -i $(flashprefix)/squashfsjffs2enigma_2x.img -o build \
-		--part ppcboot=$(flashprefix)/squashfs-flfs2x.img \
-		--part root=$(flashprefix)/root-squashfs-enigma.img \
-		--part var=$(flashprefix)/var-jffs2.img
-
-$(flashprefix)/.flash-roneutrinoroot: $(flashprefix)/.flash-rochanges flash-neutrino flash-apps
-
-$(flashprefix)/.flash-roenigmaroot: $(flashprefix)/.flash-rochanges flash-enigma flash-apps
-
-flash-apps: $(flashprefix)/.part_apps
-
-$(flashprefix)/.part_apps: flash-ftpd flash-plugins flash-dvb-tools flash-ftpfs
-	@touch $@
-
-$(flashprefix)/.flash-rochanges:
-	@if [ -e $(buildprefix)/root/etc/init.d/rcS.insmod ]; then \
-	    mv $(buildprefix)/root/etc/init.d/rcS $(buildprefix)/root/etc/init.d/rcS.modprobe && \
-	    mv $(buildprefix)/root/etc/init.d/rcS.insmod $(buildprefix)/root/etc/init.d/rcS; \
-	fi 
-
-flash-cramfsroot: $(flashprefix)/.lib 
-	$(MAKE) $(flashprefix)/.cramfs
-	$(FAKEROOT) $(MKCRAMFS) -p -n "0106`date +%Y%m%d%H%M`" $(flashprefix)/cramfs/ $(flashprefix)/root-cramfs.img
-	rm -fr $(flashprefix)/cramfs
-	rm $(flashprefix)/.cramfs
-
-flash-squashfsroot: $(flashprefix)/.lib 
-	$(MAKE) $(flashprefix)/.cramfs
-	$(FAKEROOT) $(MKSQUASHFS) $(flashprefix)/cramfs/ $(flashprefix)/root-squashfs.img -be
-	rm -fr $(flashprefix)/cramfs
-	rm $(flashprefix)/.cramfs
-
-$(flashprefix)/.cramfs:
-	rm -fr $(flashprefix)/cramfs
-	cp -pa $(flashprefix)/root $(flashprefix)/cramfs
-	rm -fr $(flashprefix)/cramfs/boot
-	rm -fr $(flashprefix)/cramfs/var/*
-	echo "/dev/mtdblock/3     /var     jffs2     defaults     0 0" >> $(flashprefix)/cramfs/etc/fstab
-	$(INSTALL) -d $(flashprefix)/jffs2/etc/init.d
-	for i in `find $(flashprefix)/cramfs/etc/init.d/ -name "start*"` ; do \
-		rm $$i ; ln -sf ../../var/etc/init.d/`basename $$i` $$i ; \
-	done
-	rm -f $(flashprefix)/cramfs/etc/resolv.conf
-	ln -sf ../var/etc/resolv.conf $(flashprefix)/cramfs/etc/resolv.conf
-	if [ -d $(flashprefix)/cramfs/etc/network ] ; then \
-		rm -fr $(flashprefix)/cramfs/etc/network ; \
-		ln -sf ../var/etc/network $(flashprefix)/cramfs/etc/network ; \
-	fi
-	if [ -d $(flashprefix)/cramfs/etc/ssh ] ; then \
-		rm -fr $(flashprefix)/cramfs/etc/ssh ; \
-		ln -sf ../var/etc/ssh $(flashprefix)/cramfs/etc/ssh ; \
-	fi
-	ln -sf /var/etc/issue.net $(flashprefix)/cramfs/etc/issue.net
-	cp -p $(targetprefix)/share/tuxbox/*.xml $(flashprefix)/cramfs/share/tuxbox
-	rm $(flashprefix)/cramfs/etc/passwd
-	ln -sf /var/etc/passwd $(flashprefix)/cramfs/etc/passwd
-	rm $(flashprefix)/cramfs/bin/camd2
-	ln -sf /var/bin/camd2 $(flashprefix)/cramfs/bin/camd2
-	@touch $@
-
-$(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
-	rm -rf $(flashprefix)/jffs2
-	cp -pa $(flashprefix)/root/var $(flashprefix)/jffs2
-	if [ ! -d $(flashprefix)/jffs2/tuxbox/boot ] ; then \
-		$(INSTALL) -d $(flashprefix)/jffs2/tuxbox/boot ; \
-	fi
-	$(INSTALL) -d $(flashprefix)/jffs2/etc/init.d
-	for i in `find $(flashprefix)/root/etc/init.d/ -name "start*"` ; do \
-		cp -pa $$i $(flashprefix)/jffs2/etc/init.d/ ; \
-	done
-	cp -pa $(flashprefix)/root/etc/resolv.conf $(flashprefix)/jffs2/etc/resolv.conf
-	if [ -d $(flashprefix)/root/etc/network ] ; then \
-		cp -pa $(flashprefix)/root/etc/network $(flashprefix)/jffs2/etc/network ; \
-	fi
-	if [ -d $(flashprefix)/root/etc/ssh ] ; then \
-		cp -pa $(flashprefix)/root/etc/ssh $(flashprefix)/jffs2/etc/ssh ; \
-	fi
-	$(INSTALL) -d $(flashprefix)/jffs2/tuxbox/config/enigma
-	$(INSTALL) -d $(flashprefix)/jffs2/plugins
-	$(INSTALL) -d $(flashprefix)/jffs2/tuxbox/plugins
-	$(INSTALL) -d $(flashprefix)/jffs2/bin
-	cp -p $(flashprefix)/root/etc/passwd $(flashprefix)/jffs2/etc/passwd
-	cp -p $(flashprefix)/root/bin/camd2 $(flashprefix)/jffs2/bin/camd2 
-	@if [ ! -e $(flashprefix)/root/var/tuxbox/config/scart.conf ]; then \
-		cp -pa $(appsdir)/tuxbox/neutrino/daemons/controld/scart.conf $(flashprefix)/root/var/tuxbox/config ; \
-	fi
-	$(FAKEROOT) $(MKJFFS2) -b -e 131072 -p -r $(flashprefix)/jffs2/ -o $(flashprefix)/var-jffs2.img
-	rm -rf $(flashprefix)/jffs2
-
-$(flashprefix)/root-jffs2.img: $(flashprefix)/.lib
-	$(FAKEROOT) $(MKJFFS2) -b -e 0x20000 --pad=0x7c0000 -r $(flashprefix)/root/ -o $(flashprefix)/root-jffs2.img
-
-$(flashprefix)/jffs2only.img: $(flashprefix)/.lib $(flashprefix)/jffs2-flfs.img
-	$(FAKEROOT) $(MKJFFS2) -b -e 0x20000 --pad=0x7c0000 -r $(flashprefix)/root/ -o $(flashprefix)/root-jffs2.tmp
-	cat $(flashprefix)/jffs2-flfs.img > $(flashprefix)/jffs2only.img
-	cat $(flashprefix)/root-jffs2.tmp >> $(flashprefix)/jffs2only.img
-	rm -f  $(flashprefix)/root-jffs2.tmp
-
-$(flashprefix)/.cramfs-flfs: $(flashprefix)/.mkflfs
-	@if [ -e $(bootdir)/u-boot-config/u-boot.config ]; then \
-	    rm $(bootdir)/u-boot-config/u-boot.config; \
-	fi 
-	ln -s $(bootdir)/u-boot-config/u-boot.cramfs.dbox2.h $(bootdir)/u-boot-config/u-boot.config
-	rm -f $(DEPDIR)/u-boot
-	rm -f $(bootprefix)/u-boot
-	$(MAKE) $(DEPDIR)/u-boot 
-	$(hostappsdir)/mkflfs/mkflfs 1x -o $(flashprefix)/cramfs-flfs1x.img $(bootprefix)/u-boot
-	$(hostappsdir)/mkflfs/mkflfs 2x -o $(flashprefix)/cramfs-flfs2x.img $(bootprefix)/u-boot
-	@touch $@
-
-$(flashprefix)/.squashfs-flfs: $(flashprefix)/.mkflfs
-	@if [ -e $(bootdir)/u-boot-config/u-boot.config ]; then \
-	    rm $(bootdir)/u-boot-config/u-boot.config; \
-	fi 
-	ln -s $(bootdir)/u-boot-config/u-boot.squashfs.dbox2.h $(bootdir)/u-boot-config/u-boot.config
-	rm -f $(DEPDIR)/u-boot
-	rm -f $(bootprefix)/u-boot
-	$(MAKE) $(DEPDIR)/u-boot 
-	$(hostappsdir)/mkflfs/mkflfs 1x -o $(flashprefix)/squashfs-flfs1x.img $(bootprefix)/u-boot
-	$(hostappsdir)/mkflfs/mkflfs 2x -o $(flashprefix)/squashfs-flfs2x.img $(bootprefix)/u-boot
-	@touch $@
-
-$(flashprefix)/.mkflfs:
-	cd $(hostappsdir)/mkflfs && \
-	gcc -o mkflfs mkflfs.c minilzo.c
-	@touch $@
-
-endif
-
-#######################
+#######################
 #
 #   internal
 #
@@ -2280,7 +2427,8 @@ Makefile-archive: $(top_srcdir)/rules-archive $(top_srcdir)/rules-archive.pl
 endif
 
 if TARGETRULESET_FLASH
-.PHONY: core libs root apps boot devel java copy lib compress
+.PHONY: core libs root apps boot devel java copy lib compress \
+	flash-clean flash-semiclean
 else
 .PHONY: core libs root apps boot devel java
 endif
