@@ -438,9 +438,6 @@ AC_MSG_RESULT([
 ])
 fi
 
-TUXBOX_CUSTOMIZE='[[ -x $(notdir $@)-local.sh ] && sh $(notdir $@)-local.sh $(flashprefix) $(buildprefix) || true]'
-AC_SUBST(TUXBOX_CUSTOMIZE)
-
 AC_CONFIG_FILES([
 Makefile
 root/Makefile
@@ -455,11 +452,3 @@ rules-downcheck.pl
 AC_CONFIG_COMMANDS([rules-downcheck-chmod],[chmod +x rules-downcheck.pl])
 
 AC_OUTPUT
-
-# This is a kludge. Make will not know how to make flash-all-all-all in 
-# a virgin directory otherwise. Don't remove unless you have found a
-# solution to that problem.
-if test "$TARGETRULESET" = "flash"; then
-   ${mkdir_p} ${flashprefix}
-fi
-
