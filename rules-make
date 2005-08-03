@@ -14,6 +14,7 @@
 #
 uboot;1.1.2;u-boot-1.1.2;u-boot-1.1.2.tar.bz2:u-boot-1.1.2.diff;extract:u-boot-1.1.2.tar.bz2;patch:u-boot-1.1.2.diff
 linux;2.4.31-dbox2;linux-2.4.31;linux-2.4.31.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.31-dbox2-mtd0305.diff.bz2;remove:linux;extract:linux-2.4.31.tar.bz2;patch:linux-2.4.31-dbox2.diff;patch:linux-2.4.31-dbox2-shift.diff;patch:linux-2.4.31-dbox2-keyboard.diff;patch:linux-2.4.31-dbox2-v4l2.diff;patch:linux-2.4.31-dbox2-cramfs.diff;patch:linux-2.4.31-dbox2-lufs.diff;patch:linux-2.4.31-dbox2-mtd0305.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.31/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs2.1r2-patch;link:linux-2.4.31:linux
+linux26;2.6.12-dbox2;linux-2.6.12;linux-2.6.12.tar.bz2;extract:linux-2.6.12.tar.bz2
 binutils;2.14.90.0.5;binutils-2.14.90.0.5;binutils-2.14.90.0.5.tar.bz2;extract:binutils-2.14.90.0.5.tar.bz2
 bootstrap_gcc;3.3.5;gcc-3.3.5;gcc-core-3.3.5.tar.bz2:gcc-core.diff;extract:gcc-core-3.3.5.tar.bz2;patch:gcc-core.diff
 gcc;3.3.5;gcc-3.3.5;gcc-core-3.3.5.tar.bz2:gcc-g++-3.3.5.tar.bz2;extract:gcc-core-3.3.5.tar.bz2;extract:gcc-g++-3.3.5.tar.bz2
@@ -26,7 +27,7 @@ watchdog;5.2.4;watchdog-5.2.4.orig;watchdog_5.2.4.orig.tar.gz:watchdog.diff;extr
 #
 busybox;1.00;busybox-1.00;busybox-1.00.tar.bz2;extract:busybox-1.00.tar.bz2;patch:busybox.diff
 ftpd;1.2.2;vsftpd-1.2.2;vsftpd-1.2.2.tar.gz:ftpd.diff;extract:vsftpd-1.2.2.tar.gz;patch:ftpd.diff
-module_init_tools;3.0;module-init-tools-3.0;module-init-tools-3.0.tar.bz2;extract:module-init-tools-3.0.tar.bz2
+module_init_tools;3.1;module-init-tools-3.1;module-init-tools-3.1.tar.bz2;extract:module-init-tools-3.1.tar.bz2
 modutils;2.4.26;modutils-2.4.26;modutils-2.4.26.tar.bz2:modutils.diff;extract:modutils-2.4.26.tar.bz2;patch:modutils.diff
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
 portmap;5;portmap-5;portmap-5.tar.bz2:portmap-5.diff;extract:portmap-5.tar.bz2;patch:portmap-5.diff
