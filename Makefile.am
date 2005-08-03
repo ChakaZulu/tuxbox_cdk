@@ -1892,6 +1892,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma root
 	cd $(flashprefix)/root/lib && tar xjvf $(appsdir)/tuxbox/enigma/po/locale.image.tar.bz2
 	cp -pa $(targetprefix)/share/locale/de $(flashprefix)/root/share/locale/
 	cp -pa $(targetprefix)/share/locale/fr $(flashprefix)/root/share/locale/
+	find $(flashprefix)/root/share/locale -name libc.mo -o -name nano.mo | xargs rm -f
 	@touch $@
 
 flash-lcars: $(flashprefix)/.part_lcars
