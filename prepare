@@ -1,0 +1,9 @@
+#!/bin/bash
+cd .. && CURRENT_PATH=`pwd`;
+cd cdk
+./autogen.sh;
+./configure \
+	--prefix=$CURRENT_PATH/root \
+	--with-cvsdir=$CURRENT_PATH \
+	--enable-maintainer-mode \
+	--with-targetruleset=flash
