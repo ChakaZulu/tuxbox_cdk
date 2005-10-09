@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: rcS.insmod,v 1.3 2005/07/20 20:42:05 barf Exp $
+# $Id: rcS.insmod,v 1.4 2005/10/09 17:37:03 barf Exp $
 # Alles mounten
 mount -a
 
@@ -149,6 +149,10 @@ fi
   ln -sf fb/0 /dev/fb0
 
 test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
+
+if [ ! -d /var/etc ] ; then
+    mkdir /var/etc
+fi
 
 if [ -e /var/etc/init.d/rcS.local ]; then
 	. /var/etc/init.d/rcS.local

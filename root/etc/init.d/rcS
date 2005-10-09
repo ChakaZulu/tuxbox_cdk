@@ -144,6 +144,10 @@ ln -sf fb/0 /dev/fb0
 
 test -x /bin/loadkeys && loadkeys /share/keymaps/i386/qwertz/de-latin1.kmap.gz
 
+if [ ! -d /var/etc ] ; then
+    mkdir /var/etc
+fi
+
 if [ -e /etc/init.d/rcS.local ]; then
 	. /etc/init.d/rcS.local
 fi
