@@ -1,6 +1,6 @@
-diff -Naur procps-010114/Makefile procps-010114.new/Makefile
---- procps-010114/Makefile	2001-01-13 12:00:48.000000000 +0100
-+++ procps-010114.new/Makefile	2004-07-22 14:47:45.000000000 +0200
+diff -Naur procps-010114.orig/Makefile procps-010114/Makefile
+--- procps-010114.orig/Makefile	2001-01-13 12:00:48.000000000 +0100
++++ procps-010114/Makefile	2005-10-17 00:34:57.000000000 +0200
 @@ -31,17 +31,6 @@
  
  SUBDIRS    =  ps # sub-packages to build/install
@@ -19,9 +19,9 @@ diff -Naur procps-010114/Makefile procps-010114.new/Makefile
  #LDFLAGS    =  -qmagic -s#		recommended for a.out systems
  #LDFLAGS    =  -Xlinker -qmagic -s#	older a.out systems may need this
  #LDFLAGS    =  -N -s#			still older a.out systems use this
-diff -Naur procps-010114/proc/ksym.c procps-010114.new/proc/ksym.c
---- procps-010114/proc/ksym.c	2001-01-13 10:46:07.000000000 +0100
-+++ procps-010114.new/proc/ksym.c	2004-07-22 14:57:54.000000000 +0200
+diff -Naur procps-010114.orig/proc/ksym.c procps-010114/proc/ksym.c
+--- procps-010114.orig/proc/ksym.c	2001-01-13 10:46:07.000000000 +0100
++++ procps-010114/proc/ksym.c	2005-10-17 00:37:04.000000000 +0200
 @@ -112,7 +112,7 @@
  
  /* These mostly rely on POSIX to make them zero. */
@@ -31,9 +31,18 @@ diff -Naur procps-010114/proc/ksym.c procps-010114.new/proc/ksym.c
  
  static char       *sysmap_data;
  static unsigned    sysmap_room;
-diff -Naur procps-010114/proc/proc/compare.h procps-010114.new/proc/proc/compare.h
---- procps-010114/proc/proc/compare.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114.new/proc/proc/compare.h	2004-07-22 14:47:45.000000000 +0200
+@@ -224,7 +224,7 @@
+     default:     _exit(101);
+     case EACCES:   /* somebody screwing around? */
+       /* FIXME: set a flag to disable symbol lookup? */
+-    case ENOENT:   /* no module support */
++    case ENOENT:;   /* no module support */
+     }
+     goto hell;
+   }
+diff -Naur procps-010114.orig/proc/proc/compare.h procps-010114/proc/proc/compare.h
+--- procps-010114.orig/proc/proc/compare.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114/proc/proc/compare.h	2005-10-17 00:34:57.000000000 +0200
 @@ -0,0 +1,9 @@
 +typedef int (*cmp_t)(void*,void*);       /* for function pointer casts */
 +
@@ -44,9 +53,9 @@ diff -Naur procps-010114/proc/proc/compare.h procps-010114.new/proc/proc/compare
 +extern const char *parse_sort_opt(const char* opt);
 +extern const char *parse_long_sort(const char* opt);
 +
-diff -Naur procps-010114/proc/proc/devname.h procps-010114.new/proc/proc/devname.h
---- procps-010114/proc/proc/devname.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114.new/proc/proc/devname.h	2004-07-22 14:47:45.000000000 +0200
+diff -Naur procps-010114.orig/proc/proc/devname.h procps-010114/proc/proc/devname.h
+--- procps-010114.orig/proc/proc/devname.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114/proc/proc/devname.h	2005-10-17 00:34:57.000000000 +0200
 @@ -0,0 +1,7 @@
 +#define ABBREV_DEV  1     /* remove /dev/         */
 +#define ABBREV_TTY  2     /* remove tty           */
@@ -55,9 +64,9 @@ diff -Naur procps-010114/proc/proc/devname.h procps-010114.new/proc/proc/devname
 +int dev_to_tty(char *ret, int chop, int dev, int pid, unsigned int flags);
 +
 +int tty_to_dev(char *name);
-diff -Naur procps-010114/proc/proc/procps.h procps-010114.new/proc/proc/procps.h
---- procps-010114/proc/proc/procps.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114.new/proc/proc/procps.h	2004-07-22 14:47:45.000000000 +0200
+diff -Naur procps-010114.orig/proc/proc/procps.h procps-010114/proc/proc/procps.h
+--- procps-010114.orig/proc/proc/procps.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114/proc/proc/procps.h	2005-10-17 00:34:57.000000000 +0200
 @@ -0,0 +1,27 @@
 +/* The shadow of the original with only common prototypes now. */
 +#include <stdio.h>
@@ -86,9 +95,9 @@ diff -Naur procps-010114/proc/proc/procps.h procps-010114.new/proc/proc/procps.h
 +
 +unsigned print_str    (FILE* file, char *s, unsigned max);
 +unsigned print_strlist(FILE* file, char **strs, char* sep, unsigned max);
-diff -Naur procps-010114/proc/proc/readproc.h procps-010114.new/proc/proc/readproc.h
---- procps-010114/proc/proc/readproc.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114.new/proc/proc/readproc.h	2004-07-22 14:47:45.000000000 +0200
+diff -Naur procps-010114.orig/proc/proc/readproc.h procps-010114/proc/proc/readproc.h
+--- procps-010114.orig/proc/proc/readproc.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114/proc/proc/readproc.h	2005-10-17 00:34:57.000000000 +0200
 @@ -0,0 +1,200 @@
 +#ifndef PROCPS_PROC_READPROC_H
 +#define PROCPS_PROC_READPROC_H
@@ -290,9 +299,9 @@ diff -Naur procps-010114/proc/proc/readproc.h procps-010114.new/proc/proc/readpr
 +#define PROC_ANYTTY  0x1000  /* proc must have a controlling terminal */
 +
 +#endif
-diff -Naur procps-010114/proc/proc/sig.h procps-010114.new/proc/proc/sig.h
---- procps-010114/proc/proc/sig.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114.new/proc/proc/sig.h	2004-07-22 14:47:45.000000000 +0200
+diff -Naur procps-010114.orig/proc/proc/sig.h procps-010114/proc/proc/sig.h
+--- procps-010114.orig/proc/proc/sig.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114/proc/proc/sig.h	2005-10-17 00:34:57.000000000 +0200
 @@ -0,0 +1,19 @@
 +/*
 + * Copyright 1998 by Albert Cahalan; all rights resered.
@@ -313,17 +322,17 @@ diff -Naur procps-010114/proc/proc/sig.h procps-010114.new/proc/proc/sig.h
 +extern void pretty_print_signals(void);
 +
 +extern void unix_print_signals(void);
-diff -Naur procps-010114/proc/proc/status.h procps-010114.new/proc/proc/status.h
---- procps-010114/proc/proc/status.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114.new/proc/proc/status.h	2004-07-22 14:47:45.000000000 +0200
+diff -Naur procps-010114.orig/proc/proc/status.h procps-010114/proc/proc/status.h
+--- procps-010114.orig/proc/proc/status.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114/proc/proc/status.h	2005-10-17 00:34:57.000000000 +0200
 @@ -0,0 +1,4 @@
 +#ifndef __PROC_STATUS_H
 +#define __PROC_STATUS_H
 +extern char *status(proc_t* task);
 +#endif
-diff -Naur procps-010114/proc/proc/sysinfo.h procps-010114.new/proc/proc/sysinfo.h
---- procps-010114/proc/proc/sysinfo.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114.new/proc/proc/sysinfo.h	2004-07-22 14:47:45.000000000 +0200
+diff -Naur procps-010114.orig/proc/proc/sysinfo.h procps-010114/proc/proc/sysinfo.h
+--- procps-010114.orig/proc/proc/sysinfo.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114/proc/proc/sysinfo.h	2005-10-17 00:34:57.000000000 +0200
 @@ -0,0 +1,40 @@
 +#ifndef SYSINFO_H
 +#define SYSINFO_H
@@ -365,9 +374,9 @@ diff -Naur procps-010114/proc/proc/sysinfo.h procps-010114.new/proc/proc/sysinfo
 +extern void meminfo(void);
 +
 +#endif /* SYSINFO_H */
-diff -Naur procps-010114/proc/proc/tree.h procps-010114.new/proc/proc/tree.h
---- procps-010114/proc/proc/tree.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114.new/proc/proc/tree.h	2004-07-22 14:47:45.000000000 +0200
+diff -Naur procps-010114.orig/proc/proc/tree.h procps-010114/proc/proc/tree.h
+--- procps-010114.orig/proc/proc/tree.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114/proc/proc/tree.h	2005-10-17 00:34:57.000000000 +0200
 @@ -0,0 +1,15 @@
 +/* for oldps.c and proc/compare.c */
 +struct tree_node {
@@ -384,9 +393,9 @@ diff -Naur procps-010114/proc/proc/tree.h procps-010114.new/proc/proc/tree.h
 +    int have_parent;
 +};
 +
-diff -Naur procps-010114/proc/proc/version.h procps-010114.new/proc/proc/version.h
---- procps-010114/proc/proc/version.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114.new/proc/proc/version.h	2004-07-22 14:47:45.000000000 +0200
+diff -Naur procps-010114.orig/proc/proc/version.h procps-010114/proc/proc/version.h
+--- procps-010114.orig/proc/proc/version.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114/proc/proc/version.h	2005-10-17 00:34:57.000000000 +0200
 @@ -0,0 +1,23 @@
 +#ifndef PROC_VERSION_H
 +#define PROC_VERSION_H
@@ -411,9 +420,9 @@ diff -Naur procps-010114/proc/proc/version.h procps-010114.new/proc/proc/version
 +#define LINUX_VERSION_PATCH(x) ( (x)      & 0xFF)
 +
 +#endif	/* PROC_VERSION_H */
-diff -Naur procps-010114/proc/proc/whattime.h procps-010114.new/proc/proc/whattime.h
---- procps-010114/proc/proc/whattime.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114.new/proc/proc/whattime.h	2004-07-22 14:47:45.000000000 +0200
+diff -Naur procps-010114.orig/proc/proc/whattime.h procps-010114/proc/proc/whattime.h
+--- procps-010114.orig/proc/proc/whattime.h	1970-01-01 01:00:00.000000000 +0100
++++ procps-010114/proc/proc/whattime.h	2005-10-17 00:34:57.000000000 +0200
 @@ -0,0 +1,9 @@
 +/* whattime.h --- see whattime.c for explanation */
 +
@@ -424,9 +433,9 @@ diff -Naur procps-010114/proc/proc/whattime.h procps-010114.new/proc/proc/whatti
 +extern char *sprint_uptime(void);
 +
 +#endif
-diff -Naur procps-010114/proc/sysinfo.c procps-010114.new/proc/sysinfo.c
---- procps-010114/proc/sysinfo.c	2001-01-13 09:46:06.000000000 +0100
-+++ procps-010114.new/proc/sysinfo.c	2004-07-22 14:55:14.000000000 +0200
+diff -Naur procps-010114.orig/proc/sysinfo.c procps-010114/proc/sysinfo.c
+--- procps-010114.orig/proc/sysinfo.c	2001-01-13 09:46:06.000000000 +0100
++++ procps-010114/proc/sysinfo.c	2005-10-17 00:34:57.000000000 +0200
 @@ -310,7 +310,7 @@
      );
      head = tail+1;
@@ -436,9 +445,54 @@ diff -Naur procps-010114/proc/sysinfo.c procps-010114.new/proc/sysinfo.c
  nextline:
      tail = strchr(head, '\n');
      if(!tail) break;
-diff -Naur procps-010114/top.c procps-010114.new/top.c
---- procps-010114/top.c	2001-01-14 11:40:14.000000000 +0100
-+++ procps-010114.new/top.c	2004-07-22 14:47:45.000000000 +0200
+diff -Naur procps-010114.orig/ps/display.c procps-010114/ps/display.c
+--- procps-010114.orig/ps/display.c	2000-06-18 23:11:18.000000000 +0200
++++ procps-010114/ps/display.c	2005-10-17 00:38:31.000000000 +0200
+@@ -326,7 +326,7 @@
+       if(processes[j]->pid == processes[i]->ppid) goto not_root;
+     }
+     show_tree(i,n,0,0);
+-not_root:
++not_root:;
+   }
+   /* don't free the array because it takes time and ps will exit anyway */
+ }
+@@ -375,7 +375,7 @@
+     case SIGPROF:  /* profiling */
+     case SIGKILL:  /* can not catch */
+     case SIGSTOP:  /* can not catch */
+-    case SIGWINCH: /* don't care if window size changes */
++    case SIGWINCH:; /* don't care if window size changes */
+     }
+   } while (0);
+ #endif
+diff -Naur procps-010114.orig/ps/parser.c procps-010114/ps/parser.c
+--- procps-010114.orig/ps/parser.c	2001-01-15 06:52:36.000000000 +0100
++++ procps-010114/ps/parser.c	2005-10-17 00:38:04.000000000 +0200
+@@ -696,7 +696,7 @@
+   case '=': case ':':
+     if(*++flagptr) return flagptr;   /* found it */
+     return NULL;                     /* empty '=' or ':' */
+-  case '\0': /* try next argv[] */
++  case '\0':; /* try next argv[] */
+   }
+   if(thisarg+2 > ps_argc) return NULL;   /* there is nothing left */
+   /* argument follows ps_argv[thisarg] */
+diff -Naur procps-010114.orig/ps/sortformat.c procps-010114/ps/sortformat.c
+--- procps-010114.orig/ps/sortformat.c	2001-01-15 09:40:06.000000000 +0100
++++ procps-010114/ps/sortformat.c	2005-10-17 00:37:39.000000000 +0200
+@@ -136,7 +136,7 @@
+     c = *walk++;
+     if(c)         goto initial;
+     return "Improper AIX field descriptor.";
+-  looks_ok:
++  looks_ok:;
+   }
+ 
+   /*** sanity check passed ***/
+diff -Naur procps-010114.orig/top.c procps-010114/top.c
+--- procps-010114.orig/top.c	2001-01-14 11:40:14.000000000 +0100
++++ procps-010114/top.c	2005-10-17 00:36:04.000000000 +0200
 @@ -92,7 +92,7 @@
  #include <time.h>
  #include <sys/ioctl.h>
@@ -448,3 +502,12 @@ diff -Naur procps-010114/top.c procps-010114.new/top.c
  #include <termios.h>
  #include <signal.h>
  #include <sys/time.h>
+@@ -489,7 +489,7 @@
+ 	    }
+ 	    cp++;
+ 	}
+-    breakargv:
++    breakargv:;
+     }
+     
+     if (nr_cpu > 1 && CPU_states)
