@@ -1,5 +1,5 @@
 #
-# $Id: INSTALL.en,v 1.26 2004/11/11 16:24:00 carjay Exp $
+# $Id: INSTALL.en,v 1.27 2005/10/16 19:45:13 mogway Exp $
 #
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
@@ -23,7 +23,7 @@ I. Prerequistes:
 
  - cvs
  - autoconf >= 2.57a
- - automake >= 1.7
+ - automake >= 1.8
  - libtool >= 1.4.2
  - gettext >= 0.12.1
  - make >= 3.79
