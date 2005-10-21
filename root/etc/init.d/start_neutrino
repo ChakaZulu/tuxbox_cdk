@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: start_neutrino,v 1.24 2005/06/10 10:46:06 saruman Exp $
+# $Id: start_neutrino,v 1.25 2005/10/21 09:39:31 barf Exp $
 
 date -s 010101001970
 sectionsd
@@ -9,7 +9,7 @@ camd2
 zapit
 controld
 nhttpd
-neutrino
+neutrino -f -u
 
 [ -e /tmp/tuxmaild.pid ] && kill $( cat /tmp/tuxmaild.pid )
 pzapit -kill
