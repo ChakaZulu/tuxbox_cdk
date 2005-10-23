@@ -50,14 +50,6 @@ AC_SUBST(HOSTRULESET)
 AM_CONDITIONAL(HOSTRULESET_STANDARD,test "$HOSTRULESET" = "standard")
 AM_CONDITIONAL(HOSTRULESET_CYGWIN,test "$HOSTRULESET" = "cygwin")
 
-AC_ARG_WITH(webif,
-	[  --with-webif=NAME dreambox webif [[standard,expert]]],
-	[WEBIF="$withval"],[WEBIF="expert"])
-
-AC_SUBST(WEBIF)
-AM_CONDITIONAL(WEBIF_STANDARD,test "$WEBIF" = "standard")
-AM_CONDITIONAL(WEBIF_EXPERT,test "$WEBIF" = "expert")
-
 AC_ARG_WITH(targetruleset,
 	[  --with-targetruleset=NAME target ruleset [[standard,flash]]],
 	[TARGETRULESET="$withval"],[TARGETRULESET="standard"])
