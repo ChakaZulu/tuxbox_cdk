@@ -1527,7 +1527,8 @@ CONFIGURE_OPTS = \
 	--prefix=$(targetprefix) \
 	--with-driver=$(driverdir) \
 	--with-dvbincludes=$(driverdir)/dvb/include \
-	--with-target=cdk
+	--with-target=cdk \
+	--with-webif=$(WEBIF)
 
 if MAINTAINER_MODE
 CONFIGURE_OPTS_MAINTAINER = \

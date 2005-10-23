@@ -6,4 +6,5 @@ cd cdk
 	--prefix=$CURRENT_PATH/root \
 	--with-cvsdir=$CURRENT_PATH \
 	--enable-maintainer-mode \
-	--with-targetruleset=flash
+	--with-targetruleset=flash \
+	--with-webif=expert
