@@ -1,5 +1,21 @@
---- Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbevents.c	2002-03-06 12:23:03.000000000 +0100
-+++ SDL-1.2.4/src/video/fbcon/SDL_fbevents.c	2002-08-26 01:26:16.000000000 +0200
+diff -Naur SDL-1.2.6.orig/src/joystick/linux/SDL_sysjoystick.c SDL-1.2.6/src/joystick/linux/SDL_sysjoystick.c
+--- SDL-1.2.6.orig/src/joystick/linux/SDL_sysjoystick.c	2003-08-30 21:13:05.000000000 +0200
++++ SDL-1.2.6/src/joystick/linux/SDL_sysjoystick.c	2005-10-27 02:06:21.000000000 +0200
+@@ -38,6 +38,11 @@
+ #ifdef __arm__
+ #include <linux/limits.h> /* Arm cross-compiler needs this */
+ #endif
++
++#ifndef BITS_PER_LONG
++#define BITS_PER_LONG 32	/* hack for 2.6.13 kernel header */
++#endif
++
+ #include <linux/joystick.h>
+ #ifdef USE_INPUT_EVENTS
+ #include <linux/input.h>
+diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.6/src/video/fbcon/SDL_fbevents.c
+--- SDL-1.2.6.orig/src/video/fbcon/SDL_fbevents.c	2002-03-06 12:23:03.000000000 +0100
++++ SDL-1.2.6/src/video/fbcon/SDL_fbevents.c	2005-10-27 02:11:22.000000000 +0200
 @@ -69,6 +69,65 @@
  static Uint16 keymap_temp[128]; /* only used at startup */
  static SDL_keysym *TranslateKey(int scancode, SDL_keysym *keysym);
@@ -281,9 +297,9 @@
  			if ( mouse_fd >= 0 ) {
  				if ( FD_ISSET(mouse_fd, &fdset) ) {
  					handle_mouse(this);
-diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.4/src/video/fbcon/SDL_fbvideo.c
---- Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.c	2002-04-03 23:45:25.000000000 +0200
-+++ SDL-1.2.4/src/video/fbcon/SDL_fbvideo.c	2002-08-19 05:25:32.000000000 +0200
+diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.6/src/video/fbcon/SDL_fbvideo.c
+--- SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.c	2003-08-30 21:13:09.000000000 +0200
++++ SDL-1.2.6/src/video/fbcon/SDL_fbvideo.c	2005-10-27 02:11:22.000000000 +0200
 @@ -161,7 +161,7 @@
  
  	SDL_fbdev = getenv("SDL_FBDEV");
@@ -302,9 +318,9 @@ diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.4/src/vi
  	}
  	console_fd = open(SDL_fbdev, O_RDWR, 0);
  	if ( console_fd < 0 ) {
-diff -Naur Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.h SDL-1.2.4/src/video/fbcon/SDL_fbvideo.h
---- Archive/SDL-1.2.4.orig/src/video/fbcon/SDL_fbvideo.h	2002-03-06 12:23:04.000000000 +0100
-+++ SDL-1.2.4/src/video/fbcon/SDL_fbvideo.h	2002-08-19 05:25:36.000000000 +0200
+diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.h SDL-1.2.6/src/video/fbcon/SDL_fbvideo.h
+--- SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.h	2002-03-06 12:23:04.000000000 +0100
++++ SDL-1.2.6/src/video/fbcon/SDL_fbvideo.h	2005-10-27 02:11:22.000000000 +0200
 @@ -61,6 +61,7 @@
  	int current_vt;
  	int saved_vt;
