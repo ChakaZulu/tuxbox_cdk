@@ -1,25 +1,30 @@
-diff -urN gcc-3.2.2.orig/gcc/config/rs6000/linux.h gcc-3.2.2/gcc/config/rs6000/linux.h
---- gcc-3.2.2.orig/gcc/config/rs6000/linux.h	2003-01-23 23:19:42.000000000 +0100
-+++ gcc-3.2.2/gcc/config/rs6000/linux.h	2003-02-08 14:53:52.000000000 +0100
-@@ -93,7 +93,11 @@
-    state data appropriately.  See unwind-dw2.c for the structs.  */
+diff -Naur gcc-3.4.4.orig/gcc/Makefile.in gcc-3.4.4/gcc/Makefile.in
+--- gcc-3.4.4.orig/gcc/Makefile.in	2005-02-24 10:26:57.000000000 +0100
++++ gcc-3.4.4/gcc/Makefile.in	2005-10-23 17:08:55.000000000 +0200
+@@ -350,7 +350,10 @@
+ CROSS_SYSTEM_HEADER_DIR = @CROSS_SYSTEM_HEADER_DIR@
  
- #ifdef IN_LIBGCC2
--#include <signal.h>
-+#include <linux/types.h>
-+#include <asm/sigcontext.h>
-+#include <asm/siginfo.h>
-+#include <asm/signal.h>
-+#include <asm/ucontext.h>
+ # autoconf sets SYSTEM_HEADER_DIR to one of the above.
+-SYSTEM_HEADER_DIR = @SYSTEM_HEADER_DIR@
++# Purge it of unneccessary internal relative paths
++# to directories that might not exist yet.
++# The sed idiom for this is to repeat the search-and-replace until it doesn't match, using :a ... ta.
++SYSTEM_HEADER_DIR = `echo @SYSTEM_HEADER_DIR@ | sed -e :a -e "s,[^/]*/\.\.\/,," -e ta`
  
- /* During the 2.5 kernel series the kernel ucontext was changed, but
-    the new layout is compatible with the old one, so we just define
-@@ -103,7 +103,7 @@
-   unsigned long     uc_flags;
-   struct ucontext  *uc_link;
-   stack_t           uc_stack;
--  struct sigcontext_struct uc_mcontext;
-+  struct sigcontext uc_mcontext;
-   sigset_t          uc_sigmask;
- };
+ # Control whether to run fixproto and fixincludes.
+ STMP_FIXPROTO = @STMP_FIXPROTO@
+@@ -2541,11 +2544,13 @@
+ 	$(SHELL) ${srcdir}/mkinstalldirs $(DESTDIR)$(gcc_tooldir)
  
+ # Build fixed copies of system files.
++# Abort if no system headers available, unless building a crosscompiler.
++# FIXME: abort unless building --without-headers would be more accurate and less ugly
+ stmp-fixinc: fixinc.sh gsyslimits.h
+ 	@if test ! -d ${SYSTEM_HEADER_DIR}; then \
+ 	  echo The directory that should contain system headers does not exist: >&2 ; \
+ 	  echo "  ${SYSTEM_HEADER_DIR}" >&2 ; \
+-	  if test "x${SYSTEM_HEADER_DIR}" = "x${gcc_tooldir}/sys-include"; \
++	  if test "x${SYSTEM_HEADER_DIR}" = "x`echo "${gcc_tooldir}/sys-include" | sed -e :a -e "s,[^/]*/\.\.\/,," -e ta`"; \
+ 	  then sleep 1; else exit 1; fi; \
+ 	fi
+ 	rm -rf include; mkdir include

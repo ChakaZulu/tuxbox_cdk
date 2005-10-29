@@ -17,13 +17,35 @@ AC_PROG_CC
 AC_ARG_ENABLE(libcrypto,
 	AS_HELP_STRING(--disable-libcrypto,don't build libcrypto to reduce binary size),
 	,[enable_libcrypto=yes])
-
 AM_CONDITIONAL(WITH_LIBCRYPTO,test "$enable_libcrypto" = "yes")
+
+AC_ARG_ENABLE(kernel26,
+	AS_HELP_STRING(--enable-kernel26,set up the CDK to use the 2.6 kernel (experimental)),
+	,[enable_kernel26=no])
+AM_CONDITIONAL(KERNEL26,test "$enable_kernel26" = "yes")
+
+AC_ARG_ENABLE(nptl,
+	AS_HELP_STRING(--disable-nptl,do not use native posix threads for glibc (only meaningful for kernel 2.6.x, default for 2.4.x)),
+	,[
+		if test "$enable_kernel26" = "yes"; then 
+			enable_nptl=yes
+		else
+			enable_nptl=no
+		fi
+	])
+if test "$enable_nptl" = "yes"; then
+	if test "$enable_kernel26" != "yes"; then
+		AC_MSG_ERROR([Option --enable-nptl (native posix threads) is only supported for a 2.6.x kernel])
+	fi
+	GLIBC_PTHREADS="nptl"
+else
+	GLIBC_PTHREADS="linuxthreads"
+fi
+AC_SUBST(GLIBC_PTHREADS)
 
 AC_ARG_WITH(cpu,
 	[  --with-cpu=MODEL        cpu model [[823,405]]],
 	[CPU_MODEL="$withval"],[CPU_MODEL="823"])
-
 AC_SUBST(CPU_MODEL)
 
 AC_ARG_WITH(hostruleset,
@@ -275,8 +297,15 @@ AC_SUBST(CLEANUP)
 #
 AC_SUBST(KERNELVERSION)
 TUXBOX_RULES_MAKE(uboot)
+
 TUXBOX_RULES_MAKE(linux)
-KERNELVERSION=$VERSION_linux
+TUXBOX_RULES_MAKE(linux24)
+if test "$enable_kernel26" == "yes"; then
+	KERNELVERSION=$VERSION_linux
+else
+	KERNELVERSION=$VERSION_linux24
+fi
+
 TUXBOX_RULES_MAKE_EXDIR(binutils)
 TUXBOX_RULES_MAKE_EXDIR(bootstrap_gcc)
 TUXBOX_RULES_MAKE_EXDIR(glibc)
@@ -408,22 +437,31 @@ ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 #
 # summary
 #
+
+if test "$enable_kernel26" == "yes"; then
+	used_kernelversion="2.6.x"
+else
+	used_kernelversion="2.4.x"
+fi
+
 AC_MSG_RESULT([
 summary:
 ----------------------------------------
-target cpu:		$CPU_MODEL
-host rule set:		$HOSTRULESET
-target rule set:	$TARGETRULESET
-target prefix:		$targetprefix
-host prefix:		$hostprefix
-boot prefix:		$bootprefix
-build prefix:		$buildprefix
-target apps directory:	$appsdir
-boot directory:		$bootdir
-driver directory:	$driverdir
-host apps directory:	$hostappsdir
-GNU server:		$gnuserver
-default server:		$defaultserver
+target cpu:            $CPU_MODEL
+kernel:                $used_kernelversion
+glibc-pthreads:        $GLIBC_PTHREADS
+host rule set:         $HOSTRULESET
+target rule set:       $TARGETRULESET
+target prefix:         $targetprefix
+host prefix:           $hostprefix
+boot prefix:           $bootprefix
+build prefix:          $buildprefix
+target apps directory: $appsdir
+boot directory:        $bootdir
+driver directory:      $driverdir
+host apps directory:   $hostappsdir
+GNU server:            $gnuserver
+default server:        $defaultserver
 ])
 
 if test "$dircheck" = "fail"; then

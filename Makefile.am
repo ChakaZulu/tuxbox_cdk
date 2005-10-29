@@ -59,6 +59,9 @@ $(DEPDIR)/directories:
 	$(INSTALL) -d $(targetprefix)/proc
 	$(INSTALL) -d $(targetprefix)/root
 	$(INSTALL) -d $(targetprefix)/sbin
+if KERNEL26
+	$(INSTALL) -d $(targetprefix)/sys
+endif
 	$(INSTALL) -d $(targetprefix)/tmp
 	$(INSTALL) -d $(targetprefix)/var
 	$(INSTALL) -d $(targetprefix)/var/etc
@@ -66,36 +69,50 @@ $(DEPDIR)/directories:
 	$(INSTALL) -d $(targetprefix)$(UCODEDIR)
 	$(INSTALL) -d $(hostprefix)/$(target)
 	$(INSTALL) -d $(bootprefix)
-	-rm $(hostprefix)/$(target)/include
-	-rm $(hostprefix)/$(target)/lib
-	-ln -s $(targetprefix)/include $(hostprefix)/$(target)/include
-	-ln -s $(targetprefix)/lib $(hostprefix)/$(target)/lib
-	-ln -s $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
-	-ln -s $(buildprefix)/linux/include/asm-generic $(hostprefix)/$(target)/include
-	-ln -s $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include
+	-rm -f $(hostprefix)/$(target)/include
+	-rm -f $(hostprefix)/$(target)/lib
+	-ln -sf $(targetprefix)/include $(hostprefix)/$(target)/include
+	-ln -sf $(targetprefix)/lib $(hostprefix)/$(target)/lib
+	-ln -sf $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
+	-ln -sf $(buildprefix)/linux/include/asm-generic $(hostprefix)/$(target)/include
+	-ln -sf $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include
+	-ln -sf $(buildprefix)/linux/include/mtd $(hostprefix)/$(target)/include
 if TARGETRULESET_FLASH
 	$(INSTALL) -d $(flashprefix)
 endif
 	touch $@
 
-$(DEPDIR)/linuxdir: @DEPENDS_linux@
+
+if KERNEL26
+KERNEL_DEPENDS = @DEPENDS_linux@
+KERNEL_DIR = @DIR_linux@
+KERNEL_PREPARE = @PREPARE_linux@
+else
+KERNEL_DEPENDS = @DEPENDS_linux24@
+KERNEL_DIR = @DIR_linux24@
+KERNEL_PREPARE = @PREPARE_linux24@
+endif
+
+$(DEPDIR)/linuxdir: $(KERNEL_DEPENDS)
 	@if [ ! -d $(targetprefix)/bin ]; then \
 		$(MAKE) directories; \
 	fi
-	@PREPARE_linux@
+	$(KERNEL_PREPARE)
 if TARGETRULESET_FLASH
-	cat Patches/linux-$(KERNELVERSION).config-flash > @DIR_linux@/.config
+	cat Patches/linux-$(KERNELVERSION).config-flash > $(KERNEL_DIR)/.config
 else
-	cat Patches/linux-$(KERNELVERSION).config > @DIR_linux@/.config
+	cat Patches/linux-$(KERNELVERSION).config > $(KERNEL_DIR)/.config
 endif
-	$(MAKE) -C @DIR_linux@ oldconfig \
+	$(MAKE) -C $(KERNEL_DIR) oldconfig \
 		ARCH=ppc
-	$(MAKE) -C @DIR_linux@ include/linux/version.h \
+if KERNEL26
+	$(MAKE) -C $(KERNEL_DIR) include/asm \
 		ARCH=ppc
-	@if [ -e $(buildprefix)/linux/include/mtd ]; then \
-	    ln -sf $(buildprefix)/linux/include/mtd $(hostprefix)/$(target)/include; \
-	fi
+endif
+	$(MAKE) -C $(KERNEL_DIR) include/linux/version.h \
+		ARCH=ppc
 	touch $@
+
 
 $(DEPDIR)/binutils: @DEPENDS_binutils@
 	@if [ ! -h linux ]; then \
@@ -109,7 +126,7 @@ $(DEPDIR)/binutils: @DEPENDS_binutils@
 			--target=$(target) \
 			--prefix=$(hostprefix) \
 			--disable-nls \
-			--nfp && \
+			--without-fp && \
 		$(MAKE) all all-gprof && \
 		@INSTALL_binutils@
 	@CLEANUP_binutils@
@@ -138,15 +155,12 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 			--disable-shared \
 			--disable-threads \
 			--disable-nls \
-			--nfp && \
+			--without-fp && \
 		$(MAKE) all && \
 		@INSTALL_bootstrap_gcc@
 	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_bootstrap_gcc@
 
-if TARGETRULESET_FLASH
-GLIBC_EXTRA_FLAGS="--enable-kernel=$(KERNELVERSION)"
-endif
 
 $(DEPDIR)/glibc: @DEPENDS_glibc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
@@ -155,6 +169,13 @@ $(DEPDIR)/glibc: @DEPENDS_glibc@
 		$(MAKE) gcc; \
 	fi
 	@PREPARE_glibc@
+	touch @DIR_glibc@/config.cache
+	@if [ $(GLIBC_PTHREADS) = "nptl" ]; then \
+		cp @SOURCEDIR_glibc@/nptl/sysdeps/pthread/pthread.h @DIR_glibc@ && \
+		cp @SOURCEDIR_glibc@/nptl/sysdeps/unix/sysv/linux/powerpc/bits/pthreadtypes.h @DIR_glibc@ && \
+		echo "libc_cv_forced_unwind=yes" > @DIR_glibc@/config.cache && \
+		echo "libc_cv_c_cleanup=yes" >> @DIR_glibc@/config.cache; \
+	fi
 	cd @DIR_glibc@ && \
 		$(BUILDENV) \
 		@CONFIGURE_glibc@ \
@@ -163,13 +184,23 @@ $(DEPDIR)/glibc: @DEPENDS_glibc@
 			--prefix= \
 			--with-headers=$(buildprefix)/linux/include \
 			--disable-profile \
+			--disable-debug  \
 			--enable-shared \
-			--enable-add-ons=linuxthreads \
+			--without-gd \
+			--with-tls \
+			--with-__thread \
+			--enable-add-ons=$(GLIBC_PTHREADS) \
+			--enable-clocale=gnu \
 			--without-fp \
+			--cache-file=config.cache \
 			$(GLIBC_EXTRA_FLAGS) && \
 		$(MAKE) all && \
 		@INSTALL_glibc@
 	@CLEANUP_glibc@
+	sed -e's_ /lib/_ $(targetprefix)/lib/_g' < $(targetprefix)/lib/libc.so > $(targetprefix)/lib/libc.so.new
+	mv $(targetprefix)/lib/libc.so.new $(targetprefix)/lib/libc.so
+	sed -e's_ /lib/_ $(targetprefix)/lib/_g' < $(targetprefix)/lib/libpthread.so > $(targetprefix)/lib/libpthread.so.new
+	mv $(targetprefix)/lib/libpthread.so.new $(targetprefix)/lib/libpthread.so
 	touch $@
 
 #
@@ -185,11 +216,16 @@ $(DEPDIR)/uclibc: @DEPENDS_uclibc@
 	touch $@
 
 #
-# gcc second stage with glibc
+# gcc second stage
 #
 $(DEPDIR)/gcc: @DEPENDS_gcc@
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so ]; then \
 		$(MAKE) glibc; \
+	fi
+# if we have a symlink inside the libdir (in case gcc has already been built)
+# we remove it here
+	@if [ -h $(hostprefix)/$(target)/lib/nof ]; then \
+		rm -f $(hostprefix)/$(target)/lib/nof; \
 	fi
 	@PREPARE_gcc@
 	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
@@ -207,10 +243,13 @@ $(DEPDIR)/gcc: @DEPENDS_gcc@
 			--enable-shared \
 			--enable-threads \
 			--disable-nls \
-			--nfp && \
+			--without-fp && \
 		$(MAKE) all && \
 		@INSTALL_gcc@
 	rm -rf $(hostprefix)/$(target)/sys-include
+	for i in `find $(hostprefix)/$(target)/lib/nof` ; do mv $$i $(hostprefix)/$(target)/lib; done
+	rm -rf $(hostprefix)/$(target)/lib/nof
+	ln -sf $(hostprefix)/$(target)/lib $(hostprefix)/$(target)/lib/nof
 	@CLEANUP_gcc@
 	touch $@
 
@@ -413,25 +452,6 @@ $(DEPDIR)/libcurl: bootstrap @DEPENDS_libcurl@
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
 	touch $@
-
-# directfb needs working directfb-csource for building tools - but only creates it for the target
-#$(DEPDIR)/libdirectfb_hostdeps: bootstrap
-#	@PREPARE_libdirectfb@
-#	cd @DIR_libdirectfb@ && \
-#	    ./autogen.sh \
-#		--disable-fbdev \
-#		--disable-sysfs \
-#		--disable-video4linux \
-#		--prefix=$(hostprefix) && \
-#	    $(MAKE) -C tools directfb-csource && \
-#	    $(INSTALL) -m 755 tools/directfb-csource $(hostprefix)/bin && \
-#	    $(MAKE) -C tools clean
-#	touch $@
-#	
-#	@if [ ! -e $(buildprefix)/@DIR_libdirectfb@/configure ]; then \
-#	    @PREPARE_libdirectfb@ && \
-#	    cd @DIR_libdirectfb@ && ./autogen.sh ; \
-#	fi
 
 $(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz @DEPENDS_libdirectfb@
 	@PREPARE_libdirectfb@
@@ -1434,45 +1454,60 @@ $(DEPDIR)/bluez_utils: bootstrap bluez_libs @DEPENDS_bluez_utils@
 
 boot: u-boot linuxkernel driver
 
+if KERNEL26
+UBOOT_CONFIG_FILE:="./u-boot.cdk.2_6.dbox2.h"
+else
+UBOOT_CONFIG_FILE:="./u-boot.cdk.dbox2.h"
+endif
+
 $(DEPDIR)/u-boot: bootstrap @DEPENDS_uboot@
 	@PREPARE_uboot@
 	@if [ ! -e $(bootdir)/u-boot-config/u-boot.config ]; then \
-	    ln -s ./u-boot.cdk.dbox2.h $(bootdir)/u-boot-config/u-boot.config; \
+	    ln -sf $(UBOOT_CONFIG_FILE) $(bootdir)/u-boot-config/u-boot.config; \
 	fi
-
+	
 	cp -pR $(bootdir)/u-boot-tuxbox/* @DIR_uboot@
 	cp -p $(bootdir)/u-boot-config/u-boot.config @DIR_uboot@/include/configs/dbox2.h
-
+	
 	$(MAKE) -C @DIR_uboot@ dbox2_config
 	$(MAKE) -C @DIR_uboot@ CROSS_COMPILE=$(target)- u-boot.stripped
-
+	
 	$(INSTALL) -m644 @DIR_uboot@/u-boot.stripped $(bootprefix)/u-boot
 	$(INSTALL) @DIR_uboot@/tools/mkimage $(hostprefix)/bin
-
+	
 	@CLEANUP_uboot@
 	touch $@
 
 $(DEPDIR)/linuxkernel: bootstrap linuxdir u-boot
-	$(MAKE) -C @DIR_linux@ zImage modules \
+if KERNEL26
+	$(MAKE) -C $(KERNEL_DIR) uImage modules \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)-
-	$(MAKE) -C @DIR_linux@ modules_install \
+else
+	$(MAKE) -C $(KERNEL_DIR) zImage modules \
+		ARCH=ppc \
+		CROSS_COMPILE=$(target)-
+endif		
+	$(MAKE) -C $(KERNEL_DIR) modules_install \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)- \
 		DEPMOD=/bin/true \
 		INSTALL_MOD_PATH=$(targetprefix)
+if KERNEL26
+	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $(bootprefix)/kernel-cdk
+else
 	$(hostprefix)/bin/mkimage \
 		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
 		-a 00000000 -e 00000000 \
-		-d @DIR_linux@/arch/ppc/boot/images/vmlinux.gz \
+		-d $(KERNEL_DIR)/arch/ppc/boot/images/vmlinux.gz \
 		$(bootprefix)/kernel-cdk
+endif
 	chmod 644 $(bootprefix)/kernel-cdk
-	$(INSTALL) -m644 @DIR_linux@/vmlinux $(targetprefix)/boot/vmlinux-$(KERNELVERSION)
-	$(INSTALL) -m644 @DIR_linux@/System.map $(targetprefix)/boot/System.map-$(KERNELVERSION)
-
+	$(INSTALL) -m644 $(KERNEL_DIR)/vmlinux $(targetprefix)/boot/vmlinux-$(KERNELVERSION)
+	$(INSTALL) -m644 $(KERNEL_DIR)/System.map $(targetprefix)/boot/System.map-$(KERNELVERSION)
 if MAINTAINER_MODE
 else
-	$(MAKE) -C @DIR_linux@ clean
+	$(MAKE) -C $(KERNEL_DIR) clean
 endif
 	touch $@
 
