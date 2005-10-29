@@ -1,5 +1,6 @@
---- mrouted-3.9-beta3.orig/Makefile
-+++ mrouted-3.9-beta3/Makefile
+diff -Naur mrouted-3.9-beta3.orig.orig/Makefile mrouted-3.9-beta3.orig/Makefile
+--- mrouted-3.9-beta3.orig.orig/Makefile	Sun Mar  1 04:09:11 1998
++++ mrouted-3.9-beta3.orig/Makefile	Sat Oct 29 23:32:39 2005
 @@ -24,15 +24,15 @@
  #
  # Uncomment the following three lines if you want to use RSRR (Routing
@@ -30,8 +31,9 @@
  
  snmpclean:	FRC
  	-(cd snmpd; make clean)
---- mrouted-3.9-beta3.orig/defs.h
-+++ mrouted-3.9-beta3/defs.h
+diff -Naur mrouted-3.9-beta3.orig.orig/defs.h mrouted-3.9-beta3.orig/defs.h
+--- mrouted-3.9-beta3.orig.orig/defs.h	Sun Mar  1 03:51:42 1998
++++ mrouted-3.9-beta3.orig/defs.h	Sat Oct 29 23:32:39 2005
 @@ -45,7 +45,7 @@
  #undef rtentry
  #endif
@@ -50,8 +52,9 @@
  #endif
  
  #ifdef OLD_KERNEL
---- mrouted-3.9-beta3.orig/main.c
-+++ mrouted-3.9-beta3/main.c
+diff -Naur mrouted-3.9-beta3.orig.orig/main.c mrouted-3.9-beta3.orig/main.c
+--- mrouted-3.9-beta3.orig.orig/main.c	Sun Mar  1 02:49:00 1998
++++ mrouted-3.9-beta3.orig/main.c	Sat Oct 29 23:32:39 2005
 @@ -32,6 +32,8 @@
  #include "snmp.h"
  #endif
@@ -61,8 +64,9 @@
  #ifndef lint
  static char rcsid[] = "@(#) $Id: \
  main.c,v 3.8.4.29 1998/03/01 01:49:00 fenner Exp $";
---- mrouted-3.9-beta3.orig/mrouted.conf
-+++ mrouted-3.9-beta3/mrouted.conf
+diff -Naur mrouted-3.9-beta3.orig.orig/mrouted.conf mrouted-3.9-beta3.orig/mrouted.conf
+--- mrouted-3.9-beta3.orig.orig/mrouted.conf	Wed Nov 29 23:40:47 1995
++++ mrouted-3.9-beta3.orig/mrouted.conf	Sat Oct 29 23:32:39 2005
 @@ -30,7 +30,7 @@
  #
  #
@@ -72,8 +76,22 @@
  #	boundary LOCAL
  #
  # You might want to specify a boundary on your tunnel to the outside world,
---- mrouted-3.9-beta3.orig/pathnames.h
-+++ mrouted-3.9-beta3/pathnames.h
+diff -Naur mrouted-3.9-beta3.orig.orig/netinet/ip_mroute.h mrouted-3.9-beta3.orig/netinet/ip_mroute.h
+--- mrouted-3.9-beta3.orig.orig/netinet/ip_mroute.h	Thu Jan  1 01:00:00 1970
++++ mrouted-3.9-beta3.orig/netinet/ip_mroute.h	Sat Oct 29 23:33:43 2005
+@@ -0,0 +1,9 @@
++#ifndef __NETINET_IP_MROUTE_H
++#define __NETINET_IP_MROUTE_H
++
++#define _LINUX_IN_H
++
++#define __u32 uint32_t
++#include <linux/mroute.h>
++
++#endif
+diff -Naur mrouted-3.9-beta3.orig.orig/pathnames.h mrouted-3.9-beta3.orig/pathnames.h
+--- mrouted-3.9-beta3.orig.orig/pathnames.h	Wed Nov 29 23:36:57 1995
++++ mrouted-3.9-beta3.orig/pathnames.h	Sat Oct 29 23:32:39 2005
 @@ -12,14 +12,14 @@
  
  #define _PATH_MROUTED_CONF	"/etc/mrouted.conf"
@@ -92,18 +110,8 @@
  #define _PATH_MROUTED_CACHE	"/usr/tmp/mrouted.cache"
 -#endif
 +#endif*/
---- mrouted-3.9-beta3.orig/netinet/ip_mroute.h
-+++ mrouted-3.9-beta3/netinet/ip_mroute.h
-@@ -0,0 +1,8 @@
-+#ifndef __NETINET_IP_MROUTE_H
-+#define __NETINET_IP_MROUTE_H
-+
-+#define _LINUX_IN_H
-+
-+#include <linux/mroute.h>
-+
-+#endif
---- mrouted-3.9-beta3.orig/vers.c
-+++ mrouted-3.9-beta3/vers.c
+diff -Naur mrouted-3.9-beta3.orig.orig/vers.c mrouted-3.9-beta3.orig/vers.c
+--- mrouted-3.9-beta3.orig.orig/vers.c	Thu Jan  1 01:00:00 1970
++++ mrouted-3.9-beta3.orig/vers.c	Sat Oct 29 23:32:39 2005
 @@ -0,0 +1 @@
 +char todaysversion[]="3.9-beta3";
