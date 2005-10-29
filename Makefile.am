@@ -197,9 +197,9 @@ $(DEPDIR)/glibc: @DEPENDS_glibc@
 		$(MAKE) all && \
 		@INSTALL_glibc@
 	@CLEANUP_glibc@
-	sed -e's_ /lib/_ $(targetprefix)/lib/_g' < $(targetprefix)/lib/libc.so > $(targetprefix)/lib/libc.so.new
+	sed -e's, /lib/, $(targetprefix)/lib/,g' < $(targetprefix)/lib/libc.so > $(targetprefix)/lib/libc.so.new
 	mv $(targetprefix)/lib/libc.so.new $(targetprefix)/lib/libc.so
-	sed -e's_ /lib/_ $(targetprefix)/lib/_g' < $(targetprefix)/lib/libpthread.so > $(targetprefix)/lib/libpthread.so.new
+	sed -e's, /lib/, $(targetprefix)/lib/,g' < $(targetprefix)/lib/libpthread.so > $(targetprefix)/lib/libpthread.so.new
 	mv $(targetprefix)/lib/libpthread.so.new $(targetprefix)/lib/libpthread.so
 	touch $@
 
