@@ -1,6 +1,6 @@
 diff -Naur vls-0.4.0.orig/configure vls-0.4.0/configure
 --- vls-0.4.0.orig/configure	Sun Oct 13 20:23:45 2002
-+++ vls-0.4.0/configure	Wed Nov 20 06:31:22 2002
++++ vls-0.4.0/configure	Sun Oct 30 12:52:47 2005
 @@ -6584,8 +6584,8 @@
    save_CPPFLAGS=$CPPFLAGS
    CPPFLAGS="$save_CPPFLAGS $test_CFLAGS"
@@ -80,7 +80,7 @@ diff -Naur vls-0.4.0.orig/configure vls-0.4.0/configure
  else
 diff -Naur vls-0.4.0.orig/configure.in vls-0.4.0/configure.in
 --- vls-0.4.0.orig/configure.in	Sun Oct 13 20:23:45 2002
-+++ vls-0.4.0/configure.in	Wed Nov 20 06:31:22 2002
++++ vls-0.4.0/configure.in	Sun Oct 30 12:52:47 2005
 @@ -305,7 +305,7 @@
    fi
    save_CPPFLAGS=$CPPFLAGS
@@ -92,7 +92,7 @@ diff -Naur vls-0.4.0.orig/configure.in vls-0.4.0/configure.in
      then
 diff -Naur vls-0.4.0.orig/doc/vls-guide.sgml vls-0.4.0/doc/vls-guide.sgml
 --- vls-0.4.0.orig/doc/vls-guide.sgml	Sun Oct 13 20:23:45 2002
-+++ vls-0.4.0/doc/vls-guide.sgml	Wed Nov 20 06:31:22 2002
++++ vls-0.4.0/doc/vls-guide.sgml	Sun Oct 30 12:52:47 2005
 @@ -636,7 +636,7 @@
    <tscreen>
    "DvbInputName" is the name of the dvb input you want to configure.
@@ -102,9 +102,83 @@ diff -Naur vls-0.4.0.orig/doc/vls-guide.sgml vls-0.4.0/doc/vls-guide.sgml
    "frequency" is the frequency of the transponder given in kHz.
    "polarization" is "1" (Horizontal) or "0" (Vertical). "symrate"
    is the symbol rate. "diseqc" is the DiSEqC address of the used
+diff -Naur vls-0.4.0.orig/src/core/hashtable.h vls-0.4.0/src/core/hashtable.h
+--- vls-0.4.0.orig/src/core/hashtable.h	Sun Oct 13 20:23:44 2002
++++ vls-0.4.0/src/core/hashtable.h	Sun Oct 30 13:02:40 2005
+@@ -62,7 +62,7 @@
+   u32 m_uiMaxHash;
+ };
+ 
+-
++template<>
+ class C_HashMethod<u32>
+ {
+  public:
+@@ -75,7 +75,7 @@
+   u32 m_uiMaxHash;
+ };
+ 
+-
++template<>
+ class C_HashMethod<u16>
+ {
+  public:
+@@ -88,7 +88,7 @@
+   u32 m_uiMaxHash;
+ };
+ 
+-
++template<>
+ class C_HashMethod<handle>
+ {
+  public:
+diff -Naur vls-0.4.0.orig/src/core/library.cpp vls-0.4.0/src/core/library.cpp
+--- vls-0.4.0.orig/src/core/library.cpp	Sun Oct 13 20:23:44 2002
++++ vls-0.4.0/src/core/library.cpp	Sun Oct 30 13:14:20 2005
+@@ -33,7 +33,7 @@
+ // There is no preamble since this file is to be included in the files which
+ // use the template: look at vector.h for further explanation
+ 
+-
++#include <dlfcn.h>
+ 
+ //******************************************************************************
+ // class C_Library
+diff -Naur vls-0.4.0.orig/src/core/stream.cpp vls-0.4.0/src/core/stream.cpp
+--- vls-0.4.0.orig/src/core/stream.cpp	Sun Oct 13 20:23:44 2002
++++ vls-0.4.0/src/core/stream.cpp	Sun Oct 30 13:33:39 2005
+@@ -314,6 +314,7 @@
+ //------------------------------------------------------------------------------
+ // 
+ //------------------------------------------------------------------------------
++#if 0
+ template <class IOStream>
+  C_Stream<IOStream>& C_Stream<IOStream>::operator >> (C_Serializable& cObject)
+ {
+@@ -350,4 +351,4 @@
+ 
+   return *this;
+ }
+-
++#endif
+diff -Naur vls-0.4.0.orig/src/core/stream.h vls-0.4.0/src/core/stream.h
+--- vls-0.4.0.orig/src/core/stream.h	Sun Oct 13 20:23:44 2002
++++ vls-0.4.0/src/core/stream.h	Sun Oct 30 13:38:27 2005
+@@ -99,7 +99,10 @@
+   // Streaming of serializable objects
+   // Avoid to use those methods to store data, just use them to transmit them
+   C_Stream& operator << (const C_Serializable& cObject);
+-  C_Stream& operator >> (C_Serializable& cObject);
++// commented out buggy implementation of operator >> , gcc 3.4.x
++// obviously tries to compile all templates now...,
++// if you want to use it, fix it 
++// C_Stream& operator >> (C_Serializable& cObject);
+ 
+  private:
+   IOStream* m_pIOStream;
 diff -Naur vls-0.4.0.orig/src/modules/dvbinput/dvbinput.cpp vls-0.4.0/src/modules/dvbinput/dvbinput.cpp
 --- vls-0.4.0.orig/src/modules/dvbinput/dvbinput.cpp	Sun Oct 13 20:23:45 2002
-+++ vls-0.4.0/src/modules/dvbinput/dvbinput.cpp	Wed Nov 20 06:33:48 2002
++++ vls-0.4.0/src/modules/dvbinput/dvbinput.cpp	Sun Oct 30 12:52:47 2005
 @@ -34,6 +34,7 @@
  
  #include <fcntl.h>
@@ -408,7 +482,7 @@ diff -Naur vls-0.4.0.orig/src/modules/dvbinput/dvbinput.cpp vls-0.4.0/src/module
  
 diff -Naur vls-0.4.0.orig/src/modules/dvbinput/dvbinput.h vls-0.4.0/src/modules/dvbinput/dvbinput.h
 --- vls-0.4.0.orig/src/modules/dvbinput/dvbinput.h	Sun Oct 13 20:23:45 2002
-+++ vls-0.4.0/src/modules/dvbinput/dvbinput.h	Wed Nov 20 06:31:22 2002
++++ vls-0.4.0/src/modules/dvbinput/dvbinput.h	Sun Oct 30 12:52:47 2005
 @@ -111,6 +111,8 @@
    // Muxes and streamers
    C_HashTable<u16, C_TsMux> m_cMuxes;
