@@ -57,7 +57,7 @@ libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch
 libmad;0.15.0b;libmad-0.15.0b;libmad-0.15.0b.tar.gz:libmad.diff;extract:libmad-0.15.0b.tar.gz;patch:libmad.diff
 libid3tag;0.15.0b;libid3tag-0.15.0b;libid3tag-0.15.0b.tar.gz:libid3tag.diff;extract:libid3tag-0.15.0b.tar.gz;patch:libid3tag.diff
 libncurses;5.3;ncurses-5.3;ncurses-5.3.tar.gz;extract:ncurses-5.3.tar.gz
-libpcap;0.7.2;libpcap-0.7.2;libpcap-0.7.2.tar.gz;extract:libpcap-0.7.2.tar.gz;patch:libpcap.diff
+libpcap;0.9.4;libpcap-0.9.4;libpcap-0.9.4.tar.gz;extract:libpcap-0.9.4.tar.gz;patch:libpcap.diff
 libpng;1.2.8;libpng-1.2.8;libpng-1.2.8.tar.bz2:libpng.diff;extract:libpng-1.2.8.tar.bz2;patch:libpng.diff
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.6;SDL-1.2.6;SDL-1.2.6.tar.gz:sdl.diff;extract:SDL-1.2.6.tar.gz;patch:sdl.diff
@@ -79,7 +79,7 @@ fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:f
 lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.diff
 lsof;4.72;lsof_4.72;lsof_4.72.tar.gz:lsof.diff;extract:lsof_4.72.tar.gz
 ssh;3.8p1;openssh-3.8p1;openssh-3.8p1.tar.gz:ssh.diff;extract:openssh-3.8p1.tar.gz;patch:ssh.diff
-tcpdump;3.7.1;tcpdump-3.7.1;tcpdump-3.7.1.tar.gz:tcpdump.diff;extract:tcpdump-3.7.1.tar.gz;patch:tcpdump.diff
+tcpdump;3.9.4;tcpdump-3.9.4;tcpdump-3.9.4.tar.gz:tcpdump.diff;extract:tcpdump-3.9.4.tar.gz;patch:tcpdump.diff
 bonnie;1.03a;bonnie++-1.03a;bonnie++-1.03a.tgz;extract:bonnie++-1.03a.tgz
 vdr;1.2.6;vdr-1.2.6;vdr-1.2.6.tar.bz2:vdr.diff;extract:vdr-1.2.6.tar.bz2;patch:vdr.diff
 lufs;0.9.7;lufs-0.9.7;lufs-0.9.7.tar.gz:lufs.diff;extract:lufs-0.9.7.tar.gz;patch:lufs.diff
