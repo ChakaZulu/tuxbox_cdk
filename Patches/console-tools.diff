@@ -1,6 +1,30 @@
+diff -Naur console-tools-0.2.3.orig/contrib/codepage.c console-tools-0.2.3/contrib/codepage.c
+--- console-tools-0.2.3.orig/contrib/codepage.c	Thu Apr  8 23:29:41 1999
++++ console-tools-0.2.3/contrib/codepage.c	Sun Oct 30 11:56:39 2005
+@@ -227,8 +227,7 @@
+ 	if (optc)
+ 	  return 0;
+ 
+-        fprintf(stderr, "\
+-Warning: CP format is a hack!\n
++        fprintf(stderr, "Warning: CP format is a hack!\n\
+          The files produced may or may not be usable!\n");
+ 
+ 	sprintf(outfile, "%d.cp", CPEntryHeader.codepage);
+diff -Naur console-tools-0.2.3.orig/kbdtools/showkey.c console-tools-0.2.3/kbdtools/showkey.c
+--- console-tools-0.2.3.orig/kbdtools/showkey.c	Mon Aug 16 19:49:31 1999
++++ console-tools-0.2.3/kbdtools/showkey.c	Sun Oct 30 11:58:52 2005
+@@ -267,6 +267,7 @@
+ 	case cmd_keymap:
+ 	  printf(")\n");
+ 	default:
++	;
+ 	}
+     }
+ 
 diff -Naur console-tools-0.2.3.orig/lib/misc-console-utils.c console-tools-0.2.3/lib/misc-console-utils.c
 --- console-tools-0.2.3.orig/lib/misc-console-utils.c	Mon Oct 25 22:24:47 1999
-+++ console-tools-0.2.3/lib/misc-console-utils.c	Tue Apr  2 15:23:58 2002
++++ console-tools-0.2.3/lib/misc-console-utils.c	Sun Oct 30 11:56:39 2005
 @@ -73,7 +73,7 @@
    if (fd >= 0)
      return fd;
@@ -12,7 +36,7 @@ diff -Naur console-tools-0.2.3.orig/lib/misc-console-utils.c console-tools-0.2.3
    
 diff -Naur console-tools-0.2.3.orig/vttools/openvt.c console-tools-0.2.3/vttools/openvt.c
 --- console-tools-0.2.3.orig/vttools/openvt.c	Tue Aug 31 22:50:12 1999
-+++ console-tools-0.2.3/vttools/openvt.c	Tue Apr  2 15:22:51 2002
++++ console-tools-0.2.3/vttools/openvt.c	Sun Oct 30 11:56:39 2005
 @@ -61,7 +61,7 @@
   * Where your VTs are hidden
   */
@@ -33,7 +57,7 @@ diff -Naur console-tools-0.2.3.orig/vttools/openvt.c console-tools-0.2.3/vttools
        perror(filename);
 diff -Naur console-tools-0.2.3.orig/vttools/resizecons.c console-tools-0.2.3/vttools/resizecons.c
 --- console-tools-0.2.3.orig/vttools/resizecons.c	Fri Apr  9 00:11:15 1999
-+++ console-tools-0.2.3/vttools/resizecons.c	Tue Apr  2 15:21:51 2002
++++ console-tools-0.2.3/vttools/resizecons.c	Sun Oct 30 11:56:39 2005
 @@ -366,7 +366,7 @@
    for (i=0; i<16; i++)
        if (vtstat.v_state & (1<<i)) 
@@ -45,7 +69,7 @@ diff -Naur console-tools-0.2.3.orig/vttools/resizecons.c console-tools-0.2.3/vtt
  	       if(ioctl(fd, TIOCSWINSZ, &winsize))
 diff -Naur console-tools-0.2.3.orig/vttools/screendump.c console-tools-0.2.3/vttools/screendump.c
 --- console-tools-0.2.3.orig/vttools/screendump.c	Fri Apr  9 00:11:15 1999
-+++ console-tools-0.2.3/vttools/screendump.c	Tue Apr  2 15:22:16 2002
++++ console-tools-0.2.3/vttools/screendump.c	Sun Oct 30 11:56:39 2005
 @@ -139,7 +139,7 @@
        unsigned char *screenbuf;
        
@@ -55,15 +79,3 @@ diff -Naur console-tools-0.2.3.orig/vttools/screendump.c console-tools-0.2.3/vtt
        if((fd = open(consnam, 0)) < 0) 
  	{
  	  perror(consnam);
---- console-tools-0.2.3.orig/contrib/codepage.c	1999-04-08 23:29:41.000000000 +0200
-+++ console-tools-0.2.3/contrib/codepage.c	2004-02-26 17:45:34.000000000 +0100
-@@ -227,8 +227,7 @@
- 	if (optc)
- 	  return 0;
- 
--        fprintf(stderr, "\
--Warning: CP format is a hack!\n
-+        fprintf(stderr, "Warning: CP format is a hack!\n\
-          The files produced may or may not be usable!\n");
- 
- 	sprintf(outfile, "%d.cp", CPEntryHeader.codepage);
