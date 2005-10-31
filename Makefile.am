@@ -820,12 +820,13 @@ $(DEPDIR)/libz: bootstrap @DEPENDS_libz@
 
 $(DEPDIR)/libglib: bootstrap @DEPENDS_libglib@
 	@PREPARE_libglib@
+	echo "ac_cv_func_posix_getpwuid_r=yes" > @DIR_libglib@/config.cache
+	echo "glib_cv_stack_grows=no" >> @DIR_libglib@/config.cache
+	echo "glib_cv_uscore=no" >> @DIR_libglib@/config.cache
 	cd @DIR_libglib@ && \
 		$(BUILDENV) \
-		aclocal && \
-		libtoolize --force && \
-		autoconf && \
 		./configure \
+			--cache-file=config.cache \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) &&\
@@ -2336,3 +2337,6 @@ CONFIG_STATUS_DEPENDENCIES = \
 	Makefile-archive
 
 -include ./Makefile.am.local
+ac_cv_func_posix_getpwuid_r=yes
+glib_cv_stack_grows=no
+glib_cv_uscore=no
