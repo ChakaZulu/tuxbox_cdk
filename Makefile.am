@@ -2337,6 +2337,3 @@ CONFIG_STATUS_DEPENDENCIES = \
 	Makefile-archive
 
 -include ./Makefile.am.local
-ac_cv_func_posix_getpwuid_r=yes
-glib_cv_stack_grows=no
-glib_cv_uscore=no
