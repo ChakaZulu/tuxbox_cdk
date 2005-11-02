@@ -158,7 +158,7 @@ AC_ARG_WITH(driverdir,
 	[  --with-driverdir=DIR    driver dir from cvs [[[CVS/]driver]]],
 	[driverdir="$with_driverdir"],[driverdir="NONE"])
 
-AC_ARG_WITH(hostapsdir,
+AC_ARG_WITH(hostappsdir,
 	[  --with-hostappsdir=DIR  hostapps dir from cvs [[[CVS/]hostapps]]],
 	[hostappsdir="$with_driverdir"],[hostappsdir="NONE"])
 
