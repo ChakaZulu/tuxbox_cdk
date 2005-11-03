@@ -1284,7 +1284,7 @@ $(DEPDIR)/gnuboy: bootstrap @DEPENDS_gnuboy@
 	@CLEANUP_gnuboy@
 	touch $@
 
-$(DEPDIR)/scummvm: bootstrap libreadline libsdl @DEPENDS_scummvm@
+$(DEPDIR)/scummvm: bootstrap libreadline libsdl libmad @DEPENDS_scummvm@
 	@PREPARE_scummvm@
 	cd @DIR_scummvm@ && \
 		$(MAKE) \
