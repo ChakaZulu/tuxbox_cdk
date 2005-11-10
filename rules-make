@@ -97,7 +97,7 @@ msttf;0.0;msttf;arial32.exe:arialb32.exe;dircreate;dirextract:arial32.exe;dirext
 gdb;6.3;gdb-6.3;gdb-6.3.tar.bz2:gdb.diff;extract:gdb-6.3.tar.bz2;patch:gdb.diff
 insight;6.1;insight-6.1;insight-6.1.tar.bz2;extract:insight-6.1.tar.bz2
 ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz;extract:ltrace_0.3.26.tar.gz;patch:ltrace.diff
-strace;4.5.12;strace-4.5.12;strace-4.5.12.tar.bz2;extract:strace-4.5.12.tar.bz2
+strace;4.5.12;strace-4.5.12;strace-4.5.12.tar.bz2:strace.diff;extract:strace-4.5.12.tar.bz2;patch:strace.diff
 nano;1.2.4;nano-1.2.4;nano-1.2.4.tar.gz:nano.diff;extract:nano-1.2.4.tar.gz;patch:nano.diff
 mc;4.6.1-pre1;mc-4.6.1-pre1;mc-4.6.1-pre1.tar.gz:mc-4.6.1.diff;extract:mc-4.6.1-pre1.tar.gz;patch:mc-4.6.1.diff
 joe;3.1;joe-3.1;joe-3.1.tar.gz;extract:joe-3.1.tar.gz
