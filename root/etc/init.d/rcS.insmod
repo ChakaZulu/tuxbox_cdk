@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: rcS.insmod,v 1.4 2005/10/09 17:37:03 barf Exp $
+# $Id: rcS.insmod,v 1.5 2005/11/12 19:54:40 carjay Exp $
 # Alles mounten
 mount -a
 
@@ -76,6 +76,7 @@ fi
   ifup -a &
   test -x /sbin/inetd && inetd
   test -x /sbin/sshd &&/etc/init.d/start_sshd &
+  test -x /sbin/dropbear && /sbin/dropbear
 
 # Internetzeit holen
 if [ -e /var/etc/.rdate ]; then
