@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: rcS.insmod,v 1.5 2005/11/12 19:54:40 carjay Exp $
+# $Id: rcS.insmod,v 1.6 2005/11/22 14:31:27 saruman Exp $
 # Alles mounten
 mount -a
 
@@ -31,6 +31,8 @@ hostname -F /etc/hostname
   $IM $MD/dbox2_fp.o
   if [ -e /var/etc/.oldrc ]; then
    $IM $MD/dbox2_fp_input.o disable_new_rc=1
+  elif [ -e /var/etc/.newrc ]; then
+   $IM $MD/dbox2_fp_input.o disable_old_rc=1
   else
    $IM $MD/dbox2_fp_input.o
   fi
