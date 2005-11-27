@@ -6,7 +6,7 @@
 
 if test \( \( -x /bin/neutrino -a -x /bin/enigma \) -o \
            \( -x /bin/neutrino -a -x /bin/lcars \)  -o \
-           \( -x /bin/enigma   -a -x /binlcars \) \) -a -x /bin/lcdmenu ; then
+           \( -x /bin/enigma   -a -x /bin/lcars \) \) -a -x /bin/lcdmenu ; then
   lcdmenu
   RC="$?"
   test "$RC" -eq 0 && /etc/init.d/start_enigma
