@@ -44,7 +44,7 @@ openssl-0.9.7e.tar.gz;http://www.openssl.org/source
 curl-7.10.1.tar.gz;http://curl.haxx.se/download/archeology
 freetype-2.1.4.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.3.tar.gz;ftp://$(gnuserver)/ncurses
-jpegsrc.v6b.tar.gz;http://www.xfig.org/software/jpeg/jpegsrc.v6b.tar.gz
+jpegsrc.v6b.tar.gz;http://www.xfig.org/software/jpeg
 libpng-1.2.8.tar.bz2;ftp://ftp.simplesystems.org/pub/libpng/png/src;http://www.dbox2world.de/Archive/
 libxml2-2.4.30.tar.gz;ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.4
 zlib-1.2.3.tar.bz2;http://www.gzip.org/zlib;http://www.zlib.net
