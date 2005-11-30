@@ -237,12 +237,16 @@ diff -Naur u-boot-1.1.2.orig/common/main.c u-boot-1.1.2/common/main.c
  #ifdef CONFIG_SILENT_CONSOLE
  	{
  		DECLARE_GLOBAL_DATA_PTR;
-@@ -415,6 +500,10 @@
+@@ -415,6 +500,14 @@
  		int prev = disable_ctrlc(1);	/* disable Control C checking */
  # endif
  
 +#ifdef CONFIG_DBOX2_LCD_INFO
-+	lcd_puts ("\n\nloading kernel");
++	#ifndef DBOXFLASHER
++ 	lcd_puts ("\n\nloading kernel");
++	#else /* DBOXFLASHER */
++	lcd_puts ("\n\nflashing image");
++	#endif /* DBOXFLASHER */
 +#endif /* CONFIG_DBOX2_LCD_INFO */
 +
  # ifndef CFG_HUSH_PARSER
@@ -731,7 +735,15 @@ diff -Naur u-boot-1.1.2.orig/Makefile u-boot-1.1.2/Makefile
 diff -Naur u-boot-1.1.2.orig/net/bootp.c u-boot-1.1.2/net/bootp.c
 --- u-boot-1.1.2.orig/net/bootp.c	2004-04-15 23:48:49.000000000 +0200
 +++ u-boot-1.1.2/net/bootp.c	2005-02-14 17:14:07.356145664 +0100
-@@ -355,6 +355,17 @@
+@@ -15,6 +15,7 @@
+ 
+ #ifdef DEBUG_BOOTP_EXT
+ #define debug_ext(fmt,args...)	printf (fmt ,##args)
++#define debug(fmt,args...)	printf (fmt ,##args)
+ #else
+ #define debug_ext(fmt,args...)
+ #endif
+@@ -355,6 +356,17 @@
  		}
  	}
  
@@ -749,7 +761,16 @@ diff -Naur u-boot-1.1.2.orig/net/bootp.c u-boot-1.1.2/net/bootp.c
  	TftpStart();
  }
  #endif	/* !CFG_CMD_DHCP */
-@@ -741,6 +752,8 @@
+@@ -571,7 +583,7 @@
+ {
+ 	volatile uchar *pkt, *iphdr;
+ 	Bootp_t *bp;
+-	int ext_len, pktlen, iplen;
++	int pktlen, iplen, ext_len=0;
+ 
+ #if (CONFIG_COMMANDS & CFG_CMD_DHCP)
+ 	dhcp_state = INIT;
+@@ -741,6 +753,8 @@
  			memcpy (&NetOurRootPath, popt + 2, size);
  			NetOurRootPath[size] = 0;
  			break;
@@ -758,7 +779,7 @@ diff -Naur u-boot-1.1.2.orig/net/bootp.c u-boot-1.1.2/net/bootp.c
  		case 51:
  			NetCopyLong (&dhcp_leasetime, (ulong *) (popt + 2));
  			break;
-@@ -758,7 +771,7 @@
+@@ -758,7 +772,7 @@
  			if (dhcp_vendorex_proc (popt))
  				break;
  #endif
@@ -767,13 +788,20 @@ diff -Naur u-boot-1.1.2.orig/net/bootp.c u-boot-1.1.2/net/bootp.c
  			break;
  		}
  		popt += oplen + 2;	/* Process next option */
-@@ -908,6 +921,9 @@
+@@ -908,6 +922,16 @@
  #endif
  				}
  			}
 +#ifdef CONFIG_TUXBOX_NETWORK
 +			NetState = NETLOOP_SUCCESS;
 +#endif /* CONFIG_TUXBOX_NETWORK */
++
++#ifdef CONFIG_TUXBOX_BOOTMANAGER
++	NetOurRootPath[0] = '/';
++	NetOurRootPath[1] = 0;
++	strncpy(NetOurRootPath, BootFile, strrchr(BootFile, '/') - BootFile);
++	NetOurRootPath[strrchr(NetOurRootPath, '/')-NetOurRootPath] = 0;
++#endif /* CONFIG_TUXBOX_BOOTMANAGER */
  			TftpStart();
  			return;
  		}
