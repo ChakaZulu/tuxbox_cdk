@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: start_neutrino,v 1.25 2005/10/21 09:39:31 barf Exp $
+# $Id: start_neutrino,v 1.26 2005/12/10 10:49:21 barf Exp $
 
 date -s 010101001970
 sectionsd
@@ -26,4 +26,9 @@ fi
 i=`expr $i - 1`
 sleep 1
 done
-halt
+
+if [ -e /tmp/.reboot ] ; then
+    reboot
+else
+    halt
+fi
