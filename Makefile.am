@@ -1075,6 +1075,7 @@ $(DEPDIR)/lufs: bootstrap @DEPENDS_lufs@
 			--build=$(build) \
 			--host=$(target) \
 			--prefix=$(targetprefix) \
+			--exec_prefix=$(targetprefix) \
 			--disable-kernel-support && \
 		$(MAKE) all && \
 		@INSTALL_lufs@
