@@ -1,2 +1,4 @@
 proc	/proc		proc	defaults	0 0
 tmpfs	/tmp		ramfs	defaults	0 0
+sysfs	/sys		sysfs	noauto		0 0
+devpts  /dev/pts	devpts	noauto		0 0
