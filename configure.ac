@@ -160,7 +160,7 @@ AC_ARG_WITH(driverdir,
 
 AC_ARG_WITH(hostappsdir,
 	[  --with-hostappsdir=DIR  hostapps dir from cvs [[[CVS/]hostapps]]],
-	[hostappsdir="$with_driverdir"],[hostappsdir="NONE"])
+	[hostappsdir="$with_hostappsdir"],[hostappsdir="NONE"])
 
 AC_ARG_WITH(gnuserver,
         [  --with-gnuserver=ADDRESS   the gnu server for gnu-stuff (without ftp://)],
