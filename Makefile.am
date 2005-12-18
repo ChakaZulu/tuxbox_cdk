@@ -263,9 +263,15 @@ root: \
 	rootdirectories busybox ftpd \
 	procps watchdog
 else
+if  KERNEL26
+root: \
+	rootdirectories busybox ftpd module_init_tools tuxbox_hotplug \
+	procps watchdog
+else
 root: \
 	rootdirectories busybox ftpd modutils \
 	procps watchdog
+endif
 endif
 
 root_optional: \
@@ -1744,6 +1750,13 @@ $(DEPDIR)/hostapps_cross: $(hostappsdir)/config.status
 	$(MAKE) -C $(hostappsdir)
 	touch $@
 
+$(appsdir)/tuxbox/tools/hotplug/config.status: bootstrap
+	cd $(appsdir)/tuxbox/tools/hotplug && $(CONFIGURE)
+
+$(DEPDIR)/tuxbox_hotplug: $(appsdir)/tuxbox/tools/hotplug/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/tools/hotplug all install
+	touch $@
+
 #######################
 #
 #   flash
@@ -2300,6 +2313,7 @@ distclean-local:
 	-$(MAKE) -C $(appsdir)/tuxbox/libtuxbox distclean
 	-$(MAKE) -C $(appsdir)/tuxbox/neutrino distclean
 	-$(MAKE) -C $(appsdir)/tuxbox/tools distclean
+	-$(MAKE) -C $(appsdir)/tuxbox/tools/hotplug distclean
 	-$(MAKE) -C $(driverdir) distclean KERNEL_LOCATION=$(buildprefix)/linux
 	-rm Makefile-archive
 	-rm rules-downcheck.pl
