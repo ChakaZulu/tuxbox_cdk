@@ -1,0 +1,853 @@
+diff -Naur u-boot-1.1.4.orig/Makefile u-boot-1.1.4/Makefile
+--- u-boot-1.1.4.orig/Makefile	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/Makefile	2005-12-22 20:09:46.000000000 +0100
+@@ -112,7 +112,7 @@
+ endif
+ LIBS += lib_$(ARCH)/lib$(ARCH).a
+ LIBS += fs/cramfs/libcramfs.a fs/fat/libfat.a fs/fdos/libfdos.a fs/jffs2/libjffs2.a \
+-	fs/reiserfs/libreiserfs.a fs/ext2/libext2fs.a
++	fs/reiserfs/libreiserfs.a fs/ext2/libext2fs.a fs/squashfs/libsquashfs.a
+ LIBS += net/libnet.a
+ LIBS += disk/libdisk.a
+ LIBS += rtc/librtc.a
+@@ -129,8 +129,11 @@
+ 
+ # The "tools" are needed early, so put this first
+ # Don't include stuff already done in $(LIBS)
++#SUBDIRS	= tools \
++#	  examples \
++#	  post \
++#	  post/cpu
+ SUBDIRS	= tools \
+-	  examples \
+ 	  post \
+ 	  post/cpu
+ .PHONY : $(SUBDIRS)
+@@ -158,6 +161,13 @@
+ 			sed -e 's/"[	 ]*$$/ for $(BOARD) board"/') \
+ 		-d $< $@
+ 
++u-boot.stripped: u-boot
++		cp $< $@
++		$(STRIP) $@
++
++u-boot.treeboot: u-boot.stripped
++		tools/mktree $< $@
++
+ u-boot.dis:	u-boot
+ 		$(OBJDUMP) -d $< > $@
+ 
+@@ -403,6 +413,9 @@
+ cogent_mpc8xx_config:	unconfig
+ 	@./mkconfig $(@:_config=) ppc mpc8xx cogent
+ 
++dbox2_config:		unconfig
++	@./mkconfig $(@:_config=) ppc mpc8xx dbox2
++
+ ELPT860_config:		unconfig
+ 	@./mkconfig $(@:_config=) ppc mpc8xx elpt860 LEOX
+ 
+@@ -788,6 +801,9 @@
+ DP405_config:	unconfig
+ 	@./mkconfig $(@:_config=) ppc ppc4xx dp405 esd
+ 
++dreambox_config:  unconfig
++	@./mkconfig $(@:_config=) ppc ppc4xx dreambox
++
+ DU405_config:	unconfig
+ 	@./mkconfig $(@:_config=) ppc ppc4xx du405 esd
+ 
+@@ -1826,7 +1842,7 @@
+ 	      examples/test_burst
+ 	rm -f tools/img2srec tools/mkimage tools/envcrc tools/gen_eth_addr
+ 	rm -f tools/mpc86x_clk tools/ncb
+-	rm -f tools/easylogo/easylogo tools/bmp_logo
++	rm -f tools/easylogo/easylogo tools/bmp_logo tools/mktree
+ 	rm -f tools/gdb/astest tools/gdb/gdbcont tools/gdb/gdbsend
+ 	rm -f tools/env/fw_printenv tools/env/fw_setenv
+ 	rm -f board/cray/L1/bootscript.c board/cray/L1/bootscript.image
+@@ -1840,7 +1856,7 @@
+ 		| xargs -0 rm -f
+ 	rm -f $(OBJS) *.bak tags TAGS
+ 	rm -fr *.*~
+-	rm -f u-boot u-boot.map u-boot.hex $(ALL)
++	rm -f u-boot u-boot.* $(ALL)
+ 	rm -f tools/crc32.c tools/environment.c tools/env/crc32.c
+ 	rm -f tools/inca-swap-bytes cpu/mpc824x/bedbug_603e.c
+ 	rm -f include/asm/proc include/asm/arch include/asm
+diff -Naur u-boot-1.1.4.orig/common/Makefile u-boot-1.1.4/common/Makefile
+--- u-boot-1.1.4.orig/common/Makefile	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/common/Makefile	2005-12-22 20:09:46.000000000 +0100
+@@ -34,7 +34,7 @@
+ 	  cmd_date.o cmd_dcr.o cmd_diag.o cmd_display.o cmd_doc.o cmd_dtt.o \
+ 	  cmd_eeprom.o cmd_elf.o cmd_ext2.o \
+ 	  cmd_fat.o cmd_fdc.o cmd_fdos.o cmd_flash.o cmd_fpga.o \
+-	  cmd_i2c.o cmd_ide.o cmd_immap.o cmd_itest.o cmd_jffs2.o \
++	  cmd_fs.o cmd_i2c.o cmd_ide.o cmd_immap.o cmd_itest.o cmd_jffs2.o \
+ 	  cmd_load.o cmd_log.o \
+ 	  cmd_mem.o cmd_mii.o cmd_misc.o cmd_mmc.o \
+ 	  cmd_nand.o cmd_net.o cmd_nvedit.o \
+diff -Naur u-boot-1.1.4.orig/common/cmd_flash.c u-boot-1.1.4/common/cmd_flash.c
+--- u-boot-1.1.4.orig/common/cmd_flash.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/common/cmd_flash.c	2005-12-22 20:09:46.000000000 +0100
+@@ -464,6 +464,8 @@
+ 		p = 0;
+ 	} else if (strcmp(argv[1], "on") == 0) {
+ 		p = 1;
++	} else if (strcmp(argv[1], "ld") == 0) {
++		p = 2;
+ 	} else {
+ 		printf ("Usage:\n%s\n", cmdtp->usage);
+ 		return 1;
+diff -Naur u-boot-1.1.4.orig/common/cmd_net.c u-boot-1.1.4/common/cmd_net.c
+--- u-boot-1.1.4.orig/common/cmd_net.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/common/cmd_net.c	2005-12-22 20:09:46.000000000 +0100
+@@ -94,7 +94,10 @@
+ );
+ #endif	/* CFG_CMD_NFS */
+ 
+-static void netboot_update_env (void)
++#ifndef CONFIG_TUXBOX_NETWORK
++static
++#endif
++void netboot_update_env (void)
+ {
+ 	char tmp[22];
+ 
+diff -Naur u-boot-1.1.4.orig/common/cmd_nvedit.c u-boot-1.1.4/common/cmd_nvedit.c
+--- u-boot-1.1.4.orig/common/cmd_nvedit.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/common/cmd_nvedit.c	2005-12-22 20:09:46.000000000 +0100
+@@ -530,7 +530,7 @@
+ 	return (-1);
+ }
+ 
+-#if defined(CFG_ENV_IS_IN_NVRAM) || defined(CFG_ENV_IS_IN_EEPROM) || \
++#if defined(CFG_ENV_IS_IN_NVRAM) || defined(CFG_ENV_IS_IN_EEPROM) && \
+     ((CONFIG_COMMANDS & (CFG_CMD_ENV|CFG_CMD_FLASH)) == \
+       (CFG_CMD_ENV|CFG_CMD_FLASH))
+ int do_saveenv (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+@@ -586,7 +586,7 @@
+ 	"    - delete environment variable 'name'\n"
+ );
+ 
+-#if defined(CFG_ENV_IS_IN_NVRAM) || defined(CFG_ENV_IS_IN_EEPROM) || \
++#if defined(CFG_ENV_IS_IN_NVRAM) || defined(CFG_ENV_IS_IN_EEPROM) && \
+     ((CONFIG_COMMANDS & (CFG_CMD_ENV|CFG_CMD_FLASH)) == \
+       (CFG_CMD_ENV|CFG_CMD_FLASH))
+ U_BOOT_CMD(
+diff -Naur u-boot-1.1.4.orig/common/devices.c u-boot-1.1.4/common/devices.c
+--- u-boot-1.1.4.orig/common/devices.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/common/devices.c	2005-12-22 20:09:46.000000000 +0100
+@@ -194,6 +194,9 @@
+ #ifdef CONFIG_LOGBUFFER
+ 	drv_logbuff_init ();
+ #endif
++#ifdef CONFIG_DBOX2
++	drv_dbox2_init();
++#endif
+ 	drv_system_init ();
+ #ifdef CONFIG_SERIAL_MULTI
+ 	serial_devices_init ();
+diff -Naur u-boot-1.1.4.orig/common/env_common.c u-boot-1.1.4/common/env_common.c
+--- u-boot-1.1.4.orig/common/env_common.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/common/env_common.c	2005-12-22 20:09:46.000000000 +0100
+@@ -42,6 +42,10 @@
+ 	extern void disable_nvram(void);
+ #endif
+ 
++#ifdef CONFIG_DBOX2_ENV_READ_FS
++void load_env_fs (void);
++#endif /* CONFIG_DBOX2_ENV_READ_FS */
++
+ #undef DEBUG_ENV
+ #ifdef DEBUG_ENV
+ #define DEBUGF(fmt,args...) printf(fmt ,##args)
+@@ -234,8 +238,10 @@
+ 	env_get_char = env_get_char_memory;
+ 
+ 	if (gd->env_valid == 0) {
+-#if defined(CONFIG_GTH)	|| defined(CFG_ENV_IS_NOWHERE)	/* Environment not changable */
++#if defined(CFG_ENV_IS_NOWHERE) /* we have no environment */
++#elif defined (CONFIG_GTH)	/* environment not changeable */
+ 		puts ("Using default environment\n\n");
++#elif defined (CONFIG_DBOX2_ENV_READ_FS)
+ #else
+ 		puts ("*** Warning - bad CRC, using default environment\n\n");
+ 		SHOW_BOOT_PROGRESS (-1);
+@@ -265,6 +271,10 @@
+ #ifdef CONFIG_AMIGAONEG3SE
+ 	disable_nvram();
+ #endif
++
++#ifdef CONFIG_DBOX2_ENV_READ_FS
++	load_env_fs ();
++#endif /* CONFIG_DBOX2_ENV_READ_FS */
+ }
+ 
+ #ifdef CONFIG_AUTO_COMPLETE
+diff -Naur u-boot-1.1.4.orig/common/main.c u-boot-1.1.4/common/main.c
+--- u-boot-1.1.4.orig/common/main.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/common/main.c	2005-12-22 20:09:46.000000000 +0100
+@@ -36,6 +36,11 @@
+ 
+ #include <post.h>
+ 
++#ifdef CONFIG_DBOX2_LCD_INFO
++#include <lcd.h>
++#include <version.h>
++#endif /* CONFIG_DBOX2_LCD_INFO */
++
+ #if defined(CONFIG_BOOT_RETRY_TIME) && defined(CONFIG_RESET_TO_RETRY)
+ extern int do_reset (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);		/* for do_reset() prototype */
+ #endif
+@@ -234,11 +239,38 @@
+ 	}
+ #endif
+ 
++#ifdef CONFIG_AUTOBOOT_SELECT
++	char option = CONFIG_AUTOBOOT_SELECT_AUTOBOOT;
++	puts("\nOptions:\n");
++#if CONFIG_AUTOBOOT_SELECT_NUMBER >= 1
++	printf("  1: " CONFIG_AUTOBOOT_SELECT_1_TEXT "\n");
++#endif /* CONFIG_AUTOBOOT_SELECT_NUMBER >= 1 */
++#if CONFIG_AUTOBOOT_SELECT_NUMBER >= 2
++	printf("  2: " CONFIG_AUTOBOOT_SELECT_2_TEXT "\n");
++#endif /* CONFIG_AUTOBOOT_SELECT_NUMBER >= 2 */
++#if CONFIG_AUTOBOOT_SELECT_NUMBER >= 3
++	printf("  3: " CONFIG_AUTOBOOT_SELECT_3_TEXT "\n");
++#endif /* CONFIG_AUTOBOOT_SELECT_NUMBER >= 3 */
++#if CONFIG_AUTOBOOT_SELECT_NUMBER >= 4
++	printf("  4: " CONFIG_AUTOBOOT_SELECT_4_TEXT "\n");
++#endif /* CONFIG_AUTOBOOT_SELECT_NUMBER >= 4 */
++#if CONFIG_AUTOBOOT_SELECT_NUMBER >= 5
++	printf("  5: " CONFIG_AUTOBOOT_SELECT_5_TEXT "\n");
++#endif /* CONFIG_AUTOBOOT_SELECT_NUMBER >= 5 */
++	printf("Select option (1-%d), other keys to stop autoboot: %2d ",
++		CONFIG_AUTOBOOT_SELECT_NUMBER, bootdelay);
++#else /* CONFIG_AUTOBOOT_SELECT */
++
+ #ifdef CONFIG_MENUPROMPT
+ 	printf(CONFIG_MENUPROMPT, bootdelay);
+ #else
+ 	printf("Hit any key to stop autoboot: %2d ", bootdelay);
+ #endif
++#endif /* CONFIG_AUTOBOOT_SELECT */
++
++#ifdef CONFIG_DBOX2_LCD_INFO
++	lcd_printf ("\nautoboot: %2d", bootdelay);
++#endif /* CONFIG_DBOX2_LCD_INFO */
+ 
+ #if defined CONFIG_ZERO_BOOTDELAY_CHECK
+ 	/*
+@@ -249,6 +281,9 @@
+ 		if (tstc()) {	/* we got a key press	*/
+ 			(void) getc();  /* consume input	*/
+ 			puts ("\b\b\b 0");
++#ifdef CONFIG_DBOX2_LCD_INFO
++			lcd_printf ("\b\b 0");
++#endif /* CONFIG_DBOX2_LCD_INFO */
+ 			abort = 1; 	/* don't auto boot	*/
+ 		}
+ 	}
+@@ -261,23 +296,73 @@
+ 		/* delay 100 * 10ms */
+ 		for (i=0; !abort && i<100; ++i) {
+ 			if (tstc()) {	/* we got a key press	*/
++#ifdef CONFIG_AUTOBOOT_SELECT
++				option = getc();
++#ifdef CONFIG_AUTOBOOT_SELECT_AUTOBOOT
++				if (option < '1' || option > CONFIG_AUTOBOOT_SELECT_NUMBER + '0')
++#endif /* CONFIG_AUTOBOOT_SELECT_AUTOBOOT */
++#endif /* CONFIG_AUTOBOOT_SELECT */
+ 				abort  = 1;	/* don't auto boot	*/
+ 				bootdelay = 0;	/* no more delay	*/
+-# ifdef CONFIG_MENUKEY
++#ifndef CONFIG_AUTOBOOT_SELECT
++#ifdef CONFIG_MENUKEY
+ 				menukey = getc();
+-# else
++#else
+ 				(void) getc();  /* consume input	*/
+-# endif
++#endif
++#endif /* CONFIG_AUTOBOOT_SELECT */
+ 				break;
+ 			}
+ 			udelay (10000);
+ 		}
+ 
+ 		printf ("\b\b\b%2d ", bootdelay);
++#ifdef CONFIG_DBOX2_LCD_INFO
++		lcd_printf("\b\b%2d", bootdelay);
++#endif /* CONFIG_DBOX2_LCD_INFO */
+ 	}
+ 
++#ifdef CONFIG_AUTOBOOT_SELECT
++	switch ( option ){
++#if CONFIG_AUTOBOOT_SELECT_NUMBER >= 1
++	case '1':
++		run_command (CONFIG_AUTOBOOT_SELECT_1_COMMAND, 0);
++		break;
++#endif /* CONFIG_AUTOBOOT_SELECT_NUMBER >= 1 */
++#if CONFIG_AUTOBOOT_SELECT_NUMBER >= 2
++	case '2':
++		run_command (CONFIG_AUTOBOOT_SELECT_2_COMMAND, 0);
++		break;
++#endif /* CONFIG_AUTOBOOT_SELECT_NUMBER >= 2 */
++#if CONFIG_AUTOBOOT_SELECT_NUMBER >= 3
++	case '3':
++		run_command (CONFIG_AUTOBOOT_SELECT_3_COMMAND, 0);
++		break;
++#endif /* CONFIG_AUTOBOOT_SELECT_NUMBER >= 3 */
++#if CONFIG_AUTOBOOT_SELECT_NUMBER >= 4
++	case '4':
++		run_command (CONFIG_AUTOBOOT_SELECT_4_COMMAND, 0);
++		break;
++#endif /* CONFIG_AUTOBOOT_SELECT_NUMBER >= 4 */
++#if CONFIG_AUTOBOOT_SELECT_NUMBER >= 5
++	case '5':
++		run_command (CONFIG_AUTOBOOT_SELECT_5_COMMAND, 0);
++		break;
++#endif /* CONFIG_AUTOBOOT_SELECT_NUMBER >= 5 */
++#ifndef CONFIG_AUTOBOOT_SELECT_AUTOBOOT
++	default:
++		abort = 1;
++		break;
++#endif /* CONFIG_AUTOBOOT_SELECT_AUTOBOOT */
++	}
++#endif /* CONFIG_AUTOBOOT_SELECT */
++
+ 	putc ('\n');
+ 
++#ifdef CONFIG_DBOX2_LCD_INFO
++	lcd_puts ("\n\n" U_BOOT_VERSION_SHORT "\n");
++#endif /* CONFIG_DBOX2_LCD_INFO */
++
+ #ifdef CONFIG_SILENT_CONSOLE
+ 	{
+ 		DECLARE_GLOBAL_DATA_PTR;
+@@ -417,6 +502,14 @@
+ 		int prev = disable_ctrlc(1);	/* disable Control C checking */
+ # endif
+ 
++#ifdef CONFIG_DBOX2_LCD_INFO
++	#ifndef DBOXFLASHER
++ 	lcd_puts ("\n\nloading kernel");
++	#else /* DBOXFLASHER */
++	lcd_puts ("\n\nflashing image");
++	#endif /* DBOXFLASHER */
++#endif /* CONFIG_DBOX2_LCD_INFO */
++
+ # ifndef CFG_HUSH_PARSER
+ 		run_command (s, 0);
+ # else
+diff -Naur u-boot-1.1.4.orig/cpu/mpc8xx/cpu_init.c u-boot-1.1.4/cpu/mpc8xx/cpu_init.c
+--- u-boot-1.1.4.orig/cpu/mpc8xx/cpu_init.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/cpu/mpc8xx/cpu_init.c	2005-12-22 20:09:46.000000000 +0100
+@@ -110,6 +110,7 @@
+ 	immr->im_clkrst.car_plprcr = reg;
+ #endif
+ 
++#ifndef CONFIG_SECONDSTAGE
+ 	/*
+ 	 * Memory Controller:
+ 	 */
+@@ -215,7 +216,9 @@
+ 	memctl->memc_br7 = CFG_BR7_PRELIM;
+ #endif
+ 
++#endif /* ! CONFIG_SECONDSTAGE */
+ #endif /* ! CONFIG_MBX */
++#ifndef CONFIG_SECONDSTAGE
+ 
+ 	/*
+ 	 * Reset CPM
+@@ -225,6 +228,7 @@
+ 		__asm__ ("eieio");
+ 	} while (immr->im_cpm.cp_cpcr & CPM_CR_FLG);
+ 
++#endif /* ! coNFIG_SECONDSTAGE */
+ #ifdef CONFIG_MBX
+ 	/*
+ 	 * on the MBX, things are a little bit different:
+diff -Naur u-boot-1.1.4.orig/cpu/mpc8xx/start.S u-boot-1.1.4/cpu/mpc8xx/start.S
+--- u-boot-1.1.4.orig/cpu/mpc8xx/start.S	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/cpu/mpc8xx/start.S	2005-12-22 20:09:46.000000000 +0100
+@@ -83,6 +83,9 @@
+  * r4 - 2nd arg to board_init(): boot flag
+  */
+ 	.text
++#ifdef CONFIG_SECONDSTAGE
++	bl EXC_OFF_SYS_RESET
++#endif
+ 	.long	0x27051956		/* U-Boot Magic Number			*/
+ 	.globl	version_string
+ version_string:
+diff -Naur u-boot-1.1.4.orig/fs/Makefile u-boot-1.1.4/fs/Makefile
+--- u-boot-1.1.4.orig/fs/Makefile	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/fs/Makefile	2005-12-22 20:09:46.000000000 +0100
+@@ -22,7 +22,7 @@
+ #
+ #
+ 
+-SUBDIRS	:= jffs2 cramfs fdos fat reiserfs ext2
++SUBDIRS	:= jffs2 cramfs fdos fat reiserfs ext2 squashfs
+ 
+ .depend all:
+ 	@for dir in $(SUBDIRS) ; do \
+diff -Naur u-boot-1.1.4.orig/fs/cramfs/cramfs.c u-boot-1.1.4/fs/cramfs/cramfs.c
+--- u-boot-1.1.4.orig/fs/cramfs/cramfs.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/fs/cramfs/cramfs.c	2005-12-22 20:09:46.000000000 +0100
+@@ -27,7 +27,7 @@
+ #include <common.h>
+ #include <malloc.h>
+ 
+-#if (CONFIG_COMMANDS & CFG_CMD_JFFS2)
++#if (CONFIG_COMMANDS & CFG_CMD_JFFS2) || (CONFIG_FS & CFG_FS_CRAMFS)
+ 
+ #include <asm/byteorder.h>
+ #include <linux/stat.h>
+@@ -344,4 +344,4 @@
+ 	return 1;
+ }
+ 
+-#endif /* CFG_FS_CRAMFS */
++#endif /* CFG_FS_CRAMFS || CFG_FS_CRAMFS */
+diff -Naur u-boot-1.1.4.orig/fs/cramfs/uncompress.c u-boot-1.1.4/fs/cramfs/uncompress.c
+--- u-boot-1.1.4.orig/fs/cramfs/uncompress.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/fs/cramfs/uncompress.c	2005-12-22 20:09:46.000000000 +0100
+@@ -1,4 +1,4 @@
+-/*
++	/*
+  * uncompress.c
+  *
+  * Copyright (C) 1999 Linus Torvalds
+@@ -25,7 +25,7 @@
+ #include <watchdog.h>
+ #include <zlib.h>
+ 
+-#if (CONFIG_COMMANDS & CFG_CMD_JFFS2)
++#if (CONFIG_COMMANDS & CFG_CMD_JFFS2) || (CONFIG_FS & CFG_FS_CRAMFS)
+ 
+ static z_stream stream;
+ 
+@@ -103,4 +103,4 @@
+ 	return 0;
+ }
+ 
+-#endif /* CFG_FS_CRAMFS */
++#endif /* CFG_FS_CRAMFS || CFG_FS_CRAMFS */
+diff -Naur u-boot-1.1.4.orig/fs/jffs2/compr_rtime.c u-boot-1.1.4/fs/jffs2/compr_rtime.c
+--- u-boot-1.1.4.orig/fs/jffs2/compr_rtime.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/fs/jffs2/compr_rtime.c	2005-12-22 20:09:46.000000000 +0100
+@@ -46,7 +46,7 @@
+  */
+ 
+ #include <config.h>
+-#if (CONFIG_COMMANDS & CFG_CMD_JFFS2)
++#if (CONFIG_COMMANDS & CFG_CMD_JFFS2) || (CONFIG_FS & CFG_FS_JFFS2)
+ 
+ #include <jffs2/jffs2.h>
+ 
+@@ -88,4 +88,4 @@
+ 	}
+ }
+ 
+-#endif /* CFG_CMD_JFFS2 */
++#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
+diff -Naur u-boot-1.1.4.orig/fs/jffs2/compr_rubin.c u-boot-1.1.4/fs/jffs2/compr_rubin.c
+--- u-boot-1.1.4.orig/fs/jffs2/compr_rubin.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/fs/jffs2/compr_rubin.c	2005-12-22 20:09:46.000000000 +0100
+@@ -39,7 +39,7 @@
+  */
+ 
+ #include <config.h>
+-#if (CONFIG_COMMANDS & CFG_CMD_JFFS2)
++#if (CONFIG_COMMANDS & CFG_CMD_JFFS2) || (CONFIG_FS & CFG_FS_JFFS2)
+ 
+ #include <jffs2/jffs2.h>
+ #include <jffs2/compr_rubin.h>
+@@ -123,4 +123,4 @@
+ 	rubin_do_decompress(bits, data_in+8, cpage_out, dstlen);
+ }
+ 
+-#endif /* CFG_CMD_JFFS2 */
++#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
+diff -Naur u-boot-1.1.4.orig/fs/jffs2/compr_zlib.c u-boot-1.1.4/fs/jffs2/compr_zlib.c
+--- u-boot-1.1.4.orig/fs/jffs2/compr_zlib.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/fs/jffs2/compr_zlib.c	2005-12-22 20:09:46.000000000 +0100
+@@ -37,7 +37,7 @@
+ 
+ #include <common.h>
+ #include <config.h>
+-#if (CONFIG_COMMANDS & CFG_CMD_JFFS2)
++#if (CONFIG_COMMANDS & CFG_CMD_JFFS2) || (CONFIG_FS & CFG_FS_JFFS2)
+ 
+ #include <jffs2/jffs2.h>
+ #include <jffs2/mini_inflate.h>
+@@ -49,4 +49,4 @@
+ 
+ }
+ 
+-#endif /* CFG_CMD_JFFS2 */
++#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
+diff -Naur u-boot-1.1.4.orig/fs/jffs2/jffs2_1pass.c u-boot-1.1.4/fs/jffs2/jffs2_1pass.c
+--- u-boot-1.1.4.orig/fs/jffs2/jffs2_1pass.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/fs/jffs2/jffs2_1pass.c	2005-12-22 20:09:46.000000000 +0100
+@@ -117,7 +117,7 @@
+ #include <linux/stat.h>
+ #include <linux/time.h>
+ 
+-#if (CONFIG_COMMANDS & CFG_CMD_JFFS2)
++#if (CONFIG_COMMANDS & CFG_CMD_JFFS2) || (CONFIG_FS & CFG_FS_JFFS2)
+ 
+ #include <jffs2/jffs2.h>
+ #include <jffs2/jffs2_1pass.h>
+@@ -1367,4 +1367,4 @@
+ 	return 1;
+ }
+ 
+-#endif /* CFG_CMD_JFFS2 */
++#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
+diff -Naur u-boot-1.1.4.orig/fs/jffs2/mini_inflate.c u-boot-1.1.4/fs/jffs2/mini_inflate.c
+--- u-boot-1.1.4.orig/fs/jffs2/mini_inflate.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/fs/jffs2/mini_inflate.c	2005-12-22 20:09:46.000000000 +0100
+@@ -25,7 +25,7 @@
+ 
+ #include <config.h>
+ 
+-#if (CONFIG_COMMANDS & CFG_CMD_JFFS2)
++#if (CONFIG_COMMANDS & CFG_CMD_JFFS2) || (CONFIG_FS & CFG_FS_JFFS2)
+ 
+ #include <jffs2/mini_inflate.h>
+ 
+@@ -393,4 +393,4 @@
+ 	return stream.error ? -stream.error : stream.decoded;
+ }
+ 
+-#endif /* CFG_CMD_JFFS2 */
++#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
+diff -Naur u-boot-1.1.4.orig/include/cmd_confdefs.h u-boot-1.1.4/include/cmd_confdefs.h
+--- u-boot-1.1.4.orig/include/cmd_confdefs.h	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/include/cmd_confdefs.h	2005-12-22 20:09:46.000000000 +0100
+@@ -94,9 +94,11 @@
+ #define CFG_CMD_EXT2	0x1000000000000000ULL	/* EXT2 Support			*/
+ #define CFG_CMD_SNTP	0x2000000000000000ULL	/* SNTP support			*/
+ #define CFG_CMD_DISPLAY	0x4000000000000000ULL	/* Display support		*/
++#define CFG_CMD_FS	0x8000000000000000ULL	/* Generic FS Support		*/
+ 
+ #define CFG_CMD_ALL	0xFFFFFFFFFFFFFFFFULL	/* ALL commands			*/
+ 
++
+ /* Commands that are considered "non-standard" for some reason
+  * (memory hogs, requires special hardware, not fully tested, etc.)
+  */
+@@ -119,6 +121,7 @@
+ 			CFG_CMD_FDC	| \
+ 			CFG_CMD_FAT	| \
+ 			CFG_CMD_FDOS	| \
++			CFG_CMD_FS	| \
+ 			CFG_CMD_HWFLOW	| \
+ 			CFG_CMD_I2C	| \
+ 			CFG_CMD_IDE	| \
+@@ -183,4 +186,11 @@
+ #define CONFIG_BOOTP_MASK		CONFIG_BOOTP_DEFAULT
+ #endif
+ 
++#ifndef CONFIG_FS
++#define CONFIG_FS			0
++#endif /* CONFIG_FS */
++#define CFG_FS_CRAMFS			0x00000001
++#define CFG_FS_JFFS2			0x00000002
++#define CFG_FS_SQUASHFS		0x00000004
++
+ #endif	/* _CMD_CONFIG_H */
+diff -Naur u-boot-1.1.4.orig/include/commproc.h u-boot-1.1.4/include/commproc.h
+--- u-boot-1.1.4.orig/include/commproc.h	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/include/commproc.h	2005-12-22 20:09:46.000000000 +0100
+@@ -605,6 +605,27 @@
+ 
+ #endif	/* CONFIG_PCU_E, CONFIG_CCM */
+ 
++/***  DBOX2  ********************************/
++
++#ifdef CONFIG_DBOX2
++
++#define	PROFF_ENET	PROFF_SCC2
++#define	CPM_CR_ENET	CPM_CR_CH_SCC2
++#define	SCC_ENET	1
++
++#define	PA_ENET_RXD	((ushort)0x0004)	/* PA 13 */
++#define	PA_ENET_TXD	((ushort)0x0008)	/* PA 12 */
++#define	PA_ENET_RCLK	((ushort)0x0200)	/* PA  6 */
++#define	PA_ENET_TCLK	((ushort)0x0800)	/* PA  4 */
++#define	PC_ENET_TENA	((ushort)0x0002)	/* PC 14 */
++#define	PC_ENET_CLSN	((ushort)0x0040)	/* PC  9 */
++#define	PC_ENET_RENA	((ushort)0x0080)	/* PC  8 */
++
++#define	SICR_ENET_MASK	((uint)0x0000ff00)
++#define	SICR_ENET_CLKRT	((uint)0x00003d00)
++
++#endif /* CONFIG_DBOX2 */
++
+ /***  ELPT860 *********************************************************/
+ 
+ #ifdef CONFIG_ELPT860
+diff -Naur u-boot-1.1.4.orig/include/devices.h u-boot-1.1.4/include/devices.h
+--- u-boot-1.1.4.orig/include/devices.h	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/include/devices.h	2005-12-22 20:09:46.000000000 +0100
+@@ -105,6 +105,9 @@
+ #ifdef CONFIG_KEYBOARD
+ int	drv_keyboard_init (void);
+ #endif
++#ifdef CONFIG_DBOX2
++int	drv_dbox2_init (void);
++#endif /* CONFG_DBOX2 */
+ #ifdef CONFIG_USB_TTY
+ int	drv_usbtty_init (void);
+ #endif
+diff -Naur u-boot-1.1.4.orig/include/flash.h u-boot-1.1.4/include/flash.h
+--- u-boot-1.1.4.orig/include/flash.h	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/include/flash.h	2005-12-22 20:09:46.000000000 +0100
+@@ -242,6 +242,7 @@
+ #define STM_ID_29W320DT 0x22CA22CA	/* M29W320DT ID (32 M, top boot sector) */
+ #define STM_ID_29W320DB 0x22CB22CB	/* M29W320DB ID (32 M, bottom boot sect)	*/
+ #define STM_ID_29W040B	0x00E300E3	/* M29W040B ID (4M = 512K x 8)	*/
++#define STM_ID_28W320CB	0x88BB88BB	/* M28W320CB ID (32 Mbit (2Mb x16, Boot Block))	*/
+ 
+ #define INTEL_ID_28F016S    0x66a066a0	/* 28F016S[VS] ID (16M = 512k x 16)	*/
+ #define INTEL_ID_28F800B3T  0x88928892	/*  8M = 512K x 16 top boot sector	*/
+@@ -342,6 +343,7 @@
+ #define FLASH_STM320DB	0x00CB		/* STM M29W320DB (4M = 64K x 64, bottom)*/
+ #define FLASH_STM800DT	0x00D7		/* STM M29W800DT (1M = 64K x 16, top)	*/
+ #define FLASH_STM800DB	0x005B		/* STM M29W800DB (1M = 64K x 16, bottom)*/
++#define FLASH_STM320CB	0x005D		/* M28W320CB ID (32 Mbit (2Mb x16, Boot Block))	*/
+ 
+ #define FLASH_28F400_T	0x0062		/* MT  28F400B3 ID (  4M = 256K x 16 )	*/
+ #define FLASH_28F400_B	0x0063		/* MT  28F400B3 ID (  4M = 256K x 16 )	*/
+diff -Naur u-boot-1.1.4.orig/include/jffs2/load_kernel.h u-boot-1.1.4/include/jffs2/load_kernel.h
+--- u-boot-1.1.4.orig/include/jffs2/load_kernel.h	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/include/jffs2/load_kernel.h	2005-12-22 20:10:05.000000000 +0100
+@@ -39,6 +39,17 @@
+ 	struct list_head parts;		/* partitions */
+ };
+ 
++#if (CONFIG_COMMANDS & CFG_CMD_FS)
++	#ifndef _CMD_FS_H
++	struct part_info {
++		int type;
++		unsigned long offset;
++		unsigned long size;
++		void *jffs2_priv;
++		struct mtd_device *dev;		/* parent device */
++	};
++	#endif
++#else
+ struct part_info {
+ 	struct list_head link;
+ 	char *name;			/* partition name */
+@@ -49,6 +60,7 @@
+ 	u32 mask_flags;			/* kernel MTD mask flags */
+ 	struct mtd_device *dev;		/* parent device */
+ };
++#endif
+ 
+ struct mtdids {
+ 	struct list_head link;
+diff -Naur u-boot-1.1.4.orig/include/jffs2/u-boot-1.1.2.diff u-boot-1.1.4/include/jffs2/u-boot-1.1.2.diff
+--- u-boot-1.1.4.orig/include/jffs2/u-boot-1.1.2.diff	1970-01-01 01:00:00.000000000 +0100
++++ u-boot-1.1.4/include/jffs2/u-boot-1.1.2.diff	2005-12-22 20:09:46.000000000 +0100
+@@ -0,0 +1,10 @@
+++#if (CONFIG_COMMANDS & CFG_CMD_FS)
+++	#ifndef _CMD_FS_H
+++	struct part_info {
+++		int type;
+++		unsigned long offset;
+++		unsigned long size;
+++		void *jffs2_priv;
+++	};
+++	#endif
+++#else
+diff -Naur u-boot-1.1.4.orig/include/lcd.h u-boot-1.1.4/include/lcd.h
+--- u-boot-1.1.4.orig/include/lcd.h	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/include/lcd.h	2005-12-22 20:09:46.000000000 +0100
+@@ -156,6 +156,9 @@
+ void	lcd_disable	(void);
+ #endif
+ 
++#ifdef CONFIG_LCD_BOARD
++int	lcd_init	(void);
++#endif /* CONFIG_LCD_BOARD */
+ 
+ /* int	lcd_init	(void *lcdbase); */
+ void	lcd_putc	(const char c);
+diff -Naur u-boot-1.1.4.orig/include/version.h u-boot-1.1.4/include/version.h
+--- u-boot-1.1.4.orig/include/version.h	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/include/version.h	2005-12-22 20:09:46.000000000 +0100
+@@ -24,6 +24,7 @@
+ #ifndef	__VERSION_H__
+ #define	__VERSION_H__
+ 
+-#define	U_BOOT_VERSION	"U-Boot 1.1.4"
++#define	U_BOOT_VERSION	"U-Boot 1.1.4 (Tuxbox)"
++#define U_BOOT_VERSION_SHORT	"U-Boot 1.1.4"
+ 
+ #endif	/* __VERSION_H__ */
+diff -Naur u-boot-1.1.4.orig/lib_generic/crc32.c u-boot-1.1.4/lib_generic/crc32.c
+--- u-boot-1.1.4.orig/lib_generic/crc32.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/lib_generic/crc32.c	2005-12-22 20:09:46.000000000 +0100
+@@ -171,7 +171,7 @@
+     return crc ^ 0xffffffffL;
+ }
+ 
+-#if (CONFIG_COMMANDS & CFG_CMD_JFFS2)
++#if (CONFIG_COMMANDS & CFG_CMD_JFFS2) || (CONFIG_FS & CFG_FS_JFFS2)
+ 
+ /* No ones complement version. JFFS2 (and other things ?)
+  * don't use ones compliment in their CRC calculations.
+@@ -194,4 +194,4 @@
+     return crc;
+ }
+ 
+-#endif	/* CFG_CMD_JFFS2 */
++#endif	/* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
+diff -Naur u-boot-1.1.4.orig/net/bootp.c u-boot-1.1.4/net/bootp.c
+--- u-boot-1.1.4.orig/net/bootp.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/net/bootp.c	2005-12-22 20:09:46.000000000 +0100
+@@ -15,6 +15,7 @@
+ 
+ #ifdef DEBUG_BOOTP_EXT
+ #define debug_ext(fmt,args...)	printf (fmt ,##args)
++#define debug(fmt,args...)	printf (fmt ,##args)
+ #else
+ #define debug_ext(fmt,args...)
+ #endif
+@@ -355,6 +356,17 @@
+ 		}
+ 	}
+ 
++#ifdef CONFIG_TUXBOX_NETWORK
++	NetState = NETLOOP_SUCCESS;
++#endif /* CONFIG_TUXBOX_NETWORK */
++
++#ifdef CONFIG_TUXBOX_BOOTMANAGER
++	NetOurRootPath[0] = '/';
++	NetOurRootPath[1] = 0;
++	strncpy(NetOurRootPath, BootFile, strrchr(BootFile, '/') - BootFile);
++	NetOurRootPath[strrchr(NetOurRootPath, '/')-NetOurRootPath] = 0;
++#endif /* CONFIG_TUXBOX_BOOTMANAGER */
++
+ 	TftpStart();
+ }
+ #endif	/* !CFG_CMD_DHCP */
+@@ -568,7 +580,7 @@
+ {
+ 	volatile uchar *pkt, *iphdr;
+ 	Bootp_t *bp;
+-	int ext_len, pktlen, iplen;
++	int pktlen, iplen, ext_len=0;
+ 
+ #if (CONFIG_COMMANDS & CFG_CMD_DHCP)
+ 	dhcp_state = INIT;
+@@ -755,6 +767,8 @@
+ 			memcpy (&NetOurRootPath, popt + 2, size);
+ 			NetOurRootPath[size] = 0;
+ 			break;
++		case 28:	/* Ignore Broadcast Address Option */
++			break;
+ #if (CONFIG_COMMANDS & CFG_CMD_SNTP) && (CONFIG_BOOTP_MASK & CONFIG_BOOTP_NTPSERVER)
+ 		case 42:	/* NTP server IP */
+ 			NetCopyIP (&NetNtpServerIP, (popt + 2));
+@@ -777,7 +791,7 @@
+ 			if (dhcp_vendorex_proc (popt))
+ 				break;
+ #endif
+-			printf ("*** Unhandled DHCP Option in OFFER/ACK: %d\n", *popt);
++			debug_ext("*** Unhandled DHCP Option in OFFER/ACK: %d\n", *popt);
+ 			break;
+ 		}
+ 		popt += oplen + 2;	/* Process next option */
+@@ -927,6 +941,16 @@
+ #endif
+ 				}
+ 			}
++#ifdef CONFIG_TUXBOX_NETWORK
++			NetState = NETLOOP_SUCCESS;
++#endif /* CONFIG_TUXBOX_NETWORK */
++
++#ifdef CONFIG_TUXBOX_BOOTMANAGER
++	NetOurRootPath[0] = '/';
++	NetOurRootPath[1] = 0;
++	strncpy(NetOurRootPath, BootFile, strrchr(BootFile, '/') - BootFile);
++	NetOurRootPath[strrchr(NetOurRootPath, '/')-NetOurRootPath] = 0;
++#endif /* CONFIG_TUXBOX_BOOTMANAGER */
+ 			TftpStart();
+ 			return;
+ 		}
+diff -Naur u-boot-1.1.4.orig/net/net.c u-boot-1.1.4/net/net.c
+--- u-boot-1.1.4.orig/net/net.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/net/net.c	2005-12-22 20:09:46.000000000 +0100
+@@ -180,6 +180,10 @@
+ 
+ static int net_check_prereq (proto_t protocol);
+ 
++#ifdef CONFIG_TUXBOX_NETWORK
++void netboot_update_env(void);
++#endif /* CONFIG_TUXBOX_NETWORK */
++
+ /**********************************************************************/
+ 
+ IPaddr_t	NetArpWaitPacketIP;
+@@ -534,6 +538,10 @@
+ 			goto restart;
+ 
+ 		case NETLOOP_SUCCESS:
++#ifdef CONFIG_TUXBOX_NETWORK
++			if (protocol == BOOTP || protocol == DHCP)
++				netboot_update_env ();
++#endif /* CONFIG_TUXBOX_NETWORK */
+ 			if (NetBootFileXferSize > 0) {
+ 				char buf[10];
+ 				printf("Bytes transferred = %ld (%lx hex)\n",
+diff -Naur u-boot-1.1.4.orig/net/tftp.c u-boot-1.1.4/net/tftp.c
+--- u-boot-1.1.4.orig/net/tftp.c	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/net/tftp.c	2005-12-22 20:09:46.000000000 +0100
+@@ -289,8 +289,12 @@
+ 	case TFTP_ERROR:
+ 		printf ("\nTFTP error: '%s' (%d)\n",
+ 					pkt + 2, ntohs(*(ushort *)pkt));
++#ifdef CONFIG_TUXBOX_NETWORK
++		NetState = NETLOOP_SUCCESS;
++#else /* CONFIG_TUXBOX_NETWORK */
+ 		puts ("Starting again\n\n");
+ 		NetStartAgain ();
++#endif /* CONFIG_TUXBOX_NETWORK */
+ 		break;
+ 	}
+ }
+diff -Naur u-boot-1.1.4.orig/tools/Makefile u-boot-1.1.4/tools/Makefile
+--- u-boot-1.1.4.orig/tools/Makefile	2005-12-16 17:39:27.000000000 +0100
++++ u-boot-1.1.4/tools/Makefile	2005-12-22 20:09:46.000000000 +0100
+@@ -21,9 +21,9 @@
+ # MA 02111-1307 USA
+ #
+ 
+-BINS	= img2srec$(SFX) mkimage$(SFX) envcrc$(SFX) gen_eth_addr$(SFX) bmp_logo$(SFX)
++BINS	= img2srec$(SFX) mkimage$(SFX) envcrc$(SFX) gen_eth_addr$(SFX) bmp_logo$(SFX) mktree$(SFX)
+ 
+-OBJS	= environment.o img2srec.o mkimage.o crc32.o envcrc.o gen_eth_addr.o bmp_logo.o
++OBJS	= environment.o img2srec.o mkimage.o crc32.o envcrc.o gen_eth_addr.o bmp_logo.o mktree.o
+ 
+ ifeq ($(ARCH),mips)
+ BINS   += inca-swap-bytes$(SFX)
+@@ -141,6 +141,10 @@
+ 		$(CC) $(CFLAGS) $(HOST_LDFLAGS) -o $@ $^
+ 		$(STRIP) $@
+ 
++mktree$(SFX):	mktree.o
++		$(CC) $(CFLAGS) $(HOST_LDFLAGS) -o $@ $^
++		$(STRIP) $@
++
+ inca-swap-bytes$(SFX):	inca-swap-bytes.o
+ 		$(CC) $(CFLAGS) $(HOST_LDFLAGS) -o $@ $^
+ 		$(STRIP) $@
