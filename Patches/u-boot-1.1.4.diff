@@ -1,6 +1,6 @@
 diff -Naur u-boot-1.1.4.orig/Makefile u-boot-1.1.4/Makefile
 --- u-boot-1.1.4.orig/Makefile	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/Makefile	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/Makefile	2005-12-22 23:00:54.000000000 +0100
 @@ -112,7 +112,7 @@
  endif
  LIBS += lib_$(ARCH)/lib$(ARCH).a
@@ -77,7 +77,7 @@ diff -Naur u-boot-1.1.4.orig/Makefile u-boot-1.1.4/Makefile
  	rm -f include/asm/proc include/asm/arch include/asm
 diff -Naur u-boot-1.1.4.orig/common/Makefile u-boot-1.1.4/common/Makefile
 --- u-boot-1.1.4.orig/common/Makefile	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/common/Makefile	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/common/Makefile	2005-12-22 23:00:54.000000000 +0100
 @@ -34,7 +34,7 @@
  	  cmd_date.o cmd_dcr.o cmd_diag.o cmd_display.o cmd_doc.o cmd_dtt.o \
  	  cmd_eeprom.o cmd_elf.o cmd_ext2.o \
@@ -89,7 +89,7 @@ diff -Naur u-boot-1.1.4.orig/common/Makefile u-boot-1.1.4/common/Makefile
  	  cmd_nand.o cmd_net.o cmd_nvedit.o \
 diff -Naur u-boot-1.1.4.orig/common/cmd_flash.c u-boot-1.1.4/common/cmd_flash.c
 --- u-boot-1.1.4.orig/common/cmd_flash.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/common/cmd_flash.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/common/cmd_flash.c	2005-12-22 23:00:54.000000000 +0100
 @@ -464,6 +464,8 @@
  		p = 0;
  	} else if (strcmp(argv[1], "on") == 0) {
@@ -101,7 +101,7 @@ diff -Naur u-boot-1.1.4.orig/common/cmd_flash.c u-boot-1.1.4/common/cmd_flash.c
  		return 1;
 diff -Naur u-boot-1.1.4.orig/common/cmd_net.c u-boot-1.1.4/common/cmd_net.c
 --- u-boot-1.1.4.orig/common/cmd_net.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/common/cmd_net.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/common/cmd_net.c	2005-12-22 23:00:54.000000000 +0100
 @@ -94,7 +94,10 @@
  );
  #endif	/* CFG_CMD_NFS */
@@ -116,7 +116,7 @@ diff -Naur u-boot-1.1.4.orig/common/cmd_net.c u-boot-1.1.4/common/cmd_net.c
  
 diff -Naur u-boot-1.1.4.orig/common/cmd_nvedit.c u-boot-1.1.4/common/cmd_nvedit.c
 --- u-boot-1.1.4.orig/common/cmd_nvedit.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/common/cmd_nvedit.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/common/cmd_nvedit.c	2005-12-22 23:00:54.000000000 +0100
 @@ -530,7 +530,7 @@
  	return (-1);
  }
@@ -137,7 +137,7 @@ diff -Naur u-boot-1.1.4.orig/common/cmd_nvedit.c u-boot-1.1.4/common/cmd_nvedit.
  U_BOOT_CMD(
 diff -Naur u-boot-1.1.4.orig/common/devices.c u-boot-1.1.4/common/devices.c
 --- u-boot-1.1.4.orig/common/devices.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/common/devices.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/common/devices.c	2005-12-22 23:00:54.000000000 +0100
 @@ -194,6 +194,9 @@
  #ifdef CONFIG_LOGBUFFER
  	drv_logbuff_init ();
@@ -150,7 +150,7 @@ diff -Naur u-boot-1.1.4.orig/common/devices.c u-boot-1.1.4/common/devices.c
  	serial_devices_init ();
 diff -Naur u-boot-1.1.4.orig/common/env_common.c u-boot-1.1.4/common/env_common.c
 --- u-boot-1.1.4.orig/common/env_common.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/common/env_common.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/common/env_common.c	2005-12-22 23:00:54.000000000 +0100
 @@ -42,6 +42,10 @@
  	extern void disable_nvram(void);
  #endif
@@ -187,7 +187,7 @@ diff -Naur u-boot-1.1.4.orig/common/env_common.c u-boot-1.1.4/common/env_common.
  #ifdef CONFIG_AUTO_COMPLETE
 diff -Naur u-boot-1.1.4.orig/common/main.c u-boot-1.1.4/common/main.c
 --- u-boot-1.1.4.orig/common/main.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/common/main.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/common/main.c	2005-12-22 23:00:54.000000000 +0100
 @@ -36,6 +36,11 @@
  
  #include <post.h>
@@ -343,7 +343,7 @@ diff -Naur u-boot-1.1.4.orig/common/main.c u-boot-1.1.4/common/main.c
  # else
 diff -Naur u-boot-1.1.4.orig/cpu/mpc8xx/cpu_init.c u-boot-1.1.4/cpu/mpc8xx/cpu_init.c
 --- u-boot-1.1.4.orig/cpu/mpc8xx/cpu_init.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/cpu/mpc8xx/cpu_init.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/cpu/mpc8xx/cpu_init.c	2005-12-22 23:00:54.000000000 +0100
 @@ -110,6 +110,7 @@
  	immr->im_clkrst.car_plprcr = reg;
  #endif
@@ -372,7 +372,7 @@ diff -Naur u-boot-1.1.4.orig/cpu/mpc8xx/cpu_init.c u-boot-1.1.4/cpu/mpc8xx/cpu_i
  	 * on the MBX, things are a little bit different:
 diff -Naur u-boot-1.1.4.orig/cpu/mpc8xx/start.S u-boot-1.1.4/cpu/mpc8xx/start.S
 --- u-boot-1.1.4.orig/cpu/mpc8xx/start.S	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/cpu/mpc8xx/start.S	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/cpu/mpc8xx/start.S	2005-12-22 23:00:54.000000000 +0100
 @@ -83,6 +83,9 @@
   * r4 - 2nd arg to board_init(): boot flag
   */
@@ -385,7 +385,7 @@ diff -Naur u-boot-1.1.4.orig/cpu/mpc8xx/start.S u-boot-1.1.4/cpu/mpc8xx/start.S
  version_string:
 diff -Naur u-boot-1.1.4.orig/fs/Makefile u-boot-1.1.4/fs/Makefile
 --- u-boot-1.1.4.orig/fs/Makefile	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/fs/Makefile	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/fs/Makefile	2005-12-22 23:00:54.000000000 +0100
 @@ -22,7 +22,7 @@
  #
  #
@@ -397,7 +397,7 @@ diff -Naur u-boot-1.1.4.orig/fs/Makefile u-boot-1.1.4/fs/Makefile
  	@for dir in $(SUBDIRS) ; do \
 diff -Naur u-boot-1.1.4.orig/fs/cramfs/cramfs.c u-boot-1.1.4/fs/cramfs/cramfs.c
 --- u-boot-1.1.4.orig/fs/cramfs/cramfs.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/fs/cramfs/cramfs.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/fs/cramfs/cramfs.c	2005-12-22 23:00:54.000000000 +0100
 @@ -27,7 +27,7 @@
  #include <common.h>
  #include <malloc.h>
@@ -407,7 +407,30 @@ diff -Naur u-boot-1.1.4.orig/fs/cramfs/cramfs.c u-boot-1.1.4/fs/cramfs/cramfs.c
  
  #include <asm/byteorder.h>
  #include <linux/stat.h>
-@@ -344,4 +344,4 @@
+@@ -45,7 +45,11 @@
+ /* CPU address space offset calculation macro, struct part_info offset is
+  * device address space offset, so we need to shift it by a device start address. */
+ extern flash_info_t flash_info[];
++#if (CONFIG_COMMANDS & CFG_CMD_FS)
++#define PART_OFFSET(x)	(x->offset)
++#else
+ #define PART_OFFSET(x)	(x->offset + flash_info[x->dev->id->num].start[0])
++#endif
+ 
+ static int cramfs_read_super (struct part_info *info)
+ {
+@@ -331,8 +335,10 @@
+ {
+ 	struct cramfs_super *sb;
+ 
++#if !(CONFIG_COMMANDS & CFG_CMD_FS)
+ 	if (info->dev->id->type != MTD_DEV_TYPE_NOR)
+ 		return 0;
++#endif
+ 
+ 	sb = (struct cramfs_super *) PART_OFFSET(info);
+ 	if (sb->magic != CRAMFS_32 (CRAMFS_MAGIC)) {
+@@ -344,4 +350,4 @@
  	return 1;
  }
  
@@ -415,7 +438,7 @@ diff -Naur u-boot-1.1.4.orig/fs/cramfs/cramfs.c u-boot-1.1.4/fs/cramfs/cramfs.c
 +#endif /* CFG_FS_CRAMFS || CFG_FS_CRAMFS */
 diff -Naur u-boot-1.1.4.orig/fs/cramfs/uncompress.c u-boot-1.1.4/fs/cramfs/uncompress.c
 --- u-boot-1.1.4.orig/fs/cramfs/uncompress.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/fs/cramfs/uncompress.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/fs/cramfs/uncompress.c	2005-12-22 23:00:54.000000000 +0100
 @@ -1,4 +1,4 @@
 -/*
 +	/*
@@ -439,7 +462,7 @@ diff -Naur u-boot-1.1.4.orig/fs/cramfs/uncompress.c u-boot-1.1.4/fs/cramfs/uncom
 +#endif /* CFG_FS_CRAMFS || CFG_FS_CRAMFS */
 diff -Naur u-boot-1.1.4.orig/fs/jffs2/compr_rtime.c u-boot-1.1.4/fs/jffs2/compr_rtime.c
 --- u-boot-1.1.4.orig/fs/jffs2/compr_rtime.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/fs/jffs2/compr_rtime.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/fs/jffs2/compr_rtime.c	2005-12-22 23:00:54.000000000 +0100
 @@ -46,7 +46,7 @@
   */
  
@@ -457,7 +480,7 @@ diff -Naur u-boot-1.1.4.orig/fs/jffs2/compr_rtime.c u-boot-1.1.4/fs/jffs2/compr_
 +#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.4.orig/fs/jffs2/compr_rubin.c u-boot-1.1.4/fs/jffs2/compr_rubin.c
 --- u-boot-1.1.4.orig/fs/jffs2/compr_rubin.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/fs/jffs2/compr_rubin.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/fs/jffs2/compr_rubin.c	2005-12-22 23:00:54.000000000 +0100
 @@ -39,7 +39,7 @@
   */
  
@@ -475,7 +498,7 @@ diff -Naur u-boot-1.1.4.orig/fs/jffs2/compr_rubin.c u-boot-1.1.4/fs/jffs2/compr_
 +#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.4.orig/fs/jffs2/compr_zlib.c u-boot-1.1.4/fs/jffs2/compr_zlib.c
 --- u-boot-1.1.4.orig/fs/jffs2/compr_zlib.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/fs/jffs2/compr_zlib.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/fs/jffs2/compr_zlib.c	2005-12-22 23:00:54.000000000 +0100
 @@ -37,7 +37,7 @@
  
  #include <common.h>
@@ -493,7 +516,7 @@ diff -Naur u-boot-1.1.4.orig/fs/jffs2/compr_zlib.c u-boot-1.1.4/fs/jffs2/compr_z
 +#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.4.orig/fs/jffs2/jffs2_1pass.c u-boot-1.1.4/fs/jffs2/jffs2_1pass.c
 --- u-boot-1.1.4.orig/fs/jffs2/jffs2_1pass.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/fs/jffs2/jffs2_1pass.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/fs/jffs2/jffs2_1pass.c	2005-12-22 22:58:25.000000000 +0100
 @@ -117,7 +117,7 @@
  #include <linux/stat.h>
  #include <linux/time.h>
@@ -503,7 +526,54 @@ diff -Naur u-boot-1.1.4.orig/fs/jffs2/jffs2_1pass.c u-boot-1.1.4/fs/jffs2/jffs2_
  
  #include <jffs2/jffs2.h>
  #include <jffs2/jffs2_1pass.h>
-@@ -1367,4 +1367,4 @@
+@@ -258,6 +258,7 @@
+  * NOR flash memory is mapped in processor's address space,
+  * just return address.
+  */
++#if !(CONFIG_COMMANDS & CFG_CMD_FS)
+ static inline void *get_fl_mem_nor(u32 off)
+ {
+ 	u32 addr = off;
+@@ -275,7 +276,7 @@
+ 	return (void*)get_fl_mem_nor(off);
+ }
+ #endif /* #if (CONFIG_COMMANDS & CFG_CMD_FLASH) */
+-
++#endif
+ 
+ /*
+  * Generic jffs2 raw memory and node read routines.
+@@ -283,6 +284,7 @@
+  */
+ static inline void *get_fl_mem(u32 off, u32 size, void *ext_buf)
+ {
++#if !(CONFIG_COMMANDS & CFG_CMD_FS)
+ 	struct mtdids *id = current_part->dev->id;
+ 
+ #if (CONFIG_COMMANDS & CFG_CMD_FLASH)
+@@ -296,11 +298,13 @@
+ #endif
+ 
+ 	printf("get_fl_mem: unknown device type, using raw offset!\n");
++#endif /* CONFIG_COMMANDS & CFG_CMD_FS */
+ 	return (void*)off;
+ }
+ 
+ static inline void *get_node_mem(u32 off)
+ {
++#if !(CONFIG_COMMANDS & CFG_CMD_FS)
+ 	struct mtdids *id = current_part->dev->id;
+ 
+ #if (CONFIG_COMMANDS & CFG_CMD_FLASH)
+@@ -314,6 +318,7 @@
+ #endif
+ 
+ 	printf("get_node_mem: unknown device type, using raw offset!\n");
++#endif /* CONFIG_COMMANDS & CFG_CMD_FS */
+ 	return (void*)off;
+ }
+ 
+@@ -1367,4 +1372,4 @@
  	return 1;
  }
  
@@ -511,7 +581,7 @@ diff -Naur u-boot-1.1.4.orig/fs/jffs2/jffs2_1pass.c u-boot-1.1.4/fs/jffs2/jffs2_
 +#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.4.orig/fs/jffs2/mini_inflate.c u-boot-1.1.4/fs/jffs2/mini_inflate.c
 --- u-boot-1.1.4.orig/fs/jffs2/mini_inflate.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/fs/jffs2/mini_inflate.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/fs/jffs2/mini_inflate.c	2005-12-22 23:00:54.000000000 +0100
 @@ -25,7 +25,7 @@
  
  #include <config.h>
@@ -529,7 +599,7 @@ diff -Naur u-boot-1.1.4.orig/fs/jffs2/mini_inflate.c u-boot-1.1.4/fs/jffs2/mini_
 +#endif /* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.4.orig/include/cmd_confdefs.h u-boot-1.1.4/include/cmd_confdefs.h
 --- u-boot-1.1.4.orig/include/cmd_confdefs.h	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/include/cmd_confdefs.h	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/include/cmd_confdefs.h	2005-12-22 23:00:54.000000000 +0100
 @@ -94,9 +94,11 @@
  #define CFG_CMD_EXT2	0x1000000000000000ULL	/* EXT2 Support			*/
  #define CFG_CMD_SNTP	0x2000000000000000ULL	/* SNTP support			*/
@@ -564,7 +634,7 @@ diff -Naur u-boot-1.1.4.orig/include/cmd_confdefs.h u-boot-1.1.4/include/cmd_con
  #endif	/* _CMD_CONFIG_H */
 diff -Naur u-boot-1.1.4.orig/include/commproc.h u-boot-1.1.4/include/commproc.h
 --- u-boot-1.1.4.orig/include/commproc.h	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/include/commproc.h	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/include/commproc.h	2005-12-22 23:00:54.000000000 +0100
 @@ -605,6 +605,27 @@
  
  #endif	/* CONFIG_PCU_E, CONFIG_CCM */
@@ -595,7 +665,7 @@ diff -Naur u-boot-1.1.4.orig/include/commproc.h u-boot-1.1.4/include/commproc.h
  #ifdef CONFIG_ELPT860
 diff -Naur u-boot-1.1.4.orig/include/devices.h u-boot-1.1.4/include/devices.h
 --- u-boot-1.1.4.orig/include/devices.h	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/include/devices.h	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/include/devices.h	2005-12-22 23:00:54.000000000 +0100
 @@ -105,6 +105,9 @@
  #ifdef CONFIG_KEYBOARD
  int	drv_keyboard_init (void);
@@ -608,7 +678,7 @@ diff -Naur u-boot-1.1.4.orig/include/devices.h u-boot-1.1.4/include/devices.h
  #endif
 diff -Naur u-boot-1.1.4.orig/include/flash.h u-boot-1.1.4/include/flash.h
 --- u-boot-1.1.4.orig/include/flash.h	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/include/flash.h	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/include/flash.h	2005-12-22 23:00:54.000000000 +0100
 @@ -242,6 +242,7 @@
  #define STM_ID_29W320DT 0x22CA22CA	/* M29W320DT ID (32 M, top boot sector) */
  #define STM_ID_29W320DB 0x22CB22CB	/* M29W320DB ID (32 M, bottom boot sect)	*/
@@ -627,8 +697,8 @@ diff -Naur u-boot-1.1.4.orig/include/flash.h u-boot-1.1.4/include/flash.h
  #define FLASH_28F400_B	0x0063		/* MT  28F400B3 ID (  4M = 256K x 16 )	*/
 diff -Naur u-boot-1.1.4.orig/include/jffs2/load_kernel.h u-boot-1.1.4/include/jffs2/load_kernel.h
 --- u-boot-1.1.4.orig/include/jffs2/load_kernel.h	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/include/jffs2/load_kernel.h	2005-12-22 20:10:05.000000000 +0100
-@@ -39,6 +39,17 @@
++++ u-boot-1.1.4/include/jffs2/load_kernel.h	2005-12-22 23:00:54.000000000 +0100
+@@ -39,6 +39,16 @@
  	struct list_head parts;		/* partitions */
  };
  
@@ -639,14 +709,13 @@ diff -Naur u-boot-1.1.4.orig/include/jffs2/load_kernel.h u-boot-1.1.4/include/jf
 +		unsigned long offset;
 +		unsigned long size;
 +		void *jffs2_priv;
-+		struct mtd_device *dev;		/* parent device */
 +	};
 +	#endif
 +#else
  struct part_info {
  	struct list_head link;
  	char *name;			/* partition name */
-@@ -49,6 +60,7 @@
+@@ -49,6 +59,7 @@
  	u32 mask_flags;			/* kernel MTD mask flags */
  	struct mtd_device *dev;		/* parent device */
  };
@@ -656,7 +725,7 @@ diff -Naur u-boot-1.1.4.orig/include/jffs2/load_kernel.h u-boot-1.1.4/include/jf
  	struct list_head link;
 diff -Naur u-boot-1.1.4.orig/include/lcd.h u-boot-1.1.4/include/lcd.h
 --- u-boot-1.1.4.orig/include/lcd.h	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/include/lcd.h	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/include/lcd.h	2005-12-22 23:00:54.000000000 +0100
 @@ -156,6 +156,9 @@
  void	lcd_disable	(void);
  #endif
@@ -669,7 +738,7 @@ diff -Naur u-boot-1.1.4.orig/include/lcd.h u-boot-1.1.4/include/lcd.h
  void	lcd_putc	(const char c);
 diff -Naur u-boot-1.1.4.orig/include/version.h u-boot-1.1.4/include/version.h
 --- u-boot-1.1.4.orig/include/version.h	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/include/version.h	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/include/version.h	2005-12-22 23:00:54.000000000 +0100
 @@ -24,6 +24,7 @@
  #ifndef	__VERSION_H__
  #define	__VERSION_H__
@@ -681,7 +750,7 @@ diff -Naur u-boot-1.1.4.orig/include/version.h u-boot-1.1.4/include/version.h
  #endif	/* __VERSION_H__ */
 diff -Naur u-boot-1.1.4.orig/lib_generic/crc32.c u-boot-1.1.4/lib_generic/crc32.c
 --- u-boot-1.1.4.orig/lib_generic/crc32.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/lib_generic/crc32.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/lib_generic/crc32.c	2005-12-22 23:00:54.000000000 +0100
 @@ -171,7 +171,7 @@
      return crc ^ 0xffffffffL;
  }
@@ -699,7 +768,7 @@ diff -Naur u-boot-1.1.4.orig/lib_generic/crc32.c u-boot-1.1.4/lib_generic/crc32.
 +#endif	/* CFG_CMD_JFFS2 || CFG_FS_JFFS2 */
 diff -Naur u-boot-1.1.4.orig/net/bootp.c u-boot-1.1.4/net/bootp.c
 --- u-boot-1.1.4.orig/net/bootp.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/net/bootp.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/net/bootp.c	2005-12-22 23:00:54.000000000 +0100
 @@ -15,6 +15,7 @@
  
  #ifdef DEBUG_BOOTP_EXT
@@ -772,7 +841,7 @@ diff -Naur u-boot-1.1.4.orig/net/bootp.c u-boot-1.1.4/net/bootp.c
  		}
 diff -Naur u-boot-1.1.4.orig/net/net.c u-boot-1.1.4/net/net.c
 --- u-boot-1.1.4.orig/net/net.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/net/net.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/net/net.c	2005-12-22 23:00:54.000000000 +0100
 @@ -180,6 +180,10 @@
  
  static int net_check_prereq (proto_t protocol);
@@ -797,7 +866,7 @@ diff -Naur u-boot-1.1.4.orig/net/net.c u-boot-1.1.4/net/net.c
  				printf("Bytes transferred = %ld (%lx hex)\n",
 diff -Naur u-boot-1.1.4.orig/net/tftp.c u-boot-1.1.4/net/tftp.c
 --- u-boot-1.1.4.orig/net/tftp.c	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/net/tftp.c	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/net/tftp.c	2005-12-22 23:00:54.000000000 +0100
 @@ -289,8 +289,12 @@
  	case TFTP_ERROR:
  		printf ("\nTFTP error: '%s' (%d)\n",
@@ -813,7 +882,7 @@ diff -Naur u-boot-1.1.4.orig/net/tftp.c u-boot-1.1.4/net/tftp.c
  }
 diff -Naur u-boot-1.1.4.orig/tools/Makefile u-boot-1.1.4/tools/Makefile
 --- u-boot-1.1.4.orig/tools/Makefile	2005-12-16 17:39:27.000000000 +0100
-+++ u-boot-1.1.4/tools/Makefile	2005-12-22 20:09:46.000000000 +0100
++++ u-boot-1.1.4/tools/Makefile	2005-12-22 23:00:54.000000000 +0100
 @@ -21,9 +21,9 @@
  # MA 02111-1307 USA
  #
