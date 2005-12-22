@@ -654,20 +654,6 @@ diff -Naur u-boot-1.1.4.orig/include/jffs2/load_kernel.h u-boot-1.1.4/include/jf
  
  struct mtdids {
  	struct list_head link;
-diff -Naur u-boot-1.1.4.orig/include/jffs2/u-boot-1.1.2.diff u-boot-1.1.4/include/jffs2/u-boot-1.1.2.diff
---- u-boot-1.1.4.orig/include/jffs2/u-boot-1.1.2.diff	1970-01-01 01:00:00.000000000 +0100
-+++ u-boot-1.1.4/include/jffs2/u-boot-1.1.2.diff	2005-12-22 20:09:46.000000000 +0100
-@@ -0,0 +1,10 @@
-++#if (CONFIG_COMMANDS & CFG_CMD_FS)
-++	#ifndef _CMD_FS_H
-++	struct part_info {
-++		int type;
-++		unsigned long offset;
-++		unsigned long size;
-++		void *jffs2_priv;
-++	};
-++	#endif
-++#else
 diff -Naur u-boot-1.1.4.orig/include/lcd.h u-boot-1.1.4/include/lcd.h
 --- u-boot-1.1.4.orig/include/lcd.h	2005-12-16 17:39:27.000000000 +0100
 +++ u-boot-1.1.4/include/lcd.h	2005-12-22 20:09:46.000000000 +0100
