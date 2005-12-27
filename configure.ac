@@ -357,6 +357,7 @@ TUXBOX_RULES_MAKE(libvorbisidec)
 TUXBOX_RULES_MAKE(libxml2)
 TUXBOX_RULES_MAKE(libz)
 TUXBOX_RULES_MAKE(libglib)
+TUXBOX_RULES_MAKE(libiconv)
 
 #
 # contrib apps

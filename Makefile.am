@@ -855,6 +855,19 @@ $(DEPDIR)/libungif: bootstrap @DEPENDS_libungif@
 	@CLEANUP_libungif@
 	touch $@
 
+$(DEPDIR)/libiconv: bootstrap @DEPENDS_libiconv@
+	@PREPARE_libiconv@
+	cd @DIR_libiconv@ && \
+		$(BUILDENV) \
+		./configure \
+			--host=$(target) \
+			--build=$(build) \
+			--prefix= \
+		$(MAKE) && \
+		@INSTALL_libiconv@
+	@CLEANUP_libiconv@
+	touch $@
+
 #######################
 #
 #   contrib apps
