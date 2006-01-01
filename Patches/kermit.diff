@@ -1,0 +1,27 @@
+--- c-kermit-8.0-orig/makefile	2004-04-17 20:52:00.000000000 +0200
++++ c-kermit-8.0/makefile	2006-01-01 15:32:21.000000000 +0100
+@@ -871,7 +871,7 @@
+ EXT=o
+ #LNKFLAGS=
+ SHAREDLIB=
+-CC= cc
++#CC= cc
+ CC2= cc
+ MAKE= make
+ SHELL=/bin/sh
+@@ -5455,6 +5455,15 @@
+ 	$(MAKE) linuxa KTARGET=$${KTARGET:-$(@)} "KFLAGS=$(KFLAGS) -pg" \
+ 	"LIBS=-pg -lcrypt -lresolv"
+ 
++# Crosscompile for PowerPC
++tuxbox:
++	@echo 'Making C-Kermit $(CKVER) for Tuxbox...'
++	$(MAKE) wart CC=gcc CFLAGS=
++	$(MAKE) xermit "CC2 = $(CC)" \
++	"CFLAGS = $(CFLAGS) -DLINUX -pipe -funsigned-char -DFNFLOAT -DCK_POSIX_SIG \
++	-DCK_NEWTERM -DTCPSOCKET -DLINUXFSSTND -DNOCOTFMC -DPOSIX \
++	-DUSE_STRERROR $(KFLAGS)" "LNKFLAGS = $(LNKFLAGS)" "LIBS = -lcrypt -lresolv -lm"
++
+ #New primary Linux entry for C-Kermit 8.0, replacing big nested
+ #if-then-else construction full of repeated clauses with a simpler scheme
+ #for automatically detecting:

@@ -80,6 +80,7 @@ bonnie;make:install:DESTDIR=TARGET/sbin
 vdr;make:install:BINDIR=TARGET/bin:MANDIR=TARGET/man:VIDEODIR=TARGET/video:PLUGINIDIR=TARGET/lib/vdr/plugins
 lufs;make:install
 dropbear;make:install
+kermit;make:install:prefix=TARGET:INFODIR=TARGET/share/doc/kermit
 
 #
 # msttf

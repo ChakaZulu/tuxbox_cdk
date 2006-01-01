@@ -86,6 +86,7 @@ DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/download/DirectFB-extra
 vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/lufs
 dropbear-0.44.tar.gz;http://matt.ucc.asn.au/dropbear/releases
+cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
 
 #
 # development tools

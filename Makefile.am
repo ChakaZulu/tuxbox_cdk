@@ -1101,6 +1101,18 @@ $(DEPDIR)/lufs: bootstrap @DEPENDS_lufs@
 	@CLEANUP_lufs@
 	touch $@
 
+$(DEPDIR)/kermit: bootstrap @DEPENDS_kermit@ libcrypto
+	@echo "Kermit is licensed differently from other software (more restrictively),"
+	@echo "see http://www.columbia.edu/kermit/licensing.html"
+	@PREPARE_kermit@
+	cd @DIR_kermit@ && \
+		$(BUILDENV) \
+		$(MAKE) tuxbox && \
+		@INSTALL_kermit@
+	ln -sf ./kermit $(targetprefix)/bin/kermit-sshsub
+	[ -d $(targetprefix)/var/lock ] ||  mkdir $(targetprefix)/var/lock
+	@CLEANUP_kermit@
+	touch $@
 
 #######################
 #
