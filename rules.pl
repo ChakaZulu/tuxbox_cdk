@@ -123,6 +123,7 @@ sub process_make_prepare (@)
     }
     elsif ( $_[0] eq "dirextract" )
     {
+      $output .= "( mkdir " . $dir . " || /bin/true ) && ";
       $output .= "( cd " . $dir . "; ";
 
       if ( $_[1] =~ m#\.tar\.bz2$# )
