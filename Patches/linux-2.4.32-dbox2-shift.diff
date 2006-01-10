@@ -1,6 +1,6 @@
-diff -Naur linux-2.4.31/drivers/video/Config.in linux-2.4.31-shift/drivers/video/Config.in
---- linux-2.4.31/drivers/video/Config.in	2004-02-18 14:36:31.000000000 +0100
-+++ linux-2.4.31-shift/drivers/video/Config.in	2005-06-03 11:40:23.000000000 +0200
+diff -Naur linux-2.4.32/drivers/video/Config.in linux-2.4.32-shift/drivers/video/Config.in
+--- linux-2.4.32/drivers/video/Config.in	2004-02-18 14:36:31.000000000 +0100
++++ linux-2.4.32-shift/drivers/video/Config.in	2005-12-18 18:03:44.000000000 +0100
 @@ -258,6 +258,7 @@
        tristate '    VGA 16-color planar support' CONFIG_FBCON_VGA_PLANES
        tristate '    VGA characters/attributes support' CONFIG_FBCON_VGA
@@ -9,9 +9,9 @@ diff -Naur linux-2.4.31/drivers/video/Config.in linux-2.4.31-shift/drivers/video
     else
        # Guess what we need
        if [ "$CONFIG_FB_ACORN" = "y" -o "$CONFIG_FB_AMIGA" = "y" -o \
-diff -Naur linux-2.4.31/drivers/video/fbcon-cfb16.c linux-2.4.31-shift/drivers/video/fbcon-cfb16.c
---- linux-2.4.31/drivers/video/fbcon-cfb16.c	2001-10-15 22:47:13.000000000 +0200
-+++ linux-2.4.31-shift/drivers/video/fbcon-cfb16.c	2005-06-03 11:40:23.000000000 +0200
+diff -Naur linux-2.4.32/drivers/video/fbcon-cfb16.c linux-2.4.32-shift/drivers/video/fbcon-cfb16.c
+--- linux-2.4.32/drivers/video/fbcon-cfb16.c	2001-10-15 22:47:13.000000000 +0200
++++ linux-2.4.32-shift/drivers/video/fbcon-cfb16.c	2005-12-18 18:03:44.000000000 +0100
 @@ -46,6 +46,12 @@
      int bytes = p->next_line, linesize = bytes * fontheight(p), rows;
      u8 *src, *dst;
@@ -105,9 +105,9 @@ diff -Naur linux-2.4.31/drivers/video/fbcon-cfb16.c linux-2.4.31-shift/drivers/v
  }
  
  
-diff -Naur linux-2.4.31/drivers/video/fbcon-cfb8.c linux-2.4.31-shift/drivers/video/fbcon-cfb8.c
---- linux-2.4.31/drivers/video/fbcon-cfb8.c	2001-10-15 22:47:13.000000000 +0200
-+++ linux-2.4.31-shift/drivers/video/fbcon-cfb8.c	2005-06-03 11:40:23.000000000 +0200
+diff -Naur linux-2.4.32/drivers/video/fbcon-cfb8.c linux-2.4.32-shift/drivers/video/fbcon-cfb8.c
+--- linux-2.4.32/drivers/video/fbcon-cfb8.c	2001-10-15 22:47:13.000000000 +0200
++++ linux-2.4.32-shift/drivers/video/fbcon-cfb8.c	2005-12-18 18:03:44.000000000 +0100
 @@ -51,6 +51,12 @@
      int bytes = p->next_line, linesize = bytes * fontheight(p), rows;
      u8 *src,*dst;
@@ -201,9 +201,9 @@ diff -Naur linux-2.4.31/drivers/video/fbcon-cfb8.c linux-2.4.31-shift/drivers/vi
  }
  
  
-diff -Naur linux-2.4.31/drivers/video/fbcon.c linux-2.4.31-shift/drivers/video/fbcon.c
---- linux-2.4.31/drivers/video/fbcon.c	2004-11-17 12:54:21.000000000 +0100
-+++ linux-2.4.31-shift/drivers/video/fbcon.c	2005-06-03 11:40:23.000000000 +0200
+diff -Naur linux-2.4.32/drivers/video/fbcon.c linux-2.4.32-shift/drivers/video/fbcon.c
+--- linux-2.4.32/drivers/video/fbcon.c	2004-11-17 12:54:21.000000000 +0100
++++ linux-2.4.32-shift/drivers/video/fbcon.c	2005-12-18 18:03:44.000000000 +0100
 @@ -655,8 +655,13 @@
      old_cols = conp->vc_cols;
      old_rows = conp->vc_rows;
@@ -218,9 +218,9 @@ diff -Naur linux-2.4.31/drivers/video/fbcon.c linux-2.4.31-shift/drivers/video/f
      
      if (logo) {
      	/* Need to make room for the logo */
-diff -Naur linux-2.4.31/include/video/fbcon.h linux-2.4.31-shift/include/video/fbcon.h
---- linux-2.4.31/include/video/fbcon.h	2003-08-25 13:44:44.000000000 +0200
-+++ linux-2.4.31-shift/include/video/fbcon.h	2005-06-03 11:40:23.000000000 +0200
+diff -Naur linux-2.4.32/include/video/fbcon.h linux-2.4.32-shift/include/video/fbcon.h
+--- linux-2.4.32/include/video/fbcon.h	2003-08-25 13:44:44.000000000 +0200
++++ linux-2.4.32-shift/include/video/fbcon.h	2005-12-18 18:03:44.000000000 +0100
 @@ -95,6 +95,11 @@
      short yscroll;                  /* Hardware scrolling */
      unsigned char fgshift, bgshift;

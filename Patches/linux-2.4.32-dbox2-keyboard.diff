@@ -1,6 +1,6 @@
-diff -Naur linux-2.4.31/arch/ppc/kernel/m8xx_setup.c linux-2.4.31-keyboard/arch/ppc/kernel/m8xx_setup.c
---- linux-2.4.31/arch/ppc/kernel/m8xx_setup.c	2004-02-18 14:36:30.000000000 +0100
-+++ linux-2.4.31-keyboard/arch/ppc/kernel/m8xx_setup.c	2005-06-03 10:57:50.000000000 +0200
+diff -Naur linux-2.4.32/arch/ppc/kernel/m8xx_setup.c linux-2.4.32-keyboard/arch/ppc/kernel/m8xx_setup.c
+--- linux-2.4.32/arch/ppc/kernel/m8xx_setup.c	2004-02-18 14:36:30.000000000 +0100
++++ linux-2.4.32-keyboard/arch/ppc/kernel/m8xx_setup.c	2005-12-18 17:48:55.000000000 +0100
 @@ -60,6 +60,14 @@
  extern void m8xx_cpm_reset(uint);
  extern void m8xx_wdt_handler_install(bd_t *bp);
@@ -34,9 +34,9 @@ diff -Naur linux-2.4.31/arch/ppc/kernel/m8xx_setup.c linux-2.4.31-keyboard/arch/
  	ppc_md.kbd_leds			= NULL;
  	ppc_md.kbd_init_hw		= NULL;
  	ppc_md.ppc_kbd_sysrq_xlate	= NULL;
-diff -Naur linux-2.4.31/include/linux/pc_keyb.h linux-2.4.31-keyboard/include/linux/pc_keyb.h
---- linux-2.4.31/include/linux/pc_keyb.h	1999-10-11 19:15:40.000000000 +0200
-+++ linux-2.4.31-keyboard/include/linux/pc_keyb.h	2005-06-03 10:57:50.000000000 +0200
+diff -Naur linux-2.4.32/include/linux/pc_keyb.h linux-2.4.32-keyboard/include/linux/pc_keyb.h
+--- linux-2.4.32/include/linux/pc_keyb.h	1999-10-11 19:15:40.000000000 +0200
++++ linux-2.4.32-keyboard/include/linux/pc_keyb.h	2005-12-18 17:48:55.000000000 +0100
 @@ -11,7 +11,7 @@
   */
  
