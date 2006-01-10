@@ -10,7 +10,7 @@
 # core
 
 u-boot-1.1.4.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/u-boot
-linux-2.4.31.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
+linux-2.4.32.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
 linux-2.6.13.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6;ftp://ftp.kernel.org/pub/linux/kernel/v2.6
 cifs-1.20c-2.4.tar.gz;http://us1.samba.org/samba/ftp/cifs-cvs
 linux-2.4.31-dbox2-mtd0305.diff.bz2
