@@ -27,6 +27,7 @@ watchdog;5.2.4;watchdog-5.2.4.orig;watchdog_5.2.4.orig.tar.gz:watchdog.diff;extr
 # root
 #
 busybox;1.01;busybox-1.01;busybox-1.01.tar.bz2;extract:busybox-1.01.tar.bz2;patch:busybox.diff
+automount;4.1.4;autofs-4.1.4;autofs-4.1.4.tar.bz2;extract:autofs-4.1.4.tar.bz2;patch:autofs.diff
 ftpd;1.2.2;vsftpd-1.2.2;vsftpd-1.2.2.tar.gz:ftpd.diff;extract:vsftpd-1.2.2.tar.gz;patch:ftpd.diff
 module_init_tools;3.2.1;module-init-tools-3.2.1;module-init-tools-3.2.1.tar.bz2;extract:module-init-tools-3.2.1.tar.bz2
 modutils;2.4.26;modutils-2.4.26;modutils-2.4.26.tar.bz2:modutils.diff;extract:modutils-2.4.26.tar.bz2;patch:modutils.diff

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+TIMEOUT=30
+DEBUG=-d
+VERBOSE=-v
+PIDFILE=/var/run/automount.pid
+
+if [ -e /etc/auto.stuff ] ; then
+	automount $DEBUG $VERBOSE -t $TIMEOUT -p $PIDFILE /autofs file /etc/auto.stuff
+fi
