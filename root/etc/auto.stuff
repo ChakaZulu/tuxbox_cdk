@@ -1,7 +1,7 @@
 # This is an example of an automounter map
 #
 # Mount name	Parameters		server file system
-pictures	-fstype=nfs,ro,nolock	myserver:/pictures
-music		-fstype=nfs,ro,nolock	yourserver:/audio
-movies		-fstype=nfs,ro,nolock	192.168.42.42:/filme
-recording	-fstype=nfs,rw,nolock	herserver:/garbage
+#pictures	-fstype=nfs,ro,nolock	myserver:/pictures
+#music		-fstype=nfs,ro,nolock	yourserver:/audio
+#movies		-fstype=nfs,ro,nolock	192.168.42.42:/filme
+#recording	-fstype=nfs,rw,nolock	herserver:/garbage

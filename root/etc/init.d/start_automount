@@ -1,10 +1,56 @@
 #!/bin/sh
 
-TIMEOUT=30
-DEBUG=-d
-VERBOSE=-v
+# This script starts the automounter. It is basically an example that
+# can be customized by the user.
+
+# Useful commands:
+
+# Force unmount of unused automounted file systems:
+# 	kill -USR1 `cat /var/run/automount.pid`	
+# Unmount and exit cleanly:
+# 	kill -TERM `cat /var/run/automount.pid`
+
+
+# Production parameters
+TIMEOUT=600
+DEBUG=
+VERBOSE=
+
+# Debug parameters (note that DEBUG and VERBOSE are meaningful only with
+# syslogd)
+#TIMEOUT=30
+#DEBUG=-d
+#VERBOSE=-v
+
 PIDFILE=/var/run/automount.pid
 
-if [ -e /etc/auto.stuff ] ; then
-	automount $DEBUG $VERBOSE -t $TIMEOUT -p $PIDFILE /autofs file /etc/auto.stuff
+# The parent directory of AUTOFSMOUNT must be absolute, must exist,
+# and be writeable. The AUTOFSMOUNTDIR should not exist.
+#AUTOFSMOUNTDIR=/autofs
+AUTOFSMOUNTDIR=/var/autofs
+MAPFILE=/etc/auto.stuff
+
+echo "Starting the automounter"
+
+MD=/lib/modules/$(uname -r)/
+
+# Load nfs-necessary modules.
+# For CIF-stuff this needs to be extended
+
+if [ -x /sbin/modprobe ] ; then
+    # If nfs-support is contained in the kernel, this will fail. The 
+    # error can be ignored.
+    modprobe nfs
+else
+    insmod $MD/kernel/net/sunrpc/sunrpc.o
+    insmod $MD/kernel/fs/lockd/lockd.o
+    insmod $MD/kernel/fs/nfs/nfs.o
+fi
+
+if [ ! -d /var/lock ]; then
+    mkdir /var/lock
+fi
+ 
+if [ -e $MAPFILE ] ; then
+    automount $DEBUG $VERBOSE -t $TIMEOUT -p $PIDFILE $AUTOFSMOUNTDIR file $MAPFILE
 fi
