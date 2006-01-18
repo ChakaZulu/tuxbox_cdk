@@ -83,7 +83,7 @@ openssh-3.8p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;
 tcpdump-3.9.4.tar.gz;http://www.tcpdump.org/release
 bonnie++-1.03a.tgz;http://www.coker.com.au/bonnie++
 lsof_4.72.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof;http://www.dbox2world.de/Archive/
-DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/download/DirectFB-extra
+DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/downloads/Old
 vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/lufs
 dropbear-0.44.tar.gz;http://matt.ucc.asn.au/dropbear/releases
