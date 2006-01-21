@@ -112,7 +112,7 @@ kaffe-1.0.6.tar.gz;ftp://ftp.kaffe.org/pub/kaffe/v1.0.x-production
 gnuboy-1.0.3.tar.gz;http://gnuboy.unix-fu.org/src
 scummvm-0.5.1.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/scummvm
 sdldoom-1.10.tar.gz;http://www.libsdl.org/projects/doom/src
-
+TinyGL-0.4.tar.gz;http://fabrice.bellard.free.fr/TinyGL
 
 #
 # dvb apps

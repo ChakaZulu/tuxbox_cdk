@@ -113,6 +113,7 @@ kaffeh;make:install
 gnuboy;make:install:prefix=TARGET
 scummvm;install:-m755:scummvm:TARGET/bin
 sdldoom;make:install:DESTDIR=TARGET
+tinygl;make
 
 #
 # dvb apps

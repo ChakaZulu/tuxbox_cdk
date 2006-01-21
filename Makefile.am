@@ -1340,6 +1340,19 @@ $(DEPDIR)/sdldoom: bootstrap libsdl @DEPENDS_sdldoom@
 	@CLEANUP_sdldoom@
 	touch $@
 
+$(DEPDIR)/tinygl: bootstrap @DEPENDS_tinygl@
+	@PREPARE_tinygl@
+	cp -p $(appsdir)/tuxbox/tools/graphics/fbgl.c @DIR_tinygl@/examples
+	cd @DIR_tinygl@ && \
+		$(MAKE) all
+		for prog in gears mech spin texobj; do \
+			 $(INSTALL) @DIR_tinygl@/examples/$$prog $(targetprefix)/bin; \
+		done
+		$(INSTALL) -m 644 @DIR_tinygl@/lib/libTinyGL.a $(targetprefix)/lib
+	@CLEANUP_tinygl@
+	touch $@
+
+
 #######################
 #
 #  DVB apps

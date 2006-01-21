@@ -1,0 +1,163 @@
+diff -Naur TinyGL.orig/config.mk TinyGL/config.mk
+--- TinyGL.orig/config.mk	2002-03-17 13:11:39.000000000 +0100
++++ TinyGL/config.mk	2006-01-21 21:04:28.000000000 +0100
+@@ -2,15 +2,20 @@
+ # C compiler
+ 
+ # linux
+-CC= gcc
+-CFLAGS= -g -Wall -O2
+-LFLAGS=
++#CC= gcc
++#CFLAGS= -g -Wall -O2
++#LFLAGS=
+ 
+ # for BeOS PPC
+ #CC= mwcc
+ #CFLAGS= -I. -i-
+ #LFLAGS=
+ 
++# for dbox2
++CC= powerpc-tuxbox-linux-gnu-gcc
++CFLAGS= -g -Wall -O2
++LFLAGS=
++
+ #####################################################################
+ # TinyGL configuration 
+ 
+@@ -18,7 +23,10 @@
+ # Select window API for TinyGL: 
+ 
+ # standard X11 GLX like API 
+-TINYGL_USE_GLX=y
++#TINYGL_USE_GLX=y
++
++# standard FB
++TINYGL_USE_FB=y
+ 
+ # BEOS API
+ #TINYGL_USE_BEOS=y
+@@ -54,6 +62,16 @@
+ endif
+ 
+ #####################################################################
++# FB configuration (for the examples only)
++
++ifdef TINYGL_USE_FB
++UI_LIBS=
++UI_INCLUDES=
++
++UI_OBJS=fbgl.o
++endif
++
++#####################################################################
+ # OpenGL configuration (for the examples only)
+ 
+ # use TinyGL 
+diff -Naur TinyGL.orig/examples/gears.c TinyGL/examples/gears.c
+--- TinyGL.orig/examples/gears.c	2000-10-16 23:16:07.000000000 +0200
++++ TinyGL/examples/gears.c	2006-01-21 21:04:28.000000000 +0100
+@@ -12,7 +12,7 @@
+ #include <stdio.h>
+ #include <string.h>
+ 
+-#include <GL/glx.h> 
++//#include <GL/glx.h>
+ #include <GL/gl.h> 
+ #include "ui.h"
+ 
+diff -Naur TinyGL.orig/examples/mech.c TinyGL/examples/mech.c
+--- TinyGL.orig/examples/mech.c	2000-10-15 17:55:28.000000000 +0200
++++ TinyGL/examples/mech.c	2006-01-21 21:04:28.000000000 +0100
+@@ -61,7 +61,7 @@
+ #define GLUT_KEY
+ #define GLUT_SPEC
+ #include <GL/gl.h>
+-#include <GL/glx.h>
++//#include <GL/glx.h>
+ #include "glu.h"
+ #include "ui.h"
+ 
+diff -Naur TinyGL.orig/examples/spin.c TinyGL/examples/spin.c
+--- TinyGL.orig/examples/spin.c	2000-10-17 01:29:23.000000000 +0200
++++ TinyGL/examples/spin.c	2006-01-21 21:05:26.000000000 +0100
+@@ -8,10 +8,11 @@
+  */
+ 
+ 
++#include <stdlib.h>
+ #include <math.h>
+ #include <stdio.h>
+ 
+-#include <GL/glx.h> 
++//#include <GL/glx.h>
+ #include <GL/gl.h> 
+ #include "ui.h"
+ 
+diff -Naur TinyGL.orig/examples/texobj.c TinyGL/examples/texobj.c
+--- TinyGL.orig/examples/texobj.c	2000-10-15 17:52:30.000000000 +0200
++++ TinyGL/examples/texobj.c	2006-01-21 21:04:28.000000000 +0100
+@@ -10,7 +10,7 @@
+ #include <stdio.h>
+ #include <string.h>
+ 
+-#include <GL/glx.h> 
++//#include <GL/glx.h> 
+ #include <GL/gl.h> 
+ #include "ui.h"
+ 
+diff -Naur TinyGL.orig/examples/ui.h TinyGL/examples/ui.h
+--- TinyGL.orig/examples/ui.h	2000-10-15 17:55:46.000000000 +0200
++++ TinyGL/examples/ui.h	2006-01-21 21:04:28.000000000 +0100
+@@ -9,9 +9,10 @@
+ int ui_loop(int argc, char **argv, const char *name);
+ void tkSwapBuffers(void);
+ 
++#ifndef NOKEYDEFS
+ #define KEY_UP     0xe000
+ #define KEY_DOWN   0xe001
+ #define KEY_LEFT   0xe002
+ #define KEY_RIGHT  0xe003
+ #define KEY_ESCAPE 0xe004
+-
++#endif
+diff -Naur TinyGL.orig/src/vertex.c TinyGL/src/vertex.c
+--- TinyGL.orig/src/vertex.c	2001-01-07 19:21:40.000000000 +0100
++++ TinyGL/src/vertex.c	2006-01-21 21:04:28.000000000 +0100
+@@ -1,4 +1,5 @@
+ #include "zgl.h"
++#include "string.h"
+ 
+ void glopNormal(GLContext * c, GLParam * p)
+ {
+diff -Naur TinyGL.orig/src/zbuffer.c TinyGL/src/zbuffer.c
+--- TinyGL.orig/src/zbuffer.c	2001-01-07 22:19:55.000000000 +0100
++++ TinyGL/src/zbuffer.c	2006-01-21 21:04:28.000000000 +0100
+@@ -245,6 +245,7 @@
+     unsigned short *q;
+     unsigned int *p, *p1, w0, w1, w2, v0, v1;
+     int y, n;
++	char *tmp;
+ 
+     q = zb->pbuf;
+     p1 = (unsigned int *) buf;
+@@ -265,7 +266,9 @@
+ 	    p += 3;
+ 	} while (--n > 0);
+ 
+-	(char *) p1 += linesize;
++	tmp = (char *) p1;
++	tmp += linesize;
++	p1 = (unsigned int *) linesize;
+     }
+ }
+ 
+diff -Naur TinyGL.orig/src/zmath.h TinyGL/src/zmath.h
+--- TinyGL.orig/src/zmath.h	2000-10-15 14:46:40.000000000 +0200
++++ TinyGL/src/zmath.h	2006-01-21 21:04:28.000000000 +0100
+@@ -50,4 +50,4 @@
+ 
+ int gl_Matrix_Inv(float *r,float *m,int n);
+ 
+-#endif  __ZMATH__
++#endif /*  __ZMATH__ */
