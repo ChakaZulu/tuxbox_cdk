@@ -407,6 +407,7 @@ TUXBOX_RULES_MAKE(kaffeh)
 TUXBOX_RULES_MAKE(gnuboy)
 TUXBOX_RULES_MAKE(scummvm)
 TUXBOX_RULES_MAKE(sdldoom)
+TUXBOX_RULES_MAKE(tinygl)
 
 #
 # dvb apps
