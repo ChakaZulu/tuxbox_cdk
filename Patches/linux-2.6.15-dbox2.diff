@@ -1,7 +1,21 @@
+diff --git a/Makefile b/Makefile
+index 497884d..30a99e3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,7 @@
+ VERSION = 2
+ PATCHLEVEL = 6
+ SUBLEVEL = 15
+-EXTRAVERSION =
++EXTRAVERSION = -dbox2
+ NAME=Sliding Snow Leopard
+ 
+ # *DOCUMENTATION*
 diff --git a/arch/ppc/Kconfig b/arch/ppc/Kconfig
+index cc3f64c..9ec4c2a 100644
 --- a/arch/ppc/Kconfig
 +++ b/arch/ppc/Kconfig
-@@ -525,6 +525,9 @@ config WINCEPT
+@@ -504,6 +504,9 @@ config WINCEPT
  	  MPC821 PowerPC, introduced in 1998 and designed to be used in
  	  thin-client machines.  Say Y to support it directly.
  
@@ -12,18 +26,20 @@ diff --git a/arch/ppc/Kconfig b/arch/ppc/Kconfig
  
  choice
 diff --git a/arch/ppc/platforms/Makefile b/arch/ppc/platforms/Makefile
+index 7c5cdab..e987b9a 100644
 --- a/arch/ppc/platforms/Makefile
 +++ b/arch/ppc/platforms/Makefile
-@@ -46,6 +46,7 @@ obj-$(CONFIG_SANDPOINT)		+= sandpoint.o
- obj-$(CONFIG_SBC82xx)		+= sbc82xx.o
+@@ -45,6 +45,7 @@ obj-$(CONFIG_SBC82xx)		+= sbc82xx.o
  obj-$(CONFIG_SPRUCE)		+= spruce.o
  obj-$(CONFIG_LITE5200)		+= lite5200.o
+ obj-$(CONFIG_EV64360)		+= ev64360.o
 +obj-$(CONFIG_DBOX2)			+= dbox2.o
  
  ifeq ($(CONFIG_SMP),y)
  obj-$(CONFIG_PPC_PMAC)		+= pmac_smp.o
 diff --git a/arch/ppc/platforms/dbox2.c b/arch/ppc/platforms/dbox2.c
 new file mode 100644
+index 0000000..62fb7c5
 --- /dev/null
 +++ b/arch/ppc/platforms/dbox2.c
 @@ -0,0 +1,220 @@
@@ -36,7 +52,7 @@ new file mode 100644
 + *
 + */
 +
-+#include <linux/device.h>
++#include <linux/platform_device.h>
 +#include <linux/init.h>
 +#include <linux/kernel.h>
 +#include <asm/commproc.h>
@@ -249,6 +265,7 @@ new file mode 100644
 +}
 diff --git a/arch/ppc/platforms/dbox2.h b/arch/ppc/platforms/dbox2.h
 new file mode 100644
+index 0000000..170c2c3
 --- /dev/null
 +++ b/arch/ppc/platforms/dbox2.h
 @@ -0,0 +1,29 @@
@@ -282,9 +299,10 @@ new file mode 100644
 +
 +#endif /* _PPC_PLATFORMS_DBOX2_H */
 diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index b9b77cf..63ff475 100644
 --- a/drivers/mtd/maps/Kconfig
 +++ b/drivers/mtd/maps/Kconfig
-@@ -624,5 +624,8 @@ config MTD_PLATRAM
+@@ -639,5 +639,8 @@ config MTD_PLATRAM
  
  	  This selection automatically selects the map_ram driver.
  
@@ -295,9 +313,10 @@ diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
  
 +endmenu
 diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
+index cc8e3bf..b21a9d5 100644
 --- a/drivers/video/Kconfig
 +++ b/drivers/video/Kconfig
-@@ -357,6 +357,17 @@ config FB_OF
+@@ -335,6 +335,17 @@ config FB_OF
  	  Say Y if you want support with Open Firmware for your graphics
  	  board.
  
@@ -316,6 +335,7 @@ diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
  	bool "Apple \"control\" display support"
  	depends on (FB = y) && PPC_PMAC
 diff --git a/include/asm-ppc/mpc8xx.h b/include/asm-ppc/mpc8xx.h
+index 46f159c..aa670aa 100644
 --- a/include/asm-ppc/mpc8xx.h
 +++ b/include/asm-ppc/mpc8xx.h
 @@ -32,6 +32,10 @@
