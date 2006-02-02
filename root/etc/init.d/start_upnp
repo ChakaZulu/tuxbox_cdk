@@ -1,0 +1,24 @@
+#!/bin/sh
+
+trap '' HUP INT
+
+mkdir /tmp/fuse
+
+# load fuse kernel driver
+#modprobe fuse
+insmod fuse
+
+# make fuse device node
+if [ ! -e /dev/fuse ] ; then
+	mknod /dev/fuse -m 0666 c 10 229
+fi
+
+# Houdini once claimed this was needed, but he retracted that statment
+# ln -s /dev/pts/0 /dev/stdout
+
+# libupnp searches routes for multicast "enabled" interfaces so place a route
+ip route add 224.0.0.0/4 dev eth0
+
+# start
+djmount /tmp/fuse &
+#djmount -ddebug /tmp/fuse &
