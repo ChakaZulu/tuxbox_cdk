@@ -5,3 +5,6 @@
 #music		-fstype=nfs,ro,nolock	yourserver:/audio
 #movies		-fstype=nfs,ro,nolock	192.168.42.42:/filme
 #recording	-fstype=nfs,rw,nolock	herserver:/garbage
+#
+# This example is from Papst
+#musik 		-fstype=cifs,ro,soft,user=root,password=dbox2,unc=//192.168.0.2/Musik //192.168.0.2/Musik 
