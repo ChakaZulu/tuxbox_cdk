@@ -27,6 +27,8 @@ watchdog_5.2.4.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/w/watchdog
 #
 busybox-1.01.tar.bz2;http://www.busybox.net/downloads
 autofs-4.1.4.tar.bz2;ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4
+fuse-2.5.1.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/fuse
+djmount-0.51.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/djmount
 module-init-tools-3.2.1.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/module-init-tools
 modutils-2.4.26.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
