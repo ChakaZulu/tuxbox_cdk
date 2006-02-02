@@ -41,10 +41,12 @@ if [ -x /sbin/modprobe ] ; then
     # If nfs-support is contained in the kernel, this will fail. The 
     # error can be ignored.
     modprobe nfs
+    #modprobe cifs
 else
     insmod $MD/kernel/net/sunrpc/sunrpc.o
     insmod $MD/kernel/fs/lockd/lockd.o
     insmod $MD/kernel/fs/nfs/nfs.o
+    #insmod $MD/kernel/fs/cifs/cifs.o
 fi
 
 if [ ! -d /var/lock ]; then
