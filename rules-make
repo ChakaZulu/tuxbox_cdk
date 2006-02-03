@@ -39,6 +39,9 @@ procps;010114;procps-010114;procps-010114.tar.gz:procps.diff;extract:procps-0101
 udev;030;udev-030;udev-030.tar.gz:udev.diff;extract:udev-030.tar.gz;patch:udev.diff
 mrouted;3.9-beta3;mrouted-3.9-beta3.orig;mrouted_3.9-beta3.orig.tar.gz:mrouted_3.9-beta3-3.diff;extract:mrouted_3.9-beta3.orig.tar.gz;patch:mrouted_3.9-beta3-3.diff
 
+cramfs;1.1;cramfs-1.1;cramfs-1.1.tar.gz;extract:cramfs-1.1.tar.gz
+squashfs;2.2r2;squashfs2.2-r2;squashfs2.2r2.tar.gz;extract:squashfs2.2r2.tar.gz
+
 #
 # contrib libs
 #
