@@ -41,7 +41,7 @@ vsftpd-1.2.2.tar.gz;ftp://vsftpd.beasts.org/users/cevans
 mrouted_3.9-beta3.orig.tar.gz;ftp://ftp.debian.org/debian/pool/non-free/m/mrouted
 
 cramfs-1.1.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/cramfs
-squashfs2.2r2.tar.gz;http://heanet.dl.sourceforge.net/sourceforge
+squashfs2.2r2.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/squashfs
 
 #
 # contrib libs
