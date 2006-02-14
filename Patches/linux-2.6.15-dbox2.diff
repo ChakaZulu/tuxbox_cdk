@@ -11,6 +11,424 @@ index 497884d..30a99e3 100644
  NAME=Sliding Snow Leopard
  
  # *DOCUMENTATION*
+diff --git a/arch/ppc/8xx_io/enet.c b/arch/ppc/8xx_io/enet.c
+index ece6a9f..f05207d 100644
+--- a/arch/ppc/8xx_io/enet.c
++++ b/arch/ppc/8xx_io/enet.c
+@@ -14,13 +14,6 @@
+  * Buffer descriptors are kept in the CPM dual port RAM, and the frame
+  * buffers are in the host memory.
+  *
+- * Right now, I am very watseful with the buffers.  I allocate memory
+- * pages and then divide them into 2K frame buffers.  This way I know I
+- * have buffers large enough to hold one frame within one buffer descriptor.
+- * Once I get this working, I will use 64 or 128 byte CPM buffers, which
+- * will be much more memory efficient and will easily handle lots of
+- * small packets.
+- *
+  */
+ #include <linux/config.h>
+ #include <linux/kernel.h>
+@@ -56,11 +49,7 @@
+  *
+  * The buffer descriptors are allocated from the CPM dual port memory
+  * with the data buffers allocated from host memory, just like all other
+- * serial communication protocols.  The host memory buffers are allocated
+- * from the free page pool, and then divided into smaller receive and
+- * transmit buffers.  The size of the buffers should be a power of two,
+- * since that nicely divides the page.  This creates a ring buffer
+- * structure similar to the LANCE and other controllers.
++ * serial communication protocols.
+  *
+  * Like the LANCE driver:
+  * The driver runs as two independent, single-threaded flows of control.  One
+@@ -92,20 +81,14 @@
+  * pool.  The code may assume these are power of two, so it is best
+  * to keep them that size.
+  * We don't need to allocate pages for the transmitter.  We just use
+- * the skbuffer directly.
++ * the skbuffer directly. Receiving data works by swapping skbuffers.
+  */
+ #ifdef CONFIG_ENET_BIG_BUFFERS
+-#define CPM_ENET_RX_PAGES	32
+-#define CPM_ENET_RX_FRSIZE	2048
+-#define CPM_ENET_RX_FRPPG	(PAGE_SIZE / CPM_ENET_RX_FRSIZE)
+-#define RX_RING_SIZE		(CPM_ENET_RX_FRPPG * CPM_ENET_RX_PAGES)
++#define RX_RING_SIZE		64
+ #define TX_RING_SIZE		64	/* Must be power of two */
+ #define TX_RING_MOD_MASK	63	/*   for this to work */
+ #else
+-#define CPM_ENET_RX_PAGES	4
+-#define CPM_ENET_RX_FRSIZE	2048
+-#define CPM_ENET_RX_FRPPG	(PAGE_SIZE / CPM_ENET_RX_FRSIZE)
+-#define RX_RING_SIZE		(CPM_ENET_RX_FRPPG * CPM_ENET_RX_PAGES)
++#define RX_RING_SIZE		8
+ #define TX_RING_SIZE		8	/* Must be power of two */
+ #define TX_RING_MOD_MASK	7	/*   for this to work */
+ #endif
+@@ -129,6 +112,8 @@ struct scc_enet_private {
+ 	struct	sk_buff* tx_skbuff[TX_RING_SIZE];
+ 	ushort	skb_cur;
+ 	ushort	skb_dirty;
++	struct	sk_buff* rx_skbuff[RX_RING_SIZE];
++	ushort	skb_cur_rx;
+ 
+ 	/* CPM dual port RAM relative addresses.
+ 	*/
+@@ -141,7 +126,6 @@ struct scc_enet_private {
+ 	/* Virtual addresses for the receive buffers because we can't
+ 	 * do a __va() on them anymore.
+ 	 */
+-	unsigned char *rx_vaddr[RX_RING_SIZE];
+ 	struct	net_device_stats stats;
+ 	uint	tx_full;
+ 	spinlock_t lock;
+@@ -208,7 +192,7 @@ scc_enet_start_xmit(struct sk_buff *skb,
+ 		/* Ooops.  All transmit buffers are full.  Bail out.
+ 		 * This should not happen, since cep->tx_busy should be set.
+ 		 */
+-		printk("%s: tx queue full!.\n", dev->name);
++		printk(KERN_ERR "%s: tx queue full!.\n", dev->name);
+ 		return 1;
+ 	}
+ #endif
+@@ -270,29 +254,135 @@ scc_enet_start_xmit(struct sk_buff *skb,
+ 	return 0;
+ }
+ 
++/*
++ * Transmits up to 3 memory locations. This 3 locations must be cache-flushed
++ * before this function is invoked. The memory won't be freed after
++ * transmission. The function takes physical addresses!
++ */
++
++int scc_enet_multiple_xmit(struct net_device *dev,unsigned count, unsigned first,
++	unsigned first_len, unsigned second, unsigned second_len, unsigned third,
++	unsigned third_len)
++{
++	struct scc_enet_private *cep = (struct scc_enet_private *)dev->priv;
++	volatile cbd_t	*bdp,*first_bdp;
++	unsigned pad = 0;
++	int tmpcnt;
++
++	/* nothing to send ? */
++	if (!count)
++		return 0;
++
++	if (count>TX_RING_SIZE)
++		return 1;
++
++	spin_lock_irq(&cep->lock);
++
++	/* not enough free descriptors? */
++	bdp = cep->cur_tx;
++	tmpcnt = count;
++	do {
++		if (bdp->cbd_sc & BD_ENET_TX_READY) {
++			spin_unlock_irq(&cep->lock);
++			return 1;
++		}
++		if (bdp->cbd_sc & BD_ENET_TX_WRAP)
++			bdp = cep->tx_bd_base;
++		else
++			bdp++;
++
++	} while (--tmpcnt);
++
++	bdp = cep->cur_tx;
++	first_bdp = bdp;
++
++	if (first_len + second_len + third_len < ETH_ZLEN) {
++		pad = BD_ENET_TX_PAD;
++	}
++
++	/* setup first descriptor */
++
++	cep->tx_skbuff[cep->skb_cur] = NULL;
++	bdp->cbd_datlen = first_len;
++	bdp->cbd_bufaddr = first;
++	cep->skb_cur = (cep->skb_cur + 1) & TX_RING_MOD_MASK;
++
++	/* setup second descriptor */
++	if (count > 1) {
++		if (bdp->cbd_sc & BD_ENET_TX_WRAP) {
++			bdp = cep->tx_bd_base;
++		}
++		else {
++			bdp++;
++		}
++		cep->tx_skbuff[cep->skb_cur] = NULL;
++		bdp->cbd_datlen = second_len;
++		bdp->cbd_bufaddr = second;
++		cep->skb_cur = (cep->skb_cur + 1) & TX_RING_MOD_MASK;
++
++		if (count > 2) {
++			bdp->cbd_sc = (bdp->cbd_sc & BD_ENET_TX_WRAP) | BD_ENET_TX_READY;
++			if (bdp->cbd_sc & BD_ENET_TX_WRAP) {
++				bdp = cep->tx_bd_base;
++			}
++			else {
++				bdp++;
++			}
++			cep->tx_skbuff[cep->skb_cur] = NULL;
++			bdp->cbd_datlen = third_len;
++			bdp->cbd_bufaddr = third;
++			cep->skb_cur = (cep->skb_cur + 1) & TX_RING_MOD_MASK;
++		}
++	}
++	bdp->cbd_sc = (bdp->cbd_sc & BD_ENET_TX_WRAP) | BD_ENET_TX_READY |
++	BD_ENET_TX_INTR | BD_ENET_TX_LAST | BD_ENET_TX_TC | pad;
++	if (count > 1) {
++		first_bdp->cbd_sc = (first_bdp->cbd_sc & BD_ENET_TX_WRAP) | BD_ENET_TX_READY;
++	}
++
++	if (bdp->cbd_sc & BD_ENET_TX_WRAP) {
++		bdp = cep->tx_bd_base;
++	}
++	else {
++		bdp++;
++	}
++
++	if (bdp->cbd_sc & BD_ENET_TX_READY) {
++		netif_stop_queue(dev);
++		cep->tx_full = 1;
++	}
++
++	cep->cur_tx = (cbd_t *) bdp;
++
++	spin_unlock_irq(&cep->lock);
++
++	return 0;
++}
++EXPORT_SYMBOL(scc_enet_multiple_xmit);
++
+ static void
+ scc_enet_timeout(struct net_device *dev)
+ {
+ 	struct scc_enet_private *cep = (struct scc_enet_private *)dev->priv;
+ 
+-	printk("%s: transmit timed out.\n", dev->name);
++	printk(KERN_ERR "%s: transmit timed out.\n", dev->name);
+ 	cep->stats.tx_errors++;
+ #ifndef final_version
+ 	{
+ 		int	i;
+ 		cbd_t	*bdp;
+-		printk(" Ring data dump: cur_tx %p%s cur_rx %p.\n",
++		printk(KERN_DEBUG " Ring data dump: cur_tx %p%s cur_rx %p.\n",
+ 		       cep->cur_tx, cep->tx_full ? " (full)" : "",
+ 		       cep->cur_rx);
+ 		bdp = cep->tx_bd_base;
+ 		for (i = 0 ; i < TX_RING_SIZE; i++, bdp++)
+-			printk("%04x %04x %08x\n",
++			printk(KERN_DEBUG "%04x %04x %08x\n",
+ 			       bdp->cbd_sc,
+ 			       bdp->cbd_datlen,
+ 			       bdp->cbd_bufaddr);
+ 		bdp = cep->rx_bd_base;
+ 		for (i = 0 ; i < RX_RING_SIZE; i++, bdp++)
+-			printk("%04x %04x %08x\n",
++			printk(KERN_DEBUG "%04x %04x %08x\n",
+ 			       bdp->cbd_sc,
+ 			       bdp->cbd_datlen,
+ 			       bdp->cbd_bufaddr);
+@@ -376,7 +466,8 @@ scc_enet_interrupt(void *dev_id, struct 
+ 
+ 		/* Free the sk buffer associated with this last transmit.
+ 		*/
+-		dev_kfree_skb_irq(cep->tx_skbuff[cep->skb_dirty]);
++		if (cep->tx_skbuff[cep->skb_dirty])
++			dev_kfree_skb_irq(cep->tx_skbuff[cep->skb_dirty]);
+ 		cep->skb_dirty = (cep->skb_dirty + 1) & TX_RING_MOD_MASK;
+ 
+ 		/* Update pointer to next buffer descriptor to be transmitted.
+@@ -446,8 +537,9 @@ scc_enet_rx(struct net_device *dev)
+ {
+ 	struct	scc_enet_private *cep;
+ 	volatile cbd_t	*bdp;
+-	struct	sk_buff *skb;
++	struct	sk_buff *skb,*rx_skb;
+ 	ushort	pkt_len;
++	ushort	skb_cur_rx;
+ 
+ 	cep = (struct scc_enet_private *)dev->priv;
+ 
+@@ -455,6 +547,7 @@ scc_enet_rx(struct net_device *dev)
+ 	 * These get messed up if we get called due to a busy condition.
+ 	 */
+ 	bdp = cep->cur_rx;
++	skb_cur_rx = cep->skb_cur_rx;
+ 
+ for (;;) {
+ 	if (bdp->cbd_sc & BD_ENET_RX_EMPTY)
+@@ -466,7 +559,7 @@ for (;;) {
+ 	 */
+ 	if ((bdp->cbd_sc & (BD_ENET_RX_FIRST | BD_ENET_RX_LAST)) !=
+ 		(BD_ENET_RX_FIRST | BD_ENET_RX_LAST))
+-			printk("CPM ENET: rcv is not first+last\n");
++			printk(KERN_CRIT "CPM ENET: rcv is not first+last\n");
+ #endif
+ 
+ 	/* Frame too long or too short.
+@@ -493,47 +586,53 @@ for (;;) {
+ 		*/
+ 		cep->stats.rx_packets++;
+ 		pkt_len = bdp->cbd_datlen;
+-		cep->stats.rx_bytes += pkt_len;
++		cep->stats.rx_bytes += pkt_len - 4;
+ 
+-		/* This does 16 byte alignment, much more than we need.
+-		 * The packet length includes FCS, but we don't want to
+-		 * include that when passing upstream as it messes up
+-		 * bridging applications.
+-		 */
+-		skb = dev_alloc_skb(pkt_len-4);
++		/* Allocate a new skb
++		*/
+ 
+-		if (skb == NULL) {
+-			printk("%s: Memory squeeze, dropping packet.\n", dev->name);
+-			cep->stats.rx_dropped++;
+-		}
++		if ( (skb = dev_alloc_skb(PKT_MAXBLR_SIZE)) == NULL)
++		{
++			printk(KERN_ERR "%s: Memory squeeze, dropping packet.\n",dev->name);
++ 			cep->stats.rx_dropped++;
++ 		}
+ 		else {
+-			skb->dev = dev;
+-			skb_put(skb,pkt_len-4);	/* Make room */
+-			eth_copy_and_sum(skb,
+-				cep->rx_vaddr[bdp - cep->rx_bd_base],
+-				pkt_len-4, 0);
+-			skb->protocol=eth_type_trans(skb,dev);
+-			netif_rx(skb);
++			/* swap new and filled skb
++			*/
++ 			skb->dev = dev;
++			/* invalidate data cache to prevent memory-modification in
++			 * write-back-mode and to get the real data on the next read
++			 */
++			invalidate_dcache_range((unsigned long) skb->data,(unsigned long) skb->data + PKT_MAXBLR_SIZE - 1);
++			rx_skb = cep->rx_skbuff[skb_cur_rx];
++			cep->rx_skbuff[skb_cur_rx] = skb;
++			bdp->cbd_bufaddr = __pa(skb->data);
++
++			/* Don't include FCS as it messes up bridging applications */
++			skb_put(rx_skb,pkt_len-4);
++			rx_skb->protocol=eth_type_trans(rx_skb,dev);
++			netif_rx(rx_skb);
+ 		}
+ 	}
+ 
+-	/* Clear the status flags for this buffer.
+-	*/
+-	bdp->cbd_sc &= ~BD_ENET_RX_STATS;
+-
+-	/* Mark the buffer empty.
++	/* Clear the status flags for this buffer and mark the buffer empty.
+ 	*/
+-	bdp->cbd_sc |= BD_ENET_RX_EMPTY;
++	bdp->cbd_sc = (bdp->cbd_sc & ~BD_ENET_RX_STATS) | BD_ENET_RX_EMPTY;
+ 
+ 	/* Update BD pointer to next entry.
+ 	*/
+-	if (bdp->cbd_sc & BD_ENET_RX_WRAP)
++	if (bdp->cbd_sc & BD_ENET_RX_WRAP) {
+ 		bdp = cep->rx_bd_base;
+-	else
++		skb_cur_rx = 0;
++	}
++	else {
+ 		bdp++;
++		skb_cur_rx++;
++	}
+ 
+    }
+ 	cep->cur_rx = (cbd_t *)bdp;
++	cep->skb_cur_rx = skb_cur_rx;
+ 
+ 	return 0;
+ }
+@@ -581,7 +680,7 @@ static void set_multicast_list(struct ne
+ 	if (dev->flags&IFF_PROMISC) {
+ 	
+ 		/* Log any net taps. */
+-		printk("%s: Promiscuous mode enabled.\n", dev->name);
++		printk(KERN_INFO "%s: Promiscuous mode enabled.\n", dev->name);
+ 		cep->sccp->scc_psmr |= SCC_PSMR_PRO;
+ 	} else {
+ 
+@@ -644,10 +743,9 @@ static int __init scc_enet_init(void)
+ {
+ 	struct net_device *dev;
+ 	struct scc_enet_private *cep;
+-	int i, j, k, err;
++	int i, err;
+ 	uint dp_offset;
+-	unsigned char	*eap, *ba;
+-	dma_addr_t	mem_addr;
++	unsigned char	*eap;
+ 	bd_t		*bd;
+ 	volatile	cbd_t		*bdp;
+ 	volatile	cpm8xx_t	*cp;
+@@ -758,6 +856,7 @@ static int __init scc_enet_init(void)
+ 
+ 	cep->dirty_tx = cep->cur_tx = cep->tx_bd_base;
+ 	cep->cur_rx = cep->rx_bd_base;
++	cep->skb_cur_rx = 0;
+ 
+ 	/* Issue init Rx BD command for SCC.
+ 	 * Manual says to perform an Init Rx parameters here.  We have
+@@ -838,26 +937,21 @@ static int __init scc_enet_init(void)
+ 	bdp--;
+ 	bdp->cbd_sc |= BD_SC_WRAP;
+ 
+-	bdp = cep->rx_bd_base;
+-	k = 0;
+-	for (i=0; i<CPM_ENET_RX_PAGES; i++) {
++	/* allocate skbs for receive-buffers */
+ 
+-		/* Allocate a page.
+-		*/
+-		ba = (unsigned char *)dma_alloc_coherent(NULL, PAGE_SIZE,
+-				&mem_addr, GFP_KERNEL);
+-		/* BUG: no check for failure */
++	bdp = cep->rx_bd_base;
+ 
+-		/* Initialize the BD for every fragment in the page.
+-		*/
+-		for (j=0; j<CPM_ENET_RX_FRPPG; j++) {
+-			bdp->cbd_sc = BD_ENET_RX_EMPTY | BD_ENET_RX_INTR;
+-			bdp->cbd_bufaddr = mem_addr;
+-			cep->rx_vaddr[k++] = ba;
+-			mem_addr += CPM_ENET_RX_FRSIZE;
+-			ba += CPM_ENET_RX_FRSIZE;
+-			bdp++;
+-		}
++	for (i=0; i<RX_RING_SIZE; i++) {
++		cep->rx_skbuff[i] = dev_alloc_skb(PKT_MAXBLR_SIZE);
++		cep->rx_skbuff[i]->dev = dev;
++		/* invalidate data cache to prevent memory-modification in
++		 * write-back-mode and to get the real data on the next read.
++		 */
++		invalidate_dcache_range((unsigned long) cep->rx_skbuff[i]->data,
++			(unsigned long) cep->rx_skbuff[i]->data + PKT_MAXBLR_SIZE - 1);
++		bdp->cbd_sc = BD_ENET_RX_EMPTY | BD_ENET_RX_INTR;
++		bdp->cbd_bufaddr = __pa(cep->rx_skbuff[i]->data);
++		bdp++;
+ 	}
+ 
+ 	/* Set the last buffer to wrap.
+@@ -995,7 +1089,7 @@ static int __init scc_enet_init(void)
+ 	*/
+ 	sccp->scc_gsmrl |= (SCC_GSMRL_ENR | SCC_GSMRL_ENT);
+ 
+-	printk("%s: CPM ENET Version 0.2 on SCC%d, ", dev->name, SCC_ENET+1);
++	printk(KERN_INFO "%s: CPM ENET Version 0.2.dbox2 on SCC%d, ", dev->name, SCC_ENET+1);
+ 	for (i=0; i<5; i++)
+ 		printk("%02x:", dev->dev_addr[i]);
+ 	printk("%02x\n", dev->dev_addr[5]);
 diff --git a/arch/ppc/Kconfig b/arch/ppc/Kconfig
 index cc3f64c..9ec4c2a 100644
 --- a/arch/ppc/Kconfig
