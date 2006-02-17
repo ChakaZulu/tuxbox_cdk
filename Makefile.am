@@ -73,7 +73,11 @@ endif
 	-rm -f $(hostprefix)/$(target)/lib
 	-ln -sf $(targetprefix)/include $(hostprefix)/$(target)/include
 	-ln -sf $(targetprefix)/lib $(hostprefix)/$(target)/lib
+if KERNEL26
+	-ln -sf $(buildprefix)/linux/include/asm-powerpc $(hostprefix)/$(target)/include/asm
+else
 	-ln -sf $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
+endif
 	-ln -sf $(buildprefix)/linux/include/asm-generic $(hostprefix)/$(target)/include
 	-ln -sf $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include
 	-ln -sf $(buildprefix)/linux/include/mtd $(hostprefix)/$(target)/include
@@ -182,7 +186,7 @@ $(DEPDIR)/glibc: @DEPENDS_glibc@
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
-			--with-headers=$(buildprefix)/linux/include \
+			--with-headers=$(targetprefix)/include \
 			--disable-profile \
 			--disable-debug  \
 			--enable-shared \
