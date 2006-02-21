@@ -1256,6 +1256,19 @@ $(DEPDIR)/bash: bootstrap @DEPENDS_bash@
 	@CLEANUP_bash@
 	touch $@
 
+$(DEPDIR)/python: bootstrap @DEPENDS_python@
+	@PREPARE_python@
+	cd @DIR_python@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=\
+			--enable-shared &&\
+		$(MAKE) python && \
+		@INSTALL_python@
+	@CLEANUP_python@
+	touch $@
 
 #######################
 #

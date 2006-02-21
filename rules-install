@@ -99,7 +99,7 @@ nano;make:install:DESTDIR=TARGET
 mc;make:install:prefix=TARGET
 joe;make:install:prefix=TARGET
 bash;make:install:prefix=TARGET
-
+python;make:bininstall:prefix=TARGET
 
 #
 # java

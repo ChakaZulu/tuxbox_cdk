@@ -110,6 +110,7 @@ nano;1.2.4;nano-1.2.4;nano-1.2.4.tar.gz:nano.diff;extract:nano-1.2.4.tar.gz;patc
 mc;4.6.1;mc-4.6.1;mc-4.6.1.tar.gz:mc-4.6.1.diff;extract:mc-4.6.1.tar.gz;patch:mc-4.6.1.diff
 joe;3.1;joe-3.1;joe-3.1.tar.gz;extract:joe-3.1.tar.gz
 bash;3.0;bash-3.0;bash-3.0.tar.gz;extract:bash-3.0.tar.gz
+python;2.4.2;Python-2.4.2;Python-2.4.2.tar.bz2:python.diff;extract:Python-2.4.2.tar.bz2;patch:python.diff
 
 #
 # java
