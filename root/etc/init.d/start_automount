@@ -28,7 +28,7 @@ PIDFILE=/var/run/automount.pid
 # and be writeable. The AUTOFSMOUNTDIR should not exist.
 #AUTOFSMOUNTDIR=/autofs
 AUTOFSMOUNTDIR=/var/autofs
-MAPFILE=/etc/auto.stuff
+MAPFILE=/etc/auto.net
 
 echo "Starting the automounter"
 
