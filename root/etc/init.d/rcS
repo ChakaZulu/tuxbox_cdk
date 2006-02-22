@@ -36,6 +36,7 @@ if [ $KMINOR -ge 6 ]; then
 		mknod /dev/dbox/fp0 c 10 62
 		mknod /dev/dbox/lcd0 c 10 59
 		mknod /dev/dbox/saa0 c 10 58
+		mknod /dev/dbox/dvb2eth c 10 57
 
 		mknod /dev/watchdog c 10 130
 		mknod /dev/lirc c 10 61
@@ -117,11 +118,11 @@ if [ $KMINOR -ge 6 ]; then
 	modprobe avia_gt_lirc
 	modprobe avia_gt_oss
 	modprobe avia_gt_v4l2
-	modprobe avia_av_proc
 
 	modprobe avs
 	modprobe lcd
 	modprobe saa7126
+	modprobe dvb2eth
 else
 	# kernel 2.4
 	modprobe dvb-core
