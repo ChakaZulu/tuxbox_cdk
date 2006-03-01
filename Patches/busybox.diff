@@ -1,6 +1,66 @@
-diff -Naur busybox-1.01/editors/vi.c busybox-1.01-tuxbox/editors/vi.c
---- busybox-1.01/editors/vi.c	2005-08-17 03:29:16.000000000 +0200
-+++ busybox-1.01-tuxbox/editors/vi.c	2005-10-16 23:28:11.000000000 +0200
+diff -Naur busybox-1.01.orig/debian/config-deb busybox-1.01/debian/config-deb
+--- busybox-1.01.orig/debian/config-deb	2005-08-17 03:29:09.000000000 +0200
++++ busybox-1.01/debian/config-deb	2006-03-01 18:04:55.000000000 +0100
+@@ -249,7 +249,7 @@
+ # CONFIG_MT is not set
+ # CONFIG_STRINGS is not set
+ # CONFIG_TIME is not set
+-# CONFIG_WATCHDOG is not set
++# CONFIG_BBOX_WATCHDOG is not set
+ 
+ #
+ # Linux Module Utilities
+diff -Naur busybox-1.01.orig/debian/config-floppy-udeb-linux busybox-1.01/debian/config-floppy-udeb-linux
+--- busybox-1.01.orig/debian/config-floppy-udeb-linux	2005-08-17 03:29:09.000000000 +0200
++++ busybox-1.01/debian/config-floppy-udeb-linux	2006-03-01 18:04:56.000000000 +0100
+@@ -213,7 +213,7 @@
+ # CONFIG_MT is not set
+ # CONFIG_STRINGS is not set
+ # CONFIG_TIME is not set
+-# CONFIG_WATCHDOG is not set
++# CONFIG_BBOX_WATCHDOG is not set
+ 
+ #
+ # Linux Module Utilities
+diff -Naur busybox-1.01.orig/debian/config-static busybox-1.01/debian/config-static
+--- busybox-1.01.orig/debian/config-static	2005-08-17 03:29:09.000000000 +0200
++++ busybox-1.01/debian/config-static	2006-03-01 18:04:56.000000000 +0100
+@@ -287,7 +287,7 @@
+ CONFIG_MT=y
+ CONFIG_STRINGS=y
+ CONFIG_TIME=y
+-CONFIG_WATCHDOG=y
++CONFIG_BBOX_WATCHDOG=y
+ 
+ #
+ # Linux Module Utilities
+diff -Naur busybox-1.01.orig/debian/config-udeb busybox-1.01/debian/config-udeb
+--- busybox-1.01.orig/debian/config-udeb	2005-08-17 03:29:09.000000000 +0200
++++ busybox-1.01/debian/config-udeb	2006-03-01 18:04:56.000000000 +0100
+@@ -252,7 +252,7 @@
+ # CONFIG_MT is not set
+ # CONFIG_STRINGS is not set
+ # CONFIG_TIME is not set
+-# CONFIG_WATCHDOG is not set
++# CONFIG_BBOX_WATCHDOG is not set
+ 
+ #
+ # Linux Module Utilities
+diff -Naur busybox-1.01.orig/debian/config-udeb-linux busybox-1.01/debian/config-udeb-linux
+--- busybox-1.01.orig/debian/config-udeb-linux	2005-08-17 03:29:09.000000000 +0200
++++ busybox-1.01/debian/config-udeb-linux	2006-03-01 18:04:56.000000000 +0100
+@@ -252,7 +252,7 @@
+ # CONFIG_MT is not set
+ # CONFIG_STRINGS is not set
+ # CONFIG_TIME is not set
+-# CONFIG_WATCHDOG is not set
++# CONFIG_BBOX_WATCHDOG is not set
+ 
+ #
+ # Linux Module Utilities
+diff -Naur busybox-1.01.orig/editors/vi.c busybox-1.01/editors/vi.c
+--- busybox-1.01.orig/editors/vi.c	2005-08-17 03:29:16.000000000 +0200
++++ busybox-1.01/editors/vi.c	2006-03-01 18:01:39.000000000 +0100
 @@ -19,7 +19,7 @@
   */
  
@@ -272,9 +332,42 @@ diff -Naur busybox-1.01/editors/vi.c busybox-1.01-tuxbox/editors/vi.c
  			while (isblnk(*dot)) {	// delete leading WS
  				dot_delete();
  			}
-diff -Naur busybox-1.01/init/init.c busybox-1.01-tuxbox/init/init.c
---- busybox-1.01/init/init.c	2005-08-17 03:29:16.000000000 +0200
-+++ busybox-1.01-tuxbox/init/init.c	2005-10-16 23:28:08.000000000 +0200
+diff -Naur busybox-1.01.orig/include/applets.h busybox-1.01/include/applets.h
+--- busybox-1.01.orig/include/applets.h	2005-08-17 03:29:15.000000000 +0200
++++ busybox-1.01/include/applets.h	2006-03-01 18:04:56.000000000 +0100
+@@ -547,7 +547,7 @@
+ #ifdef CONFIG_SYNC
+ 	APPLET(sync, sync_main, _BB_DIR_BIN, _BB_SUID_NEVER)
+ #endif
+-#ifdef CONFIG_SYSCTL
++#ifdef CONFIG_BBOX_SYSCTL
+ 	APPLET(sysctl, sysctl_main, _BB_DIR_SBIN, _BB_SUID_NEVER)
+ #endif
+ #ifdef CONFIG_SYSLOGD
+@@ -643,7 +643,7 @@
+ #ifdef CONFIG_WATCH
+ 	APPLET(watch, watch_main, _BB_DIR_BIN, _BB_SUID_NEVER)
+ #endif
+-#ifdef CONFIG_WATCHDOG
++#ifdef CONFIG_BBOX_WATCHDOG
+ 	APPLET(watchdog, watchdog_main, _BB_DIR_SBIN, _BB_SUID_NEVER)
+ #endif
+ #ifdef CONFIG_WC
+diff -Naur busybox-1.01.orig/include/usage.h busybox-1.01/include/usage.h
+--- busybox-1.01.orig/include/usage.h	2005-08-17 03:29:15.000000000 +0200
++++ busybox-1.01/include/usage.h	2006-03-01 18:04:55.000000000 +0100
+@@ -2302,7 +2302,7 @@
+   #define USAGE_IPC_LOG(a)
+ #endif
+ 
+-#ifdef CONFIG_SYSCTL
++#ifdef CONFIG_BBOX_SYSCTL
+ #define sysctl_trivial_usage \
+ 	"[OPTIONS]... [VALUE]...\n"
+ #define sysctl_full_usage
+diff -Naur busybox-1.01.orig/init/init.c busybox-1.01/init/init.c
+--- busybox-1.01.orig/init/init.c	2005-08-17 03:29:16.000000000 +0200
++++ busybox-1.01/init/init.c	2006-03-01 18:01:39.000000000 +0100
 @@ -375,7 +375,7 @@
  	while ((fd = open(console, O_RDONLY | O_NONBLOCK)) < 0 && tried < 2) {
  		/* Can't open selected console -- try
@@ -304,9 +397,9 @@ diff -Naur busybox-1.01/init/init.c busybox-1.01-tuxbox/init/init.c
  	}
  	return wpid;
  }
-diff -Naur busybox-1.01/libbb/messages.c busybox-1.01-tuxbox/libbb/messages.c
---- busybox-1.01/libbb/messages.c	2005-08-17 03:29:14.000000000 +0200
-+++ busybox-1.01-tuxbox/libbb/messages.c	2005-10-16 23:28:08.000000000 +0200
+diff -Naur busybox-1.01.orig/libbb/messages.c busybox-1.01/libbb/messages.c
+--- busybox-1.01.orig/libbb/messages.c	2005-08-17 03:29:14.000000000 +0200
++++ busybox-1.01/libbb/messages.c	2006-03-01 18:01:39.000000000 +0100
 @@ -59,27 +59,47 @@
  #endif
  
@@ -360,9 +453,33 @@ diff -Naur busybox-1.01/libbb/messages.c busybox-1.01-tuxbox/libbb/messages.c
  const char * const bb_path_nologin_file = NOLOGIN_FILE;
  #endif
  
-diff -Naur busybox-1.01/networking/ifupdown.c busybox-1.01-tuxbox/networking/ifupdown.c
---- busybox-1.01/networking/ifupdown.c	2005-08-17 03:29:10.000000000 +0200
-+++ busybox-1.01-tuxbox/networking/ifupdown.c	2005-10-16 23:28:08.000000000 +0200
+diff -Naur busybox-1.01.orig/miscutils/Config.in busybox-1.01/miscutils/Config.in
+--- busybox-1.01.orig/miscutils/Config.in	2005-08-17 03:29:15.000000000 +0200
++++ busybox-1.01/miscutils/Config.in	2006-03-01 18:04:56.000000000 +0100
+@@ -187,7 +187,7 @@
+ 	  When the command finishes, time writes a message to standard output
+ 	  giving timing statistics about this program run.
+ 
+-config CONFIG_WATCHDOG
++config CONFIG_BBOX_WATCHDOG
+ 	bool "watchdog"
+ 	default n
+ 	help
+diff -Naur busybox-1.01.orig/miscutils/Makefile.in busybox-1.01/miscutils/Makefile.in
+--- busybox-1.01.orig/miscutils/Makefile.in	2005-08-17 03:29:15.000000000 +0200
++++ busybox-1.01/miscutils/Makefile.in	2006-03-01 18:04:56.000000000 +0100
+@@ -36,7 +36,7 @@
+ MISCUTILS-$(CONFIG_RX)			+= rx.o
+ MISCUTILS-$(CONFIG_STRINGS)		+= strings.o
+ MISCUTILS-$(CONFIG_TIME)		+= time.o
+-MISCUTILS-$(CONFIG_WATCHDOG)		+= watchdog.o
++MISCUTILS-$(CONFIG_BBOX_WATCHDOG)		+= watchdog.o
+ 
+ libraries-y+=$(MISCUTILS_DIR)$(MISCUTILS_AR)
+ 
+diff -Naur busybox-1.01.orig/networking/ifupdown.c busybox-1.01/networking/ifupdown.c
+--- busybox-1.01.orig/networking/ifupdown.c	2005-08-17 03:29:10.000000000 +0200
++++ busybox-1.01/networking/ifupdown.c	2006-03-01 18:01:39.000000000 +0100
 @@ -1023,7 +1023,7 @@
  
  static int execute_all(struct interface_defn_t *ifd, execfn *exec, const char *opt)
@@ -388,9 +505,33 @@ diff -Naur busybox-1.01/networking/ifupdown.c busybox-1.01-tuxbox/networking/ifu
  	}
  	return 1;
  }
-diff -Naur busybox-1.01/sysdeps/linux/Config.in busybox-1.01-tuxbox/sysdeps/linux/Config.in
---- busybox-1.01/sysdeps/linux/Config.in	2005-08-17 03:29:15.000000000 +0200
-+++ busybox-1.01-tuxbox/sysdeps/linux/Config.in	2005-10-16 23:28:08.000000000 +0200
+diff -Naur busybox-1.01.orig/procps/Config.in busybox-1.01/procps/Config.in
+--- busybox-1.01.orig/procps/Config.in	2005-08-17 03:29:16.000000000 +0200
++++ busybox-1.01/procps/Config.in	2006-03-01 18:04:55.000000000 +0100
+@@ -72,7 +72,7 @@
+ 	  the system has been running, how many users are currently logged
+ 	  on, and the system load averages for the past 1, 5, and 15 minutes.
+ 
+-config CONFIG_SYSCTL
++config CONFIG_BBOX_SYSCTL
+ 	bool "sysctl"
+ 	default n
+ 	help
+diff -Naur busybox-1.01.orig/procps/Makefile.in busybox-1.01/procps/Makefile.in
+--- busybox-1.01.orig/procps/Makefile.in	2005-08-17 03:29:16.000000000 +0200
++++ busybox-1.01/procps/Makefile.in	2006-03-01 18:04:55.000000000 +0100
+@@ -29,7 +29,7 @@
+ PROCPS-$(CONFIG_PIDOF)		+= pidof.o
+ PROCPS-$(CONFIG_PS)		+= ps.o
+ PROCPS-$(CONFIG_RENICE)		+= renice.o
+-PROCPS-$(CONFIG_SYSCTL)		+= sysctl.o
++PROCPS-$(CONFIG_BBOX_SYSCTL)		+= sysctl.o
+ PROCPS-$(CONFIG_TOP)		+= top.o
+ PROCPS-$(CONFIG_UPTIME)		+= uptime.o
+ 
+diff -Naur busybox-1.01.orig/sysdeps/linux/Config.in busybox-1.01/sysdeps/linux/Config.in
+--- busybox-1.01.orig/sysdeps/linux/Config.in	2005-08-17 03:29:15.000000000 +0200
++++ busybox-1.01/sysdeps/linux/Config.in	2006-03-01 18:01:39.000000000 +0100
 @@ -203,6 +203,14 @@
  	  if you want to add some simple compiler switches (like -march=i686),
  	  or check for warnings using -Werror, just those options here.
@@ -406,3 +547,24 @@ diff -Naur busybox-1.01/sysdeps/linux/Config.in busybox-1.01-tuxbox/sysdeps/linu
  endmenu
  
  menu 'Installation Options'
+diff -Naur busybox-1.01.orig/sysdeps/linux/defconfig busybox-1.01/sysdeps/linux/defconfig
+--- busybox-1.01.orig/sysdeps/linux/defconfig	2005-08-17 03:29:15.000000000 +0200
++++ busybox-1.01/sysdeps/linux/defconfig	2006-03-01 18:04:56.000000000 +0100
+@@ -266,7 +266,7 @@
+ # CONFIG_RX is not set
+ CONFIG_STRINGS=y
+ CONFIG_TIME=y
+-# CONFIG_WATCHDOG is not set
++# CONFIG_BBOX_WATCHDOG is not set
+ 
+ #
+ # Linux Module Utilities
+@@ -333,7 +333,7 @@
+ # CONFIG_RENICE is not set
+ # CONFIG_TOP is not set
+ CONFIG_UPTIME=y
+-# CONFIG_SYSCTL is not set
++# CONFIG_BBOX_SYSCTL is not set
+ 
+ #
+ # Another Bourne-like Shell
