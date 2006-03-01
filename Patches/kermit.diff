@@ -1,5 +1,6 @@
+diff -Naur c-kermit-8.0-orig/makefile c-kermit-8.0/makefile
 --- c-kermit-8.0-orig/makefile	2004-04-17 20:52:00.000000000 +0200
-+++ c-kermit-8.0/makefile	2006-01-01 15:32:21.000000000 +0100
++++ c-kermit-8.0/makefile	2006-03-01 13:08:27.000000000 +0100
 @@ -871,7 +871,7 @@
  EXT=o
  #LNKFLAGS=
@@ -9,6 +10,15 @@
  CC2= cc
  MAKE= make
  SHELL=/bin/sh
+@@ -1088,7 +1088,7 @@
+ 			echo  "$(DESTDIR)$(INFODIR) exists...";\
+ 		else\
+ 			echo "Creating $(DESTDIR)$(INFODIR)/...";\
+-			mkdir     $(DESTDIR)$(INFODIR) || exit 1;\
++			mkdir -p  $(DESTDIR)$(INFODIR) || exit 1;\
+ 			chmod 755 $(DESTDIR)$(INFODIR);\
+ 		fi;\
+ 		echo "Copying text files to $(DESTDIR)$(INFODIR)...";\
 @@ -5455,6 +5455,15 @@
  	$(MAKE) linuxa KTARGET=$${KTARGET:-$(@)} "KFLAGS=$(KFLAGS) -pg" \
  	"LIBS=-pg -lcrypt -lresolv"
