@@ -1,6 +1,6 @@
 diff -Naur procps-010114.orig/Makefile procps-010114/Makefile
 --- procps-010114.orig/Makefile	2001-01-13 12:00:48.000000000 +0100
-+++ procps-010114/Makefile	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/Makefile	2006-03-04 11:40:14.000000000 +0100
 @@ -31,17 +31,6 @@
  
  SUBDIRS    =  ps # sub-packages to build/install
@@ -21,7 +21,7 @@ diff -Naur procps-010114.orig/Makefile procps-010114/Makefile
  #LDFLAGS    =  -N -s#			still older a.out systems use this
 diff -Naur procps-010114.orig/proc/ksym.c procps-010114/proc/ksym.c
 --- procps-010114.orig/proc/ksym.c	2001-01-13 10:46:07.000000000 +0100
-+++ procps-010114/proc/ksym.c	2005-10-17 00:37:04.000000000 +0200
++++ procps-010114/proc/ksym.c	2006-03-04 11:40:14.000000000 +0100
 @@ -112,7 +112,7 @@
  
  /* These mostly rely on POSIX to make them zero. */
@@ -42,7 +42,7 @@ diff -Naur procps-010114.orig/proc/ksym.c procps-010114/proc/ksym.c
    }
 diff -Naur procps-010114.orig/proc/proc/compare.h procps-010114/proc/proc/compare.h
 --- procps-010114.orig/proc/proc/compare.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/compare.h	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/proc/proc/compare.h	2006-03-04 11:40:14.000000000 +0100
 @@ -0,0 +1,9 @@
 +typedef int (*cmp_t)(void*,void*);       /* for function pointer casts */
 +
@@ -55,7 +55,7 @@ diff -Naur procps-010114.orig/proc/proc/compare.h procps-010114/proc/proc/compar
 +
 diff -Naur procps-010114.orig/proc/proc/devname.h procps-010114/proc/proc/devname.h
 --- procps-010114.orig/proc/proc/devname.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/devname.h	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/proc/proc/devname.h	2006-03-04 11:40:14.000000000 +0100
 @@ -0,0 +1,7 @@
 +#define ABBREV_DEV  1     /* remove /dev/         */
 +#define ABBREV_TTY  2     /* remove tty           */
@@ -66,7 +66,7 @@ diff -Naur procps-010114.orig/proc/proc/devname.h procps-010114/proc/proc/devnam
 +int tty_to_dev(char *name);
 diff -Naur procps-010114.orig/proc/proc/procps.h procps-010114/proc/proc/procps.h
 --- procps-010114.orig/proc/proc/procps.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/procps.h	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/proc/proc/procps.h	2006-03-04 11:40:14.000000000 +0100
 @@ -0,0 +1,27 @@
 +/* The shadow of the original with only common prototypes now. */
 +#include <stdio.h>
@@ -97,7 +97,7 @@ diff -Naur procps-010114.orig/proc/proc/procps.h procps-010114/proc/proc/procps.
 +unsigned print_strlist(FILE* file, char **strs, char* sep, unsigned max);
 diff -Naur procps-010114.orig/proc/proc/readproc.h procps-010114/proc/proc/readproc.h
 --- procps-010114.orig/proc/proc/readproc.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/readproc.h	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/proc/proc/readproc.h	2006-03-04 11:40:14.000000000 +0100
 @@ -0,0 +1,200 @@
 +#ifndef PROCPS_PROC_READPROC_H
 +#define PROCPS_PROC_READPROC_H
@@ -301,7 +301,7 @@ diff -Naur procps-010114.orig/proc/proc/readproc.h procps-010114/proc/proc/readp
 +#endif
 diff -Naur procps-010114.orig/proc/proc/sig.h procps-010114/proc/proc/sig.h
 --- procps-010114.orig/proc/proc/sig.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/sig.h	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/proc/proc/sig.h	2006-03-04 11:40:14.000000000 +0100
 @@ -0,0 +1,19 @@
 +/*
 + * Copyright 1998 by Albert Cahalan; all rights resered.
@@ -324,7 +324,7 @@ diff -Naur procps-010114.orig/proc/proc/sig.h procps-010114/proc/proc/sig.h
 +extern void unix_print_signals(void);
 diff -Naur procps-010114.orig/proc/proc/status.h procps-010114/proc/proc/status.h
 --- procps-010114.orig/proc/proc/status.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/status.h	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/proc/proc/status.h	2006-03-04 11:40:14.000000000 +0100
 @@ -0,0 +1,4 @@
 +#ifndef __PROC_STATUS_H
 +#define __PROC_STATUS_H
@@ -332,7 +332,7 @@ diff -Naur procps-010114.orig/proc/proc/status.h procps-010114/proc/proc/status.
 +#endif
 diff -Naur procps-010114.orig/proc/proc/sysinfo.h procps-010114/proc/proc/sysinfo.h
 --- procps-010114.orig/proc/proc/sysinfo.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/sysinfo.h	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/proc/proc/sysinfo.h	2006-03-04 11:40:14.000000000 +0100
 @@ -0,0 +1,40 @@
 +#ifndef SYSINFO_H
 +#define SYSINFO_H
@@ -376,7 +376,7 @@ diff -Naur procps-010114.orig/proc/proc/sysinfo.h procps-010114/proc/proc/sysinf
 +#endif /* SYSINFO_H */
 diff -Naur procps-010114.orig/proc/proc/tree.h procps-010114/proc/proc/tree.h
 --- procps-010114.orig/proc/proc/tree.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/tree.h	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/proc/proc/tree.h	2006-03-04 11:40:14.000000000 +0100
 @@ -0,0 +1,15 @@
 +/* for oldps.c and proc/compare.c */
 +struct tree_node {
@@ -395,7 +395,7 @@ diff -Naur procps-010114.orig/proc/proc/tree.h procps-010114/proc/proc/tree.h
 +
 diff -Naur procps-010114.orig/proc/proc/version.h procps-010114/proc/proc/version.h
 --- procps-010114.orig/proc/proc/version.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/version.h	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/proc/proc/version.h	2006-03-04 11:40:14.000000000 +0100
 @@ -0,0 +1,23 @@
 +#ifndef PROC_VERSION_H
 +#define PROC_VERSION_H
@@ -422,7 +422,7 @@ diff -Naur procps-010114.orig/proc/proc/version.h procps-010114/proc/proc/versio
 +#endif	/* PROC_VERSION_H */
 diff -Naur procps-010114.orig/proc/proc/whattime.h procps-010114/proc/proc/whattime.h
 --- procps-010114.orig/proc/proc/whattime.h	1970-01-01 01:00:00.000000000 +0100
-+++ procps-010114/proc/proc/whattime.h	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/proc/proc/whattime.h	2006-03-04 11:40:14.000000000 +0100
 @@ -0,0 +1,9 @@
 +/* whattime.h --- see whattime.c for explanation */
 +
@@ -435,7 +435,7 @@ diff -Naur procps-010114.orig/proc/proc/whattime.h procps-010114/proc/proc/whatt
 +#endif
 diff -Naur procps-010114.orig/proc/sysinfo.c procps-010114/proc/sysinfo.c
 --- procps-010114.orig/proc/sysinfo.c	2001-01-13 09:46:06.000000000 +0100
-+++ procps-010114/proc/sysinfo.c	2005-10-17 00:34:57.000000000 +0200
++++ procps-010114/proc/sysinfo.c	2006-03-04 11:40:14.000000000 +0100
 @@ -310,7 +310,7 @@
      );
      head = tail+1;
@@ -445,9 +445,24 @@ diff -Naur procps-010114.orig/proc/sysinfo.c procps-010114/proc/sysinfo.c
  nextline:
      tail = strchr(head, '\n');
      if(!tail) break;
+diff -Naur procps-010114.orig/ps/common.h procps-010114/ps/common.h
+--- procps-010114.orig/ps/common.h	2001-01-15 06:50:25.000000000 +0100
++++ procps-010114/ps/common.h	2006-03-04 12:11:22.000000000 +0100
+@@ -68,6 +68,11 @@
+ /* maximum escape expansion is 6, for &quot; */
+ #define ESC_STRETCH 6
+ /* output buffer size */
++#if !defined(PAGE_SIZE) && defined(__PPC__)
++#define PAGE_SIZE 4096
++#else
++#error "PAGE_SIZE is not defined for architecture"
++#endif
+ #define OUTBUF_SIZE (32*PAGE_SIZE*ESC_STRETCH + 8*PAGE_SIZE)
+ /* spaces used to right-justify things */
+ #define SPACE_AMOUNT (int)(PAGE_SIZE)
 diff -Naur procps-010114.orig/ps/display.c procps-010114/ps/display.c
 --- procps-010114.orig/ps/display.c	2000-06-18 23:11:18.000000000 +0200
-+++ procps-010114/ps/display.c	2005-10-17 00:38:31.000000000 +0200
++++ procps-010114/ps/display.c	2006-03-04 11:40:14.000000000 +0100
 @@ -326,7 +326,7 @@
        if(processes[j]->pid == processes[i]->ppid) goto not_root;
      }
@@ -468,7 +483,7 @@ diff -Naur procps-010114.orig/ps/display.c procps-010114/ps/display.c
  #endif
 diff -Naur procps-010114.orig/ps/parser.c procps-010114/ps/parser.c
 --- procps-010114.orig/ps/parser.c	2001-01-15 06:52:36.000000000 +0100
-+++ procps-010114/ps/parser.c	2005-10-17 00:38:04.000000000 +0200
++++ procps-010114/ps/parser.c	2006-03-04 11:40:14.000000000 +0100
 @@ -696,7 +696,7 @@
    case '=': case ':':
      if(*++flagptr) return flagptr;   /* found it */
@@ -480,7 +495,7 @@ diff -Naur procps-010114.orig/ps/parser.c procps-010114/ps/parser.c
    /* argument follows ps_argv[thisarg] */
 diff -Naur procps-010114.orig/ps/sortformat.c procps-010114/ps/sortformat.c
 --- procps-010114.orig/ps/sortformat.c	2001-01-15 09:40:06.000000000 +0100
-+++ procps-010114/ps/sortformat.c	2005-10-17 00:37:39.000000000 +0200
++++ procps-010114/ps/sortformat.c	2006-03-04 11:40:14.000000000 +0100
 @@ -136,7 +136,7 @@
      c = *walk++;
      if(c)         goto initial;
@@ -492,7 +507,7 @@ diff -Naur procps-010114.orig/ps/sortformat.c procps-010114/ps/sortformat.c
    /*** sanity check passed ***/
 diff -Naur procps-010114.orig/top.c procps-010114/top.c
 --- procps-010114.orig/top.c	2001-01-14 11:40:14.000000000 +0100
-+++ procps-010114/top.c	2005-10-17 00:36:04.000000000 +0200
++++ procps-010114/top.c	2006-03-04 11:40:14.000000000 +0100
 @@ -92,7 +92,7 @@
  #include <time.h>
  #include <sys/ioctl.h>
@@ -511,3 +526,19 @@ diff -Naur procps-010114.orig/top.c procps-010114/top.c
      }
      
      if (nr_cpu > 1 && CPU_states)
+diff -Naur procps-010114.orig/top.h procps-010114/top.h
+--- procps-010114.orig/top.h	2001-01-14 11:41:29.000000000 +0100
++++ procps-010114/top.h	2006-03-04 12:06:54.000000000 +0100
+@@ -98,6 +98,12 @@
+ static int CPU_states = 0;
+ static char CurrUser[BUFSIZ];
+ 
++#if !defined(PAGE_SHIFT) && defined(__PPC__)
++#define PAGE_SHIFT 12
++#else
++#error PAGE_SHIFT not defined for architecture
++#endif
++
+ static int CL_pg_shift = (PAGE_SHIFT - 10);
+ static int CL_wchan_nout = -1;
+ 
