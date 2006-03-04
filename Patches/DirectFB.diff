@@ -1,0 +1,12 @@
+diff -Naur DirectFB.orig/lib/direct/system.c DirectFB/lib/direct/system.c
+--- DirectFB.orig/lib/direct/system.c	2004-11-09 09:44:58.000000000 +0100
++++ DirectFB/lib/direct/system.c	2006-02-25 20:07:14.000000000 +0100
+@@ -33,7 +33,7 @@
+ #include <direct/build.h>
+ #include <direct/system.h>
+ 
+-#if HAVE_ASM_PAGE_H
++#if defined(HAVE_ASM_PAGE_H) && defined(PAGE_SIZE)
+ #include <asm/page.h>
+ #else
+ #define PAGE_SIZE   sysconf( _SC_PAGESIZE )

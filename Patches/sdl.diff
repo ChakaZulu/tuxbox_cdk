@@ -1,6 +1,6 @@
 diff -Naur SDL-1.2.6.orig/src/joystick/linux/SDL_sysjoystick.c SDL-1.2.6/src/joystick/linux/SDL_sysjoystick.c
---- SDL-1.2.6.orig/src/joystick/linux/SDL_sysjoystick.c	2003-08-30 21:13:05.000000000 +0200
-+++ SDL-1.2.6/src/joystick/linux/SDL_sysjoystick.c	2005-10-27 02:06:21.000000000 +0200
+--- SDL-1.2.6.orig/src/joystick/linux/SDL_sysjoystick.c	2006-02-25 20:19:27.000000000 +0100
++++ SDL-1.2.6/src/joystick/linux/SDL_sysjoystick.c	2006-02-25 20:19:45.000000000 +0100
 @@ -38,6 +38,11 @@
  #ifdef __arm__
  #include <linux/limits.h> /* Arm cross-compiler needs this */
@@ -14,8 +14,8 @@ diff -Naur SDL-1.2.6.orig/src/joystick/linux/SDL_sysjoystick.c SDL-1.2.6/src/joy
  #ifdef USE_INPUT_EVENTS
  #include <linux/input.h>
 diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.6/src/video/fbcon/SDL_fbevents.c
---- SDL-1.2.6.orig/src/video/fbcon/SDL_fbevents.c	2002-03-06 12:23:03.000000000 +0100
-+++ SDL-1.2.6/src/video/fbcon/SDL_fbevents.c	2005-10-27 02:11:22.000000000 +0200
+--- SDL-1.2.6.orig/src/video/fbcon/SDL_fbevents.c	2006-02-25 20:19:27.000000000 +0100
++++ SDL-1.2.6/src/video/fbcon/SDL_fbevents.c	2006-02-25 20:19:45.000000000 +0100
 @@ -69,6 +69,65 @@
  static Uint16 keymap_temp[128]; /* only used at startup */
  static SDL_keysym *TranslateKey(int scancode, SDL_keysym *keysym);
@@ -298,9 +298,19 @@ diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.6/src/video/fbc
  				if ( FD_ISSET(mouse_fd, &fdset) ) {
  					handle_mouse(this);
 diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.6/src/video/fbcon/SDL_fbvideo.c
---- SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.c	2003-08-30 21:13:09.000000000 +0200
-+++ SDL-1.2.6/src/video/fbcon/SDL_fbvideo.c	2005-10-27 02:11:22.000000000 +0200
-@@ -161,7 +161,7 @@
+--- SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.c	2006-02-25 20:19:27.000000000 +0100
++++ SDL-1.2.6/src/video/fbcon/SDL_fbvideo.c	2006-02-25 20:22:13.000000000 +0100
+@@ -36,6 +36,9 @@
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include <asm/page.h>		/* For definition of PAGE_SIZE */
++#if !defined(PAGE_SIZE)
++#define PAGE_SIZE sysconf(_SC_PAGESIZE)
++#endif
+ 
+ #include "SDL.h"
+ #include "SDL_error.h"
+@@ -161,7 +164,7 @@
  
  	SDL_fbdev = getenv("SDL_FBDEV");
  	if ( SDL_fbdev == NULL ) {
@@ -309,7 +319,7 @@ diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.6/src/video/fbco
  	}
  	console = open(SDL_fbdev, O_RDWR, 0);
  	if ( console >= 0 ) {
-@@ -336,7 +336,7 @@
+@@ -336,7 +339,7 @@
  	/* Initialize the library */
  	SDL_fbdev = getenv("SDL_FBDEV");
  	if ( SDL_fbdev == NULL ) {
@@ -319,8 +329,8 @@ diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.6/src/video/fbco
  	console_fd = open(SDL_fbdev, O_RDWR, 0);
  	if ( console_fd < 0 ) {
 diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.h SDL-1.2.6/src/video/fbcon/SDL_fbvideo.h
---- SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.h	2002-03-06 12:23:04.000000000 +0100
-+++ SDL-1.2.6/src/video/fbcon/SDL_fbvideo.h	2005-10-27 02:11:22.000000000 +0200
+--- SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.h	2006-02-25 20:19:27.000000000 +0100
++++ SDL-1.2.6/src/video/fbcon/SDL_fbvideo.h	2006-02-25 20:19:45.000000000 +0100
 @@ -61,6 +61,7 @@
  	int current_vt;
  	int saved_vt;
