@@ -97,7 +97,7 @@ cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
 #
 # development tools
 #
-gdb-6.3.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
+gdb-6.4.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
 insight-6.1.tar.bz2;ftp://sources.redhat.com/pub/gdb/old-releases
 ltrace_0.3.26.tar.gz;ftp://ftp.debian.org/debian/pool/main/l/ltrace
 strace-4.5.12.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/strace
