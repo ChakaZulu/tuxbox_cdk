@@ -448,13 +448,14 @@ diff -Naur procps-010114.orig/proc/sysinfo.c procps-010114/proc/sysinfo.c
 diff -Naur procps-010114.orig/ps/common.h procps-010114/ps/common.h
 --- procps-010114.orig/ps/common.h	2001-01-15 06:50:25.000000000 +0100
 +++ procps-010114/ps/common.h	2006-03-04 12:11:22.000000000 +0100
-@@ -68,6 +68,11 @@
+@@ -68,6 +68,12 @@
  /* maximum escape expansion is 6, for &quot; */
  #define ESC_STRETCH 6
  /* output buffer size */
 +#if !defined(PAGE_SIZE) && defined(__PPC__)
 +#define PAGE_SIZE 4096
-+#else
++#endif
++#if !defined(PAGE_SIZE)
 +#error "PAGE_SIZE is not defined for architecture"
 +#endif
  #define OUTBUF_SIZE (32*PAGE_SIZE*ESC_STRETCH + 8*PAGE_SIZE)
@@ -529,13 +530,14 @@ diff -Naur procps-010114.orig/top.c procps-010114/top.c
 diff -Naur procps-010114.orig/top.h procps-010114/top.h
 --- procps-010114.orig/top.h	2001-01-14 11:41:29.000000000 +0100
 +++ procps-010114/top.h	2006-03-04 12:06:54.000000000 +0100
-@@ -98,6 +98,12 @@
+@@ -98,6 +98,13 @@
  static int CPU_states = 0;
  static char CurrUser[BUFSIZ];
  
 +#if !defined(PAGE_SHIFT) && defined(__PPC__)
 +#define PAGE_SHIFT 12
-+#else
++#endif
++#if !defined(PAGE_SHIFT)
 +#error PAGE_SHIFT not defined for architecture
 +#endif
 +
