@@ -2013,6 +2013,7 @@ $(flashprefix)/.part_lcars: $(flashprefix)/.flash lcars
 flash-plugins: $(flashprefix)/.part_plugins
 
 $(flashprefix)/.part_plugins: $(flashprefix)/.flash plugins
+	$(INSTALL) -d $(flashprefix)/root/share/fonts/
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
 	$(INSTALL) -d $(flashprefix)/root/var/tuxbox/config/tuxtxt
 	$(INSTALL) $(targetprefix)/bin/tuxmaild $(flashprefix)/root/bin
