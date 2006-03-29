@@ -1,7 +1,8 @@
 #!/bin/sh
 
-# $Id: halt,v 1.1 2005/06/10 10:28:35 saruman Exp $
+# $Id: halt,v 1.2 2006/03/29 12:38:04 saruman Exp $
 
 [ -e /tmp/tuxmaild.pid ] && kill $( cat /tmp/tuxmaild.pid )
+[ -e /tmp/tuxcald.pid ] && kill $( cat /tmp/tuxcald.pid )
 
 /bin/switch -fnc 0
