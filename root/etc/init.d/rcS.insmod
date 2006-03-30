@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: rcS.insmod,v 1.7 2006/03/29 12:24:18 saruman Exp $
+# $Id: rcS.insmod,v 1.8 2006/03/30 07:29:46 saruman Exp $
 # Alles mounten
 mount -a
 
@@ -161,14 +161,6 @@ if [ -e /var/etc/init.d/rcS.local ]; then
 	. /var/etc/init.d/rcS.local
 elif [ -e /etc/init.d/rcS.local ]; then
 	. /etc/init.d/rcS.local
-fi
-
-# camd2 starten
-if [ -e /var/bin/camd2 ]; then
-  [ ! -x /var/bin/camd2 ] && chmod 755 /var/bin/camd2
-  /var/bin/camd2
-else
-  /bin/camd2
 fi
 
 # tuxmail-Daemon starten

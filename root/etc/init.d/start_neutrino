@@ -1,10 +1,11 @@
 #!/bin/sh
 
-# $Id: start_neutrino,v 1.27 2006/03/29 12:24:18 saruman Exp $
+# $Id: start_neutrino,v 1.28 2006/03/30 07:29:46 saruman Exp $
 
 date -s 010101001970
 sectionsd
 timerd
+camd2
 zapit
 controld
 nhttpd

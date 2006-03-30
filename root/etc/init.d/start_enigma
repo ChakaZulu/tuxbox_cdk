@@ -1,7 +1,8 @@
 #!/bin/sh
 
-# $Id: start_enigma,v 1.7 2006/03/29 12:24:18 saruman Exp $
+# $Id: start_enigma,v 1.8 2006/03/30 07:29:46 saruman Exp $
 
+camd2
 unset TZ
 touch /tmp/.enigma
 while [ -e /tmp/.enigma ]
