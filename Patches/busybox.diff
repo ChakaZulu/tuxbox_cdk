@@ -1,66 +1,3 @@
-diff -ur busybox-1.1.0-original/debian/config-deb busybox-1.1.0/debian/config-deb
---- busybox-1.1.0-original/debian/config-deb	2006-01-11 06:43:42.000000000 +0100
-+++ busybox-1.1.0/debian/config-deb	2006-03-05 16:59:55.000000000 +0100
-@@ -249,7 +249,7 @@
- # CONFIG_MT is not set
- # CONFIG_STRINGS is not set
- # CONFIG_TIME is not set
--# CONFIG_WATCHDOG is not set
-+# CONFIG_BB_WATCHDOG is not set
- 
- #
- # Linux Module Utilities
-Only in busybox-1.1.0/debian: config-deb~
-diff -ur busybox-1.1.0-original/debian/config-floppy-udeb-linux busybox-1.1.0/debian/config-floppy-udeb-linux
---- busybox-1.1.0-original/debian/config-floppy-udeb-linux	2006-01-11 06:43:42.000000000 +0100
-+++ busybox-1.1.0/debian/config-floppy-udeb-linux	2006-03-05 16:59:34.000000000 +0100
-@@ -213,7 +213,7 @@
- # CONFIG_MT is not set
- # CONFIG_STRINGS is not set
- # CONFIG_TIME is not set
--# CONFIG_WATCHDOG is not set
-+# CONFIG_BB_WATCHDOG is not set
- 
- #
- # Linux Module Utilities
-Only in busybox-1.1.0/debian: config-floppy-udeb-linux~
-diff -ur busybox-1.1.0-original/debian/config-static busybox-1.1.0/debian/config-static
---- busybox-1.1.0-original/debian/config-static	2006-01-11 06:43:42.000000000 +0100
-+++ busybox-1.1.0/debian/config-static	2006-03-05 17:00:06.000000000 +0100
-@@ -287,7 +287,7 @@
- CONFIG_MT=y
- CONFIG_STRINGS=y
- CONFIG_TIME=y
--CONFIG_WATCHDOG=y
-+CONFIG_BB_WATCHDOG=y
- 
- #
- # Linux Module Utilities
-Only in busybox-1.1.0/debian: config-static~
-diff -ur busybox-1.1.0-original/debian/config-udeb busybox-1.1.0/debian/config-udeb
---- busybox-1.1.0-original/debian/config-udeb	2006-01-11 06:43:42.000000000 +0100
-+++ busybox-1.1.0/debian/config-udeb	2006-03-05 16:59:49.000000000 +0100
-@@ -252,7 +252,7 @@
- # CONFIG_MT is not set
- # CONFIG_STRINGS is not set
- # CONFIG_TIME is not set
--# CONFIG_WATCHDOG is not set
-+# CONFIG_BB_WATCHDOG is not set
- 
- #
- # Linux Module Utilities
-diff -ur busybox-1.1.0-original/debian/config-udeb-linux busybox-1.1.0/debian/config-udeb-linux
---- busybox-1.1.0-original/debian/config-udeb-linux	2006-01-11 06:43:42.000000000 +0100
-+++ busybox-1.1.0/debian/config-udeb-linux	2006-03-05 16:59:43.000000000 +0100
-@@ -252,7 +252,7 @@
- # CONFIG_MT is not set
- # CONFIG_STRINGS is not set
- # CONFIG_TIME is not set
--# CONFIG_WATCHDOG is not set
-+# CONFIG_BB_WATCHDOG is not set
- 
- #
- # Linux Module Utilities
 diff -ur busybox-1.1.0-original/init/init.c busybox-1.1.0/init/init.c
 --- busybox-1.1.0-original/init/init.c	2006-01-11 06:44:17.000000000 +0100
 +++ busybox-1.1.0/init/init.c	2006-03-04 23:23:07.000000000 +0100
@@ -175,37 +112,37 @@ diff -ur busybox-1.1.0-original/miscutils/Makefile.in busybox-1.1.0/miscutils/Ma
  libraries-y+=$(MISCUTILS_DIR)$(MISCUTILS_AR)
  
 diff -ur busybox-1.1.0-original/networking/ifupdown.c busybox-1.1.0/networking/ifupdown.c
---- busybox-1.1.0-original/networking/ifupdown.c	2006-01-11 06:43:51.000000000 +0100
-+++ busybox-1.1.0/networking/ifupdown.c	2006-03-04 23:23:07.000000000 +0100
-@@ -991,7 +991,7 @@
+--- busybox-1.1.0-original/networking/ifupdown.c	2006-03-22 22:16:19.000000000 +0100
++++ busybox-1.1.0/networking/ifupdown.c	2006-04-14 21:47:58.000000000 +0200
+@@ -971,7 +971,7 @@
  
- static int execute_all(struct interface_defn_t *ifd, execfn *exec, const char *opt)
+ static int execute_all(struct interface_defn_t *ifd, const char *opt)
  {
 -	int i;
 +	int i, fd;
  	char *buf;
  	for (i = 0; i < ifd->n_options; i++) {
  		if (strcmp(ifd->option[i].name, opt) == 0) {
-@@ -1001,9 +1001,13 @@
+@@ -981,9 +981,13 @@
  		}
  	}
  
 -	buf = bb_xasprintf("run-parts /etc/network/if-%s.d", opt);
--	if ((*exec)(buf) != 1) {
+-	if (doit(buf) != 1) {
 -		return 0;
 +	buf = bb_xasprintf("/etc/network/if-%s.d", opt);
 +	if ((fd = open(buf, O_RDONLY)) >= 0) {
 +		close(fd);
 +		buf = bb_xasprintf("run-parts /etc/network/if-%s.d", opt);
-+		if ((*exec)(buf) != 1) {
++		if (doit(buf) != 1) {
 +			return 0;
 +		}
  	}
  	return 1;
  }
 diff -ur busybox-1.1.0-original/sysdeps/linux/Config.in busybox-1.1.0/sysdeps/linux/Config.in
---- busybox-1.1.0-original/sysdeps/linux/Config.in	2006-01-11 06:44:17.000000000 +0100
-+++ busybox-1.1.0/sysdeps/linux/Config.in	2006-03-04 23:23:07.000000000 +0100
+--- busybox-1.1.0-original/Config.in	2006-01-11 06:44:17.000000000 +0100
++++ busybox-1.1.0/Config.in	2006-03-04 23:23:07.000000000 +0100
 @@ -218,6 +218,14 @@
  	help
  	  Disables support for numeric arguments in fold.
@@ -221,16 +158,15 @@ diff -ur busybox-1.1.0-original/sysdeps/linux/Config.in busybox-1.1.0/sysdeps/li
  endmenu
  
  menu 'Installation Options'
-Only in busybox-1.1.0/sysdeps/linux: Config.in.orig
-diff -ur busybox-1.1.0-original/sysdeps/linux/defconfig busybox-1.1.0/sysdeps/linux/defconfig
---- busybox-1.1.0-original/sysdeps/linux/defconfig	2006-01-11 06:44:17.000000000 +0100
-+++ busybox-1.1.0/sysdeps/linux/defconfig	2006-03-05 17:00:44.000000000 +0100
-@@ -267,7 +267,7 @@
- # CONFIG_RX is not set
- CONFIG_STRINGS=y
- CONFIG_TIME=y
--# CONFIG_WATCHDOG is not set
-+# CONFIG_BB_WATCHDOG is not set
- 
- #
- # Linux Module Utilities
+diff -ur busybox-1.1.0-original/include/applets.h busybox-1.1.0/include/applets.h
+--- busybox-1.1.0-original/include/applets.h	2006-03-22 22:16:24.000000000 +0100
++++ busybox-1.1.0/include/applets.h	2006-04-14 22:00:14.000000000 +0200
+@@ -288,7 +288,7 @@
+ USE_VI(APPLET(vi, vi_main, _BB_DIR_BIN, _BB_SUID_NEVER))
+ USE_VLOCK(APPLET(vlock, vlock_main, _BB_DIR_USR_BIN, _BB_SUID_ALWAYS))
+ USE_WATCH(APPLET(watch, watch_main, _BB_DIR_BIN, _BB_SUID_NEVER))
+-USE_WATCHDOG(APPLET(watchdog, watchdog_main, _BB_DIR_SBIN, _BB_SUID_NEVER))
++USE_BB_WATCHDOG(APPLET(watchdog, watchdog_main, _BB_DIR_SBIN, _BB_SUID_NEVER))
+ USE_WC(APPLET(wc, wc_main, _BB_DIR_USR_BIN, _BB_SUID_NEVER))
+ USE_WGET(APPLET(wget, wget_main, _BB_DIR_USR_BIN, _BB_SUID_NEVER))
+ USE_WHICH(APPLET(which, which_main, _BB_DIR_USR_BIN, _BB_SUID_NEVER))
