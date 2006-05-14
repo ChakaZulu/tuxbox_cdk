@@ -15,6 +15,8 @@
 TIMEOUT=600
 DEBUG=
 VERBOSE=
+# Use ghosting, does not break anything if kernel support not present. 
+GHOSTING=-g
 
 # Debug parameters (note that DEBUG and VERBOSE are meaningful only with
 # syslogd)
@@ -54,5 +56,5 @@ if [ ! -d /var/lock ]; then
 fi
  
 if [ -e $MAPFILE ] ; then
-    automount $DEBUG $VERBOSE -t $TIMEOUT -p $PIDFILE $AUTOFSMOUNTDIR file $MAPFILE
+    automount $DEBUG $GHOSTING $VERBOSE -t $TIMEOUT -p $PIDFILE $AUTOFSMOUNTDIR file $MAPFILE
 fi
