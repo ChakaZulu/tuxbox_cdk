@@ -82,7 +82,7 @@ if test -x /sbin/sshd ; then
 	/etc/init.d/start_sshd &
 fi
 
-if test -x /sbin/dropbear ; then
+if [ -r /var/etc/dropbear/dropbear_dss_host_key -a -r /var/etc/dropbear/dropbear_rsa_host_key ]; then
 	/sbin/dropbear
 fi
 

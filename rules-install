@@ -79,7 +79,7 @@ tcpdump;make:install:DESTDIR=TARGET
 bonnie;make:install:DESTDIR=TARGET/sbin
 vdr;make:install:BINDIR=TARGET/bin:MANDIR=TARGET/man:VIDEODIR=TARGET/video:PLUGINIDIR=TARGET/lib/vdr/plugins
 lufs;make:install
-dropbear;make:install
+dropbear;install:-m755:dropbearmulti:TARGET/sbin;link:dropbearmulti:TARGET/sbin/dropbear;link:dropbearmulti:TARGET/sbin/dropbearkey;link:dropbearmulti:TARGET/sbin/scp;link:/var/.ssh:TARGET/.ssh;link:/var/etc/dropbear:TARGET/etc/dropbear
 kermit;make:install:prefix=TARGET:INFODIR=TARGET/share/doc/kermit
 
 #

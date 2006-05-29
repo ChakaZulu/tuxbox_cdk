@@ -90,7 +90,7 @@ tcpdump;3.9.4;tcpdump-3.9.4;tcpdump-3.9.4.tar.gz:tcpdump.diff;extract:tcpdump-3.
 bonnie;1.03a;bonnie++-1.03a;bonnie++-1.03a.tgz;extract:bonnie++-1.03a.tgz
 vdr;1.2.6;vdr-1.2.6;vdr-1.2.6.tar.bz2:vdr.diff;extract:vdr-1.2.6.tar.bz2;patch:vdr.diff
 lufs;0.9.7;lufs-0.9.7;lufs-0.9.7.tar.gz:lufs.diff;extract:lufs-0.9.7.tar.gz;patch:lufs.diff
-dropbear;0.44;dropbear-0.44;dropbear-0.44.tar.gz;extract:dropbear-0.44.tar.gz
+dropbear;0.48.1;dropbear-0.48.1;dropbear-0.48.1.tar.gz;extract:dropbear-0.48.1.tar.gz
 kermit;8.0;c-kermit-8.0;cku211.tar.gz;dirextract:cku211.tar.gz;patch:kermit.diff
 
 #
