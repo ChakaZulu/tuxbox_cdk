@@ -1752,6 +1752,15 @@ $(DEPDIR)/neutrino: $(appsdir)/tuxbox/neutrino/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install
 	touch $@
 
+# tuxbox/radiobox
+
+$(appsdir)/tuxbox/radiobox/config.status: bootstrap libboost libcurl libfreetype libmad libid3tag libvorbisidec libtuxbox misc_libs tuxbox_libs misc_tools lufs
+	cd $(appsdir)/tuxbox/radiobox && $(CONFIGURE)
+
+$(DEPDIR)/radiobox: $(appsdir)/tuxbox/radiobox/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/radiobox all install
+	touch $@
+
 # tuxbox/plugins
 
 $(appsdir)/tuxbox/plugins/config.status: bootstrap libcurl libfreetype libz misc_libs libsigc libpng libtuxbox tuxbox_libs
