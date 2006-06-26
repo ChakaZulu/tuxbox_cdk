@@ -143,7 +143,11 @@ else
 		modprobe ves1x93 board_type=1
 	# Philips
 	elif [ $VENDOR_ID -eq 2 ]; then
-		modprobe tda8044h
+        if [ -e /var/etc/.tda80xx ]; then
+    		modprobe tda80xx
+        else
+    		modprobe tda8044h
+        fi
 	# Sagem
 	elif [ $VENDOR_ID -eq 3 ]; then
 		modprobe at76c651
