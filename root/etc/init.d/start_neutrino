@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: start_neutrino,v 1.28 2006/03/30 07:29:46 saruman Exp $
+# $Id: start_neutrino,v 1.29 2006/07/02 12:36:14 barf Exp $
 
 date -s 010101001970
 sectionsd
@@ -13,6 +13,7 @@ neutrino -f -u
 
 [ -e /tmp/tuxmaild.pid ] && kill $( cat /tmp/tuxmaild.pid )
 [ -e /tmp/tuxcald.pid ] && kill $( cat /tmp/tuxcald.pid )
+[ -e /var/run/automount.pid ] && kill -TERM $( cat /var/run/automount.pid )
 pzapit -kill
 
 i=9
@@ -28,6 +29,19 @@ fi
 i=`expr $i - 1`
 sleep 1
 done
+
+if [ -e /tmp/.nohalt ] ; then
+    killall -q sectionsd
+    killall -q timerd
+    killall -q camd2
+    killall -q zapit
+    killall -q controld
+    killall -q nhttpd
+    saa --fbas
+    switch -fnc 0 -fblk 0
+    echo "Neutrino and its daemons terminated (hopefully)"
+    exit
+fi
 
 if [ -e /tmp/.reboot ] ; then
     reboot
