@@ -470,7 +470,7 @@ $(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz @DEPENDS_libdir
 		LDFLAGS=-L$(targetprefix)/lib \
 		CPPFLAGS="-I$(buildprefix)/linux/arch/ppc" \
 		CFLAGS="$(TARGET_CFLAGS) -I$(buildprefix)/linux/arch/ppc" \
-		./autogen.sh \
+		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
@@ -495,7 +495,7 @@ $(DEPDIR)/libdirectfbpp: bootstrap libdirectfb @DEPENDS_libdirectfbpp@
 	@PREPARE_libdirectfbpp@
 	cd @DIR_libdirectfbpp@ && \
 		$(BUILDENV) \
-		./autogen.sh \
+		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= && \
@@ -511,7 +511,7 @@ $(DEPDIR)/libppdirectfb: bootstrap libdirectfb @DEPENDS_libppdirectfb@
 	@PREPARE_libppdirectfb@
 	cd @DIR_libppdirectfb@ && \
 		$(BUILDENV) \
-		./autogen.sh \
+		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= && \
@@ -1185,7 +1185,7 @@ $(DEPDIR)/nano: bootstrap libncurses @DEPENDS_nano@
 	@CLEANUP_nano@
 	touch $@
 
-$(DEPDIR)/joe: bootstrap libncurses @DEPENDS_joe@ 
+$(DEPDIR)/joe: bootstrap libncurses @DEPENDS_joe@
 	@PREPARE_joe@
 	cd @DIR_joe@ && \
 		$(BUILDENV) \
@@ -1500,16 +1500,16 @@ $(DEPDIR)/u-boot: bootstrap @DEPENDS_uboot@
 	@if [ ! -e $(bootdir)/u-boot-config/u-boot.config ]; then \
 	    ln -sf $(UBOOT_CONFIG_FILE) $(bootdir)/u-boot-config/u-boot.config; \
 	fi
-	
+
 	cp -pR $(bootdir)/u-boot-tuxbox/* @DIR_uboot@
 	cp -p $(bootdir)/u-boot-config/u-boot.config @DIR_uboot@/include/configs/dbox2.h
-	
+
 	$(MAKE) -C @DIR_uboot@ dbox2_config
 	$(MAKE) -C @DIR_uboot@ CROSS_COMPILE=$(target)- u-boot.stripped
-	
+
 	$(INSTALL) -m644 @DIR_uboot@/u-boot.stripped $(bootprefix)/u-boot
 	$(INSTALL) @DIR_uboot@/tools/mkimage $(hostprefix)/bin
-	
+
 	@CLEANUP_uboot@
 	touch $@
 
@@ -1522,7 +1522,7 @@ else
 	$(MAKE) -C $(KERNEL_DIR) zImage modules \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)-
-endif		
+endif
 	$(MAKE) -C $(KERNEL_DIR) modules_install \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)- \
@@ -1852,7 +1852,7 @@ $(flashprefix)/.flash: procps busybox driver tuxbox_tools lirc
 
 flash-ftpd: $(flashprefix)/.part_ftpd
 
-$(flashprefix)/.part_ftpd: $(flashprefix)/.flash 
+$(flashprefix)/.part_ftpd: $(flashprefix)/.flash
 	$(INSTALL) -d $(flashprefix)/root/share/empty
 	$(INSTALL) $(targetprefix)/etc/vsftpd.conf $(flashprefix)/root/etc
 	$(INSTALL) $(targetprefix)/sbin/in.ftpd $(flashprefix)/root/sbin
@@ -1965,7 +1965,7 @@ $(flashprefix)/.part_enigma: $(flashprefix)/.flash enigma root
 	$(INSTALL) $(targetprefix)/bin/camd2 $(flashprefix)/root/bin
 	$(INSTALL) -d $(flashprefix)/root/hdd/movie
 	$(INSTALL) -d $(flashprefix)/root/share/fonts
-	cp -pa $(targetprefix)/share/fonts/* $(flashprefix)/root/share/fonts 
+	cp -pa $(targetprefix)/share/fonts/* $(flashprefix)/root/share/fonts
 	cp -pa $(targetprefix)/etc/init.d/start_enigma $(flashprefix)/root/etc/init.d
 	$(INSTALL) $(targetprefix)/etc/timezone.xml $(flashprefix)/root/etc
 	cp -pa $(targetprefix)/share/zoneinfo $(flashprefix)/root/share
@@ -2053,7 +2053,7 @@ $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 
 	fi
 	@touch $@
 
-flash-clean: 
+flash-clean:
 	@if [ -e $(flashprefix)/root-cramfs.img ]; then \
 	     rm $(flashprefix)/root-cramfs.img; \
 	fi
@@ -2089,19 +2089,19 @@ flash-clean:
 	fi
 
 flash-cramfs: $(flashprefix)/root-cramfs-neutrino.img
-	$(MAKE) flash-clean 
+	$(MAKE) flash-clean
 	$(MAKE) $(flashprefix)/root-cramfs-enigma.img
 
 flash-squashfs: $(flashprefix)/root-squashfs-neutrino.img
-	$(MAKE) flash-clean 
+	$(MAKE) flash-clean
 	$(MAKE) $(flashprefix)/root-squashfs-enigma.img
 
 flash-cramfsimages: flash-cramfsneutrinoimages
-	$(MAKE) flash-clean 
+	$(MAKE) flash-clean
 	$(MAKE) flash-cramfsenigmaimages
 
 flash-squashfsimages: flash-squashfsneutrinoimages
-	$(MAKE) flash-clean 
+	$(MAKE) flash-clean
 	$(MAKE) flash-squashfsenigmaimages
 
 flash-cramfsneutrinoimages: $(flashprefix)/cramfsjffs2neutrino_1x.img $(flashprefix)/cramfsjffs2neutrino_2x.img
@@ -2203,15 +2203,15 @@ $(flashprefix)/.flash-rochanges:
 	@if [ -e $(buildprefix)/root/etc/init.d/rcS.insmod ]; then \
 	    mv $(buildprefix)/root/etc/init.d/rcS $(buildprefix)/root/etc/init.d/rcS.modprobe && \
 	    mv $(buildprefix)/root/etc/init.d/rcS.insmod $(buildprefix)/root/etc/init.d/rcS; \
-	fi 
+	fi
 
-flash-cramfsroot: $(flashprefix)/.lib 
+flash-cramfsroot: $(flashprefix)/.lib
 	$(MAKE) $(flashprefix)/.cramfs
 	$(FAKEROOT) $(MKCRAMFS) -p -n "0106`date +%Y%m%d%H%M`" $(flashprefix)/cramfs/ $(flashprefix)/root-cramfs.img
 	rm -fr $(flashprefix)/cramfs
 	rm $(flashprefix)/.cramfs
 
-flash-squashfsroot: $(flashprefix)/.lib 
+flash-squashfsroot: $(flashprefix)/.lib
 	$(MAKE) $(flashprefix)/.cramfs
 	$(FAKEROOT) $(MKSQUASHFS) $(flashprefix)/cramfs/ $(flashprefix)/root-squashfs.img -be
 	rm -fr $(flashprefix)/cramfs
@@ -2267,7 +2267,7 @@ $(flashprefix)/var-jffs2.img: $(flashprefix)/.lib
 	$(INSTALL) -d $(flashprefix)/jffs2/tuxbox/plugins
 	$(INSTALL) -d $(flashprefix)/jffs2/bin
 	cp -p $(flashprefix)/root/etc/passwd $(flashprefix)/jffs2/etc/passwd
-	cp -p $(flashprefix)/root/bin/camd2 $(flashprefix)/jffs2/bin/camd2 
+	cp -p $(flashprefix)/root/bin/camd2 $(flashprefix)/jffs2/bin/camd2
 	@if [ ! -e $(flashprefix)/root/var/tuxbox/config/scart.conf ]; then \
 		cp -pa $(appsdir)/tuxbox/neutrino/daemons/controld/scart.conf $(flashprefix)/root/var/tuxbox/config ; \
 	fi
@@ -2286,11 +2286,11 @@ $(flashprefix)/jffs2only.img: $(flashprefix)/.lib $(flashprefix)/jffs2-flfs.img
 $(flashprefix)/.cramfs-flfs: $(flashprefix)/.mkflfs
 	@if [ -e $(bootdir)/u-boot-config/u-boot.config ]; then \
 	    rm $(bootdir)/u-boot-config/u-boot.config; \
-	fi 
+	fi
 	ln -s $(bootdir)/u-boot-config/u-boot.cramfs.dbox2.h $(bootdir)/u-boot-config/u-boot.config
 	rm -f $(DEPDIR)/u-boot
 	rm -f $(bootprefix)/u-boot
-	$(MAKE) $(DEPDIR)/u-boot 
+	$(MAKE) $(DEPDIR)/u-boot
 	$(hostappsdir)/mkflfs/mkflfs 1x -o $(flashprefix)/cramfs-flfs1x.img $(bootprefix)/u-boot
 	$(hostappsdir)/mkflfs/mkflfs 2x -o $(flashprefix)/cramfs-flfs2x.img $(bootprefix)/u-boot
 	@touch $@
@@ -2298,11 +2298,11 @@ $(flashprefix)/.cramfs-flfs: $(flashprefix)/.mkflfs
 $(flashprefix)/.squashfs-flfs: $(flashprefix)/.mkflfs
 	@if [ -e $(bootdir)/u-boot-config/u-boot.config ]; then \
 	    rm $(bootdir)/u-boot-config/u-boot.config; \
-	fi 
+	fi
 	ln -s $(bootdir)/u-boot-config/u-boot.squashfs.dbox2.h $(bootdir)/u-boot-config/u-boot.config
 	rm -f $(DEPDIR)/u-boot
 	rm -f $(bootprefix)/u-boot
-	$(MAKE) $(DEPDIR)/u-boot 
+	$(MAKE) $(DEPDIR)/u-boot
 	$(hostappsdir)/mkflfs/mkflfs 1x -o $(flashprefix)/squashfs-flfs1x.img $(bootprefix)/u-boot
 	$(hostappsdir)/mkflfs/mkflfs 2x -o $(flashprefix)/squashfs-flfs2x.img $(bootprefix)/u-boot
 	@touch $@
