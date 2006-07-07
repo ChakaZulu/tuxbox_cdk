@@ -702,11 +702,14 @@ $(DEPDIR)/libpcap: bootstrap @DEPENDS_libpcap@
 $(DEPDIR)/libpng: bootstrap libz @DEPENDS_libpng@
 	@PREPARE_libpng@
 	cd @DIR_libpng@ && \
-		$(MAKE) libpng.a libpng12.so libpng.pc libpng-config \
-	 		$(BUILDENV) \
-			CPPFLAGS="-DPNG_DEBUG=0" \
-			prefix=$(targetprefix) && \
-		@INSTALL_libpng@
+		./autogen.sh && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		$(MAKE) all $(BUILDENV) && \
+		$(MAKE) install && $(target)-ar cru $(targetprefix)/lib/libpng12_pic.a *.o
 	@CLEANUP_libpng@
 	touch $@
 
