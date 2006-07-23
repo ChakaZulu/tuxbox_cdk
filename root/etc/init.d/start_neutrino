@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: start_neutrino,v 1.29 2006/07/02 12:36:14 barf Exp $
+# $Id: start_neutrino,v 1.30 2006/07/23 12:21:37 barf Exp $
 
 date -s 010101001970
 sectionsd
@@ -9,7 +9,15 @@ camd2
 zapit
 controld
 nhttpd
-neutrino -f -u
+until neutrino -f -u ; do
+    echo "Neutrino exited with nonzero exit status, restarting..."
+    pidof sectionsd >/dev/null || sectionsd
+    pidof timerd    >/dev/null || timerd
+    pidof camd2     >/dev/null || camd2
+    pidof zapit     >/dev/null || zapit
+    pidof controld  >/dev/null || controld
+    pidof nhttpd    >/dev/null || nhttpd
+done
 
 [ -e /tmp/tuxmaild.pid ] && kill $( cat /tmp/tuxmaild.pid )
 [ -e /tmp/tuxcald.pid ] && kill $( cat /tmp/tuxcald.pid )
