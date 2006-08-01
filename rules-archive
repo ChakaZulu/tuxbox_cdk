@@ -10,12 +10,12 @@
 # core
 
 u-boot-1.1.4.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/u-boot
-linux-2.4.32.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
-linux-2.6.15.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6;ftp://ftp.kernel.org/pub/linux/kernel/v2.6
+linux-2.4.32.tar.bz2;ftp://ftp.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
+linux-2.6.15.tar.bz2;ftp://ftp.kernel.org/pub/linux/kernel/v2.6;ftp://ftp.kernel.org/pub/linux/kernel/v2.6
 cifs-1.20c-2.4.tar.gz;http://us1.samba.org/samba/ftp/cifs-cvs
 linux-2.4.32-dbox2-mtd0305.diff.bz2
 autofs4-2.4-module-20050404.tar.gz;http://www.kernel.org/pub/linux/daemons/autofs/v4
-binutils-2.15.91.0.2.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
+binutils-2.15.91.0.2.tar.bz2;ftp://ftp.kernel.org/pub/linux/devel/binutils;ftp://ftp.kernel.org/pub/linux/devel/binutils
 gcc-core-3.4.4.tar.bz2;ftp://$(gnuserver)/../../../gcc/releases/gcc-3.4.4
 gcc-g++-3.4.4.tar.bz2;ftp://$(gnuserver)/../../../gcc/releases/gcc-3.4.4
 glibc-2.3.6.tar.bz2;ftp://ftp.gnu.org/gnu/glibc
@@ -30,8 +30,8 @@ busybox-1.1.3.tar.bz2;http://www.busybox.net/downloads
 autofs-4.1.4.tar.bz2;ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4
 fuse-2.5.1.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/fuse
 djmount-0.51.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/djmount
-module-init-tools-3.2.1.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/module-init-tools
-modutils-2.4.26.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4
+module-init-tools-3.2.1.tar.bz2;ftp://ftp.kernel.org/pub/linux/utils/kernel/module-init-tools
+modutils-2.4.26.tar.bz2;ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
@@ -98,7 +98,7 @@ cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
 #
 # development tools
 #
-gdb-6.4.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
+gdb-6.5.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
 insight-6.1.tar.bz2;ftp://sources.redhat.com/pub/gdb/old-releases
 ltrace_0.3.26.tar.gz;ftp://ftp.debian.org/debian/pool/main/l/ltrace
 strace-4.5.12.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/strace
