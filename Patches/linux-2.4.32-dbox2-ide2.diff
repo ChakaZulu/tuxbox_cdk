@@ -1,0 +1,34 @@
+diff -Naur linux-2.4.32/arch/ppc/kernel/m8xx_setup.c linux-2.4.32-ide2/arch/ppc/kernel/m8xx_setup.c
+--- linux-2.4.32/arch/ppc/kernel/m8xx_setup.c	2004-02-18 14:36:30.000000000 +0100
++++ linux-2.4.32-ide2/arch/ppc/kernel/m8xx_setup.c	2006-06-28 10:03:06.000000000 +0200
+@@ -410,7 +410,9 @@
+ 	ppc_md.kbd_init_hw		= NULL;
+ 	ppc_md.ppc_kbd_sysrq_xlate	= NULL;
+ 
++#if defined(CONFIG_BLK_DEV_MPC8xx_IDE)
+ #if defined(CONFIG_BLK_DEV_IDE) || defined(CONFIG_BLK_DEV_IDE_MODULE)
+ 	m8xx_ide_init();
+ #endif
++#endif
+ }
+diff -Naur linux-2.4.32/drivers/ide/ide-iops.c linux-2.4.32-ide2/drivers/ide/ide-iops.c
+--- linux-2.4.32/drivers/ide/ide-iops.c	2004-02-18 14:36:31.000000000 +0100
++++ linux-2.4.32-ide2/drivers/ide/ide-iops.c	2006-06-19 15:38:18.000000000 +0200
+@@ -581,7 +581,7 @@
+ 	udelay(1);
+ #endif
+ 
+-#ifdef CONFIG_IDEPCI_SHARE_IRQ
++//#ifdef CONFIG_IDEPCI_SHARE_IRQ
+ 	/*
+ 	 * We do a passive status test under shared PCI interrupts on
+ 	 * cards that truly share the ATA side interrupt, but may also share
+@@ -591,7 +591,7 @@
+ 	if (IDE_CONTROL_REG)
+ 		stat = hwif->INB(IDE_ALTSTATUS_REG);
+ 	else
+-#endif /* CONFIG_IDEPCI_SHARE_IRQ */
++//#endif /* CONFIG_IDEPCI_SHARE_IRQ */
+ 		/* Note: this may clear a pending IRQ!! */
+ 		stat = hwif->INB(IDE_STATUS_REG);
+ 
