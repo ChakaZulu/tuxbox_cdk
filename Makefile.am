@@ -103,7 +103,7 @@ $(DEPDIR)/linuxdir: $(KERNEL_DEPENDS)
 	fi
 	$(KERNEL_PREPARE)
 if TARGETRULESET_FLASH
-	cat Patches/linux-$(KERNELVERSION).config-flash > $(KERNEL_DIR)/.config
+	cat Patches/linux-$(KERNELVERSION).config-flash-ide2 > $(KERNEL_DIR)/.config
 else
 	cat Patches/linux-$(KERNELVERSION).config > $(KERNEL_DIR)/.config
 endif
