@@ -1,0 +1,235 @@
+diff -Naur linux-2.4.33/drivers/video/Config.in linux-2.4.33-shift/drivers/video/Config.in
+--- linux-2.4.33/drivers/video/Config.in	2004-02-18 14:36:31.000000000 +0100
++++ linux-2.4.33-shift/drivers/video/Config.in	2006-08-11 21:33:35.000000000 +0200
+@@ -258,6 +258,7 @@
+       tristate '    VGA 16-color planar support' CONFIG_FBCON_VGA_PLANES
+       tristate '    VGA characters/attributes support' CONFIG_FBCON_VGA
+       tristate '    HGA monochrome support (EXPERIMENTAL)' CONFIG_FBCON_HGA
++      bool '    console shift' CONFIG_FBCON_SHIFT 0
+    else
+       # Guess what we need
+       if [ "$CONFIG_FB_ACORN" = "y" -o "$CONFIG_FB_AMIGA" = "y" -o \
+diff -Naur linux-2.4.33/drivers/video/fbcon.c linux-2.4.33-shift/drivers/video/fbcon.c
+--- linux-2.4.33/drivers/video/fbcon.c	2004-11-17 12:54:21.000000000 +0100
++++ linux-2.4.33-shift/drivers/video/fbcon.c	2006-08-11 21:33:35.000000000 +0200
+@@ -655,8 +655,13 @@
+     old_cols = conp->vc_cols;
+     old_rows = conp->vc_rows;
+     
++#ifdef CONFIG_FBCON_SHIFT
++    nr_cols = p->var.xres/fontwidth(p) - 2*p->shift_x;
++    nr_rows = p->var.yres/fontheight(p) - 2*p->shift_y;
++#else /* CONFIG_FBCON_SHIFT */
+     nr_cols = p->var.xres/fontwidth(p);
+     nr_rows = p->var.yres/fontheight(p);
++#endif /* CONFIG_FBCON_SHIFT */
+     
+     if (logo) {
+     	/* Need to make room for the logo */
+diff -Naur linux-2.4.33/drivers/video/fbcon-cfb16.c linux-2.4.33-shift/drivers/video/fbcon-cfb16.c
+--- linux-2.4.33/drivers/video/fbcon-cfb16.c	2001-10-15 22:47:13.000000000 +0200
++++ linux-2.4.33-shift/drivers/video/fbcon-cfb16.c	2006-08-11 21:33:35.000000000 +0200
+@@ -46,6 +46,12 @@
+     int bytes = p->next_line, linesize = bytes * fontheight(p), rows;
+     u8 *src, *dst;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    width += p->shift_x;
++    dy += p->shift_y;
++    sy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     if (sx == 0 && dx == 0 && width * fontwidth(p) * 2 == bytes) {
+ 	fb_memmove(p->screen_base + dy * linesize,
+ 		  p->screen_base + sy * linesize,
+@@ -108,6 +114,11 @@
+     int bytes = p->next_line, lines = height * fontheight(p);
+     u32 bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    sx += p->shift_x;
++    sy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + sy * fontheight(p) * bytes + sx * fontwidth(p) * 2;
+ 
+     bgx = ((u16 *)p->dispsw_data)[attr_bgcol_ec(p, conp)];
+@@ -126,6 +137,11 @@
+     int bytes = p->next_line, rows;
+     u32 eorx, fgx, bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p) * 2;
+ 
+     fgx = ((u16 *)p->dispsw_data)[attr_fgcol(p, c)];
+@@ -177,6 +193,11 @@
+     int rows, bytes = p->next_line;
+     u32 eorx, fgx, bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest0 = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p) * 2;
+     c = scr_readw(s);
+     fgx = ((u16 *)p->dispsw_data)[attr_fgcol(p, c)];
+@@ -233,6 +254,11 @@
+     u8 *dest;
+     int bytes = p->next_line, rows;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p)*2;
+     for (rows = fontheight(p); rows--; dest += bytes) {
+ 	switch (fontwidth(p)) {
+@@ -261,18 +287,31 @@
+     int bytes = p->next_line;
+     u32 bgx;
+ 
++#ifndef CONFIG_FBCON_SHIFT
+     unsigned int right_start = conp->vc_cols*fontwidth(p);
+     unsigned int bottom_start = conp->vc_rows*fontheight(p);
+     unsigned int right_width, bottom_width;
++#endif /* CONFIG_FBCON_SHIFT */
+ 
+     bgx = ((u16 *)p->dispsw_data)[attr_bgcol_ec(p, conp)];
+ 
++#ifndef CONFIG_FBCON_SHIFT
+     if (!bottom_only && (right_width = p->var.xres-right_start))
+ 	rectfill(p->screen_base+right_start*2, right_width,
+ 		 p->var.yres_virtual, bgx, bytes);
+     if ((bottom_width = p->var.yres-bottom_start))
+ 	rectfill(p->screen_base+(p->var.yoffset+bottom_start)*bytes,
+ 		 right_start, bottom_width, bgx, bytes);
++#else /* CONFIG_FBCON_SHIFT */
++    rectfill(p->screen_base, p->var.xres_virtual,
++	     p->shift_y*fontheight(p), bgx, bytes);
++    rectfill(p->screen_base, p->shift_x*fontwidth(p),
++	     p->var.yres_virtual, bgx, bytes);
++    rectfill(p->screen_base+(conp->vc_cols+p->shift_x)*fontwidth(p)*2, p->shift_x*fontwidth(p),
++	     p->var.yres_virtual, bgx, bytes);
++    rectfill(p->screen_base+(conp->vc_rows+p->shift_y)*fontheight(p)*bytes, p->var.xres_virtual,
++	     p->shift_y*fontheight(p), bgx, bytes);
++#endif /* CONFIG_FBCON_SHIFT */
+ }
+ 
+ 
+diff -Naur linux-2.4.33/drivers/video/fbcon-cfb8.c linux-2.4.33-shift/drivers/video/fbcon-cfb8.c
+--- linux-2.4.33/drivers/video/fbcon-cfb8.c	2001-10-15 22:47:13.000000000 +0200
++++ linux-2.4.33-shift/drivers/video/fbcon-cfb8.c	2006-08-11 21:33:35.000000000 +0200
+@@ -51,6 +51,12 @@
+     int bytes = p->next_line, linesize = bytes * fontheight(p), rows;
+     u8 *src,*dst;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    width += p->shift_x;
++    dy += p->shift_y;
++    sy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     if (sx == 0 && dx == 0 && width * fontwidth(p) == bytes) {
+ 	fb_memmove(p->screen_base + dy * linesize,
+ 		  p->screen_base + sy * linesize,
+@@ -97,6 +103,11 @@
+     int bytes=p->next_line,lines=height * fontheight(p);
+     u8 bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    sx += p->shift_x;
++    sy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + sy * fontheight(p) * bytes + sx * fontwidth(p);
+ 
+     bgx=attr_bgcol_ec(p,conp);
+@@ -115,6 +126,11 @@
+     int bytes=p->next_line,rows;
+     u32 eorx,fgx,bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p);
+     if (fontwidth(p) <= 8)
+ 	cdat = p->fontdata + (c & p->charmask) * fontheight(p);
+@@ -162,6 +178,11 @@
+     int rows,bytes=p->next_line;
+     u32 eorx, fgx, bgx;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest0 = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p);
+     c = scr_readw(s);
+     fgx = attr_fgcol(p, c);
+@@ -219,6 +240,11 @@
+     u8 *dest;
+     int bytes=p->next_line, rows;
+ 
++#ifdef CONFIG_FBCON_SHIFT
++    xx += p->shift_x;
++    yy += p->shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
++
+     dest = p->screen_base + yy * fontheight(p) * bytes + xx * fontwidth(p);
+     for (rows = fontheight(p) ; rows-- ; dest += bytes) {
+     	switch (fontwidth(p)) {
+@@ -237,18 +263,31 @@
+     int bytes=p->next_line;
+     u8 bgx;
+ 
++#ifndef CONFIG_FBCON_SHIFT
+     unsigned int right_start = conp->vc_cols*fontwidth(p);
+     unsigned int bottom_start = conp->vc_rows*fontheight(p);
+     unsigned int right_width, bottom_width;
++#endif /* CONFIG_FBCON_SHIFT */
+ 
+     bgx=attr_bgcol_ec(p,conp);
+ 
++#ifndef CONFIG_FBCON_SHIFT
+     if (!bottom_only && (right_width = p->var.xres-right_start))
+ 	rectfill(p->screen_base+right_start, right_width, p->var.yres_virtual,
+ 		 bgx, bytes);
+     if ((bottom_width = p->var.yres-bottom_start))
+ 	rectfill(p->screen_base+(p->var.yoffset+bottom_start)*bytes,
+ 		 right_start, bottom_width, bgx, bytes);
++#else /* CONFIG_FBCON_SHIFT */
++    rectfill(p->screen_base, p->var.xres_virtual,
++             p->shift_y*fontheight(p), bgx, bytes);
++    rectfill(p->screen_base, p->shift_x*fontwidth(p),
++             p->var.yres_virtual, bgx, bytes);
++    rectfill(p->screen_base+(conp->vc_cols+p->shift_x)*fontwidth(p), p->shift_x*fontwidth(p),
++             p->var.yres_virtual, bgx, bytes);
++    rectfill(p->screen_base+(conp->vc_rows+p->shift_y)*fontheight(p)*bytes, p->var.xres_virtual,
++             p->shift_y*fontheight(p), bgx, bytes);
++#endif /* CONFIG_FBCON_SHIFT */
+ }
+ 
+ 
+diff -Naur linux-2.4.33/include/video/fbcon.h linux-2.4.33-shift/include/video/fbcon.h
+--- linux-2.4.33/include/video/fbcon.h	2003-08-25 13:44:44.000000000 +0200
++++ linux-2.4.33-shift/include/video/fbcon.h	2006-08-11 21:33:35.000000000 +0200
+@@ -95,6 +95,11 @@
+     short yscroll;                  /* Hardware scrolling */
+     unsigned char fgshift, bgshift;
+     unsigned short charmask;        /* 0xff or 0x1ff */
++
++#ifdef CONFIG_FBCON_SHIFT
++    int shift_x;
++    int shift_y;
++#endif /* CONFIG_FBCON_SHIFT */
+ };
+ 
+ /* drivers/video/fbcon.c */

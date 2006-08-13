@@ -1,0 +1,647 @@
+diff -Naur linux-2.4.33.orig/arch/ppc/config.in linux-2.4.33/arch/ppc/config.in
+--- linux-2.4.33.orig/arch/ppc/config.in	2004-08-08 01:26:04.000000000 +0200
++++ linux-2.4.33/arch/ppc/config.in	2006-08-11 20:17:15.000000000 +0200
+@@ -459,6 +459,8 @@
+   source drivers/zorro/Config.in
+ fi
+ 
++bool 'Work around bad spots in RAM' CONFIG_BADRAM
++
+ endmenu
+ source drivers/mtd/Config.in
+ source drivers/pnp/Config.in
+diff -Naur linux-2.4.33.orig/arch/ppc/defconfig linux-2.4.33/arch/ppc/defconfig
+--- linux-2.4.33.orig/arch/ppc/defconfig	2005-01-19 15:09:36.000000000 +0100
++++ linux-2.4.33/arch/ppc/defconfig	2006-08-11 20:17:15.000000000 +0200
+@@ -63,6 +63,7 @@
+ # CONFIG_OOM_KILLER is not set
+ CONFIG_PCI_NAMES=y
+ CONFIG_HOTPLUG=y
++# CONFIG_BADRAM is not set
+ 
+ #
+ # PCMCIA/CardBus support
+diff -Naur linux-2.4.33.orig/arch/ppc/mm/init.c linux-2.4.33/arch/ppc/mm/init.c
+--- linux-2.4.33.orig/arch/ppc/mm/init.c	2003-11-28 19:26:19.000000000 +0100
++++ linux-2.4.33/arch/ppc/mm/init.c	2006-08-11 20:17:15.000000000 +0200
+@@ -144,6 +144,9 @@
+ void show_mem(void)
+ {
+ 	int i,free = 0,total = 0,reserved = 0;
++#ifdef CONFIG_BADRAM
++  	int badram = 0;
++#endif /* CONFIG_BADRAM */
+ 	int shared = 0, cached = 0;
+ 	struct task_struct *p;
+ 	int highmem = 0;
+@@ -156,6 +159,10 @@
+ 		total++;
+ 		if (PageHighMem(mem_map+i))
+ 			highmem++;
++#ifdef CONFIG_BADRAM
++		if (PageBad(mem_map+i))
++			badram++;
++#endif /* CONFIG_BADRAM */
+ 		if (PageReserved(mem_map+i))
+ 			reserved++;
+ 		else if (PageSwapCache(mem_map+i))
+@@ -169,6 +176,9 @@
+ 	printk("%d pages of HIGHMEM\n", highmem);
+ 	printk("%d free pages\n",free);
+ 	printk("%d reserved pages\n",reserved);
++#ifdef CONFIG_BADRAM
++	printk("%d pages of BadRAM\n",badram);
++#endif /* CONFIG_BADRAM */
+ 	printk("%d pages shared\n",shared);
+ 	printk("%d pages swap cached\n",cached);
+ 	printk("%d pages in page table cache\n",(int)pgtable_cache_size);
+@@ -466,6 +476,7 @@
+ 	free_area_init(zones_size);
+ }
+ 
++
+ void __init mem_init(void)
+ {
+ 	unsigned long addr;
+@@ -536,18 +547,42 @@
+ 			ClearPageReserved(page);
+ 			set_bit(PG_highmem, &page->flags);
+ 			atomic_set(&page->count, 1);
++#ifdef CONFIG_BADRAM
++			if (!PageBad(page))
++#endif /* CONFIG_BADRAM */
++			{
+ 			__free_page(page);
+ 			totalhigh_pages++;
++			}
+ 		}
+ 		totalram_pages += totalhigh_pages;
+ 	}
+ #endif /* CONFIG_HIGHMEM */
+ 
++#ifdef CONFIG_BADRAM
++        int badRamPages = 0;
++	int mp = max_mapnr;
++	while (mp-- > 0) {
++	if (PageBad(mem_map+mp))
++          {
++	   badRamPages++;
++           if (PageReserved(mem_map+mp))
++             printk("BADMEM: Iiee... Bad memory in a reserved area (page %i); please swap modules or try another module...",mp);
++          }
++	}
++        printk(KERN_INFO "Memory: %luk available (%dk kernel code, %dk data, %dk init, %ldk highmem, %ldk BadRAM)\n",
++	       (unsigned long)nr_free_pages()<< (PAGE_SHIFT-10),
++	       codepages<< (PAGE_SHIFT-10), datapages<< (PAGE_SHIFT-10),
++	       initpages<< (PAGE_SHIFT-10),
++	       (unsigned long) (totalhigh_pages << (PAGE_SHIFT-10)),
++               (unsigned long) (badRamPages << (PAGE_SHIFT-10)));
++#else
+         printk(KERN_INFO "Memory: %luk available (%dk kernel code, %dk data, %dk init, %ldk highmem)\n",
+ 	       (unsigned long)nr_free_pages()<< (PAGE_SHIFT-10),
+ 	       codepages<< (PAGE_SHIFT-10), datapages<< (PAGE_SHIFT-10),
+ 	       initpages<< (PAGE_SHIFT-10),
+ 	       (unsigned long) (totalhigh_pages << (PAGE_SHIFT-10)));
++#endif /* CONFIG_BADRAM */
+ 	if (sysmap)
+ 		printk("System.map loaded at 0x%08x for debugger, size: %ld bytes\n",
+ 			(unsigned int)sysmap, sysmap_size);
+diff -Naur linux-2.4.33.orig/CREDITS linux-2.4.33/CREDITS
+--- linux-2.4.33.orig/CREDITS	2006-08-11 06:18:20.000000000 +0200
++++ linux-2.4.33/CREDITS	2006-08-11 20:17:15.000000000 +0200
+@@ -2553,6 +2553,14 @@
+ S: Malvern, Pennsylvania 19355
+ S: USA
+ 
++N: Rick van Rein
++E: rick@vanrein.org
++W: http://rick.vanrein.org/
++D: Memory, the BadRAM subsystem dealing with statically challanged RAM modules.
++S: Binnenes 67
++S: 9407 CX Assen
++S: The Netherlands
++
+ N: Stefan Reinauer
+ E: stepan@linux.de
+ W: http://www.freiburg.linux.de/~stepan/
+diff -Naur linux-2.4.33.orig/Documentation/badram.txt linux-2.4.33/Documentation/badram.txt
+--- linux-2.4.33.orig/Documentation/badram.txt	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.33/Documentation/badram.txt	2006-08-11 20:17:15.000000000 +0200
+@@ -0,0 +1,266 @@
++
++INFORMATION ON USING BAD RAM MODULES
++====================================
++
++Introduction
++	RAM is getting smaller and smaller, and as a result, also more and more
++	vulnerable. This makes the manufacturing of hardware more expensive,
++	since an excessive amount of RAM chips must be discarded on account of
++	a single cell that is wrong. Similarly, static discharge may damage a
++	RAM module forever, which is usually remedied by replacing it
++	entirely.
++
++	This is not necessary, as the BadRAM code shows: By informing the Linux
++	kernel which addresses in a RAM are damaged, the kernel simply avoids
++	ever allocating such addresses but makes all the rest available.
++
++Reasons for this feature
++	There are many reasons why this kernel feature is useful:
++	- Chip manufacture is resource intensive; waste less and sleep better
++	- It's another chance to promote Linux as "the flexible OS"
++	- Some laptops have their RAM soldered in... and then it fails!
++	- It's plain cool ;-)
++
++Running example
++	To run this project, I was given two DIMMs, 32 MB each. One, that we
++	shall use as a running example in this text, contained 512 faulty bits,
++	spread over 1/4 of the address range in a regular pattern. Some tricks
++	with a RAM tester and a few binary calculations were sufficient to
++	write these faults down in 2 longword numbers.
++
++	The kernel recognised the correct number of pages with faults and did
++	not give them out for allocation. The allocation routines could
++	therefore progress as normally, without any adaption.
++	So, I gained 30 MB of DIMM which would otherwise have been thrown
++	away. After booting the kernel, the kernel behaved exactly as it
++	always had.
++
++Initial checks
++	If you experience RAM trouble, first read /usr/src/linux/memory.txt
++	and try out the mem=4M trick to see if at least some initial parts
++	of your RAM work well. The BadRAM routines halt the kernel in panic
++	if the reserved area of memory (containing kernel stuff) contains
++	a faulty address.
++
++Running a RAM checker
++	The memory checker is not built into the kernel, to avoid delays at
++	runtime. If you experience problems that may be caused by RAM, run
++	a good RAM checker, such as
++		http://reality.sgi.com/cbrady_denver/memtest86
++	The output of a RAM checker provides addresses that went wrong. In
++	the 32 MB chip with 512 faulty bits mentioned above, the errors were
++	found in the 8MB-16MB range (the DIMM was in slot #0) at addresses
++		xxx42f4
++		xxx62f4
++		xxxc2f4
++		xxxe2f4
++	and the error was a "sticky 1 bit", a memory bit that stayed "1" no
++	matter what was written to it. The regularity of this pattern
++	suggests the death of a buffer at the output stages of a row on one of
++	the chips. I expect such regularity to be commonplace. Finding this
++	regularity currently is human effort, but it should not be hard to
++	alter a RAM checker to capture it in some sort of pattern, possibly
++	the BadRAM patterns described below.
++
++	By the way, if you manage to get hold of memtest86 version 2.3 or
++	beyond, you can configure the printing mode to produce BadRAM patterns,
++	which find out exactly what you must enter on the LILO: commandline,
++	except that you shouldn't mention the added spacing. That means that
++	you can skip the following step, which saves you a *lot* of work.
++
++	Also by the way, if your machine has the ISA memory gap in the 15M-16M
++	range unstoppable, Linux can get in trouble. One way of handling that
++	situation is by specifying the total memory size to Linux with a boot
++	parameter mem=... and then to tell it to treat the 15M-16M range as
++	faulty with an additional boot parameter, for instance:
++		mem=24M badram=0x00f00000,0xfff00000
++	if you installed 24MB of RAM in total.
++
++Capturing errors in a pattern
++	Instead of manually providing all 512 errors to the kernel, it's nicer
++	to generate a pattern. Since the regularity is based on address decoding
++	software, which generally takes certain bits into account and ignores
++	others, we shall provide a faulty address F, together with a bit mask M
++	that specifies which bits must be equal to F. In C code, an address A
++	is faulty if and only if
++		(F & M) == (A & M)
++	or alternately (closer to a hardware implementation):
++		~((F ^ A) & M)
++	In the example 32 MB chip, we had the faulty addresses in 8MB-16MB:
++		xxx42f4         ....0100....
++		xxx62f4         ....0110....
++		xxxc2f4         ....1100....
++		xxxe2f4         ....1110....
++	The second column represents the alternating hex digit in binary form.
++	Apperantly, the first and one-but last binary digit can be anything,
++	so the binary mask for that part is 0101. The mask for the part after
++	this is 0xfff, and the part before should select anything in the range
++	8MB-16MB, or 0x00800000-0x01000000; this is done with a bitmask
++	0xff80xxxx. Combining these partial masks, we get:
++		F=0x008042f4    M=0xff805fff
++	That covers everything for this DIMM; for more complicated failing
++	DIMMs, or for a combination of multiple failing DIMMs, it can be
++	necessary to set up a number of such F/M pairs.
++
++Rebooting Linux
++	Now that these patterns are known (and double-checked, the calculations
++	are highly error-prone... it would be neat to test them in the RAM
++	checker...) we simply restart Linux with these F/M pairs as a parameter.
++	If you normally boot as follows:
++	       LILO: linux
++	you should now boot with
++	       LILO: linux badram=0x008042f4,0xff805fff
++	or perhaps by mentioning more F/M pairs in an order F0,M0,F1,M1,...
++	When you provide an odd number of arguments to badram, the default mask
++	0xffffffff (only one address matched) is applied to the pattern.
++
++	Beware of the commandline length. At least up to LILO version 0.21,
++	the commandline is cut off after the 78th character; later versions
++	may go as far as the kernel goes, namely 255 characters. In no way is
++	it possible to enter more than 10 numbers to the badram boot option.
++
++	When the kernel now boots, it should not give any trouble with RAM.
++	Mind you, this is under the assumption that the kernel and its data
++	storage do not overlap an erroneous part. If this happens, and the
++	kernel does not choke on it right away, it will stop with a panic.
++	You will need to provide a RAM where the initial, say 2MB, is faultless.
++
++	Now look up your memory status with
++	       dmesg | grep ^Memory:
++	which prints a single line with information like
++		Memory: 158524k/163840k available
++			(940k kernel code,
++			412k reserved,
++			1856k data,
++			60k init,
++			0k highmem,
++			2048k BadRAM)
++	The latter entry, the badram, is 2048k to represent the loss of 2MB
++	of general purpose RAM due to the errors. Or, positively rephrased,
++	instead of throwing out 32MB as useless, you only throw out 2MB.
++
++	If the system is stable (try compiling a few kernels, and do a few
++	finds in / or so) you may add the boot parameter to /etc/lilo.conf
++	as a line to _all_ the kernels that handle this trouble with a line
++		append="badram=0x008042f4,0xff805fff"
++	after which you run "lilo".
++	Warning: Don't experiment with these settings on your only boot image.
++	If the BadRAM overlays kernel code, data, init, or other reserved
++	memory, the kernel will halt in panic. Try settings on a test boot
++	image first, and if you get a panic you should change the order of
++	your DIMMs [which may involve buying a new one just to be able to
++	change the order].
++
++	You are allowed to enter any number of BadRAM patterns in all the
++	places documented in this file. They will all apply. It is even
++	possible to mention several BadRAM patterns in a single place. The
++	completion of an odd number of arguments with the default mask is
++	done separately for each badram=... option.
++
++Kernel Customisation
++	Some people prefer to enter their badram patterns in the kernel, and
++	this is also possible. In mm/page_alloc.c there is an array of unsigned
++	long integers into which the parameters can be entered, prefixed with
++	the number of integers (twice the number of patterns). The array is
++	named badram_custom and it will be added to the BadRAM list whenever an
++	option 'badram' is provided on the commandline when booting, either
++	with or without additional patterns.
++
++	For the previous example, the code would become
++
++	static unsigned long __initdata badram_custom[] = {
++		2,	// Number of longwords that follow, as F/M pairs
++		0x008042f4L, 0xff805fffL,
++	};
++
++	Even on this place you may assume the default mask to be filled in
++	when you enter an odd number of longwords. Specify the number of
++	longwords to be 0 to avoid influence of this custom BadRAM list.
++
++BadRAM classification
++	This technique may start a lively market for "dead" RAM. It is important
++	to realise that some RAMs are more dead than others. So, instead of
++	just providing a RAM size, it is also important to know the BadRAM
++	class, which is defined as follows:
++
++		A BadRAM class N means that at most 2^N bytes have a problem,
++		and that all problems with the RAMs are persistent: They
++		are predictable and always show up.
++
++	The DIMM that serves as an example here was of class 9, since 512=2^9
++	errors were found. Higher classes are worse, "correct" RAM is of class
++	-1 (or even less, at your choice).
++	Class N also means that the bitmask for your chip (if there's just one,
++	that is) counts N bits "0" and it means that (if no faults fall in the
++	same page) an amount of 2^N*PAGESIZE memory is lost, in the example on
++	an i386 architecture that would be 2^9*4k=2MB, which accounts for the
++	initial claim of 30MB RAM gained with this DIMM.
++
++	Note that this scheme has deliberately been defined to be independent
++	of memory technology and of computer architecture.
++
++Known Bugs
++	LILO is known to cut off commandlines which are too long. For the
++	lilo-0.21 distribution, a commandline may not exceed 78 characters,
++	while actually, 255 would be possible [on i386, kernel 2.2.16].
++	LILO does _not_ report too-long commandlines, but the error will
++	show up as either a panic at boot time, stating
++		panic: BadRAM page in initial area
++	or the dmesg line starting with Memory: will mention an unpredicted
++	number of kilobytes. (Note that the latter number only includes
++	errors in accessed memory.)
++
++Future Possibilities
++	It would be possible to use even more of the faulty RAMs by employing
++	them for slabs. The smaller allocation granularity of slabs makes it
++	possible to throw out just, say, 32 bytes surrounding an error. This
++	would mean that the example DIMM only looses 16kB instead of 2MB.
++	It might even be possible to allocate the slabs in such a way that,
++	where possible, the remaining bytes in a slab structure are allocated
++	around the error, reducing the RAM loss to 0 in the optimal situation!
++
++	However, this yield is somewhat faked: It is possible to provide 512
++	pages of 32-byte slabs, but it is not certain that anyone would use
++	that many 32-byte slabs at any time.
++
++	A better solution might be to alter the page allocation for a slab to
++	have a preference for BadRAM pages, and given those a special treatment.
++	This way, the BadRAM would be spread over all the slabs, which seems
++	more likely to be a `true' pay-off. This would yield more overhead at
++	slab allocation time, but on the other hand, by the nature of slabs,
++	such allocations are made as rare as possible, so it might not matter
++	that much. I am uncertain where to go.
++
++	Many suggestions have been made to insert a RAM checker at boot time;
++	since this would leave the time to do only very meager checking, it
++	is not a reasonable option; we already have a BIOS doing that in most
++	systems!
++
++	It would be interesting to integrate this functionality with the
++	self-verifying nature of ECC RAM. These memories can even distinguish
++	between recorable and unrecoverable errors! Such memory has been
++	handled in older operating systems by `testing' once-failed memory
++	blocks for a while, by placing only (reloadable) program code in it.
++	Unfortunately, I possess no faulty ECC modules to work this out.
++
++Names and Places
++	The home page of this project is on
++		http://rick.vanrein.org/linux/badram
++	This page also links to Nico Schmoigl's experimental extensions to
++	this patch (with debugging and a few other fancy things).
++
++	In case you have experiences with the BadRAM software which differ from
++	the test reportings on that site, I hope you will mail me with that
++	new information.
++
++	The BadRAM project is an idea and implementation by
++		Rick van Rein
++		Binnenes 67
++		9407 CX Assen
++		The Netherlands
++		rick@vanrein.org
++	If you like it, a postcard would be much appreciated ;-)
++
++
++	                                                       Enjoy,
++	                                                        -Rick.
+diff -Naur linux-2.4.33.orig/Documentation/Configure.help linux-2.4.33/Documentation/Configure.help
+--- linux-2.4.33.orig/Documentation/Configure.help	2006-08-11 06:18:20.000000000 +0200
++++ linux-2.4.33/Documentation/Configure.help	2006-08-11 20:17:15.000000000 +0200
+@@ -23453,6 +23453,21 @@
+   This option allows you to run the kernel with data cache disabled.
+   Say Y if you experience CPM lock-ups.
+ 
++Work around bad spots in RAM
++CONFIG_BADRAM
++  This small kernel extension makes it possible to use memory chips
++  which are not entirely correct. It works by never allocating the
++  places that are wrong. Those places are specified with the badram
++  boot option to LILO. Read /usr/src/linux/Documentation/badram.txt
++  and/or visit http://home.zonnet.nl/vanrein/badram for information.
++  
++  This option co-operates well with a second boot option from LILO
++  that starts memtest86, which is able to automatically produce the
++  patterns for the commandline in case of memory trouble.
++
++  It is safe to say 'Y' here, and it is advised because there is no
++  performance impact.
++
+ #
+ # m68k-specific kernel options
+ # Documented by Chris Lawrence <mailto:quango@themall.net> et al.
+@@ -29390,7 +29405,7 @@
+ # LocalWords:  CramFs Cramfs uid cramfs AVM's kernelcapi PCIV cdrdao Cdparanoia
+ # LocalWords:  DMX Domex dmx wellington ftdi sio Accton Billington Corega FEter
+ # LocalWords:  MELCO LUA PNA Linksys SNC chkdsk AWACS Webcam RAMFS Ramfs ramfs
+-# LocalWords:  ramfiles MAKEDEV pty WDTPCI APA apa
++# LocalWords:  ramfiles MAKEDEV pty WDTPCI APA apa BadRAM badram vanrein zonnet
+ #
+ # The following sets edit modes for GNU EMACS
+ # Local Variables:
+diff -Naur linux-2.4.33.orig/Documentation/kernel-parameters.txt linux-2.4.33/Documentation/kernel-parameters.txt
+--- linux-2.4.33.orig/Documentation/kernel-parameters.txt	2004-08-08 01:26:04.000000000 +0200
++++ linux-2.4.33/Documentation/kernel-parameters.txt	2006-08-11 20:17:15.000000000 +0200
+@@ -14,6 +14,7 @@
+ 	APIC	APIC support is enabled.
+ 	APM 	Advanced Power Management support is enabled.
+ 	AX25	Appropriate AX.25 support is enabled.
++	BADRAM	Support for faulty RAM chips is enabled.
+ 	CD	Appropriate CD support is enabled.
+ 	DEVFS   devfs support is enabled. 
+ 	DRM	Direct Rendering Management support is enabled. 
+@@ -127,6 +128,8 @@
+  
+ 	aztcd=		[HW,CD] Aztec CD driver.
+ 
++	badram=		[BADRAM] Avoid allocating faulty RAM addresses.
++
+ 	baycom_epp=	[HW,AX25]
+  
+ 	baycom_par= 	[HW,AX25] BayCom Parallel Port AX.25 Modem.
+diff -Naur linux-2.4.33.orig/Documentation/memory.txt linux-2.4.33/Documentation/memory.txt
+--- linux-2.4.33.orig/Documentation/memory.txt	2001-11-09 22:58:02.000000000 +0100
++++ linux-2.4.33/Documentation/memory.txt	2006-08-11 20:17:15.000000000 +0200
+@@ -18,6 +18,13 @@
+ 	   as you add more memory.  Consider exchanging your 
+            motherboard.
+ 
++	4) A static discharge or production fault causes a RAM module
++	   to have (predictable) errors, usually meaning that certain
++	   bits cannot be set or reset. Instead of throwing away your
++	   RAM module, you may read /usr/src/linux/Documentation/badram.txt
++	   to learn how to detect, locate and circuimvent such errors
++	   in your RAM module.
++
+ All of these problems can be addressed with the "mem=XXXM" boot option
+ (where XXX is the size of RAM to use in megabytes).  
+ It can also tell Linux to use less memory than is actually installed.
+@@ -45,6 +52,8 @@
+ 
+ 	* Try passing the "mem=4M" option to the kernel to limit
+ 	  Linux to using a very small amount of memory.
++	  If this helps, read /usr/src/linux/Documentation/badram.txt
++	  to learn how to find and circuimvent memory errors.
+ 
+ 
+ Other tricks:
+diff -Naur linux-2.4.33.orig/include/asm-ppc/page.h linux-2.4.33/include/asm-ppc/page.h
+--- linux-2.4.33.orig/include/asm-ppc/page.h	2003-11-28 19:26:21.000000000 +0100
++++ linux-2.4.33/include/asm-ppc/page.h	2006-08-11 20:17:15.000000000 +0200
+@@ -148,6 +148,7 @@
+ 
+ #define MAP_PAGE_RESERVED	(1<<15)
+ #define virt_to_page(kaddr)	(mem_map + (((unsigned long)(kaddr)-PAGE_OFFSET) >> PAGE_SHIFT))
++#define phys_to_page(x)		(mem_map + ((unsigned long)(x) >> PAGE_SHIFT))
+ #define VALID_PAGE(page)	(((page) - mem_map) < max_mapnr)
+ 
+ extern unsigned long get_zero_page_fast(void);
+diff -Naur linux-2.4.33.orig/include/linux/mm.h linux-2.4.33/include/linux/mm.h
+--- linux-2.4.33.orig/include/linux/mm.h	2005-01-19 15:10:12.000000000 +0100
++++ linux-2.4.33/include/linux/mm.h	2006-08-11 20:17:15.000000000 +0200
+@@ -305,6 +305,7 @@
+ #define PG_reserved		14
+ #define PG_launder		15	/* written out by VM pressure.. */
+ #define PG_fs_1			16	/* Filesystem specific */
++#define PG_badram		17
+ 
+ #ifndef arch_set_page_uptodate
+ #define arch_set_page_uptodate(page)
+@@ -403,6 +404,9 @@
+ #define PageSlab(page)		test_bit(PG_slab, &(page)->flags)
+ #define PageSetSlab(page)	set_bit(PG_slab, &(page)->flags)
+ #define PageClearSlab(page)	clear_bit(PG_slab, &(page)->flags)
++#define PageBad(page)		test_bit(PG_badram, &(page)->flags)
++#define PageSetBad(page)	set_bit(PG_badram, &(page)->flags)
++#define PageTestandSetBad(page)	test_and_set_bit(PG_badram, &(page)->flags)
+ #define PageReserved(page)	test_bit(PG_reserved, &(page)->flags)
+ 
+ #define PageActive(page)	test_bit(PG_active, &(page)->flags)
+diff -Naur linux-2.4.33.orig/mm/bootmem.c linux-2.4.33/mm/bootmem.c
+--- linux-2.4.33.orig/mm/bootmem.c	2002-11-29 00:53:15.000000000 +0100
++++ linux-2.4.33/mm/bootmem.c	2006-08-11 20:17:15.000000000 +0200
+@@ -257,8 +257,15 @@
+ 		if (!test_bit(i, bdata->node_bootmem_map)) {
+ 			count++;
+ 			ClearPageReserved(page);
++#ifdef CONFIG_BADRAM
++			if (!PageBad(page)) {
++				set_page_count(page, 1);
++				__free_page(page);
++			}
++#else
+ 			set_page_count(page, 1);
+ 			__free_page(page);
++#endif
+ 		}
+ 	}
+ 	total += count;
+@@ -272,8 +279,15 @@
+ 	for (i = 0; i < ((bdata->node_low_pfn-(bdata->node_boot_start >> PAGE_SHIFT))/8 + PAGE_SIZE-1)/PAGE_SIZE; i++,page++) {
+ 		count++;
+ 		ClearPageReserved(page);
++#ifdef CONFIG_BADRAM
++		if (!PageBad(page)) {
++			set_page_count(page, 1);
++			__free_page(page);
++		}
++#else
+ 		set_page_count(page, 1);
+ 		__free_page(page);
++#endif
+ 	}
+ 	total += count;
+ 	bdata->node_bootmem_map = NULL;
+diff -Naur linux-2.4.33.orig/mm/page_alloc.c linux-2.4.33/mm/page_alloc.c
+--- linux-2.4.33.orig/mm/page_alloc.c	2005-04-04 03:42:20.000000000 +0200
++++ linux-2.4.33/mm/page_alloc.c	2006-08-11 20:17:15.000000000 +0200
+@@ -10,6 +10,7 @@
+  *  Reshaped it to be a zoned allocator, Ingo Molnar, Red Hat, 1999
+  *  Discontiguous memory support, Kanoj Sarcar, SGI, Nov 1999
+  *  Zone balancing, Kanoj Sarcar, SGI, Jan 2000
++ *  BadRAM handling, Rick van Rein, Feb 2001
+  */
+ 
+ #include <linux/config.h>
+@@ -967,3 +968,92 @@
+ }
+ 
+ __setup("lower_zone_reserve=", setup_lower_zone_reserve);
++
++
++#ifdef CONFIG_BADRAM
++
++/* Given a pointed-at address and a mask, increment the page so that the
++ * mask hides the increment. Return 0 if no increment is possible.
++ */
++static int __init next_masked_address (unsigned long *addrp, unsigned long mask)
++{
++        unsigned long inc=1;
++        unsigned long newval = *addrp;
++	while (inc & mask)
++		inc += inc;
++        while (inc != 0) {
++		newval += inc;
++		newval &= ~mask;
++		newval |= ((*addrp) & mask);
++		if (newval > *addrp) {
++			*addrp = newval;
++			return 1;
++		}
++		do {
++			inc += inc;
++		} while (inc & ~mask);
++		while (inc & mask)
++			inc += inc;
++        }
++        return 0;
++}
++
++
++void __init badram_markpages (int argc, unsigned long *argv) {
++	unsigned long addr, mask;
++        while (argc-- > 0) {
++                addr = *argv++;
++                mask = (argc-- > 0) ? *argv++ : ~0L;
++                mask |= ~PAGE_MASK;	// Optimalisation
++		addr &= mask;		//  Normalisation
++                do {
++			struct page *pg = phys_to_page(addr);
++			printk ("%05lx ", __pa(__va(addr)) >> PAGE_SHIFT);
++			printk ("=%05lx/%05lx ", pg-mem_map, max_mapnr);
++			// if (VALID_PAGE(pg)) {
++				if (PageTestandSetBad (pg)) {
++					reserve_bootmem (addr, PAGE_SIZE);
++					printk ("BAD\n");
++				} else printk ("BFR\n");
++			// } else printk ("INV ");
++                } while (next_masked_address (&addr,mask));
++        }
++}
++
++
++/*********** CONFIG_BADRAM: CUSTOMISABLE SECTION STARTS HERE ******************/
++
++
++// Enter your custom BadRAM patterns here as pairs of unsigned long integers.
++// For more information on these F/M pairs, refer to Documentation/badram.txt
++
++
++static unsigned long __initdata badram_custom[] = {
++	4,	// Number of longwords that follow, as F/M pairs
++		0x01b19ffcL, 0xFFFFE003L, 0x0185c00cL, 0xFFFFE003L,
++};
++
++
++/*********** CONFIG_BADRAM: CUSTOMISABLE SECTION ENDS HERE ********************/
++
++
++static int __init badram_setup (char *str)
++{
++	unsigned long opts[3];
++	if (!mem_map) BUG();
++	printk ("PAGE_OFFSET=0x%08lx\n", PAGE_OFFSET);
++	printk ("BadRAM option is %s\n", str);
++	if (*str++ == '=')
++		while (str=get_options (str, 3, (int *) opts), *opts) {
++			printk ("   --> marking 0x%08lx, 0x%08lx  [%ld]\n", opts[1], opts[2], opts[0]);
++			badram_markpages (*opts, opts+1);
++			if (*opts==1)
++				break;
++		};
++	badram_markpages (*badram_custom, badram_custom+1);
++	return 0;
++}
++
++__setup("badram", badram_setup);
++
++#endif /* CONFIG_BADRAM */
