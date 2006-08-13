@@ -2,20 +2,17 @@
 
 . /etc/profile
 
-# Start lcdmenu only if there are at least two gui's present
-
-if test \( \( -x /bin/neutrino -a -x /bin/enigma \) -o \
-           \( -x /bin/neutrino -a -x /bin/lcars \)  -o \
-           \( -x /bin/enigma   -a -x /bin/lcars \) \) -a -x /bin/lcdmenu ; then
-  lcdmenu
-  RC="$?"
-  test "$RC" -eq 0 && /etc/init.d/start_enigma
-  test "$RC" -eq 1 && /etc/init.d/start_neutrino
-  test "$RC" -eq 2 && /etc/init.d/start_lcars
-elif test -x /bin/neutrino ; then
-  /etc/init.d/start_neutrino
-elif test -x /bin/enigma ; then
-  /etc/init.d/start_enigma
-elif test -x /bin/lcars ; then
-  /etc/init.d/start_lcars
+if [ -x /bin/lcdmenu ] ; then
+    exec /bin/lcdmenu
+elif [ -x /bin/neutrino ] ; then
+    exec /etc/init.d/start_neutrino
+elif [ -x /bin/enigma ] ; then
+    exec /etc/init.d/start_enigma
+elif [ -x /bin/lcars ] ; then
+    exec /etc/init.d/start_lcars
+elif [ -x /bin/radiobox ] ; then
+    exec /bin/radiobox
+else
+    echo ""
+    echo "No GUI found."
 fi
