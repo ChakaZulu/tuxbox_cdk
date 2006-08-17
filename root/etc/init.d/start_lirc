@@ -1,0 +1,19 @@
+#!/bin/sh
+
+LIRCD_CONF=/var/etc/lircd.conf
+
+if test -f $LIRCD_CONF ; then
+	echo -n "Starting lirc..."
+
+	lircd $LIRCD_CONF
+
+	if test 0 = $?
+	then
+		echo "done"
+	else
+		echo "failed!"
+	fi
+else
+	echo "Missing lircd.conf, no lirc support!"
+fi
+
