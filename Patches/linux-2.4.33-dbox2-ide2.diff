@@ -11,24 +11,3 @@ diff -Naur linux-2.4.33/arch/ppc/kernel/m8xx_setup.c linux-2.4.33-ide2/arch/ppc/
  #endif
 +#endif
  }
-diff -Naur linux-2.4.33/drivers/ide/ide-iops.c linux-2.4.33-ide2/drivers/ide/ide-iops.c
---- linux-2.4.33/drivers/ide/ide-iops.c	2004-02-18 14:36:31.000000000 +0100
-+++ linux-2.4.33-ide2/drivers/ide/ide-iops.c	2006-08-11 21:10:30.000000000 +0200
-@@ -581,7 +581,7 @@
- 	udelay(1);
- #endif
- 
--#ifdef CONFIG_IDEPCI_SHARE_IRQ
-+//#ifdef CONFIG_IDEPCI_SHARE_IRQ
- 	/*
- 	 * We do a passive status test under shared PCI interrupts on
- 	 * cards that truly share the ATA side interrupt, but may also share
-@@ -591,7 +591,7 @@
- 	if (IDE_CONTROL_REG)
- 		stat = hwif->INB(IDE_ALTSTATUS_REG);
- 	else
--#endif /* CONFIG_IDEPCI_SHARE_IRQ */
-+//#endif /* CONFIG_IDEPCI_SHARE_IRQ */
- 		/* Note: this may clear a pending IRQ!! */
- 		stat = hwif->INB(IDE_STATUS_REG);
- 
