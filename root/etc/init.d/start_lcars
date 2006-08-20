@@ -1,5 +1,18 @@
 #!/bin/sh
 
-# $Id: start_lcars,v 1.9 2006/03/30 07:29:46 saruman Exp $
+# $Id: start_lcars,v 1.10 2006/08/20 12:19:52 barf Exp $
 
-lcars > /dev/null
+# lcars silently fails if ucodes are missing. Therefore refuse to run
+# in that case. 
+
+# This code is for dBox only.
+
+if [ -e /var/tuxbox/ucodes/cam-alpha.bin \
+     -a  \(    -e /var/tuxbox/ucodes/avia500.ux \
+            -o -e /var/tuxbox/ucodes/avia600.ux \) ] ; then
+    lcars
+else
+    echo ""
+    echo "Ucodes are missing. Exiting."
+    exit 1
+fi
