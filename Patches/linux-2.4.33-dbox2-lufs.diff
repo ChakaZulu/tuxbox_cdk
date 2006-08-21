@@ -1,7 +1,7 @@
-diff -Naur linux-2.4.33/Documentation/Configure.help linux-2.4.33-lufs/Documentation/Configure.help
---- linux-2.4.33/Documentation/Configure.help	2006-08-11 06:18:20.000000000 +0200
-+++ linux-2.4.33-lufs/Documentation/Configure.help	2006-08-11 21:24:12.000000000 +0200
-@@ -17660,6 +17660,17 @@
+diff -Naur linux-2.4.32/Documentation/Configure.help linux-2.4.32-lufs/Documentation/Configure.help
+--- linux-2.4.32/Documentation/Configure.help	2005-11-16 20:12:54.000000000 +0100
++++ linux-2.4.32-lufs/Documentation/Configure.help	2005-12-18 18:00:28.000000000 +0100
+@@ -17642,6 +17642,17 @@
  
    Say N unless you are an XFS developer, or play one on TV.
  
@@ -19,9 +19,57 @@ diff -Naur linux-2.4.33/Documentation/Configure.help linux-2.4.33-lufs/Documenta
  Advanced partition selection
  CONFIG_PARTITION_ADVANCED
    Say Y here if you would like to use hard disks under Linux which
-diff -Naur linux-2.4.33/fs/lufs/dir.c linux-2.4.33-lufs/fs/lufs/dir.c
---- linux-2.4.33/fs/lufs/dir.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.33-lufs/fs/lufs/dir.c	2006-08-11 21:24:12.000000000 +0200
+diff -Naur linux-2.4.32/fs/Config.in linux-2.4.32-lufs/fs/Config.in
+--- linux-2.4.32/fs/Config.in	2004-11-17 12:54:21.000000000 +0100
++++ linux-2.4.32-lufs/fs/Config.in	2005-12-18 18:00:28.000000000 +0100
+@@ -154,6 +154,9 @@
+       # for fs/nls/Config.in
+       define_bool CONFIG_NCPFS_NLS n
+    fi
++
++   dep_tristate 'LUFS file system support (EXPERIMENTAL)' CONFIG_LUFS_FS $CONFIG_EXPERIMENTAL $CONFIG_UNIX
++
+    endmenu
+ 
+ else
+diff -Naur linux-2.4.32/fs/Makefile linux-2.4.32-lufs/fs/Makefile
+--- linux-2.4.32/fs/Makefile	2004-02-18 14:36:31.000000000 +0100
++++ linux-2.4.32-lufs/fs/Makefile	2005-12-18 18:00:28.000000000 +0100
+@@ -67,6 +67,7 @@
+ subdir-$(CONFIG_BEFS_FS)	+= befs
+ subdir-$(CONFIG_JFS_FS)		+= jfs
+ subdir-$(CONFIG_XFS_FS)		+= xfs
++subdir-$(CONFIG_LUFS_FS)	+= lufs
+ 
+ obj-$(CONFIG_BINFMT_AOUT)	+= binfmt_aout.o
+ obj-$(CONFIG_BINFMT_EM86)	+= binfmt_em86.o
+diff -Naur linux-2.4.32/fs/lufs/Makefile linux-2.4.32-lufs/fs/lufs/Makefile
+--- linux-2.4.32/fs/lufs/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.32-lufs/fs/lufs/Makefile	2005-12-18 18:00:28.000000000 +0100
+@@ -0,0 +1,20 @@
++#
++# Makefile for the linux userland filesystem routines.
++#
++# Note! Dependencies are done automagically by 'make dep', which also
++# removes any old dependencies. DON'T put your own dependencies here
++# unless it's something special (not a .c file).
++#
++# Note 2! The CFLAGS definitions are now in the main makefile.
++
++O_TARGET := lufs.o
++
++obj-y    := proc.o dir.o file.o symlink.o inode.o
++obj-m    := $(O_TARGET)
++
++# If you want debugging output, please uncomment the following lines
++# EXTRA_CFLAGS += -DLUFS_DEBUG
++# EXTRA_CFLAGS += -DLUFS_VERBOSE
++
++include $(TOPDIR)/Rules.make
++
+diff -Naur linux-2.4.32/fs/lufs/dir.c linux-2.4.32-lufs/fs/lufs/dir.c
+--- linux-2.4.32/fs/lufs/dir.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.32-lufs/fs/lufs/dir.c	2005-12-18 18:00:28.000000000 +0100
 @@ -0,0 +1,579 @@
 +/*
 + * dir.c
@@ -602,9 +650,9 @@ diff -Naur linux-2.4.33/fs/lufs/dir.c linux-2.4.33-lufs/fs/lufs/dir.c
 +
 +
 +
-diff -Naur linux-2.4.33/fs/lufs/file.c linux-2.4.33-lufs/fs/lufs/file.c
---- linux-2.4.33/fs/lufs/file.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.33-lufs/fs/lufs/file.c	2006-08-11 21:24:12.000000000 +0200
+diff -Naur linux-2.4.32/fs/lufs/file.c linux-2.4.32-lufs/fs/lufs/file.c
+--- linux-2.4.32/fs/lufs/file.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.32-lufs/fs/lufs/file.c	2005-12-18 18:00:28.000000000 +0100
 @@ -0,0 +1,338 @@
 +/*
 + * file.c
@@ -944,9 +992,9 @@ diff -Naur linux-2.4.33/fs/lufs/file.c linux-2.4.33-lufs/fs/lufs/file.c
 +
 +
 +
-diff -Naur linux-2.4.33/fs/lufs/fs.h linux-2.4.33-lufs/fs/lufs/fs.h
---- linux-2.4.33/fs/lufs/fs.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.33-lufs/fs/lufs/fs.h	2006-08-11 21:24:12.000000000 +0200
+diff -Naur linux-2.4.32/fs/lufs/fs.h linux-2.4.32-lufs/fs/lufs/fs.h
+--- linux-2.4.32/fs/lufs/fs.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.32-lufs/fs/lufs/fs.h	2005-12-18 18:00:28.000000000 +0100
 @@ -0,0 +1,112 @@
 +/*
 + * lufs.h
@@ -1060,9 +1108,9 @@ diff -Naur linux-2.4.33/fs/lufs/fs.h linux-2.4.33-lufs/fs/lufs/fs.h
 +
 +#endif
 +
-diff -Naur linux-2.4.33/fs/lufs/inode.c linux-2.4.33-lufs/fs/lufs/inode.c
---- linux-2.4.33/fs/lufs/inode.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.33-lufs/fs/lufs/inode.c	2006-08-11 21:24:12.000000000 +0200
+diff -Naur linux-2.4.32/fs/lufs/inode.c linux-2.4.32-lufs/fs/lufs/inode.c
+--- linux-2.4.32/fs/lufs/inode.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.32-lufs/fs/lufs/inode.c	2005-12-18 18:00:28.000000000 +0100
 @@ -0,0 +1,519 @@
 +/*
 + * inode.c
@@ -1583,9 +1631,9 @@ diff -Naur linux-2.4.33/fs/lufs/inode.c linux-2.4.33-lufs/fs/lufs/inode.c
 +
 +module_init(lu_init);
 +module_exit(lu_release);
-diff -Naur linux-2.4.33/fs/lufs/lufs.h linux-2.4.33-lufs/fs/lufs/lufs.h
---- linux-2.4.33/fs/lufs/lufs.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.33-lufs/fs/lufs/lufs.h	2006-08-11 21:24:12.000000000 +0200
+diff -Naur linux-2.4.32/fs/lufs/lufs.h linux-2.4.32-lufs/fs/lufs/lufs.h
+--- linux-2.4.32/fs/lufs/lufs.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.32-lufs/fs/lufs/lufs.h	2005-12-18 18:00:28.000000000 +0100
 @@ -0,0 +1,87 @@
 +/*
 + * lufs.h
@@ -1674,9 +1722,9 @@ diff -Naur linux-2.4.33/fs/lufs/lufs.h linux-2.4.33-lufs/fs/lufs/lufs.h
 +};
 +
 +#endif
-diff -Naur linux-2.4.33/fs/lufs/proc.c linux-2.4.33-lufs/fs/lufs/proc.c
---- linux-2.4.33/fs/lufs/proc.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.33-lufs/fs/lufs/proc.c	2006-08-11 21:24:12.000000000 +0200
+diff -Naur linux-2.4.32/fs/lufs/proc.c linux-2.4.32-lufs/fs/lufs/proc.c
+--- linux-2.4.32/fs/lufs/proc.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.32-lufs/fs/lufs/proc.c	2005-12-18 18:00:28.000000000 +0100
 @@ -0,0 +1,517 @@
 +/*
 + * proc.c
@@ -2195,9 +2243,9 @@ diff -Naur linux-2.4.33/fs/lufs/proc.c linux-2.4.33-lufs/fs/lufs/proc.c
 +   
 +}
 +
-diff -Naur linux-2.4.33/fs/lufs/proc.h linux-2.4.33-lufs/fs/lufs/proc.h
---- linux-2.4.33/fs/lufs/proc.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.33-lufs/fs/lufs/proc.h	2006-08-11 21:24:12.000000000 +0200
+diff -Naur linux-2.4.32/fs/lufs/proc.h linux-2.4.32-lufs/fs/lufs/proc.h
+--- linux-2.4.32/fs/lufs/proc.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.32-lufs/fs/lufs/proc.h	2005-12-18 18:00:28.000000000 +0100
 @@ -0,0 +1,51 @@
 +/*
 + * proc.h
@@ -2250,9 +2298,9 @@ diff -Naur linux-2.4.33/fs/lufs/proc.h linux-2.4.33-lufs/fs/lufs/proc.h
 +void lu_xlate_symlink(char*, char*, char*);
 +
 +#endif
-diff -Naur linux-2.4.33/fs/lufs/proto.h linux-2.4.33-lufs/fs/lufs/proto.h
---- linux-2.4.33/fs/lufs/proto.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.33-lufs/fs/lufs/proto.h	2006-08-11 21:24:12.000000000 +0200
+diff -Naur linux-2.4.32/fs/lufs/proto.h linux-2.4.32-lufs/fs/lufs/proto.h
+--- linux-2.4.32/fs/lufs/proto.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.32-lufs/fs/lufs/proto.h	2005-12-18 18:00:28.000000000 +0100
 @@ -0,0 +1,106 @@
 +/*
 + * proto.h
@@ -2360,9 +2408,9 @@ diff -Naur linux-2.4.33/fs/lufs/proto.h linux-2.4.33-lufs/fs/lufs/proto.h
 +};
 +
 +#endif
-diff -Naur linux-2.4.33/fs/lufs/symlink.c linux-2.4.33-lufs/fs/lufs/symlink.c
---- linux-2.4.33/fs/lufs/symlink.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.4.33-lufs/fs/lufs/symlink.c	2006-08-11 21:24:12.000000000 +0200
+diff -Naur linux-2.4.32/fs/lufs/symlink.c linux-2.4.32-lufs/fs/lufs/symlink.c
+--- linux-2.4.32/fs/lufs/symlink.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.4.32-lufs/fs/lufs/symlink.c	2005-12-18 18:00:28.000000000 +0100
 @@ -0,0 +1,185 @@
 +/*
 + * symlink.c
