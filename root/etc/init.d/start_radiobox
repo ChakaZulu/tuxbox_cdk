@@ -1,0 +1,21 @@
+#!/bin/sh
+
+until radiobox ; do
+	
+	case $? in
+		1)
+			echo "restart dbox";
+			reboot;
+			;;
+		
+		*)
+			echo "restart radiobox"
+			;;
+	esac
+done
+
+echo "Halt!"
+
+halt;
+
+

@@ -11,7 +11,7 @@ elif [ -x /bin/enigma ] ; then
 elif [ -x /bin/lcars ] ; then
     exec /etc/init.d/start_lcars
 elif [ -x /bin/radiobox ] ; then
-    exec /bin/radiobox
+    exec /etc/init.d/start_radiobox
 else
     echo ""
     echo "No GUI found."
