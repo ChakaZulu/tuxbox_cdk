@@ -94,6 +94,7 @@ vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/lufs
 dropbear-0.48.1.tar.gz;http://matt.ucc.asn.au/dropbear
 cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
+hdparm-6.6.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/hdparm
 
 #
 # development tools
