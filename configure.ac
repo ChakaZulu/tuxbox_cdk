@@ -377,6 +377,8 @@ TUXBOX_RULES_MAKE(lufs)
 TUXBOX_RULES_MAKE(dropbear)
 TUXBOX_RULES_MAKE(kermit)
 TUXBOX_RULES_MAKE(hdparm)
+TUXBOX_RULES_MAKE(e2fsprogs)
+TUXBOX_RULES_MAKE(utillinux)
 
 #
 # msttf

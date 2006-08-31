@@ -880,7 +880,7 @@ $(DEPDIR)/libiconv: bootstrap @DEPENDS_libiconv@
 #   contrib apps
 #
 
-contrib_apps: bzip2 console_data console_tools fbset lirc lsof ssh tcpdump lufs bonnie
+contrib_apps: bzip2 console_data console_tools fbset lirc utillinux lsof ssh tcpdump lufs bonnie e2fsprogs
 
 $(DEPDIR)/bzip2: bootstrap @DEPENDS_bzip2@
 	@PREPARE_bzip2@
@@ -956,6 +956,18 @@ $(DEPDIR)/lirc: bootstrap @DEPENDS_lirc@
 			--without-x && \
 		@INSTALL_lirc@
 	@CLEANUP_lirc@
+	touch $@
+
+$(DEPDIR)/utillinux: bootstrap @DEPENDS_utillinux@
+	@PREPARE_utillinux@
+	cd @DIR_utillinux@ && \
+		CC=$(target)-gcc \
+		CFLAGS="-Os -msoft-float" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure && \
+		$(MAKE) ARCH=ppc all && \
+		@INSTALL_utillinux@
+	@CLEANUP_utillinux@
 	touch $@
 
 $(DEPDIR)/lsof: bootstrap @DEPENDS_lsof@
@@ -1100,6 +1112,37 @@ $(DEPDIR)/hdparm: bootstrap @DEPENDS_hdparm@
 		$(MAKE) all && \
 		@INSTALL_hdparm@
 	@CLEANUP_hdparm@
+	touch $@
+
+$(DEPDIR)/e2fsprogs: bootstrap @DEPENDS_e2fsprogs@
+	@PREPARE_e2fsprogs@
+	cd @DIR_e2fsprogs@ && \
+		CC=$(target)-gcc \
+		RANLIB=$(target)-ranlib \
+		CFLAGS="-Os -msoft-float" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--prefix=$(targetprefix) \
+			--with-cc=$(target)-gcc \
+			--with-linker=$(target)-ld \
+			--disable-evms \
+			--enable-elf-shlibs \
+			--enable-htree \
+			--disable-profile \
+			--disable-swapfs \
+			--disable-debugfs \
+			--disable-image \
+			--enable-resizer \
+			--enable-dynamic-e2fsck \
+			--enable-fsck \
+			--with-gnu-ld \
+			--disable-nls && \
+		$(MAKE) libs progs && \
+		@INSTALL_e2fsprogs@
+	@CLEANUP_e2fsprogs@
 	touch $@
 
 #######################
@@ -2014,6 +2057,26 @@ $(flashprefix)/.part_plugins: $(flashprefix)/.flash plugins
 	cp -pa $(targetprefix)/var/tuxbox/config/games.cfg $(flashprefix)/root/var/tuxbox/config/
 	cp -pa $(targetprefix)/var/tuxbox/config/tuxtxt/tuxtxt.conf $(flashprefix)/root/var/tuxbox/config/tuxtxt/
 	cp -pa $(targetprefix)/share/tuxbox/sokoban $(flashprefix)/root/share/tuxbox/
+	@touch $@
+
+flash-fstools: $(flashprefix)/.part_fstools
+$(flashprefix)/.part_fstools: $(flashprefix)/.flash e2fsprogs utillinux
+	$(INSTALL) -d $(flashprefix)/root/sbin
+	@for i in e2fsck mke2fs ; do \
+		$(INSTALL) $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done;
+	ln -sf /proc/mounts $(flashprefix)/root/etc/mtab 
+	cd $(flashprefix)/root/sbin && \
+	    ln -sf mke2fs mkfs.ext3 && \
+	    ln -sf mke2fs mkfs.ext2 && \
+	    ln -sf e2fsck fsck.ext2 && \
+	    ln -sf e2fsck fsck.ext3
+	@touch $@
+
+flash-utillinux: $(flashprefix)/.part_utillinux
+$(flashprefix)/.part_utillinux: $(flashprefix)/.flash utillinux
+	$(INSTALL) -d $(flashprefix)/root/sbin
+	@for i in sfdisk ; do \
+		$(INSTALL) $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done;
 	@touch $@
 
 flash-lcdmenu: $(flashprefix)/.part_lcdmenu
