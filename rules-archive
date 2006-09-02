@@ -35,7 +35,7 @@ modutils-2.4.26.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
-portmap-5.tar.bz2
+portmap_5beta.tar.gz;ftp://ftp.porcupine.org/pub/security
 procps-010114.tar.gz;http://www.dbox2world.de/Archive/
 udev-030.tar.gz;http://www.kernel.org/pub/linux/utils/kernel/hotplug
 vsftpd-1.2.2.tar.gz;ftp://vsftpd.beasts.org/users/cevans

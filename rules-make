@@ -34,7 +34,7 @@ ftpd;1.2.2;vsftpd-1.2.2;vsftpd-1.2.2.tar.gz:ftpd.diff;extract:vsftpd-1.2.2.tar.g
 module_init_tools;3.2.1;module-init-tools-3.2.1;module-init-tools-3.2.1.tar.bz2;extract:module-init-tools-3.2.1.tar.bz2
 modutils;2.4.26;modutils-2.4.26;modutils-2.4.26.tar.bz2:modutils.diff;extract:modutils-2.4.26.tar.bz2;patch:modutils.diff
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
-portmap;5;portmap-5;portmap-5.tar.bz2:portmap-5.diff;extract:portmap-5.tar.bz2;patch:portmap-5.diff
+portmap;5;portmap-5;portmap_5beta.tar.gz:portmap-5.diff;extract:portmap-5.tar.bz2;patch:portmap-5.diff
 procps;010114;procps-010114;procps-010114.tar.gz:procps.diff;extract:procps-010114.tar.gz;patch:procps.diff
 udev;030;udev-030;udev-030.tar.gz:udev.diff;extract:udev-030.tar.gz;patch:udev.diff
 mrouted;3.9-beta3;mrouted-3.9-beta3.orig;mrouted_3.9-beta3.orig.tar.gz:mrouted_3.9-beta3-3.diff;extract:mrouted_3.9-beta3.orig.tar.gz;patch:mrouted_3.9-beta3-3.diff
