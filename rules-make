@@ -96,6 +96,7 @@ lufs;0.9.7;lufs-0.9.7;lufs-0.9.7.tar.gz:lufs.diff;extract:lufs-0.9.7.tar.gz;patc
 dropbear;0.48.1;dropbear-0.48.1;dropbear-0.48.1.tar.gz;extract:dropbear-0.48.1.tar.gz
 kermit;8.0;c-kermit-8.0;cku211.tar.gz;dirextract:cku211.tar.gz;patch:kermit.diff
 hdparm;6.6;hdparm-6.6;hdparm-6.6.tar.gz;extract:hdparm-6.6.tar.gz
+parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
 
 #
 # msttf

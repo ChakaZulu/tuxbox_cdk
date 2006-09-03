@@ -880,7 +880,7 @@ $(DEPDIR)/libiconv: bootstrap @DEPENDS_libiconv@
 #   contrib apps
 #
 
-contrib_apps: bzip2 console_data console_tools fbset lirc utillinux lsof ssh tcpdump lufs bonnie e2fsprogs
+contrib_apps: bzip2 console_data console_tools fbset lirc lsof ssh tcpdump lufs bonnie
 
 $(DEPDIR)/bzip2: bootstrap @DEPENDS_bzip2@
 	@PREPARE_bzip2@
@@ -958,17 +958,6 @@ $(DEPDIR)/lirc: bootstrap @DEPENDS_lirc@
 	@CLEANUP_lirc@
 	touch $@
 
-$(DEPDIR)/utillinux: bootstrap @DEPENDS_utillinux@
-	@PREPARE_utillinux@
-	cd @DIR_utillinux@ && \
-		CC=$(target)-gcc \
-		CFLAGS="-Os -msoft-float" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure && \
-		$(MAKE) ARCH=ppc all && \
-		@INSTALL_utillinux@
-	@CLEANUP_utillinux@
-	touch $@
 
 $(DEPDIR)/lsof: bootstrap @DEPENDS_lsof@
 	@PREPARE_lsof@
@@ -1105,6 +1094,14 @@ $(DEPDIR)/kermit: bootstrap @DEPENDS_kermit@ libcrypto
 	@CLEANUP_kermit@
 	touch $@
 
+
+#######################
+#
+#   ide apps
+#
+
+ide_apps: hdparm utillinux e2fsprogs parted
+
 $(DEPDIR)/hdparm: bootstrap @DEPENDS_hdparm@
 	@PREPARE_hdparm@
 	cd @DIR_hdparm@ && \
@@ -1114,6 +1111,21 @@ $(DEPDIR)/hdparm: bootstrap @DEPENDS_hdparm@
 	@CLEANUP_hdparm@
 	touch $@
 
+$(DEPDIR)/utillinux: bootstrap @DEPENDS_utillinux@
+	@PREPARE_utillinux@
+	cd @DIR_utillinux@ && \
+		CC=$(target)-gcc \
+		CFLAGS="-Os -msoft-float" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure && \
+		$(MAKE) ARCH=ppc all && \
+		@INSTALL_utillinux@
+	@CLEANUP_utillinux@
+	touch $@
+
+# "install-libs" target is necessary to install the
+# headers for parted, not sure why they do not
+# get installed otherwise
 $(DEPDIR)/e2fsprogs: bootstrap @DEPENDS_e2fsprogs@
 	@PREPARE_e2fsprogs@
 	cd @DIR_e2fsprogs@ && \
@@ -1141,9 +1153,29 @@ $(DEPDIR)/e2fsprogs: bootstrap @DEPENDS_e2fsprogs@
 			--with-gnu-ld \
 			--disable-nls && \
 		$(MAKE) libs progs && \
+		$(MAKE) install-libs && \
 		@INSTALL_e2fsprogs@
 	@CLEANUP_e2fsprogs@
 	touch $@
+
+$(DEPDIR)/parted: bootstrap e2fsprogs @DEPENDS_parted@
+	@PREPARE_parted@
+	cd @DIR_parted@ && \
+		CC=$(target)-gcc \
+		RANLIB=$(target)-ranlib \
+		CFLAGS="-Os -msoft-float" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--prefix=$(targetprefix) \
+			--disable-nls && \
+		$(MAKE) all && \
+		@INSTALL_parted@
+	@CLEANUP_parted@
+	touch $@
+
 
 #######################
 #
