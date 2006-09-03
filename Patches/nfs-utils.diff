@@ -1,0 +1,43 @@
+diff -Naur nfs-utils-1.0.9.orig/Makefile.am nfs-utils-1.0.9/Makefile.am
+--- nfs-utils-1.0.9.orig/Makefile.am	2006-07-08 02:04:32.000000000 +0200
++++ nfs-utils-1.0.9/Makefile.am	2006-09-03 12:39:05.000000000 +0200
+@@ -47,7 +47,7 @@
+ 	mkdir -p $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak
+ 	touch $(DESTDIR)$(statedir)/state
+ 	chmod go-rwx $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak $(DESTDIR)$(statedir)/state
+-	chown $(statduser) $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak $(DESTDIR)$(statedir)/state
++#	chown $(statduser) $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak $(DESTDIR)$(statedir)/state
+ 
+ uninstall-hook:
+ 	rm $(DESTDIR)$(statedir)/xtab
+diff -Naur nfs-utils-1.0.9.orig/configure.in nfs-utils-1.0.9/configure.in
+--- nfs-utils-1.0.9.orig/configure.in	2006-07-08 02:04:32.000000000 +0200
++++ nfs-utils-1.0.9/configure.in	2006-09-03 12:37:56.000000000 +0200
+@@ -142,7 +142,7 @@
+ 
+ AC_HEADER_STDC([])
+ AC_GNULIBC
+-AC_BSD_SIGNALS
++dnl AC_BSD_SIGNALS
+ 
+ dnl *************************************************************
+ dnl * Check for required libraries
+diff -Naur nfs-utils-1.0.9.orig/tools/rpcgen/Makefile.am nfs-utils-1.0.9/tools/rpcgen/Makefile.am
+--- nfs-utils-1.0.9.orig/tools/rpcgen/Makefile.am	2006-07-08 02:04:32.000000000 +0200
++++ nfs-utils-1.0.9/tools/rpcgen/Makefile.am	2006-09-03 12:43:56.000000000 +0200
+@@ -1,6 +1,14 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-CC=$(CC_FOR_BUILD)
++# Compile for execution on the build host, not the target. Yes, this is not
++# completely clean.
++# The warning:
++# 	tools/rpcgen/Makefile.am:6: `CFLAGS' is a user variable, you should not override it;
++# 	tools/rpcgen/Makefile.am:6: use `AM_CFLAGS' instead.
++# should be ignored.
++
++CC=gcc
++CFLAGS=
+ LIBTOOL = @LIBTOOL@ --tag=CC
+ 
+ noinst_PROGRAMS = rpcgen
