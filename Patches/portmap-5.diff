@@ -1,69 +1,88 @@
-diff -Naur portmap-5-orig/Makefile portmap5-new/Makefile
---- portmap-5-orig/Makefile	2005-10-11 17:04:25.000000000 +0200
-+++ portmap5-new/Makefile	2006-09-02 21:00:53.000000000 +0200
-@@ -15,9 +15,9 @@
+diff -Naur portmap_5beta-old/Makefile portmap_5beta/Makefile
+--- portmap_5beta-old/Makefile	2006-09-05 20:57:47.000000000 +0200
++++ portmap_5beta/Makefile	2006-09-05 21:11:48.000000000 +0200
+@@ -8,15 +8,15 @@
+ # if you disagree. See `man 3 syslog' for examples. Some syslog versions
+ # do not provide this flexibility.
+ #
+-FACILITY=LOG_MAIL
++FACILITY=LOG_DAEMON
+ 
+ # To disable tcp-wrapper style access control, comment out the following
+ # macro definitions.  Access control can also be turned off by providing
  # no access control tables. The local system, since it runs the portmap
  # daemon, is always treated as an authorized host.
  
 -HOSTS_ACCESS= -DHOSTS_ACCESS
-+#HOSTS_ACCESS= -DHOSTS_ACCESS
- #WRAP_LIB = $(WRAP_DIR)/libwrap.a
--WRAP_LIB = -lwrap
-+#WRAP_LIB = -lwrap
+-WRAP_LIB = $(WRAP_DIR)/libwrap.a
++HOSTS_ACCESS=
++WRAP_LIB =
  
  # Comment out if your RPC library does not allocate privileged ports for
  # requests from processes with root privilege, or the new portmap will
-@@ -72,7 +72,7 @@
- # With verbose logging on, HP-UX 9.x and AIX 4.1 leave zombies behind when
- # SIGCHLD is not ignored. Enable next macro for a fix.
- #
--ZOMBIES = -DIGNORE_SIGCHLD	# AIX 4.x, HP-UX 9.x
-+#ZOMBIES = -DIGNORE_SIGCHLD	# AIX 4.x, HP-UX 9.x
- 
- # Uncomment the following macro if your system does not have u_long.
- #
-@@ -82,7 +82,7 @@
+@@ -81,11 +81,11 @@
  # libwrap.a object library. WRAP_DIR should specify the directory with
  # that library.
  
--WRAP_DIR= $(TCPD_DIR)
-+#WRAP_DIR= $(TCPD_DIR)
+-WRAP_DIR= ../tcp_wrappers
++#WRAP_DIR= ../tcp_wrappers
  
  # Auxiliary object files that may be missing from your C library.
  #
-@@ -143,14 +143,15 @@
- 	cc $(CFLAGS) -DTEST -o $@ get_myaddress.c $(LIBS)
+-AUX	= daemon.o strerror.o
++#AUX	= daemon.o strerror.o
  
- install: all
--	install -o root -g root -m 0755 -s portmap ${BASEDIR}/sbin
--	install -o root -g root -m 0755 -s pmap_dump ${BASEDIR}/sbin
--	install -o root -g root -m 0755 -s pmap_set ${BASEDIR}/sbin
--	install -o root -g root -m 0644 portmap.8 ${BASEDIR}/usr/share/man/man8
--	install -o root -g root -m 0644 pmap_dump.8 ${BASEDIR}/usr/share/man/man8
--	install -o root -g root -m 0644 pmap_set.8 ${BASEDIR}/usr/share/man/man8
--	cat BLURB >${BASEDIR}/usr/share/doc/portmap/portmapper.txt
--	gzip -9f ${BASEDIR}/usr/share/doc/portmap/portmapper.txt
+ # NEXTSTEP is a little different. The following seems to work with NS 3.2
+ #
+@@ -99,7 +99,7 @@
+ 
+ # Comment out if your compiler talks ANSI and understands const
+ #
+-CONST   = -Dconst=
++#CONST   = -Dconst=
+ 
+ ### End of configurable stuff.
+ ##############################
+@@ -114,7 +114,7 @@
+ 
+ all:	portmap pmap_dump pmap_set
+ 
+-portmap: $(OBJECTS) $(WRAP_DIR)/libwrap.a
++portmap: $(OBJECTS) $(WRAP_LIB)
+ 	$(CC) $(CFLAGS) -o $@ $(OBJECTS) $(WRAP_LIB) $(LIBS)
+ 
+ pmap_dump: pmap_dump.c
+@@ -142,6 +142,14 @@
+ deps:
+ 	@$(CC) -M $(CFLAGS) *.c | grep -v /usr/include |sed 's/\.\///'
+ 
++install: all
 +	install -m 0755 -s portmap ${BASEDIR}/sbin
 +	install -m 0755 -s pmap_dump ${BASEDIR}/sbin
 +	install -m 0755 -s pmap_set ${BASEDIR}/sbin
-+	install -d ${BASEDIR}/usr/share/man/man8
-+	install -m 0444 portmap.8 ${BASEDIR}/usr/share/man/man8
-+	install -m 0444 pmap_dump.8 ${BASEDIR}/usr/share/man/man8
-+	install -m 0444 pmap_set.8 ${BASEDIR}/usr/share/man/man8
-+	install -d ${BASEDIR}/usr/share/doc/portmap
-+	install -m 0444 BLURB ${BASEDIR}/usr/share/doc/portmap/portmapper.txt
- 
- 
- lint:	
-diff -Naur portmap-5-orig/pmap_check.c portmap5-new/pmap_check.c
---- portmap-5-orig/pmap_check.c	2005-10-11 17:04:25.000000000 +0200
-+++ portmap5-new/pmap_check.c	2006-09-02 21:00:12.000000000 +0200
-@@ -48,7 +48,7 @@
++
++flashinstall: portmap
++	install -m 0755 -s portmap ${BASEDIR}/sbin
++
+ daemon.o: daemon.c
+ from_local.o: from_local.c
+ get_myaddress.o: get_myaddress.c
+diff -Naur portmap_5beta-old/portmap.c portmap_5beta/portmap.c
+--- portmap_5beta-old/portmap.c	1996-07-06 23:06:24.000000000 +0200
++++ portmap_5beta/portmap.c	2006-09-05 21:06:56.000000000 +0200
+@@ -94,6 +94,7 @@
+ #ifdef SYSV40
+ #include <netinet/in.h>
  #endif
- #include <sys/types.h>
- #include <unistd.h>
--#include <tcpd.h>
-+/*#include <tcpd.h>*/
++#include <errno.h>
  
- extern char *inet_ntoa();
+ extern char *strerror();
+ #include <stdlib.h>
+@@ -124,7 +125,6 @@
+ static void callit();
+ struct pmaplist *pmaplist;
+ int debugging = 0;
+-extern int errno;
+ 
+ #include "pmap_check.h"
  
