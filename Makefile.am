@@ -1158,7 +1158,7 @@ $(DEPDIR)/e2fsprogs: bootstrap @DEPENDS_e2fsprogs@
 	@CLEANUP_e2fsprogs@
 	touch $@
 
-$(DEPDIR)/parted: bootstrap e2fsprogs @DEPENDS_parted@
+$(DEPDIR)/parted: bootstrap e2fsprogs libreadline @DEPENDS_parted@
 	@PREPARE_parted@
 	cd @DIR_parted@ && \
 		CC=$(target)-gcc \
