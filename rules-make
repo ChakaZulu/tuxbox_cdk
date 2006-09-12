@@ -13,7 +13,7 @@
 # core
 #
 uboot;1.1.4;u-boot-1.1.4;u-boot-1.1.4.tar.bz2:u-boot-1.1.4.diff;extract:u-boot-1.1.4.tar.bz2;patch:u-boot-1.1.4.diff
-linux24;2.4.32-dbox2;linux-2.4.32;linux-2.4.32.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.32-dbox2-mtd0305.diff.bz2:autofs4-2.4-module-20050404.tar.gz;extract:autofs4-2.4-module-20050404.tar.gz;move:autofs4-2.4/module-patches/autofs4-2.4.29.patch:Patches;remove:autofs4-2.4;remove:linux;extract:linux-2.4.32.tar.bz2;patch:linux-2.4.32-dbox2.diff;patch:linux-2.4.32-dbox2-shift.diff;patch:linux-2.4.32-dbox2-keyboard.diff;patch:linux-2.4.32-dbox2-v4l2.diff;patch:linux-2.4.32-dbox2-cramfs.diff;patch:linux-2.4.32-dbox2-lufs.diff;patch:linux-2.4.32-dbox2-mtd0305.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.32/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs2.2r2-patch;patch:linux-2.4.32-dbox2-badram.diff;patch:autofs4-2.4.29.patch;patch:linux-2.4.32-dbox2-ide2.diff;link:linux-2.4.32:linux
+linux24;2.4.33-dbox2;linux-2.4.33;linux-2.4.33.tar.bz2:patch-2.4.33.3.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.33.3-dbox2-mtd0305.diff.bz2:autofs4-2.4-module-20050404.tar.gz;extract:autofs4-2.4-module-20050404.tar.gz;move:autofs4-2.4/module-patches/autofs4-2.4.29.patch:Patches;remove:autofs4-2.4;remove:linux;extract:linux-2.4.33.tar.bz2;patch:patch-2.4.33.3.bz2:;patch:linux-2.4.33.3-dbox2.diff;patch:linux-2.4.32-dbox2-shift.diff;patch:linux-2.4.32-dbox2-keyboard.diff;patch:linux-2.4.32-dbox2-v4l2.diff;patch:linux-2.4.32-dbox2-cramfs.diff;patch:linux-2.4.32-dbox2-lufs.diff;patch:linux-2.4.33.3-dbox2-mtd0305.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.33/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs2.2r2-patch;patch:linux-2.4.32-dbox2-badram.diff;patch:autofs4-2.4.29.patch;patch:linux-2.4.32-dbox2-ide2.diff;link:linux-2.4.33:linux
 linux;2.6.15-dbox2;linux-2.6.15;linux-2.6.15.tar.bz2:linux-2.6.15-dbox2.diff;remove:linux;extract:linux-2.6.15.tar.bz2;patch:linux-2.6.15-dbox2.diff;link:linux-2.6.15:linux
 binutils;2.15.91.0.2;binutils-2.15.91.0.2;binutils-2.15.91.0.2.tar.bz2;extract:binutils-2.15.91.0.2.tar.bz2
 bootstrap_gcc;3.4.4;gcc-3.4.4;gcc-core-3.4.4.tar.bz2;extract:gcc-core-3.4.4.tar.bz2
@@ -88,6 +88,7 @@ lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.d
 lsof;4.72;lsof_4.72;lsof_4.72.tar.gz:lsof.diff;extract:lsof_4.72.tar.gz
 e2fsprogs;1.35;e2fsprogs-1.35;e2fsprogs-1.35.tar.gz;extract:e2fsprogs-1.35.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
 utillinux;2.12i;util-linux-2.12i;util-linux-2.12i.tar.bz2;extract:util-linux-2.12i.tar.bz2;patch:util-linux.diff
+hddtemp;0.3-beta15;hddtemp-0.3-beta15;hddtemp-0.3-beta15.tar.bz2;extract:hddtemp-0.3-beta15.tar.bz2
 ssh;3.8p1;openssh-3.8p1;openssh-3.8p1.tar.gz:ssh.diff;extract:openssh-3.8p1.tar.gz;patch:ssh.diff
 tcpdump;3.9.4;tcpdump-3.9.4;tcpdump-3.9.4.tar.gz:tcpdump.diff;extract:tcpdump-3.9.4.tar.gz;patch:tcpdump.diff
 bonnie;1.03a;bonnie++-1.03a;bonnie++-1.03a.tgz;extract:bonnie++-1.03a.tgz

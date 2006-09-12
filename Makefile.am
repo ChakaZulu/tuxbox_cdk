@@ -1100,7 +1100,7 @@ $(DEPDIR)/kermit: bootstrap @DEPENDS_kermit@ libcrypto
 #   ide apps
 #
 
-ide_apps: hdparm utillinux e2fsprogs parted
+ide_apps: hdparm utillinux e2fsprogs parted hddtemp
 
 $(DEPDIR)/hdparm: bootstrap @DEPENDS_hdparm@
 	@PREPARE_hdparm@
@@ -1176,6 +1176,20 @@ $(DEPDIR)/parted: bootstrap e2fsprogs libreadline @DEPENDS_parted@
 	@CLEANUP_parted@
 	touch $@
 
+$(DEPDIR)/hddtemp: bootstrap Archive/hddtemp-0.3-beta15.tar.bz2 @DEPENDS_hddtemp@
+	@PREPARE_hddtemp@
+	cd @DIR_hddtemp@ && \
+		$(BUILDENV) \
+		./configure \
+			--with-db-path=/share/tuxbox/config/hddtemp.db \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
+		$(MAKE) all && \
+		$(MAKE) install DESTDIR=$(targetprefix)
+		$(INSTALL) -m 644 Patches/hddtemp.db $(targetprefix)/share/tuxbox
+	@CLEANUP_hddtemp@
+	touch $@ 
 
 #######################
 #
@@ -2109,6 +2123,14 @@ $(flashprefix)/.part_utillinux: $(flashprefix)/.flash utillinux
 	$(INSTALL) -d $(flashprefix)/root/sbin
 	@for i in sfdisk ; do \
 		$(INSTALL) $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done;
+	@touch $@
+
+flash-hddtemp: $(flashprefix)/.part_hddtemp
+$(flashprefix)/.part_hddtemp: $(flashprefix)/.flash hddtemp
+	$(INSTALL) -d $(flashprefix)/root/sbin
+	@for i in hddtemp ; do \
+		$(INSTALL) $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done;
+	cp -pa $(targetprefix)/share/tuxbox/hddtemp.db $(flashprefix)/root/share/tuxbox
 	@touch $@
 
 flash-lcdmenu: $(flashprefix)/.part_lcdmenu
