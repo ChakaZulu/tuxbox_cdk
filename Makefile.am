@@ -1181,7 +1181,7 @@ $(DEPDIR)/hddtemp: bootstrap Archive/hddtemp-0.3-beta15.tar.bz2 @DEPENDS_hddtemp
 	cd @DIR_hddtemp@ && \
 		$(BUILDENV) \
 		./configure \
-			--with-db-path=/share/tuxbox/config/hddtemp.db \
+			--with-db-path=/share/tuxbox/hddtemp.db \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= && \
