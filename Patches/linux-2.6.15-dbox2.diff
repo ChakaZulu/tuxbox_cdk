@@ -767,3 +767,33 @@ index 46f159c..aa670aa 100644
  #if defined(CONFIG_TQM8xxL)
  #include <platforms/tqm8xx.h>
  #endif
+diff --git a/include/asm-ppc/pgtable.h b/include/asm-ppc/pgtable.h
+index 6d1c39e..5aa5028 100644
+--- a/include/asm-ppc/pgtable.h
++++ b/include/asm-ppc/pgtable.h
+@@ -768,11 +768,23 @@ extern void paging_init(void);
+  * must not include the _PAGE_PRESENT bit, the _PAGE_FILE bit, or the
+  *_PAGE_HASHPTE bit (if used).  -- paulus
+  */
++#if (CONFIG_8xx)
++/* usually:
++   24 bits offset, 5 bits type, 3 bits flags 
++      so enough for 64 GiByte
++   as a quick and dirty workaround we reduce this to:
++   19 bits offset, 5 bits type, 8 bits flags
++      so enough for 2 GiByte
++*/
++#define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) >> 8 })
++#define __swp_entry_to_pte(x)		((pte_t) { (x).val << 8 })
++#else
++#define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) >> 3 })
++#define __swp_entry_to_pte(x)		((pte_t) { (x).val << 3 })
++#endif
+ #define __swp_type(entry)		((entry).val & 0x1f)
+ #define __swp_offset(entry)		((entry).val >> 5)
+ #define __swp_entry(type, offset)	((swp_entry_t) { (type) | ((offset) << 5) })
+-#define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) >> 3 })
+-#define __swp_entry_to_pte(x)		((pte_t) { (x).val << 3 })
+ 
+ /* Encode and decode a nonlinear file mapping entry */
+ #define PTE_FILE_MAX_BITS	29
