@@ -284,9 +284,9 @@ root_optional: \
 $(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@
 	@PREPARE_busybox@
 if TARGETRULESET_FLASH
-	cat Patches/busybox-flash.config > @DIR_busybox@/.config
+	m4 -Dflash Patches/busybox.config.m4 > @DIR_busybox@/.config
 else
-	cat Patches/busybox.config > @DIR_busybox@/.config
+	m4 -Dyadd Patches/busybox.config.m4 > @DIR_busybox@/.config
 endif
 	cd @DIR_busybox@ && \
 		$(MAKE) dep all \
