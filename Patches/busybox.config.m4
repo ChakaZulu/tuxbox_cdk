@@ -388,13 +388,13 @@ option(`CONFIG_FEATURE_FBSET_READMODE', `n', `n')
 option(`CONFIG_FDFLUSH', `n', `n')
 option(`CONFIG_FDFORMAT', `n', `n')
 ifdef(`ide',
-`option(`CONFIG_FDISK', `y', `y')',
-`option(`CONFIG_FDISK', `n', `n')'
+`option(`CONFIG_FDISK', `y', `y')
+option(`FDISK_SUPPORT_LARGE_DISKS', `y', `y')
+option(`CONFIG_FEATURE_FDISK_WRITABLE', `y', `y')',
+`option(`CONFIG_FDISK', `n', `n')
+option(`FDISK_SUPPORT_LARGE_DISKS', `n', `n')
+option(`CONFIG_FEATURE_FDISK_WRITABLE', `n', `n')'
 )
-option(`FDISK_SUPPORT_LARGE_DISKS', `y', `y')
-option(`CONFIG_FEATURE_FDISK_WRITABLE', `y', `y')
-option(`FDISK_SUPPORT_LARGE_DISKS', `y', `y')
-option(`CONFIG_FEATURE_FDISK_WRITABLE', `y', `y')
 option(`CONFIG_FEATURE_AIX_LABEL', `n', `n')
 option(`CONFIG_FEATURE_SGI_LABEL', `n', `n')
 option(`CONFIG_FEATURE_SUN_LABEL', `n', `n')
@@ -570,8 +570,8 @@ option(`CONFIG_FEATURE_TRACEROUTE_USE_ICMP', `n', `n')
 #
 # udhcp Server/Client
 #
-option(CONFIG_APP_UDHCPD', `n', `n')
-option(CONFIG_APP_UDHCPC', `y', `y')
+option(`CONFIG_APP_UDHCPD', `n', `n')
+option(`CONFIG_APP_UDHCPC', `y', `y')
 option(`CONFIG_APP_DUMPLEASES', `n', `n')
 option(`CONFIG_FEATURE_UDHCP_SYSLOG', `y', `n')
 option(`CONFIG_FEATURE_UDHCP_DEBUG', `n', `n')
