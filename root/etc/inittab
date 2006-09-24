@@ -1,4 +1,4 @@
-# $Id: inittab,v 1.5 2005/06/10 10:46:35 saruman Exp $
+# $Id: inittab,v 1.6 2006/09/24 09:50:25 barf Exp $
 
 ::sysinit:/etc/init.d/rcS
 
@@ -23,4 +23,4 @@ vc/6::askfirst:-/bin/sh
 
 ::restart:/sbin/init
 ::ctrlaltdel:/sbin/reboot
-::shutdown:/bin/switch -fnc 0
+::shutdown:/etc/init.d/halt
