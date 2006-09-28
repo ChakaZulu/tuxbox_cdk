@@ -466,7 +466,7 @@ option(`CONFIG_FEATURE_LESS_MARKS', `n', `n')
 option(`CONFIG_FEATURE_LESS_REGEXP', `n', `n')
 ifdef(`ide',
 `option(`CONFIG_HDPARM', `y', `y')
-option(`CONFIG_FEATURE_HDPARM_GET_IDENTITY', `y', `n')',
+option(`CONFIG_FEATURE_HDPARM_GET_IDENTITY', `y', `y')',
 `option(`CONFIG_HDPARM', `n', `n')
 option(`CONFIG_FEATURE_HDPARM_GET_IDENTITY', `n', `n')'
 )
