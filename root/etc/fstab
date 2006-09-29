@@ -1,5 +1,5 @@
 proc	/proc		proc	defaults	0 0
-tmpfs	/tmp		ramfs	defaults	0 0
+tmpfs	/tmp		tmpfs	defaults	0 0
 sysfs	/sys		sysfs	noauto		0 0
 devpts  /dev/pts	devpts	noauto		0 0
 /dev/ide/host0/bus0/target0/lun0/part1 swap swap noauto 0 0
