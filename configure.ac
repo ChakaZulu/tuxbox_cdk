@@ -311,6 +311,7 @@ TUXBOX_RULES_MAKE_EXDIR(bootstrap_gcc)
 TUXBOX_RULES_MAKE_EXDIR(glibc)
 TUXBOX_RULES_MAKE_EXDIR(gcc)
 TUXBOX_RULES_MAKE(uclibc)
+TUXBOX_RULES_MAKE(libtool)
 
 #
 # root
@@ -381,6 +382,8 @@ TUXBOX_RULES_MAKE(e2fsprogs)
 TUXBOX_RULES_MAKE(utillinux)
 TUXBOX_RULES_MAKE(parted)
 TUXBOX_RULES_MAKE(hddtemp)
+TUXBOX_RULES_MAKE(xfsprogs)
+TUXBOX_RULES_MAKE(smartmontools)
 
 #
 # msttf

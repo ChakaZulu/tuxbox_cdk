@@ -98,6 +98,9 @@ dropbear;0.48.1;dropbear-0.48.1;dropbear-0.48.1.tar.gz;extract:dropbear-0.48.1.t
 kermit;8.0;c-kermit-8.0;cku211.tar.gz;dirextract:cku211.tar.gz;patch:kermit.diff
 hdparm;6.6;hdparm-6.6;hdparm-6.6.tar.gz;extract:hdparm-6.6.tar.gz
 parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
+xfsprogs;2.8.11;xfsprogs-2.8.11;xfsprogs_2.8.11-1.tar.gz;extract:xfsprogs_2.8.11-1.tar.gz
+libtool;1.5.22;libtool-1.5.22;libtool-1.5.22.tar.gz;extract:libtool-1.5.22.tar.gz
+smartmontools;5.36;smartmontools-5.36;smartmontools-5.36.tar.gz:smartmontools.diff;extract:smartmontools-5.36.tar.gz;patch:smartmontools.diff
 
 #
 # msttf

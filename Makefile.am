@@ -1176,7 +1176,7 @@ $(DEPDIR)/parted: bootstrap e2fsprogs libreadline @DEPENDS_parted@
 	@CLEANUP_parted@
 	touch $@
 
-$(DEPDIR)/hddtemp: bootstrap Archive/hddtemp-0.3-beta15.tar.bz2 @DEPENDS_hddtemp@
+$(DEPDIR)/hddtemp: bootstrap @DEPENDS_hddtemp@
 	@PREPARE_hddtemp@
 	cd @DIR_hddtemp@ && \
 		$(BUILDENV) \
@@ -1190,6 +1190,65 @@ $(DEPDIR)/hddtemp: bootstrap Archive/hddtemp-0.3-beta15.tar.bz2 @DEPENDS_hddtemp
 		$(INSTALL) -m 644 Patches/hddtemp.db $(targetprefix)/share/tuxbox
 	@CLEANUP_hddtemp@
 	touch $@ 
+
+# ripped from uclibc/.../libtool.mk
+$(DEPDIR)/libtool: bootstrap @DEPENDS_libtool@
+	@PREPARE_libtool@
+	cd @DIR_libtool@ && \
+		$(BUILDENV) \
+		./configure \
+		--target=$(target) \
+		--host=$(target) \
+		--build=$(build) \
+		--prefix=/usr \
+		--exec-prefix=/usr \
+		--bindir=/usr/bin \
+		--sbindir=/usr/sbin \
+		--libexecdir=/usr/lib \
+		--sysconfdir=/etc \
+		--datadir=/usr/share \
+		--localstatedir=/var \
+		--mandir=/usr/man \
+		--infodir=/usr/info &&\
+	$(MAKE) CC=$(target)-gcc &&\
+	$(INSTALL) -m755 libtool $(hostprefix)/bin
+	@CLEANUP_libtool@
+	touch $@
+
+# xfsprogs needs "special" built libtool and uuid header/lib of e2fsprogs
+$(DEPDIR)/xfsprogs: bootstrap @DEPENDS_xfsprogs@ $(DEPDIR)/libtool $(DEPDIR)/e2fsprogs
+	@PREPARE_xfsprogs@
+	cd @DIR_xfsprogs@ && \
+		$(BUILDENV) \
+		autoconf && \
+		LIBTOOL=$(hostprefix)/bin/libtool \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--includedir=$(targetprefix)/include \
+			--prefix=$(targetprefix) &&\
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(targetprefix)
+	@CLEANUP_xfsprogs@
+	touch $@
+
+
+$(DEPDIR)/smartmontools: bootstrap @DEPENDS_smartmontools@
+	@PREPARE_smartmontools@
+	cd @DIR_smartmontools@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--includedir=$(targetprefix)/include \
+			--prefix=$(targetprefix) &&\
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=
+	@CLEANUP_smartmontools@
+	touch $@
+
 
 #######################
 #
@@ -2118,6 +2177,13 @@ $(flashprefix)/.part_fstools: $(flashprefix)/.flash e2fsprogs utillinux
 	    ln -sf e2fsck fsck.ext3
 	@touch $@
 
+flash-xfstools: $(flashprefix)/.part_xfstools
+$(flashprefix)/.part_xfstools: $(flashprefix)/.flash xfsprogs
+	$(INSTALL) -d $(flashprefix)/root/sbin
+	@for i in mkfs.xfs xfs_repair ; do \
+		$(INSTALL) $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done;
+	@touch $@
+
 flash-utillinux: $(flashprefix)/.part_utillinux
 $(flashprefix)/.part_utillinux: $(flashprefix)/.flash utillinux
 	$(INSTALL) -d $(flashprefix)/root/sbin
@@ -2132,6 +2198,13 @@ $(flashprefix)/.part_hddtemp: $(flashprefix)/.flash hddtemp
 		$(INSTALL) $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done;
 	cp -pa $(targetprefix)/share/tuxbox/hddtemp.db $(flashprefix)/root/share/tuxbox
 	@touch $@
+
+flash-smartmontools: $(flashprefix)/.part_smartmontools
+$(flashprefix)/.part_smartmontools: $(flashprefix)/.flash smartmontools
+	@for i in smartctl ; do \
+		$(INSTALL) $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done;
+	@touch $@
+
 
 flash-lcdmenu: $(flashprefix)/.part_lcdmenu
 

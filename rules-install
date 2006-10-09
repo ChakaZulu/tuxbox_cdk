@@ -18,6 +18,7 @@ gcc;make:install
 glibc;make:install:install_root=TARGET
 uclibc;make:install:DEVEL_PREFIX=TARGET;install:-m644:lib/libc.a:TARGET/lib/libc_pic.a;install:-m644:lib/libcrypt.a:TARGET/lib/libcrypt_pic.a;install:-m644:lib/libm.a:TARGET/lib/libm_pic.a;
 watchdog;make:install:DESTDIR=TARGET
+libtool
 
 #
 # root
@@ -85,6 +86,8 @@ dropbear;install:-m755:dropbearmulti:TARGET/sbin;link:dropbearmulti:TARGET/sbin/
 kermit;make:install:prefix=TARGET:INFODIR=TARGET/share/doc/kermit
 hdparm;make:install:DESTDIR=TARGET
 parted;make:install
+xfsprogs;make:install:DESTDIR=TARGET
+smartmontools;make:install:DESTDIR=TARGET
 
 #
 # msttf
