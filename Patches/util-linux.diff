@@ -77,14 +77,3 @@
  
  .PHONEY: all install clean now
  all:	defines.h
---- util-linux-2.12i/fdisk/Makefile	2004-09-06 22:28:58.000000000 +0200
-+++ util-linux-2.12i/fdisk/Makefile	2004-11-18 21:53:50.000000000 +0100
-@@ -22,7 +22,7 @@
- MAN8:=$(MAN8) fdisk.8
- 
- ifneq "$(ARCH)" "sparc"
--SBIN:=$(SBIN) $(CFDISK) sfdisk
-+SBIN:=$(SBIN) sfdisk
- MAN8:=$(MAN8) cfdisk.8 sfdisk.8
- endif
- 

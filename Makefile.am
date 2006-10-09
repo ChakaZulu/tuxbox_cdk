@@ -1100,7 +1100,7 @@ $(DEPDIR)/kermit: bootstrap @DEPENDS_kermit@ libcrypto
 #   ide apps
 #
 
-ide_apps: hdparm utillinux e2fsprogs parted hddtemp
+ide_apps: hdparm utillinux e2fsprogs parted hddtemp xfsprogs smartmontools
 
 $(DEPDIR)/hdparm: bootstrap @DEPENDS_hdparm@
 	@PREPARE_hdparm@
@@ -1111,11 +1111,11 @@ $(DEPDIR)/hdparm: bootstrap @DEPENDS_hdparm@
 	@CLEANUP_hdparm@
 	touch $@
 
-$(DEPDIR)/utillinux: bootstrap @DEPENDS_utillinux@
+$(DEPDIR)/utillinux: bootstrap @DEPENDS_utillinux@ $(DEPDIR)/libncurses
 	@PREPARE_utillinux@
 	cd @DIR_utillinux@ && \
 		CC=$(target)-gcc \
-		CFLAGS="-Os -msoft-float" \
+		CFLAGS="-Os -msoft-float -I$(targetprefix)/include/ncurses" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure && \
 		$(MAKE) ARCH=ppc all && \
