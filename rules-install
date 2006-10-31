@@ -140,4 +140,9 @@ bluez_pan;make:install:DESTDIR=TARGET
 bluez_sdp;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libsdp.la
 bluez_utils;make:install:DESTDIR=TARGET
 
+#
+# mksquashfs with LZMA support
+#
+squashfs
+
 >>?;rules-install-local

@@ -148,3 +148,9 @@ bluez-pan-1.1.tar.gz;http://bluez.sourceforge.net/download
 bluez-sdp-1.5.tar.gz;http://bluez.sourceforge.net/download
 bluez-utils-2.4.tar.gz;http://bluez.sourceforge.net/download;http://www.dbox2world.de/Archive/
 
+#
+# mksquashfs with LZMA support
+#
+squashfs3.0.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/squashfs
+lzma442.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/sevenzip
+

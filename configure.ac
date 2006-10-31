@@ -279,7 +279,7 @@ if test "$TARGETRULESET" = "flash"; then
 	AC_PATH_PROG(MKSQUASHFS,mksquashfs,no)
 	if test "$MKSQUASHFS" = "no"; then
 		AC_MSG_WARN(can't build squashfs)
-		MKSQUASHFS=/bin/false
+		MKSQUASHFS="$hostprefix/bin/mksquashfs"
 	fi
 fi
 
@@ -312,6 +312,7 @@ TUXBOX_RULES_MAKE_EXDIR(glibc)
 TUXBOX_RULES_MAKE_EXDIR(gcc)
 TUXBOX_RULES_MAKE(uclibc)
 TUXBOX_RULES_MAKE(libtool)
+TUXBOX_RULES_MAKE(squashfs)
 
 #
 # root

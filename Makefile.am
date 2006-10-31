@@ -265,7 +265,7 @@ $(DEPDIR)/gcc: @DEPENDS_gcc@
 if TARGETRULESET_FLASH
 root: \
 	rootdirectories busybox ftpd \
-	procps watchdog
+	procps watchdog mksquashfs
 else
 if  KERNEL26
 root: \
@@ -391,6 +391,24 @@ $(DEPDIR)/mrouted: bootstrap @DEPENDS_mrouted@
 	    $(INSTALL) -m755 map-mbone $(targetprefix)/bin/map-mbone && \
 	    $(INSTALL) -m755 mrinfo $(targetprefix)/bin/mrinfo
 	@CLEANUP_mrouted@
+	touch $@
+
+#######################
+#
+# mksquashfs with LZMA support
+#
+$(DEPDIR)/mksquashfs: bootstrap @DEPENDS_squashfs@
+	rm -rf @DIR_squashfs@
+	mkdir -p @DIR_squashfs@
+	cd @DIR_squashfs@ && \
+	bunzip2 -cd ../Archive/lzma442.tar.bz2 | TAPE=- tar -x && \
+	patch -p1 < ../Patches/lzma_zlib-stream.diff && \
+	gunzip -cd ../Archive/squashfs3.0.tar.gz | TAPE=- tar -x && \
+	patch -p0 < ../Patches/mksquashfs_lzma.diff
+	$(MAKE) -C @DIR_squashfs@/C/7zip/Compress/LZMA_Lib
+	$(MAKE) -C @DIR_squashfs@/squashfs3.0/squashfs-tools
+	$(INSTALL) -m755 @DIR_squashfs@/squashfs3.0/squashfs-tools/mksquashfs $(hostprefix)/bin
+	@CLEANUP_squashfs@
 	touch $@
 
 #######################
