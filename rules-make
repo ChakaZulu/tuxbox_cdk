@@ -101,6 +101,7 @@ parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
 xfsprogs;2.8.11;xfsprogs-2.8.11;xfsprogs_2.8.11-1.tar.gz;extract:xfsprogs_2.8.11-1.tar.gz
 libtool;1.5.22;libtool-1.5.22;libtool-1.5.22.tar.gz;extract:libtool-1.5.22.tar.gz
 smartmontools;5.36;smartmontools-5.36;smartmontools-5.36.tar.gz:smartmontools.diff;extract:smartmontools-5.36.tar.gz;patch:smartmontools.diff
+samba;1.9.18p8;samba-1.9.18p8;samba-1.9.18p8.tar.gz:samba_ppc.diff;extract:samba-1.9.18p8.tar.gz;patch:samba_ppc.diff
 
 #
 # msttf

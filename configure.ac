@@ -385,6 +385,7 @@ TUXBOX_RULES_MAKE(parted)
 TUXBOX_RULES_MAKE(hddtemp)
 TUXBOX_RULES_MAKE(xfsprogs)
 TUXBOX_RULES_MAKE(smartmontools)
+TUXBOX_RULES_MAKE(samba)
 
 #
 # msttf

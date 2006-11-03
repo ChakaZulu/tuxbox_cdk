@@ -1267,6 +1267,16 @@ $(DEPDIR)/smartmontools: bootstrap @DEPENDS_smartmontools@
 	@CLEANUP_smartmontools@
 	touch $@
 
+$(DEPDIR)/samba: bootstrap @DEPENDS_samba@
+	@PREPARE_samba@
+	cd @DIR_samba@ && \
+		cd source && \
+		(for i in smbd nmbd smbmount smbmnt smbpasswd; do \
+			$(MAKE) $$i; \
+			cp $$i $(targetprefix)/bin; \
+		done)
+	@CLEANUP_samba@
+	touch $@
 
 #######################
 #
@@ -2223,6 +2233,14 @@ $(flashprefix)/.part_smartmontools: $(flashprefix)/.flash smartmontools
 		$(INSTALL) $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done;
 	@touch $@
 
+flash-sambaserver: $(flashprefix)/.part_sambaserver
+$(flashprefix)/.part_sambaserver: $(flashprefix)/.flash 
+	$(INSTALL) -d $(flashprefix)/root/bin
+	@for i in smbd nmbd smbpasswd; do \
+		$(INSTALL) $(targetprefix)/bin/$$i $(flashprefix)/root/bin; done
+	ln -sf /var/etc/smb.conf $(flashprefix)/root/etc/smb.conf
+	ln -sf /var/etc/smbpasswd $(flashprefix)/root/etc/smbpasswd
+	@touch $@
 
 flash-lcdmenu: $(flashprefix)/.part_lcdmenu
 
