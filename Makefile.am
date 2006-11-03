@@ -2451,7 +2451,7 @@ flash-cramfsroot: $(flashprefix)/.lib
 
 flash-squashfsroot: $(flashprefix)/.lib
 	$(MAKE) $(flashprefix)/.cramfs
-	$(FAKEROOT) $(MKSQUASHFS) $(flashprefix)/cramfs/ $(flashprefix)/root-squashfs.img -be
+	$(FAKEROOT) $(hostprefix)/bin/mksquashfs $(flashprefix)/cramfs/ $(flashprefix)/root-squashfs.img -be
 	rm -fr $(flashprefix)/cramfs
 	rm $(flashprefix)/.cramfs
 
@@ -2477,9 +2477,9 @@ $(flashprefix)/.cramfs:
 	fi
 	ln -sf /var/etc/issue.net $(flashprefix)/cramfs/etc/issue.net
 	cp -p $(targetprefix)/share/tuxbox/*.xml $(flashprefix)/cramfs/share/tuxbox
-	rm $(flashprefix)/cramfs/etc/passwd
+	rm -f $(flashprefix)/cramfs/etc/passwd
 	ln -sf /var/etc/passwd $(flashprefix)/cramfs/etc/passwd
-	rm $(flashprefix)/cramfs/bin/camd2
+	rm -f $(flashprefix)/cramfs/bin/camd2
 	ln -sf /var/bin/camd2 $(flashprefix)/cramfs/bin/camd2
 	@touch $@
 

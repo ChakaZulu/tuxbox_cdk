@@ -276,11 +276,6 @@ if test "$TARGETRULESET" = "flash"; then
 			MKJFFS2=$MKFSJFFS2
 		fi
 	fi
-	AC_PATH_PROG(MKSQUASHFS,mksquashfs,no)
-	if test "$MKSQUASHFS" = "no"; then
-		AC_MSG_WARN(can't build squashfs)
-		MKSQUASHFS="$hostprefix/bin/mksquashfs"
-	fi
 fi
 
 FONTDIR="/share/fonts"
