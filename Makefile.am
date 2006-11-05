@@ -1270,11 +1270,17 @@ $(DEPDIR)/smartmontools: bootstrap @DEPENDS_smartmontools@
 $(DEPDIR)/samba: bootstrap @DEPENDS_samba@
 	@PREPARE_samba@
 	cd @DIR_samba@ && \
+		$(INSTALL) examples/dbox/smb.conf.dbox $(targetprefix)/etc && \
 		cd source && \
-		(for i in smbd nmbd smbmount smbmnt smbpasswd; do \
+		$(MAKE) make_smbcodepage CC=$(CC) && \
+		$(INSTALL) -d $(targetprefix)/lib/codepages && \
+		./make_smbcodepage c 850 codepage_def.850 \
+			$(targetprefix)/lib/codepages/codepage.850 && \
+		$(MAKE) clean && \
+		for i in smbd nmbd smbclient smbmount smbmnt smbpasswd; do \
 			$(MAKE) $$i; \
 			cp $$i $(targetprefix)/bin; \
-		done)
+		done
 	@CLEANUP_samba@
 	touch $@
 
@@ -2234,12 +2240,27 @@ $(flashprefix)/.part_smartmontools: $(flashprefix)/.flash smartmontools
 	@touch $@
 
 flash-sambaserver: $(flashprefix)/.part_sambaserver
-$(flashprefix)/.part_sambaserver: $(flashprefix)/.flash 
+$(flashprefix)/.part_sambaserver: $(flashprefix)/.flash samba
 	$(INSTALL) -d $(flashprefix)/root/bin
-	@for i in smbd nmbd smbpasswd; do \
+	@for i in nmbd smbd smbpasswd; do \
+		$(INSTALL) $(targetprefix)/bin/$$i $(flashprefix)/root/bin; done;
+	$(INSTALL) -d $(flashprefix)/root/lib/codepages
+	$(INSTALL) $(targetprefix)/lib/codepages/codepage.850 $(flashprefix)/root/lib/codepages
+	$(INSTALL) -d $(flashprefix)/root/var/etc
+	$(INSTALL) $(targetprefix)/etc/smb.conf $(flashprefix)/root/var/etc/smb.conf.default
+	$(INSTALL) $(targetprefix)/etc/smb.conf.dbox $(flashprefix)/root/var/etc/smb.conf
+	ln -sf /var/etc/smb.conf $(flashprefix)/root/etc
+	$(INSTALL) $(targetprefix)/etc/smbpasswd $(flashprefix)/root/var/etc
+	ln -sf /var/etc/smbpasswd $(flashprefix)/root/etc
+	ln -sf /proc/mounts $(flashprefix)/root/etc/mtab 
+	@touch $@
+
+# These user space tools require a kernel with smbfs
+flash-sambaclient: $(flashprefix)/.part_sambaclient
+$(flashprefix)/.part_sambaclient: $(flashprefix)/.flash samba
+	$(INSTALL) -d $(flashprefix)/root/bin
+	@for i in smbclient smbmount smbmnt ; do \
 		$(INSTALL) $(targetprefix)/bin/$$i $(flashprefix)/root/bin; done
-	ln -sf /var/etc/smb.conf $(flashprefix)/root/etc/smb.conf
-	ln -sf /var/etc/smbpasswd $(flashprefix)/root/etc/smbpasswd
 	@touch $@
 
 flash-lcdmenu: $(flashprefix)/.part_lcdmenu

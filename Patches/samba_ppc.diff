@@ -1,6 +1,49 @@
-diff -Naur samba-1.9.18p8/source/includes.h samba-1.9.18p8_patched/source/includes.h
---- samba-1.9.18p8/source/includes.h	1998-06-13 03:44:19.000000000 +0200
-+++ samba-1.9.18p8/source/includes.h	2005-01-30 21:24:20.000000000 +0100
+diff -Naur samba-1.9.18p8.orig/examples/dbox/smb.conf.dbox samba-1.9.18p8/examples/dbox/smb.conf.dbox
+--- samba-1.9.18p8.orig/examples/dbox/smb.conf.dbox	1970-01-01 01:00:00.000000000 +0100
++++ samba-1.9.18p8/examples/dbox/smb.conf.dbox	2006-11-05 12:45:11.744427639 +0000
+@@ -0,0 +1,39 @@
++; Sample smb.conf configuration file for the dbox
++[global]
++;;;;;;;;;;;;;;;
++; Edit the following two lines to reflect your network settings:
++;;;;;;;;;;;;;;;
++interfaces = 192.168.0.41/24
++workgroup = MSHEIMNETZ
++;;;;;;;;;;;;;;;
++; The rest of the configuration is a security risk, but
++; at least it should allow you to debug your setup. Once
++; samba is running OK, feel free to be more restrictive.
++;;;;;;;;;;;;;;;
++server string = Samba Server
++netbios name = dbox
++security = share
++load printers = no
++guest ok = yes
++guest account = root
++encrypt passwords = yes
++os level = 0
++log level = 0
++browseable = yes
++preserve case = yes
++short preserve case = yes
++character set = iso8859-1
++# socket options = IPTOS_LOWDELAY TCP_NODELAY SO_SNDBUF=4096 SO_RCVBUF=4096
++;;;;;;;;;;;;;;;
++; Some sample shares
++;;;;;;;;;;;;;;;
++[Configuration]
++comment = Configuration files
++path = /var
++read only = no
++public = yes
++[Harddisk]
++comment = The harddisk
++path = /hdd
++read only = no
++public = yes
+diff -Naur samba-1.9.18p8.orig/source/includes.h samba-1.9.18p8/source/includes.h
+--- samba-1.9.18p8.orig/source/includes.h	1998-06-13 02:44:19.000000000 +0100
++++ samba-1.9.18p8/source/includes.h	2006-10-30 06:21:04.902353482 +0000
 @@ -1160,13 +1160,13 @@
  #include <sys/ipc.h>
  #include <sys/sem.h>
@@ -13,14 +56,31 @@ diff -Naur samba-1.9.18p8/source/includes.h samba-1.9.18p8_patched/source/includ
  	unsigned short *array;
  };
 -#endif
-+// #endif
++//#endif
  #if defined(HPUX) && defined(HPUX10)
  #ifdef SEMMSL
  #undef SEMMSL
-diff -Naur samba-1.9.18p8/source/Makefile samba-1.9.18p8_patched/source/Makefile
---- samba-1.9.18p8/source/Makefile	1998-06-01 08:29:04.000000000 +0200
-+++ samba-1.9.18p8/source/Makefile	2005-01-30 21:24:05.000000000 +0100
-@@ -27,12 +27,12 @@
+diff -Naur samba-1.9.18p8.orig/source/Makefile samba-1.9.18p8/source/Makefile
+--- samba-1.9.18p8.orig/source/Makefile	1998-06-01 07:29:04.000000000 +0100
++++ samba-1.9.18p8/source/Makefile	2006-10-30 06:32:31.653540874 +0000
+@@ -5,7 +5,7 @@
+ ###########################################################################
+ 
+ # The base directory for all samba files
+-BASEDIR = /usr/local/samba
++BASEDIR = 
+ 
+ # The base manpages directory to put the man pages in
+ # Note: $(MANDIR)/man1, $(MANDIR)/man5 and $(MANDIR)/man8 must exist.
+@@ -20,19 +20,20 @@
+ BINDIR = $(BASEDIR)/bin
+ SBINDIR = $(BASEDIR)/bin
+ LIBDIR = $(BASEDIR)/lib
+-VARDIR = $(BASEDIR)/var
++VARDIR = $(BASEDIR)/tmp
+ 
+ # The permissions to give the executables
+ INSTALLPERMS = 0755
  
  # Add any optimisation or debugging flags here
  # add -DSYSLOG for syslog support
@@ -30,42 +90,26 @@ diff -Naur samba-1.9.18p8/source/Makefile samba-1.9.18p8_patched/source/Makefile
  
  # You will need to use a ANSI C compiler. This means under SunOS 4 you can't 
  # use cc, instead you will have to use gcc. 
--# CC = gcc
+ # CC = gcc
 +CC = powerpc-tuxbox-linux-gnu-gcc
  
  # This may help with some versions of make
  SHELL = /bin/sh
-@@ -45,20 +45,20 @@
- # set these to where to find various files
- # These can be overridden by command line switches (see smbd(8))
+@@ -47,11 +48,11 @@
  # or in smb.conf (see smb.conf(5))
--SMBLOGFILE = $(VARDIR)/log.smb
--NMBLOGFILE = $(VARDIR)/log.nmb
+ SMBLOGFILE = $(VARDIR)/log.smb
+ NMBLOGFILE = $(VARDIR)/log.nmb
 -CONFIGFILE = $(LIBDIR)/smb.conf
--LMHOSTSFILE = $(LIBDIR)/lmhosts
--DRIVERFILE = $(LIBDIR)/printers.def
--SMB_PASSWD = $(BINDIR)/smbpasswd
++CONFIGFILE = $(BASEDIR)/etc/smb.conf
+ LMHOSTSFILE = $(LIBDIR)/lmhosts
+ DRIVERFILE = $(LIBDIR)/printers.def
+ SMB_PASSWD = $(BINDIR)/smbpasswd
 -SMB_PASSWD_FILE = $(BASEDIR)/private/smbpasswd
-+SMBLOGFILE = /tmp/log.smb
-+NMBLOGFILE = /tmp/log.nmb
-+CONFIGFILE = /etc/smb.conf
-+LMHOSTSFILE = /lib/lmhosts
-+DRIVERFILE = /lib/printers.def
-+SMB_PASSWD = /bin/smbpasswd
-+SMB_PASSWD_FILE = /etc/smbpasswd
++SMB_PASSWD_FILE = $(BASEDIR)/etc/smbpasswd
  WEB_ROOT = $(BASEDIR)
  
  # the directory where lock files go
--LOCKDIR = $(VARDIR)/locks
-+LOCKDIR = /tmp/locks
- 
- # The directory where code page definition files go
--CODEPAGEDIR = $(LIBDIR)/codepages
-+CODEPAGEDIR = /lib/codepages
- # The current codepage definition list.
- CODEPAGELIST= 437 737 850 852 861 932 866 949 950 936
- 
-@@ -237,13 +237,13 @@
+@@ -237,8 +238,8 @@
  
  # Use this for Linux with glibc2 (libc6)
  # contributed by Eloy Paris <peloy@ven.ra.rockwell.com>
@@ -76,34 +120,9 @@ diff -Naur samba-1.9.18p8/source/Makefile samba-1.9.18p8_patched/source/Makefile
  
  # Use this for Linux with glibc2 (libc6) - RedHat Linux v5.0 with PAM
  # contributed by John H Terpstra <jht@aquasoft.com.au>
--# FLAGSM = -DLINUX -DNETGROUP -DALLOW_CHANGE_PASSWORD -DFAST_SHARE_MODES -DNO_ASMSIGNALH -DGLIBC2
--# LIBSM = -lnsl -lcrypt
-+#FLAGSM = -DLINUX -DNETGROUP -DALLOW_CHANGE_PASSWORD -DFAST_SHARE_MODES -DNO_ASMSIGNALH -DGLIBC2
-+#LIBSM = -lnsl -lcrypt
- 
- # This is for SUNOS5.4 and later (also known as Solaris 2.4 and later)
- # contributed by Andrew.Tridgell@anu.edu.au
-@@ -755,7 +755,7 @@
- 
- smbd: $(SMBDOBJ) $(ARCFOUR_OBJ)
- 	@echo Linking smbd
--	@$(CC) $(CFLAGS) -o smbd $(SMBDOBJ) $(ARCFOUR_OBJ) $(LIBS) $(AFS_LIBS)
-+	$(CC) $(CFLAGS) -o smbd $(SMBDOBJ) $(ARCFOUR_OBJ) $(LIBS) $(AFS_LIBS)
- 
- smbrun: smbrun.o 
- 	@echo Linking smbrun
-@@ -767,7 +767,7 @@
- 
- nmbd: $(NMBDOBJ)
- 	@echo Linking nmbd
--	@$(CC) $(CFLAGS) -o nmbd $(NMBDOBJ) $(LIBS)
-+	$(CC) $(CFLAGS) -o nmbd $(NMBDOBJ) $(LIBS)
- 
- smbclient: $(CLIENT_OBJ) $(ARCFOUR_OBJ)
- 	@echo Linking smbclient
-diff -Naur samba-1.9.18p8/source/smbmnt.c samba-1.9.18p8_patched/source/smbmnt.c
---- samba-1.9.18p8/source/smbmnt.c	1998-01-26 21:05:46.000000000 +0100
-+++ samba-1.9.18p8/source/smbmnt.c	2005-01-31 01:41:18.000000000 +0100
+diff -Naur samba-1.9.18p8.orig/source/smbmnt.c samba-1.9.18p8/source/smbmnt.c
+--- samba-1.9.18p8.orig/source/smbmnt.c	1998-01-26 20:05:46.000000000 +0000
++++ samba-1.9.18p8/source/smbmnt.c	2006-10-30 06:19:31.584094506 +0000
 @@ -33,6 +33,11 @@
  
  #include <asm/unistd.h>
@@ -116,3 +135,18 @@ diff -Naur samba-1.9.18p8/source/smbmnt.c samba-1.9.18p8_patched/source/smbmnt.c
  static char *progname;
  
  
+diff -Naur samba-1.9.18p8.orig/source/smbmount.c samba-1.9.18p8/source/smbmount.c
+--- samba-1.9.18p8.orig/source/smbmount.c	1998-05-13 02:46:57.000000000 +0100
++++ samba-1.9.18p8/source/smbmount.c	2006-10-30 06:47:13.641085771 +0000
+@@ -31,6 +31,11 @@
+ 
+ #include "includes.h"
+ #include <linux/smb_fs.h>
++
++#undef NR_OPEN
++#define NR_OPEN (1024*1024)	/* Absolute upper limit on fd num */
++#define INR_OPEN 1024		/* Initial setting for nfile rlimits */
++
+ static struct smb_conn_opt conn_options;
+ 
+ #ifndef REGISTER
