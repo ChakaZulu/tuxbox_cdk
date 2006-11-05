@@ -3,12 +3,12 @@ SUBDIRS = init.d network
 EXTRA_DIST = \
 	fstab group host.conf hostname hosts inetd.conf inittab \
 	mime.types modules.conf nsswitch.conf passwd profile protocols \
-	resolv.conf services termcap timezone.xml
+	resolv.conf services smb.conf smbpasswd termcap timezone.xml
 
 FILES = \
 	fstab group host.conf hostname hosts inetd.conf inittab \
 	mime.types modules.conf nsswitch.conf passwd profile protocols \
-	resolv.conf services termcap timezone.xml
+	resolv.conf services smb.conf smbpasswd termcap timezone.xml
 
 FILES_FLASH_RO = \
 	fstab host.conf inittab mime.types modules.conf-flash nsswitch.conf \
