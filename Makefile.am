@@ -397,6 +397,8 @@ $(DEPDIR)/mrouted: bootstrap @DEPENDS_mrouted@
 #
 # mksquashfs with LZMA support
 #
+mksquashfs: $(DEPDIR)/mksquashfs
+
 $(DEPDIR)/mksquashfs: bootstrap @DEPENDS_squashfs@
 	rm -rf @DIR_squashfs@
 	mkdir -p @DIR_squashfs@
