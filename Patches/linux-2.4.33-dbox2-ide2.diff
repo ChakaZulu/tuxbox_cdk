@@ -12,14 +12,20 @@ diff -Naur linux-2.4.33.3/arch/ppc/kernel/m8xx_setup.c linux-2.4.33.3-ide/arch/p
 +#endif
  }
 diff -Naur linux-2.4.33.3/include/asm-ppc/pgtable.h linux-2.4.33.3-ide/include/asm-ppc/pgtable.h
---- linux-2.4.33.3/include/asm-ppc/pgtable.h	2006-08-31 19:03:20.000000000 +0200
-+++ linux-2.4.33.3-ide/include/asm-ppc/pgtable.h	2006-09-16 10:57:48.000000000 +0200
-@@ -632,8 +632,8 @@
- #define SWP_TYPE(entry)			((entry).val & 0x3f)
- #define SWP_OFFSET(entry)		((entry).val >> 6)
- #define SWP_ENTRY(type, offset)		((swp_entry_t) { (type) | ((offset) << 6) })
+--- linux-2.4.33.3/include/asm-ppc/pgtable.h	2006-11-08 19:35:25.064659104 +0000
++++ linux-2.4.33.3-ide/include/asm-ppc/pgtable.h	2006-11-08 19:35:01.237107868 +0000
+@@ -629,11 +629,11 @@
+  * must not include the _PAGE_PRESENT bit, or the _PAGE_HASHPTE bit
+  * (if used).  -- paulus
+  */
+-#define SWP_TYPE(entry)			((entry).val & 0x3f)
+-#define SWP_OFFSET(entry)		((entry).val >> 6)
+-#define SWP_ENTRY(type, offset)		((swp_entry_t) { (type) | ((offset) << 6) })
 -#define pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) >> 2 })
 -#define swp_entry_to_pte(x)		((pte_t) { (x).val << 2 })
++#define SWP_TYPE(entry)			((entry).val & 0x1f)
++#define SWP_OFFSET(entry)		((entry).val >> 5)
++#define SWP_ENTRY(type, offset)		((swp_entry_t) { (type) | ((offset) << 5) })
 +#define pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) >> 8 })
 +#define swp_entry_to_pte(x)		((pte_t) { (x).val << 8 })
  
