@@ -115,6 +115,11 @@ if test "$prefix" = "NONE"; then
 	prefix=/dbox2
 fi
 
+AC_ARG_ENABLE(ide,
+	AS_HELP_STRING(--enable-ide,include ide and ext3 drivers),
+	,[enable_ide=no])
+AM_CONDITIONAL(ENABLE_IDE,test "$enable_ide" = "yes")
+
 AC_ARG_WITH(targetprefix,
 	[  --with-targetprefix=DIR prefix for target files [[PREFIX/cdkroot]]],
 	[targetprefix="$with_targetprefix"],[targetprefix="${prefix}/cdkroot"])
@@ -471,6 +476,7 @@ driver directory:      $driverdir
 host apps directory:   $hostappsdir
 GNU server:            $gnuserver
 default server:        $defaultserver
+IDE support:           $enable_ide
 ])
 
 if test "$dircheck" = "fail"; then

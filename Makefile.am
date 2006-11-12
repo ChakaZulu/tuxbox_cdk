@@ -97,13 +97,17 @@ KERNEL_DIR = @DIR_linux24@
 KERNEL_PREPARE = @PREPARE_linux24@
 endif
 
+if ENABLE_IDE
+OPTIONAL_IDE = -ide2
+endif
+
 $(DEPDIR)/linuxdir: $(KERNEL_DEPENDS)
 	@if [ ! -d $(targetprefix)/bin ]; then \
 		$(MAKE) directories; \
 	fi
 	$(KERNEL_PREPARE)
 if TARGETRULESET_FLASH
-	cat Patches/linux-$(KERNELVERSION).config-flash > $(KERNEL_DIR)/.config
+	cat Patches/linux-$(KERNELVERSION).config-flash$(OPTIONAL_IDE) > $(KERNEL_DIR)/.config
 else
 	cat Patches/linux-$(KERNELVERSION).config > $(KERNEL_DIR)/.config
 endif
@@ -284,7 +288,11 @@ root_optional: \
 $(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@
 	@PREPARE_busybox@
 if TARGETRULESET_FLASH
-	m4 -Dflash Patches/busybox.config.m4 > @DIR_busybox@/.config
+if ENABLE_IDE
+	m4 -Dflash -Dide Patches/busybox.config.m4 > @DIR_busybox@/.config;
+else
+	m4 -Dflash Patches/busybox.config.m4 > @DIR_busybox@/.config;
+endif
 else
 	m4 -Dyadd Patches/busybox.config.m4 > @DIR_busybox@/.config
 endif
