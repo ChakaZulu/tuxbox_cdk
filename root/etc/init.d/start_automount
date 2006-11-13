@@ -48,7 +48,7 @@ else
     insmod $MD/kernel/net/sunrpc/sunrpc.o
     insmod $MD/kernel/fs/lockd/lockd.o
     insmod $MD/kernel/fs/nfs/nfs.o
-    #insmod $MD/kernel/fs/cifs/cifs.o
+    insmod $MD/kernel/fs/cifs/cifs.o
 fi
 
 if [ ! -d /var/lock ]; then

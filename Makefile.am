@@ -283,7 +283,28 @@ endif
 endif
 
 root_optional: \
-	portmap mrouted
+	portmap mrouted 
+
+$(DEPDIR)/automount: bootstrap @DEPENDS_automount@
+	@PREPARE_automount@
+	cd @DIR_automount@  && \
+		$(BUILDENV) STRIP=$(target)-strip \
+		$(MAKE) && \
+		$(MAKE) install INSTALLROOT=$(targetprefix)
+	rm -rf @DIR_automount@
+	$(INSTALL) $(buildprefix)/root/etc/init.d/start_automount $(targetprefix)/etc/init.d
+	ln -sf /proc/mounts $(targetprefix)/etc/mtab
+	@touch $@
+
+$(DEPDIR)/nfs_utils: bootstrap @DEPENDS_nfs_utils@
+	@PREPARE_nfs_utils@
+	chmod +x @DIR_nfs_utils@/autogen.sh
+	cd @DIR_nfs_utils@  && \
+		$(CONFIGURE) CC_FOR_BUILD=$(target)-gcc --disable-gss --disable-nfsv4 --prefix= && \
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(targetprefix)
+	rm -rf @DIR_nfs_utils@
+	@touch $@
 
 $(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@
 	@PREPARE_busybox@
@@ -2026,6 +2047,7 @@ $(flashprefix)/.flash: procps busybox driver tuxbox_tools lirc
 	$(INSTALL) -d $(flashprefix)/root/bin
 	$(INSTALL) -d $(flashprefix)/root/dev
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox
+	$(INSTALL) -d $(flashprefix)/root/lib/autofs
 	$(INSTALL) -d $(flashprefix)/root/mnt
 	$(INSTALL) -d $(flashprefix)/root/proc
 	$(INSTALL) -d $(flashprefix)/root/sbin
@@ -2231,7 +2253,7 @@ $(flashprefix)/.part_xfstools: $(flashprefix)/.flash xfsprogs
 flash-utillinux: $(flashprefix)/.part_utillinux
 $(flashprefix)/.part_utillinux: $(flashprefix)/.flash utillinux
 	$(INSTALL) -d $(flashprefix)/root/sbin
-	@for i in sfdisk ; do \
+	@for i in cfdisk sfdisk ; do \
 		$(INSTALL) $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done;
 	@touch $@
 
@@ -2273,6 +2295,35 @@ $(flashprefix)/.part_sambaclient: $(flashprefix)/.flash samba
 		$(INSTALL) $(targetprefix)/bin/$$i $(flashprefix)/root/bin; done
 	@touch $@
 
+flash-automount: $(flashprefix)/.part_automount
+
+$(flashprefix)/.part_automount: $(flashprefix)/.flash
+	cp -pa $(targetprefix)/etc/init.d/start_automount $(flashprefix)/root/etc/init.d
+	cp -pa $(targetprefix)/sbin/automount $(flashprefix)/root/sbin
+	$(INSTALL) -d $(flashprefix)/root/lib/autofs
+	@for i in lookup_file.so mount_bind.so mount_generic.so mount_nfs.so parse_sun.so; do \
+	cp -pa $(targetprefix)/lib/autofs/$$i $(flashprefix)/root/lib/autofs; done
+	ln -sf /proc/mounts $(flashprefix)/root/etc/mtab
+	ln -sf /var/etc/auto.net $(flashprefix)/root/etc/auto.net
+	@touch $@
+
+flash-nfsserver: flash-portmap flash-nfs-utils
+
+flash-portmap: $(flashprefix)/.part_portmap
+
+$(flashprefix)/.part_portmap: $(flashprefix)/.flash
+	cp -pa $(targetprefix)/sbin/portmap $(flashprefix)/root/sbin
+	@touch $@
+
+flash-nfs-utils: $(flashprefix)/.part_nfs-utils 
+
+$(flashprefix)/.part_nfs-utils: $(flashprefix)/.flash
+	@for i in exportfs rpc.mountd rpc.nfsd; do \
+	cp -pa $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done
+	cp -pa $(targetprefix)/var/lib $(flashprefix)/root/var
+	ln -sf /var/etc/exports $(flashprefix)/root/etc/exports
+	@touch $@
+
 flash-lcdmenu: $(flashprefix)/.part_lcdmenu
 
 $(flashprefix)/.part_lcdmenu: $(flashprefix)/.flash lcd
@@ -2292,6 +2343,7 @@ $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 
 		--root $(flashprefix)/root \
 		`find $(flashprefix)/root/bin/ -path "*bin/?*"` \
 		`find $(flashprefix)/root/lib/ -name "libnss_*"` \
+		`find $(flashprefix)/root/lib/autofs/ -name "*.so" -type f` \
 		`find $(flashprefix)/root/lib/tuxbox/ -name "*.so" -type f` \
 		`find $(flashprefix)/root/sbin/ -path "*sbin/?*"`
 	$(target)-strip --remove-section=.comment --remove-section=.note \
