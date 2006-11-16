@@ -2047,7 +2047,6 @@ $(flashprefix)/.flash: procps busybox driver tuxbox_tools lirc
 	$(INSTALL) -d $(flashprefix)/root/bin
 	$(INSTALL) -d $(flashprefix)/root/dev
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox
-	$(INSTALL) -d $(flashprefix)/root/lib/autofs
 	$(INSTALL) -d $(flashprefix)/root/mnt
 	$(INSTALL) -d $(flashprefix)/root/proc
 	$(INSTALL) -d $(flashprefix)/root/sbin
@@ -2343,8 +2342,7 @@ $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 
 		--root $(flashprefix)/root \
 		`find $(flashprefix)/root/bin/ -path "*bin/?*"` \
 		`find $(flashprefix)/root/lib/ -name "libnss_*"` \
-		`find $(flashprefix)/root/lib/autofs/ -name "*.so" -type f` \
-		`find $(flashprefix)/root/lib/tuxbox/ -name "*.so" -type f` \
+		`find $(flashprefix)/root/lib/ -name "*.so" -type f` \
 		`find $(flashprefix)/root/sbin/ -path "*sbin/?*"`
 	$(target)-strip --remove-section=.comment --remove-section=.note \
 		`find $(flashprefix)/root/bin/ -path "*bin/?*"` \
