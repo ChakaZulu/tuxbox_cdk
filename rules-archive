@@ -89,7 +89,7 @@ lirc-0.6.6.tar.bz2;http://unusedino.de/lirc/software
 openssh-3.8p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 tcpdump-3.9.4.tar.gz;http://www.tcpdump.org/release
 bonnie++-1.03a.tgz;http://www.coker.com.au/bonnie++
-lsof_4.72.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof;http://www.dbox2world.de/Archive/
+lsof_4.77.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof;http://www.dbox2world.de/Archive/
 e2fsprogs-1.35.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/e2fsprogs
 hddtemp-0.3-beta15.tar.bz2;http://guzu.net/files
 util-linux-2.12r.tar.bz2;http://www.kernel.org/pub/linux/utils/util-linux/

@@ -1,15 +1,6 @@
 diff -Naur lsof_4.64_src.orig/Configure lsof_4.64_src/Configure
 --- lsof_4.64_src.orig/Configure	Mon Jun 17 22:03:44 2002
 +++ lsof_4.64_src/Configure	Fri Aug 23 15:59:46 2002
-@@ -116,7 +116,7 @@
- fi	# }
- LSOF_AFS=""
- LSOF_AFSV=""
--LSOF_AR="ar cr \${LIB} \${OBJ}"
-+LSOF_AR="${CROSS_COMPILE}ar cr \${LIB} \${OBJ}"
- if test "X$LSOF_ARCH" = "X"	# {
- then
-   LSOF_ARCH=""
 @@ -125,9 +125,9 @@
  LSOF_CFGD=""
  LSOF_CFGDN=""
