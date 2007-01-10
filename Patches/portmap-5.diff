@@ -57,12 +57,12 @@ diff -Naur portmap_5beta-old/Makefile portmap_5beta/Makefile
  	@$(CC) -M $(CFLAGS) *.c | grep -v /usr/include |sed 's/\.\///'
  
 +install: all
-+	install -m 0755 -s portmap ${BASEDIR}/sbin
-+	install -m 0755 -s pmap_dump ${BASEDIR}/sbin
-+	install -m 0755 -s pmap_set ${BASEDIR}/sbin
++	install -m 0755 portmap ${BASEDIR}/sbin
++	install -m 0755 pmap_dump ${BASEDIR}/sbin
++	install -m 0755 pmap_set ${BASEDIR}/sbin
 +
 +flashinstall: portmap
-+	install -m 0755 -s portmap ${BASEDIR}/sbin
++	install -m 0755 portmap ${BASEDIR}/sbin
 +
  daemon.o: daemon.c
  from_local.o: from_local.c
