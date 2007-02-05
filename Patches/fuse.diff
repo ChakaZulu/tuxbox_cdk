@@ -1,36 +1,30 @@
-diff -Naur fuse-2.5.1-orig/kernel/Makefile.in fuse-2.5.1/kernel/Makefile.in
---- fuse-2.5.1-orig/kernel/Makefile.in	2006-01-20 16:21:17.000000000 +0100
-+++ fuse-2.5.1/kernel/Makefile.in	2006-01-24 16:03:31.000000000 +0100
-@@ -54,9 +54,12 @@
+--- fuse-2.5.3.orig/kernel/Makefile.in	2006-02-02 18:04:52.000000000 +0100
++++ fuse-2.5.3/kernel/Makefile.in	2007-01-28 15:37:54.000000000 +0100
+@@ -31,11 +31,11 @@
+ install-y: all
+ 	$(mkdir_p) $(DESTDIR)$(fusemoduledir)
+ 	$(INSTALL) -m 644 $(fusemodule) $(DESTDIR)$(fusemoduledir)/$(fusemodule)
+-	-/sbin/depmod -a
++#	-/sbin/depmod -a
+ 
+ uninstall-y:
+ 	rm -f $(DESTDIR)$(fusemoduledir)/$(fusemodule)
+-	-/sbin/depmod -a
++#	-/sbin/depmod -a
+ 
+ clean:
+ 	-rm -f $(fusemodule) *.o .*.cmd *.mod.c *.ko *.s */*.o
+@@ -54,10 +54,10 @@
  
  ifeq ($(majver), 2.4)
  
 -CC = gcc
 -LD = ld
--CFLAGS = -O2 -Wall -Wstrict-prototypes -fno-strict-aliasing -pipe @KERNELCFLAGS@
-+#CC = gcc
-+#LD = ld
-+LD = @host_alias@-ld
 +CC = @CC@
-+#CFLAGS = @CFLAGS@
-+CFLAGS = -O2 -Wall -Wstrict-prototypes -fno-strict-aliasing -pipe @KERNELCFLAGS@ @CFLAGS@
- CPPFLAGS = -I@kernelsrc@/include -I. -D__KERNEL__ -DMODULE -D_LOOSE_KERNEL_NAMES -DFUSE_VERSION=\"$(VERSION)\" @KERNELCPPFLAGS@
++LD = @host_alias@-ld
+ CFLAGS = -O2 -Wall -Wstrict-prototypes -fno-strict-aliasing -pipe @KERNELCFLAGS@
+-CPPFLAGS = -I@kernelsrc@/include -I. -D__KERNEL__ -DMODULE -D_LOOSE_KERNEL_NAMES -DFUSE_VERSION=\"$(VERSION)\" @KERNELCPPFLAGS@
++CPPFLAGS = -I@kernelsrc@/include -I. -I@kernelsrc@/arch/ppc -D__KERNEL__ -DMODULE -D_LOOSE_KERNEL_NAMES -DFUSE_VERSION=\"$(VERSION)\" @KERNELCPPFLAGS@
  
  fuse_objs = dev.o dir.o file.o inode.o compat/parser.o
-diff -Naur fuse-2.5.1-orig/util/Makefile.in fuse-2.5.1/util/Makefile.in
---- fuse-2.5.1-orig/util/Makefile.in	2006-01-21 09:58:58.000000000 +0100
-+++ fuse-2.5.1/util/Makefile.in	2006-01-24 16:16:42.000000000 +0100
-@@ -453,13 +453,6 @@
  
- 
- install-exec-hook:
--	-chown root $(DESTDIR)$(bindir)/fusermount
--	-chmod u+s $(DESTDIR)$(bindir)/fusermount
--	@if test ! -e $(DESTDIR)/dev/fuse; then \
--		$(mkdir_p) $(DESTDIR)/dev; \
--		echo "mknod $(DESTDIR)/dev/fuse -m 0666 c 10 229"; \
--		mknod $(DESTDIR)/dev/fuse -m 0666 c 10 229; \
--	fi
- 
- install-exec-local:
- 	$(mkdir_p) $(DESTDIR)$(MOUNT_FUSE_PATH)
