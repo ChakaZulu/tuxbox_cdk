@@ -9,7 +9,7 @@
 #
 # core
 
-u-boot-1.1.4.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/u-boot
+u-boot-1.2.0.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/u-boot
 linux-2.4.34.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
 linux-2.6.15.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6;ftp://ftp.kernel.org/pub/linux/kernel/v2.6
 cifs-1.20c-2.4.tar.gz;http://us1.samba.org/samba/ftp/cifs-cvs
@@ -29,8 +29,9 @@ watchdog_5.2.4.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/w/watchdog
 busybox-1.2.1.tar.bz2;http://www.busybox.net/downloads
 autofs-4.1.4.tar.bz2;ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4
 nfs-utils-1.0.9.tar.bz2;ftp://ftp.kernel.org/pub/linux/utils/nfs
-fuse-2.5.1.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/fuse
-djmount-0.51.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/djmount
+fuse-2.5.3.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/fuse
+fuse-2.6.2.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/fuse
+djmount-0.71.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/djmount
 module-init-tools-3.2.1.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/module-init-tools
 modutils-2.4.26.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
@@ -90,7 +91,7 @@ openssh-3.8p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;
 tcpdump-3.9.4.tar.gz;http://www.tcpdump.org/release
 bonnie++-1.03a.tgz;http://www.coker.com.au/bonnie++
 lsof_4.77.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof;http://www.dbox2world.de/Archive/
-e2fsprogs-1.35.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/e2fsprogs
+e2fsprogs-1.39.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/e2fsprogs
 hddtemp-0.3-beta15.tar.bz2;http://guzu.net/files
 util-linux-2.12r.tar.bz2;http://www.kernel.org/pub/linux/utils/util-linux/
 DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/downloads/Old
@@ -98,11 +99,11 @@ vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/lufs
 dropbear-0.48.1.tar.gz;http://matt.ucc.asn.au/dropbear
 cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
-hdparm-6.6.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/hdparm
+hdparm-6.9.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/hdparm
 parted-1.7.1.tar.gz;http://ftp.gnu.org/pub/gnu/parted
-xfsprogs_2.8.11-1.tar.gz;ftp://oss.sgi.com/projects/xfs/cmd_tars
+xfsprogs_2.8.18-1.tar.gz;ftp://oss.sgi.com/projects/xfs/cmd_tars
 libtool-1.5.22.tar.gz;ftp://ftp.gnu.org/gnu/libtool
-smartmontools-5.36.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/smartmontools
+smartmontools-5.37.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/smartmontools
 samba-1.9.18p8.tar.gz;http://mirrors.xmission.com/samba/ftp/stable/
 
 #
@@ -117,6 +118,7 @@ mc-4.6.1.tar.gz;ftp://ftp.zcu.cz/pub/linux/utils/file/managers/mc
 joe-3.1.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/joe-editor
 bash-3.0.tar.gz;http://ftp.gnu.org/gnu/bash/
 Python-2.4.2.tar.bz2;http://www.python.org/ftp/python/2.4.2
+netio126.zip;http://freshmeat.net/redir/netio/18673/url_zip/
 
 #
 # java

@@ -12,7 +12,7 @@
 #
 # core
 #
-uboot;1.1.4;u-boot-1.1.4;u-boot-1.1.4.tar.bz2:u-boot-1.1.4.diff;extract:u-boot-1.1.4.tar.bz2;patch:u-boot-1.1.4.diff
+uboot;1.2.0;u-boot-1.2.0;u-boot-1.2.0.tar.bz2:u-boot-1.2.0.diff;extract:u-boot-1.2.0.tar.bz2;patch:u-boot-1.2.0.diff
 linux24;2.4.34-dbox2;linux-2.4.34;linux-2.4.34.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.34-dbox2-mtd0305.diff.bz2:autofs4-2.4-module-20050404.tar.gz;extract:autofs4-2.4-module-20050404.tar.gz;move:autofs4-2.4/module-patches/autofs4-2.4.29.patch:Patches;remove:autofs4-2.4;remove:linux;extract:linux-2.4.34.tar.bz2;patch:linux-2.4.34-dbox2.diff;patch:linux-2.4.33-dbox2-shift.diff;patch:linux-2.4.33-dbox2-keyboard.diff;patch:linux-2.4.33-dbox2-v4l2.diff;patch:linux-2.4.33-dbox2-cramfs.diff;patch:linux-2.4.33-dbox2-lufs.diff;patch:linux-2.4.34-dbox2-mtd0305.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.34/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs3.0-patch;patch:squashfs3.0_lzma-patch;patch:linux-2.4.33-dbox2-badram.diff;patch:autofs4-2.4.29.patch;patch:linux-2.4.33-dbox2-ide2.diff;link:linux-2.4.34:linux
 linux;2.6.15-dbox2;linux-2.6.15;linux-2.6.15.tar.bz2:linux-2.6.15-dbox2.diff;remove:linux;extract:linux-2.6.15.tar.bz2;patch:linux-2.6.15-dbox2.diff;link:linux-2.6.15:linux
 binutils;2.15.91.0.2;binutils-2.15.91.0.2;binutils-2.15.91.0.2.tar.bz2;extract:binutils-2.15.91.0.2.tar.bz2
@@ -29,8 +29,9 @@ watchdog;5.2.4;watchdog-5.2.4.orig;watchdog_5.2.4.orig.tar.gz:watchdog.diff;extr
 busybox;1.2.1;busybox-1.2.1;busybox-1.2.1.tar.bz2;extract:busybox-1.2.1.tar.bz2;patch:busybox.diff
 automount;4.1.4;autofs-4.1.4;autofs-4.1.4.tar.bz2;extract:autofs-4.1.4.tar.bz2;patch:autofs.diff
 nfs_utils;1.0.9;nfs-utils-1.0.9;nfs-utils-1.0.9.tar.bz2;extract:nfs-utils-1.0.9.tar.bz2;patch:nfs-utils.diff
-fuse;2.5.1;fuse-2.5.1;fuse-2.5.1.tar.gz;extract:fuse-2.5.1.tar.gz;patch:fuse.diff
-djmount;0.51;djmount-0.51;djmount-0.51.tar.gz;extract:djmount-0.51.tar.gz
+fusekernel;2.5.3;fuse-2.5.3;fuse-2.5.3.tar.gz;extract:fuse-2.5.3.tar.gz;patch:fuse.diff
+fuse;2.6.2;fuse-2.6.2;fuse-2.6.2.tar.gz;extract:fuse-2.6.2.tar.gz
+djmount;0.71;djmount-0.71;djmount-0.71.tar.gz;extract:djmount-0.71.tar.gz
 ftpd;1.2.2;vsftpd-1.2.2;vsftpd-1.2.2.tar.gz:ftpd.diff;extract:vsftpd-1.2.2.tar.gz;patch:ftpd.diff
 module_init_tools;3.2.1;module-init-tools-3.2.1;module-init-tools-3.2.1.tar.bz2;extract:module-init-tools-3.2.1.tar.bz2
 modutils;2.4.26;modutils-2.4.26;modutils-2.4.26.tar.bz2:modutils.diff;extract:modutils-2.4.26.tar.bz2;patch:modutils.diff
@@ -86,7 +87,7 @@ directfb_examples;0.9.22;DirectFB-examples-0.9.22;DirectFB-examples-0.9.22.tar.g
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.diff
 lsof;4.77;lsof_4.77;lsof_4.77.tar.gz:lsof.diff;extract:lsof_4.77.tar.gz
-e2fsprogs;1.35;e2fsprogs-1.35;e2fsprogs-1.35.tar.gz;extract:e2fsprogs-1.35.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
+e2fsprogs;1.39;e2fsprogs-1.39;e2fsprogs-1.39.tar.gz;extract:e2fsprogs-1.39.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
 utillinux;2.12r;util-linux-2.12r;util-linux-2.12r.tar.bz2;extract:util-linux-2.12r.tar.bz2;patch:util-linux.diff
 hddtemp;0.3-beta15;hddtemp-0.3-beta15;hddtemp-0.3-beta15.tar.bz2;extract:hddtemp-0.3-beta15.tar.bz2
 ssh;3.8p1;openssh-3.8p1;openssh-3.8p1.tar.gz:ssh.diff;extract:openssh-3.8p1.tar.gz;patch:ssh.diff
@@ -96,9 +97,9 @@ vdr;1.2.6;vdr-1.2.6;vdr-1.2.6.tar.bz2:vdr.diff;extract:vdr-1.2.6.tar.bz2;patch:v
 lufs;0.9.7;lufs-0.9.7;lufs-0.9.7.tar.gz:lufs.diff;extract:lufs-0.9.7.tar.gz;patch:lufs.diff
 dropbear;0.48.1;dropbear-0.48.1;dropbear-0.48.1.tar.gz;extract:dropbear-0.48.1.tar.gz
 kermit;8.0;c-kermit-8.0;cku211.tar.gz;dirextract:cku211.tar.gz;patch:kermit.diff
-hdparm;6.6;hdparm-6.6;hdparm-6.6.tar.gz;extract:hdparm-6.6.tar.gz
+hdparm;6.9;hdparm-6.9;hdparm-6.9.tar.gz;extract:hdparm-6.9.tar.gz
 parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
-xfsprogs;2.8.11;xfsprogs-2.8.11;xfsprogs_2.8.11-1.tar.gz;extract:xfsprogs_2.8.11-1.tar.gz
+xfsprogs;2.8.18;xfsprogs-2.8.18;xfsprogs_2.8.18-1.tar.gz;extract:xfsprogs_2.8.18-1.tar.gz
 libtool;1.5.22;libtool-1.5.22;libtool-1.5.22.tar.gz;extract:libtool-1.5.22.tar.gz
 smartmontools;5.36;smartmontools-5.36;smartmontools-5.36.tar.gz:smartmontools.diff;extract:smartmontools-5.36.tar.gz;patch:smartmontools.diff
 samba;1.9.18p8;samba-1.9.18p8;samba-1.9.18p8.tar.gz:samba_ppc.diff;extract:samba-1.9.18p8.tar.gz;patch:samba_ppc.diff
@@ -121,6 +122,7 @@ mc;4.6.1;mc-4.6.1;mc-4.6.1.tar.gz:mc-4.6.1.diff;extract:mc-4.6.1.tar.gz;patch:mc
 joe;3.1;joe-3.1;joe-3.1.tar.gz;extract:joe-3.1.tar.gz
 bash;3.0;bash-3.0;bash-3.0.tar.gz;extract:bash-3.0.tar.gz
 python;2.4.2;Python-2.4.2;Python-2.4.2.tar.bz2:python.diff;extract:Python-2.4.2.tar.bz2;patch:python.diff
+netio;1.2.6;netio126;netio126.zip;extract:netio126.zip:netio126
 
 #
 # java

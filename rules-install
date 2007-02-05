@@ -19,6 +19,10 @@ glibc;make:install:install_root=TARGET
 uclibc;make:install:DEVEL_PREFIX=TARGET;install:-m644:lib/libc.a:TARGET/lib/libc_pic.a;install:-m644:lib/libcrypt.a:TARGET/lib/libcrypt_pic.a;install:-m644:lib/libm.a:TARGET/lib/libm_pic.a;
 watchdog;make:install:DESTDIR=TARGET
 libtool
+fuse;make:install:DESTDIR=TARGET
+fusekernel;make:install:DESTDIR=TARGET
+djmount;make:install:DESTDIR=TARGET
+
 
 #
 # root
@@ -107,6 +111,7 @@ mc;make:install:prefix=TARGET
 joe;make:install:prefix=TARGET
 bash;make:install:prefix=TARGET
 python;make:bininstall:prefix=TARGET
+netio;install:-m755:netio:TARGET/bin;install:-m755:bin/win32-i386.exe:HOST/bin/netio
 
 #
 # java

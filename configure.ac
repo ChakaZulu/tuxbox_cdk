@@ -388,6 +388,11 @@ TUXBOX_RULES_MAKE(hddtemp)
 TUXBOX_RULES_MAKE(xfsprogs)
 TUXBOX_RULES_MAKE(smartmontools)
 TUXBOX_RULES_MAKE(samba)
+if test "$enable_kernel26" = "no"; then
+TUXBOX_RULES_MAKE(fusekernel)
+fi
+TUXBOX_RULES_MAKE(fuse)
+TUXBOX_RULES_MAKE(djmount)
 
 #
 # msttf
@@ -396,7 +401,7 @@ TUXBOX_RULES_MAKE(cabextract)
 TUXBOX_RULES_MAKE(msttf)
 
 #
-# additional
+# development tools
 #
 TUXBOX_RULES_MAKE(gdb)
 TUXBOX_RULES_MAKE(insight)
@@ -407,6 +412,7 @@ TUXBOX_RULES_MAKE(mc)
 TUXBOX_RULES_MAKE(joe)
 TUXBOX_RULES_MAKE(bash)
 TUXBOX_RULES_MAKE(python)
+TUXBOX_RULES_MAKE(netio)
 
 #
 # java

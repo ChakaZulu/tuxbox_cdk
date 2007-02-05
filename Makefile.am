@@ -422,6 +422,72 @@ $(DEPDIR)/mrouted: bootstrap @DEPENDS_mrouted@
 	@CLEANUP_mrouted@
 	touch $@
 
+# this contains the fuse kernelmodule for linux-2.4.x, fuse-2.6.x does only support kernel 2.6.x
+$(DEPDIR)/fusekernel: bootstrap @DEPENDS_fusekernel@
+	@PREPARE_fusekernel@
+	cd @DIR_fusekernel@ && \
+	$(BUILDENV) \
+	CFLAGS="$(TARGET_CFLAGS) -I$(buildprefix)/linux/arch/ppc" \
+	./configure \
+	   --build=$(build) \
+	   --host=$(target) \
+	   --with-kernel=$(buildprefix)/$(KERNEL_DIR) \
+	   --disable-lib \
+	   --disable-util \
+	   --disable-example \
+	   --prefix= && \
+	$(MAKE) all && \
+	@INSTALL_fusekernel@
+	@CLEANUP_fusekernel@
+	touch $@
+
+if KERNEL26
+# this contains the fuse library and tools and the fuse kernelmodule if kernel 2.6 is enabled
+$(DEPDIR)/fuse: bootstrap @DEPENDS_fuse@
+	@PREPARE_fuse@
+	cd @DIR_fuse@ && \
+	$(BUILDENV) \
+	CFLAGS="$(TARGET_CFLAGS) -I$(buildprefix)/linux/arch/ppc" \
+	./configure \
+	   --build=$(build) \
+	   --host=$(target) \
+	   --with-kernel=$(buildprefix)/$(KERNEL_DIR) \
+	   --prefix= && \
+	$(MAKE) all && \
+	@INSTALL_fuse@
+	@CLEANUP_fuse@
+	touch $@
+else
+# this contains the fuse library and tools if kernel 2.4 is enabled
+$(DEPDIR)/fuse: bootstrap $(DEPDIR)/fusekernel @DEPENDS_fuse@
+	@PREPARE_fuse@
+	cd @DIR_fuse@ && \
+	$(BUILDENV) \
+	CFLAGS="$(TARGET_CFLAGS) -I$(buildprefix)/linux/arch/ppc" \
+	./configure \
+	   --build=$(build) \
+	   --host=$(target) \
+	   --disable-kernel-module \
+	   --prefix= && \
+	$(MAKE) all && \
+	$(MAKE) install DESTDIR=$(targetprefix)
+	@CLEANUP_fuse@
+	touch $@
+endif
+
+$(DEPDIR)/djmount: bootstrap $(DEPDIR)/fuse @DEPENDS_djmount@
+	@PREPARE_djmount@
+	cd @DIR_djmount@ && \
+	$(BUILDENV) \
+	./configure \
+	   --build=$(build) \
+	   --host=$(target) \
+	   --prefix= && \
+	$(MAKE) all && \
+	@INSTALL_djmount@
+	@CLEANUP_djmount@
+	touch $@
+
 #######################
 #
 # mksquashfs with LZMA support
@@ -1143,7 +1209,6 @@ $(DEPDIR)/kermit: bootstrap @DEPENDS_kermit@ libcrypto
 	@CLEANUP_kermit@
 	touch $@
 
-
 #######################
 #
 #   ide apps
@@ -1182,6 +1247,7 @@ $(DEPDIR)/e2fsprogs: bootstrap @DEPENDS_e2fsprogs@
 		RANLIB=$(target)-ranlib \
 		CFLAGS="-Os -msoft-float" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
+		LDCONFIG="/bin/true" \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -1196,13 +1262,14 @@ $(DEPDIR)/e2fsprogs: bootstrap @DEPENDS_e2fsprogs@
 			--disable-swapfs \
 			--disable-debugfs \
 			--disable-image \
+			--disable-e2initrd-helper \
 			--enable-resizer \
 			--enable-dynamic-e2fsck \
 			--enable-fsck \
 			--with-gnu-ld \
 			--disable-nls && \
 		$(MAKE) libs progs && \
-		$(MAKE) install-libs && \
+		$(MAKE) install-progs-recursive install-shlibs-libs-recursive install-libs && \
 		@INSTALL_e2fsprogs@
 	@CLEANUP_e2fsprogs@
 	touch $@
@@ -1465,6 +1532,15 @@ $(DEPDIR)/python: bootstrap @DEPENDS_python@
 		$(MAKE) python && \
 		@INSTALL_python@
 	@CLEANUP_python@
+	touch $@
+
+$(DEPDIR)/netio: bootstrap @DEPENDS_netio@
+	@PREPARE_netio@
+	cd @DIR_netio@ && \
+		$(BUILDENV) \
+		$(MAKE) all O=.o X= CFLAGS="-DUNIX" LIBS="$(LDFLAGS) -lpthread" OUT=-o && \
+		@INSTALL_netio@
+	@CLEANUP_netio@
 	touch $@
 
 #######################
