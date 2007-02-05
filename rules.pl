@@ -66,6 +66,10 @@ sub process_make_depends (@)
     {
       $output .= "Archive/" . $_ . " ";
     }
+    elsif ( $_ =~ m#\.zip$# )
+    {
+      $output .= "Archive/" . $_ . " ";
+    }
     else
     {
       die "can't recognize type of archive " . $_;
@@ -115,6 +119,10 @@ sub process_make_prepare (@)
       elsif ( $_[1] =~ m#\.exe$# )
       {
 	$output .= "cabextract Archive/" . $_[1];
+      }
+      elsif ( $_[1] =~ m#\.zip$# )
+      {
+	$output .= "unzip -d $_[2] Archive/" . $_[1];
       }
       else
       {
