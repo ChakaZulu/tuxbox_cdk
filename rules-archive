@@ -54,7 +54,7 @@ curl-7.10.1.tar.gz;http://curl.haxx.se/download/archeology
 freetype-2.1.4.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/freetype
 ncurses-5.3.tar.gz;ftp://$(gnuserver)/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/software/jpeg
-libpng-1.2.15.tar.bz2;ftp://ftp.simplesystems.org/pub/libpng/png/src
+libpng-1.2.16.tar.bz2;ftp://ftp.simplesystems.org/pub/libpng/png/src
 libxml2-2.4.30.tar.gz;ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.4
 zlib-1.2.3.tar.bz2;http://www.gzip.org/zlib;http://www.zlib.net
 libffi-1.20.tar.gz;ftp://sources.redhat.com/pub/libffi
