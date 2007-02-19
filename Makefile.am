@@ -1121,6 +1121,7 @@ $(DEPDIR)/ssh: bootstrap libcrypto libz @DEPENDS_ssh@
 	cd @DIR_ssh@ && \
 		$(BUILDENV) \
 		autoconf && \
+		CFLAGS="$(TARGET_CFLAGS)" \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
