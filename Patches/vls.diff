@@ -1,6 +1,30 @@
-diff -Naur vls-0.4.0.orig/configure vls-0.4.0/configure
---- vls-0.4.0.orig/configure	Sun Oct 13 20:23:45 2002
-+++ vls-0.4.0/configure	Sun Oct 30 12:52:47 2005
+diff -Naur vls-0.4.0-orig/Makefile.dep vls-0.4.0/Makefile.dep
+--- vls-0.4.0-orig/Makefile.dep	2002-10-13 20:23:45.000000000 +0200
++++ vls-0.4.0/Makefile.dep	2007-02-19 20:40:24.701847738 +0100
+@@ -50,7 +50,6 @@
+ 	@test -d dep/$(dir $*) || mkdir -p dep/$(dir $*)
+ 	@echo "Generating dependancies for $<..."
+ 	@$(SHELL) -ec '$(CXX) $(DCFLAGS) $(INCLUDE) $< \
+-	| sed '\''s/$(subst .,\.,$(notdir $*))\.o[ :]*/src\/$(subst /,\/,$*).o \
+-	dep\/$(subst /,\/,$*).d : /g'\'' > $@; \
++	| sed '\''s/$(subst .,\.,$(notdir $*))\.o[ :]*/src\/$(subst /,\/,$*).o dep\/$(subst /,\/,$*).d : /g'\'' > $@; \
+ 	[ -s $@ ] || rm -f $@'
+ 
+diff -Naur vls-0.4.0-orig/Makefile.module.dep vls-0.4.0/Makefile.module.dep
+--- vls-0.4.0-orig/Makefile.module.dep	2002-10-13 20:23:45.000000000 +0200
++++ vls-0.4.0/Makefile.module.dep	2007-02-19 20:40:40.464443056 +0100
+@@ -50,7 +50,6 @@
+ 	@test -d dep/$(dir $*) || mkdir -p dep/$(dir $*)
+ 	@echo "Generating dependancies for $<..."
+ 	@$(SHELL) -ec '$(CXX) $(DCFLAGS) $(INCLUDE) $< \
+-	| sed '\''s/$(subst .,\.,$(notdir $*))\.o[ :]*/$(subst /,\/,$*).o \
+-	dep\/$(subst /,\/,$*).d : /g'\'' > $@; \
++	| sed '\''s/$(subst .,\.,$(notdir $*))\.o[ :]*/$(subst /,\/,$*).o dep\/$(subst /,\/,$*).d : /g'\'' > $@; \
+ 	[ -s $@ ] || rm -f $@'
+ 
+diff -Naur vls-0.4.0-orig/configure vls-0.4.0/configure
+--- vls-0.4.0-orig/configure	2002-10-13 20:23:45.000000000 +0200
++++ vls-0.4.0/configure	2007-02-19 20:39:50.922473385 +0100
 @@ -6584,8 +6584,8 @@
    save_CPPFLAGS=$CPPFLAGS
    CPPFLAGS="$save_CPPFLAGS $test_CFLAGS"
@@ -78,9 +102,9 @@ diff -Naur vls-0.4.0.orig/configure vls-0.4.0/configure
  if test "${ac_cv_header_ost_sec_h+set}" = set; then
    echo $ECHO_N "(cached) $ECHO_C" >&6
  else
-diff -Naur vls-0.4.0.orig/configure.in vls-0.4.0/configure.in
---- vls-0.4.0.orig/configure.in	Sun Oct 13 20:23:45 2002
-+++ vls-0.4.0/configure.in	Sun Oct 30 12:52:47 2005
+diff -Naur vls-0.4.0-orig/configure.in vls-0.4.0/configure.in
+--- vls-0.4.0-orig/configure.in	2002-10-13 20:23:45.000000000 +0200
++++ vls-0.4.0/configure.in	2007-02-19 20:39:50.926472775 +0100
 @@ -305,7 +305,7 @@
    fi
    save_CPPFLAGS=$CPPFLAGS
@@ -90,9 +114,9 @@ diff -Naur vls-0.4.0.orig/configure.in vls-0.4.0/configure.in
      PLUGINS="${PLUGINS} dvbinput dvbreader"
      if test x${with_dvb} != x
      then
-diff -Naur vls-0.4.0.orig/doc/vls-guide.sgml vls-0.4.0/doc/vls-guide.sgml
---- vls-0.4.0.orig/doc/vls-guide.sgml	Sun Oct 13 20:23:45 2002
-+++ vls-0.4.0/doc/vls-guide.sgml	Sun Oct 30 12:52:47 2005
+diff -Naur vls-0.4.0-orig/doc/vls-guide.sgml vls-0.4.0/doc/vls-guide.sgml
+--- vls-0.4.0-orig/doc/vls-guide.sgml	2002-10-13 20:23:45.000000000 +0200
++++ vls-0.4.0/doc/vls-guide.sgml	2007-02-19 20:39:50.968466369 +0100
 @@ -636,7 +636,7 @@
    <tscreen>
    "DvbInputName" is the name of the dvb input you want to configure.
@@ -102,9 +126,9 @@ diff -Naur vls-0.4.0.orig/doc/vls-guide.sgml vls-0.4.0/doc/vls-guide.sgml
    "frequency" is the frequency of the transponder given in kHz.
    "polarization" is "1" (Horizontal) or "0" (Vertical). "symrate"
    is the symbol rate. "diseqc" is the DiSEqC address of the used
-diff -Naur vls-0.4.0.orig/src/core/hashtable.h vls-0.4.0/src/core/hashtable.h
---- vls-0.4.0.orig/src/core/hashtable.h	Sun Oct 13 20:23:44 2002
-+++ vls-0.4.0/src/core/hashtable.h	Sun Oct 30 13:02:40 2005
+diff -Naur vls-0.4.0-orig/src/core/hashtable.h vls-0.4.0/src/core/hashtable.h
+--- vls-0.4.0-orig/src/core/hashtable.h	2002-10-13 20:23:44.000000000 +0200
++++ vls-0.4.0/src/core/hashtable.h	2007-02-19 20:39:51.009460115 +0100
 @@ -62,7 +62,7 @@
    u32 m_uiMaxHash;
  };
@@ -132,9 +156,9 @@ diff -Naur vls-0.4.0.orig/src/core/hashtable.h vls-0.4.0/src/core/hashtable.h
  class C_HashMethod<handle>
  {
   public:
-diff -Naur vls-0.4.0.orig/src/core/library.cpp vls-0.4.0/src/core/library.cpp
---- vls-0.4.0.orig/src/core/library.cpp	Sun Oct 13 20:23:44 2002
-+++ vls-0.4.0/src/core/library.cpp	Sun Oct 30 13:14:20 2005
+diff -Naur vls-0.4.0-orig/src/core/library.cpp vls-0.4.0/src/core/library.cpp
+--- vls-0.4.0-orig/src/core/library.cpp	2002-10-13 20:23:44.000000000 +0200
++++ vls-0.4.0/src/core/library.cpp	2007-02-19 20:39:51.051453709 +0100
 @@ -33,7 +33,7 @@
  // There is no preamble since this file is to be included in the files which
  // use the template: look at vector.h for further explanation
@@ -144,9 +168,9 @@ diff -Naur vls-0.4.0.orig/src/core/library.cpp vls-0.4.0/src/core/library.cpp
  
  //******************************************************************************
  // class C_Library
-diff -Naur vls-0.4.0.orig/src/core/stream.cpp vls-0.4.0/src/core/stream.cpp
---- vls-0.4.0.orig/src/core/stream.cpp	Sun Oct 13 20:23:44 2002
-+++ vls-0.4.0/src/core/stream.cpp	Sun Oct 30 13:33:39 2005
+diff -Naur vls-0.4.0-orig/src/core/stream.cpp vls-0.4.0/src/core/stream.cpp
+--- vls-0.4.0-orig/src/core/stream.cpp	2002-10-13 20:23:44.000000000 +0200
++++ vls-0.4.0/src/core/stream.cpp	2007-02-19 20:39:51.118443489 +0100
 @@ -314,6 +314,7 @@
  //------------------------------------------------------------------------------
  // 
@@ -161,9 +185,9 @@ diff -Naur vls-0.4.0.orig/src/core/stream.cpp vls-0.4.0/src/core/stream.cpp
  }
 -
 +#endif
-diff -Naur vls-0.4.0.orig/src/core/stream.h vls-0.4.0/src/core/stream.h
---- vls-0.4.0.orig/src/core/stream.h	Sun Oct 13 20:23:44 2002
-+++ vls-0.4.0/src/core/stream.h	Sun Oct 30 13:38:27 2005
+diff -Naur vls-0.4.0-orig/src/core/stream.h vls-0.4.0/src/core/stream.h
+--- vls-0.4.0-orig/src/core/stream.h	2002-10-13 20:23:44.000000000 +0200
++++ vls-0.4.0/src/core/stream.h	2007-02-19 20:39:51.168435862 +0100
 @@ -99,7 +99,10 @@
    // Streaming of serializable objects
    // Avoid to use those methods to store data, just use them to transmit them
@@ -176,9 +200,9 @@ diff -Naur vls-0.4.0.orig/src/core/stream.h vls-0.4.0/src/core/stream.h
  
   private:
    IOStream* m_pIOStream;
-diff -Naur vls-0.4.0.orig/src/modules/dvbinput/dvbinput.cpp vls-0.4.0/src/modules/dvbinput/dvbinput.cpp
---- vls-0.4.0.orig/src/modules/dvbinput/dvbinput.cpp	Sun Oct 13 20:23:45 2002
-+++ vls-0.4.0/src/modules/dvbinput/dvbinput.cpp	Sun Oct 30 12:52:47 2005
+diff -Naur vls-0.4.0-orig/src/modules/dvbinput/dvbinput.cpp vls-0.4.0/src/modules/dvbinput/dvbinput.cpp
+--- vls-0.4.0-orig/src/modules/dvbinput/dvbinput.cpp	2002-10-13 20:23:45.000000000 +0200
++++ vls-0.4.0/src/modules/dvbinput/dvbinput.cpp	2007-02-19 20:39:51.202430676 +0100
 @@ -34,6 +34,7 @@
  
  #include <fcntl.h>
@@ -480,9 +504,9 @@ diff -Naur vls-0.4.0.orig/src/modules/dvbinput/dvbinput.cpp vls-0.4.0/src/module
  }
  
  
-diff -Naur vls-0.4.0.orig/src/modules/dvbinput/dvbinput.h vls-0.4.0/src/modules/dvbinput/dvbinput.h
---- vls-0.4.0.orig/src/modules/dvbinput/dvbinput.h	Sun Oct 13 20:23:45 2002
-+++ vls-0.4.0/src/modules/dvbinput/dvbinput.h	Sun Oct 30 12:52:47 2005
+diff -Naur vls-0.4.0-orig/src/modules/dvbinput/dvbinput.h vls-0.4.0/src/modules/dvbinput/dvbinput.h
+--- vls-0.4.0-orig/src/modules/dvbinput/dvbinput.h	2002-10-13 20:23:45.000000000 +0200
++++ vls-0.4.0/src/modules/dvbinput/dvbinput.h	2007-02-19 20:39:51.243424422 +0100
 @@ -111,6 +111,8 @@
    // Muxes and streamers
    C_HashTable<u16, C_TsMux> m_cMuxes;
