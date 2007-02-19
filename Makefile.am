@@ -283,7 +283,7 @@ endif
 endif
 
 root_optional: \
-	portmap mrouted 
+	portmap mrouted
 
 $(DEPDIR)/automount: bootstrap @DEPENDS_automount@
 	@PREPARE_automount@
@@ -585,7 +585,7 @@ $(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz @DEPENDS_libdir
 		LDFLAGS=-L$(targetprefix)/lib \
 		CPPFLAGS="-I$(buildprefix)/linux/arch/ppc" \
 		CFLAGS="$(TARGET_CFLAGS) -I$(buildprefix)/linux/arch/ppc" \
-		./autogen.sh \
+		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
@@ -610,7 +610,7 @@ $(DEPDIR)/libdirectfbpp: bootstrap libdirectfb @DEPENDS_libdirectfbpp@
 	@PREPARE_libdirectfbpp@
 	cd @DIR_libdirectfbpp@ && \
 		$(BUILDENV) \
-		./autogen.sh \
+		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= && \
@@ -626,7 +626,7 @@ $(DEPDIR)/libppdirectfb: bootstrap libdirectfb @DEPENDS_libppdirectfb@
 	@PREPARE_libppdirectfb@
 	cd @DIR_libppdirectfb@ && \
 		$(BUILDENV) \
-		./autogen.sh \
+		./configure \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= && \
@@ -1305,7 +1305,7 @@ $(DEPDIR)/hddtemp: bootstrap @DEPENDS_hddtemp@
 		$(MAKE) install DESTDIR=$(targetprefix)
 		$(INSTALL) -m 644 Patches/hddtemp.db $(targetprefix)/share/tuxbox
 	@CLEANUP_hddtemp@
-	touch $@ 
+	touch $@
 
 # ripped from uclibc/.../libtool.mk
 $(DEPDIR)/libtool: bootstrap @DEPENDS_libtool@
@@ -2310,7 +2310,7 @@ $(flashprefix)/.part_fstools: $(flashprefix)/.flash e2fsprogs utillinux
 	$(INSTALL) -d $(flashprefix)/root/sbin
 	@for i in e2fsck mke2fs ; do \
 		$(INSTALL) $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done;
-	ln -sf /proc/mounts $(flashprefix)/root/etc/mtab 
+	ln -sf /proc/mounts $(flashprefix)/root/etc/mtab
 	cd $(flashprefix)/root/sbin && \
 	    ln -sf mke2fs mkfs.ext3 && \
 	    ln -sf mke2fs mkfs.ext2 && \
@@ -2359,7 +2359,7 @@ $(flashprefix)/.part_sambaserver: $(flashprefix)/.flash samba
 	ln -sf /var/etc/smb.conf $(flashprefix)/root/etc
 	$(INSTALL) $(targetprefix)/etc/smbpasswd $(flashprefix)/root/var/etc
 	ln -sf /var/etc/smbpasswd $(flashprefix)/root/etc
-	ln -sf /proc/mounts $(flashprefix)/root/etc/mtab 
+	ln -sf /proc/mounts $(flashprefix)/root/etc/mtab
 	@touch $@
 
 # These user space tools require a kernel with smbfs
@@ -2390,7 +2390,7 @@ $(flashprefix)/.part_portmap: $(flashprefix)/.flash
 	cp -pa $(targetprefix)/sbin/portmap $(flashprefix)/root/sbin
 	@touch $@
 
-flash-nfs-utils: $(flashprefix)/.part_nfs-utils 
+flash-nfs-utils: $(flashprefix)/.part_nfs-utils
 
 $(flashprefix)/.part_nfs-utils: $(flashprefix)/.flash
 	@for i in exportfs rpc.mountd rpc.nfsd; do \
