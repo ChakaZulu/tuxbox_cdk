@@ -518,9 +518,12 @@ OPTIONAL_LIBCRYPTO = libcrypto
 endif
 
 libs: \
-	$(OPTIONAL_LIBCRYPTO) libcurl libdirectfb libdirectfbpp libppdirectfb libdvbpsi \
+	$(OPTIONAL_LIBCRYPTO) libcurl libdvbpsi \
 	libfreetype libjpeg libmad libid3tag libncurses libpng \
 	libreadline libsdl libsigc libz libdvb
+
+libsdirectfb: \
+	libdirectfb libdirectfbpp libppdirectfb
 
 libs_optional: \
 	libcommoncplusplus libffi \
