@@ -2221,6 +2221,7 @@ $(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash dvb_tools
 	$(INSTALL) $(targetprefix)/sbin/streamsec $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/udpstreampes $(flashprefix)/root/sbin
+	$(INSTALL) $(targetprefix)/sbin/udpstreamts $(flashprefix)/root/sbin
 	@touch $@
 
 flash-ftpfs: $(flashprefix)/.part_ftpfs
