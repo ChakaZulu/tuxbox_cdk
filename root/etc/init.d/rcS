@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# $Id: rcS,v 1.39 2007/02/27 11:23:28 saruman Exp $
+
 PATH=/sbin:/bin
 
 # extract kernel minor without using cut
@@ -134,7 +136,18 @@ else
 	
 	# Frontprozessor
 	modprobe dbox2_fp
-	modprobe dbox2_fp_input
+	if [ -e /var/etc/.oldrc ]
+	then
+		modprobe dbox2_fp_input disable_new_rc=1
+	elif [ -e /var/etc/.newrc ]
+	then
+		modprobe dbox2_fp_input disable_old_rc=1
+	elif [ -e /var/etc/.philips_rc_patch ]
+	then
+		modprobe dbox2_fp_input philips_rc_patch=1
+	else
+		modprobe dbox2_fp_input
+	fi
 
 	# Frontends
 	# Nokia
