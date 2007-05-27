@@ -81,6 +81,7 @@ lirc;make:install
 lsof;install:-m755:lsof:TARGET/sbin
 ssh;make:install:DESTDIR=TARGET
 e2fsprogs;make:install
+dosfstools;make:install:PREFIX=TARGET
 utillinux;make:install:SBINDIR=TARGET/sbin MAN8DIR=TARGET/man
 tcpdump;make:install:DESTDIR=TARGET
 bonnie;make:install:DESTDIR=TARGET/sbin

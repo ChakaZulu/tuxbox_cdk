@@ -92,6 +92,7 @@ tcpdump-3.9.4.tar.gz;http://www.tcpdump.org/release
 bonnie++-1.03a.tgz;http://www.coker.com.au/bonnie++
 lsof_4.77.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof;http://www.dbox2world.de/Archive/
 e2fsprogs-1.39.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/e2fsprogs
+dosfstools_2.11.orig.tar.gz;http://ftp.debian.org/debian/pool/main/d/dosfstools
 hddtemp-0.3-beta15.tar.bz2;http://guzu.net/files
 util-linux-2.12r.tar.bz2;http://www.kernel.org/pub/linux/utils/util-linux/
 DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/downloads/Old

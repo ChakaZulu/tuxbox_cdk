@@ -1278,6 +1278,16 @@ $(DEPDIR)/e2fsprogs: bootstrap @DEPENDS_e2fsprogs@
 	@CLEANUP_e2fsprogs@
 	touch $@
 
+$(DEPDIR)/dosfstools: bootstrap @DEPENDS_dosfstools@
+	@PREPARE_dosfstools@
+	cd @DIR_dosfstools@ && \
+		$(MAKE) all \
+		CC=$(target)-gcc \
+		OPTFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer -D_FILE_OFFSET_BITS=64" && \
+		@INSTALL_dosfstools@
+	@CLEANUP_dosfstools@
+	touch $@
+
 $(DEPDIR)/parted: bootstrap e2fsprogs libreadline @DEPENDS_parted@
 	@PREPARE_parted@
 	cd @DIR_parted@ && \
@@ -2321,6 +2331,17 @@ $(flashprefix)/.part_fstools: $(flashprefix)/.flash e2fsprogs utillinux
 	    ln -sf mke2fs mkfs.ext2 && \
 	    ln -sf e2fsck fsck.ext2 && \
 	    ln -sf e2fsck fsck.ext3
+	@touch $@
+
+flash-dosfstools: $(flashprefix)/.part_dosfstools
+$(flashprefix)/.part_dosfstools: $(flashprefix)/.flash dosfstools
+	@$(INSTALL) -d $(flashprefix)/root/sbin
+	@for i in mkdosfs dosfsck; do \
+		$(INSTALL) $(targetprefix)/sbin/$$i $(flashprefix)/root/sbin; done;
+	@ln -s mkdosfs $(flashprefix)/root/sbin/mkfs.msdos
+	@ln -s mkdosfs $(flashprefix)/root/sbin/mkfs.vfat
+	@ln -s dosfsck $(flashprefix)/root/sbin/fsck.msdos
+	@ln -s dosfsck $(flashprefix)/root/sbin/fsck.vfat
 	@touch $@
 
 flash-xfstools: $(flashprefix)/.part_xfstools
