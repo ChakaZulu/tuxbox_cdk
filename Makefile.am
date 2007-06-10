@@ -1924,6 +1924,14 @@ CONFIGURE_OPTS_DEBUG = \
 	--without-debug
 endif
 
+if ENABLE_IDE
+CONFIGURE_OPTS += --enable-ide
+endif
+
+if ENABLE_UPNP
+CONFIGURE_OPTS += --enable-upnp
+endif
+
 CONFIGURE = \
 	./autogen.sh && \
 	CC=$(target)-gcc \

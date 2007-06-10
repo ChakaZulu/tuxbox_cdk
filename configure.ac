@@ -120,6 +120,11 @@ AC_ARG_ENABLE(ide,
 	,[enable_ide=no])
 AM_CONDITIONAL(ENABLE_IDE,test "$enable_ide" = "yes")
 
+AC_ARG_ENABLE(upnp,
+	AS_HELP_STRING(--enable-upnp,include upnp support),
+	,[enable_upnp=no])
+AM_CONDITIONAL(ENABLE_UPNP,test "$enable_upnp" = "yes")
+
 AC_ARG_WITH(targetprefix,
 	[  --with-targetprefix=DIR prefix for target files [[PREFIX/cdkroot]]],
 	[targetprefix="$with_targetprefix"],[targetprefix="${prefix}/cdkroot"])
@@ -486,6 +491,7 @@ host apps directory:   $hostappsdir
 GNU server:            $gnuserver
 default server:        $defaultserver
 IDE support:           $enable_ide
+UPNP support:          $enable_upnp
 ])
 
 if test "$dircheck" = "fail"; then
