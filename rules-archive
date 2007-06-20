@@ -31,7 +31,7 @@ autofs-4.1.4.tar.bz2;ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4
 nfs-utils-1.0.9.tar.bz2;ftp://ftp.kernel.org/pub/linux/utils/nfs
 fuse-2.5.3.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/fuse
 fuse-2.6.2.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/fuse
-djmount-0.71.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/djmount
+djmount-0.71.tar.gz;http://mesh.dl.sourceforge.net/sourceforge/djmount
 module-init-tools-3.2.1.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/module-init-tools
 modutils-2.4.26.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/utils/kernel/modutils/v2.4;ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4
 netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
@@ -98,7 +98,7 @@ util-linux-2.12r.tar.bz2;http://www.kernel.org/pub/linux/utils/util-linux/
 DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/downloads/Old
 vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/lufs
-dropbear-0.48.1.tar.gz;http://matt.ucc.asn.au/dropbear
+dropbear-0.48.1.tar.gz;http://dietmarw.trale.de/Archive
 cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
 hdparm-6.9.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/hdparm
 parted-1.7.1.tar.gz;http://ftp.gnu.org/pub/gnu/parted
