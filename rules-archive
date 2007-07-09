@@ -100,7 +100,7 @@ vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/lufs
 dropbear-0.48.1.tar.gz;http://dietmarw.trale.de/Archive
 cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
-hdparm-6.9.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/hdparm
+hdparm-7.6.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/hdparm
 parted-1.7.1.tar.gz;http://ftp.gnu.org/pub/gnu/parted
 xfsprogs_2.8.18-1.tar.gz;ftp://oss.sgi.com/projects/xfs/cmd_tars
 libtool-1.5.22.tar.gz;ftp://ftp.gnu.org/gnu/libtool

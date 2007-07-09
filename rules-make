@@ -98,7 +98,7 @@ vdr;1.2.6;vdr-1.2.6;vdr-1.2.6.tar.bz2:vdr.diff;extract:vdr-1.2.6.tar.bz2;patch:v
 lufs;0.9.7;lufs-0.9.7;lufs-0.9.7.tar.gz:lufs.diff;extract:lufs-0.9.7.tar.gz;patch:lufs.diff
 dropbear;0.48.1;dropbear-0.48.1;dropbear-0.48.1.tar.gz;extract:dropbear-0.48.1.tar.gz
 kermit;8.0;c-kermit-8.0;cku211.tar.gz;dirextract:cku211.tar.gz;patch:kermit.diff
-hdparm;6.9;hdparm-6.9;hdparm-6.9.tar.gz;extract:hdparm-6.9.tar.gz
+hdparm;7.6;hdparm-7.6;hdparm-7.6.tar.gz;extract:hdparm-7.6.tar.gz;patch:hdparm.diff
 parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
 xfsprogs;2.8.18;xfsprogs-2.8.18;xfsprogs_2.8.18-1.tar.gz;extract:xfsprogs_2.8.18-1.tar.gz
 libtool;1.5.22;libtool-1.5.22;libtool-1.5.22.tar.gz;extract:libtool-1.5.22.tar.gz

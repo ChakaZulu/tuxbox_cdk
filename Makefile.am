@@ -1224,7 +1224,7 @@ $(DEPDIR)/hdparm: bootstrap @DEPENDS_hdparm@
 	@PREPARE_hdparm@
 	cd @DIR_hdparm@ && \
 		$(BUILDENV) \
-		$(MAKE) all && \
+		$(MAKE) CROSS=$(target)- all && \
 		@INSTALL_hdparm@
 	@CLEANUP_hdparm@
 	touch $@

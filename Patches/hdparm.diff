@@ -1,0 +1,11 @@
+--- hdparm-7.6/Makefile.orig	2007-06-07 19:39:24.000000000 +0200
++++ hdparm-7.6/Makefile	2007-07-09 22:55:15.000000000 +0200
+@@ -28,7 +28,7 @@
+ 
+ hdparm: hdparm.h $(OBJS)
+ 	$(CC) $(LDFLAGS) -o hdparm $(OBJS)
+-	strip hdparm
++	$(CROSS)strip hdparm
+  
+ install: all hdparm.8
+ 	if [ ! -z $(DESTDIR) ]; then $(INSTALL_DIR) $(DESTDIR) ; fi
