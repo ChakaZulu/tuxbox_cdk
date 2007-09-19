@@ -1,0 +1,14 @@
+--- flac-1.2.0/src/flac/encode.c.old    2007-07-10 04:10:44.000000000 +0200
++++ flac-1.2.0/src/flac/encode.c        2007-08-29 22:03:43.000000000 +0200
+@@ -2178,9 +2178,11 @@
+ 
+ 	if(num_requested_seek_points < 0) {
+ 		/*@@@@@@ workaround ogg bug: too many seekpoints makes table not fit in one page */
++#if FLAC__HAS_OGG
+ 		if(e->use_ogg && e->total_samples_to_encode > 0 && e->total_samples_to_encode / e->sample_rate / 10 > 230)
+ 			requested_seek_points = "230x;";
+ 		else 
++#endif
+ 			requested_seek_points = "10s;";
+ 		num_requested_seek_points = 1;
+ 	}
