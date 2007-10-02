@@ -12,3 +12,43 @@
  			requested_seek_points = "10s;";
  		num_requested_seek_points = 1;
  	}
+--- flac-1.2.0/src/libFLAC/Makefile.am.orig	2007-07-11 06:13:09.000000000 +0200
++++ flac-1.2.0/src/libFLAC/Makefile.am	2007-09-24 22:52:43.000000000 +0200
+@@ -112,7 +112,5 @@
+ 	metadata_iterators.c \
+ 	metadata_object.c \
+ 	stream_decoder.c \
+-	stream_encoder.c \
+-	stream_encoder_framing.c \
+ 	window.c \
+ 	$(extra_ogg_sources)
+--- flac-1.2.0/src/libFLAC/Makefile.in.orig	2007-07-24 05:03:53.000000000 +0200
++++ flac-1.2.0/src/libFLAC/Makefile.in	2007-09-24 23:01:33.000000000 +0200
+@@ -292,8 +292,6 @@
+ 	metadata_iterators.c \
+ 	metadata_object.c \
+ 	stream_decoder.c \
+-	stream_encoder.c \
+-	stream_encoder_framing.c \
+ 	window.c \
+ 	$(extra_ogg_sources)
+ 
+@@ -391,16 +389,14 @@
+ am__libFLAC_la_SOURCES_DIST = bitmath.c bitreader.c bitwriter.c cpu.c \
+ 	crc.c fixed.c float.c format.c lpc.c md5.c memory.c \
+ 	metadata_iterators.c metadata_object.c stream_decoder.c \
+-	stream_encoder.c stream_encoder_framing.c window.c \
+-	ogg_decoder_aspect.c ogg_encoder_aspect.c ogg_helper.c \
+-	ogg_mapping.c
++	window.c
+ @FLaC__HAS_OGG_TRUE@am__objects_1 = ogg_decoder_aspect.lo \
+ @FLaC__HAS_OGG_TRUE@	ogg_encoder_aspect.lo ogg_helper.lo \
+ @FLaC__HAS_OGG_TRUE@	ogg_mapping.lo
+ am_libFLAC_la_OBJECTS = bitmath.lo bitreader.lo bitwriter.lo cpu.lo \
+ 	crc.lo fixed.lo float.lo format.lo lpc.lo md5.lo memory.lo \
+ 	metadata_iterators.lo metadata_object.lo stream_decoder.lo \
+-	stream_encoder.lo stream_encoder_framing.lo window.lo \
++	window.lo \
+ 	$(am__objects_1)
+ libFLAC_la_OBJECTS = $(am_libFLAC_la_OBJECTS)
+ 
