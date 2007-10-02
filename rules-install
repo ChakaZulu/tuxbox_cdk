@@ -68,6 +68,7 @@ libz;make:install:prefix=TARGET
 libglib;make:install
 libungif;make:install:DESTDIR=TARGET
 libiconv;make:install:DESTDIR=TARGET
+libFLAC;make:install: -C src/libFLAC DESTDIR=TARGET
 
 #
 # contrib apps
@@ -93,6 +94,7 @@ hdparm;make:install:DESTDIR=TARGET
 parted;make:install
 xfsprogs;make:install:DESTDIR=TARGET
 smartmontools;make:install:DESTDIR=TARGET
+wget;make:install:DESTDIR=TARGET
 
 #
 # msttf

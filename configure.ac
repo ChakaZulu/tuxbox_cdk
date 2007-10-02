@@ -125,6 +125,11 @@ AC_ARG_ENABLE(upnp,
 	,[enable_upnp=no])
 AM_CONDITIONAL(ENABLE_UPNP,test "$enable_upnp" = "yes")
 
+AC_ARG_ENABLE(flac,
+	AS_HELP_STRING(--enable-flac,include Neutrino flac audio decoder with libFLAC),
+	,[enable_flac=no])
+AM_CONDITIONAL(ENABLE_FLAC,test "$enable_flac" = "yes")
+
 AC_ARG_WITH(targetprefix,
 	[  --with-targetprefix=DIR prefix for target files [[PREFIX/cdkroot]]],
 	[targetprefix="$with_targetprefix"],[targetprefix="${prefix}/cdkroot"])
@@ -367,6 +372,7 @@ TUXBOX_RULES_MAKE(libxml2)
 TUXBOX_RULES_MAKE(libz)
 TUXBOX_RULES_MAKE(libglib)
 TUXBOX_RULES_MAKE(libiconv)
+TUXBOX_RULES_MAKE(libFLAC)
 
 #
 # contrib apps
@@ -399,6 +405,7 @@ TUXBOX_RULES_MAKE(fusekernel)
 fi
 TUXBOX_RULES_MAKE(fuse)
 TUXBOX_RULES_MAKE(djmount)
+TUXBOX_RULES_MAKE(wget)
 
 #
 # msttf
@@ -492,6 +499,7 @@ GNU server:            $gnuserver
 default server:        $defaultserver
 IDE support:           $enable_ide
 UPNP support:          $enable_upnp
+FLAC support:          $enable_flac
 ])
 
 if test "$dircheck" = "fail"; then

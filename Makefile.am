@@ -310,18 +310,17 @@ $(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@
 	@PREPARE_busybox@
 if TARGETRULESET_FLASH
 if ENABLE_IDE
-	m4 -Dflash -Dide Patches/busybox.config.m4 > @DIR_busybox@/.config;
+	m4 -Dflash -Dide -DPREFIX="\"$(targetprefix)\"" Patches/busybox.config.m4 > @DIR_busybox@/.config;
 else
-	m4 -Dflash Patches/busybox.config.m4 > @DIR_busybox@/.config;
+	m4 -Dflash -DPREFIX="\"$(targetprefix)\"" Patches/busybox.config.m4 > @DIR_busybox@/.config;
 endif
 else
-	m4 -Dyadd Patches/busybox.config.m4 > @DIR_busybox@/.config
+	m4 -Dyadd -DPREFIX="\"$(targetprefix)\"" Patches/busybox.config.m4 > @DIR_busybox@/.config
 endif
 	cd @DIR_busybox@ && \
-		$(MAKE) dep all \
-			CROSS=$(target)- \
-			CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
-		@INSTALL_busybox@
+		$(MAKE) all install \
+			CROSS_COMPILE=$(target)- \
+			CFLAGS="$(TARGET_CFLAGS)"
 	@CLEANUP_busybox@
 	touch $@
 
@@ -517,10 +516,14 @@ if WITH_LIBCRYPTO
 OPTIONAL_LIBCRYPTO = libcrypto
 endif
 
+if ENABLE_FLAC
+FLAClib = libFLAC
+endif
+
 libs: \
 	$(OPTIONAL_LIBCRYPTO) libcurl libdvbpsi \
 	libfreetype libjpeg libmad libid3tag libncurses libpng \
-	libreadline libsdl libsigc libz libdvb
+	libreadline libsdl libsigc libz libdvb $(FLAClib)
 
 libsdirectfb: \
 	libdirectfb libdirectfbpp libppdirectfb
@@ -993,6 +996,21 @@ $(DEPDIR)/libiconv: bootstrap @DEPENDS_libiconv@
 	@CLEANUP_libiconv@
 	touch $@
 
+$(DEPDIR)/libFLAC: bootstrap @DEPENDS_libFLAC@
+	@PREPARE_libFLAC@
+	cd @DIR_libFLAC@ && \
+		$(BUILDENV) \
+		./configure \
+			--host=$(target) \
+			--build=$(build) \
+			--prefix= \
+			--disable-ogg \
+			--disable-altivec \
+		$(MAKE) -C src/libFLAC && \
+		@INSTALL_libFLAC@
+	@CLEANUP_libFLAC@
+	touch $@
+
 #######################
 #
 #   contrib apps
@@ -1211,6 +1229,19 @@ $(DEPDIR)/kermit: bootstrap @DEPENDS_kermit@ libcrypto
 	ln -sf ./kermit $(targetprefix)/bin/kermit-sshsub
 	[ -d $(targetprefix)/var/lock ] ||  mkdir $(targetprefix)/var/lock
 	@CLEANUP_kermit@
+	touch $@
+
+$(DEPDIR)/wget: bootstrap @DEPENDS_wget@
+	@PREPARE_wget@
+	cd @DIR_wget@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		$(MAKE) all && \
+		@INSTALL_wget@
+	@CLEANUP_wget@
 	touch $@
 
 #######################
@@ -1932,6 +1963,10 @@ if ENABLE_UPNP
 CONFIGURE_OPTS += --enable-upnp
 endif
 
+if ENABLE_FLAC
+CONFIGURE_OPTS += --enable-flac
+endif
+
 CONFIGURE = \
 	./autogen.sh && \
 	CC=$(target)-gcc \
@@ -2068,8 +2103,13 @@ $(DEPDIR)/libtuxbox: $(appsdir)/tuxbox/libtuxbox/config.status
 
 # tuxbox/neutrino
 
+if ENABLE_FLAC
+$(appsdir)/tuxbox/neutrino/config.status: bootstrap libboost libcurl libfreetype libjpeg libmad libid3tag libvorbisidec libpng libtuxbox misc_libs plugins tuxbox_libs zapit misc_tools lufs libFLAC
+	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
+else
 $(appsdir)/tuxbox/neutrino/config.status: bootstrap libboost libcurl libfreetype libjpeg libmad libid3tag libvorbisidec libpng libtuxbox misc_libs plugins tuxbox_libs zapit misc_tools lufs
 	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
+endif
 
 $(DEPDIR)/neutrino: $(appsdir)/tuxbox/neutrino/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install
