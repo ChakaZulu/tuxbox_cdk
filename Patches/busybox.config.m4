@@ -435,10 +435,10 @@ option(`CONFIG_FDFLUSH', `n', `n')
 option(`CONFIG_FDFORMAT', `n', `n')
 ifdef(`ide',
 `option(`CONFIG_FDISK', `y', `y')
-option(`FDISK_SUPPORT_LARGE_DISKS', `y', `y')
+option(`CONFIG_FDISK_SUPPORT_LARGE_DISKS', `y', `y')
 option(`CONFIG_FEATURE_FDISK_WRITABLE', `y', `y')',
 `option(`CONFIG_FDISK', `n', `n')
-option(`FDISK_SUPPORT_LARGE_DISKS', `n', `n')
+option(`CONFIG_FDISK_SUPPORT_LARGE_DISKS', `n', `n')
 option(`CONFIG_FEATURE_FDISK_WRITABLE', `n', `n')'
 )
 option(`CONFIG_FEATURE_AIX_LABEL', `n', `n')
