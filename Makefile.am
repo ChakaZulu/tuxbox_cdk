@@ -990,7 +990,7 @@ $(DEPDIR)/libiconv: bootstrap @DEPENDS_libiconv@
 		./configure \
 			--host=$(target) \
 			--build=$(build) \
-			--prefix= \
+			--prefix= && \
 		$(MAKE) && \
 		@INSTALL_libiconv@
 	@CLEANUP_libiconv@
@@ -1005,8 +1005,9 @@ $(DEPDIR)/libFLAC: bootstrap @DEPENDS_libFLAC@
 			--build=$(build) \
 			--prefix= \
 			--disable-ogg \
-			--disable-altivec \
+			--disable-altivec && \
 		$(MAKE) -C src/libFLAC && \
+		$(MAKE) install  -C include/FLAC DESTDIR=$(targetprefix) && \
 		@INSTALL_libFLAC@
 	@CLEANUP_libFLAC@
 	touch $@
