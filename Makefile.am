@@ -330,6 +330,9 @@ $(DEPDIR)/rootdirectories:
 
 $(DEPDIR)/ftpd: bootstrap @DEPENDS_ftpd@
 	@PREPARE_ftpd@
+if KERNEL26
+	cd @DIR_ftpd@ && patch -p1 < $(buildprefix)/Patches/ftpd26.diff
+endif
 	cd @DIR_ftpd@ && \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" \
