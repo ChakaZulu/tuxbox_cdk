@@ -73,14 +73,12 @@ endif
 	-rm -f $(hostprefix)/$(target)/lib
 	-ln -sf $(targetprefix)/include $(hostprefix)/$(target)/include
 	-ln -sf $(targetprefix)/lib $(hostprefix)/$(target)/lib
-if KERNEL26
-	-ln -sf $(buildprefix)/linux/include/asm-powerpc $(hostprefix)/$(target)/include/asm
-else
-	-ln -sf $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
-endif
-	-ln -sf $(buildprefix)/linux/include/asm-generic $(hostprefix)/$(target)/include
+if !KERNEL26
 	-ln -sf $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include
+	-ln -sf $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
+	-ln -sf $(buildprefix)/linux/include/asm-generic $(hostprefix)/$(target)/include
 	-ln -sf $(buildprefix)/linux/include/mtd $(hostprefix)/$(target)/include
+endif
 if TARGETRULESET_FLASH
 	$(INSTALL) -d $(flashprefix)
 endif
@@ -1840,9 +1838,9 @@ $(DEPDIR)/bluez_utils: bootstrap bluez_libs @DEPENDS_bluez_utils@
 boot: u-boot linuxkernel driver
 
 if KERNEL26
-UBOOT_CONFIG_FILE:="./u-boot.cdk.2_6.dbox2.h"
+UBOOT_CONFIG_FILE="./u-boot.cdk.2_6.dbox2.h"
 else
-UBOOT_CONFIG_FILE:="./u-boot.cdk.dbox2.h"
+UBOOT_CONFIG_FILE="./u-boot.cdk.dbox2.h"
 endif
 
 $(DEPDIR)/u-boot: bootstrap @DEPENDS_uboot@
@@ -1865,9 +1863,9 @@ $(DEPDIR)/u-boot: bootstrap @DEPENDS_uboot@
 
 $(DEPDIR)/linuxkernel: bootstrap linuxdir u-boot
 if KERNEL26
-	$(MAKE) -C $(KERNEL_DIR) uImage modules \
-		ARCH=ppc \
-		CROSS_COMPILE=$(target)-
+#	$(MAKE) -C $(KERNEL_DIR) uImage modules \
+#		ARCH=ppc \
+#		CROSS_COMPILE=$(target)-
 else
 	$(MAKE) -C $(KERNEL_DIR) zImage modules \
 		ARCH=ppc \
@@ -1880,6 +1878,25 @@ endif
 		INSTALL_MOD_PATH=$(targetprefix)
 if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $(bootprefix)/kernel-cdk
+# Kernels after 2.6.18 offer a special "headers_install" target to generate
+# "userspace-blessed" heades. This will create an include directory in 
+# $(KERNEL_DIR)/usr
+
+# It would be more correct to copy all directories, but some files seem to also
+# be provided by the glibc (e.g. scsi) so the directory exists and we simply use
+# those directories that are necessary
+	@if [ `echo $(KERNELVERSION) | sed -e 's/\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\).*/\3/g'` -lt 18 ]; then \
+		ln -sf $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/include/asm-generic $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/include/mtd $(hostprefix)/$(target)/include; \
+	else \
+		$(MAKE) -C $(KERNEL_DIR) headers_install ARCH=powerpc; \
+		ln -sf $(buildprefix)/linux/usr/include/linux $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/usr/include/asm $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/usr/include/asm-generic $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/usr/include/mtd $(hostprefix)/$(target)/include; \
+	fi
 else
 	$(hostprefix)/bin/mkimage \
 		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
