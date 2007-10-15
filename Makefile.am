@@ -1863,9 +1863,9 @@ $(DEPDIR)/u-boot: bootstrap @DEPENDS_uboot@
 
 $(DEPDIR)/linuxkernel: bootstrap linuxdir u-boot
 if KERNEL26
-#	$(MAKE) -C $(KERNEL_DIR) uImage modules \
-#		ARCH=ppc \
-#		CROSS_COMPILE=$(target)-
+	$(MAKE) -C $(KERNEL_DIR) uImage modules \
+		ARCH=ppc \
+		CROSS_COMPILE=$(target)- \
 else
 	$(MAKE) -C $(KERNEL_DIR) zImage modules \
 		ARCH=ppc \
@@ -1917,11 +1917,20 @@ $(DEPDIR)/driver: bootstrap linuxkernel
 	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		CROSS_COMPILE=$(target)-
+if KERNEL26
+	$(MAKE) -C $(driverdir) \
+		KERNEL_LOCATION=$(buildprefix)/linux \
+		BIN_DEST=$(targetprefix)/bin \
+		INSTALL_MOD_PATH=$(targetprefix) \
+		DEPMOD=/bin/true \
+		install
+else
 	$(MAKE) -C $(driverdir) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		BIN_DEST=$(targetprefix)/bin \
 		INSTALL_MOD_PATH=$(targetprefix) \
 		install
+endif
 
 if MAINTAINER_MODE
 else
