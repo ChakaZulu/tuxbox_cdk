@@ -1865,7 +1865,7 @@ $(DEPDIR)/linuxkernel: bootstrap linuxdir u-boot
 if KERNEL26
 	$(MAKE) -C $(KERNEL_DIR) uImage modules \
 		ARCH=ppc \
-		CROSS_COMPILE=$(target)- \
+		CROSS_COMPILE=$(target)-
 else
 	$(MAKE) -C $(KERNEL_DIR) zImage modules \
 		ARCH=ppc \
