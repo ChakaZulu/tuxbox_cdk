@@ -73,6 +73,7 @@ endif
 	$(INSTALL) -d $(targetprefix)/var/run
 	$(INSTALL) -d $(targetprefix)$(UCODEDIR)
 	$(INSTALL) -d $(hostprefix)/$(target)
+	$(INSTALL) -d $(bootprefix)
 if ENABLE_CCACHE
 	if [ -e $(ccachedir)/ccache ]; then \
 		$(INSTALL) -d $(hostprefix)/ccache-bin ;\
@@ -185,7 +186,7 @@ bootstrap_gcc: @DEPENDS_bootstrap_gcc@
 	@CLEANUP_bootstrap_gcc@
 
 
-$(DEPDIR)/glibc: @DEPENDS_glibc@
+$(DEPDIR)/glibc: @DEPENDS_glibc@ install-linux-headers
 	@if [ ! -f $(hostprefix)/$(target)/lib/libc.so -a ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
 		$(MAKE) bootstrap_gcc; \
 	elif [ ! -f $(hostprefix)/bin/$(target)-gcc ]; then \
@@ -1913,7 +1914,36 @@ $(DEPDIR)/u-boot: bootstrap @DEPENDS_uboot@
 	@CLEANUP_uboot@
 	touch $@
 
-$(DEPDIR)/linuxkernel: bootstrap linuxdir u-boot
+
+$(DEPDIR)/install-linux-headers: linuxdir
+if KERNEL26
+# Kernels after 2.6.18 offer a special "headers_install" target to generate
+# "userspace-blessed" heades. This will create an include directory in 
+# $(KERNEL_DIR)/usr
+
+# It would be more correct to copy all directories, but some files seem to also
+# be provided by the glibc (e.g. scsi) so the directory exists and we simply use
+# those directories that are necessary. This is a rule of its own since glibc
+# needs the linux headers to build. For 2.4 this does nothing. Note that we cheat
+# here and declare the target powerpc since ppc will be gone in a not too distant
+# future and the headers are slowly being removed.
+	@if [ `echo $(KERNELVERSION) | sed -e 's/\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\).*/\3/g'` -lt 18 ]; then \
+		ln -sf $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/include/asm-generic $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/include/mtd $(hostprefix)/$(target)/include; \
+	else \
+		$(MAKE) -C $(KERNEL_DIR) headers_install ARCH=powerpc; \
+		ln -sf $(buildprefix)/linux/usr/include/linux $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/usr/include/asm $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/usr/include/asm-generic $(hostprefix)/$(target)/include; \
+		ln -sf $(buildprefix)/linux/usr/include/mtd $(hostprefix)/$(target)/include; \
+	fi
+endif
+	touch $@
+
+
+$(DEPDIR)/linuxkernel: bootstrap linuxdir install-linux-headers u-boot
 if KERNEL26
 	$(MAKE) -C $(KERNEL_DIR) uImage modules \
 		ARCH=ppc \
@@ -1930,25 +1960,6 @@ endif
 		INSTALL_MOD_PATH=$(targetprefix)
 if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $(bootprefix)/kernel-cdk
-# Kernels after 2.6.18 offer a special "headers_install" target to generate
-# "userspace-blessed" heades. This will create an include directory in 
-# $(KERNEL_DIR)/usr
-
-# It would be more correct to copy all directories, but some files seem to also
-# be provided by the glibc (e.g. scsi) so the directory exists and we simply use
-# those directories that are necessary
-	@if [ `echo $(KERNELVERSION) | sed -e 's/\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\).*/\3/g'` -lt 18 ]; then \
-		ln -sf $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include; \
-		ln -sf $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include; \
-		ln -sf $(buildprefix)/linux/include/asm-generic $(hostprefix)/$(target)/include; \
-		ln -sf $(buildprefix)/linux/include/mtd $(hostprefix)/$(target)/include; \
-	else \
-		$(MAKE) -C $(KERNEL_DIR) headers_install ARCH=powerpc; \
-		ln -sf $(buildprefix)/linux/usr/include/linux $(hostprefix)/$(target)/include; \
-		ln -sf $(buildprefix)/linux/usr/include/asm $(hostprefix)/$(target)/include; \
-		ln -sf $(buildprefix)/linux/usr/include/asm-generic $(hostprefix)/$(target)/include; \
-		ln -sf $(buildprefix)/linux/usr/include/mtd $(hostprefix)/$(target)/include; \
-	fi
 else
 	$(hostprefix)/bin/mkimage \
 		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
