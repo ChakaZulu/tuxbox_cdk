@@ -1,4 +1,9 @@
+if ENABLE_CCACHE
+PATH := $(hostprefix)/ccache-bin:$(hostprefix)/bin:$(PATH)
+else
 PATH := $(hostprefix)/bin:$(PATH)
+endif
+
 BUILDENV := \
 	AR=$(target)-ar \
 	AS=$(target)-as \
@@ -68,7 +73,20 @@ endif
 	$(INSTALL) -d $(targetprefix)/var/run
 	$(INSTALL) -d $(targetprefix)$(UCODEDIR)
 	$(INSTALL) -d $(hostprefix)/$(target)
-	$(INSTALL) -d $(bootprefix)
+if ENABLE_CCACHE
+	if [ -e $(ccachedir)/ccache ]; then \
+		$(INSTALL) -d $(hostprefix)/ccache-bin ;\
+			ln -s $(ccachedir)/ccache $(hostprefix)/ccache-bin/gcc ;\
+			ln -s $(ccachedir)/ccache $(hostprefix)/ccache-bin/g++ ;\
+			ln -s $(ccachedir)/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-gcc ;\
+			ln -s $(ccachedir)/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-g++ ;\
+			ln -s $(ccachedir)/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-cpp ;\
+			ln -s $(ccachedir)/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-gcc-.3.4.4 ;\
+		$(ccachedir)/ccache -M $(maxcachesize) ;\
+		$(ccachedir)/ccache -F $(maxcachefiles) ;\
+		$(ccachedir)/ccache -s ;\
+	fi
+endif
 	-rm -f $(hostprefix)/$(target)/include
 	-rm -f $(hostprefix)/$(target)/lib
 	-ln -sf $(targetprefix)/include $(hostprefix)/$(target)/include
@@ -83,7 +101,6 @@ if TARGETRULESET_FLASH
 	$(INSTALL) -d $(flashprefix)
 endif
 	touch $@
-
 
 if KERNEL26
 KERNEL_DEPENDS = @DEPENDS_linux@
@@ -258,6 +275,41 @@ $(DEPDIR)/gcc: @DEPENDS_gcc@
 	ln -sf $(hostprefix)/$(target)/lib $(hostprefix)/$(target)/lib/nof
 	@CLEANUP_gcc@
 	touch $@
+
+#################################################
+#  ccache
+#
+#You can use ccache for compiling if it is installed on your system or cdk/bin.
+#With this rule you can install ccache independ from your system. 
+#Use <make ccache> for installing in cdk/bin.
+#Isn't ccache installed, you can also install later. 
+#Most distributions contain the required packages or
+#get the sources from http://samba.org/ftp/ccache
+
+ccache:
+
+$(DEPDIR)/ccache: @DEPENDS_ccache@ directories
+	@PREPARE_ccache@
+	cd @DIR_ccache@ && \
+		./configure \
+			--build=$(build) \
+			--host=$(build) \
+			--prefix= && \
+			$(MAKE) all && \
+			$(MAKE) install DESTDIR=$(hostprefix)
+		rm -rf  $(hostprefix)/ccache-bin;\
+		$(INSTALL) -d $(hostprefix)/ccache-bin ;\
+		ln -s $(hostprefix)/bin/ccache $(hostprefix)/ccache-bin/gcc ;\
+		ln -s $(hostprefix)/bin/ccache $(hostprefix)/ccache-bin/g++ ;\
+		ln -s $(hostprefix)/bin/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-gcc ;\
+		ln -s $(hostprefix)/bin/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-g++ ;\
+		ln -s $(hostprefix)/bin/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-cpp ;\
+		ln -s $(hostprefix)/bin/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-gcc-.3.4.4 ;\
+		$(hostprefix)/bin/ccache -M $(maxcachesize) ;\
+		$(hostprefix)/bin/ccache -F $(maxcachefiles) ;\
+		$(hostprefix)/bin/ccache -s ;\
+		rm -rf @DIR_ccache@
+		touch $@
 
 #######################
 #
@@ -1995,6 +2047,10 @@ endif
 
 if ENABLE_FLAC
 CONFIGURE_OPTS += --enable-flac
+endif
+
+if ENABLE_CCACHE
+CONFIGURE_OPTS += --enable-ccache
 endif
 
 CONFIGURE = \

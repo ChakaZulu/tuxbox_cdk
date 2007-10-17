@@ -68,6 +68,45 @@ else
 	AC_MSG_ERROR([invalid hostruleset "$HOSTRULESET", choose on from standard or cygwin]);
 fi
 
+################################################################
+# ccache
+#
+AC_ARG_ENABLE(ccache,
+	AS_HELP_STRING(--enable-ccache, enable ccache supported compiling ),
+	,[enable_ccache=no])
+AM_CONDITIONAL(ENABLE_CCACHE,test "$enable_ccache" = "yes")
+
+# optional ccache settings
+AC_ARG_WITH(ccachedir,
+	[  --with-ccachedir=DIR directory where ccache is installed ],
+	[ccachedir="$with_ccachedir"],[ccachedir=$(dirname `which ccache`)])
+
+AC_ARG_WITH(maxcachesize,
+	[  --with-maxcachesize=SIZE maximal ccachesize for ccache ],
+	[maxcachesize="$with_maxcachesize"],[maxcachesize="0"])
+
+AC_ARG_WITH(maxcachefiles,
+	[  --with-maxcachefiles=COUNT maximal count of cachefiles for ccache ],
+	[maxcachefiles="$with_maxcachefiles"],[maxcachefiles="0"])
+
+if test "$enable_ccache" = "yes"; then
+	if [[ -e $ccachedir/ccache ]]; then
+	$ccachedir/ccache -M $maxcachesize
+	$ccachedir/ccache -F $maxcachefiles
+	ccacheinfo=$($ccachedir/ccache -s)
+	else
+	enable_ccache="no"
+	ccacheinfo="ccache is not installed in $ccachedir, run <make ccache> or install from your distribution"
+	fi
+fi
+
+AC_SUBST(ccachedir)
+AC_SUBST(maxcachesize)
+AC_SUBST(maxcachefiles)
+AC_SUBST(ccacheinfo)
+#
+################################################################
+
 AC_SUBST(HOSTRULESET)
 AM_CONDITIONAL(HOSTRULESET_STANDARD,test "$HOSTRULESET" = "standard")
 AM_CONDITIONAL(HOSTRULESET_CYGWIN,test "$HOSTRULESET" = "cygwin")
@@ -408,6 +447,11 @@ TUXBOX_RULES_MAKE(djmount)
 TUXBOX_RULES_MAKE(wget)
 
 #
+# ccache
+#
+TUXBOX_RULES_MAKE(ccache)
+
+#
 # msttf
 #
 TUXBOX_RULES_MAKE(cabextract)
@@ -500,6 +544,11 @@ default server:        $defaultserver
 IDE support:           $enable_ide
 UPNP support:          $enable_upnp
 FLAC support:          $enable_flac
+----------------------------------------
+ccache support:		$enable_ccache
+ccache installdir:	$ccachedir
+$ccacheinfo
+----------------------------------------
 ])
 
 if test "$dircheck" = "fail"; then
@@ -513,6 +562,9 @@ AC_MSG_RESULT([
 ******************************************************************
 ])
 fi
+
+#reset
+ccacheinfo=""
 
 AC_CONFIG_FILES([
 Makefile

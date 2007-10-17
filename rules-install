@@ -95,6 +95,7 @@ parted;make:install
 xfsprogs;make:install:DESTDIR=TARGET
 smartmontools;make:install:DESTDIR=TARGET
 wget;make:install:DESTDIR=TARGET
+ncftp;make:install:DESTDIR=TARGET
 
 #
 # msttf
@@ -115,6 +116,7 @@ joe;make:install:prefix=TARGET
 bash;make:install:prefix=TARGET
 python;make:bininstall:prefix=TARGET
 netio;install:-m755:netio:TARGET/bin;install:-m755:bin/win32-i386.exe:HOST/bin/netio
+ccache
 
 #
 # java
