@@ -1,3 +1,4 @@
+
 diff -Naur glibc-2.3.5.orig/Makeconfig glibc-2.3.5/Makeconfig
 --- glibc-2.3.5.orig/Makeconfig	2005-02-16 11:50:19.000000000 +0100
 +++ glibc-2.3.5/Makeconfig	2005-10-29 08:51:16.000000000 +0200
@@ -16,6 +17,18 @@ diff -Naur glibc-2.3.5.orig/Makeconfig glibc-2.3.5/Makeconfig
  libc.so-gnulib := -lgcc
  endif
  ifeq ($(elf),yes)
+diff -Naur glibc-2.3.5.orig/Makefile glibc-2.3.5/Makefile
+--- glibc-2.3.5.orig/csu/Makefile	2005-02-16 10:34:09.000000000 +0100
++++ glibc-2.3.5/csu/Makefile2	2007-10-23 10:32:31.000000000 +0200
+@@ -241,7 +241,7 @@
+ 	 esac; \
+ 	 files="$(all-Banner-files)";				\
+ 	 if test -n "$$files"; then				\
+-	   echo "\"Available extensions:\\n\"";			\
++	   echo "\"Available extensions:\"\\n";			\
+ 	   sed -e '/^#/d' -e 's/^[[:space:]]*/	/'		\
+ 	       -e 's/^\(.*\)$$/\"\1\\n\"/' $$files;		\
+ 	 fi) > $@T
 diff -Naur glibc-2.3.5.orig/sysdeps/powerpc/powerpc32/memset.S glibc-2.3.5/sysdeps/powerpc/powerpc32/memset.S
 --- glibc-2.3.5.orig/sysdeps/powerpc/powerpc32/memset.S	2003-04-30 00:47:19.000000000 +0200
 +++ glibc-2.3.5/sysdeps/powerpc/powerpc32/memset.S	1970-01-01 01:00:00.000000000 +0100
