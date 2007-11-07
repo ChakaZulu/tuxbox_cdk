@@ -87,11 +87,8 @@ console_tools;0.2.3;console-tools-0.2.3;console-tools-0.2.3.tar.gz:console-tools
 directfb_examples;0.9.22;DirectFB-examples-0.9.22;DirectFB-examples-0.9.22.tar.gz;extract:DirectFB-examples-0.9.22.tar.gz
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.diff
-e2fsprogs;1.40.2;e2fsprogs-1.40.2;e2fsprogs-1.40.2.tar.gz;extract:e2fsprogs-1.40.2.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
 lsof;4.78;lsof_4.78;lsof_4.78.tar.gz:lsof.diff;extract:lsof_4.78.tar.gz
 dosfstools;2.11;dosfstools-2.11;dosfstools_2.11.orig.tar.gz;extract:dosfstools_2.11.orig.tar.gz;patch:dosfstools.diff
-utillinux;2.12r;util-linux-2.12r;util-linux-2.12r.tar.bz2;extract:util-linux-2.12r.tar.bz2;patch:util-linux.diff
-hddtemp;0.3-beta15;hddtemp-0.3-beta15;hddtemp-0.3-beta15.tar.bz2;extract:hddtemp-0.3-beta15.tar.bz2
 ssh;3.8p1;openssh-3.8p1;openssh-3.8p1.tar.gz:ssh.diff;extract:openssh-3.8p1.tar.gz;patch:ssh.diff
 tcpdump;3.9.4;tcpdump-3.9.4;tcpdump-3.9.4.tar.gz:tcpdump.diff;extract:tcpdump-3.9.4.tar.gz;patch:tcpdump.diff
 bonnie;1.03a;bonnie++-1.03a;bonnie++-1.03a.tgz;extract:bonnie++-1.03a.tgz
@@ -99,14 +96,21 @@ vdr;1.2.6;vdr-1.2.6;vdr-1.2.6.tar.bz2:vdr.diff;extract:vdr-1.2.6.tar.bz2;patch:v
 lufs;0.9.7;lufs-0.9.7;lufs-0.9.7.tar.gz:lufs.diff;extract:lufs-0.9.7.tar.gz;patch:lufs.diff
 dropbear;0.48.1;dropbear-0.48.1;dropbear-0.48.1.tar.gz;extract:dropbear-0.48.1.tar.gz
 kermit;8.0;c-kermit-8.0;cku211.tar.gz;dirextract:cku211.tar.gz;patch:kermit.diff
-hdparm;7.7;hdparm-7.7;hdparm-7.7.tar.gz;extract:hdparm-7.7.tar.gz;patch:hdparm.diff
-parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
-xfsprogs;2.9.4;xfsprogs-2.9.4;xfsprogs_2.9.4-1.tar.gz;extract:xfsprogs_2.9.4-1.tar.gz
 libtool;1.5.22;libtool-1.5.22;libtool-1.5.22.tar.gz;extract:libtool-1.5.22.tar.gz
-smartmontools;5.36;smartmontools-5.36;smartmontools-5.36.tar.gz:smartmontools.diff;extract:smartmontools-5.36.tar.gz;patch:smartmontools.diff
 samba;1.9.18p8;samba-1.9.18p8;samba-1.9.18p8.tar.gz:samba_ppc.diff;extract:samba-1.9.18p8.tar.gz;patch:samba_ppc.diff
 wget;1.10.2;wget-1.10.2;wget-1.10.2.tar.gz;extract:wget-1.10.2.tar.gz
 ncftp;3.2.0;ncftp-3.2.0;ncftp-3.2.0-src.tar.bz2;extract:ncftp-3.2.0-src.tar.bz2
+
+#
+# ide/hdd apps
+#
+e2fsprogs;1.40.2;e2fsprogs-1.40.2;e2fsprogs-1.40.2.tar.gz;extract:e2fsprogs-1.40.2.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
+hddtemp;0.3-beta15;hddtemp-0.3-beta15;hddtemp-0.3-beta15.tar.bz2;extract:hddtemp-0.3-beta15.tar.bz2
+hdparm;7.7;hdparm-7.7;hdparm-7.7.tar.gz;extract:hdparm-7.7.tar.gz;patch:hdparm.diff
+parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
+smartmontools;5.36;smartmontools-5.36;smartmontools-5.36.tar.gz:smartmontools.diff;extract:smartmontools-5.36.tar.gz;patch:smartmontools.diff
+utillinux;2.12r;util-linux-2.12r;util-linux-2.12r.tar.bz2;extract:util-linux-2.12r.tar.bz2;patch:util-linux.diff
+xfsprogs;2.9.4;xfsprogs-2.9.4;xfsprogs_2.9.4-1.tar.gz;extract:xfsprogs_2.9.4-1.tar.gz
 
 #
 # msttf

@@ -96,24 +96,28 @@ lirc-0.6.6.tar.bz2;http://unusedino.de/lirc/software
 openssh-3.8p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 tcpdump-3.9.4.tar.gz;http://www.tcpdump.org/release
 bonnie++-1.03a.tgz;http://www.coker.com.au/bonnie++
-e2fsprogs-1.40.2.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/e2fsprogs
 lsof_4.78.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof;http://www.dbox2world.de/Archive/
 dosfstools_2.11.orig.tar.gz;http://ftp.debian.org/debian/pool/main/d/dosfstools
-hddtemp-0.3-beta15.tar.bz2;http://guzu.net/files
-util-linux-2.12r.tar.bz2;http://www.kernel.org/pub/linux/utils/util-linux/
 DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/downloads/Old
 vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/lufs
 dropbear-0.48.1.tar.gz;http://dietmarw.trale.de/Archive
 cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
-hdparm-7.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/hdparm
-parted-1.7.1.tar.gz;http://ftp.gnu.org/pub/gnu/parted
-xfsprogs_2.9.4-1.tar.gz;http://ftp.riken.go.jp/pub/Linux/xfs/download/download/cmd_tars
 libtool-1.5.22.tar.gz;ftp://ftp.gnu.org/gnu/libtool
-smartmontools-5.36.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/smartmontools
 samba-1.9.18p8.tar.gz;http://mirrors.xmission.com/samba/ftp/stable/
 wget-1.10.2.tar.gz;http://ftp.gnu.org/pub/gnu/wget
 ncftp-3.2.0-src.tar.bz2;ftp://ftp.ncftp.com/ncftp
+
+#
+# ide apps
+#
+hdparm-7.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/hdparm
+hddtemp-0.3-beta15.tar.bz2;http://guzu.net/files
+e2fsprogs-1.40.2.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/e2fsprogs
+parted-1.7.1.tar.gz;http://ftp.gnu.org/pub/gnu/parted
+smartmontools-5.36.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/smartmontools
+util-linux-2.12r.tar.bz2;http://www.kernel.org/pub/linux/utils/util-linux/
+xfsprogs_2.9.4-1.tar.gz;http://ftp.riken.go.jp/pub/Linux/xfs/download/download/cmd_tars
 
 #
 # development tools
