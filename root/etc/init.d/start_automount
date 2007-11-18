@@ -42,7 +42,7 @@ MD=/lib/modules/$(uname -r)/
 if [ -x /sbin/modprobe ] ; then
     # If nfs-support is contained in the kernel, this will fail. The 
     # error can be ignored.
-    modprobe nfs
+    grep -q nfs /proc/filesystems || modprobe nfs
     #modprobe cifs
 else
     insmod $MD/kernel/net/sunrpc/sunrpc.o
