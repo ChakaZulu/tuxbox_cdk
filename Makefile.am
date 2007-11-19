@@ -2322,8 +2322,14 @@ $(flashprefix)/.flash: procps busybox driver tuxbox_tools lirc
 	fi
 	rm -f $(flashprefix)/root/etc/init.d/start_*
 	$(INSTALL) -d $(flashprefix)/root/lib/modules/$(KERNELVERSION)
+if !KERNEL26
 	cp -ap $(targetprefix)/lib/modules/$(KERNELVERSION)/kernel $(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
 		$(flashprefix)/root/lib/modules/$(KERNELVERSION)
+else
+	cp -ap $(targetprefix)/lib/modules/$(KERNELVERSION)/* $(flashprefix)/root/lib/modules/$(KERNELVERSION)
+	rm -f  $(flashprefix)/root/lib/modules/$(KERNELVERSION)/build
+	rm -f  $(flashprefix)/root/lib/modules/$(KERNELVERSION)/source
+endif
 	ln -s /tmp $(flashprefix)/root/var/run
 	ln -s /var $(flashprefix)/root/root
 	@touch $@
