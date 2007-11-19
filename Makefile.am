@@ -700,11 +700,19 @@ $(DEPDIR)/libppdirectfb: bootstrap libdirectfb @DEPENDS_libppdirectfb@
 
 $(DEPDIR)/libdvb: bootstrap @DEPENDS_libdvb@
 	@PREPARE_libdvb@
+if !KERNEL26
 	cd @DIR_libdvb@ && \
 		$(MAKE) libdvb.a libdvbci.a libdvbmpegtools.a \
 		$(BUILDENV) \
 		CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/dvb/include -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" && \
 		@INSTALL_libdvb@
+else
+	cd @DIR_libdvb@ && \
+		$(MAKE) libdvb.a libdvbci.a libdvbmpegtools.a \
+		$(BUILDENV) \
+		CFLAGS="$(TARGET_CFLAGS) -I$(targetprefix)/include -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" && \
+		@INSTALL_libdvb@
+endif
 	@CLEANUP_libdvb@
 	touch $@
 
@@ -2030,6 +2038,7 @@ $(DEPDIR)/directfb_gtx: $(driverdir)/directfb/Makefile
 
 apps: dvbsnoop enigma lcars lcd neutrino plugins dvb_tools
 
+if !KERNEL26
 CONFIGURE_OPTS = \
 	--build=$(build) \
 	--host=$(target) \
@@ -2037,6 +2046,15 @@ CONFIGURE_OPTS = \
 	--with-driver=$(driverdir) \
 	--with-dvbincludes=$(driverdir)/dvb/include \
 	--with-target=cdk
+else
+CONFIGURE_OPTS = \
+	--build=$(build) \
+	--host=$(target) \
+	--prefix=$(targetprefix) \
+	--with-driver=$(driverdir) \
+	--with-dvbincludes=$(targetprefix)/include \
+	--with-target=cdk
+endif
 
 if MAINTAINER_MODE
 CONFIGURE_OPTS_MAINTAINER = \
