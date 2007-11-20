@@ -112,7 +112,7 @@ ncftp-3.2.0-src.tar.bz2;ftp://ftp.ncftp.com/ncftp
 # ide apps
 #
 hdparm-7.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/hdparm
-hddtemp-0.3-beta15.tar.bz2;http://guzu.net/files
+hddtemp-0.3-beta15.tar.bz2;http://savannah.c3sl.ufpr.br/hddtemp
 e2fsprogs-1.40.2.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/e2fsprogs
 parted-1.7.1.tar.gz;http://ftp.gnu.org/pub/gnu/parted
 smartmontools-5.36.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/smartmontools
