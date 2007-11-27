@@ -72,18 +72,6 @@ diff -Naur busybox-1.7.2/libbb/messages.c busybox-1.7.2-tuxbox/libbb/messages.c
  const char bb_path_motd_file[] ALIGN1 = "/etc/motd";
  const char bb_dev_null[] ALIGN1 = "/dev/null";
  const char bb_busybox_exec_path[] ALIGN1 = CONFIG_BUSYBOX_EXEC_PATH;
-diff -Naur busybox-1.7.2/Makefile busybox-1.7.2-tuxbox/Makefile
---- busybox-1.7.2/Makefile	2007-09-30 01:54:25.000000000 +0200
-+++ busybox-1.7.2-tuxbox/Makefile	2007-10-27 15:57:50.000000000 +0200
-@@ -570,7 +570,7 @@
- quiet_cmd_busybox__ ?= LINK    $@
-       cmd_busybox__ ?= $(srctree)/scripts/trylink $(CC) $(LDFLAGS) \
-       -o $@ -Wl,-Map -Wl,$@.map \
--      -Wl,--warn-common -Wl,--sort-common -Wl,--gc-sections \
-+      -Wl,--warn-common -Wl,--sort-common \
-       -Wl,--start-group $(busybox-all) -Wl,--end-group \
-       $(LDLIBS)
- 
 diff -Naur busybox-1.7.2/miscutils/Config.in busybox-1.7.2-tuxbox/miscutils/Config.in
 --- busybox-1.7.2/miscutils/Config.in	2007-09-03 13:48:46.000000000 +0200
 +++ busybox-1.7.2-tuxbox/miscutils/Config.in	2007-10-27 15:57:50.000000000 +0200
