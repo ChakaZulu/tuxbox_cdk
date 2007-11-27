@@ -1,6 +1,6 @@
-diff -Naur glibc-2.3.5.orig/Makeconfig glibc-2.3.5/Makeconfig
---- glibc-2.3.5.orig/Makeconfig	2005-02-16 11:50:19.000000000 +0100
-+++ glibc-2.3.5/Makeconfig	2005-10-29 08:51:16.000000000 +0200
+diff -Naur glibc-2.3.6/Makeconfig glibc-2.3.6~/Makeconfig
+--- glibc-2.3.6/Makeconfig	2005-02-16 11:50:19.000000000 +0100
++++ glibc-2.3.6~/Makeconfig	2007-01-17 20:35:58.000000000 +0100
 @@ -503,12 +503,12 @@
    libunwind = -lunwind
  endif
@@ -16,9 +16,9 @@ diff -Naur glibc-2.3.5.orig/Makeconfig glibc-2.3.5/Makeconfig
  libc.so-gnulib := -lgcc
  endif
  ifeq ($(elf),yes)
-diff -Naur glibc-2.3.5.orig/sysdeps/powerpc/powerpc32/memset.S glibc-2.3.5/sysdeps/powerpc/powerpc32/memset.S
---- glibc-2.3.5.orig/sysdeps/powerpc/powerpc32/memset.S	2003-04-30 00:47:19.000000000 +0200
-+++ glibc-2.3.5/sysdeps/powerpc/powerpc32/memset.S	1970-01-01 01:00:00.000000000 +0100
+diff -Naur glibc-2.3.6/sysdeps/powerpc/powerpc32/memset.S glibc-2.3.6~/sysdeps/powerpc/powerpc32/memset.S
+--- glibc-2.3.6/sysdeps/powerpc/powerpc32/memset.S	2003-04-30 00:47:19.000000000 +0200
++++ glibc-2.3.6~/sysdeps/powerpc/powerpc32/memset.S	1970-01-01 01:00:00.000000000 +0100
 @@ -1,335 +0,0 @@
 -/* Optimized memset implementation for PowerPC.
 -   Copyright (C) 1997, 1999, 2000, 2003 Free Software Foundation, Inc.
@@ -355,3 +355,71 @@ diff -Naur glibc-2.3.5.orig/sysdeps/powerpc/powerpc32/memset.S glibc-2.3.5/sysde
 -
 -END (BP_SYM (memset))
 -libc_hidden_builtin_def (memset)
+diff -Naur glibc-2.3.6/sysdeps/unix/sysv/linux/bind.S glibc-2.3.6~/sysdeps/unix/sysv/linux/bind.S
+--- glibc-2.3.6/sysdeps/unix/sysv/linux/bind.S	2002-05-15 02:17:25.000000000 +0200
++++ glibc-2.3.6~/sysdeps/unix/sysv/linux/bind.S	2007-01-17 20:40:41.000000000 +0100
+@@ -2,4 +2,4 @@
+ #define	NARGS	3
+ #define NO_WEAK_ALIAS	1
+ #include <socket.S>
+-weak_alias (bind, __bind)
++weak_alias (__bind, bind)
+diff -Naur glibc-2.3.6/sysdeps/unix/sysv/linux/getsockname.S glibc-2.3.6~/sysdeps/unix/sysv/linux/getsockname.S
+--- glibc-2.3.6/sysdeps/unix/sysv/linux/getsockname.S	2002-05-15 02:17:58.000000000 +0200
++++ glibc-2.3.6~/sysdeps/unix/sysv/linux/getsockname.S	2007-01-17 20:40:41.000000000 +0100
+@@ -2,4 +2,4 @@
+ #define	NARGS	3
+ #define NO_WEAK_ALIAS	1
+ #include <socket.S>
+-weak_alias (getsockname, __getsockname)
++weak_alias (__getsockname, getsockname)
+diff -Naur glibc-2.3.6/sysdeps/unix/sysv/linux/listen.S glibc-2.3.6~/sysdeps/unix/sysv/linux/listen.S
+--- glibc-2.3.6/sysdeps/unix/sysv/linux/listen.S	2002-05-15 02:18:37.000000000 +0200
++++ glibc-2.3.6~/sysdeps/unix/sysv/linux/listen.S	2007-01-17 20:40:41.000000000 +0100
+@@ -2,4 +2,4 @@
+ #define	NARGS	2
+ #define NO_WEAK_ALIAS	1
+ #include <socket.S>
+-weak_alias (listen, __listen)
++weak_alias (__listen, listen)
+diff -Naur glibc-2.3.6/sysdeps/unix/sysv/linux/powerpc/powerpc32/socket.S glibc-2.3.6~/sysdeps/unix/sysv/linux/powerpc/powerpc32/socket.S
+--- glibc-2.3.6/sysdeps/unix/sysv/linux/powerpc/powerpc32/socket.S	2003-07-12 00:46:12.000000000 +0200
++++ glibc-2.3.6~/sysdeps/unix/sysv/linux/powerpc/powerpc32/socket.S	2007-01-17 20:40:41.000000000 +0100
+@@ -116,4 +116,6 @@
+ 
+ PSEUDO_END (__socket)
+ 
++#ifndef NO_WEAK_ALIAS
+ weak_alias (__socket, socket)
++#endif
+diff -Naur glibc-2.3.6/sysdeps/unix/sysv/linux/setsockopt.S glibc-2.3.6~/sysdeps/unix/sysv/linux/setsockopt.S
+--- glibc-2.3.6/sysdeps/unix/sysv/linux/setsockopt.S	2002-05-15 02:19:09.000000000 +0200
++++ glibc-2.3.6~/sysdeps/unix/sysv/linux/setsockopt.S	2007-01-17 20:40:41.000000000 +0100
+@@ -2,4 +2,4 @@
+ #define	NARGS	5
+ #define NO_WEAK_ALIAS	1
+ #include <socket.S>
+-weak_alias (setsockopt, __setsockopt)
++weak_alias (__setsockopt, setsockopt)
+diff -Naur glibc-2.3.6/sysdeps/wordsize-32/Makefile glibc-2.3.6~/sysdeps/wordsize-32/Makefile
+--- glibc-2.3.6/sysdeps/wordsize-32/Makefile	2002-09-19 08:47:56.000000000 +0200
++++ glibc-2.3.6~/sysdeps/wordsize-32/Makefile	2007-01-17 20:40:41.000000000 +0100
+@@ -2,5 +2,6 @@
+ ifeq (yes,$(build-shared))
+ sysdep_routines += divdi3
+ shared-only-routines += divdi3
++CPPFLAGS-divdi3.c = -Din_divdi3_c
+ endif
+ endif
+diff -Naur glibc-2.3.6/sysdeps/wordsize-32/symbol-hacks.h glibc-2.3.6~/sysdeps/wordsize-32/symbol-hacks.h
+--- glibc-2.3.6/sysdeps/wordsize-32/symbol-hacks.h	2004-03-08 21:59:34.000000000 +0100
++++ glibc-2.3.6~/sysdeps/wordsize-32/symbol-hacks.h	2007-01-17 20:40:41.000000000 +0100
+@@ -22,7 +22,7 @@
+    therefore we get PLTs.  Unnecessarily so.  Changing gcc is a big
+    task which might not be worth it so we play tricks with the
+    assembler.  */
+-#if !defined __ASSEMBLER__ && !defined NOT_IN_libc && defined SHARED
++#if !defined __ASSEMBLER__ && !defined in_divdi3_c && !defined NOT_IN_libc && defined SHARED
+ asm ("__divdi3 = __divdi3_internal");
+ asm ("__udivdi3 = __udivdi3_internal");
+ asm ("__moddi3 = __moddi3_internal");
