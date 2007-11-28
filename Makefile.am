@@ -82,7 +82,7 @@ if ENABLE_CCACHE
 			ln -s $(ccachedir)/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-gcc ;\
 			ln -s $(ccachedir)/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-g++ ;\
 			ln -s $(ccachedir)/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-cpp ;\
-			ln -s $(ccachedir)/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-gcc-.3.4.4 ;\
+			ln -s $(ccachedir)/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-gcc-.$(VERSION_gcc) ;\
 		$(ccachedir)/ccache -M $(maxcachesize) ;\
 		$(ccachedir)/ccache -F $(maxcachefiles) ;\
 		$(ccachedir)/ccache -s ;\
@@ -305,7 +305,7 @@ $(DEPDIR)/ccache: @DEPENDS_ccache@ directories
 		ln -s $(hostprefix)/bin/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-gcc ;\
 		ln -s $(hostprefix)/bin/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-g++ ;\
 		ln -s $(hostprefix)/bin/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-cpp ;\
-		ln -s $(hostprefix)/bin/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-gcc-.3.4.4 ;\
+		ln -s $(hostprefix)/bin/ccache $(hostprefix)/ccache-bin/powerpc-tuxbox-linux-gnu-gcc-.$(VERSION_gcc) ;\
 		$(hostprefix)/bin/ccache -M $(maxcachesize) ;\
 		$(hostprefix)/bin/ccache -F $(maxcachefiles) ;\
 		$(hostprefix)/bin/ccache -s ;\
