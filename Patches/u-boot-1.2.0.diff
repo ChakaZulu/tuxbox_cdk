@@ -933,3 +933,58 @@ diff -Naur u-boot-1.2.0/tools/Makefile u-boot-1.2.0-dbox2/tools/Makefile
  $(obj)mpc86x_clk.o:	$(src)mpc86x_clk.c
  		$(CC) -g $(CFLAGS) -c -o $@ $<
  
+diff -rup u-boot-1.2.0/common/cmd_nvedit.c u-boot-1.2.0-dbox2/common/cmd_nvedit.c
+--- u-boot-1.2.0/common/cmd_nvedit.c	2007-12-17 01:43:07.000000000 +0100
++++ u-boot-1.2.0-dbox2/common/cmd_nvedit.c	2007-12-19 11:39:30.000000000 +0100
+@@ -159,6 +159,7 @@ int _do_setenv (int flag, int argc, char
+ 	uchar *env, *nxt = NULL;
+ 	char *name;
+ 	bd_t *bd = gd->bd;
++	int br_nowait = 0;
+ 
+ 	uchar *env_data = env_get_addr(0);
+ 
+@@ -167,6 +168,16 @@ int _do_setenv (int flag, int argc, char
+ 
+ 	name = argv[1];
+ 
++	/*
++	 * this is an ugly hack, to set the baudrate at boot without asking for
++	 * confirmation, use "setenv baudrate_now 38400"
++	 */
++	if (strcmp(name, "baudrate_now") == 0) {
++		br_nowait = 1;
++		/* execute the "baudrate" setenv routine */
++		strcpy(name, "baudrate");
++	}
++
+ 	if (strchr(name, '=')) {
+ 		printf ("## Error: illegal character '=' in variable name \"%s\"\n", name);
+ 		return 1;
+@@ -244,8 +255,9 @@ int _do_setenv (int flag, int argc, char
+ 					baudrate);
+ 				return 1;
+ 			}
+-			printf ("## Switch baudrate to %d bps and press ENTER ...\n",
+-				baudrate);
++			if (!br_nowait)
++				printf ("## Switch baudrate to %d bps and press ENTER ...\n",
++					baudrate);
+ 			udelay(50000);
+ 			gd->baudrate = baudrate;
+ #if defined(CONFIG_PPC) || defined(CONFIG_MCF52x2)
+@@ -254,9 +266,11 @@ int _do_setenv (int flag, int argc, char
+ 
+ 			serial_setbrg ();
+ 			udelay(50000);
+-			for (;;) {
+-				if (getc() == '\r')
+-				      break;
++			if (!br_nowait) {
++				for (;;) {
++					if (getc() == '\r')
++					      break;
++				}
+ 			}
+ 		}
+ 
