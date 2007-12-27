@@ -1,30 +1,40 @@
-diff -Naur nfs-utils-1.0.9.orig/Makefile.am nfs-utils-1.0.9/Makefile.am
---- nfs-utils-1.0.9.orig/Makefile.am	2006-07-08 02:04:32.000000000 +0200
-+++ nfs-utils-1.0.9/Makefile.am	2006-09-03 12:39:05.000000000 +0200
-@@ -47,7 +47,7 @@
- 	mkdir -p $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak
- 	touch $(DESTDIR)$(statedir)/state
- 	chmod go-rwx $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak $(DESTDIR)$(statedir)/state
--	chown $(statduser) $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak $(DESTDIR)$(statedir)/state
+diff -Naur nfs-utils-1.1.1.orig/Makefile.am nfs-utils-1.1.1/Makefile.am
+--- nfs-utils-1.1.1.orig/Makefile.am	2006-07-08 02:04:32.000000000 +0200
++++ nfs-utils-1.1.1/Makefile.am	2007-11-21 21:55:05.000000000 +0200
+@@ -42,17 +42,19 @@
+ 
+ ACLOCAL_AMFLAGS = -I aclocal
+ 
+-install-data-hook:
+-	if [ ! -d $(DESTDIR)$(statedir) ]; then mkdir -p $(DESTDIR)$(statedir); fi
+-	touch $(DESTDIR)$(statedir)/xtab; chmod 644 $(DESTDIR)$(statedir)/xtab
+-	touch $(DESTDIR)$(statedir)/etab; chmod 644 $(DESTDIR)$(statedir)/etab
+-	touch $(DESTDIR)$(statedir)/rmtab; chmod 644 $(DESTDIR)$(statedir)/rmtab
+-	mkdir -p $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak
+-	touch $(DESTDIR)$(statedir)/state
+-	chmod go-rwx $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak $(DESTDIR)$(statedir)/state
+-	-chown $(statduser) $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak $(DESTDIR)$(statedir)/state
+-
+-uninstall-hook:
++ install-data-hook:
++	if [ ! -d $(DESTDIR)$(statedir) ]; then mkdir -p $(DESTDIR)$(statedir); fi
++	touch $(DESTDIR)$(statedir)/xtab; chmod 644 $(DESTDIR)$(statedir)/xtab
++	if [ ! -e $(DESTDIR)$(statedir)/etab ]; then \
++		touch $(DESTDIR)$(statedir)/etab; \
++		chmod 644 $(DESTDIR)$(statedir)/etab; fi
++	touch $(DESTDIR)$(statedir)/rmtab; chmod 644 $(DESTDIR)$(statedir)/rmtab
++	mkdir -p $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak
++	touch $(DESTDIR)$(statedir)/state
++	chmod go-rwx $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak $(DESTDIR)$(statedir)/state
 +#	chown $(statduser) $(DESTDIR)$(statedir)/sm $(DESTDIR)$(statedir)/sm.bak $(DESTDIR)$(statedir)/state
- 
- uninstall-hook:
++  
++  uninstall-hook:
  	rm $(DESTDIR)$(statedir)/xtab
-diff -Naur nfs-utils-1.0.9.orig/configure.in nfs-utils-1.0.9/configure.in
---- nfs-utils-1.0.9.orig/configure.in	2006-07-08 02:04:32.000000000 +0200
-+++ nfs-utils-1.0.9/configure.in	2006-09-03 12:37:56.000000000 +0200
-@@ -142,7 +142,7 @@
- 
- AC_HEADER_STDC([])
- AC_GNULIBC
--AC_BSD_SIGNALS
-+dnl AC_BSD_SIGNALS
- 
- dnl *************************************************************
- dnl * Check for required libraries
-diff -Naur nfs-utils-1.0.9.orig/tools/rpcgen/Makefile.am nfs-utils-1.0.9/tools/rpcgen/Makefile.am
---- nfs-utils-1.0.9.orig/tools/rpcgen/Makefile.am	2006-07-08 02:04:32.000000000 +0200
-+++ nfs-utils-1.0.9/tools/rpcgen/Makefile.am	2006-09-03 12:43:56.000000000 +0200
+ 	rm $(DESTDIR)$(statedir)/etab
+ 	rm $(DESTDIR)$(statedir)/rmtab
+diff -Naur nfs-utils-1.1.1.orig/tools/rpcgen/Makefile.am nfs-utils-1.1.1/tools/rpcgen/Makefile.am
+--- nfs-utils-1.1.1.orig/tools/rpcgen/Makefile.am	2006-07-08 02:04:32.000000000 +0200
++++ nfs-utils-1.1.1/tools/rpcgen/Makefile.am	2007-11-27 08:43:56.000000000 +0200
 @@ -1,6 +1,14 @@
  ## Process this file with automake to produce Makefile.in
  

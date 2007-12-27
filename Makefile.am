@@ -351,7 +351,7 @@ $(DEPDIR)/nfs_utils: bootstrap @DEPENDS_nfs_utils@
 	@PREPARE_nfs_utils@
 	chmod +x @DIR_nfs_utils@/autogen.sh
 	cd @DIR_nfs_utils@  && \
-		$(CONFIGURE) CC_FOR_BUILD=$(target)-gcc --disable-gss --disable-nfsv4 --prefix= && \
+		$(CONFIGURE) CC_FOR_BUILD=$(target)-gcc --disable-gss --disable-nfsv4 --prefix= --without-tcp-wrappers --disable-uuid && \
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(targetprefix)
 	rm -rf @DIR_nfs_utils@

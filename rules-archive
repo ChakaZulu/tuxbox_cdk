@@ -33,7 +33,7 @@ ccache-2.4.tar.gz;http://samba.org/ftp/ccache
 #
 busybox-1.7.2.tar.bz2;http://www.busybox.net/downloads
 autofs-4.1.4.tar.bz2;ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4
-nfs-utils-1.0.9.tar.bz2;ftp://ftp.kernel.org/pub/linux/utils/nfs
+nfs-utils-1.1.1.tar.bz2;ftp://ftp.kernel.org/pub/linux/utils/nfs
 fuse-2.5.3.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/fuse
 fuse-2.6.2.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/fuse
 djmount-0.71.tar.gz;http://mesh.dl.sourceforge.net/sourceforge/djmount
