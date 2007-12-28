@@ -33,7 +33,7 @@ module_init_tools;make:install:DESTDIR=TARGET
 modutils;make:install-bin:sbindir=TARGET/sbin
 netkit_telnet;install:-m755:telnet/telnet:TARGET/bin/telnet;install:-m755:telnetd/telnetd:TARGET/sbin/in.telnetd
 portmap;make:install:BASEDIR=TARGET
-procps;remove:TARGET/bin/ps;install:-m755:top:ps/ps:TARGET/bin
+procps;remove:TARGET/bin/ps;install:-m755:top:ps/ps:TARGET/bin;install:-m755:proc/libproc-3.2.7.so:TARGET/lib
 udev;make:install:DESTDIR=TARGET
 
 #

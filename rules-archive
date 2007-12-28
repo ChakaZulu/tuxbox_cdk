@@ -43,7 +43,7 @@ netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 portmap_5beta.tar.gz;ftp://ftp.porcupine.org/pub/security
-procps-010114.tar.gz
+procps-3.2.7.tar.gz;http://procps.sourceforge.net/
 udev-030.tar.gz;http://www.kernel.org/pub/linux/utils/kernel/hotplug
 vsftpd-1.2.2.tar.gz;ftp://vsftpd.beasts.org/users/cevans
 mrouted_3.9-beta3.orig.tar.gz;ftp://archive.debian.org/debian-archive/pool/non-free/m/mrouted
