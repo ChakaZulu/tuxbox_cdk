@@ -45,5 +45,4 @@ diff -urN vsftpd-1.0.1.orig/vsftpd-dbox2.conf vsftpd-1.0.1/vsftpd-dbox2.conf
 +xferlog_enable=NO
 +connect_from_port_20=YES
 +secure_chroot_dir=/share/empty
-+ftpd_banner=Willkomen auf Ihrer d-box 2.
-+
++banner_file=/etc/issue.net
