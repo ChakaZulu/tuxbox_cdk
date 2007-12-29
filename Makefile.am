@@ -16,7 +16,15 @@ BUILDENV := \
 	LDFLAGS="$(TARGET_LDFLAGS)" \
 	PKG_CONFIG_PATH=$(targetprefix)/lib/pkgconfig
 
-all: core libs root boot apps devel
+all:
+	@echo
+	@echo "You probably do not want to build all possible targets."
+	@echo "Many of them are broken anyway."
+	@echo "If you REALLY want to build everything, then type "
+	@echo "\"make all-yes-really\", and don't complain if it does not work."
+	@echo
+
+all-yes-really: core libs root boot apps devel
 extra: java contrib_apps fun dvb_apps
 
 # This rule script checks if all archives are present at the given address but
