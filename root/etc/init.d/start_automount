@@ -34,7 +34,7 @@ MAPFILE=/etc/auto.net
 
 echo "Starting the automounter"
 
-MD=/lib/modules/$(uname -r)/
+MD=/lib/modules/$(uname -r)
 
 # Load nfs-necessary modules.
 # For CIF-stuff this needs to be extended
@@ -47,8 +47,8 @@ if [ -x /sbin/modprobe ] ; then
 else
     insmod $MD/kernel/net/sunrpc/sunrpc.o
     insmod $MD/kernel/fs/lockd/lockd.o
-    insmod $MD/kernel/fs/nfs/nfs.o
     insmod $MD/kernel/fs/cifs/cifs.o
+    insmod $MD/kernel/fs/nfsd/nfsd.o
 fi
 
 if [ ! -d /var/lock ]; then
