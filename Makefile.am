@@ -2617,7 +2617,7 @@ $(flashprefix)/.lib: $(flashprefix)/.flash $(shell ls -1 $(flashprefix)/.part_* 
 	cp -pa $(targetprefix)/lib/libnss_dns-?.*.so $(flashprefix)/root/lib
 	cp -pa $(targetprefix)/lib/libnss_files-?.*.so $(flashprefix)/root/lib
 	-cp -d $(targetprefix)/lib/libproc-*.so $(flashprefix)/root/lib
-	-chmod +w $</lib/libproc-*.so
+	-chmod +w $(flashprefix)/root/lib/libproc-*.so
 	$(MKLIBS) --target $(target) --ldlib ld.so.1 --libc-extras-dir $(targetprefix)/lib/libc_pic \
 		-d $(flashprefix)/root/lib \
 		-D -L $(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins \
