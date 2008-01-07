@@ -122,7 +122,17 @@ KERNEL_PREPARE = @PREPARE_linux24@
 endif
 
 if ENABLE_IDE
-OPTIONAL_IDE = -ide2
+LINUX_CFG_OPTION_IDE = -DTARGETRULESET_IDE2
+endif
+if TARGETRULESET_FLASH
+LINUX_CFG_TARGETRULESET = -DTARGETRULESET_FLASH
+else
+LINUX_CFG_TARGETRULESET = -DTARGETRULESET_YADD
+endif
+if KERNEL26
+LINUX_CFG_KERNEL_VER = 2.6.x
+else
+LINUX_CFG_KERNEL_VER = 2.4.x
 endif
 
 $(DEPDIR)/linuxdir: $(KERNEL_DEPENDS)
@@ -130,11 +140,7 @@ $(DEPDIR)/linuxdir: $(KERNEL_DEPENDS)
 		$(MAKE) directories; \
 	fi
 	$(KERNEL_PREPARE)
-if TARGETRULESET_FLASH
-	cat Patches/linux-$(KERNELVERSION).config-flash$(OPTIONAL_IDE) > $(KERNEL_DIR)/.config
-else
-	cat Patches/linux-$(KERNELVERSION).config > $(KERNEL_DIR)/.config
-endif
+	m4 $(LINUX_CFG_OPTION_IDE) $(LINUX_CFG_OPTION_FLASH) Patches/linux-$(LINUX_CFG_KERNEL_VER).config.m4 > $(KERNEL_DIR)/.config
 	$(MAKE) -C $(KERNEL_DIR) oldconfig \
 		ARCH=ppc
 if KERNEL26
@@ -145,6 +151,15 @@ endif
 		ARCH=ppc
 	touch $@
 
+$(DEPDIR)/linuxconfig: $(KERNEL_DEPENDS)
+	$(MAKE) -C $(KERNEL_DIR) oldconfig \
+		ARCH=ppc
+if KERNEL26
+	$(MAKE) -C $(KERNEL_DIR) include/asm \
+		ARCH=ppc
+endif
+	$(MAKE) -C $(KERNEL_DIR) include/linux/version.h \
+		ARCH=ppc
 
 $(DEPDIR)/binutils: @DEPENDS_binutils@
 	@if [ ! -h linux ]; then \
