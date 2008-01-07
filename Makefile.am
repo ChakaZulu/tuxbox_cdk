@@ -140,7 +140,7 @@ $(DEPDIR)/linuxdir: $(KERNEL_DEPENDS)
 		$(MAKE) directories; \
 	fi
 	$(KERNEL_PREPARE)
-	m4 $(LINUX_CFG_OPTION_IDE) $(LINUX_CFG_OPTION_FLASH) Patches/linux-$(LINUX_CFG_KERNEL_VER).config.m4 > $(KERNEL_DIR)/.config
+	m4 $(LINUX_CFG_OPTION_IDE) $(LINUX_CFG_TARGETRULESET) Patches/linux-$(LINUX_CFG_KERNEL_VER).config.m4 > $(KERNEL_DIR)/.config
 	$(MAKE) -C $(KERNEL_DIR) oldconfig \
 		ARCH=ppc
 if KERNEL26
