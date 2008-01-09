@@ -1324,7 +1324,7 @@ $(DEPDIR)/wget: bootstrap @DEPENDS_wget@
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
-			--prefix=$(targetprefix) && \
+			--prefix= && \
 		$(MAKE) all && \
 		@INSTALL_wget@
 	@CLEANUP_wget@
