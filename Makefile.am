@@ -1330,6 +1330,19 @@ $(DEPDIR)/wget: bootstrap @DEPENDS_wget@
 	@CLEANUP_wget@
 	touch $@
 
+$(DEPDIR)/screen: bootstrap @DEPENDS_screen@
+	@PREPARE_screen@
+	cd @DIR_screen@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= && \
+		$(MAKE) all && \
+		@INSTALL_screen@
+	@CLEANUP_screen@
+	touch $@
+
 #######################
 #
 #   ide apps

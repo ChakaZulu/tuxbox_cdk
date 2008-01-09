@@ -99,6 +99,7 @@ libtool;1.5.22;libtool-1.5.22;libtool-1.5.22.tar.gz;extract:libtool-1.5.22.tar.g
 samba;1.9.18p8;samba-1.9.18p8;samba-1.9.18p8.tar.gz:samba_ppc.diff;extract:samba-1.9.18p8.tar.gz;patch:samba_ppc.diff
 wget;1.10.2;wget-1.10.2;wget-1.10.2.tar.gz;extract:wget-1.10.2.tar.gz
 ncftp;3.2.0;ncftp-3.2.0;ncftp-3.2.0-src.tar.bz2;extract:ncftp-3.2.0-src.tar.bz2
+screen;4.0.2;screen-4.0.2;screen-4.0.2.tar.gz:screen.diff;extract:screen-4.0.2.tar.gz;patch:screen.diff
 
 #
 # ide/hdd apps
