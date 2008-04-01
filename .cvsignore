@@ -9,3 +9,6 @@ config.status
 configure
 linux-*
 rules-downcheck.pl
+config.guess
+config.sub
+ltmain.sh
