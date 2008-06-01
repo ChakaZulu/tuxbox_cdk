@@ -23,7 +23,7 @@ diff -Naur linux-2.4.36.2/arch/ppc/8xx_io/enet.c linux-2.4.36.2_new/arch/ppc/8xx
 +	immap->im_ioport.iop_papar &= ~PA_ENET_LBK;
 +	immap->im_ioport.iop_padir |=  PA_ENET_LBK;
 +	immap->im_ioport.iop_padat &= ~PA_ENET_LBK;
-+#endif /* PA_ENET_LBK */(
++#endif /* PA_ENET_LBK */
 +
  #if defined(PC_ENET_LBK)
  	/* Configure port C pins to disable External Loopback
