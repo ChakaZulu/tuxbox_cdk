@@ -1,0 +1,56 @@
+Index: linux-2.6.25.6/init/do_mounts.c
+===================================================================
+--- linux-2.6.25.6.orig/init/do_mounts.c
++++ linux-2.6.25.6/init/do_mounts.c
+@@ -198,6 +198,37 @@ static int __init do_mount_root(char *na
+ 	       current->fs->pwd.mnt->mnt_sb->s_type->name,
+ 	       current->fs->pwd.mnt->mnt_sb->s_flags & MS_RDONLY ?
+ 	       " readonly" : "");
++
++	err = sys_mount("dev", "dev", "tmpfs", 0, NULL);
++	if (err < 0) {
++		printk("could not mount /dev tmpfs! bailing out\n");
++		return err;
++	}
++
++	err = sys_mknod((const char __user *) "dev/console",
++			S_IFCHR | S_IRUSR | S_IWUSR,
++			new_encode_dev(MKDEV(5, 1)));
++	if (err < 0) {
++		printk("could not create dev/console\n");
++		return err;
++	}
++
++	err = sys_mknod((const char __user *) "dev/null",
++			S_IFCHR | S_IRUSR | S_IWUSR,
++			new_encode_dev(MKDEV(1, 3)));
++	if (err < 0) {
++		printk("could not create dev/null\n");
++		return err;
++	}
++
++	err = sys_mknod((const char __user *) "dev/ttyCPM0",
++			S_IFCHR | S_IRUSR | S_IWUSR,
++			new_encode_dev(MKDEV(4, 64)));
++	if (err < 0) {
++		printk("could not create dev/ttyCPM0\n");
++		return err;
++	}
++
+ 	return 0;
+ }
+ 
+Index: linux-2.6.25.6/kernel/printk.c
+===================================================================
+--- linux-2.6.25.6.orig/kernel/printk.c
++++ linux-2.6.25.6/kernel/printk.c
+@@ -835,6 +835,9 @@ static int __init console_setup(char *st
+ 	if (!strcmp(str, "ttyb"))
+ 		strcpy(buf, "ttyS1");
+ #endif
++	if (!strcmp(str, "ttyS0"))
++		strcpy(buf, "ttyCPM0");
++
+ 	for (s = buf; *s; s++)
+ 		if ((*s >= '0' && *s <= '9') || *s == ',')
+ 			break;
