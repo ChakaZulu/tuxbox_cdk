@@ -13,7 +13,7 @@
 # core
 #
 uboot;1.2.0;u-boot-1.2.0;u-boot-1.2.0.tar.bz2:u-boot-1.2.0.diff;extract:u-boot-1.2.0.tar.bz2;patch:u-boot-1.2.0.diff
-linux24;2.4.36.2-dbox2;linux-2.4.36.2;linux-2.4.36.2.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.34-dbox2-mtd0305.diff.bz2:autofs4-2.4-module-20050404.tar.gz;extract:autofs4-2.4-module-20050404.tar.gz;move:autofs4-2.4/module-patches/autofs4-2.4.29.patch:Patches;remove:autofs4-2.4;remove:linux;extract:linux-2.4.36.2.tar.bz2;patch:linux-version.diff;patch:linux-2.4.35.5-dbox2.diff;patch:linux-2.4.33-dbox2-shift.diff;patch:linux-2.4.33-dbox2-keyboard.diff;patch:linux-2.4.33-dbox2-v4l2.diff;patch:linux-2.4.33-dbox2-cramfs.diff;patch:linux-2.4.33-dbox2-lufs.diff;patch:linux-2.4.34-dbox2-mtd0305.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.36.2/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs3.0-patch;patch:squashfs3.0_lzma-patch;patch:linux-2.4.33-dbox2-badram.diff;patch:autofs4-2.4.29.patch;patch:linux-2.4.33-dbox2-ide2.diff;patch:fdx.diff;link:linux-2.4.36.2:linux
+linux24;2.4.36.6-dbox2;linux-2.4.36.6;linux-2.4.36.6.tar.bz2:cifs-1.20c-2.4.tar.gz:linux-2.4.34-dbox2-mtd0305.diff.bz2:autofs4-2.4-module-20050404.tar.gz;extract:autofs4-2.4-module-20050404.tar.gz;move:autofs4-2.4/module-patches/autofs4-2.4.29.patch:Patches;remove:autofs4-2.4;remove:linux;extract:linux-2.4.36.6.tar.bz2;patch:linux-version.diff;patch:linux-2.4.35.5-dbox2.diff;patch:linux-2.4.33-dbox2-shift.diff;patch:linux-2.4.33-dbox2-keyboard.diff;patch:linux-2.4.33-dbox2-v4l2.diff;patch:linux-2.4.33-dbox2-cramfs.diff;patch:linux-2.4.33-dbox2-lufs.diff;patch:linux-2.4.34-dbox2-mtd0305.diff.bz2;extract:cifs-1.20c-2.4.tar.gz;move:linux/fs/cifs:linux-2.4.36.6/fs/;patch:../linux/cifs_24.patch;remove:linux;patch:fb_accel_id.diff;patch:squashfs3.0-patch;patch:squashfs3.0_lzma-patch;patch:linux-2.4.33-dbox2-badram.diff;patch:autofs4-2.4.29.patch;patch:linux-2.4.33-dbox2-ide2.diff;patch:fdx.diff;link:linux-2.4.36.6:linux
 linux;2.6.25.6-dbox2;linux-2.6.25.6;linux-2.6.25.6.tar.bz2:linux-2.6.25-dbox2.diff:linux-2.6.25-create-console.diff:linux-2.6.25-squashfs3.3.patch;remove:linux;extract:linux-2.6.25.6.tar.bz2;patch:linux-2.6.25-dbox2.diff;patch:linux-2.6.25-create-console.diff;patch:linux-2.6.25-squashfs3.3.patch;link:linux-2.6.25.6:linux
 binutils;2.17.50.0.9;binutils-2.17.50.0.9;binutils-2.17.50.0.9.tar.bz2;extract:binutils-2.17.50.0.9.tar.bz2;patch:binutils.diff
 bootstrap_gcc;3.4.6;gcc-3.4.6;gcc-core-3.4.6.tar.bz2;extract:gcc-core-3.4.6.tar.bz2
@@ -100,15 +100,16 @@ samba;1.9.18p8;samba-1.9.18p8;samba-1.9.18p8.tar.gz:samba_ppc.diff;extract:samba
 wget;1.10.2;wget-1.10.2;wget-1.10.2.tar.gz;extract:wget-1.10.2.tar.gz
 ncftp;3.2.0;ncftp-3.2.0;ncftp-3.2.0-src.tar.bz2;extract:ncftp-3.2.0-src.tar.bz2
 screen;4.0.2;screen-4.0.2;screen-4.0.2.tar.gz:screen.diff;extract:screen-4.0.2.tar.gz;patch:screen.diff
+lynx;2.8.5;lynx2-8-5;lynx2.8.5.tar.bz2;extract:lynx2.8.5.tar.bz2
 
 #
 # ide/hdd apps
 #
-e2fsprogs;1.40.2;e2fsprogs-1.40.2;e2fsprogs-1.40.2.tar.gz;extract:e2fsprogs-1.40.2.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
+e2fsprogs;1.40.8;e2fsprogs-1.40.8;e2fsprogs-1.40.8.tar.gz;extract:e2fsprogs-1.40.8.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
 hddtemp;0.3-beta15;hddtemp-0.3-beta15;hddtemp-0.3-beta15.tar.bz2;extract:hddtemp-0.3-beta15.tar.bz2
-hdparm;7.7;hdparm-7.7;hdparm-7.7.tar.gz;extract:hdparm-7.7.tar.gz;patch:hdparm.diff
+hdparm;8.6;hdparm-8.6;hdparm-8.6.tar.gz;extract:hdparm-8.6.tar.gz;patch:hdparm.diff
 parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
-smartmontools;5.36;smartmontools-5.36;smartmontools-5.36.tar.gz:smartmontools.diff;extract:smartmontools-5.36.tar.gz;patch:smartmontools.diff
+smartmontools;5.38;smartmontools-5.38;smartmontools-5.38.tar.gz;extract:smartmontools-5.38.tar.gz;patch:smartmontools.diff
 utillinux;2.12r;util-linux-2.12r;util-linux-2.12r.tar.bz2;extract:util-linux-2.12r.tar.bz2;patch:util-linux.diff
 xfsprogs;2.9.4;xfsprogs-2.9.4;xfsprogs_2.9.4-1.tar.gz;extract:xfsprogs_2.9.4-1.tar.gz
 
