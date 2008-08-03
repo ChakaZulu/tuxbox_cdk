@@ -2437,7 +2437,6 @@ $(flashprefix)/.part_dvb_tools: $(flashprefix)/.flash dvb_tools
 	$(INSTALL) $(targetprefix)/sbin/streampes $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streamsec $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/streamts $(flashprefix)/root/sbin
-	$(INSTALL) $(targetprefix)/sbin/udpstreampes $(flashprefix)/root/sbin
 	$(INSTALL) $(targetprefix)/sbin/udpstreamts $(flashprefix)/root/sbin
 	@touch $@
 
@@ -2464,6 +2463,7 @@ $(flashprefix)/.part_neutrino: $(flashprefix)/.flash neutrino root
 	$(INSTALL) $(targetprefix)/bin/pzapit $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/satfind $(flashprefix)/root/bin
 	$(INSTALL) $(targetprefix)/bin/zapit $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/sbin/udpstreampes $(flashprefix)/root/sbin
 	sed -e 's/neutrino/neutrino -u -f/' $(targetprefix)/etc/init.d/start_neutrino > \
 		$(flashprefix)/root/etc/init.d/start_neutrino ;
 	chmod 755 $(flashprefix)/root/etc/init.d/start_neutrino ;
