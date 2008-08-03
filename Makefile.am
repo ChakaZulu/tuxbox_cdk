@@ -2527,6 +2527,11 @@ $(flashprefix)/.part_plugins: $(flashprefix)/.flash plugins
 	cp -pa $(targetprefix)/share/tuxbox/sokoban $(flashprefix)/root/share/tuxbox/
 	@touch $@
 
+flash-dvbsnoop: $(flashprefix)/.part_dvbsnoop
+$(flashprefix)/.part_dvbsnoop: $(flashprefix)/.flash dvbsnoop
+	$(INSTALL) $(targetprefix)/bin/dvbsnoop $(flashprefix)/root/bin
+	@touch $@
+
 flash-fstools: $(flashprefix)/.part_fstools
 $(flashprefix)/.part_fstools: $(flashprefix)/.flash e2fsprogs utillinux
 	$(INSTALL) -d $(flashprefix)/root/sbin
