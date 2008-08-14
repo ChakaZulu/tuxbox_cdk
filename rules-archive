@@ -100,13 +100,14 @@ dosfstools_2.11.orig.tar.gz;http://ftp.debian.org/debian/pool/main/d/dosfstools
 DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/downloads/Old
 vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/lufs
-dropbear-0.48.1.tar.gz;http://dietmarw.trale.de/Archive
+dropbear-0.51.tar.bz2;http://www.ucc.asn.au/~matt/dropbear
 cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
 libtool-1.5.22.tar.gz;ftp://ftp.gnu.org/gnu/libtool
 samba-1.9.18p8.tar.gz;http://mirrors.xmission.com/samba/ftp/stable
 wget-1.10.2.tar.gz;http://ftp.gnu.org/pub/gnu/wget
 ncftp-3.2.0-src.tar.bz2;ftp://ftp.linuxforum.net/gentoo/distfiles
 screen-4.0.2.tar.gz;ftp://ftp.gnu.org/pub/gnu/screen
+lzma-4.32.7.tar.gz;http://tukaani.org/lzma
 
 #
 # ide apps

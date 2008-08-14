@@ -97,6 +97,7 @@ smartmontools;make:install:DESTDIR=TARGET
 wget;make:install:DESTDIR=TARGET
 screen;make:install:DESTDIR=TARGET
 ncftp;make:install:DESTDIR=TARGET
+lzma_utils;make:install:DESTDIR=TARGET
 
 #
 # msttf
