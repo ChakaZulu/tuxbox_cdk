@@ -1,0 +1,37 @@
+diff -uNr ../dropbear-0.51.org/svr-auth.c ./svr-auth.c
+--- ./svr-auth.c	2008-03-27 14:17:16.000000000 +0100
++++ ./svr-auth.c	2008-07-09 15:50:30.000000000 +0200
+@@ -272,6 +272,7 @@
+ 	}
+ 
+ 	/* check for an empty password */
++/* Dbox has no root password, disabling...
+ 	if (ses.authstate.pw_passwd[0] == '\0') {
+ 		TRACE(("leave checkusername: empty pword"))
+ 		dropbear_log(LOG_WARNING, "user '%s' has blank password, rejected",
+@@ -279,6 +280,7 @@
+ 		send_msg_userauth_failure(0, 1);
+ 		return DROPBEAR_FAILURE;
+ 	}
++*/
+ 
+ 	TRACE(("shell is %s", ses.authstate.pw_shell))
+ 
+diff -uNr ../dropbear-0.51.org/svr-authpasswd.c ./svr-authpasswd.c
+--- ./svr-authpasswd.c	2008-03-27 14:17:16.000000000 +0100
++++ ./svr-authpasswd.c	2008-07-09 15:50:22.000000000 +0200
+@@ -63,12 +63,14 @@
+ 	/* check for empty password - need to do this again here
+ 	 * since the shadow password may differ to that tested
+ 	 * in auth.c */
++/* Dbox has no root password, disabling...
+ 	if (passwdcrypt[0] == '\0') {
+ 		dropbear_log(LOG_WARNING, "user '%s' has blank password, rejected",
+ 				ses.authstate.pw_name);
+ 		send_msg_userauth_failure(0, 1);
+ 		return;
+ 	}
++*/
+ 
+ 	/* check if client wants to change password */
+ 	changepw = buf_getbool(ses.payload);
