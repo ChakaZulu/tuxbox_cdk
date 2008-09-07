@@ -2238,7 +2238,7 @@ $(DEPDIR)/lcd: $(appsdir)/tuxbox/lcd/config.status
 
 # tuxbox/libs
 
-$(appsdir)/tuxbox/libs/config.status: bootstrap libfreetype libpng
+$(appsdir)/tuxbox/libs/config.status: bootstrap libfreetype libpng libtuxbox
 	cd $(appsdir)/tuxbox/libs && $(CONFIGURE)
 
 $(DEPDIR)/tuxbox_libs: $(appsdir)/tuxbox/libs/config.status
