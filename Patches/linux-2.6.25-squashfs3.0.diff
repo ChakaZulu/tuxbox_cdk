@@ -1,0 +1,11 @@
+--- ../../Patches/squashfs3.0_2.6-patch	2006-03-16 00:44:31.000000000 +0100
++++ ../../Patches/squashfs3.0_2.6-patch	2008-07-13 22:26:09.000000000 +0200
+@@ -81,7 +81,7 @@
+  obj-$(CONFIG_EXT2_FS)		+= ext2/
+  obj-$(CONFIG_CRAMFS)		+= cramfs/
+ +obj-$(CONFIG_SQUASHFS)		+= squashfs/
+- obj-$(CONFIG_RAMFS)		+= ramfs/
++ obj-y				+= ramfs/
+  obj-$(CONFIG_HUGETLBFS)		+= hugetlbfs/
+  obj-$(CONFIG_CODA_FS)		+= coda/
+ diff --new-file -urp linux-2.6.15/fs/squashfs/inode.c linux-2.6.15-squashfs3.0/fs/squashfs/inode.c

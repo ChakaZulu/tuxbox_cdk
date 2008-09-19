@@ -1,0 +1,139 @@
+diff -uNr ../linux-2.6.25.6/fs/squashfs/inode.c ./fs/squashfs/inode.c
+--- ./fs/squashfs/inode.c	2008-07-14 10:15:34.000000000 +0200
++++ ./fs/squashfs/inode.c	2008-07-14 10:11:15.000000000 +0200
+@@ -39,13 +39,14 @@
+ #include <linux/zlib.h>
+ #include <linux/blkdev.h>
+ #include <linux/vmalloc.h>
++#include <linux/version.h>
+ #include <asm/uaccess.h>
+ #include <asm/semaphore.h>
+ 
+ #include "squashfs.h"
+ 
+ static void squashfs_put_super(struct super_block *);
+-static int squashfs_statfs(struct super_block *, struct kstatfs *);
++static int squashfs_statfs(struct dentry *, struct kstatfs *);
+ static int squashfs_symlink_readpage(struct file *file, struct page *page);
+ static int squashfs_readpage(struct file *file, struct page *page);
+ static int squashfs_readpage4K(struct file *file, struct page *page);
+@@ -60,8 +61,8 @@
+ static long long read_blocklist(struct inode *inode, int index,
+ 				int readahead_blks, char *block_list,
+ 				unsigned short **block_p, unsigned int *bsize);
+-static struct super_block *squashfs_get_sb(struct file_system_type *, int,
+-				const char *, void *);
++static int squashfs_get_sb(struct file_system_type *, int,
++                       const char *, void *, struct vfsmount *);
+ 
+ 
+ static z_stream stream;
+@@ -607,7 +608,6 @@
+ 			i->i_fop = &generic_ro_fops;
+ 			i->i_mode |= S_IFREG;
+ 			i->i_blocks = ((i->i_size - 1) >> 9) + 1;
+-			i->i_blksize = PAGE_CACHE_SIZE;
+ 			SQUASHFS_I(i)->u.s1.fragment_start_block = frag_blk;
+ 			SQUASHFS_I(i)->u.s1.fragment_size = frag_size;
+ 			SQUASHFS_I(i)->u.s1.fragment_offset = inodep->offset;
+@@ -660,7 +660,6 @@
+ 			i->i_fop = &generic_ro_fops;
+ 			i->i_mode |= S_IFREG;
+ 			i->i_blocks = ((i->i_size - 1) >> 9) + 1;
+-			i->i_blksize = PAGE_CACHE_SIZE;
+ 			SQUASHFS_I(i)->u.s1.fragment_start_block = frag_blk;
+ 			SQUASHFS_I(i)->u.s1.fragment_size = frag_size;
+ 			SQUASHFS_I(i)->u.s1.fragment_offset = inodep->offset;
+@@ -1148,9 +1147,9 @@
+ }
+ 
+ 
+-static int squashfs_statfs(struct super_block *s, struct kstatfs *buf)
++static int squashfs_statfs(struct dentry *dentry, struct kstatfs *buf)
+ {
+-	struct squashfs_sb_info *msblk = s->s_fs_info;
++	struct squashfs_sb_info *msblk = dentry->d_inode->i_sb->s_fs_info;
+ 	struct squashfs_super_block *sblk = &msblk->sblk;
+ 
+ 	TRACE("Entered squashfs_statfs\n");
+@@ -2030,10 +2029,11 @@
+ }
+ 
+ 
+-static struct super_block *squashfs_get_sb(struct file_system_type *fs_type,
+-				int flags, const char *dev_name, void *data)
++static int squashfs_get_sb(struct file_system_type *fs_type,
++                       int flags, const char *dev_name, void *data,
++                       struct vfsmount *mnt)
+ {
+-	return get_sb_bdev(fs_type, flags, dev_name, data, squashfs_fill_super);
++	return get_sb_bdev(fs_type, flags, dev_name, data, squashfs_fill_super, mnt);
+ }
+ 
+ 
+@@ -2071,13 +2071,13 @@
+ }
+ 
+ 
+-static kmem_cache_t * squashfs_inode_cachep;
++static struct kmem_cache * squashfs_inode_cachep;
+ 
+ 
+ static struct inode *squashfs_alloc_inode(struct super_block *sb)
+ {
+ 	struct squashfs_inode_info *ei;
+-	ei = kmem_cache_alloc(squashfs_inode_cachep, SLAB_KERNEL);
++	ei = kmem_cache_alloc(squashfs_inode_cachep, GFP_KERNEL);
+ 	if (!ei)
+ 		return NULL;
+ 	return &ei->vfs_inode;
+@@ -2090,12 +2090,15 @@
+ }
+ 
+ 
+-static void init_once(void * foo, kmem_cache_t * cachep, unsigned long flags)
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,23)
++static void init_once(void * foo, struct kmem_cache * cachep, unsigned long flags)
++{
++#else
++static void init_once(struct kmem_cache * cachep, void * foo)
+ {
++#endif
+ 	struct squashfs_inode_info *ei = foo;
+ 
+-	if ((flags & (SLAB_CTOR_VERIFY|SLAB_CTOR_CONSTRUCTOR)) ==
+-							SLAB_CTOR_CONSTRUCTOR)
+ 		inode_init_once(&ei->vfs_inode);
+ }
+  
+@@ -2105,7 +2108,7 @@
+ 	squashfs_inode_cachep = kmem_cache_create("squashfs_inode_cache",
+ 	     sizeof(struct squashfs_inode_info),
+ 	     0, SLAB_HWCACHE_ALIGN|SLAB_RECLAIM_ACCOUNT,
+-	     init_once, NULL);
++	     init_once);
+ 	if (squashfs_inode_cachep == NULL)
+ 		return -ENOMEM;
+ 	return 0;
+@@ -2114,9 +2117,7 @@
+ 
+ static void destroy_inodecache(void)
+ {
+-	if (kmem_cache_destroy(squashfs_inode_cachep))
+-		printk(KERN_INFO "squashfs_inode_cache: not all structures "
+-			"were freed\n");
++	kmem_cache_destroy(squashfs_inode_cachep);
+ }
+ 
+ 
+diff -uNr ../linux-2.6.25.6/fs/squashfs/squashfs2_0.c ./fs/squashfs/squashfs2_0.c
+--- ./fs/squashfs/squashfs2_0.c	2008-07-14 10:15:34.000000000 +0200
++++ ./fs/squashfs/squashfs2_0.c	2008-07-14 10:07:47.000000000 +0200
+@@ -228,7 +228,6 @@
+ 			i->i_atime.tv_sec = inodep->mtime;
+ 			i->i_ctime.tv_sec = inodep->mtime;
+ 			i->i_blocks = ((i->i_size - 1) >> 9) + 1;
+-			i->i_blksize = PAGE_CACHE_SIZE;
+ 			SQUASHFS_I(i)->u.s1.fragment_start_block = frag_blk;
+ 			SQUASHFS_I(i)->u.s1.fragment_size = frag_size;
+ 			SQUASHFS_I(i)->u.s1.fragment_offset = inodep->offset;
