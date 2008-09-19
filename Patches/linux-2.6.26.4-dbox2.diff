@@ -1,0 +1,538 @@
+diff -uNr ../linux-2.6.26/arch/ppc/8xx_io/enet.c ./arch/ppc/8xx_io/enet.c
+--- ../linux-2.6.26/arch/ppc/8xx_io/enet.c	2008-07-13 23:51:29.000000000 +0200
++++ ./arch/ppc/8xx_io/enet.c	2008-07-17 14:49:12.000000000 +0200
+@@ -83,6 +83,12 @@
+  * All functions are directly controlled using I/O pins.  See <asm/cpm1.h>.
+  */
+ 
++//The full-duplex part-1-start
++//to activate /var/tuxbox/config/boot.conf insert dbox_duplex=1
++//http://wiki.dbox2-tuning.net/wiki/index.php/FullDuplexUmbau
++static int duplex_mode=0;
++//The full-duplex part-1-end
++
+ /* The transmitter timeout
+  */
+ #define TX_TIMEOUT	(2*HZ)
+@@ -703,6 +709,13 @@
+ #error Exactly ONE pair of PA_ENET_[RT]XD, PB_ENET_[RT]XD must be defined
+ #endif
+ 
++#if defined(PA_ENET_LBK)
++	/* Disable Loopback */
++	immap->im_ioport.iop_papar &= ~PA_ENET_LBK;
++	immap->im_ioport.iop_padir |=  PA_ENET_LBK;
++	immap->im_ioport.iop_padat &= ~PA_ENET_LBK;
++#endif /* PA_ENET_LBK */
++
+ #if defined(PC_ENET_LBK)
+ 	/* Configure port C pins to disable External Loopback
+ 	 */
+@@ -727,7 +740,15 @@
+ 
+ 	/* Configure port C pins to enable CLSN and RENA.
+ 	*/
++	if (duplex_mode==2)
++	{
++		immap->im_ioport.iop_pcpar &= ~PC_ENET_RENA;
++		immap->im_ioport.iop_pcpar |=  PC_ENET_CLSN; // Disable CLSN pin
++	}
++	else
++	{
+ 	immap->im_ioport.iop_pcpar &= ~(PC_ENET_CLSN | PC_ENET_RENA);
++	}
+ 	immap->im_ioport.iop_pcdir &= ~(PC_ENET_CLSN | PC_ENET_RENA);
+ 	immap->im_ioport.iop_pcso  |=  (PC_ENET_CLSN | PC_ENET_RENA);
+ 
+@@ -897,7 +918,22 @@
+ 	/* Set processing mode.  Use Ethernet CRC, catch broadcast, and
+ 	 * start frame search 22 bit times after RENA.
+ 	 */
++	//The full-duplex part-2-start
++	//sccp->scc_psmr = (SCC_PSMR_ENCRC | SCC_PSMR_NIB22);
++	if (duplex_mode==0)
++	{
+ 	sccp->scc_psmr = (SCC_PSMR_ENCRC | SCC_PSMR_NIB22);
++		printk(KERN_INFO "half-duplex mode enabled\n");
++	}
++	else
++	{
++		sccp->scc_psmr = (SCC_PSMR_ENCRC | SCC_PSMR_NIB22 | SCC_PSMR_LPB | SCC_PSMR_FDE);
++		if (duplex_mode==2)
++			printk(KERN_INFO "forced full-duplex mode enabled\n");
++		else
++			printk(KERN_INFO "full-duplex mode enabled\n");
++	}
++	//The full-duplex part-2-end
+ 
+ 	/* It is now OK to enable the Ethernet transmitter.
+ 	 * Unfortunately, there are board implementation differences here.
+@@ -978,5 +1014,17 @@
+ 	return 0;
+ }
+ 
++//The full-duplex part-3-start
++#ifndef MODULE
++static int __init duplex_mode_setup(char *str)
++{
++	duplex_mode = simple_strtol(str, NULL, 0);
++	return 1;
++}
++
++	__setup("dbox_duplex=", duplex_mode_setup);
++#endif
++//The full-duplex part-3-end
++
+ module_init(scc_enet_init);
+ 
+diff -uNr ../linux-2.6.26/arch/ppc/Kconfig ./arch/ppc/Kconfig
+--- ../linux-2.6.26/arch/ppc/Kconfig	2008-07-13 23:51:29.000000000 +0200
++++ ./arch/ppc/Kconfig	2008-07-17 14:49:12.000000000 +0200
+@@ -461,6 +461,9 @@
+ 	  MPC821 PowerPC, introduced in 1998 and designed to be used in
+ 	  thin-client machines.  Say Y to support it directly.
+ 
++config DBOX2
++	bool "dbox2"
++
+ endchoice
+ 
+ choice
+diff -uNr ../linux-2.6.26/arch/ppc/kernel/time.c ./arch/ppc/kernel/time.c
+--- ../linux-2.6.26/arch/ppc/kernel/time.c	2008-07-13 23:51:29.000000000 +0200
++++ ./arch/ppc/kernel/time.c	2008-07-17 14:49:12.000000000 +0200
+@@ -69,6 +69,9 @@
+ unsigned long disarm_decr[NR_CPUS];
+ 
+ extern struct timezone sys_tz;
++#ifdef CONFIG_DBOX2
++extern void m8xx_wdt_reset(void);
++#endif
+ 
+ /* keep track of when we need to update the rtc */
+ time_t last_rtc_update;
+@@ -311,6 +314,10 @@
+ 		sec = ppc_md.get_rtc_time();
+ 		elapsed = 0;
+ 		do {
++#ifdef CONFIG_DBOX2
++			/* needed to fix wdt problems during boot on some boxes */
++			m8xx_wdt_reset();
++#endif
+ 			old_stamp = stamp;
+ 			old_sec = sec;
+ 			stamp = get_native_tbl();
+diff -uNr ../linux-2.6.26/arch/ppc/platforms/dbox2.c ./arch/ppc/platforms/dbox2.c
+--- ../linux-2.6.26/arch/ppc/platforms/dbox2.c	1970-01-01 01:00:00.000000000 +0100
++++ ./arch/ppc/platforms/dbox2.c	2008-07-17 14:49:12.000000000 +0200
+@@ -0,0 +1,221 @@
++/*
++ * arch/ppc/platforms/dbox2.c
++ *
++ * setup routines for the dbox2 board
++ *
++ * Copyright (C) 2004 Andreas Oberritter <obi@linuxtv.org>
++ *
++ */
++
++#include <linux/platform_device.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <asm/cpm1.h>
++#include <asm/io.h>
++#include <asm/irq.h>
++
++enum dbox2_mid {
++	MID_NOKIA	= 1,
++	MID_PHILIPS	= 2,
++	MID_SAGEM	= 3,
++};
++
++const char *manuf_name[3] = {
++	"Nokia",
++	"Philips",
++	"Sagem",
++};
++
++static unsigned int manuf_id;
++
++static struct resource enx_resources[] = {
++	[0] = {
++		.start	= 0x08000000,
++		.end	= 0x080033ff,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= 0x09000000,
++		.end	= 0x091fffff,
++		.flags	= IORESOURCE_MEM,
++	},
++	[2] = {
++		.start	= SIU_IRQ1,
++		.end	= SIU_IRQ1,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device enx_device = {
++	.name		= "enx",
++	.id		= 0,
++	.num_resources	= ARRAY_SIZE(enx_resources),
++	.resource	= enx_resources,
++};
++
++static struct resource gtx_resources[] = {
++	[0] = {
++		.start	= 0x08400000,
++		.end	= 0x08402fff,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= 0x08000000,
++		.end	= 0x081fffff,
++		.flags	= IORESOURCE_MEM,
++	},
++	[2] = {
++		.start	= SIU_IRQ1,
++		.end	= SIU_IRQ1,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device gtx_device = {
++	.name		= "gtx",
++	.id		= 0,
++	.num_resources	= ARRAY_SIZE(gtx_resources),
++	.resource	= gtx_resources,
++};
++
++static struct resource fp_resources[] = {
++	[0] = {
++		.start	= SIU_IRQ2,
++		.end	= SIU_IRQ2,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device fp_device = {
++	.name		= "fp",
++	.id		= 0,
++	.num_resources	= ARRAY_SIZE(fp_resources),
++	.resource	= fp_resources,
++};
++
++static struct resource fe_resources[] = {
++	[0] = {
++		.start	= SIU_IRQ7,
++		.end	= SIU_IRQ7,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device fe_device = {
++	.name		= "fe",
++	.id		= 0,
++	.num_resources	= ARRAY_SIZE(fe_resources),
++	.resource	= fe_resources,
++};
++
++static struct resource cam_resources[] = {
++	[0] = {
++		.start	= 0x0c000000,
++		.end	= 0x0c01ffff,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= SIU_IRQ3,
++		.end	= SIU_IRQ3,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device cam_device = {
++	.name		= "cam",
++	.id		= 0,
++	.num_resources	= ARRAY_SIZE(cam_resources),
++	.resource	= cam_resources,
++};
++
++static struct resource avia_resources[] = {
++	[0] = {
++		.start	= 0x0a000000,
++		.end	= 0x0a0001ff,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= SIU_IRQ4,
++		.end	= SIU_IRQ4,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device avia_device = {
++	.name		= "avia",
++	.id		= 0,
++	.num_resources	= ARRAY_SIZE(avia_resources),
++	.resource	= avia_resources,
++};
++
++static ssize_t dbox2_manufacturer_node(struct bus_type *bus, char *buf)
++{
++	return sprintf(buf, "%s\n", manuf_name[manuf_id - 1]);
++}
++static BUS_ATTR(manufacturer, S_IRUGO, dbox2_manufacturer_node, NULL);
++
++static ssize_t dbox2_mID_node(struct bus_type *bus, char *buf)
++{
++	return sprintf(buf, "%d\n", manuf_id);
++}
++static BUS_ATTR(mID, S_IRUGO, dbox2_mID_node, NULL);
++
++static struct bus_attribute *const platform_bus_attrs[] = {
++	&bus_attr_manufacturer,
++	&bus_attr_mID,
++	NULL
++};
++
++static struct platform_device *dbox2_devs[] __initdata = {
++	&enx_device,
++	&fp_device,
++	&fe_device,
++	&cam_device,
++	&avia_device,
++};
++
++static int __init dbox2_add_devices(void)
++{
++	u8 *config_area;
++	int i;
++
++	config_area = ioremap(0x1001ffe0, 0x20);
++	if (!config_area) {
++		printk(KERN_ERR "dbox2: could not map config area!\n");
++		return -EIO;
++	}
++	manuf_id = config_area[0];
++	iounmap(config_area);
++
++	if ((manuf_id < MID_NOKIA) || (manuf_id > MID_SAGEM)) {
++		printk(KERN_ERR "dbox2: invalid config area!\n");
++		return -EIO;
++	}
++
++	printk(KERN_INFO "dbox2: %s board detected.\n", manuf_name[manuf_id - 1]);
++
++	if (manuf_id == MID_NOKIA) {
++		dbox2_devs[0] = &gtx_device;
++	} else if (manuf_id == MID_PHILIPS) {
++		cam_resources[0].start += 0x40000;
++		cam_resources[0].end += 0x40000;
++	}
++	fe_device.dev.platform_data = (void*)manuf_id;
++
++	for (i=0; platform_bus_attrs[i]; i++){
++		int ret = bus_create_file(&platform_bus_type, platform_bus_attrs[i]);
++		if (ret<0){
++			while (--i>=0){
++				bus_remove_file(&platform_bus_type, platform_bus_attrs[i]);
++			}
++			printk(KERN_ERR "dbox2: error creating platform bus attributes: errno: %d\n",ret);
++		}
++	}
++
++	return platform_add_devices(dbox2_devs, ARRAY_SIZE(dbox2_devs));
++}
++
++void __init board_init(void)
++{
++	device_initcall(dbox2_add_devices);
++}
+diff -uNr ../linux-2.6.26/arch/ppc/platforms/dbox2.h ./arch/ppc/platforms/dbox2.h
+--- ../linux-2.6.26/arch/ppc/platforms/dbox2.h	1970-01-01 01:00:00.000000000 +0100
++++ ./arch/ppc/platforms/dbox2.h	2008-07-17 14:49:12.000000000 +0200
+@@ -0,0 +1,29 @@
++/*
++ * arch/ppc/platforms/dbox2.h
++ *
++ * Copyright (c) 2001-2002 Florian Schirmer <jolt@tuxbox.org>
++ *
++ */
++
++#ifndef _PPC_PLATFORMS_DBOX2_H
++#define _PPC_PLATFORMS_DBOX2_H
++
++#include <asm/ppcboot.h>
++
++/* physical base address of IMMR area */
++#define IMAP_ADDR	0xFF000000
++/* mapped size of IMMR area */
++#define IMAP_SIZE	(64 * 1024)
++
++#define PA_ENET_RXD	((u16)0x0004)
++#define PA_ENET_TXD	((u16)0x0008)
++#define PA_ENET_RCLK	((u16)0x0200)
++#define PA_ENET_TCLK	((u16)0x0800)
++#define PC_ENET_TENA	((u16)0x0002)
++#define PC_ENET_CLSN	((u16)0x0040)
++#define PC_ENET_RENA	((u16)0x0080)
++
++#define SICR_ENET_MASK	((u32)0x0000ff00)
++#define SICR_ENET_CLKRT	((u32)0x00003d00)
++
++#endif /* _PPC_PLATFORMS_DBOX2_H */
+diff -uNr ../linux-2.6.26/arch/ppc/platforms/Makefile ./arch/ppc/platforms/Makefile
+--- ../linux-2.6.26/arch/ppc/platforms/Makefile	2008-07-13 23:51:29.000000000 +0200
++++ ./arch/ppc/platforms/Makefile	2008-07-17 14:49:12.000000000 +0200
+@@ -23,3 +23,4 @@
+ obj-$(CONFIG_SPRUCE)		+= spruce.o
+ obj-$(CONFIG_LITE5200)		+= lite5200.o
+ obj-$(CONFIG_EV64360)		+= ev64360.o
++obj-$(CONFIG_DBOX2)		+= dbox2.o
+diff -uNr ../linux-2.6.26/arch/ppc/syslib/m8xx_setup.c ./arch/ppc/syslib/m8xx_setup.c
+--- ../linux-2.6.26/arch/ppc/syslib/m8xx_setup.c	2008-07-13 23:51:29.000000000 +0200
++++ ./arch/ppc/syslib/m8xx_setup.c	2008-07-17 14:49:12.000000000 +0200
+@@ -60,7 +60,7 @@
+ #define MPC8xxADS_U_BOOT_SIZE          0x80000
+ #define MPC8xxADS_FREE_AREA_OFFSET     MPC8xxADS_U_BOOT_SIZE
+ 
+-#if defined(CONFIG_MTD_PARTITIONS)
++#if defined(CONFIG_MTD_PARTITIONS) && !defined(CONFIG_DBOX2)
+  /*
+    NOTE: bank width and interleave relative to the installed flash
+    should have been chosen within MTD_CFI_GEOMETRY options.
+diff -uNr ../linux-2.6.26/drivers/mtd/maps/Kconfig ./drivers/mtd/maps/Kconfig
+--- ../linux-2.6.26/drivers/mtd/maps/Kconfig	2008-07-13 23:51:29.000000000 +0200
++++ ./drivers/mtd/maps/Kconfig	2008-07-17 14:49:12.000000000 +0200
+@@ -586,5 +586,8 @@
+ 
+ 	  This selection automatically selects the map_ram driver.
+ 
+-endmenu
++config MTD_DBOX2
++	tristate "Map driver for the dbox2"
++	depends on DBOX2
+ 
++endmenu
+diff -uNr ../linux-2.6.26/drivers/video/Kconfig ./drivers/video/Kconfig
+--- ../linux-2.6.26/drivers/video/Kconfig	2008-07-13 23:51:29.000000000 +0200
++++ ./drivers/video/Kconfig	2008-07-17 14:49:12.000000000 +0200
+@@ -501,6 +501,16 @@
+ 	  Say Y if you want support with Open Firmware for your graphics
+ 	  board.
+ 
++config FB_DBOX2
++	bool "Framebuffer generic functions (for dbox2)"
++	depends on FB && PPC
++	select FB_CFB_FILLRECT
++	select FB_CFB_COPYAREA
++	select FB_CFB_IMAGEBLIT
++	help
++	  Say Y here to include the generic functions necessary for
++	  building the (external) dbox2 driver
++
+ config FB_CONTROL
+ 	bool "Apple \"control\" display support"
+ 	depends on (FB = y) && PPC_PMAC && PPC32
+diff -uNr ../linux-2.6.26/include/asm-ppc/mpc8xx.h ./include/asm-ppc/mpc8xx.h
+--- ../linux-2.6.26/include/asm-ppc/mpc8xx.h	2008-07-13 23:51:29.000000000 +0200
++++ ./include/asm-ppc/mpc8xx.h	2008-07-17 14:49:12.000000000 +0200
+@@ -31,6 +31,10 @@
+ #include <platforms/rpxclassic.h>
+ #endif
+ 
++#ifdef CONFIG_DBOX2
++#include <platforms/dbox2.h>
++#endif
++
+ #if defined(CONFIG_TQM8xxL)
+ #include <platforms/tqm8xx.h>
+ #endif
+diff -uNr ../linux-2.6.26/include/asm-ppc/pgtable.h ./include/asm-ppc/pgtable.h
+--- ../linux-2.6.26/include/asm-ppc/pgtable.h	2008-07-13 23:51:29.000000000 +0200
++++ ./include/asm-ppc/pgtable.h	2008-07-17 14:49:12.000000000 +0200
+@@ -703,11 +703,23 @@
+  * must not include the _PAGE_PRESENT bit, the _PAGE_FILE bit, or the
+  *_PAGE_HASHPTE bit (if used).  -- paulus
+  */
++#if (CONFIG_8xx)
++/* usually:
++   24 bits offset, 5 bits type, 3 bits flags
++      so enough for 64 GiByte
++   as a quick and dirty workaround we reduce this to:
++   19 bits offset, 5 bits type, 8 bits flags
++      so enough for 2 GiByte
++*/
++#define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) >> 8 })
++#define __swp_entry_to_pte(x)		((pte_t) { (x).val << 8 })
++#else
++#define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) >> 3 })
++#define __swp_entry_to_pte(x)		((pte_t) { (x).val << 3 })
++#endif
+ #define __swp_type(entry)		((entry).val & 0x1f)
+ #define __swp_offset(entry)		((entry).val >> 5)
+ #define __swp_entry(type, offset)	((swp_entry_t) { (type) | ((offset) << 5) })
+-#define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) >> 3 })
+-#define __swp_entry_to_pte(x)		((pte_t) { (x).val << 3 })
+ 
+ /* Encode and decode a nonlinear file mapping entry */
+ #define PTE_FILE_MAX_BITS	29
+diff -uNr ../linux-2.6.26/include/linux/of.h ./include/linux/of.h
+--- ../linux-2.6.26/include/linux/of.h	2008-07-13 23:51:29.000000000 +0200
++++ ./include/linux/of.h	2008-07-17 14:45:09.000000000 +0200
+@@ -37,8 +37,10 @@
+ #define for_each_node_by_type(dn, type) \
+ 	for (dn = of_find_node_by_type(NULL, type); dn; \
+ 	     dn = of_find_node_by_type(dn, type))
++/*
+ extern struct device_node *of_find_compatible_node(struct device_node *from,
+ 	const char *type, const char *compat);
++*/
+ #define for_each_compatible_node(dn, type, compatible) \
+ 	for (dn = of_find_compatible_node(NULL, type, compatible); dn; \
+ 	     dn = of_find_compatible_node(dn, type, compatible))
+@@ -48,7 +50,9 @@
+ 	for (dn = of_find_matching_node(NULL, matches); dn; \
+ 	     dn = of_find_matching_node(dn, matches))
+ extern struct device_node *of_find_node_by_path(const char *path);
++/*
+ extern struct device_node *of_find_node_by_phandle(phandle handle);
++*/
+ extern struct device_node *of_get_parent(const struct device_node *node);
+ extern struct device_node *of_get_next_parent(struct device_node *node);
+ extern struct device_node *of_get_next_child(const struct device_node *node,
+@@ -63,9 +67,11 @@
+ extern int of_device_is_compatible(const struct device_node *device,
+ 				   const char *);
+ extern int of_device_is_available(const struct device_node *device);
++/*
+ extern const void *of_get_property(const struct device_node *node,
+ 				const char *name,
+ 				int *lenp);
++*/
+ extern int of_n_addr_cells(struct device_node *np);
+ extern int of_n_size_cells(struct device_node *np);
+ extern const struct of_device_id *of_match_node(
+diff -uNr ../linux-2.6.26/include/linux/vt.h ./include/linux/vt.h
+--- ../linux-2.6.26/include/linux/vt.h	2008-07-13 23:51:29.000000000 +0200
++++ ./include/linux/vt.h	2008-07-17 14:49:12.000000000 +0200
+@@ -18,7 +18,7 @@
+  * resizing).
+  */
+ #define MIN_NR_CONSOLES 1       /* must be at least 1 */
+-#define MAX_NR_CONSOLES	63	/* serial lines start at 64 */
++#define MAX_NR_CONSOLES	7	/* serial lines start at 64 */
+ #define MAX_NR_USER_CONSOLES 63	/* must be root to allocate above this */
+ 		/* Note: the ioctl VT_GETSTATE does not work for
+ 		   consoles 16 and higher (since it returns a short) */
+diff -uNr ../linux-2.6.26/Makefile ./Makefile
+--- ../linux-2.6.26/Makefile	2008-07-13 23:51:29.000000000 +0200
++++ ./Makefile	2008-07-17 14:49:12.000000000 +0200
+@@ -1,7 +1,7 @@
+ VERSION = 2
+ PATCHLEVEL = 6
+ SUBLEVEL = 26
+-EXTRAVERSION = .4
++EXTRAVERSION = .4-dbox2
+ NAME = Rotary Wombat
+ 
+ # *DOCUMENTATION*
