@@ -1,0 +1,11 @@
+diff -uNr ../kbd-1.14.1.org/configure.ac ./configure.ac
+--- ../configure.ac	2008-03-24 17:26:26.000000000 +0100
++++ ../configure.ac	2008-09-23 18:11:12.000000000 +0200
+@@ -38,7 +38,6 @@
+ AC_PROG_GCC_TRADITIONAL
+ AC_FUNC_MALLOC
+ AC_FUNC_REALLOC
+-AC_FUNC_SETPGRP
+ AC_TYPE_SIGNAL
+ AC_FUNC_STAT
+ AC_CHECK_FUNCS([alarm memset setlocale strcasecmp strchr strdup strerror \
