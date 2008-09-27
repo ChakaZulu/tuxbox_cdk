@@ -76,6 +76,7 @@ libFLAC;make:install: -C src/libFLAC DESTDIR=TARGET
 bzip2;make:install:PREFIX=TARGET
 console_data;make:install
 console_tools;make:install
+kbd;make:install
 directfb_examples;make:install:DESTDIR=TARGET
 fbset;install:-m755:fbset:TARGET/bin
 lirc;make:install
