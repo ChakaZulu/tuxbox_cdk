@@ -9,14 +9,3 @@ diff -Naur libdvb-0.5.5.orig/Makefile libdvb-0.5.5/Makefile
  
  uninstall: 
  	for i in $(DVB_LIBS); do rm -f $(DESTDIR)$(PREFIX)/lib/$$i;done
-diff -Naur libdvb-0.5.5.orig/include/DVB.hh libdvb-0.5.5/include/DVB.hh
---- libdvb-0.5.5.orig/include/DVB.hh	2004-09-15 20:56:21.000000000 +0200
-+++ libdvb-0.5.5/include/DVB.hh	2005-10-18 23:03:21.000000000 +0200
-@@ -2,6 +2,7 @@
- #define _DVB_DEV_HH_
- 
- extern "C" {
-+#include <errno.h>
- #include <asm/errno.h>
- #include <fcntl.h>
- #include <netdb.h>
