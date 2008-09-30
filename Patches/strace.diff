@@ -1,83 +1,19 @@
---- strace-4.5.12/resource.c	2004-10-07 00:14:53.000000000 +0200
-+++ strace-4.5.12/resource.c	2005-08-03 14:18:09.000000000 +0200
-@@ -27,7 +27,7 @@
-  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-- *	$Id: resource.c,v 1.13 2004/10/06 22:14:53 roland Exp $
-+ *	$Id: resource.c,v 1.15 2005/08/03 12:18:09 roland Exp $
-  */
+diff -uNr ../strace-4.5.18.org/file.c ./file.c
+--- ../file.c	2008-08-01 03:13:10.000000000 +0200
++++ ../file.c	2008-09-30 17:55:16.000000000 +0200
+@@ -98,15 +98,6 @@
+ #    undef off_t
+ #    undef loff_t
  
- #include "defs.h"
-@@ -464,6 +464,7 @@
+-#    define dev_t __kernel_dev_t
+-#    define ino_t __kernel_ino_t
+-#    define mode_t __kernel_mode_t
+-#    define nlink_t __kernel_nlink_t
+-#    define uid_t __kernel_uid_t
+-#    define gid_t __kernel_gid_t
+-#    define off_t __kernel_off_t
+-#    define loff_t __kernel_loff_t
+-
+ #    include <asm/stat.h>
  
- #ifdef LINUX
- 
-+#define OLD_CMD(c)	((c)<<8)
- #define NEW_CMD(c)      ((0x80<<16)+(c))
- #define XQM_CMD(c)      (('X'<<8)+(c))
- #define NEW_COMMAND(c) (( ((c) >> SUBCMDSHIFT) & (0x80 << 16)))
-@@ -471,15 +472,15 @@
- #define OLD_COMMAND(c) (!NEW_COMMAND(c) && !XQM_COMMAND(c))
- 
- static const struct xlat quotacmds[] = {
--	{ Q_QUOTAON,	"Q_QUOTAON"	},
--	{ Q_QUOTAOFF,	"Q_QUOTAOFF"	},
--	{ Q_GETQUOTA,	"Q_GETQUOTA"	},
--	{ Q_SETQUOTA,	"Q_SETQUOTA"	},
--	{ Q_SETUSE,	"Q_SETUSE"	},
--	{ Q_SYNC,	"Q_SYNC"	},
--	{ Q_SETQLIM,	"Q_SETQLIM"	},
--	{ Q_GETSTATS,	"Q_GETSTATS"	},
--	{ Q_RSQUASH,	"Q_RSQUASH"	},
-+	{ OLD_CMD(0x1),	"Q_QUOTAON"	},
-+	{ OLD_CMD(0x2),	"Q_QUOTAOFF"	},
-+	{ OLD_CMD(0x3),	"Q_GETQUOTA"	},
-+	{ OLD_CMD(0x4),	"Q_SETQUOTA"	},
-+	{ OLD_CMD(0x5),	"Q_SETUSE"	},
-+	{ OLD_CMD(0x6),	"Q_SYNC"	},
-+	{ OLD_CMD(0x7),	"Q_SETQLIM"	},
-+	{ OLD_CMD(0x8),	"Q_GETSTATS"	},
-+	{ OLD_CMD(0x10),"Q_RSQUASH"	},
- 	{ NEW_CMD(0x1), "Q_SYNC"        },
- 	{ NEW_CMD(0x2), "Q_QUOTAON"     },
- 	{ NEW_CMD(0x3), "Q_QUOTAOFF"    },
-@@ -528,21 +529,29 @@
- 
- 		if (!tcp->u_arg[3])
- 			tprintf("NULL");
--               else if (!verbose(tcp) || !OLD_COMMAND(cmd))
-+               else if (!verbose(tcp) ||
-+#ifdef HAVE_STRUCT_DQBLK_DQB_CURBLOCKS
-+			!
-+#endif
-+			OLD_COMMAND(cmd))
- 			tprintf("%#lx", tcp->u_arg[3]);
-                 else if (umoven(tcp, tcp->u_arg[3], sizeof(struct dqblk),
-                     (char *) &dq) < 0)
-                         tprintf("???");
- 		else {
-                         tprintf("{");
--			tprintf("%u, ", dq.dqb_bhardlimit);
--			tprintf("%u, ", dq.dqb_bsoftlimit);
--			tprintf("%u, ", dq.dqb_curblocks);
--			tprintf("%u, ", dq.dqb_ihardlimit);
--			tprintf("%u, ", dq.dqb_isoftlimit);
--			tprintf("%u, ", dq.dqb_curinodes);
--			tprintf("%lu, ", dq.dqb_btime);
--			tprintf("%lu", dq.dqb_itime);
-+			tprintf("%llu, ", (unsigned long long) dq.dqb_bhardlimit);
-+			tprintf("%llu, ", (unsigned long long) dq.dqb_bsoftlimit);
-+#ifdef HAVE_STRUCT_DQBLK_DQB_CURBLOCKS
-+			tprintf("%llu, ", (unsigned long long) dq.dqb_curblocks);
-+#else
-+			tprintf("%llu, ", (unsigned long long) dq.dqb_curspace);
-+#endif
-+			tprintf("%llu, ", (unsigned long long) dq.dqb_ihardlimit);
-+			tprintf("%llu, ", (unsigned long long) dq.dqb_isoftlimit);
-+			tprintf("%llu, ", (unsigned long long) dq.dqb_curinodes);
-+			tprintf("%llu, ", (unsigned long long) dq.dqb_btime);
-+			tprintf("%llu", (unsigned long long) dq.dqb_itime);
-                         tprintf("}");
- 		}
- 
+ #    undef dev_t

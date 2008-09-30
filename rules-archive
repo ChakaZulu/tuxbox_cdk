@@ -96,7 +96,7 @@ lirc-0.6.6.tar.bz2;http://unusedino.de/lirc/software
 openssh-3.8p1.tar.gz;ftp://ftp.de.openbsd.org/pub/unix/OpenBSD/OpenSSH/portable;ftp://ftp.freenet.de/pub/ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 tcpdump-3.9.4.tar.gz;http://www.tcpdump.org/release
 bonnie++-1.03a.tgz;http://www.coker.com.au/bonnie++
-lsof_4.78.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof
+lsof_4.80.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof
 dosfstools_2.11.orig.tar.gz;http://ftp.debian.org/debian/pool/main/d/dosfstools
 DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/downloads/Old
 vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
@@ -105,8 +105,8 @@ dropbear-0.51.tar.bz2;http://www.ucc.asn.au/~matt/dropbear
 cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
 libtool-1.5.22.tar.gz;ftp://ftp.gnu.org/gnu/libtool
 samba-1.9.18p8.tar.gz;http://mirrors.xmission.com/samba/ftp/stable
-wget-1.10.2.tar.gz;http://ftp.gnu.org/pub/gnu/wget
-ncftp-3.2.0-src.tar.bz2;ftp://ftp.linuxforum.net/gentoo/distfiles
+wget-1.11.4.tar.bz2;http://ftp.gnu.org/pub/gnu/wget
+ncftp-3.2.2-src.tar.bz2;ftp://ftp.ncftp.com/ncftp
 screen-4.0.2.tar.gz;ftp://ftp.gnu.org/pub/gnu/screen
 lzma-4.32.7.tar.gz;http://tukaani.org/lzma
 
@@ -124,14 +124,14 @@ xfsprogs_2.9.4-1.tar.gz;http://www.dbox2-tuning.net/cvsdata/files
 #
 # development tools
 #
-gdb-6.6.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
+gdb-6.8.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
 insight-6.1.tar.bz2;ftp://sources.redhat.com/pub/gdb/old-releases
 ltrace_0.3.26.tar.gz;ftp://ftp.debian.org/debian/pool/main/l/ltrace
-strace-4.5.12.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/strace
+strace-4.5.18.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/strace
 nano-1.2.4.tar.gz;http://www.nano-editor.org/dist/v1.2
 mc-4.6.1.tar.gz;ftp://ftp.zcu.cz/pub/linux/utils/file/managers/mc
-joe-3.1.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/joe-editor
-bash-3.0.tar.gz;http://ftp.gnu.org/gnu/bash/
+joe-3.5.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/joe-editor
+bash-3.2.tar.gz;http://ftp.gnu.org/gnu/bash
 Python-2.4.2.tar.bz2;http://www.python.org/ftp/python/2.4.2
 netio126.zip;http://freshmeat.net/redir/netio/18673/url_zip/
 

@@ -87,7 +87,7 @@ kbd;1.14.1;kbd-1.14.1;kbd-1.14.1.tar.gz:kbd.diff;extract:kbd-1.14.1.tar.gz;patch
 directfb_examples;0.9.22;DirectFB-examples-0.9.22;DirectFB-examples-0.9.22.tar.gz;extract:DirectFB-examples-0.9.22.tar.gz
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.6.6;lirc-0.6.6;lirc-0.6.6.tar.bz2;extract:lirc-0.6.6.tar.bz2;patch:lirc.diff
-lsof;4.78;lsof_4.78;lsof_4.78.tar.gz:lsof.diff;extract:lsof_4.78.tar.gz
+lsof;4.80;lsof_4.80;lsof_4.80.tar.gz:lsof.diff;extract:lsof_4.80.tar.gz
 dosfstools;2.11;dosfstools-2.11;dosfstools_2.11.orig.tar.gz;extract:dosfstools_2.11.orig.tar.gz;patch:dosfstools.diff
 ssh;3.8p1;openssh-3.8p1;openssh-3.8p1.tar.gz:ssh.diff;extract:openssh-3.8p1.tar.gz;patch:ssh.diff
 tcpdump;3.9.4;tcpdump-3.9.4;tcpdump-3.9.4.tar.gz:tcpdump.diff;extract:tcpdump-3.9.4.tar.gz;patch:tcpdump.diff
@@ -98,8 +98,8 @@ dropbear;0.51;dropbear-0.51;dropbear-0.51.tar.bz2;extract:dropbear-0.51.tar.bz2;
 kermit;8.0;c-kermit-8.0;cku211.tar.gz;dirextract:cku211.tar.gz;patch:kermit.diff
 libtool;1.5.22;libtool-1.5.22;libtool-1.5.22.tar.gz;extract:libtool-1.5.22.tar.gz
 samba;1.9.18p8;samba-1.9.18p8;samba-1.9.18p8.tar.gz:samba_ppc.diff;extract:samba-1.9.18p8.tar.gz;patch:samba_ppc.diff
-wget;1.10.2;wget-1.10.2;wget-1.10.2.tar.gz;extract:wget-1.10.2.tar.gz
-ncftp;3.2.0;ncftp-3.2.0;ncftp-3.2.0-src.tar.bz2;extract:ncftp-3.2.0-src.tar.bz2
+wget;1.11.4;wget-1.11.4;wget-1.11.4.tar.bz2;extract:wget-1.11.4.tar.bz2
+ncftp;3.2.2;ncftp-3.2.2;ncftp-3.2.2-src.tar.bz2;extract:ncftp-3.2.2-src.tar.bz2
 screen;4.0.2;screen-4.0.2;screen-4.0.2.tar.gz:screen.diff;extract:screen-4.0.2.tar.gz;patch:screen.diff
 lzma_utils;4.32.7;lzma-4.32.7;lzma-4.32.7.tar.gz;extract:lzma-4.32.7.tar.gz
 
@@ -123,14 +123,14 @@ msttf;0.0;msttf;arial32.exe:arialb32.exe;dircreate;dirextract:arial32.exe;dirext
 #
 # development tools
 #
-gdb;6.6;gdb-6.6;gdb-6.6.tar.bz2;extract:gdb-6.6.tar.bz2;
+gdb;6.8;gdb-6.8;gdb-6.8.tar.bz2;extract:gdb-6.8.tar.bz2
 insight;6.1;insight-6.1;insight-6.1.tar.bz2;extract:insight-6.1.tar.bz2
-ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz;extract:ltrace_0.3.26.tar.gz;patch:ltrace.diff
-strace;4.5.12;strace-4.5.12;strace-4.5.12.tar.bz2:strace.diff;extract:strace-4.5.12.tar.bz2;patch:strace.diff
+ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz:ltrace.diff;extract:ltrace_0.3.26.tar.gz;patch:ltrace.diff
+strace;4.5.18;strace-4.5.18;strace-4.5.18.tar.bz2:strace.diff;extract:strace-4.5.18.tar.bz2;patch:strace.diff
 nano;1.2.4;nano-1.2.4;nano-1.2.4.tar.gz:nano.diff;extract:nano-1.2.4.tar.gz;patch:nano.diff
 mc;4.6.1;mc-4.6.1;mc-4.6.1.tar.gz:mc-4.6.1.diff;extract:mc-4.6.1.tar.gz;patch:mc-4.6.1.diff
-joe;3.1;joe-3.1;joe-3.1.tar.gz;extract:joe-3.1.tar.gz
-bash;3.0;bash-3.0;bash-3.0.tar.gz;extract:bash-3.0.tar.gz
+joe;3.5;joe-3.5;joe-3.5.tar.gz;extract:joe-3.5.tar.gz
+bash;3.2;bash-3.2;bash-3.2.tar.gz:bash32_039.diff;extract:bash-3.2.tar.gz;patch:bash32_039.diff
 python;2.4.2;Python-2.4.2;Python-2.4.2.tar.bz2:python.diff;extract:Python-2.4.2.tar.bz2;patch:python.diff
 netio;1.2.6;netio126;netio126.zip;extract:netio126.zip:netio126
 ccache;2.4;ccache-2.4;ccache-2.4.tar.gz;extract:ccache-2.4.tar.gz
