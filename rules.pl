@@ -193,7 +193,7 @@ sub process_make_prepare (@)
     }
   }
 
-  $output .= " && ((for f1 in config.guess config.sub; do (for f2 in \\`find " . $dir . " -name \\\$\\\$f1\\`; do (rm \\\$\\\$f2 && ln -s \\\$(buildprefix)/Patches/\\\$\\\$f1 \\\$\\\$f2 && echo \\\"updated \\\$\\\$f2\\\") done) done) || /bin/true)";
+  $output .= " && ((for f1 in config.guess config.sub; do (for f2 in \\`find " . $dir . " -name \\\$\\\$f1\\`; do (test -e \\\$\\\$f2 && rm -f \\\$\\\$f2 && ln -s \\\$(buildprefix)/Patches/\\\$\\\$f1 \\\$\\\$f2 && echo \\\"updated \\\$\\\$f2\\\") done) done) || /bin/true)";
 
   return "\"$output\"";
 }
