@@ -1,0 +1,21 @@
+diff -uNr libxml2-2.4.30.org/configure libxml2-2.4.30/configure
+--- libxml2-2.4.30.org/configure	2002-12-12 12:06:28.000000000 +0100
++++ libxml2-2.4.30/configure	2008-10-09 22:45:02.000000000 +0200
+@@ -3689,7 +3689,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   case $host_cpu in
+   alpha* | hppa* | i*86 | powerpc* | sparc* | ia64* | s390* )
+     lt_cv_deplibs_check_method=pass_all ;;
+@@ -6080,7 +6080,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no

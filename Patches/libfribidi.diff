@@ -1,0 +1,21 @@
+diff -uNr fribidi-0.10.4.org/configure fribidi-0.10.4/configure
+--- fribidi-0.10.4.org/configure	2002-05-19 12:06:53.000000000 +0200
++++ fribidi-0.10.4/configure	2008-10-09 22:07:30.000000000 +0200
+@@ -1935,7 +1935,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   case $host_cpu in
+   alpha* | i*86 | powerpc* | sparc* | ia64* )
+     lt_cv_deplibs_check_method=pass_all ;;
+@@ -4056,7 +4056,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no
