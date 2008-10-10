@@ -285,3 +285,30 @@ diff -Naur libffi-1.20.orig/configure libffi-1.20/configure
  EOF
  
  
+diff -uNr libffi-1.20.org/ltconfig libffi-1.20/ltconfig
+--- libffi-1.20.org/ltconfig	1998-10-05 10:36:28.000000000 +0200
++++ libffi-1.20/ltconfig	2008-10-09 22:54:01.000000000 +0200
+@@ -1082,22 +1082,14 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   version_type=linux
+   library_names_spec='$libname.so.$versuffix $libname.so.$major $libname.so'
+   soname_spec='$libname.so.$major'
+   finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
+   shlibpath_var=LD_LIBRARY_PATH
+ 
+-  if test -f /lib/ld.so.1; then
+     dynamic_linker='GNU ld.so'
+-  else
+-    # Only the GNU ld.so supports shared libraries on MkLinux.
+-    case "$host_cpu" in
+-    powerpc*) dynamic_linker=no ;;
+-    *) dynamic_linker='Linux ld.so' ;;
+-    esac
+-  fi
+   ;;
+ 
+ netbsd* | openbsd*)

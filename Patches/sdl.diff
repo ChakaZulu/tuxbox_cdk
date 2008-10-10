@@ -347,3 +347,31 @@ diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.h SDL-1.2.6/src/video/fbco
  #define saved_kbd_mode		(this->hidden->saved_kbd_mode)
  #define saved_kbd_termios	(this->hidden->saved_kbd_termios)
  #define mouse_fd		(this->hidden->mouse_fd)
+diff -uNr SDL-1.2.6.org/ltconfig SDL-1.2.6/ltconfig
+--- SDL-1.2.6.org/ltconfig	2003-08-30 21:13:00.000000000 +0200
++++ SDL-1.2.6/ltconfig	2008-10-09 22:39:12.000000000 +0200
+@@ -2091,7 +2091,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no
+@@ -2102,15 +2102,7 @@
+   shlibpath_overrides_runpath=no
+   deplibs_check_method=pass_all
+ 
+-  if test -f /lib/ld.so.1; then
+     dynamic_linker='GNU ld.so'
+-  else
+-    # Only the GNU ld.so supports shared libraries on MkLinux.
+-    case "$host_cpu" in
+-    powerpc*) dynamic_linker=no ;;
+-    *) dynamic_linker='Linux ld.so' ;;
+-    esac
+-  fi
+   ;;
+ 
+ netbsd*)

@@ -12,3 +12,24 @@
 +Version: 0.15.0b
 +Libs: -L${libdir} -lid3tag -lz
 +Cflags: -I${includedir}
+diff -uNr libid3tag-0.15.0b.org/configure libid3tag-0.15.0b/configure
+--- libid3tag-0.15.0b.org/configure	2003-06-05 04:48:28.000000000 +0200
++++ libid3tag-0.15.0b/configure	2008-10-09 18:30:32.000000000 +0200
+@@ -3378,7 +3378,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   case $host_cpu in
+   alpha* | hppa* | i*86 | mips | mipsel | powerpc* | sparc* | ia64* | arm* | m68k)
+     lt_cv_deplibs_check_method=pass_all ;;
+@@ -6303,7 +6303,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no

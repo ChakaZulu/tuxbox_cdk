@@ -67,3 +67,24 @@ diff -Naur expat-1.95.6.orig/lib/expat.h expat-1.95.6/lib/expat.h
  XMLPARSEAPI(enum XML_Status)
  XML_Parse(XML_Parser parser, const char *s, int len, int isFinal);
  
+diff -uNr expat-1.95.6.org/configure expat-1.95.6/configure
+--- expat-1.95.6.org/configure	2003-01-28 07:04:08.000000000 +0100
++++ expat-1.95.6/configure	2008-10-09 22:59:08.000000000 +0200
+@@ -2731,7 +2731,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   case $host_cpu in
+   alpha* | hppa* | i*86 | powerpc* | sparc* | ia64* )
+     lt_cv_deplibs_check_method=pass_all ;;
+@@ -5559,7 +5559,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no

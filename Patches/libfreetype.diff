@@ -52,3 +52,24 @@ diff -Naur freetype-2.1.4.orig/src/winfonts/winfnt.c freetype-2.1.4/src/winfonts
      slot->bitmap_left = 0;
      slot->bitmap_top  = font->header.ascent;
      slot->format      = FT_GLYPH_FORMAT_BITMAP;
+diff -uNr freetype-2.1.4.org/builds/unix/configure freetype-2.1.4/builds/unix/configure
+--- freetype-2.1.4.org/builds/unix/configure	2003-01-18 17:39:18.000000000 +0100
++++ freetype-2.1.4/builds/unix/configure	2008-10-09 18:25:46.000000000 +0200
+@@ -4901,7 +4901,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   case $host_cpu in
+   alpha* | hppa* | i*86 | mips | mipsel | powerpc* | sparc* | ia64*)
+     lt_cv_deplibs_check_method=pass_all ;;
+@@ -7287,7 +7287,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no

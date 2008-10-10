@@ -9,3 +9,24 @@ diff -Naur curl-7.9.1.orig/curl-config.in curl-7.9.1/curl-config.in
         	;;
  
      --libs)
+diff -uNr curl-7.10.1.org/configure curl-7.10.1/configure
+--- curl-7.10.1.org/configure	2002-10-11 14:58:39.000000000 +0200
++++ curl-7.10.1/configure	2008-10-09 18:19:35.000000000 +0200
+@@ -3796,7 +3796,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   case $host_cpu in
+   alpha* | hppa* | i*86 | powerpc* | sparc* | ia64* )
+     lt_cv_deplibs_check_method=pass_all ;;
+@@ -6380,7 +6380,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++linux*)
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no
