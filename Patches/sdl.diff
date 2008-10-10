@@ -300,10 +300,14 @@ diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbevents.c SDL-1.2.6/src/video/fbc
 diff -Naur SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.c SDL-1.2.6/src/video/fbcon/SDL_fbvideo.c
 --- SDL-1.2.6.orig/src/video/fbcon/SDL_fbvideo.c	2006-02-25 20:19:27.000000000 +0100
 +++ SDL-1.2.6/src/video/fbcon/SDL_fbvideo.c	2006-02-25 20:22:13.000000000 +0100
-@@ -36,6 +36,9 @@
+@@ -35,7 +35,13 @@
+ #include <unistd.h>
  #include <sys/ioctl.h>
  #include <sys/mman.h>
++#include <linux/version.h>
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(2,5,0)
  #include <asm/page.h>		/* For definition of PAGE_SIZE */
++#endif
 +#if !defined(PAGE_SIZE)
 +#define PAGE_SIZE sysconf(_SC_PAGESIZE)
 +#endif
