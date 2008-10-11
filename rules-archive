@@ -20,7 +20,8 @@ gcc-core-3.4.6.tar.bz2;ftp://$(gnuserver)/../../../gcc/releases/gcc-3.4.6
 gcc-g++-3.4.6.tar.bz2;ftp://$(gnuserver)/../../../gcc/releases/gcc-3.4.6
 glibc-2.3.6.tar.bz2;ftp://ftp.gnu.org/gnu/glibc
 glibc-linuxthreads-2.3.6.tar.bz2;ftp://ftp.gnu.org/gnu/glibc
-uClibc-0.9.11.tar.bz2
+uClibc-0.9.28.3.tar.bz2;http://www.uclibc.org/downloads
+uClibc-locale-030818.tgz;http://www.uclibc.org/downloads
 watchdog_5.2.4.orig.tar.gz;ftp://ftp.debian.org/debian/pool/main/w/watchdog
 
 #

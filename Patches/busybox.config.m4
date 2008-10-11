@@ -364,7 +364,7 @@ option(`CONFIG_MESG', `n', `n')
 #
 # Login/Password Management Utilities
 #
-option(`CONFIG_FEATURE_SHADOWPASSWDS', `y', `n')
+option(`CONFIG_FEATURE_SHADOWPASSWDS', `n', `n')
 option(`CONFIG_USE_BB_SHADOW', `n', `n')
 option(`CONFIG_USE_BB_PWD_GRP', `n', `n')
 option(`CONFIG_ADDGROUP', `n', `n')

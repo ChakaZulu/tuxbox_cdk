@@ -1,24 +1,18 @@
-diff -Naur nfs-utils-1.1.1.orig/tools/rpcgen/Makefile.am nfs-utils-1.1.1/tools/rpcgen/Makefile.am
---- nfs-utils-1.1.1.orig/tools/rpcgen/Makefile.am	2006-07-08 02:04:32.000000000 +0200
-+++ nfs-utils-1.1.1/tools/rpcgen/Makefile.am	2007-11-27 08:43:56.000000000 +0200
-@@ -1,6 +1,14 @@
- ## Process this file with automake to produce Makefile.in
- 
--CC=$(CC_FOR_BUILD)
-+# Compile for execution on the build host, not the target. Yes, this is not
-+# completely clean.
-+# The warning:
-+# 	tools/rpcgen/Makefile.am:6: `CFLAGS' is a user variable, you should not override it;
-+# 	tools/rpcgen/Makefile.am:6: use `AM_CFLAGS' instead.
-+# should be ignored.
-+
-+CC=gcc
-+CFLAGS=
- LIBTOOL = @LIBTOOL@ --tag=CC
- 
- noinst_PROGRAMS = rpcgen
---- nfs-utils-1.1.1.orig/support/nfs/xlog.c
-+++ nfs-utils-1.1.1/support/nfs/xlog.c
+diff -uNr nfs-utils-1.1.1.org/configure.ac nfs-utils-1.1.1/configure.ac
+--- nfs-utils-1.1.1.org/configure.ac	2007-10-19 05:07:28.000000000 +0200
++++ nfs-utils-1.1.1/configure.ac	2008-10-07 15:34:55.000000000 +0200
+@@ -276,7 +276,7 @@
+ AC_TYPE_SIGNAL
+ AC_FUNC_STAT
+ AC_FUNC_VPRINTF
+-AC_CHECK_FUNCS([alarm atexit dup2 fdatasync ftruncate getcwd \
++AC_CHECK_FUNCS([alarm atexit dup2 fdatasync ftruncate getcwd getgrouplist \
+                gethostbyaddr gethostbyname gethostname getmntent \
+                gettimeofday hasmntopt inet_ntoa innetgr memset mkdir pathconf \
+                realpath rmdir select socket strcasecmp strchr strdup \
+diff -uNr nfs-utils-1.1.1.org/support/nfs/xlog.c nfs-utils-1.1.1/support/nfs/xlog.c
+--- nfs-utils-1.1.1.org/support/nfs/xlog.c	2007-10-19 05:07:28.000000000 +0200
++++ nfs-utils-1.1.1/support/nfs/xlog.c	2008-10-07 15:39:40.000000000 +0200
 @@ -133,9 +133,13 @@
  void
  xlog_backend(int kind, const char *fmt, va_list args)
@@ -47,3 +41,122 @@ diff -Naur nfs-utils-1.1.1.orig/tools/rpcgen/Makefile.am nfs-utils-1.1.1/tools/r
  	if (kind == L_FATAL)
  		exit(1);
  }
+diff -uNr nfs-utils-1.1.1.org/tools/rpcgen/Makefile.am nfs-utils-1.1.1/tools/rpcgen/Makefile.am
+--- nfs-utils-1.1.1.org/tools/rpcgen/Makefile.am	2007-10-19 05:07:28.000000000 +0200
++++ nfs-utils-1.1.1/tools/rpcgen/Makefile.am	2008-10-07 15:39:40.000000000 +0200
+@@ -1,6 +1,14 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-CC=$(CC_FOR_BUILD)
++# Compile for execution on the build host, not the target. Yes, this is not
++# completely clean.
++# The warning:
++# 	tools/rpcgen/Makefile.am:6: `CFLAGS' is a user variable, you should not override it;
++# 	tools/rpcgen/Makefile.am:6: use `AM_CFLAGS' instead.
++# should be ignored.
++
++CC=gcc
++CFLAGS=
+ LIBTOOL = @LIBTOOL@ --tag=CC
+ 
+ noinst_PROGRAMS = rpcgen
+diff -uNr nfs-utils-1.1.1.org/utils/mountd/cache.c nfs-utils-1.1.1/utils/mountd/cache.c
+--- nfs-utils-1.1.1.org/utils/mountd/cache.c	2007-10-19 05:07:28.000000000 +0200
++++ nfs-utils-1.1.1/utils/mountd/cache.c	2008-10-07 15:36:52.000000000 +0200
+@@ -36,6 +36,7 @@
+ #include "blkid/blkid.h"
+ #endif
+ 
++#include "getgrouplist.c"
+ 
+ enum nfsd_fsid {
+ 	FSID_DEV = 0,
+diff -uNr nfs-utils-1.1.1.org/utils/mountd/getgrouplist.c nfs-utils-1.1.1/utils/mountd/getgrouplist.c
+--- nfs-utils-1.1.1.org/utils/mountd/getgrouplist.c	1970-01-01 01:00:00.000000000 +0100
++++ nfs-utils-1.1.1/utils/mountd/getgrouplist.c	2008-10-07 15:37:51.000000000 +0200
+@@ -0,0 +1,85 @@
++/*
++ *  getgrouplist.c
++ *
++ *  if system does not provide the non-standard getgrouplist, we will emulate
++ *  it via POSIX standard functions
++ *
++ * Copyright (c) 1991, 1993
++ *	The Regents of the University of California.  All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 4. Neither the name of the University nor the names of its contributors
++ *    may be used to endorse or promote products derived from this software
++ *    without specific prior written permission.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
++ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ */
++
++#include <sys/types.h>
++#include <grp.h>
++#include <string.h>
++#include <unistd.h>
++
++#ifndef HAVE_GETGROUPLIST
++static
++int
++getgrouplist(const char *uname, gid_t agroup, gid_t *groups, int *grpcnt)
++{
++	const struct group *grp;
++	int i, maxgroups, ngroups, ret;
++
++	ret = 0;
++	ngroups = 0;
++	maxgroups = *grpcnt;
++	/*
++	 * When installing primary group, duplicate it;
++	 * the first element of groups is the effective gid
++	 * and will be overwritten when a setgid file is executed.
++	 */
++	groups[ngroups++] = agroup;
++	if (maxgroups > 1)
++		groups[ngroups++] = agroup;
++	/*
++	 * Scan the group file to find additional groups.
++	 */
++	setgrent();
++	while ((grp = getgrent()) != NULL) {
++		for (i = 0; i < ngroups; i++) {
++			if (grp->gr_gid == groups[i])
++				goto skip;
++		}
++		for (i = 0; grp->gr_mem[i]; i++) {
++			if (!strcmp(grp->gr_mem[i], uname)) {
++				if (ngroups >= maxgroups) {
++					ret = -1;
++					break;
++				}
++				groups[ngroups++] = grp->gr_gid;
++				break;
++			}
++		}
++skip:
++		;
++	}
++	endgrent();
++	*grpcnt = ngroups;
++	return (ret);
++}
++#endif

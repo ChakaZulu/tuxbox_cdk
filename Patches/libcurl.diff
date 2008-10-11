@@ -9,6 +9,17 @@ diff -Naur curl-7.9.1.orig/curl-config.in curl-7.9.1/curl-config.in
         	;;
  
      --libs)
+--- curl-7.9.1.orig/lib/mprintf.c	2007-09-24 14:47:39.000000000 +0200
++++ curl-7.9.1/lib/mprintf.c	2007-09-24 14:47:46.000000000 +0200
+@@ -1100,7 +1100,7 @@
+ }
+ 
+ #ifndef WIN32 /* not needed on win32 */
+-extern int fputc(int, FILE *);
++//extern int fputc(int, FILE *);
+ #endif
+ 
+ int curl_mprintf(const char *format, ...)
 diff -uNr curl-7.10.1.org/configure curl-7.10.1/configure
 --- curl-7.10.1.org/configure	2002-10-11 14:58:39.000000000 +0200
 +++ curl-7.10.1/configure	2008-10-09 18:19:35.000000000 +0200

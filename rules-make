@@ -19,7 +19,7 @@ binutils;2.17.50.0.9;binutils-2.17.50.0.9;binutils-2.17.50.0.9.tar.bz2:binutils-
 bootstrap_gcc;3.4.6;gcc-3.4.6;gcc-core-3.4.6.tar.bz2;extract:gcc-core-3.4.6.tar.bz2
 gcc;3.4.6;gcc-3.4.6;gcc-core-3.4.6.tar.bz2:gcc-g++-3.4.6.tar.bz2:gcc-core.diff;extract:gcc-core-3.4.6.tar.bz2;extract:gcc-g++-3.4.6.tar.bz2;patch:gcc-core.diff
 glibc;2.3.6;glibc-2.3.6;glibc-2.3.6.tar.bz2:glibc-linuxthreads-2.3.6.tar.bz2:glibc.diff;extract:glibc-2.3.6.tar.bz2;dirextract:glibc-linuxthreads-2.3.6.tar.bz2;patch:glibc.diff
-uclibc;0.9.11;uClibc-0.9.11;uClibc-0.9.11.tar.bz2:uclibc-0.9.11.diff;extract:uClibc-0.9.11.tar.bz2;patch:uclibc-0.9.11.diff
+uclibc;0.9.28.3;uClibc-0.9.28.3;uClibc-0.9.28.3.tar.bz2:uClibc-locale-030818.tgz:uclibc-0.9.28.3.diff;extract:uClibc-0.9.28.3.tar.bz2;patch:uclibc-0.9.28.3.diff;link:../../../Archive/uClibc-locale-030818.tgz:uClibc-0.9.28.3/extra/locale/uClibc-locale-030818.tgz
 watchdog;5.2.4;watchdog-5.2.4.orig;watchdog_5.2.4.orig.tar.gz:watchdog.diff;extract:watchdog_5.2.4.orig.tar.gz;patch:watchdog.diff
 
 #

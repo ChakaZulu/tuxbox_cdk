@@ -137,3 +137,46 @@ diff -Naur autofs-4.1.4/include/config.h autofs-4.1.4-fixed/include/config.h
 +/* #undef HAVE_SLOPPY_MOUNT */
 +
 +/* #undef ENABLE_EXT_ENV */
+diff -Naur autofs-4.1.4/lib/rpc_subs.c autofs-4.1.4-new/lib/rpc_subs.c
+--- autofs-4.1.4/lib/rpc_subs.c	2004-11-20 16:08:38.000000000 +0100
++++ autofs-4.1.4-new/lib/rpc_subs.c	2007-09-26 17:59:57.000000000 +0200
+@@ -16,7 +16,7 @@
+ 
+ #include <rpc/rpc.h>
+ #include <rpc/pmap_prot.h>
+-#include <nfs/nfs.h>
++#include <linux/nfs.h>
+ #include <linux/nfs2.h>
+ #include <linux/nfs3.h>
+ #include <rpc/xdr.h>
+diff -Naur autofs-4.1.4-orig/modules/Makefile autofs-4.1.4/modules/Makefile
+--- autofs-4.1.4-orig/modules/Makefile	2007-09-29 12:45:56.000000000 +0200
++++ autofs-4.1.4/modules/Makefile	2007-09-29 12:46:16.000000000 +0200
+@@ -6,13 +6,13 @@
+ -include ../Makefile.conf
+ include ../Makefile.rules
+ 
+-SRCS :=	lookup_yp.c  lookup_file.c  lookup_program.c  lookup_userhome.c \
++SRCS :=	lookup_file.c  lookup_program.c  lookup_userhome.c \
+ 	lookup_multi.c \
+ 	parse_sun.c    \
+ 	mount_generic.c  mount_nfs.c  mount_afs.c  mount_autofs.c \
+ 	mount_changer.c  mount_bind.c
+ 
+-MODS :=	lookup_yp.so lookup_file.so lookup_program.so lookup_userhome.so \
++MODS :=	lookup_file.so lookup_program.so lookup_userhome.so \
+ 	lookup_multi.so \
+ 	parse_sun.so \
+ 	mount_generic.so mount_nfs.so mount_afs.so mount_autofs.so \
+@@ -43,6 +43,11 @@
+   MODS += lookup_ldap.so
+ endif
+ 
++ifeq ($(YP), 1)
++  SRCS += lookup_yp.c
++  MODS += lookup_yp.so
++endif
++
+ CFLAGS += -I../include -fPIC -DAUTOFS_LIB_DIR=\"$(autofslibdir)\" -DPATH_AUTOMOUNT=\"$(sbindir)/automount\"
+ 
+ all: $(MODS)

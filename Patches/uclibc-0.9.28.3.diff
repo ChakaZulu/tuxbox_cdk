@@ -1,0 +1,308 @@
+diff -uNr uClibc-0.9.28.3.org/extra/Configs/Config.in uClibc-0.9.28.3/extra/Configs/Config.in
+--- uClibc-0.9.28.3.org/extra/Configs/Config.in	2007-01-26 01:01:55.000000000 +0100
++++ uClibc-0.9.28.3/extra/Configs/Config.in	2008-10-07 16:13:33.000000000 +0200
+@@ -552,6 +552,15 @@
+ 	  nfs mounts to work.  If you find you need the rest of the RPC stuff,
+ 	  then enable this option.  Most people can safely answer N.
+ 
++config UCLIBC_HAS_REENTRANT_RPC
++	bool "Reentrant RPC support"
++	depends on UCLIBC_HAS_RPC
++	default y if !HAVE_SHARED
++	help
++	  Most packages utilize the normal (non-reentrant) RPC functions, but 
++	  some (like exportfs from nfs-utils) need these reentrant versions.  
++	  Most people can safely answer N.
++
+ endmenu
+ 
+ 
+diff -uNr uClibc-0.9.28.3.org/libc/inet/rpc/getrpcent.c uClibc-0.9.28.3/libc/inet/rpc/getrpcent.c
+--- uClibc-0.9.28.3.org/libc/inet/rpc/getrpcent.c	2002-07-07 09:25:57.000000000 +0200
++++ uClibc-0.9.28.3/libc/inet/rpc/getrpcent.c	2008-10-07 16:13:38.000000000 +0200
+@@ -42,6 +42,7 @@
+ #include <netdb.h>
+ #include <sys/socket.h>
+ #include <arpa/inet.h>
++#include <errno.h>
+ 
+ /*
+  * Internet version.
+@@ -261,3 +262,100 @@
+ 	*q = NULL;
+ 	return (&d->rpc);
+ }
++
++#if defined(__UCLIBC_HAS_REENTRANT_RPC__)
++
++#if defined(__UCLIBC_HAS_THREADS__)
++# include <pthread.h>
++static pthread_mutex_t rpcdata_lock = PTHREAD_MUTEX_INITIALIZER;
++# define LOCK    __pthread_mutex_lock(&rpcdata_lock)
++# define UNLOCK  __pthread_mutex_unlock(&rpcdata_lock);
++#else
++# define LOCK
++# define UNLOCK
++#endif
++
++static int __copy_rpcent(struct rpcent *r, struct rpcent *result_buf, char *buffer, 
++		size_t buflen, struct rpcent **result)
++{
++	size_t i, s;
++
++	*result = NULL;
++
++	if (!r)
++		return ENOENT;
++
++	/* copy the struct from the shared mem */
++	memset(result_buf, 0x00, sizeof(*result_buf));
++	memset(buffer, 0x00, buflen);
++
++	result_buf->r_number = r->r_number;
++
++	/* copy the aliases ... need to not only copy the alias strings, 
++	 * but the array of pointers to the alias strings */
++	i = 0;
++	while (r->r_aliases[i++]) ;
++
++	s = i-- * sizeof(char*);
++	if (buflen < s)
++		goto err_out;
++	result_buf->r_aliases = (char**)buffer;
++	buffer += s;
++	buflen -= s;
++
++	while (i-- > 0) {
++		s = strlen(r->r_aliases[i]) + 1;
++		if (buflen < s)
++			goto err_out;
++		result_buf->r_aliases[i] = buffer;
++		buffer += s;
++		buflen -= s;
++		memcpy(result_buf->r_aliases[i], r->r_aliases[i], s);
++	}
++
++	/* copy the name */
++	i = strlen(r->r_name);
++	if (buflen <= i)
++		goto err_out;
++	result_buf->r_name = buffer;
++	memcpy(result_buf->r_name, r->r_name, i);
++
++	/* that was a hoot eh ? */
++	*result = result_buf;
++
++	return 0;
++err_out:
++	return ERANGE;
++}
++
++int getrpcbynumber_r(int number, struct rpcent *result_buf, char *buffer,
++		size_t buflen, struct rpcent **result)
++{
++	int ret;
++	LOCK;
++	ret = __copy_rpcent(getrpcbynumber(number), result_buf, buffer, buflen, result);
++	UNLOCK;
++	return ret;
++}
++
++int getrpcbyname_r(const char *name, struct rpcent *result_buf, char *buffer,
++		size_t buflen, struct rpcent **result)
++{
++	int ret;
++	LOCK;
++	ret = __copy_rpcent(getrpcbyname(name), result_buf, buffer, buflen, result);
++	UNLOCK;
++	return ret;
++}
++
++int getrpcent_r(struct rpcent *result_buf, char *buffer, 
++		size_t buflen, struct rpcent **result)
++{
++	int ret;
++	LOCK;
++	ret = __copy_rpcent(getrpcent(), result_buf, buffer, buflen, result);
++	UNLOCK;
++	return ret;
++}
++
++#endif /* __UCLIBC_HAS_REENTRANT_RPC__ */
+diff -uNr uClibc-0.9.28.3.org/libc/inet/rpc/rcmd.c uClibc-0.9.28.3/libc/inet/rpc/rcmd.c
+--- uClibc-0.9.28.3.org/libc/inet/rpc/rcmd.c	2004-01-16 14:43:30.000000000 +0100
++++ uClibc-0.9.28.3/libc/inet/rpc/rcmd.c	2008-10-07 16:13:33.000000000 +0200
+@@ -57,11 +57,6 @@
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ 
+-#ifdef __UCLIBC_HAS_THREADS__
+-#undef __UCLIBC_HAS_THREADS__
+-#warning FIXME I am not reentrant yet...
+-#endif
+-
+ 
+ /* some forward declarations */
+ static int __ivaliduser2(FILE *hostf, u_int32_t raddr,
+@@ -76,13 +71,13 @@
+      const char *locuser, *remuser, *cmd;
+      int *fd2p;
+ {
+-#ifdef __UCLIBC_HAS_THREADS__
++#ifdef __UCLIBC_HAS_REENTRANT_RPC__
+ 	int herr;
+-        struct hostent hostbuf;
++	struct hostent hostbuf;
+ 	size_t hstbuflen;
+ 	char *tmphstbuf;
+ #endif
+-        struct hostent *hp;
++	struct hostent *hp;
+ 	struct sockaddr_in sin, from;
+ 	struct pollfd pfd[2];
+ 	int32_t oldmask;
+@@ -92,7 +87,7 @@
+ 
+ 	pid = getpid();
+ 
+-#ifdef __UCLIBC_HAS_THREADS__
++#ifdef __UCLIBC_HAS_REENTRANT_RPC__
+ 	hstbuflen = 1024;
+ #ifdef __ARCH_HAS_MMU__
+ 	tmphstbuf = alloca (hstbuflen);
+@@ -299,14 +294,14 @@
+         struct hostent *hp;
+ 	u_int32_t addr;
+ 	char **ap;
+-#ifdef __UCLIBC_HAS_THREADS__
++#ifdef __UCLIBC_HAS_REENTRANT_RPC__
+ 	size_t buflen;
+ 	char *buffer;
+ 	int herr;
+ 	struct hostent hostbuf;
+ #endif
+ 
+-#ifdef __UCLIBC_HAS_THREADS__
++#ifdef __UCLIBC_HAS_REENTRANT_RPC__
+ 	buflen = 1024;
+ #ifdef __ARCH_HAS_MMU__
+ 	buffer = alloca (buflen);
+@@ -432,7 +427,7 @@
+ 		size_t dirlen;
+ 		uid_t uid;
+ 
+-#ifdef __UCLIBC_HAS_THREADS__
++#ifdef __UCLIBC_HAS_REENTRANT_RPC__
+ 		size_t buflen = sysconf (_SC_GETPW_R_SIZE_MAX);
+ 		struct passwd pwdbuf;
+ #ifdef __ARCH_HAS_MMU__
+@@ -515,7 +510,7 @@
+ 	int negate=1;    /* Multiply return with this to get -1 instead of 1 */
+ 	char **pp;
+ 
+-#ifdef __UCLIBC_HAS_THREADS__
++#ifdef __UCLIBC_HAS_REENTRANT_RPC__
+ 	int save_errno;
+ 	size_t buflen;
+ 	char *buffer;
+@@ -545,7 +540,7 @@
+ 		return negate * (! (raddr ^ laddr));
+ 
+ 	/* Better be a hostname. */
+-#ifdef __UCLIBC_HAS_THREADS__
++#ifdef __UCLIBC_HAS_REENTRANT_RPC__
+ 	buflen = 1024;
+ 	buffer = malloc(buflen);
+ 	save_errno = errno;
+@@ -559,7 +554,7 @@
+ 	__set_errno (save_errno);
+ #else
+ 	hp = gethostbyname(lhost);
+-#endif /* __UCLIBC_HAS_THREADS__ */
++#endif /* __UCLIBC_HAS_REENTRANT_RPC__ */
+ 
+ 	if (hp == NULL)
+ 		return 0;
+diff -uNr uClibc-0.9.28.3.org/libc/Makefile uClibc-0.9.28.3/libc/Makefile
+--- uClibc-0.9.28.3.org/libc/Makefile	2007-02-28 22:23:09.000000000 +0100
++++ uClibc-0.9.28.3/libc/Makefile	2008-10-07 16:14:05.000000000 +0200
+@@ -59,7 +59,7 @@
+ 	$(AR) dN 2 $(LIBNAME) $$objs && \
+ 	$(AR) dN 2 $(LIBNAME) $$objs
+ 	@for objfile in obj.signal \
+-	                obj.string.generic obj.string.$(TARGET_ARCH) obj.string \
++	                obj.string obj.string.generic obj.string.$(TARGET_ARCH) \
+ 	                obj.sysdeps.common obj.sysdeps.$(TARGET_ARCH) ; do \
+ 		if [ -e $$objfile ] ; then \
+ 			if [ "$(MAKE_IS_SILENT)" = "n" ] ; then \
+diff -uNr uClibc-0.9.28.3.org/libc/sysdeps/linux/common/getrusage.c uClibc-0.9.28.3/libc/sysdeps/linux/common/getrusage.c
+--- uClibc-0.9.28.3.org/libc/sysdeps/linux/common/getrusage.c	2005-01-06 00:11:28.000000000 +0100
++++ uClibc-0.9.28.3/libc/sysdeps/linux/common/getrusage.c	2008-10-07 16:14:05.000000000 +0200
+@@ -10,4 +10,4 @@
+ #include "syscalls.h"
+ #include <unistd.h>
+ #include <wait.h>
+-_syscall2(int, getrusage, int, who, struct rusage *, usage);
++_syscall2(int, getrusage, __rusage_who_t, who, struct rusage *, usage);
+diff -uNr uClibc-0.9.28.3.org/libc/sysdeps/linux/common/open64.c uClibc-0.9.28.3/libc/sysdeps/linux/common/open64.c
+--- uClibc-0.9.28.3.org/libc/sysdeps/linux/common/open64.c	2002-10-31 19:20:21.000000000 +0100
++++ uClibc-0.9.28.3/libc/sysdeps/linux/common/open64.c	2008-10-07 16:14:05.000000000 +0200
+@@ -26,7 +26,7 @@
+ #endif
+ 
+ #ifdef __UCLIBC_HAS_LFS__
+-extern int __libc_open (__const char *file, int oflag, mode_t mode);
++extern int __libc_open (__const char *file, int oflag, ...);
+ 
+ /* Open FILE with access OFLAG.  If OFLAG includes O_CREAT,
+    a third argument is the file protection.  */
+diff -uNr uClibc-0.9.28.3.org/libc/sysdeps/linux/common/__syscall_fcntl.c uClibc-0.9.28.3/libc/sysdeps/linux/common/__syscall_fcntl.c
+--- uClibc-0.9.28.3.org/libc/sysdeps/linux/common/__syscall_fcntl.c	2005-07-30 16:02:24.000000000 +0200
++++ uClibc-0.9.28.3/libc/sysdeps/linux/common/__syscall_fcntl.c	2008-10-07 16:14:05.000000000 +0200
+@@ -12,7 +12,7 @@
+ #include <fcntl.h>
+ 
+ #if defined __UCLIBC_HAS_LFS__ && defined __NR_fcntl64
+-extern int __libc_fcntl64(int fd, int cmd, long arg);
++extern int __libc_fcntl64(int fd, int cmd, ...);
+ #endif
+ 
+ #define __NR___syscall_fcntl __NR_fcntl
+diff -uNr uClibc-0.9.28.3.org/libm/Makefile uClibc-0.9.28.3/libm/Makefile
+--- uClibc-0.9.28.3.org/libm/Makefile	2005-03-07 11:52:38.000000000 +0100
++++ uClibc-0.9.28.3/libm/Makefile	2008-10-07 16:14:05.000000000 +0200
+@@ -81,6 +81,8 @@
+ 	 w_cosh.c w_exp.c s_fabs.c s_floor.c w_fmod.c s_frexp.c \
+ 	 s_ldexp.c w_log.c w_log10.c s_modf.c w_pow.c s_sin.c \
+ 	 w_sinh.c w_sqrt.c s_tan.c s_tanh.c
++# extra stuff required for some apps
++CSRC+= fpmacros.c nan.c s_rint.c e_hypot.c w_hypot.c s_floorf.c
+ CSRC+=   s_expm1.c s_scalbn.c s_copysign.c e_acos.c e_asin.c e_atan2.c \
+ 	 k_cos.c e_cosh.c e_exp.c e_fmod.c e_log.c e_log10.c e_pow.c \
+ 	 k_sin.c e_sinh.c e_sqrt.c k_tan.c e_rem_pio2.c k_rem_pio2.c \
+diff -uNr uClibc-0.9.28.3.org/Makefile uClibc-0.9.28.3/Makefile
+--- uClibc-0.9.28.3.org/Makefile	2007-02-02 03:24:29.000000000 +0100
++++ uClibc-0.9.28.3/Makefile	2008-10-07 16:14:05.000000000 +0200
+@@ -158,12 +158,7 @@
+ 	$(INSTALL) -d $(PREFIX)$(DEVEL_PREFIX)lib
+ 	$(INSTALL) -d $(PREFIX)$(DEVEL_PREFIX)include
+ 	-$(INSTALL) -m 644 lib/*.[ao] $(PREFIX)$(DEVEL_PREFIX)lib/
+-	if [ "$(KERNEL_SOURCE)" = "$(DEVEL_PREFIX)" ] ; then \
+-		extra_exclude="--exclude include/linux --exclude include/asm'*'" ; \
+-	else \
+-		extra_exclude="" ; \
+-	fi ; \
+-	tar -chf - include --exclude .svn --exclude CVS $$extra_exclude \
++	tar -chf - include \
+ 		| tar -xf - -C $(PREFIX)$(DEVEL_PREFIX)
+ 	echo '/* Dont use _syscall#() macros; use the syscall() function */' > \
+ 		$(PREFIX)$(DEVEL_PREFIX)include/bits/syscalls.h
+@@ -255,7 +250,7 @@
+ 	$(INSTALL) -d $(PREFIX)$(RUNTIME_PREFIX)lib
+ 	$(INSTALL) -m 644 lib/lib*-$(MAJOR_VERSION).$(MINOR_VERSION).$(SUBLEVEL).so \
+ 		$(PREFIX)$(RUNTIME_PREFIX)lib
+-	cp -dRf lib/*.so.* $(PREFIX)$(RUNTIME_PREFIX)lib
++	cp -pRf lib/*.so.* $(PREFIX)$(RUNTIME_PREFIX)lib
+ 	@if [ -x lib/ld-uClibc-$(MAJOR_VERSION).$(MINOR_VERSION).$(SUBLEVEL).so ] ; then \
+ 	    set -e; \
+ 		$(SHELL_SET_X); \
