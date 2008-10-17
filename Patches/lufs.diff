@@ -253,6 +253,15 @@ diff -Naur lufs-0.9.7-orig/lufsd/Makefile.am lufs-0.9.7/lufsd/Makefile.am
 diff -Naur lufs-0.9.7-orig/lufsd/Makefile.in lufs-0.9.7/lufsd/Makefile.in
 --- lufs-0.9.7-orig/lufsd/Makefile.in    2003-10-29 23:48:30.000000000 +0100
 +++ lufs-0.9.7/lufsd/Makefile.in   2004-12-20 11:53:13.000000000 +0100
+@@ -159,7 +159,7 @@
+ 
+ EXTRA_DIST = lussh lufsd.conf
+ 
+-configdir = /etc
++configdir=$(prefix)/etc
+ config_DATA = lufsd.conf
+ 
+ bin_PROGRAMS = lufsd
 @@ -169,7 +169,7 @@
  
  lufsd_SOURCES = daemon.c message.c fsctl.c filesystem.c dircache.c options.c
