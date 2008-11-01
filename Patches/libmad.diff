@@ -9,27 +9,6 @@
 +Name: mad
 +Description: MPEG Audio Decoder
 +Requires:
-+Version: 0.15.0b
++Version: 0.15.1b
 +Libs: -L${libdir} -lmad -lm
 +Cflags: -I${includedir}
-diff -uNr libmad-0.15.0b.org/configure libmad-0.15.0b/configure
---- libmad-0.15.0b.org/configure	2003-06-05 04:27:29.000000000 +0200
-+++ libmad-0.15.0b/configure	2008-10-09 18:31:57.000000000 +0200
-@@ -3393,7 +3393,7 @@
-   ;;
- 
- # This must be Linux ELF.
--linux-gnu*)
-+linux*)
-   case $host_cpu in
-   alpha* | hppa* | i*86 | mips | mipsel | powerpc* | sparc* | ia64* | arm* | m68k)
-     lt_cv_deplibs_check_method=pass_all ;;
-@@ -6318,7 +6318,7 @@
-   ;;
- 
- # This must be Linux ELF.
--linux-gnu*)
-+linux*)
-   version_type=linux
-   need_lib_prefix=no
-   need_version=no

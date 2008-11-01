@@ -61,8 +61,8 @@ libfreetype;2.1.4;freetype-2.1.4;freetype-2.1.4.tar.bz2:libfreetype.diff;extract
 libfribidi;0.10.4;fribidi-0.10.4;fribidi-0.10.4.tar.bz2:libfribidi.diff;extract:fribidi-0.10.4.tar.bz2;patch:libfribidi.diff
 libgmp;4.1.2;gmp-4.1.2;gmp-4.1.2.tar.bz2;extract:gmp-4.1.2.tar.bz2
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff
-libmad;0.15.0b;libmad-0.15.0b;libmad-0.15.0b.tar.gz:libmad.diff;extract:libmad-0.15.0b.tar.gz;patch:libmad.diff
-libid3tag;0.15.0b;libid3tag-0.15.0b;libid3tag-0.15.0b.tar.gz:libid3tag.diff;extract:libid3tag-0.15.0b.tar.gz;patch:libid3tag.diff
+libmad;0.15.1b;libmad-0.15.1b;libmad-0.15.1b.tar.gz:libmad.diff;extract:libmad-0.15.1b.tar.gz;patch:libmad.diff
+libid3tag;0.15.1b;libid3tag-0.15.1b;libid3tag-0.15.1b.tar.gz:libid3tag.diff;extract:libid3tag-0.15.1b.tar.gz;patch:libid3tag.diff
 libncurses;5.3;ncurses-5.3;ncurses-5.3.tar.gz;extract:ncurses-5.3.tar.gz
 libpcap;0.9.4;libpcap-0.9.4;libpcap-0.9.4.tar.gz;extract:libpcap-0.9.4.tar.gz;patch:libpcap.diff
 libpng;1.2.16;libpng-1.2.16;libpng-1.2.16.tar.bz2;extract:libpng-1.2.16.tar.bz2
