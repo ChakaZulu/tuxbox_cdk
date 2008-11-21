@@ -16,7 +16,7 @@ binutils;make:install
 bootstrap_gcc;make:install
 gcc;make:install
 glibc;make:install:install_root=TARGET
-uclibc;make:install:DEVEL_PREFIX=TARGET;install:-m644:lib/libc.a:TARGET/lib/libc_pic.a;install:-m644:lib/libcrypt.a:TARGET/lib/libcrypt_pic.a;install:-m644:lib/libm.a:TARGET/lib/libm_pic.a;
+uclibc;make:install:DEVEL_PREFIX=/:PREFIX=TARGET;install:-m644:lib/libc.a:TARGET/lib/libc_pic.a;install:-m644:lib/libcrypt.a:TARGET/lib/libcrypt_pic.a;install:-m644:lib/libm.a:TARGET/lib/libm_pic.a
 watchdog;make:install:DESTDIR=TARGET
 libtool
 fuse;make:install:DESTDIR=TARGET
@@ -69,6 +69,7 @@ libglib;make:install
 libungif;make:install:DESTDIR=TARGET
 libiconv;make:install:DESTDIR=TARGET
 libFLAC;make:install: -C src/libFLAC DESTDIR=TARGET
+libgettext;make:install:DESTDIR=TARGET
 
 #
 # contrib apps

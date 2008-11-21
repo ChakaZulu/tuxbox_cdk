@@ -19,3 +19,15 @@ diff -uNr libxml2-2.4.30.org/configure libxml2-2.4.30/configure
    version_type=linux
    need_lib_prefix=no
    need_version=no
+diff -uNr libxml2-2.4.30.org/Makefile.in libxml2-2.4.30/Makefile.in
+--- libxml2-2.4.30.org/Makefile.in	2002-12-12 12:07:06.000000000 +0100
++++ libxml2-2.4.30/Makefile.in	2008-10-31 11:53:53.000000000 +0100
+@@ -302,7 +302,7 @@
+ testHTML$(EXEEXT) testXPath$(EXEEXT) testURI$(EXEEXT) \
+ testDocbook$(EXEEXT) testThreads$(EXEEXT) testC14N$(EXEEXT) \
+ testAutomata$(EXEEXT) testRegexp$(EXEEXT) testReader$(EXEEXT)
+-PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
++PROGRAMS =  $(bin_PROGRAMS)
+ 
+ xmllint_OBJECTS =  xmllint.$(OBJEXT)
+ xmlcatalog_OBJECTS =  xmlcatalog.$(OBJEXT)

@@ -1,0 +1,43 @@
+diff -uNr insight-6.1.org/bfd/config.bfd insight-6.1/bfd/config.bfd
+--- insight-6.1.org/bfd/config.bfd	2004-03-13 13:37:09.000000000 +0100
++++ insight-6.1/bfd/config.bfd	2008-10-11 20:12:34.000000000 +0200
+@@ -952,7 +952,7 @@
+     ;;
+ #endif
+   powerpc-*-*bsd* | powerpc-*-elf* | powerpc-*-sysv4* | powerpc-*-eabi* | \
+-  powerpc-*-solaris2* | powerpc-*-linux-gnu* | powerpc-*-rtems* | \
++  powerpc-*-solaris2* | powerpc-*-linux* | powerpc-*-rtems* | \
+   powerpc-*-chorus* | powerpc-*-vxworks* | powerpc-*-windiss*)
+     targ_defvec=bfd_elf32_powerpc_vec
+     targ_selvecs="rs6000coff_vec bfd_elf32_powerpcle_vec ppcboot_vec"
+diff -uNr insight-6.1.org/gdb/configure insight-6.1/gdb/configure
+--- insight-6.1.org/gdb/configure	2004-02-26 01:41:46.000000000 +0100
++++ insight-6.1/gdb/configure	2008-10-11 20:11:20.000000000 +0200
+@@ -10187,11 +10187,6 @@
+            # know whether 8.2 will or not, but I bet it will.
+            # I don't have to worry about 7.x since we don't support it.
+            GDBTK_CFLAGS=""
+-	   if test "$GCC" = "yes"; then
+-               if test "$TCL_VERSION" != "8.0" ; then
+-                   GDBTK_CFLAGS="-fwritable-strings"
+-	       fi
+-           fi
+ 
+ 	   # Include some libraries that Tcl and Tk want.
+ 	   TCL_LIBS='$(LIBGUI) $(ITCL) $(ITK) $(TK) $(TCL) $(X11_LDFLAGS) $(X11_LIBS)'
+diff -uNr insight-6.1.org/libgui/configure insight-6.1/libgui/configure
+--- insight-6.1.org/libgui/configure	2003-02-12 05:18:53.000000000 +0100
++++ insight-6.1/libgui/configure	2008-10-11 20:11:20.000000000 +0200
+@@ -1922,11 +1922,7 @@
+ 
+ # Tcl8.1 requires writable strings for gcc
+ 
+-if test "$GCC" = "yes"; then
+-   LIBGUI_CFLAGS=-fwritable-strings
+-else
+-   LIBGUI_CFLAGS=
+-fi
++LIBGUI_CFLAGS=
+ 
+ echo $ac_n "checking for cygwin32""... $ac_c" 1>&6
+ echo "configure:1933: checking for cygwin32" >&5

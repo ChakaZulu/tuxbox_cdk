@@ -1,0 +1,85 @@
+diff -uNr gettext-0.17.org/gettext-runtime/gnulib-lib/wchar.in.h gettext-0.17/gettext-runtime/gnulib-lib/wchar.in.h
+--- gettext-0.17.org/gettext-runtime/gnulib-lib/wchar.in.h	2007-10-04 00:23:31.000000000 +0200
++++ gettext-0.17/gettext-runtime/gnulib-lib/wchar.in.h	2008-11-04 12:46:40.000000000 +0100
+@@ -26,6 +26,14 @@
+  * the declaration of wcwidth().
+  */
+ 
++#ifdef __need_mbstate_t
++/* Special invocation convention inside uClibc header files.  */
++
++#@INCLUDE_NEXT@ @NEXT_WCHAR_H@
++
++#else
++/* Normal invocation convention.  */
++
+ #ifndef _GL_WCHAR_H
+ 
+ /* Tru64 with Desktop Toolkit C has a bug: <stdio.h> must be included before
+@@ -80,3 +88,4 @@
+ 
+ #endif /* _GL_WCHAR_H */
+ #endif /* _GL_WCHAR_H */
++#endif
+diff -uNr gettext-0.17.org/gettext-runtime/intl/libgnuintl.h.in gettext-0.17/gettext-runtime/intl/libgnuintl.h.in
+--- gettext-0.17.org/gettext-runtime/intl/libgnuintl.h.in	2007-11-02 01:23:43.000000000 +0100
++++ gettext-0.17/gettext-runtime/intl/libgnuintl.h.in	2008-11-04 13:26:31.000000000 +0100
+@@ -88,10 +88,10 @@
+    If he doesn't, we choose the method.  A third possible method is
+    _INTL_REDIRECT_ASM, supported only by GCC.  */
+ #if !(defined _INTL_REDIRECT_INLINE || defined _INTL_REDIRECT_MACROS)
+-# if __GNUC__ >= 2 && !(__APPLE_CC__ > 1) && !defined __MINGW32__ && !(__GNUC__ == 2 && defined _AIX) && (defined __STDC__ || defined __cplusplus)
++# if __GNUC__ >= 2 && !(__APPLE_CC__ > 1) && !defined __MINGW32__ && !(__GNUC__ == 2 && defined _AIX) && (defined __STDC__ || defined __cplusplus) && !defined __UCLIBC__
+ #  define _INTL_REDIRECT_ASM
+ # else
+-#  ifdef __cplusplus
++#  if defined __cplusplus && !defined __UCLIBC__
+ #   define _INTL_REDIRECT_INLINE
+ #  else
+ #   define _INTL_REDIRECT_MACROS
+diff -uNr gettext-0.17.org/gettext-tools/gnulib-lib/wchar.in.h gettext-0.17/gettext-tools/gnulib-lib/wchar.in.h
+--- gettext-0.17.org/gettext-tools/gnulib-lib/wchar.in.h	2007-10-04 00:24:58.000000000 +0200
++++ gettext-0.17/gettext-tools/gnulib-lib/wchar.in.h	2008-11-04 12:46:40.000000000 +0100
+@@ -26,6 +26,14 @@
+  * the declaration of wcwidth().
+  */
+ 
++#ifdef __need_mbstate_t
++/* Special invocation convention inside uClibc header files.  */
++
++#@INCLUDE_NEXT@ @NEXT_WCHAR_H@
++
++#else
++/* Normal invocation convention.  */
++
+ #ifndef _GL_WCHAR_H
+ 
+ /* Tru64 with Desktop Toolkit C has a bug: <stdio.h> must be included before
+@@ -80,3 +88,4 @@
+ 
+ #endif /* _GL_WCHAR_H */
+ #endif /* _GL_WCHAR_H */
++#endif
+diff -uNr gettext-0.17.org/gettext-tools/libgettextpo/wchar.in.h gettext-0.17/gettext-tools/libgettextpo/wchar.in.h
+--- gettext-0.17.org/gettext-tools/libgettextpo/wchar.in.h	2007-10-04 00:26:17.000000000 +0200
++++ gettext-0.17/gettext-tools/libgettextpo/wchar.in.h	2008-11-04 12:46:40.000000000 +0100
+@@ -26,6 +26,14 @@
+  * the declaration of wcwidth().
+  */
+ 
++#ifdef __need_mbstate_t
++/* Special invocation convention inside uClibc header files.  */
++
++#@INCLUDE_NEXT@ @NEXT_WCHAR_H@
++
++#else
++/* Normal invocation convention.  */
++
+ #ifndef _GL_WCHAR_H
+ 
+ /* Tru64 with Desktop Toolkit C has a bug: <stdio.h> must be included before
+@@ -80,3 +88,4 @@
+ 
+ #endif /* _GL_WCHAR_H */
+ #endif /* _GL_WCHAR_H */
++#endif

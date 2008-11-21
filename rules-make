@@ -19,7 +19,7 @@ binutils;2.17.50.0.9;binutils-2.17.50.0.9;binutils-2.17.50.0.9.tar.bz2:binutils-
 bootstrap_gcc;3.4.6;gcc-3.4.6;gcc-core-3.4.6.tar.bz2;extract:gcc-core-3.4.6.tar.bz2
 gcc;3.4.6;gcc-3.4.6;gcc-core-3.4.6.tar.bz2:gcc-g++-3.4.6.tar.bz2:gcc-core.diff;extract:gcc-core-3.4.6.tar.bz2;extract:gcc-g++-3.4.6.tar.bz2;patch:gcc-core.diff
 glibc;2.3.6;glibc-2.3.6;glibc-2.3.6.tar.bz2:glibc-linuxthreads-2.3.6.tar.bz2:glibc.diff;extract:glibc-2.3.6.tar.bz2;dirextract:glibc-linuxthreads-2.3.6.tar.bz2;patch:glibc.diff
-uclibc;0.9.28.3;uClibc-0.9.28.3;uClibc-0.9.28.3.tar.bz2:uClibc-locale-030818.tgz:uclibc-0.9.28.3.diff;extract:uClibc-0.9.28.3.tar.bz2;patch:uclibc-0.9.28.3.diff;link:../../../Archive/uClibc-locale-030818.tgz:uClibc-0.9.28.3/extra/locale/uClibc-locale-030818.tgz
+uclibc;0.9.30;uClibc-0.9.30;uClibc-0.9.30.tar.bz2;extract:uClibc-0.9.30.tar.bz2
 watchdog;5.2.4;watchdog-5.2.4.orig;watchdog_5.2.4.orig.tar.gz:watchdog.diff;extract:watchdog_5.2.4.orig.tar.gz;patch:watchdog.diff
 
 #
@@ -76,6 +76,7 @@ libglib;2.8.3;glib-2.8.3;glib-2.8.3.tar.gz;extract:glib-2.8.3.tar.gz
 libungif;4.1.3;libungif-4.1.3;libungif-4.1.3.tar.bz2;extract:libungif-4.1.3.tar.bz2
 libiconv;1.9.1;libiconv-1.9.1;libiconv-1.9.1.tar.gz;extract:libiconv-1.9.1.tar.gz
 libFLAC;1.2.0;flac-1.2.0;flac-1.2.0.tar.gz;extract:flac-1.2.0.tar.gz;patch:flac.diff
+libgettext;0.17;gettext-0.17;gettext-0.17.tar.gz:gettext.diff;extract:gettext-0.17.tar.gz;patch:gettext.diff
 
 #
 # contrib apps
@@ -124,7 +125,7 @@ msttf;0.0;msttf;arial32.exe:arialb32.exe;dircreate;dirextract:arial32.exe;dirext
 # development tools
 #
 gdb;6.8;gdb-6.8;gdb-6.8.tar.bz2;extract:gdb-6.8.tar.bz2
-insight;6.1;insight-6.1;insight-6.1.tar.bz2;extract:insight-6.1.tar.bz2
+insight;6.1;insight-6.1;insight-6.1.tar.bz2:insight.diff;extract:insight-6.1.tar.bz2;patch:insight.diff
 ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz:ltrace.diff;extract:ltrace_0.3.26.tar.gz;patch:ltrace.diff
 strace;4.5.18;strace-4.5.18;strace-4.5.18.tar.bz2:strace.diff;extract:strace-4.5.18.tar.bz2;patch:strace.diff
 nano;1.2.4;nano-1.2.4;nano-1.2.4.tar.gz:nano.diff;extract:nano-1.2.4.tar.gz;patch:nano.diff

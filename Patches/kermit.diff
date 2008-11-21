@@ -29,7 +29,7 @@ diff -Naur c-kermit-8.0-orig/makefile c-kermit-8.0/makefile
 +	$(MAKE) wart CC=gcc CFLAGS=
 +	$(MAKE) xermit "CC2 = $(CC)" \
 +	"CFLAGS = $(CFLAGS) -DLINUX -pipe -funsigned-char -DFNFLOAT -DCK_POSIX_SIG \
-+	-DCK_NEWTERM -DTCPSOCKET -DLINUXFSSTND -DNOCOTFMC -DPOSIX \
++	-DCK_NEWTERM -DTCPSOCKET -DLINUXFSSTND -DNOCOTFMC -DPOSIX -DNOARROWKEYS \
 +	-DUSE_STRERROR $(KFLAGS)" "LNKFLAGS = $(LNKFLAGS)" "LIBS = -lcrypt -lresolv -lm"
 +
  #New primary Linux entry for C-Kermit 8.0, replacing big nested
