@@ -653,6 +653,11 @@ $(DEPDIR)/libcurl: bootstrap @DEPENDS_libcurl@
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
+			--disable-gopher \
+			--disable-ldap \
+			--disable-dict \
+			--disable-telnet \
+			--without-ssl \
 			--with-random && \
 		$(MAKE) all && \
 		rm -f $(hostprefix)/bin/curl-config && \
