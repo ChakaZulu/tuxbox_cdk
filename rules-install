@@ -69,7 +69,7 @@ libglib;make:install
 libungif;make:install:DESTDIR=TARGET
 libiconv;make:install:DESTDIR=TARGET
 libFLAC;make:install: -C src/libFLAC DESTDIR=TARGET
-libgettext;make:install:DESTDIR=TARGET
+libgettext;make:install: -C intl DESTDIR=TARGET
 
 #
 # contrib apps
