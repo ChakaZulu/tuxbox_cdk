@@ -17,8 +17,8 @@ diff -Naur autofs-4.1.4/Makefile.conf autofs-4.1.4-fixed/Makefile.conf
 +#STRIP = powerpc-tuxbox-linux-gnu-strip
 +
 +# Do we build with -fpie?
-+DAEMON_CFLAGS  = -fPIE
-+DAEMON_LDFLAGS = -pie
++DAEMON_CFLAGS  = 
++DAEMON_LDFLAGS = 
 +
 +# Special parameters for glibc (libc 6)
 +LIBNSL    = -lnsl
