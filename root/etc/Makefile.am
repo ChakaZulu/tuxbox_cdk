@@ -1,21 +1,27 @@
+if ENABLE_NFSSERVER
+EXPORTS=exports
+endif
+
+if ENABLE_SAMBASERVER
+SMBCONF=smb.conf
+SMBPASSWD=smbpasswd
+endif
+
 SUBDIRS = init.d network
 
-EXTRA_DIST = \
-	fstab group host.conf hostname hosts inetd.conf inittab \
-	mime.types modules.conf nsswitch.conf passwd profile protocols \
-	resolv.conf services smb.conf smbpasswd termcap timezone.xml
-
-FILES = \
-	fstab group host.conf hostname hosts inetd.conf inittab \
-	mime.types modules.conf nsswitch.conf passwd profile protocols \
-	resolv.conf services smb.conf smbpasswd termcap timezone.xml
 
 FILES_FLASH_RO = \
-	fstab host.conf inittab mime.types modules.conf-flash nsswitch.conf \
+	fstab host.conf inittab mime.types nsswitch.conf \
 	protocols termcap timezone.xml
 
 FILES_FLASH_RW = \
-	group hostname hosts inetd.conf passwd profile resolv.conf services
+	group hostname hosts inetd.conf passwd profile resolv.conf services auto.net modules.conf \
+	$(EXPORTS) $(SMBCONF) $(SMBPASSWD)
+
+FILES = \
+	$(FILES_FLASH_RO) $(FILES_FLASH_RW)
+
+EXTRA_DIST = $(FILES)
 
 DIR = /etc
 

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Nukes all game plugins.
+
+# This file is intended to be called from
+# e.g. root-neutrino-jffs2-local.sh using the call
+# $2/customization/nukegames $1/root-neutrino-jffs2
+
+if [ $# != 1 ] ; then
+    echo "usage: $0 rootdirectory"
+    exit 1
+fi
+
+root=$1
+
+echo "Nuking all games in $root/lib/tuxbox/plugins"
+
+for f in $root/lib/tuxbox/plugins/*.cfg; do
+    grep 'type=1' $f>/dev/null && rm -f $root/lib/tuxbox/plugins/`basename $f .cfg`.*
+done

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+releasetype=3
+versionnumber=000
+year=`date +%Y`
+month=`date +%m`
+day=`date +%d`
+hour=`date +%H`
+minute=`date +%M`
+
+while expr $# > 0 ; do
+	case "$1" in
+	-release) 
+		releasetype=0
+        ;;	
+	-snapshot) 
+		releasetype=1
+        ;;	
+	-internal) 
+		releasetype=2
+        ;;
+	-version)
+		versionnumber=$2
+		shift
+	;;	
+	esac
+	shift
+done
+
+echo $releasetype$versionnumber$year$month$day$hour$minute

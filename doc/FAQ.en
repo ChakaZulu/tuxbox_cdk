@@ -1,9 +1,10 @@
 #
-# $Id: FAQ.en,v 1.5 2003/09/30 07:08:44 obi Exp $
+# $Revision: 1.6 $
 #
 # Frequently Asked Questions about the Cross Development Kit
 #
 # Copyright (c) 2002-2003 Andreas Oberritter <obi@tuxbox.org>
+# Changes to newmake (c) 2009 Thilo Graf <dbt@tuxbox.org>
 #
 # Permission is granted to copy, distribute and/or modify this document
 # under the terms of the GNU Free Documentation License, Version 1.2
@@ -14,6 +15,12 @@
 # This document is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# $Log: FAQ.en,v $
+# Revision 1.6  2009/01/06 21:40:14  dbt
+# newmake goes HEAD see:
+# http://tuxbox-forum.dreambox-fan.de/forum/viewtopic.php?f=7&t=48357&start=40
+# hope it's complete ;-)
 #
 
 Q: Why is there no configure script?
@@ -40,6 +47,7 @@ A: Because it has probably already been answered many times and is already
 Q: What is a good place to look for more answers to
    my problems with linux on my dbox2?
 A: The forum at "https://tuxbox.org/forum/" provides a search facility.
+   Tuxbox-Wiki, "http://wiki.dbox2-tuning.net/Development"
    There are also public mailing lists at
    "https://developer.berlios.de/mail/?group_id=72".
 

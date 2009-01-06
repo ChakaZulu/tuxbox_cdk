@@ -1,0 +1,154 @@
+#
+# $Log: BUILD.changes,v $
+# Revision 1.2  2009/01/06 21:40:14  dbt
+# newmake goes HEAD see:
+# http://tuxbox-forum.dreambox-fan.de/forum/viewtopic.php?f=7&t=48357&start=40
+# hope it's complete ;-)
+#
+#
+
+Configuration options:
+
+--[enable|disable]-flashrules (replaces
+  --with-targetruleset=[standard|flash]). As opposed to previous versions,
+  building yadds and building flash images do not exclude
+  one another. Using --enable-flashrules targets for creating flash
+  images are included in the generated Makefile, otherwise not. By
+  default they are enabled. If enabled, all compilation is done using
+  the flash-optimized compilation flags (no debugging info, stripped,
+  compiled with -Os (optimize for size). Other than that,
+  --enable-flashrules has no disadvantages, and can normally be left
+  on. Using --with-targetrulset now gives a warning error; in the future it
+  should be completely eliminated.
+
+--with-rootpartitionsize=SIZE gives the possibility to build (cramfs-,
+  squashfs-) images with non-default root partition size. The size of
+  the var-partition is automatically computed to use all remaining
+  flash space, i.e. everything not used by the other partitions. Default is
+  0x660000 (as before). This number should be a multiple of the erase
+  size, presently 0x20000. Ignored (while meaningless) by jffs2-images.
+
+--with-serversupport=DIR: New option. Build template files for
+  /etc/dhcpd.conf, /etc/fstab, /etc/hosts, and /etc/xinetd.d/tftp for
+  a Linux server.
+
+--with-logosdir=DIR: New option. Picks logo files from this directory,
+  if found.
+
+--with-ucodesdir=DIR: New option. Installs ucodes from this directory, if
+  found. (An image containing Betaresearch ucodes may not legally be
+  distributed.)
+
+--enable-maintainer-mode still exists, but does nothing explicit. (It
+  is passed on to invoked configure's, and enables automatic
+  re-invocation of configure if necessary, so it makes sense.)
+
+--with-checkImage=[none,rename,warn]  How/if to invoke checkImage. If
+  `none', do nothing. If `rename' created images are checked by by
+  checkImage, and if checkImage complains about the file (which may or
+  may not mean that the image will not run), it is renamed to
+  *_bad. If `warn', a zerosize *_bad-file is created, to warn the
+  user. Requested by dietmarw.
+
+ --with-updatehttpprefix=URL  optional URL containing the URL of a
+   directory with update images.
+
+Removed configuration option:
+--with-hostruleset=[standard,cygwin]. This was not working, and is not
+  the right method. configure should take care of this. (Don't confuse
+  this with "removing support for Cygwin"! Building with Cygwin should
+  preferably be supported, but --with-hostruleset is not the way!)
+
+--[enable|disable]-libcrypto has been eliminated. libcrypto is not
+  built by default; no reason to treat it differently from other
+  optional libraries.
+
+Removed program:
+  fakeroot has been eliminated.
+
+FILENAMES: 
+
+Naming system: A file system image is generally named
+[root,var]-[neutrino,enigma].[cramfs,squashfs,jffs2]. Full images have
+names like [neutrino,enigma]-[cramfs,squashfs,jffs2].img[1x,2x]. The
+semantics is hopefully obvious.
+
+The previous version of this work used the notation "jff2fs". It has
+been replaced by "jffs2" ("journalled flash file system 2").
+
+Makefile[.am]: 
+Restructuring to make more target-driven (but still not
+perfect).
+
+Customization-hooks: Many rules calls customization script, if present. 
+
+Now builds root/.version file that can be parsed by neutrino. 
+
+For neutrino, installs plugins tuxmail, tuxtext, tuxcom, vncviewer and
+fx2/*. For enigma, also installs enigma/*.
+
+The partitioning table file linux/drivers/mtd/maps/dbox2-flash.c is now
+generated from an m4-file, for all the different configurations.
+
+Changed targets:
+all: different semantics
+busybox: replaced by $(targetprefix)/bin/busybox (for yadd) and
+$(flashprefix)/root/bin/busybox (for flashing). For this, configuration
+files busybox.config and busybox-flash.config merged to
+busybox.config.m4.
+
+New (public) targets (see doc):
+serversupport, everything, yadd-[all,none,neutrino,enigma,lcars],
+dboxflasher, bare-os.
+
+Cleaning targets:
+New and/or changed cleaning targets: flash-clean,
+flash-semiclean, flash-mostlyclean, clean, mostlyclean. Cleaning
+targets like clean and mostlyclean now works sensibly.
+
+POSSIBLE PROBLEMS: 
+-- Due to the new dependencies, sometimes rebuilds too much. (Should
+   be fixed now) 
+-- Neutrino contains ($(appsdir)/tuxbox/neutrino/src/gui/update.cpp)
+   stuff like #ifdef SQUASHFS. (FIXED)
+
+TODO: 
+-- Support kernel 2.6. Can this be done without building the kernel
+   version into the CDK environment? 
+-- Neutrino and Enigma should be installed (in flash) with something like
+   $(MAKE) -C $(appsdir)/tuxbox/neutrino install prefix=$(flashprefix)/root/...
+   (DONE)
+-- Possibly restructure Makefile.am, with non-essential stuff in
+   included files,...? (DONE)
+-- Merge all the u-boot-*.dbox2.h files (or at least the ones we are
+   using) into an m4-file. (Like I did with the busybox.) (DONE)
+-- Ditto for rcS[.insmod] (DONE),
+-- and possibly also for the kernel .config? (Only for 2.6.)
+-- Check dependencies carefully, to minimize unnecessary rebuilds. (DONE)
+-- teach neutrino's flash function to recognize my file extensions 
+   (DONE)
+-- Some rules (e.g. %/lib/ld.so.1) still look awful (DONE, basically.)
+-- Sensible clean-targets (DONE).
+-- Move all fonts to $(fontdir) (new variable).
+
+NICE THINGS TO HAVE:
+-- download/build mkcramfs, mksquashfs, mkjffs2, mkfs.jffs2 (DONE)
+-- Really fix the "Kein System"-problem (that checkImage is scratching
+   on). (HARD)
+-- At least optionally, it should be possible to build an absolutely
+   minimal system. (DONE, see target bare-os and yadd-neutrino-micro)
+-- Generate md5-checksums (DONE)
+-- configure should be picky on program versions (DONE)
+-- yadd (!= cdk) targets. "Images" for disk based systems.
+-- smarter font handling.
+
+DISADVANTAGES in comparison to old version:
+-- Needs more space to build,
+-- May rebuild more (while "oldmake" often "cheats").
+-- No support for images with more than one GUIs.
+
+for more informations about options, packages and installation instructions, take a look at 
+tuxbox-wiki:
+	http://wiki.dbox2-tuning.net/Newmake
+	http://wiki.dbox2-tuning.net/Newmake-EN
+	http://wiki.dbox2-tuning.net/Development

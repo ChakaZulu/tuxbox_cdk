@@ -1,11 +1,8 @@
-EXTRA_DIST = \
-	default.script default.script-flash
+EXTRA_DIST = default.script
 
-FILES_EXEC = \
-	default.script
+FILES_EXEC = default.script
 
-FILES_FLASH_RO_EXEC = \
-	default.script-flash
+FILES_FLASH_RO_EXEC = default.script
 
 DIR = /share/udhcpc
 

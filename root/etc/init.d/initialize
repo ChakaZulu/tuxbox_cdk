@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Things to do when booting a virgin system
+
+if [ -x /bin/lcdip ] ; then
+	if lcdip -i ; then
+	    ifup -a
+	    # lcdip has done its task, nuke it
+	    # rm -f /bin/lcdip || true
+	    exit 0
+	else
+	    exit 1
+	fi
+fi

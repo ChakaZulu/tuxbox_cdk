@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Nukes all locale files not given as arguments 2, 3, ...
+# Defalt is german ("deutsch") and english.
+
+# This file can be called from e.g. root-neutrino-jffs2-local.sh using the call
+# $2/customization/nukelanguages $1/root-neutrino-jffs2
+
+if [ $# -lt 1 ] ; then
+    echo "usage: $0 rootdirectory [LANGUAGES_TO_KEEP]..."
+    exit 1
+fi
+
+root=$1
+shift
+if [ $# -lt 1 ] ; then
+    LANGUAGES="deutsch english"
+else
+    LANGUAGES="$@"
+fi
+
+echo "Nuking all locales in $root/share/tuxbox/neutrino/locale except: $LANGUAGES"
+
+for f in $root/share/tuxbox/neutrino/locale/*; do
+    (echo $LANGUAGES | grep -v `basename $f .locale` >/dev/null) && rm -f $f
+done

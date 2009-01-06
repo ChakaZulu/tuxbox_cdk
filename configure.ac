@@ -3,26 +3,38 @@ AC_PREREQ(2.57a)
 
 AC_CANONICAL_BUILD
 AC_SUBST(build)
+
+AC_ARG_ENABLE(uclibc,
+	AS_HELP_STRING(--enable-uclibc,	enable rules for creating uclibc linked targets),
+	,[enable_uclibc=no])
+AM_CONDITIONAL(TARGETRULESET_UCLIBC,test "$enable_uclibc" = "yes")
+
 if test "$target_alias" = "" ; then
-	target_alias="powerpc-tuxbox-linux-gnu"
+	if test "$enable_uclibc" = "yes"; then
+		target_alias="powerpc-tuxbox-linux-uclibc"
+	else
+		target_alias="powerpc-tuxbox-linux-gnu"
+	fi
 fi
+
 AC_CANONICAL_TARGET
 AC_SUBST(target)
 
-AM_INIT_AUTOMAKE([])
+# automake1.10 comes with verbose warning output, but we don't want them
+AM_INIT_AUTOMAKE([-Wno-portability])
 AM_MAINTAINER_MODE
 
 AC_PROG_CC
-
-AC_ARG_ENABLE(libcrypto,
-	AS_HELP_STRING(--disable-libcrypto,don't build libcrypto to reduce binary size),
-	,[enable_libcrypto=yes])
-AM_CONDITIONAL(WITH_LIBCRYPTO,test "$enable_libcrypto" = "yes")
 
 AC_ARG_ENABLE(kernel26,
 	AS_HELP_STRING(--enable-kernel26,set up the CDK to use the 2.6 kernel (experimental)),
 	,[enable_kernel26=no])
 AM_CONDITIONAL(KERNEL26,test "$enable_kernel26" = "yes")
+
+AC_ARG_ENABLE(lzma,
+	AS_HELP_STRING(--enable-lzma,use LZMA compression when generating images),
+	,[enable_lzma=yes])
+AM_CONDITIONAL(ENABLE_LZMA,test "$enable_lzma" = "yes")
 
 AC_ARG_ENABLE(nptl,
 	AS_HELP_STRING(--disable-nptl,do not use native posix threads for glibc (only meaningful for kernel 2.6.x, default for 2.4.x)),
@@ -48,84 +60,29 @@ AC_ARG_WITH(cpu,
 	[CPU_MODEL="$withval"],[CPU_MODEL="823"])
 AC_SUBST(CPU_MODEL)
 
-AC_ARG_WITH(hostruleset,
-	[  --with-hostruleset=NAME host ruleset [[standard,cygwin]]],
-	[HOSTRULESET="$withval"],[HOSTRULESET="NULL"])
-
-if test "$HOSTRULESET" = "NULL"; then
-	if test "$host_os" = "cygwin"; then
-		HOSTRULESET="cygwin"
-	else
-		HOSTRULESET="standard"
-	fi
-fi
-
-if test "$HOSTRULESET" = "standard"; then
-	MAKERULESETFILE=""
-elif test "$HOSTRULESET" = "cygwin"; then
-	MAKERULESETFILE="-cygwin"
-else
-	AC_MSG_ERROR([invalid hostruleset "$HOSTRULESET", choose on from standard or cygwin]);
-fi
-
-################################################################
-# ccache
-#
-AC_ARG_ENABLE(ccache,
-	AS_HELP_STRING(--enable-ccache, enable ccache supported compiling ),
-	,[enable_ccache=no])
-AM_CONDITIONAL(ENABLE_CCACHE,test "$enable_ccache" = "yes")
-
-# optional ccache settings
-AC_ARG_WITH(ccachedir,
-	[  --with-ccachedir=DIR directory where ccache is installed ],
-	[ccachedir="$with_ccachedir"],[ccachedir=$(dirname `which ccache`)])
-
-AC_ARG_WITH(maxcachesize,
-	[  --with-maxcachesize=SIZE maximal ccachesize for ccache ],
-	[maxcachesize="$with_maxcachesize"],[maxcachesize="0"])
-
-AC_ARG_WITH(maxcachefiles,
-	[  --with-maxcachefiles=COUNT maximal count of cachefiles for ccache ],
-	[maxcachefiles="$with_maxcachefiles"],[maxcachefiles="0"])
-
-if test "$enable_ccache" = "yes"; then
-	if [[ -e $ccachedir/ccache ]]; then
-	$ccachedir/ccache -M $maxcachesize
-	$ccachedir/ccache -F $maxcachefiles
-	ccacheinfo=$($ccachedir/ccache -s)
-	else
-	enable_ccache="no"
-	ccacheinfo="ccache is not installed in $ccachedir, run <make ccache> or install from your distribution"
-	fi
-fi
-
-AC_SUBST(ccachedir)
-AC_SUBST(maxcachesize)
-AC_SUBST(maxcachefiles)
-AC_SUBST(ccacheinfo)
-#
-################################################################
-
-AC_SUBST(HOSTRULESET)
-AM_CONDITIONAL(HOSTRULESET_STANDARD,test "$HOSTRULESET" = "standard")
-AM_CONDITIONAL(HOSTRULESET_CYGWIN,test "$HOSTRULESET" = "cygwin")
-
 AC_ARG_WITH(targetruleset,
-	[  --with-targetruleset=NAME target ruleset [[standard,flash]]],
-	[TARGETRULESET="$withval"],[TARGETRULESET="standard"])
+	[  --with-targetruleset=NAME	OBSOLETE, use --[[enable|disable]]-flashrules instead],
+	[TARGETRULESET="$withval"],[TARGETRULESET="notset"])
 
-if test "$TARGETRULESET" = "standard"; then
-	INSTALLRULESETFILE=""
-elif test "$TARGETRULESET" = "flash"; then
-	INSTALLRULESETFILE="-flash"
-else
-	AC_MSG_ERROR([invalid targetruleset "$TARGETRULESET", choose on from standard or flash]);
+if test "$TARGETRULESET" != "notset"; then
+	AC_MSG_WARN([--with-targetruleset is obsolete; use --[[enable|disable]]-flashrules instead]);
 fi
 
-AC_SUBST(TARGETRULESET)
-AM_CONDITIONAL(TARGETRULESET_STANDARD,test "$TARGETRULESET" = "standard")
-AM_CONDITIONAL(TARGETRULESET_FLASH,test "$TARGETRULESET" = "flash")
+AC_ARG_WITH(assume-kernelsources-old,
+	[  --with-assume-kernelsources-old	Do not recompile due to new kernel sources],
+	[assume_kernelsources_old="yes"],[assume_kernelsources_old="no"])
+AM_CONDITIONAL(ASSUME_KERNELSOURCES_OLD,test "$assume_kernelsources_old" = "yes")
+
+AC_ARG_ENABLE(flashrules,
+	AS_HELP_STRING(--enable-flashrules,	enable rules for creating flash targets),
+	,[enable_flashrules=yes])
+AM_CONDITIONAL(TARGETRULESET_FLASH,test "$enable_flashrules" = "yes")
+
+if test "$enable_flashrules" = "yes"; then
+        INSTALLRULESETFILE="-flash"
+else
+        INSTALLRULESETFILE=""
+fi
 
 if test -z "$CFLAGS" ; then
 	CFLAGS="-O2"
@@ -133,15 +90,135 @@ fi
 
 if test -z "$TARGET_CFLAGS" -o -z "$TARGET_CXXFLAGS"; then
 	TARGET_CFLAGS="-pipe"
-	if test "$TARGETRULESET" = "standard"; then
+	if test "$enable_flashrules" != "yes"; then
 		TARGET_CFLAGS="$TARGET_CFLAGS -O2 -g3 -gdwarf-2"
 		TARGET_LDFLAGS=""
-	elif test "$TARGETRULESET" = "flash"; then
+	else
 		TARGET_CFLAGS="$TARGET_CFLAGS -Os"
 		TARGET_LDFLAGS="-Wl,-O1"
 	fi
 	TARGET_CXXFLAGS="$TARGET_CFLAGS"
 fi
+
+if test "$enable_uclibc" = "yes"; then
+	CFLAGS="$CFLAGS -fPIC"
+	TARGET_CFLAGS="$TARGET_CFLAGS -fPIC"
+	TARGET_CXXFLAGS="$TARGET_CXXFLAGS -fPIC"
+fi
+
+AC_ARG_ENABLE(lirc,
+	AS_HELP_STRING(--enable-lirc,	include lirc in yadds and images),
+	[case "${enableval}" in
+		yes) LIRC=lirc ;;
+	esac], [enable_lirc=no])
+AM_CONDITIONAL(ENABLE_LIRC,test "$enable_lirc" = "yes")
+AC_SUBST(LIRC)
+
+AC_ARG_ENABLE(cdkVcInfo,
+	AS_HELP_STRING(--enable-cdkVcInfo,	include cdkVcInfo in yadds and images),
+	[case "${enableval}" in
+		yes) CDKVCINFO=cdkVcInfo ;;
+	esac],[enable_cdkVcInfo=no])
+AM_CONDITIONAL(ENABLE_CDKVCINFO,test "$enable_cdkVcInfo" = "yes")
+AC_SUBST(CDKVCINFO)
+
+AC_ARG_ENABLE(german_keymaps,
+	AS_HELP_STRING(--enable-german-keymaps,	include loadkey and German keymaps in yadds and images),
+	[case "${enableval}" in
+		yes) CONSOLE_TOOLS=kbd ;;
+	esac],[enable_german_keymaps=no])
+AM_CONDITIONAL(ENABLE_GERMAN_KEYMAPS,test "$enable_german_keymaps" = "yes")
+AC_SUBST(CONSOLE_TOOLS)
+
+AC_ARG_ENABLE(ide,
+	AS_HELP_STRING(--enable-ide,	include ide and ext2/ext3 drivers in yadds and images),
+	[],[enable_ide=no])
+
+AC_ARG_ENABLE(ext3,
+	AS_HELP_STRING(--disable-ext3,	exclude ext2/ext3 drivers in yadds and images),
+	[],[enable_ext3=yes])
+
+AC_ARG_ENABLE(xfs,
+	AS_HELP_STRING(--enable-xfs,	include xfs drivers in yadds and images),
+	[case "${enableval}" in
+		yes) XFSPROGS=xfsprogs ;;
+	esac],[enable_xfs=no])
+AC_SUBST(XFSPROGS)
+
+if test "$enable_ide" = "no"; then
+	enable_ext3=no
+	enable_xfs=no
+fi
+if ! test "$enable_ext3" = "yes" -o "$enable_xfs" = "yes"; then
+	enable_ide=no
+	enable_ext3=no
+	enable_xfs=no
+fi
+AM_CONDITIONAL(ENABLE_IDE,test "$enable_ide" = "yes")
+AM_CONDITIONAL(ENABLE_EXT3,test "$enable_ext3" = "yes")
+AM_CONDITIONAL(ENABLE_XFS,test "$enable_xfs" = "yes")
+
+if test "$enable_uclibc" = "yes" && test "$enable_xfs" = "yes"; then
+	echo
+	echo "*******************************************************************"
+	echo "***** XFS does not work with uClibc yet - use \"--disable-xfs\" *****"
+	echo "*******************************************************************"
+	echo
+	exit 1
+fi
+
+AC_ARG_ENABLE(nfsserver,
+	AS_HELP_STRING(--enable-nfsserver,	enable the dBox NFS server),
+	[case "${enableval}" in
+		yes) NFSSERVER=nfsserver ;;
+	esac],[enable_nfsserver=no])
+AM_CONDITIONAL(ENABLE_NFSSERVER,test "$enable_nfsserver" = "yes")
+AC_SUBST(NFSSERVER)
+
+AC_ARG_ENABLE(sambaserver,
+	AS_HELP_STRING(--enable-sambaserver,    enable the dBox samba server),
+	[case "${enableval}" in
+		yes) SAMBASERVER=sambaserver ;;
+	esac],[enable_sambaserver=no])
+AM_CONDITIONAL(ENABLE_SAMBASERVER,test "$enable_sambaserver" = "yes")
+AC_SUBST(SAMBASERVER)
+
+AC_ARG_ENABLE(dosfstools,
+	AS_HELP_STRING(--enable-dosfstools,    enable the dosfstools),
+	[case "${enableval}" in
+		yes) DOSFSTOOLS=dosfstools ;;
+	esac],[enable_dosfstools=no])
+AM_CONDITIONAL(ENABLE_DOSFSTOOLS,test "$enable_dosfstools" = "yes")
+AC_SUBST(DOSFSTOOLS)
+
+AC_ARG_ENABLE(upnp,
+	AS_HELP_STRING(--enable-upnp,include upnp support),
+	,[enable_upnp=no])
+AM_CONDITIONAL(ENABLE_UPNP,test "$enable_upnp" = "yes")
+
+AC_ARG_ENABLE(flac,
+	AS_HELP_STRING(--enable-flac,include Neutrino flac audio decoder with libFLAC),
+	,[enable_flac=no])
+AM_CONDITIONAL(ENABLE_FLAC,test "$enable_flac" = "yes")
+
+if test "$enable_uclibc" = "yes" && test "$enable_flac" = "yes" && test "$enable_flashrules" = "yes"; then
+	echo
+	echo "*********************************************************************"
+	echo "***** FLAC does not work with uClibc yet - use \"--disable-flac\" *****"
+	echo "*********************************************************************"
+	echo
+	exit 1
+fi
+
+AC_ARG_WITH(rootpartitionsize,
+	[  --with-rootpartitionsize=SIZE	size of the root partition],
+	[ROOT_PARTITION_SIZE="$withval"],[ROOT_PARTITION_SIZE="0x660000"])
+AC_SUBST(ROOT_PARTITION_SIZE)
+
+AC_ARG_WITH(defaultlocale,
+	[  --with-defaultlocale=LOCALE	default locale],
+	[DEFAULTLOCALE="$withval"],[DEFAULTLOCALE="deutsch"])
+AC_SUBST(DEFAULTLOCALE)
 
 AC_SUBST(CFLAGS)
 AC_SUBST(TARGET_CFLAGS)
@@ -185,16 +262,54 @@ AC_ARG_WITH(flashprefix,
 	[  --with-flashprefix=DIR  prefix for flash files [[PREFIX/cdkflash]] (only used for flash building)],
 	[flashprefix="$with_flashprefix"],[flashprefix="${prefix}/cdkflash"])
 
+AC_ARG_WITH(serversupport,
+	[  --with-serversupport=DIR  prefix for server file templates [[PREFIX/serversupport]]],
+	[serversupport="$with_serversupport"],[serversupport="${prefix}/serversupport"])
+
+AC_ARG_WITH(ucodesdir,
+	[  --with-ucodesdir=DIR  optional directory containing ucodes [[NONE]]],
+	[ucodesdir="$with_ucodesdir"],[ucodesdir="NONE"])
+
+AC_ARG_WITH(logosdir,
+	[  --with-logosdir=DIR  optional directory containing logos [[[CVS/]logos]]],
+	[logosdir="$with_logosdir"],[logosdir="`pwd`/logos"])
+
+AC_ARG_WITH(customizationsdir,
+	[  --with-customizationsdir=DIR  optional directory containing customization scripts [[[CVS]]]],
+	[customizationsdir="$with_customizationsdir"],[customizationsdir="`pwd`"])
+
+AC_ARG_WITH(updatehttpprefix,
+	[  --with-updatehttpprefix=URL  optional URL containing the URL of a directory with update images [[NONE]]],
+	[updatehttpprefix="$with_updatehttpprefix"],[updatehttpprefix=])
+
+
 buildprefix=`pwd`
 AC_SUBST(targetprefix)
 AC_SUBST(hostprefix)
 AC_SUBST(buildprefix)
 AC_SUBST(bootprefix)
 AC_SUBST(flashprefix)
+AC_SUBST(serversupport)
+AC_SUBST(ucodesdir)
+AC_SUBST(logosdir)
+AC_SUBST(customizationsdir)
+AC_SUBST(updatehttpprefix)
 flashprefix_ro=${flashprefix}/ro
 AC_SUBST(flashprefix_ro)
 flashprefix_rw=${flashprefix}/rw
 AC_SUBST(flashprefix_rw)
+
+AC_ARG_WITH(checkImage,
+	[  --with-checkImage=[[none,rename,warn]]	How/if to invoke checkImage [[none]]],
+	[CHECKIMAGE_BEHAVIOR="$withval"],[CHECKIMAGE_BEHAVIOR="true"])
+if [[ "$withval" = "rename" ]] ; then
+	TUXBOX_CHECKIMAGE='$(hostprefix)/bin/checkImage $@ || mv $@ $@_bad'
+elif [[ "$withval" = "warn" ]] ; then
+	TUXBOX_CHECKIMAGE='rm -f $@_bad; $(hostprefix)/bin/checkImage $@ || touch $@_bad'
+else
+	TUXBOX_CHECKIMAGE=@true
+fi
+AC_SUBST(TUXBOX_CHECKIMAGE)
 
 AC_ARG_WITH(cvsdir,
 	[  --with-cvsdir=DIR       where to find the cvs],
@@ -304,33 +419,100 @@ AC_SUBST(hostappsdir)
 AC_SUBST(gnuserver)
 AC_SUBST(defaultserver)
 
-if test "$TARGETRULESET" = "flash"; then
-	AC_PATH_PROG(MKLIBS,mklibs,no)
-	if test "$MKLIBS" = "no"; then
-		AC_MSG_WARN(using tuxbox mklibs)
+AC_PATH_PROG(M4,m4,no)
+if test "$M4" = "no"; then
+	AC_MSG_WARN(No m4 found)
+fi
+
+AC_PROG_CXX
+if test "$CXX" = "g++" -a "$GXX" != "yes"; then
+	AC_MSG_ERROR(No g++ found)
+fi
+
+AC_PROG_LEX
+if test "$LEX" != "flex"; then
+	AC_MSG_ERROR(No flex found)
+fi
+
+AC_PROG_YACC
+if test "$YACC" != "bison -y"; then
+	AC_MSG_ERROR(No bison found)
+fi
+
+if test "$enable_flashrules" = "yes"; then
+	if test "$enable_uclibc" = "yes"; then
+		MKLIBS="$hostappsdir/mklibs/mklibs_uclibc.py"
+	else
 		MKLIBS="$hostappsdir/mklibs/mklibs.py"
 	fi
-	AC_PATH_PROG(FAKEROOT,fakeroot,no)
-	if test "$FAKEROOT" = "no"; then
-		AC_MSG_WARN(can't build images with uid 0 as non-root)
-		FAKEROOT=
-	fi
+	[[ -x "$MKLIBS" ] && true || chmod +x "$MKLIBS" ]
+	AC_SUBST(MKLIBS)
+
 	AC_PATH_PROG(MKCRAMFS,mkcramfs,no)
 	if test "$MKCRAMFS" = "no"; then
-		AC_MSG_WARN(can't build cramfs)
-		MKCRAMFS=/bin/false
+		AC_MSG_WARN(using tuxbox cramfs)
+		MKCRAMFS=$hostprefix/bin/mkcramfs
 	fi
 	AC_PATH_PROG(MKJFFS2,mkjffs2,no)
 	if test "$MKJFFS2" = "no"; then
 		AC_PATH_PROG(MKFSJFFS2,mkfs.jffs2,no)
 		if test "$MKFSJFFS2" = "no"; then
-			AC_MSG_WARN(can't build jffs2)
-			MKJFFS2=/bin/false
-		else
-			MKJFFS2=$MKFSJFFS2
+			AC_MSG_WARN(using tuxbox mkfs.jffs2)
+			MKFSJFFS2="$hostprefix/bin/mkfs.jffs2"
 		fi
+		MKJFFS2="$MKFSJFFS2"
 	fi
 fi
+
+
+################################################################
+# ccache
+#
+AC_ARG_ENABLE(ccache,
+   AS_HELP_STRING(--enable-ccache,   enable ccache supported compiling ),
+   [case "${enableval}" in
+      yes) CCACHE=ccache ;;
+   esac],[enable_ccache=no])
+AM_CONDITIONAL(ENABLE_CCACHE,test "$enable_ccache" = "yes")
+
+# optional ccache settings
+AC_ARG_WITH(ccachedir,
+	[  --with-ccachedir=DIR directory where ccache is installed ],
+	[ccachedir="$with_ccachedir"],	[if  [[ -e $hostprefix/bin/ccache ]]; then
+		ccachedir=$hostprefix/bin
+	else
+		ccachedir=$(dirname `which ccache`)
+	fi])
+
+AC_ARG_WITH(maxcachesize,
+	[  --with-maxcachesize=SIZE maximal ccachesize for ccache ],
+	[maxcachesize="$with_maxcachesize"],[maxcachesize="-1"])
+
+AC_ARG_WITH(maxcachefiles,
+	[  --with-maxcachefiles=COUNT maximal count of cachefiles for ccache ],
+	[maxcachefiles="$with_maxcachefiles"],[maxcachefiles="-1"])
+
+if test "$enable_ccache" = "yes"; then
+	if  [[ -e $ccachedir/ccache ]]; then
+		if test $maxcachesize != -1; then
+			$ccachedir/ccache -M $maxcachesize
+		fi
+		if test $maxcachefiles != -1; then
+			$ccachedir/ccache -F $maxcachefiles
+		fi
+		ccacheinfo=$($ccachedir/ccache -s)
+	else
+		enable_ccache="no"
+		ccacheinfo="ccache is not installed please run make ccache or install it and configure again"
+	fi
+fi
+
+AC_SUBST(ccachedir)
+AC_SUBST(maxcachesize)
+AC_SUBST(maxcachefiles)
+AC_SUBST(ccacheinfo)
+#
+################################################################
 
 FONTDIR="/share/fonts"
 AC_SUBST(FONTDIR)
@@ -340,6 +522,8 @@ AC_SUBST(UCODEDIR)
 CLEANUP="rm -rf"
 AC_SUBST(CLEANUP)
 
+DEPSCLEANUP="rm -f"
+AC_SUBST(DEPSCLEANUP)
 
 #
 # core
@@ -369,6 +553,11 @@ TUXBOX_RULES_MAKE(squashfs)
 TUXBOX_RULES_MAKE(busybox)
 TUXBOX_RULES_MAKE(automount)
 TUXBOX_RULES_MAKE(nfs_utils)
+TUXBOX_RULES_MAKE(fuse)
+if test "$enable_kernel26" != "yes"; then
+TUXBOX_RULES_MAKE(fusekernel)
+fi
+TUXBOX_RULES_MAKE(djmount)
 TUXBOX_RULES_MAKE(ftpd)
 TUXBOX_RULES_MAKE(module_init_tools)
 TUXBOX_RULES_MAKE(modutils)
@@ -378,7 +567,10 @@ TUXBOX_RULES_MAKE(procps)
 TUXBOX_RULES_MAKE(udev)
 TUXBOX_RULES_MAKE(watchdog)
 TUXBOX_RULES_MAKE(mrouted)
-
+TUXBOX_RULES_MAKE(samba)
+TUXBOX_RULES_MAKE(cramfs)
+TUXBOX_RULES_MAKE(squashfs)
+TUXBOX_RULES_MAKE(dosfstools)
 #
 # contrib libs
 #
@@ -411,7 +603,9 @@ TUXBOX_RULES_MAKE(libxml2)
 TUXBOX_RULES_MAKE(libz)
 TUXBOX_RULES_MAKE(libglib)
 TUXBOX_RULES_MAKE(libiconv)
+TUXBOX_RULES_MAKE(libtool)
 TUXBOX_RULES_MAKE(libFLAC)
+TUXBOX_RULES_MAKE(libgettext)
 
 #
 # contrib apps
@@ -419,6 +613,7 @@ TUXBOX_RULES_MAKE(libFLAC)
 TUXBOX_RULES_MAKE(bzip2)
 TUXBOX_RULES_MAKE(console_data)
 TUXBOX_RULES_MAKE(console_tools)
+TUXBOX_RULES_MAKE(kbd)
 TUXBOX_RULES_MAKE(directfb_examples)
 TUXBOX_RULES_MAKE(fbset)
 TUXBOX_RULES_MAKE(lirc)
@@ -430,22 +625,21 @@ TUXBOX_RULES_MAKE(vdr)
 TUXBOX_RULES_MAKE(lufs)
 TUXBOX_RULES_MAKE(dropbear)
 TUXBOX_RULES_MAKE(kermit)
+TUXBOX_RULES_MAKE(wget)
+TUXBOX_RULES_MAKE(ncftp)
+TUXBOX_RULES_MAKE(screen)
+TUXBOX_RULES_MAKE(lzma_utils)
+
+#
+# ide apps
+#
 TUXBOX_RULES_MAKE(hdparm)
 TUXBOX_RULES_MAKE(e2fsprogs)
-TUXBOX_RULES_MAKE(dosfstools)
 TUXBOX_RULES_MAKE(utillinux)
 TUXBOX_RULES_MAKE(parted)
 TUXBOX_RULES_MAKE(hddtemp)
 TUXBOX_RULES_MAKE(xfsprogs)
 TUXBOX_RULES_MAKE(smartmontools)
-TUXBOX_RULES_MAKE(samba)
-if test "$enable_kernel26" = "no"; then
-TUXBOX_RULES_MAKE(fusekernel)
-fi
-TUXBOX_RULES_MAKE(fuse)
-TUXBOX_RULES_MAKE(djmount)
-TUXBOX_RULES_MAKE(screen)
-TUXBOX_RULES_MAKE(wget)
 
 #
 # ccache
@@ -518,36 +712,59 @@ ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 # summary
 #
 
-if test "$enable_kernel26" = "yes"; then
-	used_kernelversion="2.6.x"
+if test "$enable_kernel26" == "yes"; then
+	used_kernelversion="2.6"
 else
-	used_kernelversion="2.4.x"
+	used_kernelversion="2.4"
+fi
+
+if test "$enable_uclibc" == "yes"; then
+	used_libc="uclibc"
+else
+	used_libc="glibc"
 fi
 
 AC_MSG_RESULT([
 summary:
 ----------------------------------------
-target cpu:            $CPU_MODEL
-kernel:                $used_kernelversion
-glibc-pthreads:        $GLIBC_PTHREADS
-host rule set:         $HOSTRULESET
-target rule set:       $TARGETRULESET
-target prefix:         $targetprefix
-host prefix:           $hostprefix
-boot prefix:           $bootprefix
-build prefix:          $buildprefix
-target apps directory: $appsdir
-boot directory:        $bootdir
-driver directory:      $driverdir
-host apps directory:   $hostappsdir
-GNU server:            $gnuserver
-default server:        $defaultserver
-IDE support:           $enable_ide
-UPNP support:          $enable_upnp
-FLAC support:          $enable_flac
+target cpu:			$CPU_MODEL
+kernel:				$used_kernelversion
+libc:				$used_libc
+threads:			$GLIBC_PTHREADS
+target:				$target
+host:				$host
+flash rules:			$enable_flashrules
+target prefix:			$targetprefix
+host prefix:			$hostprefix
+boot prefix:			$bootprefix
+build prefix:			$buildprefix
+root partition size:		$ROOT_PARTITION_SIZE
+LZMA support:			$enable_lzma
+default locale:			$DEFAULTLOCALE
+serversupport:			$serversupport
+checkImage:			$CHECKIMAGE_BEHAVIOR
+target apps directory:		$appsdir
+boot directory:			$bootdir
+driver directory:		$driverdir
+host apps directory:		$hostappsdir
+logo directory:			$logosdir
+customization directory:	$customizationsdir
+ucode directory:		$ucodesdir
+GNU server:			$gnuserver
+default server:			$defaultserver
+update http prefix:		$updatehttpprefix
+IDE support:			$enable_ide
+Ext2/3 support for IDE:		$enable_ext3
+XFS support for IDE:		$enable_xfs
+NFS server:			$enable_nfsserver
+Samba server:			$enable_sambaserver
+dosfstools:			$enable_dosfstools
+Neutrino UPnP-support:		$enable_upnp
+FLAC support:			$enable_flac	
+German keymaps:			$enable_german_keymaps
 ----------------------------------------
-ccache support:		$enable_ccache
-ccache installdir:	$ccachedir
+ccache support:			$enable_ccache
+ccache installdir:		$ccachedir
 $ccacheinfo
 ----------------------------------------
 ])
@@ -563,6 +780,13 @@ AC_MSG_RESULT([
 ******************************************************************
 ])
 fi
+
+TUXBOX_CUSTOMIZE='[[ -x $(customizationsdir)/$(notdir $@)-local.sh ] && KERNEL='$used_kernelversion' KERNELVERSION=$(KERNELVERSION) LIBC='$used_libc' $(customizationsdir)/$(notdir $@)-local.sh $(flashprefix) $(buildprefix) || true]'
+AC_SUBST(TUXBOX_CUSTOMIZE)
+TUXBOX_YADD_CUSTOMIZE='[[ -x $(customizationsdir)/$(notdir $@)-local.sh ] && KERNEL='$used_kernelversion' KERNELVERSION=$(KERNELVERSION) LIBC='$used_libc' $(customizationsdir)/$(notdir $@)-local.sh $(targetprefix) $(buildprefix) || true]'
+AC_SUBST(TUXBOX_YADD_CUSTOMIZE)
+FLASHROOTDIR_MODIFIED='touch $(flashprefix)/root'
+AC_SUBST(FLASHROOTDIR_MODIFIED)
 
 #reset
 ccacheinfo=""

@@ -1,15 +1,34 @@
 #
-#  $Id: README,v 1.11 2003/02/14 17:16:23 obi Exp $
+# $Revision: 1.12 $
+#
+# $Log: README,v $
+# Revision 1.12  2009/01/06 21:40:09  dbt
+# newmake goes HEAD see:
+# http://tuxbox-forum.dreambox-fan.de/forum/viewtopic.php?f=7&t=48357&start=40
+# hope it's complete ;-)
+#
 #
 
 English:
 ----------------
 doc/FAQ.en		- frequently asked questions
 doc/INSTALL.en		- installation instructions
-doc/README.3rdparty.en	- guidelines for the inclusion of 3rd party software (TO BE TRANSLATED!)
+doc/README.3rdparty.en	- guidelines for the inclusion of 3rd party software
+
+documentation
+Tuxbox-Wiki:
+	http://wiki.dbox2-tuning.net/Development:Newmake
+	http://wiki.dbox2-tuning.net/Development:Newmake-EN
 
 Deutsch:
 ---------------
 doc/INSTALL.de		- Installationsanweisungen
 doc/README.3rdparty.de	- Richtlinien zur Einbindung von Fremdsoftware
+
+Dokumentation
+Tuxbox-Wiki:
+	http://wiki.dbox2-tuning.net/Development:Newmake
+	http://wiki.dbox2-tuning.net/Development:Newmake-EN
+
+
 

@@ -1,11 +1,8 @@
 #
-# $Id: README.3rdparty.en,v 1.2 2004/02/14 03:31:08 carjay Exp $
+# $Revision: 1.3 $
 #
-# This document describes the necessary steps to add
+# This document describes to add
 # 3rd party software to the CDK
-#
-# Copyright (c) 2002-2003 Andreas Oberritter <obi@tuxbox.org>
-# English Translation and slight modifications (c) 2004 Carsten Juttner <carjay@gmx.net>
 #
 # Permission is granted to copy, distribute and/or modify this document
 # under the terms of the GNU Free Documentation License, Version 1.2
@@ -17,173 +14,23 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
+#
+# $Log: README.3rdparty.en,v $
+# Revision 1.3  2009/01/06 21:40:14  dbt
+# newmake goes HEAD see:
+# http://tuxbox-forum.dreambox-fan.de/forum/viewtopic.php?f=7&t=48357&start=40
+# hope it's complete ;-)
+#
+#
 
-And this is how you add new tools to the cdk
---------------------------------------------
-First of all start thinking if whatever you intend to add really is a useful
-addition to the project. If you still think your idea is great you can start
-integrating it.
+Documentation is found at 
+http://www.bengt-martensson.de/dbox2/flash-yadds-newmake.html (elementary) 
+and
+http://www.bengt-martensson.de/dbox2/newmake-architecture.html 
+(architectural description)
 
-The audience of this document is neither developers wanting to add their own software
-nor people who deeply integrated some 3rd party software into their projects.
+for more informations about installation of 3rdParty-tools, please mainly use 
+Tuxbox-Wiki:
+	http://wiki.dbox2-tuning.net/Development:Newmake.3rdparty
+	http://wiki.dbox2-tuning.net/Development:Newmake.3rdparty.en
 
-It is meant for people wanting to add someone's else's code in more or less its original
-form. Please be very careful to check that the code's license is suitable for the project.
-
-Often you will need to make some small changes to the source code to make it build properly.
-In that case you must NOT create a new archive but simply take the original version, 
-copy it, add your changes and create a diff between the two. 
-
-You do this with the command:
-
-"diff -Naur packet.orig packet > packet.diff"
-
-The created patch goes to "$HOME/tuxbox-cvs/cdk/Patches". Do not add any version information
-to the filename.
-
-The next step is to make some additions to the following files:
-$HOME/tuxbox-cvs/cdk/Makefile.am
-$HOME/tuxbox-cvs/cdk/configure.ac
-$HOME/tuxbox-cvs/cdk/rules-archive
-$HOME/tuxbox-cvs/cdk/rules-make
-$HOME/tuxbox-cvs/cdk/rules-install
-
-Let's start with rules-archive:
--------------------------------
-This file describes the packets' download source(s). Since most packets are hosted on public
-servers we simply download them when needed. Both the http and ftp protocol is supported.
-Format is one line per packet, first the name then URL(s), all separated by semicolons.
-
-packetname;URL1[;URL2...;URLN]
-
-example:
-paket-1.0.tar.gz;http://www.packethome.com/download
-
-
-Next we deal with rules-make:
------------------------------
-This file describes the steps necessary to 'make' the packet. 
-
-Again we have one line per packet with several entries separated by semicolons.
-The entries are as follows:
-
-identifier;version;directory;archive[:patch1...:patchN];rule1[;rule2...;ruleN]
-
-identifier: Must be a unique name. It will be used again in the files 
-            rules-install, configure.ac and Makefile.am. It can be any name but 
-            it's best to use part of the packet name to avoid namespace clashes.
-
-version: Versionnumber of the packet. Even though most packets have this as part
-         of their archive name you might find one that doesn't so it's provided as
-         an additional separate entry.
-
-directory: This is the name of the directory that results from unpacking the
-           archive. Even though most archives will contain just one directory
-           which will in turn contain all the necessary files and subdirectories
-           there might be some exceptions. In this case choose a suitable name here
-           and use "dirextract" as a rule (see below).
-           
-archive: The name of the packet archive itself. If there are additional files
-         necessary (diffs or additional archives) you add the names without path and
-         separate them by colons.
-
-rules: You state rules that need to be applied to the packet and its files
-   extract    - extracts a packet
-   dirextract - creates a directory and extracts the packet inside it
-   patch      - applies a diff-file to patch the packet
-
-Take a look at rules-make for additional rules.
-
-example1 (just extract):
-packet;1.0;packet-1.0;packet-1.0.tar.gz;extract:packet-1.0.tar.gz
-
-example2 (extract and apply patch):
-packet;1.0;packet-1.0;packet-1.0.tar.gz:packet.diff;extract:packet-1.0.tar.gz;patch:packet.diff
-
-
-rules-install
--------------
-
-If everything related to the installation will be taken care of by Makefile.am 
-you can simply add just one line here containing the identifier.
-
-Else you might want to add an entry like this:
-
-packet;make:install:DESTDIR=TARGET
-
-You can state multiple commands which have to be separated by semicolons.
-The commands and their parameter(s) are separated by colons.
-
-DESTDIR=TARGET is used to inform 'make' about the path of the cdkroot.
-But of course this is not valid for all packets, some might use different variable 
-names or you will need to add parameters like --prefix while running their 
-'configure'-scripts.
-
-
-configure.ac:
--------------
-Choose a suitable section here (take the existing entries as a guide)
-and either add TUXBOX_RULES_MAKE(...) or TUXBOX_RULES_MAKE_EXDIR(...). Replace
-the three dots by the unique identifier you chose in rules-make.
-
-TUXBOX_RULES_MAKE(packet)
-Creates variables from the information you gave in rules-install and rules-make.
-These variables can be used later inside Makefile.am. The following variables 
-will be defined:
-
-DEPENDS_packet - archive(s) and patch(es) necessary to build the packet
-PREPARE_packet - expands to commands for extracting and patching the packet
-DIR_packet     - name of the directory to which the archive has been unpacked to
-INSTALL_packet - expands to commands for installing the packet
-CLEANUP_packet - expands to commands responsible for removing the sourcecode and build files
-                 no longer needed after building and installing the packet. Note that this
-                 does NOT remove the downloaded archive.
-
-TUXBOX_RULES_MAKE_EXDIR(packet)
-same as above but the difference being that you use it for packets that do not get built
-inside their sourcedirectory. Additionally the variable CONFIGURE_packet is defined which
-expands to a command executing the configure-script of the packet.
-
-
-Makefile.am:
-------------
-If you know your way around Makefile.am you should have no trouble. This file contains 
-commands and variables that are used to create the final Makefile when 'configure' 
-is run and serves as a kind of basis.
-
-If you create rules for 'make' that belong to a packet then add a dot in front of the 
-name. The last command used is "touch $@". This command will create a file with the 
-name of the currently used rule which indicates that the rule was sucessfully executed.
-
-Example for a rule:
-.paket: .bootstrap @DEPENDS_packet@
-	@PREPARE_packet@
-	cd @DIR_packet@ && \
-		$(BUILDENV) \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix= && \
-		$(MAKE) all && \
-		@INSTALL_packet@
-	@CLEANUP_packet@
-	touch $@
-
-$(BUILDENV) is a macro that expands to widely used environmental variables like
-CC, CFLAGS etc.
-Then and now you might encounter a packet that needs additional or different variables.
-You can add these below $(BUILDENV) in a rule. Take a look at Makefile.am for examples.
-
-Furthermore there are some rules in Makefile.am which group the single packet rules
-to useful group-rules (for exmaple "libs"). These rules might be further grouped until 
-finally there is an "all"-rule. 
-
-Take a look at the group-rules and think where your newly added rule might fit best.
-
-example:
-devel = .gdb .strace .packet
-
-At the end of Makefile.am you will find a section that deals with cleaning up the 
-environment in case you want to start from anew. You need to add your packet's rulename
-here to remove the file that has been created by 'touch' when the packet was built and
-which would prevent the packet from being rebuilt.

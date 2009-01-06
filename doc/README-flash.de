@@ -1,124 +1,32 @@
 #
+# $Revision: 1.6 $
+#
+# Permission is granted to copy, distribute and/or modify this document
+# under the terms of the GNU Free Documentation License, Version 1.2
+# or any later version published by the Free Software Foundation;
+# with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+# A copy of the license is included in cdk/common-licenses/FDL-1.2
+# 
+# This document is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 #
-# Urheber:
-# --------
-# (C) 2002 by genial <genial@oups.info>
+# $Log: README-flash.de,v $
+# Revision 1.6  2009/01/06 21:40:14  dbt
+# newmake goes HEAD see:
+# http://tuxbox-forum.dreambox-fan.de/forum/viewtopic.php?f=7&t=48357&start=40
+# hope it's complete ;-)
 #
-# Lizenz:
-# -------
-# Dieses Dokument darf weder verkauft werden noch darf es auf
-# kostenpflichtigen Datentraegern weiterverbreitet werden.
-#
-# Inhalt:
-# -------
-# Inhalt dieses Dokuments sind die noetigen Schritte zum Erstellen
-# von Flash-Images.
 #
 
-Prerequisiten:
---------------
+Elementary documentation is found at 
+http://www.bengt-martensson.de/dbox2/flash-yadds-newmake.html 
+and
+http://www.bengt-martensson.de/dbox2/newmake-architecture.html 
+(architectural description)
 
-- python
-- mkcramfs
-- mkjffs2
-- fakeroot (?)
-
-- ucodes
-- logo-fb
-- logo-lcd
-- mix-ppcboot-flfs.img (siehe Bemerkung weiter unten)
-- jffs2-ppcboot-flfs.img (siehe Bemerkung weiter unten)
-
-
-Hier die Kommandos zum Erstellen von Flash-Imgaes:
---------------------------------------------------
-- Auschecken des CDKs weitestgehend nach INSTALL.en,
-  abweichend davon wird configure mit den Flashrules aufgerufen
-
-mkdir $HOME/tuxbox-cvs
-cd $HOME/tuxbox-cvs
-cvs -d:pserver:anonymous@cvs.tuxbox.org:/cvs/tuxbox -z3 co -P .
-cd cdk
-./autogen.sh
-./configure --prefix=$HOME/dbox2 --with-cvsdir=$HOME/tuxbox-cvs --enable-maintainer-mode --with-targetruleset=flash
-
-
-- Danach kann man wie in INSTALL.en beschrieben die einzelnen oder
-  alle Module vorab kompilieren, muss man aber nicht.
-
-
-- Um alle Flash-Module vorzubereiten und ggf. zu kompilieren:
-
-make flash-all
-
-
-- Nur die Netzwerk-Module:
-  (Ftp-Daemon, Telnet-Daemon, SSH, SSH-Daemon)
-
-make flash-network
-
-
-- Nur die Applikationen:
-  (Neutrino, Enigma, Lcars, Plugins, LCD-Menue)
-
-make flash-apps
-
-
-- Die einzelnen Netzwerk-Module:
-
-make flash-ftpd
-make flash-telnetd
-make flash-ssh
-make flash-sshd
-
-
-- Die einzelnen Applikations-Module:
-
-make flash-neutrino
-make flash-enigma
-make flash-lcars
-make flash-plugins
-make flash-lcdmenu
-
-
-- Wenn man die gewuensten Module vorbreitet hat, kann man nun fertige Flash-Images erstellen
-  oder auch nur die einzelnen Flash-Partitionen. Voher muss man noch seine ucodes nach
-  cdkflash/root/var/ucodes und die beiden boot-logos nach cdkflash/root/boot kopieren.
-
-- Komplettes Image mit ppcboot im flfs, root im cramfs und var im jffs2:
-  (Dafuer benoetigt man die Datei mix-ppcboot-flfs.img im cdkflash-Verzeichnis.
-  Man erhaelt diese Datei, in dem man aus einem Image mit cramfs und jffs2 über die
-  Expertenfunktion des Softwareupdates das ppcboot[flfs] ausliest und dann die Datei
-  mtd1.img mittels FTP von der D-Box holt und in mix-ppcboot-flfs.img umbenennt.)
-
-make flash-mix-image
-
-
-- Nur das root als cramfs:
-
-make flash-mix-cramfs
-
-
-- Nur das var als jffs2:
-
-make flash-mix-jffs2
-
-
-- Komplettes Image mit ppcboot im flfs und gesamtes root im jffs2:
-  (ACHTUNG: Dafuer benoetigt man einen modifierten Kernel als kernel-cdk in tftpboot
-  und ein angepasstes ppcboot in einem flfs als mix-ppcboot-flfs.img in cdkflash.
-  Diese kann man sich aus einem bereits bestehenden Image ohne cramfs besorgen.)
-
-make flash-jffs2-image
-
-
-- Das gesamte root als jffs2:
-
-make flash-jffs2-root
-
-
-- Aktualisieren der bereits vorbereiteten Module nach Aenderungen im cdkroot:
-  (Nur bereits vorbereitete Module werden dabei aktualisiert, bereits erstelle Images bleiben davon unberuehrt)
-
-make rebuild-flash
+for more informations about build flash-images, please mainly use
+Tuxbox-Wiki:
+	http://wiki.dbox2-tuning.net/Development:Newmake
+	http://wiki.dbox2-tuning.net/Development:Newmake-EN
