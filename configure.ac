@@ -231,21 +231,6 @@ if test "$prefix" = "NONE"; then
 	prefix=/dbox2
 fi
 
-AC_ARG_ENABLE(ide,
-	AS_HELP_STRING(--enable-ide,include ide and ext3 drivers),
-	,[enable_ide=no])
-AM_CONDITIONAL(ENABLE_IDE,test "$enable_ide" = "yes")
-
-AC_ARG_ENABLE(upnp,
-	AS_HELP_STRING(--enable-upnp,include upnp support),
-	,[enable_upnp=no])
-AM_CONDITIONAL(ENABLE_UPNP,test "$enable_upnp" = "yes")
-
-AC_ARG_ENABLE(flac,
-	AS_HELP_STRING(--enable-flac,include Neutrino flac audio decoder with libFLAC),
-	,[enable_flac=no])
-AM_CONDITIONAL(ENABLE_FLAC,test "$enable_flac" = "yes")
-
 AC_ARG_WITH(targetprefix,
 	[  --with-targetprefix=DIR prefix for target files [[PREFIX/cdkroot]]],
 	[targetprefix="$with_targetprefix"],[targetprefix="${prefix}/cdkroot"])
@@ -544,8 +529,6 @@ TUXBOX_RULES_MAKE_EXDIR(bootstrap_gcc)
 TUXBOX_RULES_MAKE_EXDIR(glibc)
 TUXBOX_RULES_MAKE_EXDIR(gcc)
 TUXBOX_RULES_MAKE(uclibc)
-TUXBOX_RULES_MAKE(libtool)
-TUXBOX_RULES_MAKE(squashfs)
 
 #
 # root
@@ -653,7 +636,7 @@ TUXBOX_RULES_MAKE(cabextract)
 TUXBOX_RULES_MAKE(msttf)
 
 #
-# development tools
+# additional
 #
 TUXBOX_RULES_MAKE(gdb)
 TUXBOX_RULES_MAKE(insight)
@@ -663,8 +646,6 @@ TUXBOX_RULES_MAKE(nano)
 TUXBOX_RULES_MAKE(mc)
 TUXBOX_RULES_MAKE(joe)
 TUXBOX_RULES_MAKE(bash)
-TUXBOX_RULES_MAKE(python)
-TUXBOX_RULES_MAKE(netio)
 
 #
 # java
