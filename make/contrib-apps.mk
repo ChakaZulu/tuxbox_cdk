@@ -317,7 +317,10 @@ $(DEPDIR)/lufs: bootstrap @DEPENDS_lufs@
 	cd @DIR_lufs@ && \
 		$(BUILDENV) \
 		aclocal && \
-		libtoolize --force --install && \
+		case `libtoolize --version | head -n 1 | awk '{ print $$(NF); }'` in \
+		    0.*|1.*)    libtoolize --force ;; \
+		    *)          libtoolize --force --install ;; \
+		esac && \
 		autoconf && \
 		./configure \
 			--build=$(build) \
@@ -339,7 +342,10 @@ $(flashprefix)/root/bin/lufsd: bootstrap @DEPENDS_lufs@ | $(flashprefix)/root
 	cd @DIR_lufs@ && \
 		$(BUILDENV) \
 		aclocal && \
-		libtoolize --force --install && \
+		case `libtoolize --version | head -n 1 | awk '{ print $$(NF); }'` in \
+		    0.*|1.*)    libtoolize --force ;; \
+		    *)          libtoolize --force --install ;; \
+		esac && \
 		autoconf && \
 		./configure \
 			--build=$(build) \
