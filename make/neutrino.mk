@@ -1,11 +1,16 @@
 # tuxbox/neutrino
 
+if ENABLE_MOVIEPLAYER2
+CONFIGURE_OPTS_MP2 = \
+	--enable-movieplayer2
+endif
+
 if ENABLE_FLAC
 $(appsdir)/tuxbox/neutrino/config.status: bootstrap libid3tag libmad libvorbisidec $(appsdir)/dvb/zapit/src/zapit libboost libjpeg libcurl libfreetype libpng libFLAC $(targetprefix)/lib/pkgconfig/tuxbox-tuxtxt.pc $(targetprefix)/include/tuxbox/plugin.h
-	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
+	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE) $(CONFIGURE_OPTS_MP2)
 else
 $(appsdir)/tuxbox/neutrino/config.status: bootstrap libid3tag libmad libvorbisidec $(appsdir)/dvb/zapit/src/zapit libboost libjpeg libcurl libfreetype libpng  $(targetprefix)/lib/pkgconfig/tuxbox-tuxtxt.pc $(targetprefix)/include/tuxbox/plugin.h
-	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE)
+	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE) $(CONFIGURE_OPTS_MP2)
 endif
 
 neutrino: $(appsdir)/tuxbox/neutrino/config.status

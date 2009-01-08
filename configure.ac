@@ -496,6 +496,13 @@ AC_SUBST(ccachedir)
 AC_SUBST(maxcachesize)
 AC_SUBST(maxcachefiles)
 AC_SUBST(ccacheinfo)
+
+# neutrino movieplayer2 (experimental) #########################
+AC_ARG_ENABLE(movieplayer2,
+	AS_HELP_STRING(--enable-movieplayer2,enable experimental neutrino movieplayer2),
+	,[enable_movieplayer2=no])
+AM_CONDITIONAL(ENABLE_MOVIEPLAYER2,test "$enable_movieplayer2" = "yes")
+
 #
 ################################################################
 
