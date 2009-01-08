@@ -1,7 +1,7 @@
 $(DEPDIR):
 	$(INSTALL) -d $(DEPDIR)
 
-$(DEPDIR)/bootstrap: gcc
+$(DEPDIR)/bootstrap: $(CCACHE) gcc
 	touch $@
 
 $(DEPDIR)/directories:
@@ -25,9 +25,6 @@ endif
 	$(INSTALL) -d $(targetprefix)/var/run
 	$(INSTALL) -d $(targetprefix)/var/tuxbox/boot
 	$(INSTALL) -d $(targetprefix)$(UCODEDIR)
-if ENABLE_CCACHE
-	$(CCACHE_ENV)
-endif
 if ENABLE_IDE
 	$(INSTALL) -d $(targetprefix)/hdd
 endif
@@ -80,7 +77,7 @@ endif
 	touch $@
 
 
-$(DEPDIR)/binutils: @DEPENDS_binutils@ directories
+$(DEPDIR)/binutils: @DEPENDS_binutils@ directories 
 	@PREPARE_binutils@
 	cd @DIR_binutils@ && \
 		CC=$(CC) \

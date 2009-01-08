@@ -11,10 +11,6 @@
 depsclean:
 	$(DEPSCLEANUP)
 
-# Delete all marker files in .deps for ccache-enviroment
-ccache-depsclean:
-	$(CCACHE_DEPSCLEANUP)
-
 # Delete all marker files in .deps for ide-apps, contrib-apps
 ide-apps-depsclean:
 	$(IDE_DEPSCLEANUP)

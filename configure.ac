@@ -459,23 +459,29 @@ AC_ARG_ENABLE(ccache,
       yes) CCACHE=ccache ;;
    esac],[enable_ccache=no])
 AM_CONDITIONAL(ENABLE_CCACHE,test "$enable_ccache" = "yes")
+AC_SUBST(CCACHE)
+
+
+hostccachedir=$(dirname `which ccache`)
+if  [[ -e $hostccachedir/ccache ]]; then
+	ccachedir=$hostccachedir
+	AM_CONDITIONAL(USE_CCACHEHOST, true)
+else
+	ccachedir=$hostprefix/bin
+	AM_CONDITIONAL(USE_CCACHEHOST, false)
+fi
+AC_SUBST(ccachedir)
 
 # optional ccache settings
-AC_ARG_WITH(ccachedir,
-	[  --with-ccachedir=DIR directory where ccache is installed ],
-	[ccachedir="$with_ccachedir"],	[if  [[ -e $hostprefix/bin/ccache ]]; then
-		ccachedir=$hostprefix/bin
-	else
-		ccachedir=$(dirname `which ccache`)
-	fi])
-
 AC_ARG_WITH(maxcachesize,
 	[  --with-maxcachesize=SIZE maximal ccachesize for ccache ],
 	[maxcachesize="$with_maxcachesize"],[maxcachesize="-1"])
+AC_SUBST(maxcachesize)
 
 AC_ARG_WITH(maxcachefiles,
 	[  --with-maxcachefiles=COUNT maximal count of cachefiles for ccache ],
 	[maxcachefiles="$with_maxcachefiles"],[maxcachefiles="-1"])
+AC_SUBST(maxcachefiles)
 
 if test "$enable_ccache" = "yes"; then
 	if  [[ -e $ccachedir/ccache ]]; then
@@ -485,17 +491,21 @@ if test "$enable_ccache" = "yes"; then
 		if test $maxcachefiles != -1; then
 			$ccachedir/ccache -F $maxcachefiles
 		fi
-		ccacheinfo=$($ccachedir/ccache -s)
+		ccacheinfo="
+----------------------------------------
+ccache installdir:			$ccachedir
+$($ccachedir/ccache -s)
+----------------------------------------"
 	else
-		enable_ccache="no"
-		ccacheinfo="ccache is not installed please run make ccache or install it and configure again"
+		ccacheinfo="
+----------------------------------------
+ccache installdir:		$ccachedir
+ccache is not yet installed, but installation starts on first build of cdk environment or you can run make ccache
+----------------------------------------"
 	fi
 fi
-
-AC_SUBST(ccachedir)
-AC_SUBST(maxcachesize)
-AC_SUBST(maxcachefiles)
-AC_SUBST(ccacheinfo)
+#
+################################################################
 
 # neutrino movieplayer2 (experimental) #########################
 AC_ARG_ENABLE(movieplayer2,
@@ -750,11 +760,8 @@ dosfstools:			$enable_dosfstools
 Neutrino UPnP-support:		$enable_upnp
 FLAC support:			$enable_flac	
 German keymaps:			$enable_german_keymaps
-----------------------------------------
 ccache support:			$enable_ccache
-ccache installdir:		$ccachedir
 $ccacheinfo
-----------------------------------------
 ])
 
 if test "$dircheck" = "fail"; then
@@ -776,8 +783,6 @@ AC_SUBST(TUXBOX_YADD_CUSTOMIZE)
 FLASHROOTDIR_MODIFIED='touch $(flashprefix)/root'
 AC_SUBST(FLASHROOTDIR_MODIFIED)
 
-#reset
-ccacheinfo=""
 
 AC_CONFIG_FILES([
 Makefile
