@@ -48,6 +48,7 @@ if USE_CCACHEHOST
 ccache:
 	$(CCACHE_ENV) ;\
 	$(CCACHE_TEST)
+	touch $@
 
 else
 
@@ -66,6 +67,7 @@ $(DEPDIR)/ccache: @DEPENDS_ccache@
 			$(CCACHE_ENV) ;\
 			$(CCACHE_TEST) ;\
 		rm -rf @DIR_ccache@
+		touch $@
 endif
 
 endif
