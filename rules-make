@@ -170,4 +170,9 @@ bluez_pan;1.1;bluez-pan-1.1;bluez-pan-1.1.tar.gz;extract:bluez-pan-1.1.tar.gz
 bluez_sdp;1.5;bluez-sdp-1.5;bluez-sdp-1.5.tar.gz;extract:bluez-sdp-1.5.tar.gz
 bluez_utils;2.4;bluez-utils-2.4;bluez-utils-2.4.tar.gz;extract:bluez-utils-2.4.tar.gz
 
+#
+# database
+#
+sqlite;3.6.7;sqlite-3.6.7;sqlite-3.6.7.tar.gz;extract:sqlite-3.6.7.tar.gz
+
 >>?;rules-make-local

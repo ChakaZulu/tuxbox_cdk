@@ -60,6 +60,14 @@ AC_ARG_WITH(cpu,
 	[CPU_MODEL="$withval"],[CPU_MODEL="823"])
 AC_SUBST(CPU_MODEL)
 
+AC_ARG_ENABLE(sqlite,
+	[  --enable-sqlite          enable sql storage (default off)],
+	[SQLITE="$withval"],[SQLITE="no"])
+
+AC_SUBST(SQLITE)
+AM_CONDITIONAL(ENABLE_SQLITE,test "$enable_sqlite" = "yes")
+
+
 AC_ARG_WITH(targetruleset,
 	[  --with-targetruleset=NAME	OBSOLETE, use --[[enable|disable]]-flashrules instead],
 	[TARGETRULESET="$withval"],[TARGETRULESET="notset"])
@@ -697,6 +705,11 @@ TUXBOX_RULES_MAKE(bluez_sdp)
 TUXBOX_RULES_MAKE(bluez_utils)
 
 #
+# Database
+#
+TUXBOX_RULES_MAKE(sqlite)
+
+#
 # internal
 #
 AC_SUBST_FILE(ARCHIVE)
@@ -760,6 +773,7 @@ dosfstools:			$enable_dosfstools
 Neutrino UPnP-support:		$enable_upnp
 FLAC support:			$enable_flac	
 German keymaps:			$enable_german_keymaps
+sqlite3 storage:		$enable_sqlite
 ccache support:			$enable_ccache
 $ccacheinfo
 ])

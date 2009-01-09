@@ -159,4 +159,9 @@ bluez_utils;make:install:DESTDIR=TARGET
 #
 squashfs
 
+#
+# database
+#
+sqlite;make:install:prefix=TARGET
+
 >>?;rules-install-local
