@@ -70,7 +70,7 @@ if ENABLE_GERMAN_KEYMAPS
 	$(MAKE) flash-german-keymaps
 endif
 if ENABLE_SQLITE
-   $(MAKE) flash-sqlite
+	$(MAKE) flash-sqlite
 endif
 	$(MAKE) flash-defaultlocale
 	$(MAKE) flash-version

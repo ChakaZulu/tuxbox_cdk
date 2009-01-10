@@ -35,6 +35,7 @@ $(flashprefix)/root-null-jffs2/lib/ld.so.1: \
 		${MKLIBS_UCLIBCOPTS} \
 		`find $</bin/ -path "*bin/?*" -type f` \
 		`find $</lib/ -name "libnss_*" -type f` \
+		`find $</lib/ -name "libsqlite3*" -type f` \
 		`find $</lib/ -name "*.so" -type f` \
 		`find $</sbin/ -path "*sbin/?*" -type f`
 if TARGETRULESET_UCLIBC
