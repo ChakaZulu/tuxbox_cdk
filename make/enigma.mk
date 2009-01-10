@@ -1,10 +1,14 @@
 # tuxbox/enigma
 
 if TARGETRULESET_UCLIBC
-$(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad libid3tag libvorbisidec libpng libsigc libjpeg libungif libgettext $(targetprefix)/lib/pkgconfig/tuxbox.pc $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc $(targetprefix)/include/tuxbox/plugin.h
-else
-$(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad libid3tag libvorbisidec libpng libsigc libjpeg libungif $(targetprefix)/lib/pkgconfig/tuxbox.pc $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc $(targetprefix)/include/tuxbox/plugin.h
+ENIGMA_GETTEXT=libgettext
 endif
+
+if ENABLE_SQLITE
+ENIGMA_SQLITE=sqlite
+endif
+
+$(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad libid3tag libvorbisidec libpng libsigc libjpeg libungif $(ENIGMA_GETTEXT) $(ENIGMA_SQLITE) $(targetprefix)/lib/pkgconfig/tuxbox.pc $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc $(targetprefix)/include/tuxbox/plugin.h
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE)
 
 enigma: $(appsdir)/tuxbox/enigma/config.status | tuxbox_tools
