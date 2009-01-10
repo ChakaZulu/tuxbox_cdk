@@ -69,7 +69,7 @@ include make/dvb-apps.mk
 # Bluetooth (nonessential)
 include make/bluetooth.mk
 
-# Sqlite
+# Database
 include make/database.mk
 
 # FUSE and djmount for uPnP support (non-essential)
