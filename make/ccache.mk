@@ -31,16 +31,15 @@ CCACHE_TEST =	$(CCACHE_TUXBOX_BIN) -s
 
 
 # sets the options for ccache which are configured
-CCACHE_SETUP =	test "$(maxcachesize)" != -1 && $(ccachedir)/ccache -M $(maxcachesize);\
-		test "$(maxcachefiles)" != -1 && $(ccachedir)/ccache -F $(maxcachefiles);\
+CCACHE_SETUP =	test "$(maxcachesize)" != -1 && $(CCACHE_TUXBOX_BIN) -M $(maxcachesize);\
+		test "$(maxcachefiles)" != -1 && $(CCACHE_TUXBOX_BIN) -F $(maxcachefiles);\
 		true
 
 
 # create ccache environment
 CCACHE_ENV = 	$(INSTALL) -d $(CCACHE_BINDIR) ;\
 		$(CCACHE_LINKS) ;\
-		$(CCACHE_TUXBOX_BIN) -M $(maxcachesize) ;\
-		$(CCACHE_TUXBOX_BIN) -F $(maxcachefiles)
+		$(CCACHE_SETUP)
 
 
 # use ccache from your host if is installed
