@@ -199,3 +199,7 @@ include make/disttargets.mk
 # generated Makefile during make run, automake or configure does not
 # see it.)
 -include ./Makefile.local
+
+# add user specific stuff if needed
+-include $(customizationsdir)/user.mk
+

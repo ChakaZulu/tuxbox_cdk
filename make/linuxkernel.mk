@@ -125,15 +125,15 @@ endif
 kernel-cdk: $(bootprefix)/kernel-cdk
 
 if KERNEL26
-$(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage Patches/linux-$(KERNELVERSION).config Patches/dbox2-flash.c-26.m4
-	sed $(IDE_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(NFSSERVER_SED_CONF) Patches/linux-$(KERNELVERSION).config \
+$(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c-26.m4
+	sed $(IDE_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(NFSSERVER_SED_CONF) $(yadd_kernel_conf) \
 		> $(KERNEL_DIR)/.config
-	m4 Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
+	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 else
-$(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage Patches/linux-2.4.35.5-dbox2.config Patches/dbox2-flash.c.m4
-	sed $(IDE_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(NFSSERVER_SED_CONF) Patches/linux-2.4.35.5-dbox2.config \
+$(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c.m4
+	sed $(IDE_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(NFSSERVER_SED_CONF) $(yadd_kernel_conf) \
 		> $(KERNEL_DIR)/.config
-	m4 Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
+	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif
 	$(MAKE) $(KERNEL_BUILD_FILENAME)
 if KERNEL26

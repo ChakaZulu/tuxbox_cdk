@@ -8,9 +8,9 @@ if KERNEL26
 POSSIBLY_KERNEL26=-Dkernel26
 endif
 
-$(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ Patches/busybox.config.m4 Patches/busybox.diff
+$(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ $(busybox_conf) Patches/busybox.diff
 	@PREPARE_busybox@
-	m4 -Dyadd $(POSSIBLY_IDE) $(POSSIBLY_EXT3) $(POSSIBLY_KERNEL26) -DPREFIX="\"$(targetprefix)\"" Patches/busybox.config.m4 > @DIR_busybox@/.config
+	m4 -Dyadd $(POSSIBLY_IDE) $(POSSIBLY_EXT3) $(POSSIBLY_KERNEL26) -DPREFIX="\"$(targetprefix)\"" $(busybox_conf) > @DIR_busybox@/.config
 	cd @DIR_busybox@ && \
 		$(MAKE) all install \
 			CROSS_COMPILE=$(target)- \
@@ -21,9 +21,9 @@ $(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ Patches/busybox.config.m4 Patches
 
 if TARGETRULESET_FLASH
 
-flash-busybox: bootstrap $(flashprefix)/root @DEPENDS_busybox@ Patches/busybox.config.m4 Patches/busybox.diff
+flash-busybox: bootstrap $(flashprefix)/root @DEPENDS_busybox@ $(busybox_conf) Patches/busybox.diff
 	@PREPARE_busybox@
-	m4 -Dflash $(POSSIBLY_IDE) $(POSSIBLY_EXT3) $(POSSIBLY_KERNEL26) -DPREFIX="\"$(flashprefix)/root\"" Patches/busybox.config.m4 > @DIR_busybox@/.config
+	m4 -Dflash $(POSSIBLY_IDE) $(POSSIBLY_EXT3) $(POSSIBLY_KERNEL26) -DPREFIX="\"$(flashprefix)/root\"" $(busybox_conf) > @DIR_busybox@/.config
 	cd @DIR_busybox@ && \
 		$(MAKE) all install \
 			CROSS_COMPILE=$(target)- \

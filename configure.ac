@@ -223,6 +223,19 @@ AC_ARG_WITH(rootpartitionsize,
 	[ROOT_PARTITION_SIZE="$withval"],[ROOT_PARTITION_SIZE="0x660000"])
 AC_SUBST(ROOT_PARTITION_SIZE)
 
+AC_ARG_WITH(flashfstype,
+	[  --with-flashfstype=FS_TYPE	type of flash root filesystem partition for the yadd kernel],
+	[FLASH_FS_TYPE="$withval"],[FLASH_FS_TYPE="NONE"])
+AC_SUBST(FLASH_FS_TYPE)
+
+if test "$FLASH_FS_TYPE" = "NONE"; then
+	if test "$ENABLE_LZMA" = "yes"; then
+		FLASH_FS_TYPE = "squashfs+lzma"
+	else
+		FLASH_FS_TYPE = "squashfs"
+	fi
+fi
+
 AC_ARG_WITH(defaultlocale,
 	[  --with-defaultlocale=LOCALE	default locale],
 	[DEFAULTLOCALE="$withval"],[DEFAULTLOCALE="deutsch"])
@@ -275,6 +288,20 @@ AC_ARG_WITH(updatehttpprefix,
 	[  --with-updatehttpprefix=URL  optional URL containing the URL of a directory with update images [[NONE]]],
 	[updatehttpprefix="$with_updatehttpprefix"],[updatehttpprefix=])
 
+AC_ARG_WITH(busybox_conf,
+	[  --with-busybox-conf=M4_FILE personalized optional m4 busybox configuration file [[Patches/busybox-config.m4]]],
+	[busybox_conf="$with_busybox_conf"],[busybox_conf="Patches/busybox-config.m4"])
+AC_SUBST(busybox_conf)
+
+AC_ARG_WITH(yadd_kernel_conf,
+	[  --with-yadd-kernel-conf=FILE optional personalized linux kernel config file for nfs rootfs [[Patches/linux-KERNEL_VERSION-dbox2.config]]],
+	[yadd_kernel_conf="$with_yadd_kernel_conf"],[yadd_kernel_conf="NONE"])
+AC_SUBST(yadd_kernel_conf)
+
+AC_ARG_WITH(flash_kernel_conf,
+	[  --with-flash-kernel-conf=FILE optional personalized linux kernel config file for flash rootfs [[Patches/linux-KERNEL_VERSION-dbox2.config-flash]]],
+	[flash_kernel_conf="$with_flash_kernel_conf"],[flash_kernel_conf="NONE"])
+AC_SUBST(flash_kernel_conf)
 
 buildprefix=`pwd`
 AC_SUBST(targetprefix)
@@ -720,6 +747,26 @@ ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 ])
 
 #
+# customized linux kernel configs
+#
+if test "$enable_kernel26" = "yes"; then
+	if test "$yadd_kernel_conf" = "NONE"; then
+		yadd_kernel_conf="Patches/linux-$KERNELVERSION.config"
+	fi
+	if test "$flash_kernel_conf" = "NONE"; then
+		flash_kernel_conf="Patches/linux-$KERNELVERSION.config-flash"
+	fi
+else
+	if test "$yadd_kernel_conf" = "NONE"; then
+		yadd_kernel_conf="Patches/linux-2.4.35.5-dbox2.config"
+	fi
+	if test "$flash_kernel_conf" = "NONE"; then
+		flash_kernel_conf="Patches/linux-2.4.35.5-dbox2.config-flash"
+	fi
+fi
+
+
+#
 # summary
 #
 
@@ -773,7 +820,7 @@ dosfstools:			$enable_dosfstools
 Neutrino UPnP-support:		$enable_upnp
 FLAC support:			$enable_flac	
 German keymaps:			$enable_german_keymaps
-sqlite3 storage:		$enable_sqlite
+sqlite3 storage:		$SQLITE
 ccache support:			$enable_ccache
 $ccacheinfo
 ])
