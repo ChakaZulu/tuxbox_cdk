@@ -53,10 +53,10 @@ PART_TYPE=squashfs
 endif
 if KERNEL26
 	m4 --define=rootfs=$(PART_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
-	sed -e 's/.*CONFIG_SQUASHFS[= ].*$$/CONFIG_SQUASHFS=y/' $(IDE_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(NFSSERVER_SED_CONF) $(LZMA_SED_CONF) Patches/linux-$(KERNELVERSION).config-flash > $(KERNEL_DIR)/.config
+	sed -e 's/.*CONFIG_SQUASHFS[= ].*$$/CONFIG_SQUASHFS=y/' $(IDE_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(NFSSERVER_SED_CONF) $(LZMA_SED_CONF) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
 else
 	m4 --define=rootfs=$(PART_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
-	sed -e 's/.*CONFIG_SQUASHFS[= ].*$$/CONFIG_SQUASHFS=y/' $(IDE_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(NFSSERVER_SED_CONF) $(LZMA_SED_CONF) Patches/linux-2.4.35.5-dbox2.config-flash > $(KERNEL_DIR)/.config
+	sed -e 's/.*CONFIG_SQUASHFS[= ].*$$/CONFIG_SQUASHFS=y/' $(IDE_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(NFSSERVER_SED_CONF) $(LZMA_SED_CONF) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
 endif
 	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
 if KERNEL26
