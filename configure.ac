@@ -230,9 +230,9 @@ AC_SUBST(FLASH_FS_TYPE)
 
 if test "$FLASH_FS_TYPE" = "NONE"; then
 	if test "$ENABLE_LZMA" = "yes"; then
-		FLASH_FS_TYPE = "squashfs+lzma"
+		FLASH_FS_TYPE="squashfs+lzma"
 	else
-		FLASH_FS_TYPE = "squashfs"
+		FLASH_FS_TYPE="squashfs"
 	fi
 fi
 
