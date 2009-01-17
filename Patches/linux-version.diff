@@ -1,12 +1,11 @@
-diff -Naur linux-2.4.31/Makefile linux-2.4.31-dbox2/Makefile
---- linux-2.4.31/Makefile	2005-06-01 02:56:56.000000000 +0200
-+++ linux-2.4.31-dbox2/Makefile	2005-06-03 11:02:31.000000000 +0200
+--- linux-2.4.37/Makefile.orig	2008-12-02 09:01:34.000000000 +0100
++++ linux-2.4.37/Makefile	2009-01-13 22:32:58.000000000 +0100
 @@ -1,7 +1,7 @@
  VERSION = 2
  PATCHLEVEL = 4
- SUBLEVEL = 36
--EXTRAVERSION = .6
-+EXTRAVERSION = .6-dbox2
+ SUBLEVEL = 37
+-EXTRAVERSION =
++EXTRAVERSION = -dbox2
  
  KERNELRELEASE=$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
  

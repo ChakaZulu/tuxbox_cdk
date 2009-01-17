@@ -118,8 +118,6 @@ nano;make:install:DESTDIR=TARGET
 mc;make:install:prefix=TARGET
 joe;make:install:prefix=TARGET
 bash;make:install:prefix=TARGET
-python;make:bininstall:prefix=TARGET
-netio;install:-m755:netio:TARGET/bin;install:-m755:bin/win32-i386.exe:HOST/bin/netio
 ccache
 
 #
