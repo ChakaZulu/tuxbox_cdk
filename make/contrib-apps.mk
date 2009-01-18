@@ -3,7 +3,11 @@
 #   contrib apps
 #
 
-contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie lufs kermit wget ncftp screen lzma_utils
+if ENABLE_FS_LUFS
+TARGET_LUFS=lufs
+endif
+
+contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie $(TARGET_LUFS) kermit wget ncftp screen lzma_utils
 
 CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma_utils
 
@@ -311,6 +315,7 @@ $(DEPDIR)/vdr: bootstrap @DEPENDS_vdr@
 	@CLEANUP_vdr@
 	touch $@
 
+if ENABLE_FS_LUFS
 #lufs
 $(DEPDIR)/lufs: bootstrap @DEPENDS_lufs@
 	@PREPARE_lufs@
@@ -366,6 +371,7 @@ $(flashprefix)/root/bin/lufsd: bootstrap @DEPENDS_lufs@ | $(flashprefix)/root
 	@CLEANUP_lufs@
 	@FLASHROOTDIR_MODIFIED@
 	@TUXBOX_CUSTOMIZE@
+endif
 endif
 
 #kermit

@@ -73,6 +73,7 @@ endif
 
 if TARGETRULESET_UCLIBC
 E2FSPROGSOPT=--disable-tls
+XFSPROGSOPT=ac_cv_header_aio_h=yes ac_cv_lib_rt_lio_listio=yes
 endif
 
 #e2fs2progs
@@ -149,8 +150,10 @@ $(flashprefix)/root/sbin/e2fsck: bootstrap @DEPENDS_e2fsprogs@ | $(flashprefix)/
 	$(INSTALL) $(targetprefix)/sbin/resize2fs $(flashprefix)/root/sbin/
 	$(INSTALL) $(targetprefix)/sbin/tune2fs $(flashprefix)/root/sbin/
 	$(INSTALL) $(targetprefix)/sbin/fsck $(flashprefix)/root/sbin/
+if ENABLE_EXT2
 	$(INSTALL) $(targetprefix)/sbin/fsck.ext2 $(flashprefix)/root/sbin/
 	$(INSTALL) $(targetprefix)/sbin/mkfs.ext2 $(flashprefix)/root/sbin/
+endif
 	$(INSTALL) $(targetprefix)/sbin/e2label $(flashprefix)/root/sbin/
 if ENABLE_EXT3
 	$(INSTALL) $(targetprefix)/sbin/fsck.ext3 $(flashprefix)/root/sbin/
@@ -260,6 +263,7 @@ $(DEPDIR)/xfsprogs: bootstrap libtool @DEPENDS_e2fsprogs@ @DEPENDS_xfsprogs@
 	cd @DIR_xfsprogs@ && \
 		LIBTOOL=$(hostprefix)/bin/libtool \
 		$(BUILDENV) \
+		$(XFSPROGSOPT) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \

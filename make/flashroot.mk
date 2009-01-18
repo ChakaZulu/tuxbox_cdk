@@ -34,7 +34,9 @@ endif
 	$(MAKE) flash-ftpd
 	$(MAKE) flash-satfind
 	$(MAKE) flash-streampes
+if ENABLE_FS_LUFS
 	$(MAKE) flash-lufsd
+endif
 	$(MAKE) flash-etherwake
 	$(MAKE) flash-tuxmail
 	$(MAKE) flash-tuxtxt

@@ -64,6 +64,13 @@ if KERNEL26
 	cp Patches/linux-$(KERNELVERSION).config $(KERNEL_DIR)/.config
 else
 	cp Patches/linux-2.4.35.5-dbox2.config $(KERNEL_DIR)/.config
+if ENABLE_FS_LUFS
+	cd $(KERNEL_DIR) && patch -p1 -E -i $(buildprefix)/Patches/linux-2.4.33-dbox2-lufs.diff
+endif
+if ENABLE_FS_CIFS
+	gunzip -cd $(buildprefix)/Archive/cifs-1.20c-2.4.tar.gz | TAPE=- tar -x
+	cd $(KERNEL_DIR) && patch -p1 -E -i ./cifs_24.patch
+endif
 endif
 	$(MAKE) -C $(KERNEL_DIR) oldconfig \
 		ARCH=ppc
@@ -135,7 +142,7 @@ else
 KHEADERS="$(buildprefix)/$(KERNEL_DIR)/include"
 endif
 	@PREPARE_uclibc@
-	cp Patches/uclibc-@VERSION_uclibc@.config @DIR_uclibc@/.config
+	sed $(XFS_UCLIBC_CONF) Patches/uclibc-@VERSION_uclibc@.config > @DIR_uclibc@/.config
 	sed -i -e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=$(KHEADERS),g' @DIR_uclibc@/.config
 	$(MAKE) -C @DIR_uclibc@ oldconfig ARCH=ppc
 	cd @DIR_uclibc@ && \

@@ -81,17 +81,27 @@ if ENABLE_IDE
 IDE_SED_CONF=$(foreach param,CONFIG_IDE CONFIG_BLK_DEV_IDE CONFIG_BLK_DEV_IDEDISK,-e s"/^.*$(param)[= ].*/$(param)=m/")
 else
 if KERNEL26
-IDE_SED_CONF=$(foreach param,CONFIG_IDE CONFIG_BLK_DEV_IDE CONFIG_BLK_DEV_IDEDISK,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+IDE_SED_CONF=$(foreach param,CONFIG_IDE CONFIG_BLK_DEV_IDE CONFIG_BLK_DEV_IDEDISK CONFIG_MSDOS_PARTITION,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
 else
-IDE_SED_CONF=-e ""
+IDE_SED_CONF=$(foreach param,CONFIG_MSDOS_PARTITION,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+endif
+endif
+
+if ENABLE_EXT2
+EXT2_SED_CONF=$(foreach param,CONFIG_EXT2_FS CONFIG_JBD,-e s"/^.*$(param)[= ].*/$(param)=m/")
+else
+if KERNEL26
+EXT2_SED_CONF=$(foreach param,CONFIG_EXT2_FS CONFIG_JBD,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+else
+EXT2_SED_CONF=-e ""
 endif
 endif
 
 if ENABLE_EXT3
-EXT3_SED_CONF=$(foreach param,CONFIG_EXT2_FS CONFIG_EXT3_FS CONFIG_JBD,-e s"/^.*$(param)[= ].*/$(param)=m/")
+EXT3_SED_CONF=$(foreach param,CONFIG_EXT3_FS CONFIG_JBD,-e s"/^.*$(param)[= ].*/$(param)=m/")
 else
 if KERNEL26
-EXT3_SED_CONF=$(foreach param,CONFIG_EXT2_FS CONFIG_EXT3_FS CONFIG_JBD,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+EXT3_SED_CONF=$(foreach param,CONFIG_EXT3_FS CONFIG_JBD,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
 else
 EXT3_SED_CONF=-e ""
 endif
@@ -99,12 +109,36 @@ endif
 
 if ENABLE_XFS
 XFS_SED_CONF=$(foreach param,CONFIG_XFS_FS,-e s"/^.*$(param)[= ].*/$(param)=m/")
+XFS_UCLIBC_CONF=$(foreach param,UCLIBC_HAS_OBSOLETE_BSD_SIGNAL UCLIBC_SV4_DEPRECATED,-e s"/^.*$(param)[= ].*/$(param)=y/")
 else
+XFS_UCLIBC_CONF=-e ""
 if KERNEL26
 XFS_SED_CONF=$(foreach param,CONFIG_XFS_FS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
 else
 XFS_SED_CONF=-e ""
 endif
+endif
+
+if ENABLE_VFAT
+VFAT_SED_CONF=$(foreach param,CONFIG_FAT_FS CONFIG_VFAT_FS,-e s"/^.*$(param)[= ].*/$(param)=m/")
+else
+if KERNEL26
+VFAT_SED_CONF=$(foreach param,CONFIG_FAT_FS CONFIG_MSDOS_FS CONFIG_VFAT_FS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+else
+VFAT_SED_CONF=-e ""
+endif
+endif
+
+if ENABLE_FS_CIFS
+FS_CIFS_SED_CONF=-e ""
+else
+FS_CIFS_SED_CONF=$(foreach param,CONFIG_CIFS CONFIG_CIFS_POSIX,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+endif
+
+if ENABLE_FS_SMBFS
+FS_SMBFS_SED_CONF=$(foreach param,CONFIG_SMB_FS CONFIG_NLS,-e s"/^.*$(param)[= ].*/$(param)=m/")
+else
+FS_SMBFS_SED_CONF=$(foreach param,CONFIG_SMB_FS CONFIG_SMB_UNIX CONFIG_NLS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
 endif
 
 if ENABLE_NFSSERVER
@@ -122,16 +156,21 @@ NFSSERVER_SED_CONF=-e ""
 endif
 endif
 
+# this option is ignored for target kernel-cdk, yadd needs NFS
+if !ENABLE_FS_NFS
+FS_NFS_SED_CONF=$(foreach param,CONFIG_NFS_FS CONFIG_NFS_V3 CONFIG_SUNRPC CONFIG_LOCKD CONFIG_LOCKD_V4 CONFIG_ROOT_NFS CONFIG_NFS_COMMON,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+endif
+
 kernel-cdk: $(bootprefix)/kernel-cdk
 
 if KERNEL26
 $(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c-26.m4
-	sed $(IDE_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(NFSSERVER_SED_CONF) $(yadd_kernel_conf) \
+	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(yadd_kernel_conf) \
 		> $(KERNEL_DIR)/.config
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 else
 $(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c.m4
-	sed $(IDE_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(NFSSERVER_SED_CONF) $(yadd_kernel_conf) \
+	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(yadd_kernel_conf) \
 		> $(KERNEL_DIR)/.config
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif
@@ -153,11 +192,17 @@ endif
 	$(INSTALL) -d $(targetprefix)/proc
 	$(INSTALL) -d $(targetprefix)/var/run
 
+if ENABLE_MMC
+DRIVER_MMC=yes
+endif
+
 driver: $(KERNEL_BUILD_FILENAME)
 	$(MAKE) -C $(driverdir) \
+		DRIVER_MMC=$(DRIVER_MMC) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		CROSS_COMPILE=$(target)-
 	$(MAKE) -C $(driverdir) \
+		DRIVER_MMC=$(DRIVER_MMC) \
 		KERNEL_LOCATION=$(buildprefix)/linux \
 		CROSS_COMPILE=$(target)- \
 		BIN_DEST=$(targetprefix)/bin \

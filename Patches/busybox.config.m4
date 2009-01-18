@@ -394,7 +394,7 @@ option(`CONFIG_VLOCK', `n', `n')
 #
 # Linux Ext2 FS Progs
 #
-ifdef(`ext3',
+ifdef(`extfs',
 `option(`CONFIG_CHATTR', `y', `y')
 option(`CONFIG_FSCK', `y', `y')
 option(`CONFIG_LSATTR', `y', `y')',
@@ -477,10 +477,16 @@ option(`CONFIG_FEATURE_MKSWAP_V0', `n', `n')'
 option(`CONFIG_MORE', `y', `y')
 option(`CONFIG_FEATURE_USE_TERMIOS', `y', `y')
 option(`CONFIG_MOUNT', `y', `y')
-option(`CONFIG_FEATURE_MOUNT_CIFS', `y', `y')
+ifdef(`cifs',
+`option(`CONFIG_FEATURE_MOUNT_CIFS', `y', `y')',
+`option(`CONFIG_FEATURE_MOUNT_CIFS', `n', `n')'
+)
 option(`CONFIG_FEATURE_MOUNT_FLAGS', `y', `y')
 option(`CONFIG_FEATURE_MOUNT_FSTAB', `y', `y')
-option(`CONFIG_FEATURE_MOUNT_NFS', `y', `y')
+ifdef(`nfs',
+`option(`CONFIG_FEATURE_MOUNT_NFS', `y', `y')',
+`option(`CONFIG_FEATURE_MOUNT_NFS', `y', `n')'
+)
 option(`CONFIG_PIVOT_ROOT', `n', `n')
 option(`CONFIG_RDATE', `n', `y')
 option(`CONFIG_READPROFILE', `n', `n')
