@@ -75,6 +75,11 @@ CONFIGURE_OPTS_SQLITE = \
 	--enable-sqlite
 endif
 
+if DISABLE_UPDATE_HTTP
+CONFIGURE_OPTS_HTTP_UPDATE = \
+	--disable-http-update
+endif
+
 CONFIGURE = \
 	./autogen.sh && \
 	CC=$(target)-gcc \
@@ -89,7 +94,8 @@ CONFIGURE = \
 	$(CONFIGURE_OPTS_FLAC) \
 	$(CONFIGURE_OPTS_IDE) \
 	$(CONFIGURE_OPTS_SQLITE) \
-	$(CONFIGURE_OPTS_CCACHE)
+	$(CONFIGURE_OPTS_CCACHE) \
+	$(CONFIGURE_OPTS_HTTP_UPDATE)
 
 ACLOCAL_AMFLAGS = -I .
 

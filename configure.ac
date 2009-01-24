@@ -381,7 +381,8 @@ AC_ARG_WITH(customizationsdir,
 	[customizationsdir="$with_customizationsdir"],[customizationsdir="`pwd`"])
 
 AC_ARG_WITH(updatehttpprefix,
-	[  --with-updatehttpprefix=URL  optional URL containing the URL of a directory with update images [[NONE]]],
+	[  --with-updatehttpprefix=URL  optional URL containing the URL of a directory with update images
+                               "disable" completely disables internet update code [[NONE]]],
 	[updatehttpprefix="$with_updatehttpprefix"],[updatehttpprefix=])
 
 AC_ARG_WITH(busybox_conf,
@@ -410,6 +411,7 @@ AC_SUBST(ucodesdir)
 AC_SUBST(logosdir)
 AC_SUBST(customizationsdir)
 AC_SUBST(updatehttpprefix)
+AM_CONDITIONAL(DISABLE_UPDATE_HTTP,test "$updatehttpprefix" = "disable")
 flashprefix_ro=${flashprefix}/ro
 AC_SUBST(flashprefix_ro)
 flashprefix_rw=${flashprefix}/rw
