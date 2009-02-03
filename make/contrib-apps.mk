@@ -176,7 +176,7 @@ $(DEPDIR)/lsof: bootstrap @DEPENDS_lsof@
 	touch $@
 
 #dropbear
-$(DEPDIR)/dropbear: bootstrap libz @DEPENDS_dropbear@ Patches/dropbear-options.h
+$(DEPDIR)/dropbear: bootstrap libz @DEPENDS_dropbear@
 	@PREPARE_dropbear@
 	cd @DIR_dropbear@ && \
 		$(BUILDENV) \
@@ -192,7 +192,6 @@ $(DEPDIR)/dropbear: bootstrap libz @DEPENDS_dropbear@ Patches/dropbear-options.h
 			--disable-utmpx \
 			--disable-wtmp \
 			--disable-wtmpx && \
-		cp ../Patches/dropbear-options.h options.h && \
 		$(MAKE) PROGRAMS="dropbear dropbearkey scp" MULTI=1 && \
 		mkdir -p $(targetprefix)/var/etc/dropbear && \
 		mkdir -p $(targetprefix)/var/.ssh && \

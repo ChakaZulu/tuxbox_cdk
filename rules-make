@@ -95,7 +95,7 @@ tcpdump;3.9.4;tcpdump-3.9.4;tcpdump-3.9.4.tar.gz:tcpdump.diff;extract:tcpdump-3.
 bonnie;1.03a;bonnie++-1.03a;bonnie++-1.03a.tgz;extract:bonnie++-1.03a.tgz
 vdr;1.2.6;vdr-1.2.6;vdr-1.2.6.tar.bz2:vdr.diff;extract:vdr-1.2.6.tar.bz2;patch:vdr.diff
 lufs;0.9.7;lufs-0.9.7;lufs-0.9.7.tar.gz:lufs.diff;extract:lufs-0.9.7.tar.gz;patch:lufs.diff
-dropbear;0.51;dropbear-0.51;dropbear-0.51.tar.bz2;extract:dropbear-0.51.tar.bz2;patch:dropbear-nopass.diff
+dropbear;0.52;dropbear-0.52;dropbear-0.52.tar.bz2:dropbear-nopass.diff:dropbear-options.diff;extract:dropbear-0.52.tar.bz2;patch:dropbear-nopass.diff;patch:dropbear-options.diff
 kermit;8.0;c-kermit-8.0;cku211.tar.gz;dirextract:cku211.tar.gz;patch:kermit.diff
 libtool;1.5.22;libtool-1.5.22;libtool-1.5.22.tar.gz;extract:libtool-1.5.22.tar.gz
 samba;1.9.18p8;samba-1.9.18p8;samba-1.9.18p8.tar.gz:samba_ppc.diff;extract:samba-1.9.18p8.tar.gz;patch:samba_ppc.diff
