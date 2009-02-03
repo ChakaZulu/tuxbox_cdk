@@ -887,6 +887,8 @@ summary:
 ----------------------------------------
 target cpu:			$CPU_MODEL
 kernel:				$used_kernelversion
+used yadd kernel config:	$yadd_kernel_conf
+used flash kernel config:	$flash_kernel_conf
 libc:				$used_libc
 threads:			$GLIBC_PTHREADS
 target:				$target
@@ -911,6 +913,7 @@ ucode directory:		$ucodesdir
 GNU server:			$gnuserver
 default server:			$defaultserver
 update http prefix:		$updatehttpprefix
+used busybox-m4-config:		$busybox_conf
 IDE support:			$enable_ide
 MMC support:			$enable_use_mmc
 fstab default fs:		$DEFAULT_FS_FSTAB
