@@ -100,6 +100,8 @@ wget;make:install:DESTDIR=TARGET
 screen;make:install:DESTDIR=TARGET
 ncftp;make:install:DESTDIR=TARGET
 lzma_utils;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/liblzmadec.la
+links;make:install:DESTDIR=TARGET
+links_g;install:-m755:links:TARGET/bin/links_g
 
 #
 # msttf

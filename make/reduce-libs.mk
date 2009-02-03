@@ -57,6 +57,9 @@ endif
 		rm -f $</lib/libfx2.so ; \
 		ln -s /lib/tuxbox/plugins/libfx2.so $</lib/libfx2.so; \
 	fi
+	if [ -d $(flashprefix)/root/lib/directfb-1.0-0 ]; then \
+		cp -va $(flashprefix)/root/lib/directfb-1.0-0 $</lib/ ; \
+	fi
 	$(target)-strip --remove-section=.comment --remove-section=.note \
 		`find $</bin/ -path "*bin/?*"` \
 		`find $</sbin/ -path "*sbin/?*"` 2>/dev/null || /bin/true

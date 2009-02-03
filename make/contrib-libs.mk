@@ -101,10 +101,16 @@ $(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz @DEPENDS_libdir
 	@CLEANUP_libdirectfb@
 	mv $(targetprefix)/lib/libdirectfb.la $(targetprefix)/lib/libdirectfb.la.old
 	mv $(targetprefix)/lib/libfusion.la $(targetprefix)/lib/libfusion.la.old
+	mv $(targetprefix)/bin/directfb-config $(targetprefix)/bin/directfb-config.old
 	sed -e "s, /lib, $(targetprefix)/lib,g" < $(targetprefix)/lib/libdirectfb.la.old >$(targetprefix)/lib/libdirectfb.la
 	sed -e "s, /lib, $(targetprefix)/lib,g" < $(targetprefix)/lib/libfusion.la.old >$(targetprefix)/lib/libfusion.la
+	sed -e "s,^prefix=,prefix=$(targetprefix)," < $(targetprefix)/bin/directfb-config.old >$(targetprefix)/bin/directfb-config
+	chmod 755 $(targetprefix)/bin/directfb-config
 	rm -f $(targetprefix)/lib/libdirectfb.la.old
 	rm -f $(targetprefix)/lib/libfusion.la.old
+	rm -f $(targetprefix)/bin/directfb-config.old
+	rm -f $(hostprefix)/bin/directfb-config
+	ln -s $(targetprefix)/bin/directfb-config $(hostprefix)/bin/directfb-config
 	touch $@
 
 $(DEPDIR)/libdirectfbpp: bootstrap libdirectfb @DEPENDS_libdirectfbpp@
