@@ -722,9 +722,9 @@ option(`CONFIG_CTTYHACK', `n', `n')
 #
 # System Logging Utilities
 #
-option(`CONFIG_SYSLOGD', `y', `n')
-option(`CONFIG_FEATURE_ROTATE_LOGFILE', `n', `n')
-option(`CONFIG_FEATURE_REMOTE_LOG', `n', `n')
+option(`CONFIG_SYSLOGD', `y', `y')
+option(`CONFIG_FEATURE_ROTATE_LOGFILE', `y', `y')
+option(`CONFIG_FEATURE_REMOTE_LOG', `y', `y')
 option(`CONFIG_FEATURE_IPC_SYSLOG', `n', `n')
 CONFIG_FEATURE_IPC_SYSLOG_BUFFER_SIZE=0
 option(`CONFIG_LOGREAD', `n', `n')
