@@ -57,8 +57,11 @@ KERNEL_PREPARE = @PREPARE_linux24@
 KERNEL_BUILD_FILENAME = @DIR_linux24@/arch/ppc/boot/images/vmlinux.gz
 endif
 
+if ENABLE_FS_CIFS
+KERNEL_CIFS=Archive/cifs-1.20c-2.4.tar.gz
+endif
 
-$(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) directories
+$(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) $(KERNEL_CIFS) directories
 	$(KERNEL_PREPARE)
 if KERNEL26
 	cp Patches/linux-$(KERNELVERSION).config $(KERNEL_DIR)/.config
