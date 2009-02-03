@@ -423,3 +423,15 @@ diff -Naur glibc-2.3.6/sysdeps/wordsize-32/symbol-hacks.h glibc-2.3.6~/sysdeps/w
  asm ("__divdi3 = __divdi3_internal");
  asm ("__udivdi3 = __udivdi3_internal");
  asm ("__moddi3 = __moddi3_internal");
+diff -uNr glibc-2.3.6.org/csu/Makefile glibc-2.3.6/csu/Makefile
+--- glibc-2.3.6.org/csu/Makefile	2005-02-16 10:34:09.000000000 +0100
++++ glibc-2.3.6/csu/Makefile	2009-01-07 18:46:20.000000000 +0100
+@@ -241,7 +241,7 @@
+ 	 esac; \
+ 	 files="$(all-Banner-files)";				\
+ 	 if test -n "$$files"; then				\
+-	   echo "\"Available extensions:\\n\"";			\
++	   echo "\"Available extensions:\\\\n\""; \
+ 	   sed -e '/^#/d' -e 's/^[[:space:]]*/	/'		\
+ 	       -e 's/^\(.*\)$$/\"\1\\n\"/' $$files;		\
+ 	 fi) > $@T
