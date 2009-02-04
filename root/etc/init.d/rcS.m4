@@ -311,6 +311,11 @@ runprogifexists({/sbin/automount},{/etc/init.d/start_automount})
 runprogifexists({/bin/djmount},{/etc/init.d/start_upnp})
 ifmarkerfile({boot_info},{runifexists({/bin/cdkVcInfo})})
 
+# If appropriate, load smbfs driver
+if [ -e /lib/modules/$(uname -r)/kernel/fs/smbfs/smbfs.ko -o -e /lib/modules/$(uname -r)/kernel/fs/smbfs/smbfs.o ] ; then
+	loadmodule(smbfs)
+fi
+
 # Start the nfs server if /etc/exports exists
 runprogifexists({/etc/exports},{loadmodule(nfsd)
 	pidof portmap >/dev/null || portmap

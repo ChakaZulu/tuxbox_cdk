@@ -68,6 +68,9 @@ endif
 if ENABLE_SAMBASERVER
 	$(MAKE) flash-sambaserver
 endif
+if ENABLE_FS_SMBFS
+	$(MAKE) flash-smbmount
+endif
 if ENABLE_GERMAN_KEYMAPS
 	$(MAKE) flash-german-keymaps
 endif

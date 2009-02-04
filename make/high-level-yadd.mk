@@ -18,7 +18,7 @@ bare-os: yadd-u-boot kernel-cdk driver yadd-etc busybox modutils tuxinfo
 endif
 	@TUXBOX_YADD_CUSTOMIZE@
 
-yadd-none: bare-os config tuxbox_tools procps ftpd yadd-ucodes yadd-bootlogos automount @LIRC@ @CDKVCINFO@ @XFSPROGS@ @NFSSERVER@ @SAMBASERVER@ $(TARGET_LUFS) @CONSOLE_TOOLS@ version defaultlocale
+yadd-none: bare-os config tuxbox_tools procps ftpd yadd-ucodes yadd-bootlogos automount @LIRC@ @CDKVCINFO@ @XFSPROGS@ @NFSSERVER@ @SAMBASERVER@ $(TARGET_LUFS) $(TARGET_SMBMOUNT) @CONSOLE_TOOLS@ version defaultlocale
 	@TUXBOX_YADD_CUSTOMIZE@
 
 yadd-micro-neutrino: bare-os config yadd-ucodes camd2 switch neutrino
