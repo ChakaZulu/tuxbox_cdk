@@ -29,7 +29,7 @@ $(flashprefix)/root/bin/sqlite3: @DEPENDS_sqlite@ | $(flashprefix)/root
 			--host=$(target) \
 			--prefix=$(flashprefix)/root && \
 		$(MAKE) all && \
-		@INSTALL_sqlite@
+		$(MAKE) install PREFIX=$(flashprefix)/root
 	@CLEANUP_sqlite@
 	@FLASHROOTDIR_MODIFIED@
 
