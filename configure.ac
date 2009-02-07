@@ -61,12 +61,9 @@ AC_ARG_WITH(cpu,
 AC_SUBST(CPU_MODEL)
 
 AC_ARG_ENABLE(sqlite,
-	[  --enable-sqlite          enable sql storage (default off)],
-	[SQLITE="$withval"],[SQLITE="no"])
-
-AC_SUBST(SQLITE)
+	AS_HELP_STRING(--enable-sqlite,enable sql storage),
+	,[enable_sqlite=no])
 AM_CONDITIONAL(ENABLE_SQLITE,test "$enable_sqlite" = "yes")
-
 
 AC_ARG_WITH(targetruleset,
 	[  --with-targetruleset=NAME	OBSOLETE, use --[[enable|disable]]-flashrules instead],
@@ -169,19 +166,19 @@ AC_ARG_ENABLE(xfs,
 	esac],[enable_xfs=no])
 AC_SUBST(XFSPROGS)
 
-enable_vfat=no
 AC_ARG_ENABLE(mmc,
 	AS_HELP_STRING(--enable-mmc,	include mmc drivers in yadds and images),
 	[case "${enableval}" in
 		yes)	enable_use_mmc=yes ;;
 		no)	enable_use_mmc=no ;;
-	esac],[])
+	esac],[enable_use_mmc=no])
 
 # transfer current defaults to new configuration data
 enable_fs_nfs=yes
 enable_fs_cifs=yes
 enable_fs_smbfs=no
 enable_fs_lufs=yes
+enable_vfat=no
 
 AC_ARG_WITH(filesystems,[  --with-filesystems      comma seperated list of filesystems to be used,
                           first disk filesystem will be used as default for /hdd entry in /etc/fstab
@@ -929,7 +926,7 @@ NFS server:			$enable_nfsserver
 Samba server:			$enable_sambaserver
 dosfstools:			$enable_dosfstools
 Neutrino UPnP-support:		$enable_upnp
-FLAC support:			$enable_flac	
+FLAC support:			$enable_flac
 German keymaps:			$enable_german_keymaps
 sqlite3 storage:		$enable_sqlite
 ccache support:			$enable_ccache
