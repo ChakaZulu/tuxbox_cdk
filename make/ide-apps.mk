@@ -150,14 +150,16 @@ $(flashprefix)/root/sbin/e2fsck: bootstrap @DEPENDS_e2fsprogs@ | $(flashprefix)/
 	$(INSTALL) $(targetprefix)/sbin/resize2fs $(flashprefix)/root/sbin/
 	$(INSTALL) $(targetprefix)/sbin/tune2fs $(flashprefix)/root/sbin/
 	$(INSTALL) $(targetprefix)/sbin/fsck $(flashprefix)/root/sbin/
+	$(INSTALL) $(targetprefix)/sbin/e2fsck $(flashprefix)/root/sbin/
+	$(INSTALL) $(targetprefix)/sbin/mke2fs $(flashprefix)/root/sbin/
 if ENABLE_EXT2
-	$(INSTALL) $(targetprefix)/sbin/fsck.ext2 $(flashprefix)/root/sbin/
-	$(INSTALL) $(targetprefix)/sbin/mkfs.ext2 $(flashprefix)/root/sbin/
+	@ln -sf mke2fs $(flashprefix)/root/sbin/mkfs.ext2
+	@ln -sf e2fsck $(flashprefix)/root/sbin/fsck.ext2
 endif
 	$(INSTALL) $(targetprefix)/sbin/e2label $(flashprefix)/root/sbin/
 if ENABLE_EXT3
-	$(INSTALL) $(targetprefix)/sbin/fsck.ext3 $(flashprefix)/root/sbin/
-	$(INSTALL) $(targetprefix)/sbin/mkfs.ext3 $(flashprefix)/root/sbin/
+	@ln -sf mke2fs $(flashprefix)/root/sbin/mkfs.ext3
+	@ln -sf e2fsck $(flashprefix)/root/sbin/fsck.ext3
 endif
 		@CLEANUP_e2fsprogs@
 	@FLASHROOTDIR_MODIFIED@
