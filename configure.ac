@@ -141,7 +141,8 @@ AC_ARG_ENABLE(ide,
 	AS_HELP_STRING(--enable-ide,	include ide/mmc and ext2/ext3 drivers in yadds and images),
 	[case "${enableval}" in
 		yes) enable_use_mmc=yes; DEFAULT_FS_FSTAB="ext3" ;;
-	esac],[enable_ide=no])
+		no)  enable_use_mmc=no ;;
+	esac],[enable_ide=no; enable_use_mmc=no])
 
 AC_ARG_ENABLE(ext3,
 	AS_HELP_STRING(--disable-ext3,	exclude ext2/ext3 drivers in yadds and images),
@@ -167,11 +168,11 @@ AC_ARG_ENABLE(xfs,
 AC_SUBST(XFSPROGS)
 
 AC_ARG_ENABLE(mmc,
-	AS_HELP_STRING(--enable-mmc,	include mmc drivers in yadds and images),
+	AS_HELP_STRING(--enable-mmc,	include mmc drivers in yadds and images, you need to activate a filesystem),
 	[case "${enableval}" in
 		yes)	enable_use_mmc=yes ;;
 		no)	enable_use_mmc=no ;;
-	esac],[enable_use_mmc=no])
+	esac],[])
 
 # transfer current defaults to new configuration data
 enable_fs_nfs=yes
