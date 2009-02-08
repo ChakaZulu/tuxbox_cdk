@@ -160,7 +160,7 @@ if ENABLE_EXT3
 	$(INSTALL) $(targetprefix)/sbin/mkfs.ext3 $(flashprefix)/root/sbin/
 endif
 		@CLEANUP_e2fsprogs@
-	@@FLASHROOTDIR_MODIFIED@@
+	@FLASHROOTDIR_MODIFIED@
 endif
 
 #parted
