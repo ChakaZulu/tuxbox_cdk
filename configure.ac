@@ -168,7 +168,7 @@ AC_ARG_ENABLE(xfs,
 AC_SUBST(XFSPROGS)
 
 AC_ARG_ENABLE(mmc,
-	AS_HELP_STRING(--enable-mmc,	include mmc drivers in yadds and images, you need to activate a filesystem),
+	AS_HELP_STRING(--enable-mmc,	include mmc drivers in yadds and images - you need to activate a filesystem),
 	[case "${enableval}" in
 		yes)	enable_use_mmc=yes ;;
 		no)	enable_use_mmc=no ;;
