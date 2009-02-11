@@ -176,7 +176,7 @@ eval `/bin/tuxinfo -e`
 
 echo "Detected STB:"
 echo "	Vendor: $VENDOR"
-echo "	Model: $MODEL $SUBMODEL"
+echo "	Model: $MODEL $SUBMODEL ($FLASHCHIPS flash chips)"
 
 loadmodule(dvb-core, dvb_shutdown_timeout=0)
 
