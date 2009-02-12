@@ -98,6 +98,7 @@ lufs;0.9.7;lufs-0.9.7;lufs-0.9.7.tar.gz:lufs.diff;extract:lufs-0.9.7.tar.gz;patc
 dropbear;0.52;dropbear-0.52;dropbear-0.52.tar.bz2:dropbear-nopass.diff:dropbear-options.diff;extract:dropbear-0.52.tar.bz2;patch:dropbear-nopass.diff;patch:dropbear-options.diff
 kermit;8.0;c-kermit-8.0;cku211.tar.gz;dirextract:cku211.tar.gz;patch:kermit.diff
 libtool;1.5.22;libtool-1.5.22;libtool-1.5.22.tar.gz;extract:libtool-1.5.22.tar.gz
+libtool_cdk;1.5.26;libtool-1.5.26;libtool-1.5.26.tar.gz;extract:libtool-1.5.26.tar.gz
 samba;1.9.18p8;samba-1.9.18p8;samba-1.9.18p8.tar.gz:samba_ppc.diff;extract:samba-1.9.18p8.tar.gz;patch:samba_ppc.diff
 wget;1.11.4;wget-1.11.4;wget-1.11.4.tar.bz2;extract:wget-1.11.4.tar.bz2
 ncftp;3.2.2;ncftp-3.2.2;ncftp-3.2.2-src.tar.bz2;extract:ncftp-3.2.2-src.tar.bz2
@@ -174,5 +175,16 @@ bluez_utils;2.4;bluez-utils-2.4;bluez-utils-2.4.tar.gz;extract:bluez-utils-2.4.t
 # database
 #
 sqlite;3.6.7;sqlite-3.6.7;sqlite-3.6.7.tar.gz;extract:sqlite-3.6.7.tar.gz
+gdbm;1.8.3;gdbm-1.8.3;gdbm-1.8.3.tar.gz:gdbm.diff;extract:gdbm-1.8.3.tar.gz;patch:gdbm.diff
+
+#
+# pulseaudio
+#
+liboil;0.3.15;liboil-0.3.15;liboil-0.3.15.tar.gz:liboil.diff;extract:liboil-0.3.15.tar.gz;patch:liboil.diff
+libsamplerate;0.1.4;libsamplerate-0.1.4;libsamplerate-0.1.4.tar.gz;extract:libsamplerate-0.1.4.tar.gz
+libsndfile;1.0.17;libsndfile-1.0.17;libsndfile-1.0.17.tar.gz;extract:libsndfile-1.0.17.tar.gz
+libogg;1.1.3;libogg-1.1.3;libogg-1.1.3.tar.gz;extract:libogg-1.1.3.tar.gz
+speex;1.2rc1;speex-1.2rc1;speex-1.2rc1.tar.gz;extract:speex-1.2rc1.tar.gz
+libatomic_ops;1.2;libatomic_ops-1.2;libatomic-ops_1.2+cvs20080819.orig.tar.gz;extract:libatomic-ops_1.2+cvs20080819.orig.tar.gz
 
 >>?;rules-make-local

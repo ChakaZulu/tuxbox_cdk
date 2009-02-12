@@ -19,6 +19,7 @@ glibc;make:install:install_root=TARGET
 uclibc;make:install:DEVEL_PREFIX=/:PREFIX=TARGET;install:-m644:lib/libc.a:TARGET/lib/libc_pic.a;install:-m644:lib/libcrypt.a:TARGET/lib/libcrypt_pic.a;install:-m644:lib/libm.a:TARGET/lib/libm_pic.a
 watchdog;make:install:DESTDIR=TARGET
 libtool
+libtool_cdk;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libltdl.la
 fuse;make:install:DESTDIR=TARGET
 fusekernel;make:install:DESTDIR=TARGET
 djmount;make:install:DESTDIR=TARGET
@@ -155,6 +156,16 @@ bluez_sdp;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libsdp.la
 bluez_utils;make:install:DESTDIR=TARGET
 
 #
+# pulseaudio
+#
+liboil;rewrite-pkgconfig:liboil-0.3.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/liboil-0.3.la
+libsamplerate;rewrite-pkgconfig:samplerate.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libsamplerate.la
+libsndfile;rewrite-pkgconfig:sndfile.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libsndfile.la
+libogg;rewrite-pkgconfig:ogg.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libogg.la
+speex;rewrite-pkgconfig:speex.pc;rewrite-pkgconfig:speexdsp.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libspeex.la;rewrite-libtool:TARGET/lib/libspeexdsp.la
+libatomic_ops;make:install:DESTDIR=TARGET
+
+#
 # mksquashfs with LZMA support
 #
 squashfs
@@ -163,5 +174,6 @@ squashfs
 # database
 #
 sqlite;make:install:prefix=TARGET
+gdbm;make:install;rewrite-libtool:TARGET/lib/libgdbm.la
 
 >>?;rules-install-local

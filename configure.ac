@@ -735,6 +735,7 @@ TUXBOX_RULES_MAKE(libz)
 TUXBOX_RULES_MAKE(libglib)
 TUXBOX_RULES_MAKE(libiconv)
 TUXBOX_RULES_MAKE(libtool)
+TUXBOX_RULES_MAKE(libtool_cdk)
 TUXBOX_RULES_MAKE(libFLAC)
 TUXBOX_RULES_MAKE(libgettext)
 
@@ -833,6 +834,17 @@ TUXBOX_RULES_MAKE(bluez_utils)
 # Database
 #
 TUXBOX_RULES_MAKE(sqlite)
+TUXBOX_RULES_MAKE(gdbm)
+
+#
+# pulseaudio
+#
+TUXBOX_RULES_MAKE(liboil)
+TUXBOX_RULES_MAKE(libsamplerate)
+TUXBOX_RULES_MAKE(libsndfile)
+TUXBOX_RULES_MAKE(libogg)
+TUXBOX_RULES_MAKE(speex)
+TUXBOX_RULES_MAKE(libatomic_ops)
 
 #
 # internal
