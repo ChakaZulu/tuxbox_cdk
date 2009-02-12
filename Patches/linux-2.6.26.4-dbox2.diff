@@ -536,6 +536,31 @@ diff -uNr ../linux-2.6.26/Makefile ./Makefile
  NAME = Rotary Wombat
  
  # *DOCUMENTATION*
+
+diff -uNr ./drivers/ide/ide-iops.org.c  ../drivers/ide/ide-iops.c
+--- ./drivers/ide/ide-iops.org.c        2008-09-07 19:16:46.000000000 +0200
++++ ./drivers/ide/ide-iops.c    2008-09-07 19:17:36.000000000 +0200
+@@ -95,6 +95,8 @@
+        hwif->OUTB(drive->select.all, hwif->io_ports.device_addr);
+ }
+ 
++EXPORT_SYMBOL(SELECT_DRIVE);
++
+ static void SELECT_MASK(ide_drive_t *drive, int mask)
+ {
+        const struct ide_port_ops *port_ops = drive->hwif->port_ops;
+
+diff -u ./drivers/ide/ide.c.orig ./drivers/ide/ide.c
+--- ./drivers/ide/ide.c.orig	2009-01-28 08:26:32.378823846 +0100
++++ ./drivers/ide/ide.c	2009-01-28 08:26:43.198939460 +0100
+@@ -95,6 +95,7 @@
+ int noautodma = 0;
+ 
+ ide_hwif_t ide_hwifs[MAX_HWIFS];	/* master data repository */
++EXPORT_SYMBOL(ide_hwifs);		/* required by dboxide */
+ 
+ static void ide_port_init_devices_data(ide_hwif_t *);
+ 
 diff -uNr linux-2.6.26.4.org/include/linux/smb.h linux-2.6.26.4/include/linux/smb.h
 --- linux-2.6.26.4.org/include/linux/smb.h	2008-09-08 13:44:46.000000000 +0200
 +++ linux-2.6.26.4/include/linux/smb.h	2009-01-22 18:48:09.000000000 +0100
