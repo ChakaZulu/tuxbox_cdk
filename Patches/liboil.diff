@@ -1,0 +1,16 @@
+diff -uNr ../liboil-0.3.15.org/liboil/liboilcpu-powerpc.c ./liboil/liboilcpu-powerpc.c
+--- ../liboil/liboilcpu-powerpc.c	2008-06-30 21:57:33.000000000 +0200
++++ ../liboil/liboilcpu-powerpc.c	2008-09-30 22:12:19.000000000 +0200
+@@ -35,7 +35,12 @@
+ #include <liboil/liboilutils.h>
+ 
+ #if defined(__linux__)
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,0)
+ #include <linux/auxvec.h>
++#else
++#include <linux/elf.h>
++#endif
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
