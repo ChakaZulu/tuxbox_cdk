@@ -1,12 +1,17 @@
 #!/bin/sh
 
-# $Id: start_neutrino,v 1.30 2006/07/23 12:21:37 barf Exp $
+# $Id: start_neutrino,v 1.31 2009/02/15 19:08:56 rhabarber1848 Exp $
 
 date -s 010101001970
 sectionsd
 timerd
 camd2
-zapit
+if [ -e /var/etc/.pmt_update -a `cat /proc/bus/avia_version` = "avia600" ] ; then
+    zapit -u
+else
+    zapit
+fi
+
 controld
 nhttpd
 until neutrino -f -u ; do
