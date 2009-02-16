@@ -861,10 +861,10 @@ ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 #
 if test "$enable_kernel26" = "yes"; then
 	if test "$yadd_kernel_conf" = "NONE"; then
-		yadd_kernel_conf="Patches/linux-$KERNELVERSION.config"
+		yadd_kernel_conf="Patches/linux-2.6.26.4-dbox2.config"
 	fi
 	if test "$flash_kernel_conf" = "NONE"; then
-		flash_kernel_conf="Patches/linux-$KERNELVERSION.config-flash"
+		flash_kernel_conf="Patches/linux-2.6.26.4-dbox2.config-flash"
 	fi
 else
 	if test "$yadd_kernel_conf" = "NONE"; then

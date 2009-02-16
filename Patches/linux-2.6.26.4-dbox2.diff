@@ -531,8 +531,8 @@ diff -uNr ../linux-2.6.26/Makefile ./Makefile
  VERSION = 2
  PATCHLEVEL = 6
  SUBLEVEL = 26
--EXTRAVERSION = .4
-+EXTRAVERSION = .4-dbox2
+-EXTRAVERSION = .8
++EXTRAVERSION = .8-dbox2
  NAME = Rotary Wombat
  
  # *DOCUMENTATION*
@@ -561,14 +561,3 @@ diff -u ./drivers/ide/ide.c.orig ./drivers/ide/ide.c
  
  static void ide_port_init_devices_data(ide_hwif_t *);
  
-diff -uNr linux-2.6.26.4.org/include/linux/smb.h linux-2.6.26.4/include/linux/smb.h
---- linux-2.6.26.4.org/include/linux/smb.h	2008-09-08 13:44:46.000000000 +0200
-+++ linux-2.6.26.4/include/linux/smb.h	2009-01-22 18:48:09.000000000 +0100
-@@ -11,7 +11,6 @@
- 
- #include <linux/types.h>
- #include <linux/magic.h>
--#include <linux/time.h>
- 
- enum smb_protocol { 
- 	SMB_PROTOCOL_NONE, 

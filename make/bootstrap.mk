@@ -64,7 +64,7 @@ endif
 $(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) $(KERNEL_CIFS) directories
 	$(KERNEL_PREPARE)
 if KERNEL26
-	cp Patches/linux-$(KERNELVERSION).config $(KERNEL_DIR)/.config
+	cp Patches/linux-2.6.26.4-dbox2.config $(KERNEL_DIR)/.config
 else
 	cp Patches/linux-2.4.35.5-dbox2.config $(KERNEL_DIR)/.config
 if ENABLE_FS_LUFS
