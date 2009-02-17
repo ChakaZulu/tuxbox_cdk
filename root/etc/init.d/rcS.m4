@@ -126,14 +126,6 @@ if [ $KMINOR -ge 6 ]; then
 	mount /dev/pts
 fi
 
-if [ $KMINOR -ge 6 ]; then
-	# everything else is already mounted
-	mount /var
-else
-	# Mount file systems in /etc/fstab
-	mount -a
-fi
-
 # If appropriate, load ide drivers and file system drivers
 if [ $KMINOR -ge 6 ]; then
 	# kernel 2.6
@@ -152,6 +144,14 @@ else
 		loadmodule(ext3)
 		loadmodule(xfs)
 	fi
+fi
+
+if [ $KMINOR -ge 6 ]; then
+	# everything else is already mounted
+	mount /var
+else
+	# Mount file systems in /etc/fstab
+	mount -a
 fi
 
 # Turn on swap
