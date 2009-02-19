@@ -1,10 +1,8 @@
-#
-# Automatically generated make config: don't edit
-#
-
 define(`dooption',`ifelse(`$2',`n', `# $1 is not set', `$1=y')')dnl
 ifdef(`yadd',`define(`option',`dooption($1,$2)')',`define(`option',`dooption($1,$3)')')dnl
 dnl
+dnl Include a local customization file, if found.
+sinclude(customizationsdir`/busybox_pre.m4')dnl
 #
 # Busybox Settings
 #
@@ -760,3 +758,6 @@ option(`CONFIG_SETENFORCE', `n', `n')
 #
 # CONFIG_TCPSVD is not set
 # CONFIG_UDPSVD is not set
+dnl
+dnl Include a local customization file, if found.
+sinclude(customizationsdir`/busybox_post.m4')dnl
