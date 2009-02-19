@@ -29,6 +29,8 @@ define({runifexists},{if [ -x $1 ]; then
 fi})dnl
 dnl
 dnl
+dnl Include a local customization file, if found.
+sinclude(customizationsdir{/rcS_pre.m4})dnl
 #!/bin/sh
 # This file was automatically generated from rcS.m4
 #
@@ -333,6 +335,9 @@ ifmarkerfile({tuxmaild},{tuxmaild})
 ifmarkerfile({tuxcald},{tuxcald})
 ifmarkerfile({rdate},{rdate time.fu-berlin.de})
 ifmarkerfile({initialize},{/etc/init.d/initialize && rm /var/etc/.initialize})
+dnl
+dnl Include a local customization file, if found.
+sinclude(customizationsdir{/rcS_post.m4})dnl
 
 if [ -e /var/etc/init.d/rcS.local ]; then
 	. /var/etc/init.d/rcS.local

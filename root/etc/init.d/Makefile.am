@@ -16,10 +16,16 @@ CLEANFILES = rcS rcS.insmod
 
 include $(top_srcdir)/root/Makefile.inc
 
+if KERNEL26
+KERNEL_ARGS=--define=use_kernel_26
+endif
+
+COMMON_ARGS=--define=customizationsdir=$(customizationsdir) $(KERNEL_ARGS)
+
 rcS: rcS.m4
-	m4 $< > $@
+	m4 $(COMMON_ARGS) $< > $@
 	chmod 755 $@
 
 rcS.insmod: rcS.m4
-	m4 --define=insmod $< > $@
+	m4 $(COMMON_ARGS) --define=insmod $< > $@
 	chmod 755 $@
