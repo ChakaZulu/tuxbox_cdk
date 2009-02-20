@@ -137,6 +137,9 @@ endif
 	touch $@
 
 if TARGETRULESET_UCLIBC
+if !TARGETRULESET_FLASH
+UCLIBC_DEBUG_SED_CONF=$(foreach param,DODEBUG DODEBUG_PT SUPPORT_LD_DEBUG SUPPORT_LD_DEBUG_EARLY UCLIBC_MALLOC_DEBUGGING,-e s"/^.*$(param)[= ].*/$(param)=y/")
+endif
 
 $(DEPDIR)/libc: @DEPENDS_uclibc@ bootstrap_gcc install-linux-headers
 if KERNEL26
@@ -145,8 +148,7 @@ else
 KHEADERS="$(buildprefix)/$(KERNEL_DIR)/include"
 endif
 	@PREPARE_uclibc@
-	sed $(XFS_UCLIBC_CONF) Patches/uclibc-@VERSION_uclibc@.config > @DIR_uclibc@/.config
-	sed -i -e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=$(KHEADERS),g' @DIR_uclibc@/.config
+	sed $(XFS_UCLIBC_CONF) $(UCLIBC_DEBUG_SED_CONF) -e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=$(KHEADERS),g' Patches/uclibc-@VERSION_uclibc@.config > @DIR_uclibc@/.config
 	$(MAKE) -C @DIR_uclibc@ oldconfig ARCH=ppc
 	cd @DIR_uclibc@ && \
 		$(BUILDENV) \
