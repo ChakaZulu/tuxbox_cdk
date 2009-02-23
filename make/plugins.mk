@@ -5,7 +5,7 @@ $(appsdir)/tuxbox/plugins/config.status: bootstrap libfreetype libcurl libz libs
 
 plugins: neutrino-plugins enigma-plugins fx2-plugins
 
-neutrino-plugins: $(targetprefix)/include/tuxbox/plugin.h tuxmail tuxtxt tuxcom tuxcal vncviewer
+neutrino-plugins: $(targetprefix)/include/tuxbox/plugin.h tuxmail tuxtxt tuxcom tuxcal vncviewer dvbsub
 
 fx2-plugins: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/fx2 all install
@@ -73,6 +73,15 @@ vncviewer: $(appsdir)/tuxbox/plugins/config.status
 if TARGETRULESET_FLASH
 flash-vncviewer: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/vncviewer all install prefix=$(flashprefix)/root
+	@FLASHROOTDIR_MODIFIED@
+endif
+
+dvbsub: $(appsdir)/tuxbox/plugins/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/plugins/dvbsub all install
+
+if TARGETRULESET_FLASH
+flash-dvbsub: $(appsdir)/tuxbox/plugins/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/plugins/dvbsub all install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 
 # $(appsdir)/tuxbox/plugins/fx2/*/Makefile.am are silly and should be

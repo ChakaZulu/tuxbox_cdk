@@ -42,6 +42,7 @@ endif
 	$(MAKE) flash-tuxtxt
 	$(MAKE) flash-tuxcom
 	$(MAKE) flash-vncviewer
+	$(MAKE) flash-dvbsub
 	$(MAKE) flash-fx2-plugins
 	$(MAKE) flash-ucodes
 	$(MAKE) flash-lcdip
