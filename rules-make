@@ -19,7 +19,7 @@ binutils;2.17.50.0.9;binutils-2.17.50.0.9;binutils-2.17.50.0.9.tar.bz2:binutils-
 bootstrap_gcc;3.4.6;gcc-3.4.6;gcc-core-3.4.6.tar.bz2:gcc-core.diff;extract:gcc-core-3.4.6.tar.bz2;patch:gcc-core.diff
 gcc;3.4.6;gcc-3.4.6;gcc-core-3.4.6.tar.bz2:gcc-g++-3.4.6.tar.bz2:gcc-core.diff;extract:gcc-core-3.4.6.tar.bz2;extract:gcc-g++-3.4.6.tar.bz2;patch:gcc-core.diff
 glibc;2.3.6;glibc-2.3.6;glibc-2.3.6.tar.bz2:glibc-linuxthreads-2.3.6.tar.bz2:glibc.diff;extract:glibc-2.3.6.tar.bz2;dirextract:glibc-linuxthreads-2.3.6.tar.bz2;patch:glibc.diff
-uclibc;0.9.30;uClibc-0.9.30.1;uClibc-0.9.30.1.tar.bz2;extract:uClibc-0.9.30.1.tar.bz2
+uclibc;0.9.30.1;uClibc-0.9.30.1;uClibc-0.9.30.1.tar.bz2;extract:uClibc-0.9.30.1.tar.bz2
 watchdog;5.2.4;watchdog-5.2.4.orig;watchdog_5.2.4.orig.tar.gz:watchdog.diff;extract:watchdog_5.2.4.orig.tar.gz;patch:watchdog.diff
 
 #
