@@ -1,0 +1,38 @@
+diff -uNr mc-4.6.2.org/Makefile.in mc-4.6.2/Makefile.in
+--- mc-4.6.2.org/Makefile.in	2009-02-01 20:46:26.000000000 +0100
++++ mc-4.6.2/Makefile.in	2009-03-09 19:42:44.000000000 +0100
+@@ -249,7 +249,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = 1.5
+-SUBDIRS = intl po m4 vfs slang edit src lib doc syntax
++SUBDIRS = intl po m4 vfs slang edit src lib syntax
+ EXTRA_DIST = FAQ HACKING INSTALL.FAST MAINTAINERS README.QNX TODO pkginfo.in prototype.in mc.qpg mc.spec
+ noinst_DATA = mc.spec mc.qpg pkginfo prototype
+ dist_noinst_SCRIPTS = build-glib1.sh build-glib2.sh
+diff -uNr mc-4.6.2.org/mhl/escape.h mc-4.6.2/mhl/escape.h
+--- mc-4.6.2.org/mhl/escape.h	2009-02-01 20:30:21.000000000 +0100
++++ mc-4.6.2/mhl/escape.h	2009-03-09 20:02:40.000000000 +0100
+@@ -5,8 +5,7 @@
+ 
+ #include <string.h>
+ #include <stdlib.h>
+-
+-#include <mhl/types.h>
++#include <stdbool.h>
+ 
+ #define mhl_shell_escape_toesc(x)	\
+     (((x)==' ')||((x)=='!')||((x)=='#')||((x)=='$')||((x)=='%')||	\
+diff -uNr mc-4.6.2.org/src/tty.h mc-4.6.2/src/tty.h
+--- mc-4.6.2.org/src/tty.h	2009-02-01 20:30:21.000000000 +0100
++++ mc-4.6.2/src/tty.h	2009-03-09 20:02:25.000000000 +0100
+@@ -20,9 +20,6 @@
+ #    else
+ #        include <curses.h>
+ #    endif
+-#ifdef WANT_TERM_H
+-#    include <term.h>
+-#endif /* WANT_TERM_H */
+ #endif /* USE_NCURSES */
+ 
+ /* {{{ Input }}} */

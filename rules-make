@@ -133,9 +133,9 @@ insight;6.1;insight-6.1;insight-6.1.tar.bz2:insight.diff;extract:insight-6.1.tar
 ltrace;0.3.26;ltrace-0.3.26;ltrace_0.3.26.tar.gz:ltrace.diff;extract:ltrace_0.3.26.tar.gz;patch:ltrace.diff
 strace;4.5.18;strace-4.5.18;strace-4.5.18.tar.bz2:strace.diff;extract:strace-4.5.18.tar.bz2;patch:strace.diff
 nano;1.2.4;nano-1.2.4;nano-1.2.4.tar.gz:nano.diff;extract:nano-1.2.4.tar.gz;patch:nano.diff
-mc;4.6.1;mc-4.6.1;mc-4.6.1.tar.gz:mc-4.6.1.diff;extract:mc-4.6.1.tar.gz;patch:mc-4.6.1.diff
+mc;4.6.2;mc-4.6.2;mc-4.6.2.tar.gz:mc-4.6.2.diff;extract:mc-4.6.2.tar.gz;patch:mc-4.6.2.diff
 joe;3.5;joe-3.5;joe-3.5.tar.gz;extract:joe-3.5.tar.gz
-bash;3.2;bash-3.2;bash-3.2.tar.gz:bash32_039.diff;extract:bash-3.2.tar.gz;patch:bash32_039.diff
+bash;4.0;bash-4.0;bash-4.0.tar.gz;extract:bash-4.0.tar.gz
 ccache;2.4;ccache-2.4;ccache-2.4.tar.gz;extract:ccache-2.4.tar.gz
 
 #
