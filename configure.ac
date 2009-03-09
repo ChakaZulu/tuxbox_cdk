@@ -763,6 +763,7 @@ TUXBOX_RULES_MAKE(screen)
 TUXBOX_RULES_MAKE(lzma_utils)
 TUXBOX_RULES_MAKE(links)
 TUXBOX_RULES_MAKE(links_g)
+TUXBOX_RULES_MAKE(ntpd)
 
 #
 # ide apps

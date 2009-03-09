@@ -11,9 +11,9 @@ if ENABLE_FS_SMBFS
 TARGET_SMBMOUNT=smbmount
 endif
 
-contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie $(TARGET_LUFS) kermit wget ncftp screen lzma_utils
+contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie $(TARGET_LUFS) kermit wget ncftp screen lzma_utils ntpd
 
-CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma_utils
+CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma_utils .deps/ntpd
 
 #bzip2
 $(DEPDIR)/bzip2: bootstrap @DEPENDS_bzip2@
@@ -567,6 +567,31 @@ $(flashprefix)/root/bin/links_g: $(DEPDIR)/links_g | $(flashprefix)/root
 	$(INSTALL) $(targetprefix)/var/tuxbox/plugins/links.cfg $(flashprefix)/root/var/tuxbox/plugins
 	$(INSTALL) $(appsdir)/tuxbox/tools/kb2rcd/kb2rcd_links.conf $(flashprefix)/root/var/tuxbox/config
 	cp -va $(targetprefix)/lib/directfb-1.0-0 $(flashprefix)/root/lib/
+	@FLASHROOTDIR_MODIFIED@
+
+endif
+
+# ntpd
+$(DEPDIR)/ntpd: bootstrap @DEPENDS_ntpd@
+	@PREPARE_ntpd@
+	cd @DIR_ntpd@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=&& \
+		$(MAKE) all && \
+		@INSTALL_ntpd@
+	@CLEANUP_ntpd@
+	touch $@
+
+if TARGETRULESET_FLASH
+flash-ntpd: $(flashprefix)/root/bin/ntpd
+
+$(flashprefix)/root/bin/ntpd: ntpd | $(flashprefix)/root
+	@$(INSTALL) -d $(flashprefix)/root/bin
+		@for i in ntpd ntpdate ntpdc ntp-keygen ntptime ntptrace ntp-wait; do \
+		$(INSTALL) $(targetprefix)/bin/$$i $(flashprefix)/root/bin; done;
 	@FLASHROOTDIR_MODIFIED@
 
 endif

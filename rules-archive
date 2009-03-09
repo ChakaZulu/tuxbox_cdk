@@ -113,6 +113,7 @@ screen-4.0.2.tar.gz;ftp://ftp.gnu.org/pub/gnu/screen
 lzma-4.32.7.tar.gz;http://tukaani.org/lzma
 links-1.00.tar.gz;http://www.jikos.cz/~mikulas/links//download
 links-2.2.tar.gz;http://links.twibright.com/download
+ntp-4.2.4p5.tar.gz;http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2
 
 #
 # ide apps
