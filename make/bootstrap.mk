@@ -74,6 +74,10 @@ if ENABLE_FS_CIFS
 	gunzip -cd $(buildprefix)/Archive/cifs-1.20c-2.4.tar.gz | TAPE=- tar -x
 	cd $(KERNEL_DIR) && patch -p1 -E -i ./cifs_24.patch
 endif
+if ENABLE_AUTOMOUNT
+	cd $(KERNEL_DIR) && gunzip -cd $(buildprefix)/Archive/autofs4-2.4-module-20050404.tar.gz | TAPE=- tar -x
+	cd $(KERNEL_DIR) && patch -p1 -E -i ./autofs4-2.4/module-patches/autofs4-2.4.29.patch
+endif
 endif
 	$(MAKE) -C $(KERNEL_DIR) oldconfig \
 		ARCH=ppc

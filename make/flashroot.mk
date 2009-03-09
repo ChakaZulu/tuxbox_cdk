@@ -46,7 +46,9 @@ endif
 	$(MAKE) flash-fx2-plugins
 	$(MAKE) flash-ucodes
 	$(MAKE) flash-lcdip
+if ENABLE_AUTOMOUNT
 	$(MAKE) flash-automount
+endif
 if KERNEL26
 	$(MAKE) flash-makedevices
 	$(MAKE) flash-hotplug

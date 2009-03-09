@@ -2,6 +2,8 @@
 # option CONFIG_AUTOFS4_FS enabled. At this time, this must be changed
 # manually.
 
+if ENABLE_AUTOMOUNT
+
 $(DEPDIR)/automount: bootstrap @DEPENDS_automount@ Patches/autofs.diff
 	@PREPARE_automount@
 	cd @DIR_automount@  && \
@@ -36,3 +38,5 @@ flash-automount: @DEPENDS_automount@ Patches/autofs.diff | $(flashprefix)/root
 endif
 
 .PHONY: flash-automount
+
+endif

@@ -218,7 +218,7 @@ if test x"${withval+set}" = xset; then
 	    ext2)		enable_ext2=yes
 				[[ "$enable_use_mmc" != "yes" ] && enable_ide=yes ]
 				[[ "$DEFAULT_FS_FSTAB" = "" ] && DEFAULT_FS_FSTAB="ext2" || /bin/true ] ;;
-	    *)			AC_MSG_ERROR([bad value $i for --enable-filesystems]) ;;
+	    *)			AC_MSG_ERROR([bad value $i for --with-filesystems]) ;;
 	esac
     done
 fi],[])
@@ -237,7 +237,7 @@ if test "$enable_use_mmc" != "yes" -a "$enable_ide" != "yes" -a "$enable_vfat" =
 	enable_vfat=no
 fi
 
-# if no disc filesystem is activated deactivate IDE and MMC support
+# if no disc filesystem is activated, deactivate IDE and MMC support
 if ! test "$enable_ext2" = "yes" -o "$enable_ext3" = "yes" -o "$enable_xfs" = "yes" -o "$enable_vfat" = "yes"; then
 	DEFAULT_FS_FSTAB=""
 	enable_ide=no
@@ -246,11 +246,24 @@ if ! test "$enable_ext2" = "yes" -o "$enable_ext3" = "yes" -o "$enable_xfs" = "y
 	enable_ext3=no
 	enable_xfs=no
 	enable_vfat=no
+	disable_hdd_fs=yes
+else
+	disable_hdd_fs=no
 fi
 
 AM_CONDITIONAL(ENABLE_FS_CIFS,test "$enable_fs_cifs" = "yes")
 AM_CONDITIONAL(ENABLE_FS_SMBFS,test "$enable_fs_smbfs" = "yes")
+if test "$enable_fs_smbfs" = "yes"; then
+	SMBMOUNT=smbmount
+fi
+AC_SUBST(SMBMOUNT)
+
 AM_CONDITIONAL(ENABLE_FS_LUFS,test "$enable_fs_lufs" = "yes")
+if test "$enable_fs_lufs" = "yes"; then
+	LUFS=lufs
+fi
+AC_SUBST(LUFS)
+
 AM_CONDITIONAL(ENABLE_VFAT,test "$enable_vfat" = "yes")
 AM_CONDITIONAL(ENABLE_IDE,test "$enable_ide" = "yes")
 AM_CONDITIONAL(ENABLE_MMC,test "$enable_use_mmc" = "yes")
@@ -276,6 +289,33 @@ AC_ARG_ENABLE(nfsserver,
 AM_CONDITIONAL(ENABLE_NFSSERVER,test "$enable_nfsserver" = "yes")
 AM_CONDITIONAL(ENABLE_FS_NFS,test "$enable_fs_nfs" = "yes")
 AC_SUBST(NFSSERVER)
+
+# mark if no network filesystem is activated
+# please note that NFS is always activated for yadd images, but
+# a deactivated automounter will not be reactivated for yadd
+if ! test "$enable_fs_cifs" = "yes" -o "$enable_fs_smbfs" = "yes" -o "$enable_fs_lufs" = "yes" -o "$enable_fs_nfs" = "yes"; then
+	disable_net_fs=yes
+else
+	disable_net_fs=no
+fi
+
+AC_ARG_ENABLE(automount,
+	AS_HELP_STRING(--enable-automount,	enable automount daemon),
+	[case "${enableval}" in
+		yes) enable_automount=yes ;;
+		no) enable_automount=no ;;
+	esac],[enable_automount=yes])
+
+# if no filesystem is active, deactivate automounter
+if test "$disable_net_fs" = "yes" -a "$disable_hdd_fs" = "yes"; then
+	enable_automount=no
+fi
+
+if test "$enable_automount" = "yes"; then
+	AUTOMOUNT=automount
+fi
+AC_SUBST(AUTOMOUNT)
+AM_CONDITIONAL(ENABLE_AUTOMOUNT,test "$enable_automount" = "yes")
 
 AC_ARG_ENABLE(sambaserver,
 	AS_HELP_STRING(--enable-sambaserver,    enable the dBox samba server),
@@ -938,6 +978,7 @@ LUFS kernel module:		$enable_fs_lufs
 NFS kernel module:		$enable_fs_nfs
 NFS server:			$enable_nfsserver
 Samba server:			$enable_sambaserver
+Automount:			$enable_automount
 dosfstools:			$enable_dosfstools
 Neutrino UPnP-support:		$enable_upnp
 FLAC support:			$enable_flac

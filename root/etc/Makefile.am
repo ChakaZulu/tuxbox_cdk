@@ -15,8 +15,12 @@ FILES_FLASH_RO = \
 	protocols termcap timezone.xml
 
 FILES_FLASH_RW = \
-	group hostname hosts inetd.conf passwd profile resolv.conf services auto.net modules.conf \
+	group hostname hosts inetd.conf passwd profile resolv.conf services modules.conf \
 	$(EXPORTS) $(SMBCONF) $(SMBPASSWD)
+
+if ENABLE_AUTOMOUNT
+FILES_FLASH_RW += auto.net
+endif
 
 FILES = \
 	$(FILES_FLASH_RO) $(FILES_FLASH_RW)

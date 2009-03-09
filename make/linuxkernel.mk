@@ -141,6 +141,12 @@ else
 FS_SMBFS_SED_CONF=$(foreach param,CONFIG_SMB_FS CONFIG_SMB_UNIX CONFIG_NLS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
 endif
 
+if ENABLE_AUTOMOUNT
+AUTOMOUNT_SED_CONF=-e ""
+else
+AUTOMOUNT_SED_CONF=$(foreach param,CONFIG_AUTOFS4_FS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+endif
+
 if ENABLE_NFSSERVER
 if KERNEL26
 NFSSERVER_SED_CONF=$(foreach param,CONFIG_NFSD CONFIG_EXPORTFS,-e s"/^.*$(param)[= ].*/$(param)=m/")
@@ -165,12 +171,12 @@ kernel-cdk: $(bootprefix)/kernel-cdk
 
 if KERNEL26
 $(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c-26.m4
-	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(yadd_kernel_conf) \
+	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(yadd_kernel_conf) \
 		> $(KERNEL_DIR)/.config
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 else
 $(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c.m4
-	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(yadd_kernel_conf) \
+	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(yadd_kernel_conf) \
 		> $(KERNEL_DIR)/.config
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif

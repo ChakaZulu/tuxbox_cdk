@@ -3,15 +3,7 @@
 #   contrib apps
 #
 
-if ENABLE_FS_LUFS
-TARGET_LUFS=lufs
-endif
-
-if ENABLE_FS_SMBFS
-TARGET_SMBMOUNT=smbmount
-endif
-
-contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie $(TARGET_LUFS) kermit wget ncftp screen lzma_utils ntpd
+contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie @LUFS@ kermit wget ncftp screen lzma_utils ntpd
 
 CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma_utils .deps/ntpd
 
