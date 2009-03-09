@@ -464,7 +464,7 @@ $(DEPDIR)/libz: bootstrap @DEPENDS_libz@
 	@CLEANUP_libz@
 	touch $@
 
-$(DEPDIR)/libglib: bootstrap @DEPENDS_libglib@
+$(DEPDIR)/libglib: bootstrap @LIBGETTEXT@ @DEPENDS_libglib@
 	@PREPARE_libglib@
 	echo "ac_cv_func_posix_getpwuid_r=yes" > @DIR_libglib@/config.cache
 	echo "glib_cv_stack_grows=no" >> @DIR_libglib@/config.cache

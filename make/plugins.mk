@@ -10,11 +10,7 @@ neutrino-plugins: $(targetprefix)/include/tuxbox/plugin.h tuxmail tuxtxt tuxcom 
 fx2-plugins: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/fx2 all install
 
-if TARGETRULESET_UCLIBC
-enigma-plugins: libgettext $(appsdir)/tuxbox/plugins/config.status $(targetprefix)/include/tuxbox/plugin.h
-else
-enigma-plugins: $(appsdir)/tuxbox/plugins/config.status $(targetprefix)/include/tuxbox/plugin.h
-endif
+enigma-plugins: @LIBGETTEXT@ $(appsdir)/tuxbox/plugins/config.status $(targetprefix)/include/tuxbox/plugin.h
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma all install
 
 $(targetprefix)/include/tuxbox/plugin.h \

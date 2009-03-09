@@ -109,7 +109,9 @@ if test "$enable_uclibc" = "yes"; then
 	CFLAGS="$CFLAGS -fPIC"
 	TARGET_CFLAGS="$TARGET_CFLAGS -fPIC"
 	TARGET_CXXFLAGS="$TARGET_CXXFLAGS -fPIC"
+	LIBGETTEXT=libgettext
 fi
+AC_SUBST(LIBGETTEXT)
 
 AC_ARG_ENABLE(lirc,
 	AS_HELP_STRING(--enable-lirc,	include lirc in yadds and images),
