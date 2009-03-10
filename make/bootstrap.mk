@@ -61,7 +61,11 @@ if ENABLE_FS_CIFS
 KERNEL_CIFS=Archive/cifs-1.20c-2.4.tar.gz
 endif
 
-$(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) $(KERNEL_CIFS) directories
+if ENABLE_AUTOMOUNT
+KERNEL_AUTOMOUNT=Archive/autofs4-2.4-module-20050404.tar.gz
+endif
+
+$(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) $(KERNEL_CIFS) $(KERNEL_AUTOMOUNT) directories
 	$(KERNEL_PREPARE)
 if KERNEL26
 	cp Patches/linux-2.6.26.4-dbox2.config $(KERNEL_DIR)/.config
