@@ -17,6 +17,7 @@ $(flashprefix)/root-radiobox-jffs2/lib/ld.so.1 \
 $(flashprefix)/root-enigma-cramfs/lib/ld.so.1 \
 $(flashprefix)/root-enigma-squashfs/lib/ld.so.1 \
 $(flashprefix)/root-enigma-jffs2/lib/ld.so.1 \
+$(flashprefix)/root-enigma+neutrino-squashfs/lib/ld.so.1 \
 $(flashprefix)/root-lcars-jffs2/lib/ld.so.1 \
 $(flashprefix)/root-null-jffs2/lib/ld.so.1: \
 %/lib/ld.so.1: %

@@ -28,6 +28,27 @@ $(flashprefix)/root-% $(flashprefix)/root
 	$(target)-strip --remove-section=.comment --remove-section=.note $@/bin/camd2
 	@TUXBOX_CUSTOMIZE@
 
+$(flashprefix)/var-enigma+neutrino: \
+$(flashprefix)/root-neutrino $(flashprefix)/root-enigma $(flashprefix)/root
+	rm -rf $@
+	cp -rd $(flashprefix)/root/var $@
+	cp -rd $(flashprefix)/root-neutrino/var/* $@
+	cp -rd $(flashprefix)/root-enigma/var/* $@
+	$(MAKE) flash-bootlogos flashbootlogosdir=$@/tuxbox/boot
+	$(MAKE) -C root install-flash flashprefix_ro=$(flashprefix)/.junk flashprefix_rw=$@
+	rm -rf $(flashprefix)/.junk
+	if [ -d $(flashprefix)/root/etc/ssh ] ; then \
+		cp -rd $(flashprefix)/root/etc/ssh $@/etc/ssh ; \
+	fi
+	if [ -e $(flashprefix)/root/etc/profile.local ]; then \
+		cp $(flashprefix)/root/etc/profile.local $@/etc; \
+	fi
+	$(INSTALL) -d $@/plugins
+	$(INSTALL) -d $@/tuxbox/plugins
+	$(MAKE) -C $(appsdir)/tuxbox/tools/camd install prefix=$@
+	$(target)-strip --remove-section=.comment --remove-section=.note $@/bin/camd2
+	@TUXBOX_CUSTOMIZE@
+
 $(flashprefix)/root-neutrino-jffs2 $(flashprefix)/root-enigma-jffs2 \
 $(flashprefix)/root-lcars-jffs2 \
 $(flashprefix)/root-radiobox-jffs2: \
@@ -75,11 +96,10 @@ endif
 		rm $@/etc/profile.local; \
 		ln -sf /var/etc/profile.local $@/etc/profile.local; \
 	fi
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
 if KERNEL26
 	ln -s libgcc_s_nof.so.1 $@/lib/libgcc_s.so.1
+else
+	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
 endif
 	@TUXBOX_CUSTOMIZE@
 
@@ -147,6 +167,41 @@ endif
 		ln -sf /var/etc/profile.local $@/etc/profile.local; \
 	fi
 if !KERNEL26
+	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
+endif
+	@TUXBOX_CUSTOMIZE@
+
+$(flashprefix)/root-enigma+neutrino-squashfs: \
+$(flashprefix)/root-enigma+neutrino-%: \
+$(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino $(flashprefix)/root-enigma flash-lcdmenu
+	rm -rf $@
+	cp -rd $(flashprefix)/root $@
+	cp -rd $</* $@
+	cp -rd $(flashprefix)/root-neutrino/* $@
+	cp -rd $(flashprefix)/root-enigma/* $@
+	rm -rf $@/man
+	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root-neutrino/lib:$(flashprefix)/root-neutrino/lib/tuxbox/plugins:$(flashprefix)/root-enigma/lib:$(flashprefix)/root-enigma/lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$</lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
+	$(MAKE) -C root install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk
+	rm -rf $(flashprefix)/.junk
+	rm -fr $@/var/*
+	echo "/dev/mtdblock/3     /var     jffs2     defaults     0 0" >> $@/etc/fstab
+if ENABLE_IDE
+	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
+endif
+	if [ -d $@/etc/ssh ] ; then \
+		rm -fr $@/etc/ssh ; \
+		ln -sf /var/etc/ssh $@/etc/ssh ; \
+	fi
+	ln -sf /var/etc/issue.net $@/etc/issue.net
+	ln -sf /var/etc/localtime $@/etc/localtime
+	ln -sf /var/bin/camd2 $@/bin/camd2
+	if [ -e $@/etc/profile.local ]; then \
+		rm $@/etc/profile.local; \
+		ln -sf /var/etc/profile.local $@/etc/profile.local; \
+	fi
+if KERNEL26
+	ln -s libgcc_s_nof.so.1 $@/lib/libgcc_s.so.1
+else
 	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
 endif
 	@TUXBOX_CUSTOMIZE@

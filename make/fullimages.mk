@@ -156,3 +156,29 @@ $(flashprefix)/null-jffs2.img%: \
 	cat $< $(word 2,$+) > $@
 	@TUXBOX_CHECKIMAGE@
 	@TUXBOX_CUSTOMIZE@
+
+################################################################
+$(flashprefix)/enigma+neutrino-squashfs.img1x $(flashprefix)/enigma+neutrino-squashfs.img2x:\
+$(flashprefix)/enigma+neutrino-squashfs.img%: \
+		$(flashprefix)/squashfs.flfs% \
+		$(flashprefix)/root-enigma+neutrino.squashfs \
+		$(flashprefix)/var-enigma+neutrino.jffs2 \
+		$(hostprefix)/bin/checkImage
+	$(hostappsdir)/flash/flashmanage.pl -i $@ -o build \
+		--rootsize=$(ROOT_PARTITION_SIZE) \
+		--part ppcboot=$< \
+		--part root=$(word 2,$+) \
+		--part var=$(word 3,$+)
+	@TUXBOX_CHECKIMAGE@
+	@TUXBOX_CUSTOMIZE@
+
+# target yadd-enigma+neutrino makes no sense, use
+# make yadd-neutrino yadd-enigma lcd
+# instead
+enigma+neutrino: neutrino enigma
+
+if TARGETRULESET_FLASH
+
+flash-enigma+neutrino: $(flashprefix)/root-neutrino $(flashprefix)/root-enigma
+
+endif

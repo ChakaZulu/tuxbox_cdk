@@ -3,6 +3,7 @@
 ####### var-$gui.jffs2
 $(flashprefix)/var-radiobox.jffs2 \
 $(flashprefix)/var-neutrino.jffs2 \
+$(flashprefix)/var-enigma+neutrino.jffs2 \
 $(flashprefix)/var-enigma.jffs2: \
 $(flashprefix)/var-%.jffs2: $(flashprefix)/var-% $(MKJFFS2)
 	@if [ "$(MKJFFS2)" = "/bin/false" ] ; then \
@@ -22,6 +23,7 @@ $(flashprefix)/root-%.cramfs: $(flashprefix)/root-%-cramfs $(MKCRAMFS)
 
 $(flashprefix)/root-radiobox.squashfs \
 $(flashprefix)/root-neutrino.squashfs \
+$(flashprefix)/root-enigma+neutrino.squashfs \
 $(flashprefix)/root-enigma.squashfs: \
 $(flashprefix)/root-%.squashfs: $(flashprefix)/root-%-squashfs $(MKSQUASHFS)
 	rm -f $@
