@@ -104,6 +104,7 @@ lzma_utils;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/liblzmadec.la
 links;make:install:DESTDIR=TARGET
 links_g;install:-m755:links:TARGET/bin/links_g
 ntpd;make:install:DESTDIR=TARGET
+ntpclient;install:-m755:ntpclient:TARGET/bin
 
 #
 # msttf

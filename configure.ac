@@ -806,6 +806,7 @@ TUXBOX_RULES_MAKE(lzma_utils)
 TUXBOX_RULES_MAKE(links)
 TUXBOX_RULES_MAKE(links_g)
 TUXBOX_RULES_MAKE(ntpd)
+TUXBOX_RULES_MAKE(ntpclient)
 
 #
 # ide apps

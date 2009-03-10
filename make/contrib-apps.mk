@@ -3,9 +3,9 @@
 #   contrib apps
 #
 
-contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie @LUFS@ kermit wget ncftp screen lzma_utils ntpd
+contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie @LUFS@ kermit wget ncftp screen lzma_utils ntpd ntpclient
 
-CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma_utils .deps/ntpd
+CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma_utils .deps/ntpd .deps/ntpclient
 
 #bzip2
 $(DEPDIR)/bzip2: bootstrap @DEPENDS_bzip2@
@@ -584,6 +584,26 @@ $(flashprefix)/root/bin/ntpd: ntpd | $(flashprefix)/root
 	@$(INSTALL) -d $(flashprefix)/root/bin
 		@for i in ntpd ntpdate ntpdc ntp-keygen ntptime ntptrace ntp-wait; do \
 		$(INSTALL) $(targetprefix)/bin/$$i $(flashprefix)/root/bin; done;
+	@FLASHROOTDIR_MODIFIED@
+
+endif
+
+$(DEPDIR)/ntpclient: bootstrap @DEPENDS_ntpclient@
+	@PREPARE_ntpclient@
+	cd @DIR_ntpclient@ && \
+		$(BUILDENV) \
+		$(MAKE) all && \
+		@INSTALL_ntpclient@
+	@CLEANUP_ntpclient@
+	touch $@
+
+if TARGETRULESET_FLASH
+
+flash-ntpclient: $(flashprefix)/root/bin/ntpclient
+
+$(flashprefix)/root/bin/ntpclient: ntpclient | $(flashprefix)/root
+	@$(INSTALL) -d $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/ntpclient $(flashprefix)/root/bin
 	@FLASHROOTDIR_MODIFIED@
 
 endif
