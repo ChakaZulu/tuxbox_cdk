@@ -37,6 +37,6 @@ flash-automount: @DEPENDS_automount@ Patches/autofs.diff | $(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 endif
 
-.PHONY: flash-automount
-
 endif
+
+.PHONY: flash-automount
