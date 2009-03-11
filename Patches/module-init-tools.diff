@@ -1,0 +1,12 @@
+diff -uNr module-init-tools-3.2.1.org/modprobe.c module-init-tools-3.2.1/modprobe.c
+--- module-init-tools-3.2.1.org/modprobe.c	2005-11-19 03:11:50.000000000 +0100
++++ module-init-tools-3.2.1/modprobe.c	2009-02-04 15:22:50.000000000 +0100
+@@ -270,7 +270,7 @@
+ 	char *modname;
+ 
+ 	/* Ignore lines without : or which start with a # */
+-	ptr = index(line, ':');
++	ptr = strchr(line, ':');
+ 	if (ptr == NULL || line[strspn(line, "\t ")] == '#')
+ 		return 0;
+ 
