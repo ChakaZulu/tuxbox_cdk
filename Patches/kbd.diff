@@ -9,3 +9,108 @@ diff -uNr ../kbd-1.14.1.org/configure.ac ./configure.ac
  AC_TYPE_SIGNAL
  AC_FUNC_STAT
  AC_CHECK_FUNCS([alarm memset setlocale strcasecmp strchr strdup strerror \
+diff -uNr kbd-1.14.1.org/src/findfile.c kbd-1.14.1/src/findfile.c
+--- kbd-1.14.1.org/src/findfile.c	2008-03-14 09:03:43.000000000 +0100
++++ kbd-1.14.1/src/findfile.c	2008-10-28 12:04:36.000000000 +0100
+@@ -53,7 +53,7 @@
+ 	struct decompressor *dc;
+ 
+ 	if ((fp = fopen(pathname, "r")) != NULL) {
+-	    t = rindex(pathname, '.');
++	    t = strrchr(pathname, '.');
+ 	    if (t) {
+ 		for (dc = &decompressors[0]; dc->cmd; dc++)
+ 		    if (strcmp(t, dc->ext) == 0) {
+@@ -76,7 +76,7 @@
+ 
+ 	ispipe = 0;
+ 
+-	ff = index(fnam, '/');
++	ff = strchr(fnam, '/');
+ 	if (ff) {
+ 		fdir = xstrdup(fnam);
+ 		fdir[ff-fnam] = 0; 	/* caller guarantees fdir != "" */
+diff -uNr kbd-1.14.1.org/src/loadkeys.c kbd-1.14.1/src/loadkeys.c
+--- kbd-1.14.1.org/src/loadkeys.c	2008-03-24 17:37:06.000000000 +0100
++++ kbd-1.14.1/src/loadkeys.c	2008-10-28 12:04:41.000000000 +0100
+@@ -2170,7 +2170,7 @@
+ 		return NULL;
+ 
+ 	t = xstrdup(fn);
+-	te = rindex(t, '/');
++	te = strrchr(t, '/');
+ 	if (te) {
+ 		te[1] = 0;
+ 		include_dirpath2[0] = t;
+@@ -2208,7 +2208,7 @@
+ 		     else if (strlen(filename) + n < sizeof(path)) {
+ 			  strcpy(path, filename);
+ 			  path[sizeof(path)-1] = 0;
+-			  p = rindex(path, '/');
++			  p = strrchr(path, '/');
+ 			  if (p)
+ 			       p[1] = 0;
+ 			  strcat(path, buf);
+@@ -2234,7 +2234,7 @@
+ 		/* try user-specified path */
+ 		char *user_dir[2] = { 0, 0 };
+ 		while(ev) {
+-			char *t = index(ev, ':');
++			char *t = strchr(ev, ':');
+ 			char sv = 0;
+ 			if (t) {
+ 				sv = *t;
+diff -uNr kbd-1.14.1.org/src/loadkeys.y kbd-1.14.1/src/loadkeys.y
+--- kbd-1.14.1.org/src/loadkeys.y	2008-03-24 17:36:44.000000000 +0100
++++ kbd-1.14.1/src/loadkeys.y	2008-10-28 12:04:45.000000000 +0100
+@@ -474,7 +474,7 @@
+ 		return NULL;
+ 
+ 	t = xstrdup(fn);
+-	te = rindex(t, '/');
++	te = strrchr(t, '/');
+ 	if (te) {
+ 		te[1] = 0;
+ 		include_dirpath2[0] = t;
+@@ -512,7 +512,7 @@
+ 		     else if (strlen(filename) + n < sizeof(path)) {
+ 			  strcpy(path, filename);
+ 			  path[sizeof(path)-1] = 0;
+-			  p = rindex(path, '/');
++			  p = strrchr(path, '/');
+ 			  if (p)
+ 			       p[1] = 0;
+ 			  strcat(path, buf);
+@@ -538,7 +538,7 @@
+ 		/* try user-specified path */
+ 		char *user_dir[2] = { 0, 0 };
+ 		while(ev) {
+-			char *t = index(ev, ':');
++			char *t = strchr(ev, ':');
+ 			char sv = 0;
+ 			if (t) {
+ 				sv = *t;
+diff -uNr kbd-1.14.1.org/src/resizecons.c kbd-1.14.1/src/resizecons.c
+--- kbd-1.14.1.org/src/resizecons.c	2008-03-14 09:03:43.000000000 +0100
++++ kbd-1.14.1/src/resizecons.c	2008-10-28 12:04:49.000000000 +0100
+@@ -138,7 +138,7 @@
+     	rr = atoi(argv[2]);
+     }
+     else
+-    if (argc == 2 && (p = index(argv[1], 'x')) != 0)
++    if (argc == 2 && (p = strchr(argv[1], 'x')) != 0)
+       rr = atoi(p+1);
+     else if(argc == 3)
+       rr = atoi(argv[2]);
+diff -uNr kbd-1.14.1.org/src/version.h kbd-1.14.1/src/version.h
+--- kbd-1.14.1.org/src/version.h	2008-03-24 17:36:01.000000000 +0100
++++ kbd-1.14.1/src/version.h	2008-10-28 12:03:12.000000000 +0100
+@@ -9,7 +9,7 @@
+ set_progname(char *name) {
+ 	char *p;
+ 
+-	p = rindex(name, '/');
++	p = strrchr(name, '/');
+ 	progname = (p ? p+1 : name);
+ }
+ 

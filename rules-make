@@ -32,7 +32,7 @@ fusekernel;2.5.3;fuse-2.5.3;fuse-2.5.3.tar.gz;extract:fuse-2.5.3.tar.gz;patch:fu
 fuse;2.6.2;fuse-2.6.2;fuse-2.6.2.tar.gz;extract:fuse-2.6.2.tar.gz
 djmount;0.71;djmount-0.71;djmount-0.71.tar.gz;extract:djmount-0.71.tar.gz
 ftpd;1.2.2;vsftpd-1.2.2;vsftpd-1.2.2.tar.gz:ftpd.diff;extract:vsftpd-1.2.2.tar.gz;patch:ftpd.diff
-module_init_tools;3.2.1;module-init-tools-3.2.1;module-init-tools-3.2.1.tar.bz2;extract:module-init-tools-3.2.1.tar.bz2
+module_init_tools;3.2.1;module-init-tools-3.2.1;module-init-tools-3.2.1.tar.bz2:module-init-tools.diff;extract:module-init-tools-3.2.1.tar.bz2;patch:module-init-tools.diff
 modutils;2.4.26;modutils-2.4.26;modutils-2.4.26.tar.bz2:modutils.diff;extract:modutils-2.4.26.tar.bz2;patch:modutils.diff
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
 portmap;5;portmap_5beta;portmap_5beta.tar.gz:portmap-5.diff;extract:portmap_5beta.tar.gz;patch:portmap-5.diff

@@ -171,3 +171,48 @@ diff -uNr nfs-utils-1.1.1.org/configure.ac nfs-utils-1.1.1/configure.ac
  AC_CONFIG_MACRO_DIR(aclocal)
  AM_INIT_AUTOMAKE
  AC_PREREQ(2.59)
+diff -uNr nfs-utils-1.1.1.org/support/nfs/nfs_mntent.c nfs-utils-1.1.1/support/nfs/nfs_mntent.c
+--- nfs-utils-1.1.1.org/support/nfs/nfs_mntent.c	2007-10-19 05:07:28.000000000 +0200
++++ nfs-utils-1.1.1/support/nfs/nfs_mntent.c	2008-10-28 16:35:37.000000000 +0100
+@@ -163,7 +163,7 @@
+ 			return NULL;
+ 
+ 		mfp->mntent_lineno++;
+-		s = index (buf, '\n');
++		s = strchr (buf, '\n');
+ 		if (s == NULL) {
+ 			/* Missing final newline?  Otherwise extremely */
+ 			/* long line - assume file was corrupted */
+@@ -171,7 +171,7 @@
+ 				fprintf(stderr, _("[mntent]: warning: no final "
+ 					"newline at the end of %s\n"),
+ 					mfp->mntent_file);
+-				s = index (buf, 0);
++				s = strchr (buf, 0);
+ 			} else {
+ 				mfp->mntent_errs = 1;
+ 				goto err;
+diff -uNr nfs-utils-1.1.1.org/utils/mount/error.c nfs-utils-1.1.1/utils/mount/error.c
+--- nfs-utils-1.1.1.org/utils/mount/error.c	2007-10-19 05:07:28.000000000 +0200
++++ nfs-utils-1.1.1/utils/mount/error.c	2008-10-28 16:30:05.000000000 +0100
+@@ -61,7 +61,7 @@
+ 	char *tmp;
+ 
+ 	if (estr) {
+-		if ((ptr = index(estr, ':')))
++		if ((ptr = strchr(estr, ':')))
+ 			estr = ++ptr;
+ 
+ 		tmp = &errbuf[spos];
+diff -uNr nfs-utils-1.1.1.org/utils/mountd/fsloc.c nfs-utils-1.1.1/utils/mountd/fsloc.c
+--- nfs-utils-1.1.1.org/utils/mountd/fsloc.c	2007-10-19 05:07:28.000000000 +0200
++++ nfs-utils-1.1.1/utils/mountd/fsloc.c	2008-10-28 16:29:59.000000000 +0100
+@@ -126,7 +126,7 @@
+ 	struct servers *rv=NULL;
+ 
+ 	xlog(L_NOTICE, "method_list(%s)\n", data);
+-	for (ptr--, listsize=1; ptr; ptr=index(ptr, ':'), listsize++)
++	for (ptr--, listsize=1; ptr; ptr=strchr(ptr, ':'), listsize++)
+ 		ptr++;
+ 	list = malloc(listsize * sizeof(char *));
+ 	copy = strdup(data);

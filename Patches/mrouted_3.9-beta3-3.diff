@@ -115,3 +115,96 @@ diff -Naur mrouted-3.9-beta3.orig.orig/vers.c mrouted-3.9-beta3.orig/vers.c
 +++ mrouted-3.9-beta3.orig/vers.c	Sat Oct 29 23:32:39 2005
 @@ -0,0 +1 @@
 +char todaysversion[]="3.9-beta3";
+diff -uNr mrouted-3.9-beta3.orig.orig/cfparse.y mrouted-3.9-beta3.orig/cfparse.y
+--- mrouted-3.9-beta3.orig.orig/cfparse.y	1998-03-01 02:48:58.000000000 +0100
++++ mrouted-3.9-beta3.orig/cfparse.y	2009-01-17 17:01:41.000000000 +0100
+@@ -584,7 +584,7 @@
+ 				    fatal("Hostname %s does not %s",
+ 					$1, "map to a unique address");
+ 
+-				  bcopy(hp->h_addr_list[0], &$$,
++				  memmove(&$$, hp->h_addr_list[0],
+ 					    hp->h_length);
+ 				}
+ 
+diff -uNr mrouted-3.9-beta3.orig.orig/config.c mrouted-3.9-beta3.orig/config.c
+--- mrouted-3.9-beta3.orig.orig/config.c	1998-01-06 02:57:41.000000000 +0100
++++ mrouted-3.9-beta3.orig/config.c	2009-01-17 17:01:41.000000000 +0100
+@@ -89,7 +89,7 @@
+ 	 * SIOCGIFFLAGS stomps over it because the requests
+ 	 * are returned in a union.)
+ 	 */
+-	bcopy(ifrp->ifr_name, ifr.ifr_name, sizeof(ifr.ifr_name));
++	memmove(ifr.ifr_name, ifrp->ifr_name, sizeof(ifr.ifr_name));
+ 
+ 	/*
+ 	 * Ignore loopback interfaces and interfaces that do not support
+diff -uNr mrouted-3.9-beta3.orig.orig/main.c mrouted-3.9-beta3.orig/main.c
+--- mrouted-3.9-beta3.orig.orig/main.c	2009-01-17 17:01:28.000000000 +0100
++++ mrouted-3.9-beta3.orig/main.c	2009-01-17 17:01:41.000000000 +0100
+@@ -429,7 +429,7 @@
+     gettimeofday(&curtime, NULL);
+     lasttime = curtime;
+     for(;;) {
+-	bcopy((char *)&readers, (char *)&rfds, sizeof(rfds));
++	memmove((char *)&rfds, (char *)&readers, sizeof(rfds));
+ 	secs = timer_nextTimer();
+ 	if (secs == -1)
+ 	    timeout = NULL;
+@@ -1001,8 +1001,6 @@
+ 		    thyme->tm_min, thyme->tm_sec, now.tv_usec / 1000, msg);
+ 	if (syserr == 0)
+ 	    fprintf(stderr, "\n");
+-	else if (syserr < sys_nerr)
+-	    fprintf(stderr, ": %s\n", sys_errlist[syserr]);
+ 	else
+ 	    fprintf(stderr, ": errno %d\n", syserr);
+     }
+diff -uNr mrouted-3.9-beta3.orig.orig/mapper.c mrouted-3.9-beta3.orig/mapper.c
+--- mrouted-3.9-beta3.orig.orig/mapper.c	1998-01-06 02:57:47.000000000 +0100
++++ mrouted-3.9-beta3.orig/mapper.c	2009-01-17 17:01:41.000000000 +0100
+@@ -197,8 +197,6 @@
+ 	    vfprintf(stderr, fmt, ap);
+ 	    if (syserr == 0)
+ 		fprintf(stderr, "\n");
+-	    else if (syserr < sys_nerr)
+-		fprintf(stderr, ": %s\n", sys_errlist[syserr]);
+ 	    else
+ 		fprintf(stderr, ": errno %d\n", syserr);
+     }
+diff -uNr mrouted-3.9-beta3.orig.orig/mrinfo.c mrouted-3.9-beta3.orig/mrinfo.c
+--- mrouted-3.9-beta3.orig.orig/mrinfo.c	1998-03-01 04:05:20.000000000 +0100
++++ mrouted-3.9-beta3.orig/mrinfo.c	2009-01-17 17:01:41.000000000 +0100
+@@ -159,8 +159,6 @@
+ 		vfprintf(stderr, fmt, ap);
+ 		if (syserr == 0)
+ 			fprintf(stderr, "\n");
+-		else if (syserr < sys_nerr)
+-			fprintf(stderr, ": %s\n", sys_errlist[syserr]);
+ 		else
+ 			fprintf(stderr, ": errno %d\n", syserr);
+ 	}
+diff -uNr mrouted-3.9-beta3.orig.orig/prune.c mrouted-3.9-beta3.orig/prune.c
+--- mrouted-3.9-beta3.orig.orig/prune.c	1998-03-01 03:06:32.000000000 +0100
++++ mrouted-3.9-beta3.orig/prune.c	2009-01-17 17:01:41.000000000 +0100
+@@ -2450,7 +2450,7 @@
+     /* copy the packet to the sending buffer */
+     p = send_buf + MIN_IP_HEADER_LEN + IGMP_MINLEN;
+     
+-    bcopy(data, p, datalen);
++    memmove(p, data, datalen);
+     
+     p += datalen;
+     
+diff -uNr mrouted-3.9-beta3.orig.orig/route.c mrouted-3.9-beta3.orig/route.c
+--- mrouted-3.9-beta3.orig.orig/route.c	1998-01-15 01:08:34.000000000 +0100
++++ mrouted-3.9-beta3.orig/route.c	2009-01-17 17:01:41.000000000 +0100
+@@ -968,7 +968,7 @@
+     bh->bh_dst = dst;
+     bh->bh_level = level;
+     bh->bh_datalen = datalen;
+-    bcopy(p, (char *)(bh + 1), datalen);
++    memmove((char *)(bh + 1), p, datalen);
+     v->uv_blasterend += bblen;
+ 
+     if (v->uv_blastertimer == 0) {

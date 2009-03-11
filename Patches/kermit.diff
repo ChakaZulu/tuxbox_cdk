@@ -35,3 +35,179 @@ diff -Naur c-kermit-8.0-orig/makefile c-kermit-8.0/makefile
  #New primary Linux entry for C-Kermit 8.0, replacing big nested
  #if-then-else construction full of repeated clauses with a simpler scheme
  #for automatically detecting:
+diff -uNr cku-211.org/ckcftp.c cku-211/ckcftp.c
+--- cku-211.org/ckcftp.c	2004-03-14 18:05:26.000000000 +0100
++++ cku-211/ckcftp.c	2008-10-30 14:21:25.000000000 +0100
+@@ -3687,7 +3687,7 @@
+ 	flag++;
+     } else if (ftpcmd("MDTM",remote,lcs,rcs,0) == REPLY_COMPLETE) {
+         char c;
+-        bzero((char *)&tmremote, sizeof(struct tm));
++        memset((char *)&tmremote, 0, sizeof(struct tm));
+         s = ftp_reply_str;
+         while ((c = *s++)) {            /* Skip past response code */
+             if (c == SP) {
+@@ -7995,7 +7995,7 @@
+ 		char c, * s;
+ 		struct tm tmremote;
+ 
+-		bzero((char *)&tmremote, sizeof(struct tm));
++		memset((char *)&tmremote, 0, sizeof(struct tm));
+ 		s = ftp_reply_str;
+ 		while ((c = *s++)) {
+ 		    if (c == SP) {
+diff -uNr cku-211.org/ckcnet.c cku-211/ckcnet.c
+--- cku-211.org/ckcnet.c	2004-03-14 18:26:29.000000000 +0100
++++ cku-211/ckcnet.c	2008-10-30 14:21:03.000000000 +0100
+@@ -1486,16 +1486,16 @@
+         hosts[next].h_addr_list = (char **) malloc(sizeof(char *) * (cnt+1));
+         for ( i=0; i<cnt; i++) {
+             hosts[next].h_addr_list[i] = malloc(h->h_length);
+-            bcopy(h->h_addr_list[i],hosts[next].h_addr_list[i],h->h_length);
++            memmove(hosts[next].h_addr_list[i],h->h_addr_list[i],h->h_length);
+         }
+         hosts[next].h_addr_list[i] = NULL;
+     } else
+         hosts[next].h_addr_list = NULL;
+ #else
+-    bcopy(h->h_addr, &hosts[next].h_addr, h->h_length);
++    memmove(&hosts[next].h_addr, h->h_addr, h->h_length);
+ #endif /* h_addr */
+ #else /* HADDRLIST */
+-    bcopy(h->h_addr, &hosts[next].h_addr, h->h_length);
++    memmove(&hosts[next].h_addr, h->h_addr, h->h_length);
+ #endif /* HADDRLIST */
+ 
+     return(&hosts[next++]);
+@@ -2655,7 +2655,7 @@
+ 
+         /* Set up socket structure and get host address */
+ 
+-        bzero((char *)&saddr, sizeof(saddr));
++        memset((char *)&saddr, 0, sizeof(saddr));
+         debug(F100,"tcpsrv_open bzero ok","",0);
+         saddr.sin_family = AF_INET;
+         if (tcp_address) {
+@@ -2964,7 +2964,7 @@
+ #ifndef datageneral
+         /* Find out our own IP address. */
+         l_slen = sizeof(l_addr);
+-        bzero((char *)&l_addr, l_slen);
++        memset((char *)&l_addr, 0, l_slen);
+ #ifndef EXCELAN
+         if (!getsockname(ttyfd, (struct sockaddr *)&l_addr, &l_slen)) {
+             char * s = (char *)inet_ntoa(l_addr.sin_addr);
+@@ -3157,7 +3157,7 @@
+     if (i)
+       namebuf[i-1] = '\0';
+ 
+-    bzero((char *)&r_addr, sizeof(r_addr));
++    memset((char *)&r_addr, 0, sizeof(r_addr));
+ 
+     host = gethostbyname(namebuf);
+     if (host) {
+@@ -3169,8 +3169,8 @@
+         /* This is for trying multiple IP addresses - see <netdb.h> */
+         if (!(host->h_addr_list))
+           goto exit_func;
+-        bcopy(host->h_addr_list[0],
+-              (caddr_t)&r_addr.sin_addr,
++        memmove((caddr_t)&r_addr.sin_addr,
++              host->h_addr_list[0],
+               host->h_length
+               );
+ #else
+@@ -4017,7 +4017,7 @@
+ 
+     /* Set up socket structure and get host address */
+ 
+-    bzero((char *)&r_addr, sizeof(r_addr));
++    memset((char *)&r_addr, 0, sizeof(r_addr));
+     debug(F100,"netopen bzero ok","",0);
+ /*
+    NOTE: Originally the inet_addr() check was #ifdef NT, but is enabled for
+@@ -4092,8 +4092,7 @@
+             /* This is for trying multiple IP addresses - see <netdb.h> */
+             if (!(host->h_addr_list))
+               return(-1);
+-            bcopy(host->h_addr_list[0],
+-                  (caddr_t)&r_addr.sin_addr,
++            memmove((caddr_t)&r_addr.sin_addr,host->h_addr_list[0],
+                   host->h_length
+                   );
+ #else
+@@ -4333,7 +4332,7 @@
+              int s_errno;
+ 
+              debug(F110,"netopen binding socket to",tcp_address,0);
+-             bzero((char *)&sin,sizeof(sin));
++             memset((char *)&sin, 0, sizeof(sin));
+              sin.sin_family = AF_INET;
+ #ifdef INADDRX
+              inaddrx = inet_addr(tcp_address);
+@@ -4412,8 +4411,7 @@
+               if (host && host->h_addr_list && host->h_addr_list[1]) {
+                   perror("");
+                   host->h_addr_list++;
+-                  bcopy(host->h_addr_list[0],
+-                        (caddr_t)&r_addr.sin_addr,
++                  memmove((caddr_t)&r_addr.sin_addr,host->h_addr_list[0],
+                         host->h_length);
+ 
+                   ckstrncpy(ipaddr,(char *)inet_ntoa(r_addr.sin_addr),20);
+@@ -4708,7 +4706,7 @@
+     /* Find out our own IP address. */
+     /* We need the l_addr structure for [E]KLOGIN. */
+     l_slen = sizeof(l_addr);
+-    bzero((char *)&l_addr, l_slen);
++    memset((char *)&l_addr, 0, l_slen);
+ #ifndef EXCELAN
+     if (!getsockname(ttyfd, (struct sockaddr *)&l_addr, &l_slen)) {
+         char * s = (char *)inet_ntoa(l_addr.sin_addr);
+@@ -10201,7 +10199,7 @@
+     }
+ 
+     /* Set up socket structure and get host address */
+-    bzero((char *)&r_addr, sizeof(r_addr));
++    memset((char *)&r_addr, 0, sizeof(r_addr));
+     debug(F100,"http_open bzero ok","",0);
+ 
+ #ifdef INADDR_NONE
+@@ -10264,8 +10262,7 @@
+             /* This is for trying multiple IP addresses - see <netdb.h> */
+             if (!(host->h_addr_list))
+               return(-1);
+-            bcopy(host->h_addr_list[0],
+-                  (caddr_t)&r_addr.sin_addr,
++            memmove((caddr_t)&r_addr.sin_addr,host->h_addr_list[0],
+                   host->h_length
+                   );
+ #else
+@@ -10374,7 +10371,7 @@
+              int s_errno;
+ 
+              debug(F110,"http_open binding socket to",tcp_address,0);
+-             bzero((char *)&sin,sizeof(sin));
++             memset((char *)&sin,0,sizeof(sin));
+              sin.sin_family = AF_INET;
+ #ifdef INADDRX
+              inaddrx = inet_addr(tcp_address);
+@@ -10426,8 +10423,7 @@
+               if (host && host->h_addr_list && host->h_addr_list[1]) {
+                   perror("");
+                   host->h_addr_list++;
+-                  bcopy(host->h_addr_list[0],
+-                        (caddr_t)&r_addr.sin_addr,
++                  memmove(host->h_addr_list[0],(caddr_t)&r_addr.sin_addr,
+                         host->h_length);
+ 
+                   ckstrncpy(http_ip,(char *)inet_ntoa(r_addr.sin_addr),20);
+@@ -10603,7 +10599,7 @@
+     /* Find out our own IP address. */
+     /* We need the l_addr structure for [E]KLOGIN. */
+     l_slen = sizeof(l_addr);
+-    bzero((char *)&l_addr, l_slen);
++    memset((char *)&l_addr, 0, l_slen);
+ #ifndef EXCELAN
+     if (!getsockname(httpfd, (struct sockaddr *)&l_addr, &l_slen)) {
+         char * s = (char *)inet_ntoa(l_addr.sin_addr);

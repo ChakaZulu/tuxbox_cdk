@@ -40,3 +40,14 @@ diff -Naur lsof_4.64_src.orig/Configure lsof_4.64_src/Configure
        LSOF_CCV=`$LSOF_CC -v 2>&1 | sed -n 's/.*version \(.*\)/\1/p'`
      fi	# }
      LSOF_DIALECT_DIR=""
+diff -uNr lsof_4.80_src.org/dialects/linux/machine.h lsof_4.80_src/dialects/linux/machine.h
+--- lsof_4.80_src.org/dialects/linux/machine.h	2008-05-09 14:53:56.000000000 +0200
++++ lsof_4.80_src/dialects/linux/machine.h	2008-10-28 20:01:44.000000000 +0100
+@@ -616,6 +616,6 @@
+  * zeromem is a macro that uses bzero or memset.
+  */
+ 
+-#define	zeromem(a, l)	bzero(a, l)
++#define	zeromem(a, l)	memset(a, 0, l)
+ 
+ #endif	/* !defined(LSOF_MACHINE_H) */
