@@ -106,8 +106,8 @@ screen;4.0.2;screen-4.0.2;screen-4.0.2.tar.gz:screen.diff;extract:screen-4.0.2.t
 lzma_utils;4.32.7;lzma-4.32.7;lzma-4.32.7.tar.gz;extract:lzma-4.32.7.tar.gz
 links;1.0;links-1.00;links-1.00.tar.gz;extract:links-1.00.tar.gz
 links_g;2.2;links-2.2;links-2.2.tar.gz;extract:links-2.2.tar.gz
-ntpd;4.2.4p5;ntp-4.2.4p5;ntp-4.2.4p5.tar.gz;extract:ntp-4.2.4p5.tar.gz
-ntpclient;2000_339;ntpclient;ntpclient_2000_339.tar.gz;extract:ntpclient_2000_339.tar.gz
+ntpd;4.2.4p5;ntp-4.2.4p5;ntp-4.2.4p5.tar.gz:ntp.diff;extract:ntp-4.2.4p5.tar.gz;patch:ntp.diff
+ntpclient;2000_339;ntpclient;ntpclient_2000_339.tar.gz:ntpclient.diff;extract:ntpclient_2000_339.tar.gz;patch:ntpclient.diff
 
 #
 # ide/hdd apps
