@@ -96,9 +96,10 @@ endif
 		rm $@/etc/profile.local; \
 		ln -sf /var/etc/profile.local $@/etc/profile.local; \
 	fi
-if KERNEL26
-	ln -s libgcc_s_nof.so.1 $@/lib/libgcc_s.so.1
-else
+	if [ -f $@/lib/libgcc_s_nof.so.1 -a ! -f $@/lib/libgcc_s.so.1 ]; then \
+		ln -s libgcc_s_nof.so.1 $@/lib/libgcc_s.so.1; \
+	fi
+if !KERNEL26
 	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
 endif
 	@TUXBOX_CUSTOMIZE@
@@ -199,9 +200,10 @@ endif
 		rm $@/etc/profile.local; \
 		ln -sf /var/etc/profile.local $@/etc/profile.local; \
 	fi
-if KERNEL26
-	ln -s libgcc_s_nof.so.1 $@/lib/libgcc_s.so.1
-else
+	if [ -f $@/lib/libgcc_s_nof.so.1 -a ! -f $@/lib/libgcc_s.so.1 ]; then \
+		ln -s libgcc_s_nof.so.1 $@/lib/libgcc_s.so.1; \
+	fi
+if !KERNEL26
 	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
 endif
 	@TUXBOX_CUSTOMIZE@
