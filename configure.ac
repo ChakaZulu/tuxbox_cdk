@@ -891,6 +891,12 @@ TUXBOX_RULES_MAKE(speex)
 TUXBOX_RULES_MAKE(libatomic_ops)
 
 #
+# esound
+#
+TUXBOX_RULES_MAKE(libaudiofile)
+TUXBOX_RULES_MAKE(esound)
+
+#
 # internal
 #
 AC_SUBST_FILE(ARCHIVE)

@@ -168,6 +168,12 @@ speex;rewrite-pkgconfig:speex.pc;rewrite-pkgconfig:speexdsp.pc;make:install:DEST
 libatomic_ops;make:install:DESTDIR=TARGET
 
 #
+# esound
+#
+libaudiofile;rewrite-pkgconfig:audiofile.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libaudiofile.la
+esound;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libesd.la;rewrite-libtool:TARGET/lib/libesddsp.la
+
+#
 # mksquashfs with LZMA support
 #
 squashfs

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# $Id: start_esound,v 1.1 2009/03/15 22:15:54 rhabarber1848 Exp $
+
+/bin/esd -tcp -public -nobeeps -d /dev/sound/dsp -r 44100 &

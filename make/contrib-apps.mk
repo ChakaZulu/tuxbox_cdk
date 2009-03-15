@@ -607,3 +607,29 @@ $(flashprefix)/root/bin/ntpclient: ntpclient | $(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 
 endif
+
+$(DEPDIR)/esound: bootstrap libaudiofile @DEPENDS_esound@
+	@PREPARE_esound@
+	cd @DIR_esound@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--disable-ipv6 \
+			--disable-alsa \
+			--disable-arts && \
+		$(MAKE) all && \
+		@INSTALL_esound@
+	@CLEANUP_esound@
+	touch $@
+
+if TARGETRULESET_FLASH
+
+flash-esound: $(flashprefix)/root/bin/esd
+
+$(flashprefix)/root/bin/esd: $(DEPDIR)/esound | $(flashprefix)/root
+	$(INSTALL) $(targetprefix)/bin/esd $(flashprefix)/root/bin
+	@FLASHROOTDIR_MODIFIED@
+
+endif
