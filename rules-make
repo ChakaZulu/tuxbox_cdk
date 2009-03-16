@@ -5,7 +5,7 @@
 #   version
 #   directory
 #   source files and patches (separated by ':')
-#   rules ('extract', 'dirextract', 'patch', 'move', 'remove', 'link') and arguments
+#   rules ('extract', 'dirextract', 'patch' or 'patch-X' for 'patch -pX', 'move', 'remove', 'link') and arguments
 #   ...
 #
 
