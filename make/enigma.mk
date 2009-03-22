@@ -19,7 +19,7 @@ flash-enigma: $(flashprefix)/root-enigma
 
 $(flashprefix)/root-enigma: $(appsdir)/tuxbox/enigma/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/enigma all install prefix=$@
-	$(INSTALL) $(appsdir)/tuxbox/neutrino/daemons/controld/scart.conf $@/var/tuxbox/config
+	$(INSTALL) $(appsdir)/dvb/zapit/src/scart.conf $@/var/tuxbox/config
 	cp $(appsdir)/tuxbox/neutrino/data/fonts/*.pcf.gz $@/share/fonts
 	cp $(appsdir)/tuxbox/neutrino/data/fonts/micron*.ttf $@/share/fonts
 	cp -pa $(appsdir)/tuxbox/enigma/po/locale.alias.image $@/share/locale/locale.alias

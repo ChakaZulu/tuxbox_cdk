@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: start_neutrino,v 1.31 2009/02/15 19:08:56 rhabarber1848 Exp $
+# $Id: start_neutrino,v 1.32 2009/03/22 22:06:48 rhabarber1848 Exp $
 
 date -s 010101001970
 sectionsd
@@ -12,7 +12,6 @@ else
     zapit
 fi
 
-controld
 nhttpd
 until neutrino -f -u ; do
     echo "Neutrino exited with nonzero exit status, restarting..."
@@ -20,7 +19,6 @@ until neutrino -f -u ; do
     pidof timerd    >/dev/null || timerd
     pidof camd2     >/dev/null || camd2
     pidof zapit     >/dev/null || zapit
-    pidof controld  >/dev/null || controld
     pidof nhttpd    >/dev/null || nhttpd
 done
 
@@ -32,7 +30,6 @@ pzapit -kill
 i=9
 while expr $i != 0 > /dev/null
 do
-if pidof controld > /dev/null; then echo "Waiting for controld (max. $i seconds)"
 elif pidof timerd > /dev/null; then echo "Waiting for timerd (max. $i seconds)"
 elif pidof zapit > /dev/null; then echo "Waiting for zapit (max. $i seconds)"
 elif pidof tuxmaild > /dev/null; then echo "Waiting for tuxmaild (max. $i seconds)"
@@ -48,7 +45,6 @@ if [ -e /tmp/.nohalt ] ; then
     killall -q timerd
     killall -q camd2
     killall -q zapit
-    killall -q controld
     killall -q nhttpd
     saa --fbas
     switch -fnc 0 -fblk 0
