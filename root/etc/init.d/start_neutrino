@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: start_neutrino,v 1.32 2009/03/22 22:06:48 rhabarber1848 Exp $
+# $Id: start_neutrino,v 1.33 2009/03/23 19:52:39 rhabarber1848 Exp $
 
 date -s 010101001970
 sectionsd
@@ -30,7 +30,7 @@ pzapit -kill
 i=9
 while expr $i != 0 > /dev/null
 do
-elif pidof timerd > /dev/null; then echo "Waiting for timerd (max. $i seconds)"
+if pidof timerd > /dev/null; then echo "Waiting for timerd (max. $i seconds)"
 elif pidof zapit > /dev/null; then echo "Waiting for zapit (max. $i seconds)"
 elif pidof tuxmaild > /dev/null; then echo "Waiting for tuxmaild (max. $i seconds)"
 elif pidof tuxcald > /dev/null; then echo "Waiting for tuxcald (max. $i seconds)"
