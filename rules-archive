@@ -105,7 +105,6 @@ lufs-0.9.7.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/lufs
 dropbear-0.52.tar.bz2;http://www.ucc.asn.au/~matt/dropbear
 cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
 libtool-1.5.22.tar.gz;ftp://ftp.gnu.org/gnu/libtool
-libtool-1.5.26.tar.gz;ftp://ftp.gnu.org/gnu/libtool
 samba-1.9.18p8.tar.gz;http://mirrors.xmission.com/samba/ftp/stable
 wget-1.11.4.tar.bz2;http://ftp.gnu.org/pub/gnu/wget
 ncftp-3.2.2-src.tar.bz2;ftp://ftp.ncftp.com/ncftp
@@ -181,4 +180,3 @@ lzma442.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/sevenzip
 # database
 #
 sqlite-3.6.7.tar.gz;http://www.sqlite.org
-gdbm-1.8.3.tar.gz;ftp://ftp.gnu.org/gnu/gdbm

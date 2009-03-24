@@ -36,17 +36,3 @@ $(flashprefix)/root/bin/sqlite3: @DEPENDS_sqlite@ | $(flashprefix)/root
 endif
 
 endif
-
-$(DEPDIR)/gdbm: bootstrap @DEPENDS_gdbm@
-	@PREPARE_gdbm@
-	cd @DIR_gdbm@ && \
-		$(BUILDENV) \
-		LD_LIBRARY_PATH=$(libdir) \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix=$(targetprefix) && \
-		$(MAKE) && \
-		@INSTALL_gdbm@
-	@CLEANUP_gdbm@
-	touch $@

@@ -562,17 +562,3 @@ $(DEPDIR)/libtool: bootstrap @DEPENDS_libtool@
 		$(INSTALL) -m755 libtool $(hostprefix)/bin
 	@CLEANUP_libtool@
 	touch $@
-
-$(DEPDIR)/libtool_cdk: bootstrap @DEPENDS_libtool_cdk@
-	@PREPARE_libtool_cdk@
-	cd @DIR_libtool_cdk@ && \
-		$(BUILDENV) \
-		./configure \
-			--target=$(target) \
-			--host=$(target) \
-			--build=$(build) \
-			--prefix=/ && \
-		$(MAKE) CC=$(target)-gcc && \
-		@INSTALL_libtool_cdk@
-	@CLEANUP_libtool_cdk@
-	touch $@

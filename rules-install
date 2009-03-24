@@ -19,7 +19,6 @@ glibc;make:install:install_root=TARGET
 uclibc;make:install:DEVEL_PREFIX=/:PREFIX=TARGET;install:-m644:lib/libc.a:TARGET/lib/libc_pic.a;install:-m644:lib/libcrypt.a:TARGET/lib/libcrypt_pic.a;install:-m644:lib/libm.a:TARGET/lib/libm_pic.a
 watchdog;make:install:DESTDIR=TARGET
 libtool
-libtool_cdk;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libltdl.la
 fuse;make:install:DESTDIR=TARGET
 fusekernel;make:install:DESTDIR=TARGET
 djmount;make:install:DESTDIR=TARGET
@@ -167,6 +166,5 @@ squashfs
 # database
 #
 sqlite;make:install:prefix=TARGET
-gdbm;make:install;rewrite-libtool:TARGET/lib/libgdbm.la
 
 >>?;rules-install-local

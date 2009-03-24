@@ -777,7 +777,6 @@ TUXBOX_RULES_MAKE(libz)
 TUXBOX_RULES_MAKE(libglib)
 TUXBOX_RULES_MAKE(libiconv)
 TUXBOX_RULES_MAKE(libtool)
-TUXBOX_RULES_MAKE(libtool_cdk)
 TUXBOX_RULES_MAKE(libFLAC)
 TUXBOX_RULES_MAKE(libgettext)
 
@@ -879,7 +878,6 @@ TUXBOX_RULES_MAKE(bluez_utils)
 # Database
 #
 TUXBOX_RULES_MAKE(sqlite)
-TUXBOX_RULES_MAKE(gdbm)
 
 #
 # internal
