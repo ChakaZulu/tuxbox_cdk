@@ -608,9 +608,10 @@ $(flashprefix)/root/bin/ntpclient: ntpclient | $(flashprefix)/root
 
 endif
 
-$(DEPDIR)/esound: bootstrap libaudiofile @DEPENDS_esound@
+$(DEPDIR)/esound: bootstrap @DEPENDS_esound@
 	@PREPARE_esound@
 	cd @DIR_esound@ && \
+		autoreconf && \
 		$(BUILDENV) \
 		./configure \
 			--build=$(build) \

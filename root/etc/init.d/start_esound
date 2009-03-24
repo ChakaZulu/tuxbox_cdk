@@ -1,5 +1,11 @@
 #!/bin/sh
 
-# $Id: start_esound,v 1.1 2009/03/15 22:15:54 rhabarber1848 Exp $
+# $Id: start_esound,v 1.2 2009/03/24 20:37:59 rhabarber1848 Exp $
 
-/bin/esd -tcp -public -nobeeps -d /dev/sound/dsp -r 44100 &
+ESD=/bin/esd
+
+if [ -x /var/bin/esd ] ; then
+	ESD=/var/bin/esd
+fi
+
+$ESD -tcp -public -nobeeps -d /dev/sound/dsp -r 44100 &

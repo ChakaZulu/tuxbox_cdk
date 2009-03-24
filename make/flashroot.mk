@@ -44,6 +44,7 @@ endif
 	$(MAKE) flash-vncviewer
 	$(MAKE) flash-dvbsub
 	$(MAKE) flash-fx2-plugins
+	$(MAKE) flash-esound
 	$(MAKE) flash-ucodes
 	$(MAKE) flash-lcdip
 if ENABLE_AUTOMOUNT

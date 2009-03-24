@@ -807,6 +807,7 @@ TUXBOX_RULES_MAKE(links)
 TUXBOX_RULES_MAKE(links_g)
 TUXBOX_RULES_MAKE(ntpd)
 TUXBOX_RULES_MAKE(ntpclient)
+TUXBOX_RULES_MAKE(esound)
 
 #
 # ide apps
@@ -879,22 +880,6 @@ TUXBOX_RULES_MAKE(bluez_utils)
 #
 TUXBOX_RULES_MAKE(sqlite)
 TUXBOX_RULES_MAKE(gdbm)
-
-#
-# pulseaudio
-#
-TUXBOX_RULES_MAKE(liboil)
-TUXBOX_RULES_MAKE(libsamplerate)
-TUXBOX_RULES_MAKE(libsndfile)
-TUXBOX_RULES_MAKE(libogg)
-TUXBOX_RULES_MAKE(speex)
-TUXBOX_RULES_MAKE(libatomic_ops)
-
-#
-# esound
-#
-TUXBOX_RULES_MAKE(libaudiofile)
-TUXBOX_RULES_MAKE(esound)
 
 #
 # internal

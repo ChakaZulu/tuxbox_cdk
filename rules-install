@@ -105,6 +105,7 @@ links;make:install:DESTDIR=TARGET
 links_g;install:-m755:links:TARGET/bin/links_g
 ntpd;make:install:DESTDIR=TARGET
 ntpclient;install:-m755:ntpclient:TARGET/bin
+esound;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libesd.la
 
 #
 # msttf
@@ -156,22 +157,6 @@ bluez_libs;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libbluetooth.l
 bluez_pan;make:install:DESTDIR=TARGET
 bluez_sdp;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libsdp.la
 bluez_utils;make:install:DESTDIR=TARGET
-
-#
-# pulseaudio
-#
-liboil;rewrite-pkgconfig:liboil-0.3.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/liboil-0.3.la
-libsamplerate;rewrite-pkgconfig:samplerate.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libsamplerate.la
-libsndfile;rewrite-pkgconfig:sndfile.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libsndfile.la
-libogg;rewrite-pkgconfig:ogg.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libogg.la
-speex;rewrite-pkgconfig:speex.pc;rewrite-pkgconfig:speexdsp.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libspeex.la;rewrite-libtool:TARGET/lib/libspeexdsp.la
-libatomic_ops;make:install:DESTDIR=TARGET
-
-#
-# esound
-#
-libaudiofile;rewrite-pkgconfig:audiofile.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libaudiofile.la
-esound;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libesd.la;rewrite-libtool:TARGET/lib/libesddsp.la
 
 #
 # mksquashfs with LZMA support

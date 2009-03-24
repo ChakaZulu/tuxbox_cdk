@@ -425,19 +425,6 @@ $(DEPDIR)/libvorbisidec: bootstrap @DEPENDS_libvorbisidec@
 	@CLEANUP_libvorbisidec@
 	touch $@
 
-$(DEPDIR)/libaudiofile: bootstrap @DEPENDS_libaudiofile@
-	@PREPARE_libaudiofile@
-	cd @DIR_libaudiofile@ && \
-		$(BUILDENV) \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix= && \
-		$(MAKE) -j $(J) && \
-		@INSTALL_libaudiofile@
-	@CLEANUP_libaudiofile@
-	touch $@
-
 $(DEPDIR)/libxml2: bootstrap @DEPENDS_libxml2@
 	@PREPARE_libxml2@
 	cd @DIR_libxml2@ && \

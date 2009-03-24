@@ -1,0 +1,213 @@
+diff -uNr esound-0.2.41.org/configure.ac esound-0.2.41/configure.ac
+--- esound-0.2.41.org/configure.ac	2008-11-18 21:35:33.000000000 +0100
++++ esound-0.2.41/configure.ac	2009-03-24 19:14:21.000000000 +0100
+@@ -174,26 +174,6 @@
+   [enable_arts=${enableval}],
+   [enable_arts=no])
+ 
+-dnl build the esddsp wrapper for systems, 
+-dnl that support LD_PRELOAD and RTLD_NEXT only
+-dsp_ok=no DL_LIB=
+-
+-AC_MSG_CHECKING([if your platform supports esddsp])
+-case "$host_os" in
+-  linux* | freebsd* | kfreebsd*-gnu | bsdi4* )
+-    dsp_ok=yes
+-    ;;
+-esac
+-AC_MSG_RESULT($dsp_ok)
+-
+-if test "x$dsp_ok" = xyes; then
+-   AC_CHECK_FUNC(dlopen, DL_LIB=,
+-      AC_CHECK_LIB(dl, dlopen, DL_LIB=-ldl))
+-   ESDDSP=esddsp
+-   LIBESDDSP=libesddsp.la
+-fi
+-AM_CONDITIONAL(BUILD_ESDDSP, test "x$dsp_ok" = xyes)
+-
+ if test "x$enable_local_sound" = "xyes"; then
+    found_sound=no
+ 
+@@ -358,19 +338,6 @@
+ AC_SUBST(ESD_DIR)
+ AC_SUBST(ESD_PC_DIR)
+ 
+-dnl make sure we have the library, -laudiofile
+-
+-build_esdplay=false
+-
+-PKG_CHECK_MODULES(AUDIOFILE, [audiofile >= 0.2.3])
+-
+-CFLAGS="$CFLAGS $AUDIOFILE_CFLAGS"
+-LIBS="$LIBS $AUDIOFILE_LIBS"
+-
+-build_esdplay=true
+-
+-AM_CONDITIONAL(BUILD_ESDPLAY, $build_esdplay)
+-
+ echo "---------------------------------------------------------------------"
+ echo "--- Checking for the documentation generation tools.  NOTE: These "
+ echo "--- are NOT required for proper compilation of the esound package."
+@@ -422,7 +389,6 @@
+ 
+ AC_SUBST(WRAP_LIB)
+ AC_SUBST(SOUND_LIBS)
+-AC_SUBST(AUDIOFILE_LIBS)
+ AC_SUBST(DL_LIB)
+ AC_SUBST(DOCS)
+ AC_SUBST(DISTDOCS)
+@@ -433,19 +399,6 @@
+ esd-config
+ esound.spec
+ esound.pc
+-esddsp
+-docs/Makefile
+-docs/esd.1
+-docs/esdcat.1
+-docs/esd-config.1
+-docs/esdctl.1
+-docs/esddsp.1
+-docs/esdfilt.1
+-docs/esdloop.1
+-docs/esdmon.1
+-docs/esdplay.1
+-docs/esdrec.1
+-docs/esdsample.1
+ ])
+ dnl , [case "$CONFIG_FILES" in *esd-config*) chmod +x esd-config;; esac])
+ 
+diff -uNr esound-0.2.41.org/esd.h esound-0.2.41/esd.h
+--- esound-0.2.41.org/esd.h	2008-11-18 21:35:19.000000000 +0100
++++ esound-0.2.41/esd.h	2009-03-24 19:10:02.000000000 +0100
+@@ -1,6 +1,5 @@
+ #ifndef ESD_H
+ #define ESD_H
+-#include <audiofile.h>
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -305,14 +304,6 @@
+ 
+ 
+ /*******************************************************************/
+-/* esdfile.c - audiofile wrappers for sane handling of files */
+-
+-int esd_send_file( int esd, AFfilehandle au_file, int frame_length );
+-int esd_play_file( const char *name_prefix, const char *filename, int fallback );
+-int esd_file_cache( int esd, const char *name_prefix, const char *filename );
+-
+-
+-/*******************************************************************/
+ /* audio.c - abstract the sound hardware for cross platform usage */
+ extern esd_format_t esd_audio_format;
+ extern int esd_audio_rate;
+diff -uNr esound-0.2.41.org/Makefile.am esound-0.2.41/Makefile.am
+--- esound-0.2.41.org/Makefile.am	2008-11-18 18:33:39.000000000 +0100
++++ esound-0.2.41/Makefile.am	2009-03-24 19:13:51.000000000 +0100
+@@ -1,21 +1,13 @@
+ 
+-SUBDIRS = docs
++SUBDIRS = 
+ 
+ ACLOCAL_AMFLAGS = -I m4
+ 
+ SPEC_FILE = esound.spec
+ 
+-INCLUDES = $(AUDIOFILE_CFLAGS) -DSYSCONFDIR=\"$(sysconfdir)\" \
++INCLUDES = -DSYSCONFDIR=\"$(sysconfdir)\" \
+     -DSERVERDIR=\"$(ESD_DIR)\"
+ 
+-if BUILD_ESDDSP
+-ESDDSP = esddsp
+-libesddsp_la = libesddsp.la
+-endif
+-if BUILD_ESDPLAY
+-ESDPLAY = esdplay
+-endif
+-
+ getopt_extra = getopt.c getopt1.c
+ 
+ if NEED_GETOPT
+@@ -30,12 +22,11 @@
+ 
+ libesd_la_CFLAGS = $(AM_CFLAGS)
+ libesd_la_LDFLAGS = -version-info $(ESD_VERSION_INFO) -no-undefined
+-libesd_la_LIBADD = $(AUDIOFILE_LIBS) $(SOUND_LIBS)
++libesd_la_LIBADD = $(SOUND_LIBS)
+ 
+ libesd_la_SOURCES = \
+ 	esdlib.c	\
+ 	esdmgr.c	\
+-	esdfile.c	\
+ 	esd-config.h	\
+ 	esd_config.c	\
+ 	audio.c		\
+@@ -60,13 +51,6 @@
+ 	audio_solaris.c		\
+ 	audio_win32.c
+ 
+-libesddsp_la_LDFLAGS = -version-info $(ESD_VERSION_INFO)
+-libesddsp_la_LIBADD = libesd.la $(DL_LIB) -lm
+-
+-libesddsp_la_SOURCES = \
+-	esddsp.c
+-
+-
+ include_HEADERS = \
+ 	esd.h
+ 
+@@ -75,16 +59,6 @@
+ esd_PROGRAMS = \
+ 	esd		
+ 
+-bin_PROGRAMS = \
+-	esdcat		\
+-	esdctl		\
+-	esdfilt		\
+-	esdmon		\
+-	esdrec		\
+-	esdsample	\
+-	esdloop		\
+-	$(ESDPLAY)
+-
+ esd_SOURCES = 	\
+ 	esd.c 		\
+ 	clients.c	\
+@@ -97,35 +71,9 @@
+ 	esd-config.h	\
+ 	esd-server.h
+ 
+-esdcat_SOURCES = \
+-	esdcat.c
+-
+-esdctl_SOURCES = \
+-	$(getopt_src) \
+-	esdctl.c
+-
+-esdfilt_SOURCES = \
+-	esdfilt.c
+-
+-esdmon_SOURCES = \
+-	esdmon.c
+-
+-esdrec_SOURCES = \
+-	esdrec.c
+-
+-esdsample_SOURCES = \
+-	esdsample.c
+-
+-esdloop_SOURCES = \
+-	esdloop.c
+-
+-esdplay_SOURCES = \
+-	$(getopt_src) \
+-	esdplay.c
+-
+-LDADD = libesd.la $(AUDIOFILE_LIBS)
++LDADD = libesd.la
+ 
+-esd_LDADD = $(WRAP_LIB) $(LDADD)
++esd_LDADD = $(WRAP_LIB) $(LDADD) -lm
+ 
+ m4datadir = $(datadir)/aclocal
+ m4data_DATA = esd.m4

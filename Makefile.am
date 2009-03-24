@@ -144,9 +144,6 @@ include make/ucodes.mk
 # Generate a /.version file in the image
 include make/version.mk
 
-# Pulseaudio stuff
-include make/pulseaudio.mk
-
 if TARGETRULESET_FLASH
 # High-level flash targets are:
 

@@ -115,6 +115,7 @@ links-1.00.tar.gz;http://www.jikos.cz/~mikulas/links//download
 links-2.2.tar.gz;http://links.twibright.com/download
 ntp-4.2.4p5.tar.gz;http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2
 ntpclient_2000_339.tar.gz;http://doolittle.icarus.com/ntpclient
+esound-0.2.41.tar.bz2;ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2
 
 #
 # ide apps
@@ -181,19 +182,3 @@ lzma442.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/sevenzip
 #
 sqlite-3.6.7.tar.gz;http://www.sqlite.org
 gdbm-1.8.3.tar.gz;ftp://ftp.gnu.org/gnu/gdbm
-
-#
-# pulseaudio
-#
-liboil-0.3.15.tar.gz;http://liboil.freedesktop.org/download
-libsamplerate-0.1.7.tar.gz;http://www.mega-nerd.com/SRC
-libsndfile-1.0.19.tar.gz;http://www.mega-nerd.com/libsndfile
-speex-1.2rc1.tar.gz;http://downloads.xiph.org/releases/speex
-libogg-1.1.3.tar.gz;http://downloads.xiph.org/releases/ogg
-libatomic-ops_1.2+cvs20080819.orig.tar.gz;http://ftp.debian.org/debian/pool/main/liba/libatomic-ops
-
-#
-# esound
-#
-audiofile-0.2.6.tar.bz2;ftp://ftp.gnome.org/pub/GNOME/sources/audiofile/0.2
-esound-0.2.41.tar.bz2;ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2
