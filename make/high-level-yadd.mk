@@ -14,11 +14,11 @@ if KERNEL26
 bare-os: yadd-u-boot kernel-cdk driver yadd-etc busybox module_init_tools \
 		tuxbox_hotplug tuxinfo misc_tools
 else
-bare-os: yadd-u-boot kernel-cdk driver yadd-etc busybox modutils tuxinfo
+bare-os: yadd-u-boot kernel-cdk driver yadd-etc busybox modutils tuxinfo misc_tools
 endif
 	@TUXBOX_YADD_CUSTOMIZE@
 
-yadd-none: bare-os config tuxbox_tools procps ftpd yadd-ucodes yadd-bootlogos @AUTOMOUNT@ @LIRC@ @CDKVCINFO@ @XFSPROGS@ @NFSSERVER@ @SAMBASERVER@ @LUFS@ @SMBMOUNT@ @CONSOLE_TOOLS@ version defaultlocale
+yadd-none: bare-os config tuxbox_tools procps ftpd esound yadd-ucodes yadd-bootlogos @AUTOMOUNT@ @LIRC@ @CDKVCINFO@ @XFSPROGS@ @NFSSERVER@ @SAMBASERVER@ @LUFS@ @SMBMOUNT@ @CONSOLE_TOOLS@ version defaultlocale
 	@TUXBOX_YADD_CUSTOMIZE@
 
 yadd-micro-neutrino: bare-os config yadd-ucodes camd2 switch neutrino
