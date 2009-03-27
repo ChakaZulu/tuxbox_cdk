@@ -69,7 +69,7 @@ libpng;1.2.35;libpng-1.2.35;libpng-1.2.35.tar.bz2;extract:libpng-1.2.35.tar.bz2
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.6;SDL-1.2.6;SDL-1.2.6.tar.gz:sdl.diff;extract:SDL-1.2.6.tar.gz;patch:sdl.diff
 libsigc;1.2.5;libsigc++-1.2.5;libsigc++-1.2.5.tar.gz;extract:libsigc++-1.2.5.tar.gz
-libvorbisidec;20040525;tremor-20040525;tremor-20040525.tar.bz2:tremor.diff;extract:tremor-20040525.tar.bz2;patch:tremor.diff
+libvorbisidec;20090210;tremor-20090210;tremor-20090210.tar.bz2:tremor.diff;extract:tremor-20090210.tar.bz2;patch:tremor.diff
 libxml2;2.4.30;libxml2-2.4.30;libxml2-2.4.30.tar.gz:libxml2.diff;extract:libxml2-2.4.30.tar.gz;patch:libxml2.diff
 libz;1.2.3;zlib-1.2.3;zlib-1.2.3.tar.bz2;extract:zlib-1.2.3.tar.bz2
 libglib;2.8.3;glib-2.8.3;glib-2.8.3.tar.gz;extract:glib-2.8.3.tar.gz
