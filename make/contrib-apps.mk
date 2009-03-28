@@ -611,7 +611,8 @@ endif
 $(DEPDIR)/esound: bootstrap @DEPENDS_esound@
 	@PREPARE_esound@
 	cd @DIR_esound@ && \
-		autoreconf && \
+		autoconf && \
+		automake && \
 		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
