@@ -12,3 +12,13 @@
 +Version: 20040525
 +Libs: -L${libdir} -lvorbisidec
 +Cflags: -I${includedir}
+--- libvorbisidec-1.0.2+svn14261.org/configure.in	2007-07-24 00:35:47.000000000 +0200
++++ libvorbisidec-1.0.2+svn14261/configure.in	2009-03-28 20:14:54.000000000 +0100
+@@ -5,6 +5,7 @@
+ dnl ------------------------------------------------
+ 
+ AC_INIT(mdct.c)
++AC_CONFIG_AUX_DIR(.)
+ 
+ AC_CANONICAL_HOST
+ AC_CANONICAL_TARGET

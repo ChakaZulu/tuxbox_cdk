@@ -72,7 +72,7 @@ DirectFB-1.0.0.tar.gz;http://directfb.org/downloads/Old
 DFB++-1.0.0.tar.gz;http://directfb.org/downloads/Extras
 ++DFB-1.0.0.tar.gz;http://directfb.org/downloads/Extras
 boost_1_38_0.tar.bz2;http://heanet.dl.sourceforge.net/sourceforge/boost
-tremor-20090210.tar.bz2;http://www.dbox2-tuning.net/cvsdata/files
+libvorbisidec_1.0.2+svn14261.orig.tar.gz;http://ftp.debian.org/debian/pool/main/libv/libvorbisidec
 fribidi-0.10.4.tar.bz2
 expat-1.95.6.tar.gz;http://heanet.dl.sourceforge.net/sourceforge/expat
 libdvb-0.5.5.1.tar.gz;http://www.metzlerbros.org/dvb
