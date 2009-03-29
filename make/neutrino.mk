@@ -6,10 +6,10 @@ CONFIGURE_OPTS_MP2 = \
 endif
 
 if ENABLE_FLAC
-$(appsdir)/tuxbox/neutrino/config.status: bootstrap libid3tag libmad libvorbisidec $(appsdir)/dvb/zapit/src/zapit libboost libjpeg libcurl libfreetype libpng libFLAC $(targetprefix)/lib/pkgconfig/tuxbox-tuxtxt.pc $(targetprefix)/include/tuxbox/plugin.h
+$(appsdir)/tuxbox/neutrino/config.status: bootstrap libid3tag libmad libvorbisidec $(appsdir)/dvb/zapit/src/zapit libboost libjpeg libcurl libfreetype libpng esound libFLAC $(targetprefix)/lib/pkgconfig/tuxbox-tuxtxt.pc $(targetprefix)/include/tuxbox/plugin.h
 	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE) $(CONFIGURE_OPTS_MP2)
 else
-$(appsdir)/tuxbox/neutrino/config.status: bootstrap libid3tag libmad libvorbisidec $(appsdir)/dvb/zapit/src/zapit libboost libjpeg libcurl libfreetype libpng  $(targetprefix)/lib/pkgconfig/tuxbox-tuxtxt.pc $(targetprefix)/include/tuxbox/plugin.h
+$(appsdir)/tuxbox/neutrino/config.status: bootstrap libid3tag libmad libvorbisidec $(appsdir)/dvb/zapit/src/zapit libboost libjpeg libcurl libfreetype libpng esound $(targetprefix)/lib/pkgconfig/tuxbox-tuxtxt.pc $(targetprefix)/include/tuxbox/plugin.h
 	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE) $(CONFIGURE_OPTS_MP2)
 endif
 
@@ -20,7 +20,7 @@ neutrino: $(appsdir)/tuxbox/neutrino/config.status
 if TARGETRULESET_FLASH
 flash-neutrino: $(flashprefix)/root-neutrino
 
-$(flashprefix)/root-neutrino: $(appsdir)/tuxbox/neutrino/config.status
+$(flashprefix)/root-neutrino: $(appsdir)/tuxbox/neutrino/config.status flash-esound
 	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install prefix=$@
 	$(MAKE) -C $(appsdir)/dvb/zapit install prefix=$@
 	$(MAKE) neutrino-additional-fonts targetprefix=$@
