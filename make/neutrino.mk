@@ -20,10 +20,11 @@ neutrino: $(appsdir)/tuxbox/neutrino/config.status
 if TARGETRULESET_FLASH
 flash-neutrino: $(flashprefix)/root-neutrino
 
-$(flashprefix)/root-neutrino: $(appsdir)/tuxbox/neutrino/config.status flash-esound
+$(flashprefix)/root-neutrino: $(appsdir)/tuxbox/neutrino/config.status $(DEPDIR)/esound
 	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install prefix=$@
 	$(MAKE) -C $(appsdir)/dvb/zapit install prefix=$@
 	$(MAKE) neutrino-additional-fonts targetprefix=$@
+	$(INSTALL) $(targetprefix)/bin/esd $@/bin
 	touch $@
 	@TUXBOX_CUSTOMIZE@
 
