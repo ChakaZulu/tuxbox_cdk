@@ -48,4 +48,4 @@ yadd-bootlogos:
 		 cp $(logosdir)/logo-fb $(bootprefix) ; \
 	fi
 
-extra: libs libs_optional contrib_apps fun dvb_apps root_optional udev devel bash
+extra: libs libs_optional contrib_apps fun dvb_apps root_optional udev devel devel_optional

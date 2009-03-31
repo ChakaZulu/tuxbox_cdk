@@ -3,18 +3,15 @@
 #   contrib libs
 #
 
-if ENABLE_FLAC
-FLAClib = libFLAC
-endif
-
 libs: \
 	libcurl libdirectfb libdirectfbpp libppdirectfb libdvbpsi \
 	libfreetype libjpeg libmad libid3tag libncurses libpng \
-	libreadline libsdl libsigc libz libdvb libtool $(FLAClib)
+	libreadline libsdl libsigc libz libdvb libtool @FLACLIB@
 
 libs_optional: \
 	libcommoncplusplus libffi \
-	libpcap libxml2 libungif libexpat libcrypto
+	libpcap libxml2 libungif \
+	libexpat libcrypto @SQLITE@
 
 $(DEPDIR)/libboost: bootstrap @DEPENDS_libboost@
 	@PREPARE_libboost@

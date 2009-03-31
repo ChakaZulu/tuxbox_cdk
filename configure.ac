@@ -62,8 +62,11 @@ AC_SUBST(CPU_MODEL)
 
 AC_ARG_ENABLE(sqlite,
 	AS_HELP_STRING(--enable-sqlite,enable sql storage),
-	,[enable_sqlite=no])
+	[case "${enableval}" in
+		yes) SQLITE=sqlite ;;
+	esac],[enable_sqlite=no])
 AM_CONDITIONAL(ENABLE_SQLITE,test "$enable_sqlite" = "yes")
+AC_SUBST(SQLITE)
 
 AC_ARG_WITH(targetruleset,
 	[  --with-targetruleset=NAME	OBSOLETE, use --[[enable|disable]]-flashrules instead],
@@ -342,8 +345,11 @@ AM_CONDITIONAL(ENABLE_UPNP,test "$enable_upnp" = "yes")
 
 AC_ARG_ENABLE(flac,
 	AS_HELP_STRING(--enable-flac,include Neutrino flac audio decoder with libFLAC),
-	,[enable_flac=no])
+	[case "${enableval}" in
+		yes) FLACLIB=libFLAC ;;
+	esac],[enable_flac=no])
 AM_CONDITIONAL(ENABLE_FLAC,test "$enable_flac" = "yes")
+AC_SUBST(FLACLIB)
 
 if test "$enable_uclibc" = "yes" && test "$enable_flac" = "yes" && test "$enable_flashrules" = "yes"; then
 	echo

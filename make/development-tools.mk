@@ -4,7 +4,7 @@
 #
 
 devel: gdb ltrace strace nano joe
-devel_optional: gdb-remote insight bash
+devel_optional: gdb-remote insight bash mc
 
 $(DEPDIR)/gdb: bootstrap libncurses @DEPENDS_gdb@
 	@PREPARE_gdb@
