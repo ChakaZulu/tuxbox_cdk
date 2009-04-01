@@ -1,5 +1,5 @@
 #
-# $Revision: 1.29 $
+# $Revision: 1.30 $
 #
 # This document describes the steps needed to set up a cross compile
 # environment (CDK) for linux on embedded PowerPC using a GNU system.
@@ -18,6 +18,9 @@
 #
 #
 # $Log: INSTALL.en,v $
+# Revision 1.30  2009/04/01 19:38:37  rhabarber1848
+# get rid of makeinfo dependency in binutils: http://tuxbox-forum.dreambox-fan.de/forum/viewtopic.php?p=366510#p366510
+#
 # Revision 1.29  2009/01/06 21:40:14  dbt
 # newmake goes HEAD see:
 # http://tuxbox-forum.dreambox-fan.de/forum/viewtopic.php?f=7&t=48357&start=40
@@ -35,7 +38,6 @@ I. Prerequistes:
  - libtool >= 1.4.2
  - gettext >= 0.12.1
  - make >= 3.79
- - makeinfo (texinfo)
  - tar
  - bunzip2 (bzip2)
  - gunzip (gzip)
