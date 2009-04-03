@@ -710,6 +710,9 @@ AC_SUBST(DEPSCLEANUP)
 # core
 #
 AC_SUBST(KERNELVERSION)
+
+TUXBOX_BOXTYPE
+
 TUXBOX_RULES_MAKE(uboot)
 
 TUXBOX_RULES_MAKE(linux)
@@ -934,7 +937,7 @@ fi
 AC_MSG_RESULT([
 summary:
 ----------------------------------------
-target cpu:			$CPU_MODEL
+target cpu/boxtype:		$CPU_MODEL/$BOXTYPE
 kernel:				$used_kernelversion
 used yadd kernel config:	$yadd_kernel_conf
 used flash kernel config:	$flash_kernel_conf

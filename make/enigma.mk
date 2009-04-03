@@ -30,12 +30,14 @@ endif
 	cp $(appsdir)/tuxbox/enigma/po/locale.alias.image $@/share/locale/locale.alias
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/dbswitch all install prefix=$@
 #	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/demo all install prefix=$@
+if BOXTYPE_DREAMBOX
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/dreamdata all install prefix=$@
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/dreamflash all install prefix=$@
+	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/movieplayer all install prefix=$@
+endif
 #	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/dslconnect all install prefix=$@
 #	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/dsldisconnect all install prefix=$@
 #	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/getset all install prefix=$@
-	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/movieplayer all install prefix=$@
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/ngrabstart all install prefix=$@
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/ngrabstop all install prefix=$@
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma/rss all install prefix=$@

@@ -25,6 +25,7 @@ CONFIGURE_OPTS = \
 	--host=$(target) \
 	--prefix=$(targetprefix) \
 	--with-driver=$(driverdir) \
+	--with-boxtype=$(BOXTYPE) \
 	--with-target=cdk
 
 if KERNEL26
