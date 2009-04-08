@@ -34,17 +34,30 @@ endif
 	-rm -f $(hostprefix)/$(target)/lib
 	-ln -sf $(targetprefix)/include $(hostprefix)/$(target)/include
 	-ln -sf $(targetprefix)/lib $(hostprefix)/$(target)/lib
+if BOXTYPE_DREAMBOX
+	@for i in linux asm-generic asm mtd ; do \
+		rm -rf $(hostprefix)/$(target)/include/$$i 2> /dev/null || /bin/true; \
+		ln -sf $(buildprefix)/linux/include/$$i $(hostprefix)/$(target)/include; \
+	done;
+else
 if !KERNEL26
 	-ln -sf $(buildprefix)/linux/include/linux $(hostprefix)/$(target)/include
 	-ln -sf $(buildprefix)/linux/include/asm $(hostprefix)/$(target)/include
 	-ln -sf $(buildprefix)/linux/include/asm-generic $(hostprefix)/$(target)/include
 	-ln -sf $(buildprefix)/linux/include/mtd $(hostprefix)/$(target)/include
 endif
+endif
 if TARGETRULESET_FLASH
 	$(INSTALL) -d $(flashprefix)
 endif
 	touch $@
 
+if BOXTYPE_DREAMBOX
+KERNEL_DEPENDS = @DEPENDS_linux_dream@
+KERNEL_DIR = @DIR_linux_dream@
+KERNEL_PREPARE = @PREPARE_linux_dream@
+KERNEL_BUILD_FILENAME = @DIR_linux24@/arch/ppc/boot/images/vmlinux.gz
+else
 if KERNEL26
 KERNEL_DEPENDS = @DEPENDS_linux@
 KERNEL_DIR = @DIR_linux@
@@ -55,6 +68,7 @@ KERNEL_DEPENDS = @DEPENDS_linux24@
 KERNEL_DIR = @DIR_linux24@
 KERNEL_PREPARE = @PREPARE_linux24@
 KERNEL_BUILD_FILENAME = @DIR_linux24@/arch/ppc/boot/images/vmlinux.gz
+endif
 endif
 
 if ENABLE_FS_CIFS
@@ -68,7 +82,11 @@ endif
 $(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) $(KERNEL_CIFS) $(KERNEL_AUTOMOUNT) directories
 	$(KERNEL_PREPARE)
 if KERNEL26
+if BOXTYPE_DREAMBOX
+	cat $(KERNEL_DIR)/arch/ppc/configs/$(BOXTYPE)_defconfig > $(KERNEL_DIR)/.config
+else
 	cp Patches/linux-2.6.26.4-dbox2.config $(KERNEL_DIR)/.config
+endif
 else
 	cp Patches/linux-2.4.35.5-dbox2.config $(KERNEL_DIR)/.config
 if ENABLE_FS_LUFS

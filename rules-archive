@@ -12,6 +12,12 @@
 u-boot-1.2.0.tar.bz2;ftp://ftp.denx.de/pub/u-boot
 linux-2.4.37.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.4;ftp://ftp.kernel.org/pub/linux/kernel/v2.4
 linux-2.6.26.8.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6;ftp://ftp.kernel.org/pub/linux/kernel/v2.6
+linux-libc-headers-2.6.9.1.tar.bz2;http://ep09.pld-linux.org/~mmazur/linux-libc-headers
+linux-2.6.9.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6;ftp://ftp.kernel.org/pub/linux/kernel/v2.6
+linuxppc-2.6.9-r1.diff.bz2;http://sources.dreamboxupdate.com/download/kernel-patches
+linuxppc-2.6.9-dream-s7.diff.bz2;http://sources.dreamboxupdate.com/download/kernel-patches
+squashfs2.2r2.diff.bz2;http://sources.dreamboxupdate.com/download/kernel-patches
+squashfs_lzma.diff.bz2;http://sources.dreamboxupdate.com/download/kernel-patches
 cifs-1.20c-2.4.tar.gz;http://us1.samba.org/samba/ftp/cifs-cvs
 linux-2.4.34-dbox2-mtd0305.diff.bz2
 autofs4-2.4-module-20050404.tar.gz;http://www.kernel.org/pub/linux/daemons/autofs/v4

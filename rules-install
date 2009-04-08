@@ -12,6 +12,8 @@
 uboot
 linux24
 linux
+linux_dream
+linux_libc_headers
 binutils;make:install
 bootstrap_gcc;make:install
 gcc;make:install

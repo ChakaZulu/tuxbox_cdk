@@ -27,13 +27,17 @@ CONFIGURE_OPTS = \
 	--with-driver=$(driverdir) \
 	--with-boxtype=$(BOXTYPE) \
 	--with-target=cdk
-
+if BOXTYPE_DREAMBOX
+CONFIGURE_OPTS += \
+	--with-dvbincludes=$(driverdir)/dvb/include
+else
 if KERNEL26
 CONFIGURE_OPTS += \
 	--with-dvbincludes=$(targetprefix)/include
 else
 CONFIGURE_OPTS += \
 	--with-dvbincludes=$(driverdir)/dvb/include
+endif
 endif
 
 if MAINTAINER_MODE

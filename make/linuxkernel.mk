@@ -44,6 +44,20 @@ endif
 #	touch $@
 
 $(DEPDIR)/install-linux-headers: linuxdir
+if BOXTYPE_DREAMBOX
+	@PREPARE_linux_libc_headers@
+	mv $(buildprefix)/linux-libc-headers/include/asm-ppc $(buildprefix)/linux-libc-headers/include/asm
+	for i in linux asm asm_generic; do \
+		rm -R $(hostprefix)/$(target)/include/$$i 2> /dev/null || /bin/true; \
+		if [ $$i != asm_generic ] ; then \
+			mv $(buildprefix)/linux-libc-headers/include/$$i $(hostprefix)/$(target)/include; \
+		fi; \
+	done;
+	for i in config.h autoconf.h; do \
+		ln -sf $(buildprefix)/linux/include/linux/$$i $(hostprefix)/$(target)/include/linux; \
+	done;
+	@CLEANUP_linux_libc_headers@
+else
 if KERNEL26
 # Kernels after 2.6.18 offer a special "headers_install" target to generate
 # "userspace-blessed" heades. This will create an include directory in
@@ -67,6 +81,7 @@ if KERNEL26
 		ln -sf $(buildprefix)/linux/usr/include/asm-generic $(hostprefix)/$(target)/include; \
 		ln -sf $(buildprefix)/linux/usr/include/mtd $(hostprefix)/$(target)/include; \
 	fi
+endif
 endif
 	touch $@
 

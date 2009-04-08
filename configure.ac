@@ -715,6 +715,11 @@ TUXBOX_BOXTYPE
 
 TUXBOX_RULES_MAKE(uboot)
 
+if test "$BOXTYPE" != "dbox2" -a "$BOXTYPE" != "tripledragon" -a "$BOXTYPE" != "generic" ; then
+TUXBOX_RULES_MAKE(linux_dream)
+TUXBOX_RULES_MAKE(linux_libc_headers)
+KERNELVERSION=$VERSION_linux_dream
+else
 TUXBOX_RULES_MAKE(linux)
 TUXBOX_RULES_MAKE(linux24)
 if test "$enable_kernel26" = "yes"; then
@@ -722,7 +727,7 @@ if test "$enable_kernel26" = "yes"; then
 else
 	KERNELVERSION=$VERSION_linux24
 fi
-
+fi
 TUXBOX_RULES_MAKE_EXDIR(binutils)
 TUXBOX_RULES_MAKE_EXDIR(bootstrap_gcc)
 TUXBOX_RULES_MAKE_EXDIR(glibc)
