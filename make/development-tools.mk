@@ -42,6 +42,7 @@ $(DEPDIR)/gdb-remote: @DEPENDS_gdb@
 			--build=$(build) \
 			--host=$(build) \
 			--target=$(target) \
+			--with-sysroot=$(targetprefix) \
 			--prefix=$(hostprefix) && \
 		$(MAKE) all-gdb && \
 		$(MAKE) install-gdb
