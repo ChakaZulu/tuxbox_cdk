@@ -12,8 +12,6 @@
 uboot
 linux24
 linux
-linux_dream
-linux_libc_headers
 binutils;make:install
 bootstrap_gcc;make:install
 gcc;make:install
@@ -24,7 +22,6 @@ libtool
 fuse;make:install:DESTDIR=TARGET
 fusekernel;make:install:DESTDIR=TARGET
 djmount;make:install:DESTDIR=TARGET
-
 
 #
 # root
@@ -168,5 +165,11 @@ squashfs
 # database
 #
 sqlite;make:install:prefix=TARGET
+
+#
+# dreambox
+#
+linux_dream
+linux_libc_headers
 
 >>?;rules-install-local

@@ -6,7 +6,9 @@ $(flashprefix)/root: bootstrap $(wildcard root-local.sh) | $(flashprefix)
 	$(INSTALL) -d $@/bin
 	$(INSTALL) -d $@/dev
 	$(INSTALL) -d $@/lib/tuxbox
+if !BOXTYPE_DREAMBOX
 	$(INSTALL) -d $@/mnt
+endif
 	$(INSTALL) -d $@/proc
 	$(INSTALL) -d $@/sbin
 	$(INSTALL) -d $@/share/tuxbox
@@ -25,11 +27,14 @@ if ENABLE_IDE
 	$(INSTALL) -d $@/hdd
 endif
 	$(MAKE) $@/etc/update.urls
+
 	$(MAKE) flash-tuxinfo
+if !BOXTYPE_DREAMBOX
 	$(MAKE) flash-tools_misc
 	$(MAKE) flash-fcp
-	$(MAKE) flash-config
 	$(MAKE) flash-camd2
+endif
+	$(MAKE) flash-config
 	$(MAKE) flash-busybox
 	$(MAKE) flash-ftpd
 	$(MAKE) flash-satfind
@@ -84,3 +89,4 @@ endif
 	$(MAKE) flash-version
 	@FLASHROOTDIR_MODIFIED@
 	@TUXBOX_CUSTOMIZE@
+

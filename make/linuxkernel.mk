@@ -4,8 +4,17 @@
 # as a target.
 # This is deliberate, and makes the target "private".
 
-#$(DEPDIR)/linuxkernel: bootstrap linuxdir install-linux-headers $(KERNEL_DIR)/.config
 $(KERNEL_BUILD_FILENAME): bootstrap linuxdir install-linux-headers $(KERNEL_DIR)/.config
+if BOXTYPE_DREAMBOX
+	$(MAKE) -C $(KERNEL_DIR) zImage modules \
+		ARCH=ppc \
+		CROSS_COMPILE=$(target)-
+	$(MAKE) -C $(KERNEL_DIR) modules_install \
+		ARCH=ppc \
+		CROSS_COMPILE=$(target)- \
+		DEPMOD=/bin/true \
+		INSTALL_MOD_PATH=$(targetprefix)
+else
 	$(MAKE) -C $(KERNEL_DIR) oldconfig ARCH=ppc
 if KERNEL26
 	$(MAKE) -C $(KERNEL_DIR) include/asm \
@@ -29,6 +38,7 @@ else
 		CROSS_COMPILE=$(target)- \
 		DEPMOD=/bin/true \
 		INSTALL_MOD_PATH=$(targetprefix)
+endif
 endif
 # if KERNEL26
 # 	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $(bootprefix)/kernel-cdk
@@ -157,7 +167,12 @@ FS_SMBFS_SED_CONF=$(foreach param,CONFIG_SMB_FS CONFIG_SMB_UNIX CONFIG_NLS,-e s"
 endif
 
 if ENABLE_AUTOMOUNT
+if BOXTYPE_DREAMBOX
+# this replaces cdk/Patches/linux-enable-autofs.diff from the dreambox branch
+AUTOMOUNT_SED_CONF=$(foreach param,CONFIG_AUTOFS4_FS,-e s"/^.*$(param)[= ].*/\$(param)=m/")
+else
 AUTOMOUNT_SED_CONF=-e ""
+endif
 else
 AUTOMOUNT_SED_CONF=$(foreach param,CONFIG_AUTOFS4_FS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
 endif

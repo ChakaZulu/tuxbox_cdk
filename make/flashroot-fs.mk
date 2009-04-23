@@ -51,6 +51,10 @@ PART_TYPE="squashfs+lzma"
 else
 PART_TYPE=squashfs
 endif
+if BOXTYPE_DREAMBOX
+	sed $(AUTOMOUNT_SED_CONF) $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig > $(KERNEL_DIR)/.config
+	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
+else
 if KERNEL26
 	m4 --define=rootfs=$(PART_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 	sed -e 's/.*CONFIG_SQUASHFS[= ].*$$/CONFIG_SQUASHFS=y/' $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_NFS_SED_CONF) $(VFAT_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(LZMA_SED_CONF) $(AUTOMOUNT_SED_CONF) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
@@ -67,6 +71,7 @@ else
 		-a 00000000 -e 00000000 -d $(KERNEL_BUILD_FILENAME) $@/vmlinuz
 endif
 	$(MAKE) driver targetprefix=$@
+endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/build
 	rm -f $@/lib/modules/$(KERNELVERSION)/source
 	rm -f $@/lib/modules/$(KERNELVERSION)/modules.[^d]*

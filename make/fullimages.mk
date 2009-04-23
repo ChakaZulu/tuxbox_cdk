@@ -128,6 +128,47 @@ $(flashprefix)/enigma-squashfs.img%: \
 	@TUXBOX_CHECKIMAGE@
 	@TUXBOX_CUSTOMIZE@
 
+if BOXTYPE_DREAMBOX
+$(flashprefix)/enigma-squashfs.dream: \
+		$(flashprefix)/root \
+		$(flashprefix)/root-enigma-squashfs \
+		$(flashprefix)/boot-cramfs.img $(flashprefix)/root-squashfs.img $(flashprefix)/complete.img
+		@TUXBOX_CUSTOMIZE@
+
+$(flashprefix)/boot-cramfs.img: $(KERNEL_BUILD_FILENAME)\
+		$(flashprefix)/boot
+	$(INSTALL) $(buildprefix)/linux/arch/ppc/boot/images/zImage.treeboot $(flashprefix)/boot/root/platform/kernel/os
+if BOXMODEL_DM7000
+	$(flashprefix)/mkcramfs-e -eb $(flashprefix)/boot $(flashprefix)/boot-cramfs.img
+else
+	mv $(flashprefix)/boot/root/platform/kernel/bild .
+	$(flashprefix)/mkcramfs-e -eb $(flashprefix)/boot $(flashprefix)/boot-cramfs.img
+	mv ./bild $(flashprefix)/boot/root/platform/kernel
+endif
+	@if [ `stat -c %s $(flashprefix)/boot-cramfs.img` -gt 1179648 ]; then \
+		echo "ERROR: CramFS part is too big for image (max. allowed 1179648 bytes)"; \
+		rm -f $(flashprefix)/boot-cramfs.img.too-big 2> /dev/null || /bin/true; \
+		mv $(flashprefix)/boot-cramfs.img $(flashprefix)/boot-cramfs.img.too-big; \
+		exit 1; \
+	fi
+
+$(flashprefix)/root-squashfs.img: \
+		$(flashprefix)/root \
+		$(flashprefix)/root-enigma-squashfs
+	$(flashprefix)/mksquashfs $(flashprefix)/root-enigma-squashfs $(flashprefix)/root-squashfs.img -be -all-root
+	@if [ `stat -c %s $(flashprefix)/root-squashfs.img` -gt 5111808 ]; then \
+		echo "ERROR: SquashFS part is too big for image (max. allowed 5111808 bytes)"; \
+		rm -f $(flashprefix)/root-squashfs.img.too-big 2> /dev/null || /bin/true; \
+		mv $(flashprefix)/root-squashfs.img $(flashprefix)/root-squashfs.img.too-big; \
+		exit 1; \
+	fi
+
+$(flashprefix)/complete.img: $(flashprefix)/boot-cramfs.img $(flashprefix)/root-squashfs.img
+	cp $(flashprefix)/boot-cramfs.img $(flashprefix)/complete.img; \
+	dd if=$(flashprefix)/root-squashfs.img of=$(flashprefix)/complete.img bs=1024 seek=1152
+
+endif
+
 $(flashprefix)/enigma-jffs2.img1x $(flashprefix)/enigma-jffs2.img2x: \
 $(flashprefix)/enigma-jffs2.img%: \
 		$(flashprefix)/jffs2.flfs% \

@@ -36,25 +36,106 @@ AC_MSG_RESULT(done)
 ])
 
 AC_DEFUN([TUXBOX_BOXTYPE],[
+
+KERNELVERSION=check
+
 AC_ARG_WITH(boxtype,
-	[  --with-boxtype=NAME box type [[dbox2,tripledragon,generic,dm7000,dm500,dm56x0,dm600pvr...]]],
-	[BOXTYPE="$withval"],[BOXTYPE="dbox2"])
+	[  --with-boxtype          valid values: dbox2,tripledragon,dreambox,ipbox,generic],
+	[case "${withval}" in
+dnl		To-Do: extend CPU types and kernel versions when needed
+		dbox2)
+			BOXTYPE="$withval"
+			CPU_MODEL="823"
+			;;
+		dreambox)
+			BOXTYPE="$withval"
+			CPU_MODEL="405"
+			AM_CONDITIONAL(KERNEL26, true)
+			enable_kernel26=yes
+			KERNELVERSION=$VERSION_linux_dream
+			;;
+		ipbox)
+			BOXTYPE="$withval"
+			CPU_MODEL="405"
+			;;
+		tripledragon|generic)
+			BOXTYPE="$withval"
+			CPU_MODEL="823"
+			;;
+		*)
+			AC_MSG_ERROR([bad value $withval for --with-boxtype]) ;;
+	esac], [BOXTYPE="dbox2"; CPU_MODEL="823"])
+
+if test "$KERNELVERSION" = "check"; then
+	AC_ARG_ENABLE(kernel26,
+		AS_HELP_STRING(--enable-kernel26,set up the CDK to use the 2.6 kernel (experimental)),
+		,[enable_kernel26=no])
+	AM_CONDITIONAL(KERNEL26,test "$enable_kernel26" = "yes")
+	if test "$enable_kernel26" = "yes"; then
+		KERNELVERSION=$VERSION_linux
+	else
+		KERNELVERSION=$VERSION_linux24
+	fi
+fi
+
+AC_ARG_WITH(boxmodel,
+	[  --with-boxmodel         valid for dreambox: dm500, dm500plus, dm600pvr, dm56x0, dm7020, dm7025)
+                          valid for ipbox: ip200, ip250, ip350],
+	[case "${withval}" in
+		dm500|dm500plus|dm600pvr|dm56x0|dm7020|dm7025)
+			if test "$BOXTYPE" = "dreambox"; then
+				BOXMODEL="$withval"
+			else
+				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
+			fi
+			;;
+		ip200|ip250|ip300)
+			if test "$BOXTYPE" = "ipbox"; then
+				BOXMODEL="$withval"
+			else
+				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
+			fi
+			;;
+		*)
+			AC_MSG_ERROR([unsupported value $withval for --with-boxmodel])
+			;;
+	esac],
+	[if test "$BOXTYPE" = "dreambox" -o "$BOXTYPE" = "ipbox"; then
+		AC_MSG_ERROR([Dreambox/IPBox needs --with-boxmodel])
+	fi])
 
 AC_SUBST(BOXTYPE)
+AC_SUBST(BOXMODEL)
+AC_SUBST(CPU_MODEL)
+AC_SUBST(KERNELVERSION)
 
 AM_CONDITIONAL(BOXTYPE_DBOX2, test "$BOXTYPE" = "dbox2")
 AM_CONDITIONAL(BOXTYPE_TRIPLE, test "$BOXTYPE" = "tripledragon")
+AM_CONDITIONAL(BOXTYPE_DREAMBOX, test "$BOXTYPE" = "dreambox")
+AM_CONDITIONAL(BOXTYPE_IPBOX, test "$BOXTYPE" = "ipbox")
 AM_CONDITIONAL(BOXTYPE_GENERIC, test "$BOXTYPE" = "generic")
-AM_CONDITIONAL(BOXTYPE_DREAMBOX, test "$BOXTYPE" != "dbox2" -a "$BOXTYPE" != "tripledragon" -a "$BOXTYPE" != "generic")
+
+AM_CONDITIONAL(BOXMODEL_DM500,test "$BOXMODEL" = "dm500")
+AM_CONDITIONAL(BOXMODEL_DM500PLUS,test "$BOXMODEL" = "dm500plus")
+AM_CONDITIONAL(BOXMODEL_DM600PVR,test "$BOXMODEL" = "dm600pvr")
+AM_CONDITIONAL(BOXMODEL_DM56x0,test "$BOXMODEL" = "dm56x0")
+AM_CONDITIONAL(BOXMODEL_DM7000,test "$BOXMODEL" = "dm7020")
+AM_CONDITIONAL(BOXMODEL_DM7000,test "$BOXMODEL" = "dm7025")
+
+AM_CONDITIONAL(BOXMODEL_IP200,test "$BOXMODEL" = "ip200")
+AM_CONDITIONAL(BOXMODEL_IP250,test "$BOXMODEL" = "ip250")
+AM_CONDITIONAL(BOXMODEL_IP350,test "$BOXMODEL" = "ip350")
 
 if test "$BOXTYPE" = "dbox2"; then
 	AC_DEFINE(HAVE_DBOX_HARDWARE, 1, [building for a dbox2])
 elif test "$BOXTYPE" = "tripledragon"; then
-	AC_DEFINE(HAVE_TRIPLEDRAGON, 1, [building for a tripledragon])
+	AC_DEFINE(HAVE_TRIPLEDRAGON_HARDWARE, 1, [building for a tripledragon])
+elif test "$BOXTYPE" = "dreambox"; then
+	AC_DEFINE(HAVE_DREAMBOX_HARDWARE, 1, [building for a dreambox])
+elif test "$BOXTYPE" = "ipbox"; then
+	AC_DEFINE(HAVE_IPBOX_HARDWARE, 1, [building for an ipbox])
 elif test "$BOXTYPE" = "generic"; then
 	AC_DEFINE(HAVE_GENERIC_HARDWARE, 1, [building for a generic device like a standard PC])
-else	# many dreamboxes, don't list them one by one...
-	AC_DEFINE(HAVE_DREAMBOX_HARDWARE, 1, [building for a dreambox])
 fi
 
 ])

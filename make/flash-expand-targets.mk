@@ -54,7 +54,11 @@ flash-enigma-all-all: flash-enigma-cramfs-all flash-enigma-squashfs-all flash-en
 
 flash-enigma-cramfs-all: flash-enigma-cramfs-1x flash-enigma-cramfs-2x
 
+if BOXTYPE_DREAMBOX
+flash-enigma-squashfs: $(flashprefix)/enigma-squashfs.dream
+else
 flash-enigma-squashfs-all: flash-enigma-squashfs-1x flash-enigma-squashfs-2x
+endif
 
 flash-enigma-jffs2-all: flash-enigma-jffs2-1x flash-enigma-jffs2-2x
 

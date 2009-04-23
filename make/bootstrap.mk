@@ -83,7 +83,7 @@ $(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) $(KERNEL_CIFS) $(KERNEL_AUTOMOUNT) directo
 	$(KERNEL_PREPARE)
 if KERNEL26
 if BOXTYPE_DREAMBOX
-	cat $(KERNEL_DIR)/arch/ppc/configs/$(BOXTYPE)_defconfig > $(KERNEL_DIR)/.config
+	cp $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig $(KERNEL_DIR)/.config
 else
 	cp Patches/linux-2.6.26.4-dbox2.config $(KERNEL_DIR)/.config
 endif
@@ -109,7 +109,9 @@ if KERNEL26
 endif
 	$(MAKE) -C $(KERNEL_DIR) include/linux/version.h \
 		ARCH=ppc
+if !BOXTYPE_DREAMBOX
 	rm $(KERNEL_DIR)/.config
+endif
 	touch $@
 
 
@@ -168,10 +170,14 @@ UCLIBC_DEBUG_SED_CONF=$(foreach param,DODEBUG DODEBUG_PT SUPPORT_LD_DEBUG SUPPOR
 endif
 
 $(DEPDIR)/libc: @DEPENDS_uclibc@ bootstrap_gcc install-linux-headers
+if BOXTYPE_DREAMBOX
+KHEADERS="$(buildprefix)/$(KERNEL_DIR)/include"
+else
 if KERNEL26
 KHEADERS="$(buildprefix)/$(KERNEL_DIR)/usr/include"
 else
 KHEADERS="$(buildprefix)/$(KERNEL_DIR)/include"
+endif
 endif
 	@PREPARE_uclibc@
 	sed $(XFS_UCLIBC_CONF) $(UCLIBC_DEBUG_SED_CONF) -e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=$(KHEADERS),g' Patches/uclibc-0.9.30.config > @DIR_uclibc@/.config

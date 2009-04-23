@@ -26,10 +26,7 @@ AM_MAINTAINER_MODE
 
 AC_PROG_CC
 
-AC_ARG_ENABLE(kernel26,
-	AS_HELP_STRING(--enable-kernel26,set up the CDK to use the 2.6 kernel (experimental)),
-	,[enable_kernel26=no])
-AM_CONDITIONAL(KERNEL26,test "$enable_kernel26" = "yes")
+TUXBOX_BOXTYPE
 
 AC_ARG_ENABLE(lzma,
 	AS_HELP_STRING(--enable-lzma,use LZMA compression when generating images),
@@ -54,11 +51,6 @@ else
 	GLIBC_PTHREADS="linuxthreads"
 fi
 AC_SUBST(GLIBC_PTHREADS)
-
-AC_ARG_WITH(cpu,
-	[  --with-cpu=MODEL        cpu model [[823,405]]],
-	[CPU_MODEL="$withval"],[CPU_MODEL="823"])
-AC_SUBST(CPU_MODEL)
 
 AC_ARG_ENABLE(sqlite,
 	AS_HELP_STRING(--enable-sqlite,enable sql storage),
@@ -524,7 +516,16 @@ else
 		bootdir="$cvsdir/boot"
 	fi
 	if test "$driverdir" = "NONE"; then
-		driverdir="$cvsdir/driver"
+		case "${BOXTYPE}" in
+			dreambox)
+				driverdir="$cvsdir/driver_dream"
+				startscriptdir="$cvsdir/cdk/root_dream"
+				;;
+			*)
+				driverdir="$cvsdir/driver"
+				startscriptdir="$cvsdir/cdk/root"
+				;;
+		esac
 	fi
 	if test "$hostappsdir" = "NONE"; then
 		hostappsdir="$cvsdir/hostapps"
@@ -580,6 +581,7 @@ AC_SUBST(appsdir)
 AC_SUBST(bootdir)
 AC_SUBST(driverdir)
 AC_SUBST(hostappsdir)
+AC_SUBST(startscriptdir)
 AC_SUBST(gnuserver)
 AC_SUBST(defaultserver)
 
@@ -709,25 +711,24 @@ AC_SUBST(DEPSCLEANUP)
 #
 # core
 #
-AC_SUBST(KERNELVERSION)
 
-TUXBOX_BOXTYPE
+
+case "${BOXTYPE}" in
+	dreambox)
+		TUXBOX_RULES_MAKE(linux_dream)
+		TUXBOX_RULES_MAKE(linux_libc_headers)
+		TUXBOX_RULES_MAKE(dreamfiles)
+		TUXBOX_RULES_MAKE(dreamdriver_dm7000)
+		TUXBOX_RULES_MAKE(dreamdriver_dm56x0)
+		TUXBOX_RULES_MAKE(dreamdriver_dm500)
+		;;
+	*)
+		TUXBOX_RULES_MAKE(linux)
+		TUXBOX_RULES_MAKE(linux24)
+		;;
+esac
 
 TUXBOX_RULES_MAKE(uboot)
-
-if test "$BOXTYPE" != "dbox2" -a "$BOXTYPE" != "tripledragon" -a "$BOXTYPE" != "generic" ; then
-TUXBOX_RULES_MAKE(linux_dream)
-TUXBOX_RULES_MAKE(linux_libc_headers)
-KERNELVERSION=$VERSION_linux_dream
-else
-TUXBOX_RULES_MAKE(linux)
-TUXBOX_RULES_MAKE(linux24)
-if test "$enable_kernel26" = "yes"; then
-	KERNELVERSION=$VERSION_linux
-else
-	KERNELVERSION=$VERSION_linux24
-fi
-fi
 TUXBOX_RULES_MAKE_EXDIR(binutils)
 TUXBOX_RULES_MAKE_EXDIR(bootstrap_gcc)
 TUXBOX_RULES_MAKE_EXDIR(glibc)
@@ -942,7 +943,7 @@ fi
 AC_MSG_RESULT([
 summary:
 ----------------------------------------
-target cpu/boxtype:		$CPU_MODEL/$BOXTYPE
+target cpu/boxtype:		$CPU_MODEL/$BOXTYPE $BOXMODEL
 kernel:				$used_kernelversion
 used yadd kernel config:	$yadd_kernel_conf
 used flash kernel config:	$flash_kernel_conf
@@ -962,6 +963,7 @@ serversupport:			$serversupport
 checkImage:			$CHECKIMAGE_BEHAVIOR
 target apps directory:		$appsdir
 boot directory:			$bootdir
+start script directory:		$startscriptdir
 driver directory:		$driverdir
 host apps directory:		$hostappsdir
 logo directory:			$logosdir
@@ -1016,14 +1018,36 @@ AC_SUBST(FLASHROOTDIR_MODIFIED)
 
 AC_CONFIG_FILES([
 Makefile
+rules-downcheck.pl
+])
+
+case "${BOXTYPE}" in
+	dreambox)
+	AC_CONFIG_FILES([
+root_dream/Makefile
+root_dream/etc/Makefile
+root_dream/etc/init.d/Makefile
+root_dream/share/Makefile
+root_dream/share/tuxbox/Makefile
+root_dream/share/udhcpc/Makefile
+root_dream/var_init/Makefile
+root_dream/var_init/etc/Makefile
+root_dream/var_init/tuxbox/Makefile
+root_dream/var_init/tuxbox/config/Makefile
+root_dream/var_init/tuxbox/config/enigma/Makefile
+])
+	;;
+	*)
+	AC_CONFIG_FILES([
 root/Makefile
 root/etc/Makefile
 root/etc/init.d/Makefile
 root/etc/network/Makefile
 root/share/Makefile
 root/share/udhcpc/Makefile
-rules-downcheck.pl
 ])
+	;;
+esac
 
 AC_CONFIG_COMMANDS([rules-downcheck-chmod],[chmod +x rules-downcheck.pl])
 
