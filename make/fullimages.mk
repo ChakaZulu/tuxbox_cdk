@@ -137,7 +137,7 @@ $(flashprefix)/enigma-squashfs.dream: \
 
 $(flashprefix)/boot-cramfs.img: $(KERNEL_BUILD_FILENAME)\
 		$(flashprefix)/boot
-	$(INSTALL) $(buildprefix)/linux/arch/ppc/boot/images/zImage.treeboot $(flashprefix)/boot/root/platform/kernel/os
+	$(INSTALL) $(KERNEL_BUILD_FILENAME) $(flashprefix)/boot/root/platform/kernel/os
 if BOXMODEL_DM7000
 	$(flashprefix)/mkcramfs-e -eb $(flashprefix)/boot $(flashprefix)/boot-cramfs.img
 else

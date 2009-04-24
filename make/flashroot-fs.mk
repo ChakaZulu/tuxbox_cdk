@@ -64,7 +64,7 @@ else
 endif
 	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
 if KERNEL26
-	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $@/vmlinuz
+	$(INSTALL) -m644 $(KERNEL_BUILD_FILENAME) $@/vmlinuz
 else
 	$(hostprefix)/bin/mkimage \
 		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \

@@ -194,3 +194,8 @@ dreamfiles_20061230.tar.bz2;http://sources.dreamboxupdate.com/download/snapshots
 dreamdriver_dm7000_20071022.tar.bz2;http://sources.dreamboxupdate.com/download/snapshots
 dreamdriver_dm56x0_20071022.tar.bz2;http://sources.dreamboxupdate.com/download/snapshots
 dreamdriver_dm500_20071022.tar.bz2;http://sources.dreamboxupdate.com/download/snapshots
+
+#
+# ipbox
+#
+linux-2.6.17.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6;ftp://ftp.kernel.org/pub/linux/kernel/v2.6

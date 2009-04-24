@@ -188,4 +188,9 @@ dreamdriver_dm7000;20071022;dreamdriver_dm7000_20071022;dreamdriver_dm7000_20071
 dreamdriver_dm56x0;20071022;dreamdriver_dm56x0_20071022;dreamdriver_dm56x0_20071022.tar.bz2;extract:dreamdriver_dm56x0_20071022.tar.bz2
 dreamdriver_dm500;20071022;dreamdriver_dm500_20071022;dreamdriver_dm500_20071022.tar.bz2;extract:dreamdriver_dm500_20071022.tar.bz2
 
+#
+# ipbox
+#
+linux_ipbox;2.6.17;linux-2.6.17;linux-2.6.17.tar.bz2:linux-2.6.17.diff:linux-2.6.17-sumversion.diff:linux-2.6.17-mmc.diff:linux-2.6.17-sd.diff;remove:linux;extract:linux-2.6.17.tar.bz2;patch:linux-2.6.17.diff;patch:linux-2.6.17-sumversion.diff;patch:linux-2.6.17-mmc.diff;patch:linux-2.6.17-sd.diff;link:linux-2.6.17:linux
+
 >>?;rules-make-local

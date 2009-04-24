@@ -172,4 +172,9 @@ sqlite;make:install:prefix=TARGET
 linux_dream
 linux_libc_headers
 
+#
+# ipbox
+#
+linux_ipbox
+
 >>?;rules-install-local

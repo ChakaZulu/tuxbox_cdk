@@ -52,11 +52,14 @@ dnl		To-Do: extend CPU types and kernel versions when needed
 			CPU_MODEL="405"
 			AM_CONDITIONAL(KERNEL26, true)
 			enable_kernel26=yes
-			KERNELVERSION=$VERSION_linux_dream
+			KERNELVERSION="\$(VERSION_linux_dream)"
 			;;
 		ipbox)
 			BOXTYPE="$withval"
 			CPU_MODEL="405"
+			AM_CONDITIONAL(KERNEL26, true)
+			enable_kernel26=yes
+			KERNELVERSION="\$(VERSION_linux_ipbox)"
 			;;
 		tripledragon|generic)
 			BOXTYPE="$withval"
@@ -72,9 +75,9 @@ if test "$KERNELVERSION" = "check"; then
 		,[enable_kernel26=no])
 	AM_CONDITIONAL(KERNEL26,test "$enable_kernel26" = "yes")
 	if test "$enable_kernel26" = "yes"; then
-		KERNELVERSION=$VERSION_linux
+		KERNELVERSION="\$(VERSION_linux)"
 	else
-		KERNELVERSION=$VERSION_linux24
+		KERNELVERSION="\$(VERSION_linux24)"
 	fi
 fi
 

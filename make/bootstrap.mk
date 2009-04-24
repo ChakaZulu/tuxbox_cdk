@@ -56,7 +56,13 @@ if BOXTYPE_DREAMBOX
 KERNEL_DEPENDS = @DEPENDS_linux_dream@
 KERNEL_DIR = @DIR_linux_dream@
 KERNEL_PREPARE = @PREPARE_linux_dream@
-KERNEL_BUILD_FILENAME = @DIR_linux24@/arch/ppc/boot/images/vmlinux.gz
+KERNEL_BUILD_FILENAME = @DIR_linux_dream@/arch/ppc/boot/images/zImage.treeboot
+else
+if BOXTYPE_IPBOX
+KERNEL_DEPENDS = @DEPENDS_linux_ipbox@
+KERNEL_DIR = @DIR_linux_ipbox@
+KERNEL_PREPARE = @PREPARE_linux_ipbox@
+KERNEL_BUILD_FILENAME = @DIR_linux_ipbox@/vmlinux
 else
 if KERNEL26
 KERNEL_DEPENDS = @DEPENDS_linux@
@@ -68,6 +74,7 @@ KERNEL_DEPENDS = @DEPENDS_linux24@
 KERNEL_DIR = @DIR_linux24@
 KERNEL_PREPARE = @PREPARE_linux24@
 KERNEL_BUILD_FILENAME = @DIR_linux24@/arch/ppc/boot/images/vmlinux.gz
+endif
 endif
 endif
 
@@ -85,7 +92,19 @@ if KERNEL26
 if BOXTYPE_DREAMBOX
 	cp $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig $(KERNEL_DIR)/.config
 else
+if BOXTYPE_IPBOX
+if BOXMODEL_IP200
+	$(MAKE) -C linux-2.6.17 mutant200s_defconfig
+endif
+if BOXMODEL_IP250
+	$(MAKE) -C linux-2.6.17 relook200_defconfig
+endif
+if BOXMODEL_IP350
+	$(MAKE) -C linux-2.6.17 relook210_defconfig
+endif
+else
 	cp Patches/linux-2.6.26.4-dbox2.config $(KERNEL_DIR)/.config
+endif
 endif
 else
 	cp Patches/linux-2.4.35.5-dbox2.config $(KERNEL_DIR)/.config
@@ -109,6 +128,10 @@ if KERNEL26
 endif
 	$(MAKE) -C $(KERNEL_DIR) include/linux/version.h \
 		ARCH=ppc
+if BOXTYPE_IPBOX
+	ln -sf $(buildprefix)/linux/include/asm-ppc $(buildprefix)/linux/include/asm > /dev/null || /bin/true
+	ln -s $(buildprefix)/linux/include/asm-powerpc/* $(buildprefix)/linux/include/asm-ppc/ > /dev/null || /bin/true
+endif
 if !BOXTYPE_DREAMBOX
 	rm $(KERNEL_DIR)/.config
 endif
@@ -170,14 +193,14 @@ UCLIBC_DEBUG_SED_CONF=$(foreach param,DODEBUG DODEBUG_PT SUPPORT_LD_DEBUG SUPPOR
 endif
 
 $(DEPDIR)/libc: @DEPENDS_uclibc@ bootstrap_gcc install-linux-headers
-if BOXTYPE_DREAMBOX
-KHEADERS="$(buildprefix)/$(KERNEL_DIR)/include"
-else
+if BOXTYPE_DBOX2
 if KERNEL26
 KHEADERS="$(buildprefix)/$(KERNEL_DIR)/usr/include"
 else
 KHEADERS="$(buildprefix)/$(KERNEL_DIR)/include"
 endif
+else
+KHEADERS="$(buildprefix)/$(KERNEL_DIR)/include"
 endif
 	@PREPARE_uclibc@
 	sed $(XFS_UCLIBC_CONF) $(UCLIBC_DEBUG_SED_CONF) -e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=$(KHEADERS),g' Patches/uclibc-0.9.30.config > @DIR_uclibc@/.config
@@ -204,6 +227,11 @@ $(DEPDIR)/libc: @DEPENDS_glibc@ bootstrap_gcc install-linux-headers
 		echo "libc_cv_forced_unwind=yes" > @DIR_glibc@/config.cache && \
 		echo "libc_cv_c_cleanup=yes" >> @DIR_glibc@/config.cache; \
 	fi
+if BOXTYPE_IPBOX
+	rm @SOURCEDIR_glibc@/sysdeps/powerpc/powerpc32/strncmp.S
+	cd @SOURCEDIR_glibc@ && patch -p1 -E -i ../Patches/glibc_ppc4xx_ibmstropt.diff
+	cd @SOURCEDIR_glibc@ && patch -p1 -E -i ../Patches/glibc-ibmppc4xx_fp_perflib.diff
+endif
 	cd @DIR_glibc@ && \
 		$(BUILDENV) \
 		@CONFIGURE_glibc@ \
@@ -245,6 +273,10 @@ $(DEPDIR)/gcc: @DEPENDS_gcc@ libc
 	@PREPARE_gcc@
 if TARGETRULESET_UCLIBC
 	cd @SOURCEDIR_gcc@ && patch -p1 -E -i $(buildprefix)/Patches/gcc-uclibc.diff
+endif
+if BOXTYPE_IPBOX
+	cd @SOURCEDIR_gcc@ && patch -p1 -E -i ../Patches/gcc-g++-ppc4xx.diff
+	cd @SOURCEDIR_gcc@ && patch -p1 -E -i ../Patches/gcc-ibmppc4xx_fp_perflib.diff
 endif
 	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
 	cp -p $(hostprefix)/$(target)/include/limits.h $(hostprefix)/$(target)/sys-include/

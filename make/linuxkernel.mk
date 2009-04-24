@@ -15,6 +15,14 @@ if BOXTYPE_DREAMBOX
 		DEPMOD=/bin/true \
 		INSTALL_MOD_PATH=$(targetprefix)
 else
+if BOXTYPE_IPBOX
+	$(MAKE) -C linux vmlinux modules ARCH=ppc CROSS_COMPILE=$(target)-
+	cp $(KERNEL_BUILD_FILENAME) $(flashprefix)/
+	$(MAKE) -C linux modules_install ARCH=ppc CROSS_COMPILE=$(target)- DEPMOD=/bin/true INSTALL_MOD_PATH=$(flashprefix)/root
+	rm -rf $(targetprefix)/lib/modules || /bin/true
+	cp -rp $(flashprefix)/root/lib/modules $(targetprefix)/lib/
+	cp $(buildprefix)/linux/System.map $(flashprefix)/kernel_System.map
+else
 	$(MAKE) -C $(KERNEL_DIR) oldconfig ARCH=ppc
 if KERNEL26
 	$(MAKE) -C $(KERNEL_DIR) include/asm \
@@ -38,6 +46,7 @@ else
 		CROSS_COMPILE=$(target)- \
 		DEPMOD=/bin/true \
 		INSTALL_MOD_PATH=$(targetprefix)
+endif
 endif
 endif
 # if KERNEL26

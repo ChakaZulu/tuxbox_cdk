@@ -722,6 +722,9 @@ case "${BOXTYPE}" in
 		TUXBOX_RULES_MAKE(dreamdriver_dm56x0)
 		TUXBOX_RULES_MAKE(dreamdriver_dm500)
 		;;
+	ipbox)
+		TUXBOX_RULES_MAKE(linux_ipbox)
+		;;
 	*)
 		TUXBOX_RULES_MAKE(linux)
 		TUXBOX_RULES_MAKE(linux24)
