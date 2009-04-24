@@ -1,0 +1,100 @@
+diff -ru linux-2.6.17/drivers/mmc/mmc_block.c linux-2.6.17-mod/drivers/mmc/mmc_block.c
+--- linux-2.6.17/drivers/mmc/mmc_block.c	2008-11-13 18:29:00.000000000 +0000
++++ linux-2.6.17-mod/drivers/mmc/mmc_block.c	2008-12-23 15:58:16.000000000 +0000
+@@ -31,6 +31,7 @@
+ #include <linux/mutex.h>
+ 
+ #include <linux/mmc/card.h>
++#include <linux/mmc/host.h>
+ #include <linux/mmc/protocol.h>
+ 
+ #include <asm/system.h>
+@@ -181,6 +182,37 @@
+ 		brq.stop.arg = 0;
+ 		brq.stop.flags = MMC_RSP_R1B | MMC_CMD_AC;
+ 
++		/*
++		 * Scale up the timeout by the r2w factor
++		 */
++		if (rq_data_dir(req) == WRITE) {
++			brq.data.timeout_ns <<= card->csd.r2w_factor;
++			brq.data.timeout_clks <<= card->csd.r2w_factor;
++		}
++
++		/*
++		 * SD cards use a 100 multiplier and has a upper limit
++		 */
++		if (mmc_card_sd(card)) {
++			unsigned int limit_us, timeout_us;
++
++			brq.data.timeout_ns *= 10;
++			brq.data.timeout_clks *= 10;
++
++			if (rq_data_dir(req) == READ)
++				limit_us = 100000;
++			else
++				limit_us = 250000;
++
++			timeout_us = brq.data.timeout_ns / 1000;
++			timeout_us += brq.data.timeout_clks * 1000 / (card->host->ios.clock / 1000);
++
++			if (timeout_us > limit_us) {
++				brq.data.timeout_ns = limit_us * 1000;
++				brq.data.timeout_clks = 0;
++			}
++		} 
++
+ 		if (rq_data_dir(req) == READ) {
+ 			brq.cmd.opcode = brq.data.blocks > 1 ? MMC_READ_MULTIPLE_BLOCK : MMC_READ_SINGLE_BLOCK;
+ 			brq.data.flags |= MMC_DATA_READ;
+@@ -188,12 +220,6 @@
+ 			brq.cmd.opcode = MMC_WRITE_BLOCK;
+ 			brq.data.flags |= MMC_DATA_WRITE;
+ 			brq.data.blocks = 1;
+-
+-			/*
+-			 * Scale up the timeout by the r2w factor
+-			 */
+-			brq.data.timeout_ns <<= card->csd.r2w_factor;
+-			brq.data.timeout_clks <<= card->csd.r2w_factor;
+ 		}
+ 
+ 		if (brq.data.blocks > 1) {
+Only in linux-2.6.17-mod/drivers/mmc: mmc_block.c~
+diff -ru linux-2.6.17/drivers/mmc/mmc.c linux-2.6.17-mod/drivers/mmc/mmc.c
+--- linux-2.6.17/drivers/mmc/mmc.c	2006-06-18 01:49:35.000000000 +0000
++++ linux-2.6.17-mod/drivers/mmc/mmc.c	2008-12-23 15:53:47.000000000 +0000
+@@ -913,6 +913,7 @@
+ 	struct mmc_request mrq;
+ 	struct mmc_command cmd;
+ 	struct mmc_data data;
++	unsigned int timeout_us;
+ 
+ 	struct scatterlist sg;
+ 
+@@ -948,8 +949,22 @@
+ 
+ 		memset(&data, 0, sizeof(struct mmc_data));
+ 
+-		data.timeout_ns = card->csd.tacc_ns * 10;
+-		data.timeout_clks = card->csd.tacc_clks * 10;
++		if (mmc_card_sd(card)) {
++			data.timeout_ns = card->csd.tacc_ns * 100;
++			data.timeout_clks = card->csd.tacc_clks * 100;
++
++			timeout_us = data.timeout_ns / 1000;
++			timeout_us += data.timeout_clks * 1000 / (host->ios.clock / 1000);
++
++			if (timeout_us > 100000) {
++				data.timeout_ns = 100000000;
++				data.timeout_clks = 0;
++			}
++		} else {
++			data.timeout_ns = card->csd.tacc_ns * 10;
++			data.timeout_clks = card->csd.tacc_clks * 10;
++		}
++
+ 		data.blksz_bits = 3;
+ 		data.blksz = 1 << 3;
+ 		data.blocks = 1;
+Only in linux-2.6.17-mod/drivers/mmc: mmc.c~

@@ -1,0 +1,12 @@
+diff -ru linux-2.6.17/scripts/mod/sumversion.c linux-2.6.17-mod/scripts/mod/sumversion.c
+--- linux-2.6.17/scripts/mod/sumversion.c	2006-06-18 01:49:35.000000000 +0000
++++ linux-2.6.17-mod/scripts/mod/sumversion.c	2008-11-03 19:21:17.000000000 +0000
+@@ -8,6 +8,7 @@
+ #include <errno.h>
+ #include <string.h>
+ #include "modpost.h"
++#include "limits.h"
+ 
+ /*
+  * Stolen form Cryptographic API.
+Only in linux-2.6.17-mod/scripts/mod: sumversion.c~
