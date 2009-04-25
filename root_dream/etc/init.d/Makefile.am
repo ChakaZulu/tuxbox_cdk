@@ -1,4 +1,4 @@
-FILES_FLASH_RO = rcS rcK start init1
+FILES_FLASH_RO_EXEC = rcS rcK start init1
 
 DIR = /etc/init.d
 
