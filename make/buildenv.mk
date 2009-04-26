@@ -36,7 +36,12 @@ endif
 if BOXTYPE_DREAMBOX
 CONFIGURE_OPTS += \
 	--with-dvbincludes=$(driverdir)/dvb/include
-else
+endif
+if BOXTYPE_IPBOX
+CONFIGURE_OPTS += \
+	--with-dvbincludes=$(driverdir)/include
+endif
+if BOXTYPE_DBOX2
 if KERNEL26
 CONFIGURE_OPTS += \
 	--with-dvbincludes=$(targetprefix)/include

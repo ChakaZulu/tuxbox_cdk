@@ -517,7 +517,7 @@ else
 	fi
 	if test "$driverdir" = "NONE"; then
 		case "${BOXTYPE}" in
-			dreambox)
+			dreambox|ipbox)
 				driverdir="$cvsdir/driver_dream"
 				startscriptdir="$cvsdir/cdk/root_dream"
 				;;
