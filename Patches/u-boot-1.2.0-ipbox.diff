@@ -1,0 +1,1711 @@
+diff -uNr u-boot-1.2.0.org/common/cmd_bdinfo.c u-boot-1.2.0/common/cmd_bdinfo.c
+--- u-boot-1.2.0.org/common/cmd_bdinfo.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/common/cmd_bdinfo.c	2009-04-26 12:55:04.000000000 +0200
+@@ -47,6 +47,7 @@
+ #ifdef DEBUG
+ 	print_num ("bd address",    (ulong)bd		);
+ #endif
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB04xxx)
+ 	print_num ("memstart",	    bd->bi_memstart	);
+ 	print_num ("memsize",	    bd->bi_memsize	);
+ 	print_num ("flashstart",    bd->bi_flashstart	);
+@@ -54,11 +55,14 @@
+ 	print_num ("flashoffset",   bd->bi_flashoffset	);
+ 	print_num ("sramstart",	    bd->bi_sramstart	);
+ 	print_num ("sramsize",	    bd->bi_sramsize	);
++#endif
+ #if defined(CONFIG_5xx)  || defined(CONFIG_8xx) || \
+     defined(CONFIG_8260) || defined(CONFIG_E500)
+ 	print_num ("immr_base",	    bd->bi_immr_base	);
+ #endif
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB04xxx)
+ 	print_num ("bootflags",	    bd->bi_bootflags	);
++#endif
+ #if defined(CONFIG_405GP) || defined(CONFIG_405CR) || \
+     defined(CONFIG_405EP) || defined(CONFIG_XILINX_ML300) || \
+     defined(CONFIG_440EP) || defined(CONFIG_440GR) || \
+@@ -120,8 +124,10 @@
+ #ifdef CONFIG_HERMES
+ 	print_str ("ethspeed",	    strmhz(buf, bd->bi_ethspeed));
+ #endif
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB04xxx)
+ 	puts ("\nIP addr     = ");	print_IPaddr (bd->bi_ip_addr);
+ 	printf ("\nbaudrate    = %6ld bps\n", bd->bi_baudrate   );
++#endif
+ 	return 0;
+ }
+ 
+diff -uNr u-boot-1.2.0.org/common/cmd_dcr.c u-boot-1.2.0/common/cmd_dcr.c
+--- u-boot-1.2.0.org/common/cmd_dcr.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/common/cmd_dcr.c	2009-04-26 12:55:04.000000000 +0200
+@@ -82,27 +82,36 @@
+ 
+ 	/* Set a DCR */
+ 	dcrn = (unsigned short) simple_strtoul (argv[1], NULL, 16);
+-	do {
+-		value = get_dcr (dcrn);
+-		printf ("%04x: %08lx", dcrn, value);
+-		nbytes = readline (" ? ");
+-		if (nbytes == 0) {
+-			/*
+-			 * <CR> pressed as only input, don't modify current
+-			 * location and exit command.
+-			 */
+-			nbytes = 1;
+-			return 0;
+-		} else {
+-			unsigned long i;
+-			char *endp;
+-
+-			i = simple_strtoul (console_buffer, &endp, 16);
+-			nbytes = endp - console_buffer;
+-			if (nbytes)
+-				set_dcr (dcrn, i);
+-		}
+-	} while (nbytes);
++	if( argc == 2 )
++	{
++		do {
++			value = get_dcr (dcrn);
++			printf ("%04x: %08lx", dcrn, value);
++			nbytes = readline (" ? ");
++			if (nbytes == 0) {
++				/*
++				 * <CR> pressed as only input, don't modify current
++				 * location and exit command.
++				 */
++				nbytes = 1;
++				return 0;
++			} else {
++				unsigned long i;
++				char *endp;
++	
++				i = simple_strtoul (console_buffer, &endp, 16);
++				nbytes = endp - console_buffer;
++				if (nbytes)
++					set_dcr (dcrn, i);
++			}
++		} while (nbytes);
++	}
++	else
++	{
++		unsigned long dat;
++		dat = simple_strtoul( argv[2], NULL, 16 );
++		set_dcr( dcrn, dat );
++	}
+ 
+ 	return 0;
+ }
+@@ -229,7 +238,7 @@
+ 	"dcrn - return a DCR's value.\n"
+ );
+ U_BOOT_CMD(
+-	setdcr,	2,	1,	do_setdcr,
++	setdcr,	3,	1,	do_setdcr,
+ 	"setdcr  - Set an AMCC PPC 4xx DCR's value\n",
+ 	"dcrn - set a DCR's value.\n"
+ );
+diff -uNr u-boot-1.2.0.org/common/cmd_eeprom.c u-boot-1.2.0/common/cmd_eeprom.c
+--- u-boot-1.2.0.org/common/cmd_eeprom.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/common/cmd_eeprom.c	2009-04-26 12:55:04.000000000 +0200
+@@ -135,6 +135,12 @@
+ 	unsigned blk_off;
+ 	int rcode = 0;
+ 
++#ifdef CFG_EEPROM_SIZE
++	/* check eeprom size */
++	if( end >= CFG_EEPROM_SIZE )
++		return 1;
++#endif
++
+ 	/* Read data until done or would cross a page boundary.
+ 	 * We must write the address again when changing pages
+ 	 * because the next page may be in a different device.
+@@ -217,6 +223,12 @@
+ 	int	i;
+ #endif
+ 
++#ifdef CFG_EEPROM_SIZE
++	/* check eeprom size */
++	if( end >= CFG_EEPROM_SIZE )
++		return 1;
++#endif
++
+ #if defined(CFG_EEPROM_WREN)
+ 	eeprom_write_enable (dev_addr,1);
+ #endif
+diff -uNr u-boot-1.2.0.org/common/cmd_nvedit.c u-boot-1.2.0/common/cmd_nvedit.c
+--- u-boot-1.2.0.org/common/cmd_nvedit.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/common/cmd_nvedit.c	2009-04-26 12:55:04.000000000 +0200
+@@ -249,8 +249,10 @@
+ 			udelay(50000);
+ 			gd->baudrate = baudrate;
+ #if defined(CONFIG_PPC) || defined(CONFIG_MCF52x2)
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB034xx) && !defined(CONFIG_STB04xxx)
+ 			gd->bd->bi_baudrate = baudrate;
+ #endif
++#endif
+ 
+ 			serial_setbrg ();
+ 			udelay(50000);
+@@ -353,14 +355,18 @@
+ 		char *s = argv[2];	/* always use only one arg */
+ 		char *e;
+ 		unsigned long addr;
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB034xx) && !defined(CONFIG_STB04xxx)
+ 		bd->bi_ip_addr = 0;
++#endif
+ 		for (addr=0, i=0; i<4; ++i) {
+ 			ulong val = s ? simple_strtoul(s, &e, 10) : 0;
+ 			addr <<= 8;
+ 			addr  |= (val & 0xFF);
+ 			if (s) s = (*e) ? e+1 : e;
+ 		}
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB034xx) && !defined(CONFIG_STB04xxx)
+ 		bd->bi_ip_addr = htonl(addr);
++#endif
+ 		return 0;
+ 	}
+ 	if (strcmp(argv[1],"loadaddr") == 0) {
+diff -uNr u-boot-1.2.0.org/cpu/ppc4xx/4xx_enet.c u-boot-1.2.0/cpu/ppc4xx/4xx_enet.c
+--- u-boot-1.2.0.org/cpu/ppc4xx/4xx_enet.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/cpu/ppc4xx/4xx_enet.c	2009-04-26 12:55:04.000000000 +0200
+@@ -94,7 +94,7 @@
+  * network support enabled.
+  * Remark: CONFIG_405 describes Xilinx PPC405 FPGA without EMAC controller!
+  */
+-#if (CONFIG_COMMANDS & CFG_CMD_NET) && !defined(CONFIG_405) && !defined(CONFIG_IOP480)
++#if (CONFIG_COMMANDS & CFG_CMD_NET) && !defined(CONFIG_405) && !defined(CONFIG_IOP480) && !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB04xxx)
+ 
+ #if !(defined(CONFIG_MII) || (CONFIG_COMMANDS & CFG_CMD_MII))
+ #error "CONFIG_MII has to be defined!"
+diff -uNr u-boot-1.2.0.org/cpu/ppc4xx/cpu.c u-boot-1.2.0/cpu/ppc4xx/cpu.c
+--- u-boot-1.2.0.org/cpu/ppc4xx/cpu.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/cpu/ppc4xx/cpu.c	2009-04-26 12:55:04.000000000 +0200
+@@ -203,6 +203,24 @@
+ 
+ 	get_sys_info(&sys_info);
+ 
++#if defined(CONFIG_STBx25xx) || defined(CONFIG_STB034xx) || defined(CONFIG_STB04xxx) || defined(CONFIG_405B3)
++	printf( "IBM PowerPC ");
++#ifdef CONFIG_STBx25xx
++	printf( "STBx25xx(%08x)", pvr );
++#endif
++#ifdef CONFIG_STB034xx
++	printf( "STB034xx(%08x)", pvr );
++#endif
++#ifdef CONFIG_STB04xxx
++	printf( "STB04xxx(%08x)", pvr );
++#endif
++#if defined(CONFIG_405B3)
++	printf( "405B3(%08x)", pvr );
++#endif
++	printf (" at %s MHz (PLB=%lu)\n", strmhz(buf, clock),sys_info.freqPLB / 1000000);
++
++#else
++
+ 	puts("AMCC PowerPC 4");
+ 
+ #if defined(CONFIG_405GP) || defined(CONFIG_405CR) || defined(CONFIG_405EP)
+@@ -357,11 +375,14 @@
+ 		break;
+ 	}
+ 
++
+ 	printf (" at %s MHz (PLB=%lu, OPB=%lu, EBC=%lu MHz)\n", strmhz(buf, clock),
+ 	       sys_info.freqPLB / 1000000,
+ 	       sys_info.freqPLB / sys_info.pllOpbDiv / 1000000,
+ 	       FREQ_EBC / 1000000);
+ 
++#endif
++
+ 	if (addstr[0] != 0)
+ 		printf("       %s\n", addstr);
+ 
+@@ -468,11 +489,17 @@
+  */
+ unsigned long get_tbclk (void)
+ {
+-#if !defined(CONFIG_IOP480)
++#if !defined(CONFIG_IOP480) && !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB04xxx) && !defined(CONFIG_STB034xx)
+ 	sys_info_t  sys_info;
+ 
+ 	get_sys_info(&sys_info);
+ 	return (sys_info.freqProcessor);
++
++#elif defined(CONFIG_STBx25xx) || defined(CONFIG_STB034xx) || defined(CONFIG_STB04xxx) || \
++      defined(CONFIG_405B3)
++
++	return CONFIG_TB_CLK_FREQ;
++
+ #else
+ 	return (66000000);
+ #endif
+diff -uNr u-boot-1.2.0.org/cpu/ppc4xx/i2c.c u-boot-1.2.0/cpu/ppc4xx/i2c.c
+--- u-boot-1.2.0.org/cpu/ppc4xx/i2c.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/cpu/ppc4xx/i2c.c	2009-04-26 12:55:04.000000000 +0200
+@@ -9,6 +9,8 @@
+ #include <ppc4xx.h>
+ #if defined(CONFIG_440)
+ #   include <440_i2c.h>
++#elif defined(CONFIG_STBx25xx) || defined(CONFIG_STB034xx) || defined(CONFIG_STB04xxx)
++#   include <ibm_i2c.h>
+ #else
+ #   include <405gp_i2c.h>
+ #endif
+@@ -58,6 +60,7 @@
+ 	__asm__ volatile ("eieio");
+ 
+ 	/* make sure where in initial state, data hi, clock hi */
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB034xx) && !defined(CONFIG_STB04xxx)
+ 	out8 (IIC_DIRECTCNTL, 0xC);
+ 	for (i = 0; i < 10; i++) {
+ 		if ((in8 (IIC_DIRECTCNTL) & 0x3) != 0x3) {
+@@ -75,6 +78,7 @@
+ 	udelay (1000);				/* 1ms */
+ 	/* send stop condition */
+ 	out8 (IIC_DIRECTCNTL, 0xC);
++#endif
+ 	udelay (1000);				/* 1ms */
+ 	/* Unreset controller */
+ 	out8 (IIC_XTCNTLSS, (status & ~IIC_XTCNTLSS_SRST));
+@@ -112,12 +116,16 @@
+ 
+ 	/* Clock divide Register */
+ 	/* get OPB frequency */
++#if defined(CONFIG_STBx25xx) || defined(CONFIG_STB034xx) || defined(CONFIG_STB04xxx)
++	divisor = 6;
++#else
+ 	get_sys_info (&sysInfo);
+ 	freqOPB = sysInfo.freqPLB / sysInfo.pllOpbDiv;
+ 	/* set divisor according to freqOPB */
+ 	divisor = (freqOPB - 1) / 10000000;
+ 	if (divisor == 0)
+ 		divisor = 1;
++#endif
+ 	out8 (IIC_CLKDIV, divisor);
+ 
+ 	/* no interrupts */
+diff -uNr u-boot-1.2.0.org/cpu/ppc4xx/Makefile u-boot-1.2.0/cpu/ppc4xx/Makefile
+--- u-boot-1.2.0.org/cpu/ppc4xx/Makefile	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/cpu/ppc4xx/Makefile	2009-04-26 12:55:04.000000000 +0200
+@@ -30,7 +30,7 @@
+ COBJS	= 405gp_pci.o 4xx_enet.o \
+ 	  bedbug_405.o commproc.o \
+ 	  cpu.o cpu_init.o i2c.o interrupts.o \
+-	  miiphy.o ndfc.o sdram.o serial.o \
++	  miiphy.o ndfc.o sdram.o serial.o serial_sicc.o \
+ 	  spd_sdram.o speed.o traps.o usb_ohci.o usbdev.o \
+ 	  440spe_pcie.o
+ 
+diff -uNr u-boot-1.2.0.org/cpu/ppc4xx/serial.c u-boot-1.2.0/cpu/ppc4xx/serial.c
+--- u-boot-1.2.0.org/cpu/ppc4xx/serial.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/cpu/ppc4xx/serial.c	2009-04-26 12:55:04.000000000 +0200
+@@ -59,6 +59,8 @@
+ #include <malloc.h>
+ #endif
+ 
++#include <ppc4xx.h>
++
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+ /*****************************************************************************/
+@@ -265,7 +267,8 @@
+ 
+ /*****************************************************************************/
+ #if defined(CONFIG_405GP) || defined(CONFIG_405CR) || defined(CONFIG_405EP) || \
+-    defined(CONFIG_440)
++    defined(CONFIG_440)	|| defined(CONFIG_STBx25xx) || defined(CONFIG_STB04xxx) || \
++    ( defined(CONFIG_STB034xx) && !defined(CFG_SICC_CONSOLE) )
+ 
+ #if defined(CONFIG_440)
+ #if defined(CONFIG_440EP) || defined(CONFIG_440GR) || \
+@@ -317,6 +320,21 @@
+ #define UCR0_UDIV_POS   0
+ #define UCR1_UDIV_POS   8
+ #define UDIV_MAX        127
++#elif defined(CONFIG_STBx25xx) || defined(CONFIG_STB04xxx)
++#define UART0_BASE	0x40040000
++#define UART1_BASE	0x40000000
++#ifdef CONFIG_STB04xxx
++#define UART2_BASE	0x400e0000
++#else
++#define UART2_BASE	0x40010000
++#endif
++#if defined(CONFIG_UART1_CONSOLE)
++#define CICCR_SCC_BIT	7
++#elif defined(CONFIG_UART2_CONSOLE)
++#define CICCR_SCC_BIT	9
++#else
++#define CICCR_SCC_BIT	6
++#endif
+ #else /* CONFIG_405GP || CONFIG_405CR */
+ #define UART0_BASE      0xef600300
+ #define UART1_BASE      0xef600400
+@@ -330,6 +348,9 @@
+ #if defined(CONFIG_UART1_CONSOLE)
+ #define ACTING_UART0_BASE	UART1_BASE
+ #define ACTING_UART1_BASE	UART0_BASE
++#elif defined(CONFIG_UART2_CONSOLE)
++#define ACTING_UART0_BASE	UART2_BASE
++#define ACTING_UART1_BASE	UART0_BASE
+ #else
+ #define ACTING_UART0_BASE	UART0_BASE
+ #define ACTING_UART1_BASE	UART1_BASE
+@@ -528,6 +549,26 @@
+ 	reg |= (udiv) << UCR0_UDIV_POS;	        /* set the UART divisor */
+ 	reg |= (udiv) << UCR1_UDIV_POS;	        /* set the UART divisor */
+ 	mtdcr (cpc0_ucr, reg);
++#elif defined(CONFIG_STBx25xx) || defined(CONFIG_STB04xxx)
++	/* select frequency source(external or internal) */
++	reg = mfdcr( cic0_cr );
++#if defined(CFG_EXT_SERIAL_CLOCK)
++	reg |= 1<<(31-CICCR_SCC_BIT);
++#else
++	reg &= ~(1<<(31-CICCR_SCC_BIT));
++#endif
++	mtdcr( cic0_cr, reg );
++
++	/* set internal frequency to 21MHz */
++	reg = mfdcr( cic0_sccr );
++	reg |= 1<<(31-24);			/* use 378MHz */
++	reg &= 0xff03ffff;			/* use 21MHz(=378MHz/18(0x12)) internal frequency */
++	reg |= 0x12<<(31-13);
++	mtdcr( cic0_sccr, reg );
++
++	/* get uart divisor */
++	clk = 21000000;
++	udiv = 1;
+ #else /* CONFIG_405EP */
+ 	reg = mfdcr(cntrl0) & ~CR0_MASK;
+ #ifdef CFG_EXT_SERIAL_CLOCK
+@@ -582,20 +623,13 @@
+ }
+ 
+ #if defined(CONFIG_SERIAL_MULTI)
+-void serial_putc_dev (unsigned long dev_base, const char c)
++void raw_serial_putc_dev (unsigned long dev_base, const char c)
+ #else
+-void serial_putc (const char c)
++void raw_serial_putc (const char c)
+ #endif
+ {
+ 	int i;
+ 
+-	if (c == '\n')
+-#if defined(CONFIG_SERIAL_MULTI)
+-		serial_putc_dev (dev_base, '\r');
+-#else
+-		serial_putc ('\r');
+-#endif
+-
+ 	/* check THRE bit, wait for transmiter available */
+ 	for (i = 1; i < 3500; i++) {
+ 		if ((in8 (UART_BASE + UART_LSR) & 0x20) == 0x20)
+@@ -606,6 +640,26 @@
+ }
+ 
+ #if defined(CONFIG_SERIAL_MULTI)
++void serial_putc_dev (unsigned long dev_base, const char c)
++#else
++void serial_putc (const char c)
++#endif
++{
++        int i;
++
++        if (c == '\n')
++#if defined(CONFIG_SERIAL_MULTI)
++                raw_serial_putc_dev (dev_base, '\r');
++                raw_serial_putc_dev (dev_base, c);
++#else
++                raw_serial_putc ('\r');
++                raw_serial_putc (c);
++#endif
++
++}
++
++
++#if defined(CONFIG_SERIAL_MULTI)
+ void serial_puts_dev (unsigned long dev_base, const char *s)
+ #else
+ void serial_puts (const char *s)
+diff -uNr u-boot-1.2.0.org/cpu/ppc4xx/speed.c u-boot-1.2.0/cpu/ppc4xx/speed.c
+--- u-boot-1.2.0.org/cpu/ppc4xx/speed.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/cpu/ppc4xx/speed.c	2009-04-26 12:55:04.000000000 +0200
+@@ -35,7 +35,18 @@
+ #define DEBUGF(fmt,args...)
+ #endif
+ 
+-#if defined(CONFIG_405GP) || defined(CONFIG_405CR)
++#if \
++	defined(CONFIG_STB034xx) || \
++	defined(CONFIG_STBx25xx) || \
++	defined(CONFIG_STB04xxx) || \
++	defined(CONFIG_405B3)
++
++void get_sys_info( PPC405_SYS_INFO *sysInfo )
++{
++	sysInfo->freqProcessor = CONFIG_CPU_CLK_FREQ;
++	sysInfo->freqPLB = CONFIG_SYS_CLK_FREQ;
++}
++#elif defined(CONFIG_405GP) || defined(CONFIG_405CR)
+ 
+ void get_sys_info (PPC405_SYS_INFO * sysInfo)
+ {
+@@ -772,7 +783,7 @@
+ 
+ int get_clocks (void)
+ {
+-#if defined(CONFIG_405GP) || defined(CONFIG_405CR) || defined(CONFIG_440) || defined(CONFIG_405) || defined(CONFIG_405EP)
++#if defined(CONFIG_405GP) || defined(CONFIG_405CR) || defined(CONFIG_440) || defined(CONFIG_405) || defined(CONFIG_405EP) || defined(CONFIG_STBx25xx) || defined(CONFIG_STB034xx) || defined(CONFIG_STB04xxx) || defined(CONFIG_405B3)
+ 	sys_info_t sys_info;
+ 
+ 	get_sys_info (&sys_info);
+@@ -797,7 +808,7 @@
+ {
+ 	ulong val;
+ 
+-#if defined(CONFIG_405GP) || defined(CONFIG_405CR) || defined(CONFIG_405) || defined(CONFIG_440) || defined(CONFIG_405EP)
++#if defined(CONFIG_405GP) || defined(CONFIG_405CR) || defined(CONFIG_440) || defined(CONFIG_405) || defined(CONFIG_405EP) || defined(CONFIG_STBx25xx) || defined(CONFIG_STB034xx) || defined(CONFIG_STB04xxx) || defined(CONFIG_405B3)
+ 	sys_info_t sys_info;
+ 
+ 	get_sys_info (&sys_info);
+diff -uNr u-boot-1.2.0.org/cpu/ppc4xx/start.S u-boot-1.2.0/cpu/ppc4xx/start.S
+--- u-boot-1.2.0.org/cpu/ppc4xx/start.S	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/cpu/ppc4xx/start.S	2009-04-26 12:55:04.000000000 +0200
+@@ -896,6 +896,125 @@
+ #endif	/* CONFIG_405GP || CONFIG_405CR || CONFIG_405 || CONFIG_405EP */
+ 	/*----------------------------------------------------------------------- */
+ 
++#if defined(CONFIG_STBx25xx) || defined(CONFIG_STB034xx) || defined(CONFIG_STB04xxx)
++	/*
++	 * problems in stbx25xx
++	 * sdram constoller의 신호선중 gpio에서 나오는 신호선을 사용할 때
++	 * gpio를 sdram controller 초기화 보다 나중에 초기화 할 때
++	 * 이상한 문제(relocate_code함수에서 in_ram으로 점프한 후
++	 * instruction cache가 정상적인 작동을 하지 않은것 같다. 오래되서
++	 * 기억이 가물가물하다.)가 발생한다.
++	 * 
++	 * problems in stb034xx
++	 * sdram_init을 chip_control_init보다 먼저 호출 했을 때 in_ram에서 
++	 * instruction cache가 정상작동하지 않는다. 아마 stbx25xx와 같은 증상으로
++	 * 보이나 원인을 찾을 수 없다.
++	 *
++	 * 음... 뭐가 잘못된거지...?
++	 * 
++	 * Hyun-woo Park <parkhw00@dgstation.co.kr>
++	 * written in korean(utf-8).
++	 */
++	/*----------------------------------------------------------------------- */
++	/* Clear and set up some registers. */
++	/*----------------------------------------------------------------------- */
++	addi	r4,r0,0x0000
++	mtspr	sgr,r4
++	mtspr	dcwr,r4
++	mtesr	r4			/* clear Exception Syndrome Reg */
++	mttcr	r4			/* clear Timer Control Reg */
++	mtxer	r4			/* clear Fixed-Point Exception Reg */
++	mtevpr	r4			/* clear Exception Vector Prefix Reg */
++	addi	r4,r0,0x1000		/* set ME bit (Machine Exceptions) disabled by parkhw00 */
++	oris	r4,r4,0x0002		/* set CE bit (Critical Exceptions) disabled by parkhw00 */
++	mtmsr	r4			/* change MSR */
++	addi	r4,r0,(0xFFFF-0x10000)		/* set r4 to 0xFFFFFFFF (status in the */
++					/* dbsr is cleared by setting bits to 1) */
++	mtdbsr	r4			/* clear/reset the dbsr */
++
++	/*----------------------------------------------------------------------- */
++	/* Invalidate I and D caches. Enable I cache for defined memory regions */
++	/* to speed things up. Leave the D cache disabled for now. It will be */
++	/* enabled/left disabled later based on user selected menu options. */
++	/* Be aware that the I cache may be disabled later based on the menu */
++	/* options as well. See miscLib/main.c. */
++	/*----------------------------------------------------------------------- */
++	bl	invalidate_icache
++	bl	invalidate_dcache
++
++	/*----------------------------------------------------------------------- */
++	/* Enable two 128MB cachable regions. */
++	/*----------------------------------------------------------------------- */
++	addis	r4,r0,0x8000
++	addi	r4,r4,0x0001
++	mticcr	r4			/* instruction cache */
++	isync
++
++	addis	r4,r0,0x0000
++	addi	r4,r4,0x0000
++	mtdccr	r4			/* data cache */
++
++	bl	gpio_init
++	bl	ext_bus_cntlr_init
++#if defined(CONFIG_STB034xx)
++	bl	chip_control_init
++	bl	sdram_init
++#else
++	bl	sdram_init
++	bl	chip_control_init
++#endif
++
++	/* set stack pointer and clear stack to known value */
++
++	lis	r1,CFG_INIT_RAM_ADDR@h
++	ori     r1,r1,CFG_INIT_SP_OFFSET@l
++
++	li	r4,2048			/* we store 2048 words to stack */
++	mtctr	r4
++
++	lis	r2,CFG_INIT_RAM_ADDR@h		/* we also clear data area */
++	ori	r2,r2,CFG_INIT_RAM_END@l 	/* so cant copy value from r1 */
++
++	lis	r4,0xdead		/* we store 0xdeaddead in the stack */
++	ori	r4,r4,0xdead
++
++..stackloop:
++	stwu	r4,-4(r2)
++	bdnz	..stackloop
++
++	li	r0, 0			/* Make room for stack frame header and */
++	stwu	r0, -4(r1)		/* clear final stack frame so that	*/
++	stwu	r0, -4(r1)		/* stack backtraces terminate cleanly	*/
++	/*
++	 * Set up a dummy frame to store reset vector as return address.
++	 * this causes stack underflow to reset board.
++	 */
++	stwu	r1, -8(r1)		/* Save back chain and move SP */
++	addis	r0, 0, RESET_VECTOR@h	/* Address of reset vector */
++	ori	r0, r0, RESET_VECTOR@l
++	stwu	r1, -8(r1)		/* Save back chain and move SP */
++	stw	r0, +12(r1)		/* Save return addr (underflow vect) */
++
++	GET_GOT			/* initialize GOT access			*/
++
++       	bl	cpu_init_f	/* run low-level CPU init code     (from Flash)	*/
++
++	
++	/*------------------------------------------------------------*/
++	/* ethernet reset off */
++	/*------------------------------------------------------------*/
++#if defined(CONFIG_RELOOK400C)
++	li r0,0
++	addis	r4,r0, 0x4006
++	addis	r0,r0,0x6000
++	ori	r0,r0,0x0080
++	stw	r0, 0x0000(r4)
++#endif	
++
++	/* NEVER RETURNS! */
++	bl	board_init_f	/* run first part of init code (from Flash)	*/
++
++#endif  /* defined(CONFIG_STBx25xx) || defined(CONFIG_STB034xx) || defined(CONFIG_STB04xxx) */
+ 
+ #ifndef CONFIG_NAND_SPL
+ /*****************************************************************************/
+diff -uNr u-boot-1.2.0.org/cpu/ppc4xx/traps.c u-boot-1.2.0/cpu/ppc4xx/traps.c
+--- u-boot-1.2.0.org/cpu/ppc4xx/traps.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/cpu/ppc4xx/traps.c	2009-04-26 12:55:04.000000000 +0200
+@@ -86,24 +86,24 @@
+  */
+ 
+ void
+-print_backtrace(unsigned long *sp)
++print_backtrace(unsigned long *sp, unsigned long endofmem, unsigned long rel_off)
+ {
+ 	int cnt = 0;
+ 	unsigned long i;
+ 
+-	printf("Call backtrace: ");
++	printf("Call backtrace:\n");
+ 	while (sp) {
+-		if ((uint)sp > END_OF_MEM)
++		if ((uint)sp > endofmem)
+ 			break;
+ 
+ 		i = sp[1];
+ 		if (cnt++ % 7 == 0)
+ 			printf("\n");
+-		printf("%08lX ", i);
++		printf("%08lX(%08lX in rom)\n", i, i-rel_off);
++
+ 		if (cnt > 32) break;
+ 		sp = (unsigned long *)*sp;
+ 	}
+-	printf("\n");
+ }
+ 
+ void show_regs(struct pt_regs * regs)
+@@ -137,14 +137,16 @@
+ void
+ _exception(int signr, struct pt_regs *regs)
+ {
++	DECLARE_GLOBAL_DATA_PTR;
+ 	show_regs(regs);
+-	print_backtrace((unsigned long *)regs->gpr[1]);
++	print_backtrace((unsigned long *)regs->gpr[1], gd->ram_size, gd->reloc_off);
+ 	panic("Exception in kernel pc %lx signal %d",regs->nip,signr);
+ }
+ 
+ void
+ MachineCheckException(struct pt_regs *regs)
+ {
++	DECLARE_GLOBAL_DATA_PTR;
+ 	unsigned long fixup;
+ 
+ 	/* Probing PCI using config cycles cause this exception
+@@ -156,6 +158,8 @@
+ 		return;
+ 	}
+ 
++	printf( "fault @ %08x(%08x in rom,rel_off %08x)\n", (int)regs->nip, (int)regs->nip-gd->reloc_off, (int)gd->reloc_off );
++
+ #if (CONFIG_COMMANDS & CFG_CMD_KGDB)
+ 	if (debugger_exception_handler && (*debugger_exception_handler)(regs))
+ 		return;
+@@ -182,26 +186,29 @@
+ 		printf("Unknown values in msr\n");
+ 	}
+ 	show_regs(regs);
+-	print_backtrace((unsigned long *)regs->gpr[1]);
++	print_backtrace((unsigned long *)regs->gpr[1], gd->ram_size, gd->reloc_off);
+ 	panic("machine check");
+ }
+ 
+ void
+ AlignmentException(struct pt_regs *regs)
+ {
++	DECLARE_GLOBAL_DATA_PTR;
++
+ #if (CONFIG_COMMANDS & CFG_CMD_KGDB)
+ 	if (debugger_exception_handler && (*debugger_exception_handler)(regs))
+ 		return;
+ #endif
+ 
+ 	show_regs(regs);
+-	print_backtrace((unsigned long *)regs->gpr[1]);
++	print_backtrace((unsigned long *)regs->gpr[1], gd->ram_size, gd->reloc_off);
+ 	panic("Alignment Exception");
+ }
+ 
+ void
+ ProgramCheckException(struct pt_regs *regs)
+ {
++	DECLARE_GLOBAL_DATA_PTR;
+ 	long esr_val;
+ 
+ #if (CONFIG_COMMANDS & CFG_CMD_KGDB)
+@@ -219,7 +226,7 @@
+ 	else if( esr_val & ESR_PTR )
+ 		printf( "** Trap Instruction **\n" );
+ 
+-	print_backtrace((unsigned long *)regs->gpr[1]);
++	print_backtrace((unsigned long *)regs->gpr[1], gd->ram_size, gd->reloc_off);
+ 	panic("Program Check Exception");
+ }
+ 
+diff -uNr u-boot-1.2.0.org/drivers/cfb_console.c u-boot-1.2.0/drivers/cfb_console.c
+--- u-boot-1.2.0.org/drivers/cfb_console.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/drivers/cfb_console.c	2009-04-26 12:55:04.000000000 +0200
+@@ -1142,14 +1142,22 @@
+ 
+ /*****************************************************************************/
+ 
+-static int video_init (void)
++int video_start( void )
+ {
+ 	unsigned char color8;
++	static int inited = 0;
+ 
+-	if ((pGD = video_hw_init ()) == NULL)
+-		return -1;
++	if( inited )
++		return 0;
++	inited = 1;
++#ifdef CFG_VIDEO_CHANGE_SIZE
++	video_change_size( 1 );
++#endif
++
++#ifdef CONFIG_VIDEO_CLEARSCR
++	video_clear_screen();
++#endif
+ 
+-	video_fb_address = (void *) VIDEO_FB_ADRS;
+ #ifdef CONFIG_VIDEO_HW_CURSOR
+ 	video_init_hw_cursor (VIDEO_FONT_WIDTH, VIDEO_FONT_HEIGHT);
+ #endif
+@@ -1210,6 +1218,19 @@
+ #else
+ 	video_console_address = video_fb_address;
+ #endif
++	return 0;
++}
++
++static int video_init (void)
++{
++	if ((pGD = video_hw_init ()) == NULL)
++		return -1;
++
++	video_fb_address = (void *) VIDEO_FB_ADRS;
++
++#ifndef CFG_VIDEO_START_FUNCTION
++	video_start();
++#endif
+ 
+ 	/* Initialize the console */
+ 	console_col = 0;
+@@ -1240,6 +1261,9 @@
+ 		strcpy (console_dev.name, "vga");
+ 		console_dev.ext = DEV_EXT_VIDEO;	/* Video extensions */
+ 		console_dev.flags = DEV_FLAGS_OUTPUT | DEV_FLAGS_SYSTEM;
++#ifdef CFG_VIDEO_START_FUNCTION
++		console_dev.start = video_start;
++#endif
+ 		console_dev.putc = video_putc;	/* 'putc' function */
+ 		console_dev.puts = video_puts;	/* 'puts' function */
+ 		console_dev.tstc = NULL;	/* 'tstc' function */
+@@ -1259,6 +1283,9 @@
+ 		strcpy (console_dev.name, "vga");
+ 		console_dev.ext = DEV_EXT_VIDEO;	/* Video extensions */
+ 		console_dev.flags = DEV_FLAGS_OUTPUT | DEV_FLAGS_INPUT | DEV_FLAGS_SYSTEM;
++#ifdef CFG_VIDEO_START_FUNCTION
++		console_dev.start = video_start;
++#endif
+ 		console_dev.putc = video_putc;	/* 'putc' function */
+ 		console_dev.puts = video_puts;	/* 'puts' function */
+ 		console_dev.tstc = VIDEO_TSTC_FCT;	/* 'tstc' function */
+diff -uNr u-boot-1.2.0.org/drivers/dm9000x.c u-boot-1.2.0/drivers/dm9000x.c
+--- u-boot-1.2.0.org/drivers/dm9000x.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/drivers/dm9000x.c	2009-04-26 12:55:04.000000000 +0200
+@@ -56,7 +56,7 @@
+ #define DM9801_NOISE_FLOOR	0x08
+ #define DM9802_NOISE_FLOOR	0x05
+ 
+-/* #define CONFIG_DM9000_DEBUG */
++/*#define CONFIG_DM9000_DEBUG*/
+ 
+ #ifdef CONFIG_DM9000_DEBUG
+ #define DM9000_DBG(fmt,args...) printf(fmt ,##args)
+@@ -87,10 +87,11 @@
+ } board_info_t;
+ board_info_t dmfe_info;
+ 
++u32 dm9k_phy_retry_times=10000;
++
+ /* For module input parameter */
+ static int media_mode = DM9000_AUTO;
+ static u8 nfloor = 0;
+-
+ /* function declaration ------------------------------------- */
+ int eth_init(bd_t * bd);
+ int eth_send(volatile void *, int);
+@@ -105,6 +106,9 @@
+ 
+ /* DM9000 network board routine ---------------------------- */
+ 
++
++#ifndef CONFIG_PPC
++
+ #define DM9000_outb(d,r) ( *(volatile u8 *)r = d )
+ #define DM9000_outw(d,r) ( *(volatile u16 *)r = d )
+ #define DM9000_outl(d,r) ( *(volatile u32 *)r = d )
+@@ -112,6 +116,20 @@
+ #define DM9000_inw(r) (*(volatile u16 *)r)
+ #define DM9000_inl(r) (*(volatile u32 *)r)
+ 
++#else
++
++#define DM9000_outb(dat,adr)	out_be16((unsigned short*)(adr),dat)
++#define DM9000_outw(dat,adr)	out_le16((unsigned short*)(adr),dat)
++#define DM9000_outl(dat,adr)	out_le32((unsigned *)(adr),dat)
++#define DM9000_inb(adr)	(unsigned char)in_be16((unsigned short*)(adr))
++#define DM9000_inw(adr)	(unsigned short)in_le16((unsigned short*)(adr))
++#define DM9000_inl(adr)	(unsigned long)in_le32((unsigned *)(adr))
++
++#define DM9000_outw_be(dat,adr)	out_be16((unsigned short*)(adr),dat)
++#define DM9000_inw_be(adr)	(unsigned short)in_be16((unsigned short*)(adr))
++
++#endif
++
+ #ifdef CONFIG_DM9000_DEBUG
+ static void
+ dump_regs(void)
+@@ -124,7 +142,7 @@
+ 	DM9000_DBG("TSRII (0x04): %02x\n", DM9000_ior(4));
+ 	DM9000_DBG("RCR   (0x05): %02x\n", DM9000_ior(5));
+ 	DM9000_DBG("RSR   (0x06): %02x\n", DM9000_ior(6));
+-	DM9000_DBG("ISR   (0xFE): %02x\n", DM9000_ior(ISR));
++	DM9000_DBG("ISR   (0xFE): %02x\n", DM9000_ior(DM9000_ISR));
+ 	DM9000_DBG("\n");
+ }
+ #endif				/*  */
+@@ -270,10 +288,11 @@
+ 
+ /* Initilize dm9000 board
+ */
+-int
+-eth_init(bd_t * bd)
++static int
++dm9k_eth_init(bd_t * bd)
+ {
+ 	int i, oft, lnk;
++
+ 	DM9000_DBG("eth_init()\n");
+ 
+ 	/* RESET device */
+@@ -300,8 +319,25 @@
+ 	DM9000_iow(DM9000_ISR, 0x0f);	/* Clear interrupt status */
+ 
+ 	/* Set Node address */
++#ifdef CONFIG_DM9000_USE_EXTERNAL_EEPROM
++	{
++		unsigned char env_enetaddr[6];
++		char *tmp = getenv ("ethaddr");
++		char *end;
++
++		for (i=0; i<6; i++) {
++			env_enetaddr[i] = tmp ? simple_strtoul(tmp, &end, 16) : 0;
++			if (tmp)
++				tmp = (*end) ? end+1 : end;
++		}
++
++		for( i=0; i<6; i++ )
++			bd->bi_enetaddr[i] = env_enetaddr[i];
++	}
++#else
+ 	for (i = 0; i < 6; i++)
+ 		((u16 *) bd->bi_enetaddr)[i] = read_srom_word(i);
++#endif
+ 	printf("MAC: %02x:%02x:%02x:%02x:%02x:%02x\n", bd->bi_enetaddr[0],
+ 	       bd->bi_enetaddr[1], bd->bi_enetaddr[2], bd->bi_enetaddr[3],
+ 	       bd->bi_enetaddr[4], bd->bi_enetaddr[5]);
+@@ -322,7 +358,7 @@
+ 	while (!(phy_read(1) & 0x20)) {	/* autonegation complete bit */
+ 		udelay(1000);
+ 		i++;
+-		if (i == 10000) {
++		if (i == dm9k_phy_retry_times) {
+ 			printf("could not establish link\n");
+ 			return 0;
+ 		}
+@@ -356,8 +392,8 @@
+   Hardware start transmission.
+   Send a packet to media from the upper layer.
+ */
+-int
+-eth_send(volatile void *packet, int length)
++static int
++dm9k_eth_send(volatile void *packet, int length)
+ {
+ 	char *data_ptr;
+ 	u32 tmplen, i;
+@@ -373,6 +409,7 @@
+ 	data_ptr = (char *) packet;
+ 	DM9000_outb(DM9000_MWCMD, DM9000_IO);
+ 
++
+ #ifdef CONFIG_DM9000_USE_8BIT
+ 	/* Byte mode */
+ 	for (i = 0; i < length; i++)
+@@ -415,8 +452,8 @@
+   Stop the interface.
+   The interface is stopped when it is brought.
+ */
+-void
+-eth_halt(void)
++static void
++dm9k_eth_halt(void)
+ {
+ 	DM9000_DBG("eth_halt\n");
+ 
+@@ -430,8 +467,8 @@
+ /*
+   Received a packet and pass to upper layer
+ */
+-int
+-eth_rx(void)
++static int
++dm9k_eth_rx(void)
+ {
+ 	u8 rxbyte, *rdptr = (u8 *) NetRxPackets[0];
+ 	u16 RxStatus, RxLen = 0;
+@@ -439,7 +476,11 @@
+ #ifdef CONFIG_DM9000_USE_32BIT
+ 	u32 tmpdata;
+ #endif
+-
++	for(i=0;i<10000;i++)
++	{
++		if (DM9000_ior(DM9000_ISR)&1)
++			break;
++	}
+ 	/* Check packet ready or not */
+ 	DM9000_ior(DM9000_MRCMDX);	/* Dummy read */
+ 	rxbyte = DM9000_inb(DM9000_DATA);	/* Got most updated data */
+@@ -457,11 +498,16 @@
+ 	/* A packet ready now  & Get status/length */
+ 	DM9000_outb(DM9000_MRCMD, DM9000_IO);
+ 
++
++
+ #ifdef CONFIG_DM9000_USE_8BIT
+ 	RxStatus = DM9000_inb(DM9000_DATA) + (DM9000_inb(DM9000_DATA) << 8);
+ 	RxLen = DM9000_inb(DM9000_DATA) + (DM9000_inb(DM9000_DATA) << 8);
+ 
+ #endif				/*  */
++
++#ifndef CONFIG_PPC
++
+ #ifdef CONFIG_DM9000_USE_16BIT
+ 	RxStatus = DM9000_inw(DM9000_DATA);
+ 	RxLen = DM9000_inw(DM9000_DATA);
+@@ -473,6 +519,22 @@
+ 	RxLen = tmpdata >> 16;
+ 
+ #endif				/*  */
++
++#else
++#ifdef CONFIG_DM9000_USE_16BIT
++	RxStatus = DM9000_inw_be(DM9000_DATA);
++	RxLen = DM9000_inw_be(DM9000_DATA);
++
++#endif				/*  */
++#ifdef CONFIG_DM9000_USE_32BIT
++	tmpdata = DM9000_inl(DM9000_DATA);
++	RxStatus = tmpdata;
++	RxLen = tmpdata >> 16;
++
++#endif				/*  */
++
++#endif
++
+ 	DM9000_DBG("rx status: 0x%04x rx len: %d\n", RxStatus, RxLen);
+ 
+ 	/* Move data from DM9000 */
+@@ -578,7 +640,6 @@
+ static void
+ phy_write(int reg, u16 value)
+ {
+-
+ 	/* Fill the phyxcer register into REG_0C */
+ 	DM9000_iow(DM9000_EPAR, DM9000_PHY | reg);
+ 
+@@ -590,4 +651,89 @@
+ 	DM9000_iow(DM9000_EPCR, 0x0);	/* Clear phyxcer write command */
+ 	DM9000_DBG("phy_write(reg:%d, value:%d)\n", reg, value);
+ }
++
++#if defined(CONFIG_NET_MULTI)
++
++#define DM9000_MAX_CARDS 1
++
++static int dm9000_init(struct eth_device *dev, bd_t * bis)
++{
++	dm9k_eth_init(bis);
++}
++
++static void dm9000_halt(struct eth_device *dev)
++{
++	dm9k_eth_halt();
++}
++
++static int dm9000_send(struct eth_device *dev, volatile void *packet,int length)
++{
++	return dm9k_eth_send(packet,length);
++}
++
++
++static int dm9000_recv(struct eth_device *dev)
++{
++	return dm9k_eth_rx();
++}
++
++static int dm9k_probe (struct eth_device ** ret_dev)
++{
++	return 1;
++}
++
++int dm9000_initialize(bd_t * bis)
++{
++	int numdev, i;
++	struct eth_device *dev[DM9000_MAX_CARDS];
++
++	numdev = dm9k_probe(&dev[0]);
++
++	if (numdev > DM9000_MAX_CARDS)
++	{
++		printf("ERROR: numdev > DM9000_MAX_CARDS\n");
++	}
++
++	for (i = 0; i < numdev; i++)
++	{
++		sprintf (dev[i]->name, "DM9000#%d", i);
++
++		dev[i]->init = dm9000_init;
++		dev[i]->halt = dm9000_halt;
++		dev[i]->send = dm9000_send;
++		dev[i]->recv = dm9000_recv;
++
++		eth_register(dev[i]);
++	}
++
++	return numdev;
++}
++
++
++#else
++
++int eth_init(bd_t * bis)
++{
++	return dm9k_eth_init(bis);
++}
++
++void eth_halt(void)
++{
++	dm9k_eth_halt();
++}
++
++int eth_send( volatile void *packet,int length)
++{
++	return dm9k_eth_send(packet,length);
++}
++
++int eth_rx(void)
++{
++	return dm9k_eth_rx();
++}
++
++
++#endif
++
++
+ #endif				/* CONFIG_DRIVER_DM9000 */
+diff -uNr u-boot-1.2.0.org/drivers/Makefile u-boot-1.2.0/drivers/Makefile
+--- u-boot-1.2.0.org/drivers/Makefile	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/drivers/Makefile	2009-04-26 12:55:04.000000000 +0200
+@@ -31,7 +31,7 @@
+ 	  bcm570x.o bcm570x_autoneg.o cfb_console.o cfi_flash.o \
+ 	  cs8900.o ct69000.o dataflash.o dc2114x.o dm9000x.o \
+ 	  e1000.o eepro100.o \
+-	  i8042.o inca-ip_sw.o keyboard.o \
++	  i8042.o inca-ip_sw.o isp116x-hcd.o keyboard.o \
+ 	  lan91c96.o \
+ 	  natsemi.o ne2000.o netarm_eth.o netconsole.o \
+ 	  ns16550.o ns8382x.o ns87308.o ns7520_eth.o omap1510_i2c.o \
+diff -uNr u-boot-1.2.0.org/include/asm-arm/setup.h u-boot-1.2.0/include/asm-arm/setup.h
+--- u-boot-1.2.0.org/include/asm-arm/setup.h	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/include/asm-arm/setup.h	2009-04-26 12:55:04.000000000 +0200
+@@ -235,7 +235,8 @@
+ 	int (*parse)(const struct tag *);
+ };
+ 
+-#define __tag __attribute__((unused, __section__(".taglist")))
++//#define __tag __attribute__((unused, __section__(".taglist")))
++#define __tag __attribute__((used, __section__(".taglist")))
+ #define __tagtable(tag, fn) \
+ static struct tagtable __tagtable_##fn __tag = { tag, fn }
+ 
+diff -uNr u-boot-1.2.0.org/include/asm-ppc/global_data.h u-boot-1.2.0/include/asm-ppc/global_data.h
+--- u-boot-1.2.0.org/include/asm-ppc/global_data.h	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/include/asm-ppc/global_data.h	2009-04-26 12:55:04.000000000 +0200
+@@ -128,6 +128,9 @@
+ 	unsigned long kbd_status;
+ #endif
+ 	void		**jt;		/* jump table */
++#ifdef CONFIG_DGS_UPGRADE		/* tmp buffer printer for upgrade. */
++	unsigned long	dgs_upg_buffer;
++#endif
+ } gd_t;
+ 
+ /*
+diff -uNr u-boot-1.2.0.org/include/asm-ppc/u-boot.h u-boot-1.2.0/include/asm-ppc/u-boot.h
+--- u-boot-1.2.0.org/include/asm-ppc/u-boot.h	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/include/asm-ppc/u-boot.h	2009-04-26 12:55:04.000000000 +0200
+@@ -36,6 +36,36 @@
+ 
+ #ifndef __ASSEMBLY__
+ 
++#if defined(CONFIG_STBx25xx) || defined(CONFIG_STB04xxx)
++typedef struct bd_info {
++	unsigned char	bi_s_version[4];	/* Version of this structure */
++	unsigned char	bi_r_version[30];	/* Version of the IBM ROM */
++	unsigned int	bi_memsize;		/* DRAM installed, in bytes */
++	unsigned int	bi_dummy;		/* field shouldn't exist */
++	unsigned char	bi_enetaddr[6];		/* Ethernet MAC address */
++	unsigned int	bi_intfreq;		/* Processor speed, in Hz */
++	unsigned int	bi_busfreq;		/* Bus speed, in Hz */
++	unsigned int	bi_tbfreq;		/* Software timebase freq */
++	unsigned int	bi_opb_busfreq;		/* OPB Bus speed, in Hz */
++	int		bi_iic_fast[1];		/* Use fast i2c mode */
++} bd_t;
++#elif defined(CONFIG_STB034xx)
++typedef struct bd_info {
++	unsigned char	bi_s_version[4];	/* Version of this structure */
++	unsigned char	bi_r_version[30];	/* Version of the IBM ROM */
++	unsigned int	bi_memsize;		/* DRAM installed, in bytes */
++	unsigned int	bi_dummy;		/* field shouldn't exist */
++	unsigned char	bi_enetaddr[6];		/* Ethernet MAC address */
++	unsigned int	bi_intfreq;		/* Processor speed, in Hz */
++	unsigned int	bi_busfreq;		/* Bus speed, in Hz */
++	unsigned int	bi_tbfreq;		/* Software timebase freq */
++	unsigned int	bi_opb_busfreq;		/* OPB Bus speed, in Hz */
++	int		bi_iic_fast[2];		/* Use fast i2c mode */
++	int 		bi_phynum[4];           /* Determines phy mapping */
++	int 		bi_phymode[4];          /* Determines phy mode */
++} bd_t;
++#else /* CONFIG_STBx25xx */
++
+ typedef struct bd_info {
+ 	unsigned long	bi_memstart;	/* start of DRAM memory */
+ 	unsigned long	bi_memsize;	/* size	 of DRAM memory in bytes */
+@@ -129,6 +159,7 @@
+ #endif
+ #endif /* defined(CONFIG_4xx) */
+ } bd_t;
++#endif /* CONFIG_STBx25xx */
+ 
+ #endif /* __ASSEMBLY__ */
+ #endif	/* __U_BOOT_H__ */
+diff -uNr u-boot-1.2.0.org/include/command.h u-boot-1.2.0/include/command.h
+--- u-boot-1.2.0.org/include/command.h	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/include/command.h	2009-04-26 12:55:04.000000000 +0200
+@@ -90,7 +90,8 @@
+  */
+ 
+ 
+-#define Struct_Section  __attribute__ ((unused,section (".u_boot_cmd")))
++//#define Struct_Section  __attribute__ ((unused,section (".u_boot_cmd")))
++#define Struct_Section  __attribute__ ((used,section (".u_boot_cmd")))
+ 
+ #ifdef  CFG_LONGHELP
+ 
+diff -uNr u-boot-1.2.0.org/include/common.h u-boot-1.2.0/include/common.h
+--- u-boot-1.2.0.org/include/common.h	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/include/common.h	2009-04-26 12:55:04.000000000 +0200
+@@ -105,6 +105,7 @@
+ #include <flash.h>
+ #include <image.h>
+ 
++//#define	DEBUG
+ #ifdef	DEBUG
+ #define debug(fmt,args...)	printf (fmt ,##args)
+ #define debugX(level,fmt,args...) if (DEBUG>=level) printf(fmt,##args);
+@@ -341,6 +342,7 @@
+ 
+ /* $(BOARD)/$(BOARD).c */
+ int board_early_init_f (void);
++int board_post_init_f (void);
+ int board_late_init (void);
+ int board_postclk_init (void); /* after clocks/timebase, before env/serial */
+ int board_early_init_r (void);
+diff -uNr u-boot-1.2.0.org/include/flash.h u-boot-1.2.0/include/flash.h
+--- u-boot-1.2.0.org/include/flash.h	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/include/flash.h	2009-04-26 12:55:04.000000000 +0200
+@@ -125,6 +125,7 @@
+  */
+ 
+ #define AMD_MANUFACT	0x00010001	/* AMD	   manuf. ID in D23..D16, D7..D0 */
++#define SPA_MANUFACT	0x00010001	/* Spansion */
+ #define FUJ_MANUFACT	0x00040004	/* FUJITSU manuf. ID in D23..D16, D7..D0 */
+ #define ATM_MANUFACT	0x001F001F	/* ATMEL */
+ #define STM_MANUFACT	0x00200020	/* STM (Thomson) manuf. ID in D23.. -"- */
+@@ -136,6 +137,7 @@
+ #define TOSH_MANUFACT	0x00980098	/* TOSHIBA manuf. ID in D23..D16, D7..D0 */
+ #define MT2_MANUFACT	0x002C002C	/* alternate MICRON manufacturer ID*/
+ #define EXCEL_MANUFACT	0x004A004A	/* Excel Semiconductor			*/
++#define EON_MANUFACT	0x007F007F	/* EON manuf. */
+ 
+ 					/* Micron Technologies (INTEL compat.)	*/
+ #define MT_ID_28F400_T	0x44704470	/* 28F400B3 ID ( 4 M, top boot sector)	*/
+@@ -189,6 +191,9 @@
+ #define MX_ID_LV320T	0x22A722A7	/* 29LV320T by Macronix, AMD compatible */
+ #define AMD_ID_LV320B	0x22F922F9	/* 29LV320B ID (32 M, bottom boot sect) */
+ #define MX_ID_LV320B	0x22A822A8	/* 29LV320B by Macronix, AMD compatible */
++#define MX_ID_LV640MT	0x227E227E	/* 29LV640MT                            */
++#define	MX_ID_LV640BT	0x22c922c9	/* 29LV640BT/DT				*/
++#define	MX_ID_LV640DT	0x22c922c9	/* 29LV640BT/DT				*/
+ 
+ #define AMD_ID_DL322T	0x22552255	/* 29DL322T ID (32 M, top boot sector)	*/
+ #define AMD_ID_DL322B	0x22562256	/* 29DL322B ID (32 M, bottom boot sect) */
+@@ -249,10 +254,15 @@
+ #define STM_ID_F040B	0xE2		/* M29F040B ID ( 4M = 512K x 8	)	*/
+ 					/* 8 64K x 8 uniform sectors		*/
+ 
++#define SPA_ID_S29GL064M    0x227E227E  /* Spansion S29GL064M ( 8MBytes )	*/
++
++#define EON_ID_EN29LV640B		0x22CB22CB	/* EON EN29LV640B (8Mbyte) */
++
+ #define STM_ID_x800AB	0x005B005B	/* M29W800AB ID (8M = 512K x 16 )	*/
+ #define STM_ID_29W320DT 0x22CA22CA	/* M29W320DT ID (32 M, top boot sector) */
+ #define STM_ID_29W320DB 0x22CB22CB	/* M29W320DB ID (32 M, bottom boot sect)	*/
+ #define STM_ID_29W040B	0x00E300E3	/* M29W040B ID (4M = 512K x 8)	*/
++#define STM_ID_29W640DT 0x22DE22DE	/* M29W640DT ID (64M = 4M x 16 )	*/
+ #define FLASH_PSD4256GV 0x00E9		/* PSD4256 Flash and CPLD combination	*/
+ 
+ #define INTEL_ID_28F016S    0x66a066a0	/* 28F016S[VS] ID (16M = 512k x 16)	*/
+@@ -360,6 +370,9 @@
+ #define FLASH_STMW320DT 0x0052		/* STM M29W320DT   (32 M, top boot sector)	*/
+ #define FLASH_STMW320DB 0x0053		/* STM M29W320DB   (32 M, bottom boot sect)*/
+ #define FLASH_STM320DB	0x00CB		/* STM M29W320DB (4M = 64K x 64, bottom)*/
++
++#define FLASH_STMW640DT	0x22DE		/* STM M29W640DT ( 64M = 4M x 16) */
++
+ #define FLASH_STM800DT	0x00D7		/* STM M29W800DT (1M = 64K x 16, top)	*/
+ #define FLASH_STM800DB	0x005B		/* STM M29W800DB (1M = 64K x 16, bottom)*/
+ 
+@@ -411,6 +424,10 @@
+ #define FLASH_AMLV256U	0x00AA		/* AMD 29LV256M	   ( 256M = 16M x 16 )	*/
+ #define FLASH_MXLV320B	0x00AB		/* MX  29LV320MB   ( 32M = 2M x 16 )	*/
+ #define FLASH_MXLV320T	0x00AC		/* MX  29LV320MT   ( 32M = 2M x 16 )	*/
++#define FLASH_MXLV640MB	0x00AD		/* MX  29LV640MB                        */
++#define FLASH_MXLV640MT	0x00AE		/* MX  29LV640MT                        */
++#define FLASH_MXLV640BT 0x00AF		/* MX  29LV640BT						*/
++
+ #define FLASH_28F256L18T 0x00B0		/* Intel 28F256L18T 256M = 128K x 255 + 32k x 4 */
+ #define FLASH_AMDL163T	0x00B2		/* AMD AM29DL163T (2M x 16 )			*/
+ #define FLASH_AMDL163B	0x00B3
+@@ -424,6 +441,12 @@
+ #define FLASH_28F256J3A 0x00C6		/* INTEL 28F256J3A (256M = 128K x 256)	*/
+ 
+ #define FLASH_FUJLV650	0x00D0		/* Fujitsu MBM 29LV650UE/651UE		*/
++
++#define FLASH_SPA064MR3	0x00B6		/* Spansion S29GL064MR3			*/
++#define FLASH_SPA064MR4	0x00B7		/* Spansion S29GL064MR4		*/
++#define FLASH_MXLV640DT	0x00B8	
++#define FLASH_EN29LV640B	0xB9	/* EON EN29LV640B 8MByte */
++
+ #define FLASH_MT28S4M16LC 0x00E1	/* Micron MT28S4M16LC			*/
+ #define FLASH_S29GL064M 0x00F0		/* Spansion S29GL064M-R6		*/
+ #define FLASH_S29GL128N 0x00F1		/* Spansion S29GL128N			*/
+@@ -439,7 +462,9 @@
+ #define FLASH_MAN_MX	0x00030000	/* MXIC					*/
+ #define FLASH_MAN_STM	0x00040000
+ #define FLASH_MAN_TOSH	0x00050000	/* Toshiba				*/
++#define FLASH_MAN_SPA	0x00060000	/* Spansion */
+ #define FLASH_MAN_EXCEL 0x00060000	/* Excel Semiconductor			*/
++#define FLASH_MAN_EON	0x00070000
+ #define FLASH_MAN_SST	0x00100000
+ #define FLASH_MAN_INTEL 0x00300000
+ #define FLASH_MAN_MT	0x00400000
+diff -uNr u-boot-1.2.0.org/include/ppc405.h u-boot-1.2.0/include/ppc405.h
+--- u-boot-1.2.0.org/include/ppc405.h	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/include/ppc405.h	2009-04-26 12:55:04.000000000 +0200
+@@ -25,6 +25,7 @@
+ /*--------------------------------------------------------------------- */
+ /* Special Purpose Registers						*/
+ /*--------------------------------------------------------------------- */
++#ifdef __ASSEMBLY__
+ 	#define  srr2  0x3de      /* save/restore register 2 */
+ 	#define  srr3  0x3df      /* save/restore register 3 */
+ 	#define  dbsr  0x3f0      /* debug status register */
+@@ -67,7 +68,7 @@
+ 	#define  sprg5w 0x115     /* Special purpose general 5 - write only */
+ 	#define  sprg6w 0x116     /* Special purpose general 6 - write only */
+ 	#define  sprg7w 0x117     /* Special purpose general 7 - write only */
+-
++#endif
+ /******************************************************************************
+  * Special for PPC405GP
+  ******************************************************************************/
+@@ -75,7 +76,9 @@
+ /******************************************************************************
+  * DMA
+  ******************************************************************************/
++#ifndef DMA_DCR_BASE
+ #define DMA_DCR_BASE 0x100
++#endif
+ #define dmacr0  (DMA_DCR_BASE+0x00)  /* DMA channel control register 0       */
+ #define dmact0  (DMA_DCR_BASE+0x01)  /* DMA count register 0                 */
+ #define dmada0  (DMA_DCR_BASE+0x02)  /* DMA destination address register 0   */
+@@ -103,7 +106,9 @@
+ /******************************************************************************
+  * Universal interrupt controller
+  ******************************************************************************/
++#ifndef UIC_DCR_BASE
+ #define UIC_DCR_BASE 0xc0
++#endif
+ #define uicsr        (UIC_DCR_BASE+0x0)  /* UIC status                       */
+ #define uicsrs       (UIC_DCR_BASE+0x1)  /* UIC status set                   */
+ #define uicer        (UIC_DCR_BASE+0x2)  /* UIC enable                       */
+@@ -642,7 +647,9 @@
+ /******************************************************************************
+  * GPIO macro register defines
+  ******************************************************************************/
++#ifndef GPIO_BASE
+ #define GPIO_BASE  0xEF600700
++#endif
+ #define GPIO0_OR               (GPIO_BASE+0x0)
+ #define GPIO0_TCR              (GPIO_BASE+0x4)
+ #define GPIO0_OSRH             (GPIO_BASE+0x8)
+diff -uNr u-boot-1.2.0.org/include/ppc4xx.h u-boot-1.2.0/include/ppc4xx.h
+--- u-boot-1.2.0.org/include/ppc4xx.h	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/include/ppc4xx.h	2009-04-26 12:55:04.000000000 +0200
+@@ -26,6 +26,15 @@
+ #if defined(CONFIG_440)
+ #include <ppc440.h>
+ #else
++#if defined(CONFIG_STBx25xx)
++#include <asm/stbx25xx.h>
++#endif
++#if defined(CONFIG_STB034xx)
++#include <asm/stb034xx.h>
++#endif
++#if defined(CONFIG_STB04xxx)
++#include <asm/stb04xxx.h>
++#endif
+ #include <ppc405.h>
+ #endif
+ 
+diff -uNr u-boot-1.2.0.org/include/usb.h u-boot-1.2.0/include/usb.h
+--- u-boot-1.2.0.org/include/usb.h	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/include/usb.h	2009-04-26 12:55:04.000000000 +0200
+@@ -169,7 +169,7 @@
+  * this is how the lowlevel part communicate with the outer world
+  */
+ 
+-#if defined(CONFIG_USB_UHCI) || defined(CONFIG_USB_OHCI) || defined (CONFIG_USB_SL811HS)
++#if defined(CONFIG_USB_UHCI) || defined(CONFIG_USB_OHCI) || defined (CONFIG_USB_SL811HS) || defined(CONFIG_USB_ISP116X_HCD)
+ int usb_lowlevel_init(void);
+ int usb_lowlevel_stop(void);
+ int submit_bulk_msg(struct usb_device *dev, unsigned long pipe, void *buffer,int transfer_len);
+diff -uNr u-boot-1.2.0.org/lib_ppc/board.c u-boot-1.2.0/lib_ppc/board.c
+--- u-boot-1.2.0.org/lib_ppc/board.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/lib_ppc/board.c	2009-04-26 12:55:04.000000000 +0200
+@@ -378,6 +378,7 @@
+ 	memset ((void *) gd, 0, sizeof (gd_t));
+ #endif
+ 
++	debug("start.....by\n");
+ 	for (init_fnc_ptr = init_sequence; *init_fnc_ptr; ++init_fnc_ptr) {
+ 		if ((*init_fnc_ptr) () != 0) {
+ 			hang ();
+@@ -411,6 +412,13 @@
+ 	debug ("Reserving %dk for kernel logbuffer at %08lx\n", LOGBUFF_LEN, addr);
+ #endif
+ 
++#ifdef CONFIG_DGS_UPGRADE
++	addr -= CFG_DGS_UPGRADE_BUFSIZE;
++	gd->dgs_upg_buffer = addr;
++	debug( "Reserving 0x%08x bytes for usb download buffer at 0x%08x.\n",
++			CFG_DGS_UPGRADE_BUFSIZE, (int)gd->dgs_upg_buffer );
++#endif
++
+ #ifdef CONFIG_PRAM
+ 	/*
+ 	 * reserve protected RAM
+@@ -493,6 +501,16 @@
+ 	 * Save local variables to board info struct
+ 	 */
+ 
++#if defined(CONFIG_STBx25xx) || defined(CONFIG_STB034xx) || defined(CONFIG_STB04xxx)
++
++	bd->bi_memsize = gd->ram_size;
++	/* bd->bi_enetaddr in board_init_r */
++	bd->bi_intfreq = gd->cpu_clk;
++	bd->bi_busfreq = gd->bus_clk;
++	bd->bi_tbfreq = (unsigned int)get_tbclk();
++	bd->bi_opb_busfreq = gd->bus_clk;
++	/* bd->bi_iic_fast in board_init_r */
++#else
+ 	bd->bi_memstart  = CFG_SDRAM_BASE;	/* start of  DRAM memory	*/
+ 	bd->bi_memsize   = gd->ram_size;	/* size  of  DRAM memory in bytes */
+ 
+@@ -554,11 +572,13 @@
+ 	bd->bi_pcifreq = gd->pci_clk;
+ #endif /* CONFIG_MPC5xxx */
+ 	bd->bi_baudrate = gd->baudrate;	/* Console Baudrate     */
++#endif
+ 
+ #ifdef CFG_EXTBDINFO
+ 	strncpy ((char *)bd->bi_s_version, "1.2", sizeof (bd->bi_s_version));
+ 	strncpy ((char *)bd->bi_r_version, U_BOOT_VERSION, sizeof (bd->bi_r_version));
+ 
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB034xx) && !defined(CONFIG_STB04xxx)
+ 	bd->bi_procfreq = gd->cpu_clk;	/* Processor Speed, In Hz */
+ 	bd->bi_plb_busfreq = gd->bus_clk;
+ #if defined(CONFIG_405GP) || defined(CONFIG_405EP) || defined(CONFIG_440EP) || defined(CONFIG_440GR)
+@@ -567,7 +587,8 @@
+ #elif defined(CONFIG_XILINX_ML300)
+ 	bd->bi_pci_busfreq = get_PCI_freq ();
+ #endif
+-#endif
++#endif /* CONFIG_STBx25xx */
++#endif /* CFG_EXTBDINFO */
+ 
+ 	debug ("New Stack Pointer is: %08lx\n", addr_sp);
+ 
+@@ -658,6 +679,17 @@
+ 		}
+ #endif
+ 	}
++
++#ifdef CONFIG_PDIUSB12
++	/*
++	 * We have to relocate usbclient functiontable.
++	 */
++	{
++		extern int usb_client_relocate_code( void );
++		usb_client_relocate_code();
++	}
++#endif
++
+ 	/* there are some other pointer constants we must deal with */
+ #ifndef CFG_ENV_IS_NOWHERE
+ 	env_name_spec += gd->reloc_off;
+@@ -732,6 +764,7 @@
+ 		hang ();
+ 	}
+ 
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB034xx) && !defined(CONFIG_STB04xxx)
+ 	bd->bi_flashstart = CFG_FLASH_BASE;	/* update start of FLASH memory    */
+ 	bd->bi_flashsize = flash_size;	/* size of FLASH memory (final value) */
+ 
+@@ -749,6 +782,7 @@
+ # else
+ 	bd->bi_flashoffset = 0;
+ # endif
++#endif	/* CONFIG_STBx25xx */
+ #else	/* CFG_NO_FLASH */
+ 
+ 	bd->bi_flashsize = 0;
+@@ -792,7 +826,7 @@
+ 	 */
+ 
+ #if defined(CFG_EXTBDINFO)
+-#if defined(CONFIG_405GP) || defined(CONFIG_405EP)
++#if defined(CONFIG_405GP) || defined(CONFIG_405EP) || defined(CONFIG_STBx25xx) || defined(CONFIG_STB04xxx)
+ #if defined(CONFIG_I2CFAST)
+ 	/*
+ 	 * set bi_iic_fast for linux taking environment variable
+@@ -802,15 +836,21 @@
+ 		char *s = getenv ("i2cfast");
+ 		if (s && ((*s == 'y') || (*s == 'Y'))) {
+ 			bd->bi_iic_fast[0] = 1;
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB04xxx)
+ 			bd->bi_iic_fast[1] = 1;
++#endif
+ 		} else {
+ 			bd->bi_iic_fast[0] = 0;
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB04xxx)
+ 			bd->bi_iic_fast[1] = 0;
++#endif
+ 		}
+ 	}
+ #else
+ 	bd->bi_iic_fast[0] = 0;
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB04xxx)
+ 	bd->bi_iic_fast[1] = 0;
++#endif
+ #endif	/* CONFIG_I2CFAST */
+ #endif	/* CONFIG_405GP, CONFIG_405EP */
+ #endif	/* CFG_EXTBDINFO */
+@@ -892,7 +932,9 @@
+ 	load_sernum_ethaddr ();
+ #endif
+ 	/* IP Address */
++#if !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB034xx) && !defined(CONFIG_STB04xxx)
+ 	bd->bi_ip_addr = getenv_IPaddr ("ipaddr");
++#endif
+ 
+ 	WATCHDOG_RESET ();
+ 
+diff -uNr u-boot-1.2.0.org/Makefile u-boot-1.2.0/Makefile
+--- u-boot-1.2.0.org/Makefile	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/Makefile	2009-04-26 12:55:51.000000000 +0200
+@@ -122,7 +122,8 @@
+ CROSS_COMPILE =
+ else
+ ifeq ($(ARCH),ppc)
+-CROSS_COMPILE = powerpc-linux-
++#CROSS_COMPILE = powerpc-linux-
++CROSS_COMPILE = powerpc-tuxbox-linux-gnu-
+ endif
+ ifeq ($(ARCH),arm)
+ CROSS_COMPILE = arm-linux-
+@@ -209,6 +210,7 @@
+ LIBS += drivers/sk98lin/libsk98lin.a
+ LIBS += post/libpost.a post/cpu/libcpu.a
+ LIBS += common/libcommon.a
++#LIBS += common/jpeg/libjpeg.a
+ LIBS += $(BOARDLIBS)
+ 
+ LIBS := $(addprefix $(obj),$(LIBS))
+@@ -248,6 +250,7 @@
+ 
+ $(obj)u-boot.bin:	$(obj)u-boot
+ 		$(OBJCOPY) ${OBJCFLAGS} -O binary $< $@
++		[[ -r login.cfg ]] && ncftpput -f login.cfg tmp u-boot.bin || true
+ 
+ $(obj)u-boot.img:	$(obj)u-boot.bin
+ 		./tools/mkimage -A $(ARCH) -T firmware -C none \
+@@ -301,7 +304,7 @@
+ 
+ tags ctags:
+ 		ctags -w -o $(OBJTREE)/ctags `find $(SUBDIRS) include \
+-				lib_generic board/$(BOARDDIR) cpu/$(CPU) lib_$(ARCH) \
++				lib_generic board/$(if $(VENDOR),$(VENDOR),$(BOARDDIR)) cpu/$(CPU) lib_$(ARCH) \
+ 				fs/cramfs fs/fat fs/fdos fs/jffs2 \
+ 				net disk rtc dtt drivers drivers/sk98lin common \
+ 			\( -name CVS -prune \) -o \( -name '*.[ch]' -print \)`
+@@ -1228,6 +1231,39 @@
+ yucca_config:	unconfig
+ 	@$(MKCONFIG) $(@:_config=) ppc ppc4xx yucca amcc
+ 
++relook100s_config:	unconfig
++	@$(MKCONFIG) $(@:_config=) ppc ppc4xx relook100s ipbox
++
++relook100s.ntsc_config:	unconfig
++	@$(MKCONFIG) $(@:_config=) ppc ppc4xx relook100s ipbox
++
++relook200c_config:      unconfig
++	@$(MKCONFIG) $(@:_config=) ppc ppc4xx relook200c ipbox
++
++relook200s_config:      unconfig
++	@$(MKCONFIG) $(@:_config=) ppc ppc4xx relook200s ipbox
++
++relook200s.ntsc_config: unconfig
++	@$(MKCONFIG) $(@:_config=) ppc ppc4xx relook200s ipbox
++
++relook210_config:	unconfig
++	@$(MKCONFIG) $(@:_config=) ppc ppc4xx relook210 ipbox
++
++relook3000_config:	unconfig
++	@$(MKCONFIG) $(@:_config=) ppc ppc4xx relook3000 ipbox
++
++relook300s_config:	unconfig
++	@$(MKCONFIG) $(@:_config=) ppc ppc4xx relook300s ipbox
++
++relook400s_config:	unconfig
++	@$(MKCONFIG) $(@:_config=) ppc ppc4xx relook400s ipbox
++
++relook400s.ntsc_config:	unconfig
++	@$(MKCONFIG) $(@:_config=) ppc ppc4xx relook400s ipbox
++
++relook400c_config:	unconfig
++	@$(MKCONFIG) $(@:_config=) ppc ppc4xx relook400c ipbox
++	
+ #########################################################################
+ ## MPC8220 Systems
+ #########################################################################
+diff -uNr u-boot-1.2.0.org/net/eth.c u-boot-1.2.0/net/eth.c
+--- u-boot-1.2.0.org/net/eth.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/net/eth.c	2009-04-26 12:55:04.000000000 +0200
+@@ -36,6 +36,7 @@
+ extern int dc21x4x_initialize(bd_t*);
+ extern int e1000_initialize(bd_t*);
+ extern int eepro100_initialize(bd_t*);
++extern int dm9000_initialize(bd_t*);
+ extern int eth_3com_initialize(bd_t*);
+ extern int fec_initialize(bd_t*);
+ extern int inca_switch_initialize(bd_t*);
+@@ -149,7 +150,7 @@
+ #if defined(CONFIG_DB64460) || defined(CONFIG_P3Mx)
+ 	mv6446x_eth_initialize(bis);
+ #endif
+-#if defined(CONFIG_4xx) && !defined(CONFIG_IOP480) && !defined(CONFIG_AP1000)
++#if defined(CONFIG_4xx) && !defined(CONFIG_IOP480) && !defined(CONFIG_AP1000) && !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB04xxx) && !defined(CONFIG_STB034xx)
+ 	ppc_4xx_eth_initialize(bis);
+ #endif
+ #ifdef CONFIG_INCA_IP_SWITCH
+@@ -228,8 +229,11 @@
+ #ifdef CONFIG_E1000
+ 	e1000_initialize(bis);
+ #endif
+-#ifdef CONFIG_EEPRO100
+-	eepro100_initialize(bis);
++#ifdef CONFIG_E1000
++	e1000_initialize(bis);
++#endif
++#ifdef CONFIG_DRIVER_DM9000
++	dm9000_initialize(bis);
+ #endif
+ #ifdef CONFIG_TULIP
+ 	dc21x4x_initialize(bis);
+@@ -479,7 +483,7 @@
+ 	at91rm9200_miiphy_initialize(bis);
+ #endif
+ #if defined(CONFIG_4xx) && !defined(CONFIG_IOP480) \
+-	&& !defined(CONFIG_AP1000) && !defined(CONFIG_405)
++	&& !defined(CONFIG_AP1000) && !defined(CONFIG_405) && !defined(CONFIG_STBx25xx) && !defined(CONFIG_STB04xxx)
+ 	emac4xx_miiphy_initialize(bis);
+ #endif
+ #if defined(CONFIG_MCF52x2)
+diff -uNr u-boot-1.2.0.org/net/net.c u-boot-1.2.0/net/net.c
+--- u-boot-1.2.0.org/net/net.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/net/net.c	2009-04-26 12:55:04.000000000 +0200
+@@ -337,7 +337,15 @@
+ #endif
+ 	case NETCONS:
+ 	case TFTP:
++#if defined(CONFIG_STBx25xx) || defined(CONFIG_STB04xxx)
++		{
++			unsigned long ip_addr = getenv_IPaddr( "ipaddr" );
++
++			NetCopyIP(&NetOurIP, &ip_addr);
++		}
++#else
+ 		NetCopyIP(&NetOurIP, &bd->bi_ip_addr);
++#endif
+ 		NetOurGatewayIP = getenv_IPaddr ("gatewayip");
+ 		NetOurSubnetMask= getenv_IPaddr ("netmask");
+ 		NetOurVLAN = getenv_VLAN("vlan");
+@@ -653,7 +661,11 @@
+ 	if (memcmp(ether, NetEtherNullAddr, 6) == 0) {
+ 
+ #ifdef ET_DEBUG
+-		printf("sending ARP for %08lx\n", dest);
++		printf("sending ARP for %d.%d.%d.%d\n",
++				(dest>>24)&0xff,
++				(dest>>16)&0xff,
++				(dest>>8)&0xff,
++				(dest>>0)&0xff );
+ #endif
+ 		NetArpWaitPacketIP = dest;
+ 		NetArpWaitPacketMAC = ether;
+@@ -702,7 +714,11 @@
+ 	memcpy(mac, NetEtherNullAddr, 6);
+ 
+ #ifdef ET_DEBUG
+-	printf("sending ARP for %08lx\n", NetPingIP);
++	printf("sending ARP for %d.%d.%d.%d\n",
++			(NetPingIP>>24)&0xff,
++			(NetPingIP>>16)&0xff,
++			(NetPingIP>>8)&0xff,
++			(NetPingIP>>0)&0xff );
+ #endif
+ 
+ 	NetArpWaitPacketIP = NetPingIP;
+@@ -1271,6 +1287,13 @@
+ 		}
+ 
+ 		if (NetReadIP(&arp->ar_data[16]) != NetOurIP) {
++#ifdef ET_DEBUG
++			printf( "ip for %d.%d.%d.%d not mine.\n",
++					(NetReadIP(&arp->ar_data[16])>>24)&0xff,
++					(NetReadIP(&arp->ar_data[16])>>16)&0xff,
++					(NetReadIP(&arp->ar_data[16])>>8)&0xff,
++					(NetReadIP(&arp->ar_data[16])>>0)&0xff );
++#endif
+ 			return;
+ 		}
+ 
+diff -uNr u-boot-1.2.0.org/net/tftp.c u-boot-1.2.0/net/tftp.c
+--- u-boot-1.2.0.org/net/tftp.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/net/tftp.c	2009-04-26 12:55:04.000000000 +0200
+@@ -10,7 +10,7 @@
+ #include "tftp.h"
+ #include "bootp.h"
+ 
+-#undef	ET_DEBUG
++//#undef	ET_DEBUG
+ 
+ #if (CONFIG_COMMANDS & CFG_CMD_NET)
+ 
+diff -uNr u-boot-1.2.0.org/tools/Makefile u-boot-1.2.0/tools/Makefile
+--- u-boot-1.2.0.org/tools/Makefile	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/tools/Makefile	2009-04-26 12:55:04.000000000 +0200
+@@ -40,7 +40,7 @@
+ LOGO_H	= $(OBJTREE)/include/bmp_logo.h
+ 
+ ifeq ($(LOGO_BMP),)
+-LOGO_BMP= logos/denx.bmp
++LOGO_BMP= logos/logo_linux_clut224.bmp
+ endif
+ 
+ #-------------------------------------------------------------------------
