@@ -33,7 +33,11 @@ flash-neutrino-all-all: flash-neutrino-cramfs-all flash-neutrino-squashfs-all fl
 
 flash-neutrino-cramfs-all: flash-neutrino-cramfs-1x flash-neutrino-cramfs-2x
 
+if BOXTYPE_DREAMBOX
+flash-neutrino-squashfs: $(flashprefix)/neutrino-squashfs.dream
+else
 flash-neutrino-squashfs-all: flash-neutrino-squashfs-1x flash-neutrino-squashfs-2x
+endif
 
 flash-neutrino-jffs2-all: flash-neutrino-jffs2-1x flash-neutrino-jffs2-2x
 

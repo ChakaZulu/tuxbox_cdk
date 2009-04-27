@@ -167,6 +167,26 @@ $(flashprefix)/complete.img: $(flashprefix)/boot-cramfs.img $(flashprefix)/root-
 	cp $(flashprefix)/boot-cramfs.img $(flashprefix)/complete.img; \
 	dd if=$(flashprefix)/root-squashfs.img of=$(flashprefix)/complete.img bs=1024 seek=1152
 
+$(flashprefix)/neutrino-squashfs.dream: \
+		$(flashprefix)/root \
+		$(flashprefix)/root-neutrino-squashfs \
+		$(flashprefix)/boot-cramfs.img $(flashprefix)/root-neutrino-squashfs.img $(flashprefix)/complete-neutrino.img
+		@TUXBOX_CUSTOMIZE@
+
+$(flashprefix)/root-neutrino-squashfs.img: \
+		$(flashprefix)/root \
+		$(flashprefix)/root-neutrino-squashfs
+	$(flashprefix)/mksquashfs $(flashprefix)/root-neutrino-squashfs $(flashprefix)/root-neutrino-squashfs.img -be -all-root
+	@if [ `stat -c %s $(flashprefix)/root-neutrino-squashfs.img` -gt 5111808 ]; then \
+		echo "ERROR: SquashFS part is too big for image (max. allowed 5111808 bytes)"; \
+		rm -f $(flashprefix)/root-neutrino-squashfs.img.too-big 2> /dev/null || /bin/true; \
+		mv $(flashprefix)/root-neutrino-squashfs.img $(flashprefix)/root-neutrino-squashfs.img.too-big; \
+		exit 1; \
+	fi
+
+$(flashprefix)/complete-neutrino.img: $(flashprefix)/boot-cramfs.img $(flashprefix)/root-neutrino-squashfs.img
+	cp $(flashprefix)/boot-cramfs.img $(flashprefix)/complete-neutrino.img; \
+	dd if=$(flashprefix)/root-neutrino-squashfs.img of=$(flashprefix)/complete.img bs=1024 seek=1152
 endif
 
 $(flashprefix)/enigma-jffs2.img1x $(flashprefix)/enigma-jffs2.img2x: \
