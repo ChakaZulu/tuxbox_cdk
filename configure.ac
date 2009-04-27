@@ -926,6 +926,11 @@ else
 	fi
 fi
 
+# hack
+AC_ARG_ENABLE(dreambox-serial-console,
+	AS_HELP_STRING(--enable-dreambox-serial-console, enable serial console on dream),
+	,[enable_dreambox_serial_console=no])
+AM_CONDITIONAL(DREAMBOX_ENABLE_SERIAL_CONSOLE,test "$enable_dreambox_serial_console" = "yes")
 
 #
 # summary
