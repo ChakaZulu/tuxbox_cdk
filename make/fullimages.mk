@@ -186,7 +186,7 @@ $(flashprefix)/root-neutrino-squashfs.img: \
 
 $(flashprefix)/complete-neutrino.img: $(flashprefix)/boot-cramfs.img $(flashprefix)/root-neutrino-squashfs.img
 	cp $(flashprefix)/boot-cramfs.img $(flashprefix)/complete-neutrino.img; \
-	dd if=$(flashprefix)/root-neutrino-squashfs.img of=$(flashprefix)/complete.img bs=1024 seek=1152
+	dd if=$(flashprefix)/root-neutrino-squashfs.img of=$(flashprefix)/complete-neutrino.img bs=1024 seek=1152
 endif
 
 $(flashprefix)/enigma-jffs2.img1x $(flashprefix)/enigma-jffs2.img2x: \
