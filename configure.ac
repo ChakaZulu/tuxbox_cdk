@@ -516,21 +516,21 @@ else
 		bootdir="$cvsdir/boot"
 	fi
 	if test "$driverdir" = "NONE"; then
-		case "${BOXTYPE}" in
-			dreambox|ipbox)
-				driverdir="$cvsdir/driver_dream"
-				startscriptdir="$cvsdir/cdk/root_dream"
-				;;
-			*)
-				driverdir="$cvsdir/driver"
-				startscriptdir="$cvsdir/cdk/root"
-				;;
-		esac
+		driverdir="$cvsdir/driver"
 	fi
 	if test "$hostappsdir" = "NONE"; then
 		hostappsdir="$cvsdir/hostapps"
 	fi
 fi
+
+case "${BOXTYPE}" in
+	dreambox)
+		startscriptdir="$cvsdir/cdk/root_dream"
+		;;
+	*)
+		startscriptdir="$cvsdir/cdk/root"
+		;;
+esac
 
 if test "$gnuserver" = "NONE"; then
 	gnuserver="ftp.gwdg.de/pub/misc/gnu/ftp/gnu"

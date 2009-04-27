@@ -28,18 +28,12 @@ CONFIGURE_OPTS = \
 	--with-boxtype=$(BOXTYPE) \
 	--with-target=cdk
 if BOXTYPE_DREAMBOX
-CONFIGURE_OPTS += --with-boxmodel=$(BOXMODEL)
+CONFIGURE_OPTS += --with-boxmodel=$(BOXMODEL) \
+		  --with-dvbincludes=$(driverdir)/oldapi/include
 endif
 if BOXTYPE_IPBOX
-CONFIGURE_OPTS += --with-boxmodel=$(BOXMODEL)
-endif
-if BOXTYPE_DREAMBOX
-CONFIGURE_OPTS += \
-	--with-dvbincludes=$(driverdir)/dvb/include
-endif
-if BOXTYPE_IPBOX
-CONFIGURE_OPTS += \
-	--with-dvbincludes=$(driverdir)/include
+CONFIGURE_OPTS += --with-boxmodel=$(BOXMODEL) \
+		  --with-dvbincludes=$(driverdir)/oldapi/include
 endif
 if BOXTYPE_DBOX2
 if KERNEL26
