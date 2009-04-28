@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: halt,v 1.4 2006/09/28 18:28:06 barf Exp $
+# $Id: halt,v 1.5 2009/04/28 08:08:36 seife Exp $
 
 mount | grep /hdd >/dev/null && umount /hdd
 
@@ -11,3 +11,4 @@ mount | grep /hdd >/dev/null && umount /hdd
 switch -fnc 0 -fblk 0
 
 mount | grep /var >/dev/null && umount /var
+umount -l /var
