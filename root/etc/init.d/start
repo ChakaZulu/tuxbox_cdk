@@ -1,5 +1,4 @@
 #!/bin/sh
-date -s 010101001970
 
 . /etc/profile
 

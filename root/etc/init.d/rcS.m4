@@ -35,22 +35,20 @@ sinclude(customizationsdir{/rcS_pre.m4})dnl
 # This file was automatically generated from rcS.m4
 #
 PATH=/sbin:/bin
-KV=$(uname -r)
 ifdef({insmod},{IM=/sbin/{insmod}
-MD=/lib/modules/${KV}/misc/
+MD=/lib/modules/$(uname -r)/misc/
 })dnl
 
 # extract kernel minor without using cut
-OLD_IFS="$IFS"
+OLD_IFS=$IFS
 IFS='.'
-set $KV
-KMINOR=$2
-IFS="$OLD_IFS"
+get_second() {{ echo $2; }}
+KMINOR=`get_second $(uname -r)`
+IFS=$OLD_IFS
 
 if [ $KMINOR -ge 6 ]; then
 	MD=
 	mount -t proc proc /proc
-cat /proc/uptime
 	mount -t tmpfs tmp /tmp
 	mount -t tmpfs dev /dev
 	mount -t sysfs sys /sys
@@ -58,7 +56,6 @@ cat /proc/uptime
 	# create necessary nodes,
 	# static for now, i am just too lazy for udev :-)
 	mkdir -p /dev/pts /dev/dbox /dev/dvb/adapter0 /dev/loop /dev/i2c /dev/input /dev/sound /dev/v4l /dev/fb /dev/vc /dev/mtdblock /dev/mtd /dev/tts
-	cat /proc/uptime
 	if type -p makedevices; then
 		makedevices
 	else
@@ -123,7 +120,6 @@ cat /proc/uptime
 		mknod /dev/tts/0 c 4 64
 		mknod /dev/tts/1 c 4 65
 	fi
-	cat /proc/uptime
 	# devices with dynamic minor numbers are created by /sbin/hotplug
 
 	ln -sf /dev/fb0 /dev/fb/0
@@ -132,17 +128,15 @@ cat /proc/uptime
 	mount /dev/pts
 fi
 
-cat /proc/uptime
-
 # If appropriate, load ide drivers and file system drivers
 if [ $KMINOR -ge 6 ]; then
 	# kernel 2.6
-	if [ -e /lib/modules/${KV}/extra/ide/dboxide.ko ] ; then
+	if [ -e /lib/modules/$(uname -r)/extra/ide/dboxide.ko ] ; then
 		loadmodule(dboxide)
 	fi
 else
 	# kernel 2.4
-	if [ -e /lib/modules/${KV}/misc/dboxide.o ] ; then
+	if [ -e /lib/modules/$(uname -r)/misc/dboxide.o ] ; then
 		loadmodule(ide-core)
 		loadmodule(dboxide)
 		loadmodule(ide-detect)
@@ -154,7 +148,6 @@ else
 	fi
 fi
 
-cat /proc/uptime
 if [ $KMINOR -ge 6 ]; then
 	# everything else is already mounted
 	mount /var
@@ -163,7 +156,6 @@ else
 	mount -a
 fi
 
-cat /proc/uptime
 # Turn on swap
 ifmarkerfile({swap},{swapon -a})
 
@@ -175,17 +167,14 @@ runprogifexists({/var/tuxbox/config/target1.hdparm},{hdparm},{"`cat /var/tuxbox/
   
 # Setup hostname
 hostname -F /etc/hostname
-ifup -a &
-cat /var/tuxbox/ucodes/* > /dev/null &
+ifup -a
 
 ifdef({insmod},{loadmodule(event)},{type -p depmod > /dev/null && touch /etc/modules.conf && depmod -ae}) dnl
 
 loadmodule(tuxbox)
 
-cat /proc/uptime
-
 # Get info about the current box
-eval `tuxinfo -e`
+eval `/bin/tuxinfo -e`
 
 echo "Detected STB:"
 echo "	Vendor: $VENDOR"
@@ -201,31 +190,22 @@ fi
 
 if [ $KMINOR -ge 6 ]; then
 	# kernel 2.6
-dnl FIXME: using loadmodule makes no sense here
-dnl since modprobe is used to pull in the dependencies
-dnl	# Nokia
-dnl	loadmodule(ves1820)
-dnl	loadmodule(ves1x93)
-dnl	# Philips
-dnl	loadmodule(tda80xx)
-dnl	loadmodule(tda8044h)
-dnl	# Sagem
-dnl	loadmodule(at76c651)
+
+	dnl FIXME: using loadmodule makes no sense here
+	dnl since modprobe is used to pull in the dependencies
+
 	# I2C core
 	loadmodule(dbox2_i2c)
 	# load order is somehow important, if dbox2_napi (which pulls in
 	# e.g. the demodulator drivers) is loaded first, at least tda80{xx,44h}
 	# hang while initalizing the i2c-bus :-(
 	loadmodule(saa7126)
-dnl	loadmodule(event)
-	loadmodule(avs) # pulls in event.ko
-	loadmodule(lcd) #
-dnl	loadmodule(dbox2_fp)
-	loadmodule(dbox2_fp_input) # pulls in dbox2_fp
-dnl	loadmodule(avia_av)
-dnl	loadmodule(avia_gt)
-dnl	loadmodule(cam)
-dnl	loadmodule(dbox2_napi) # avia_av avia_gt cam + demodulator drivers...
+	loadmodule(avs)
+	loadmodule(lcd)
+
+	loadmodule(dbox2_fp_input)
+
+	loadmodule(dbox2_napi)
 
 	loadmodule(avia_gt_fb)
 	loadmodule(avia_gt_lirc)
@@ -307,8 +287,6 @@ else
 	loadmodule(aviaEXT)
 fi
 
-cat /proc/uptime
-
 # Create a telnet greeting
 echo "$VENDOR $MODEL - Kernel %r (%t)." > /etc/issue.net
 
@@ -324,39 +302,39 @@ if [ ! -d /var/etc ] ; then
     mkdir /var/etc
 fi
 
-dnl runprogcreatedirifexists({/sbin/syslogd},{/var/log},{/sbin/syslogd})
-dnl runprogifexists({/var/tuxbox/config/lirc/lircd.conf},{lircd},
-dnl 	{/var/tuxbox/config/lirc/lircd.conf})
-dnl runifexists({/bin/loadkeys},{/share/keymaps/i386/qwertz/de-latin1-nodeadkeys.kmap.gz})
+runprogcreatedirifexists({/sbin/syslogd},{/var/log},{/sbin/syslogd})
+runprogifexists({/var/tuxbox/config/lirc/lircd.conf},{lircd},
+	{/var/tuxbox/config/lirc/lircd.conf})
+runifexists({/bin/loadkeys},{/share/keymaps/i386/qwertz/de-latin1-nodeadkeys.kmap.gz})
 runifexists({/sbin/inetd})
-dnl runprogifexists({/sbin/sshd},{/etc/init.d/start_sshd},{&})
-dnl runifexists({/sbin/dropbear})
-runprogifexists({/sbin/automount},{/etc/init.d/start_automount &})
-dnl runprogifexists({/bin/djmount},{/etc/init.d/start_upnp})
-dnl ifmarkerfile({boot_info},{runifexists({/bin/cdkVcInfo})})
-dnl 
-dnl # If appropriate, load smbfs driver
-dnl if [ -e /lib/modules/$(uname -r)/kernel/fs/smbfs/smbfs.ko -o -e /lib/modules/$(uname -r)/kernel/fs/smbfs/smbfs.o ] ; then
-dnl 	loadmodule(smbfs)
-dnl fi
-dnl
-dnl # Start the nfs server if /etc/exports exists
-dnl runprogifexists({/etc/exports},{loadmodule(nfsd)
-dnl 	pidof portmap >/dev/null || portmap
-dnl 	exportfs -r
-dnl 	rpc.mountd
-dnl 	rpc.nfsd 3})	
-dnl 
-dnl #Start the samba server if /var/etc/.sambaserver and /etc/smb.conf.dbox exist
-dnl ifmarkerfile({sambaserver},{if [ -e /etc/smb.conf -a -x /bin/nmbd -a -x /bin/smbd ]; then
-dnl 		/bin/nmbd -D
-dnl 		/bin/smbd -D -a -s /etc/smb.conf
-dnl 	fi})
-dnl 
-dnl ifmarkerfile({tuxmaild},{tuxmaild})
-dnl ifmarkerfile({tuxcald},{tuxcald})
-dnl ifmarkerfile({rdate},{rdate time.fu-berlin.de})
-dnl ifmarkerfile({initialize},{/etc/init.d/initialize && rm /var/etc/.initialize})
+runprogifexists({/sbin/sshd},{/etc/init.d/start_sshd},{&})
+runifexists({/sbin/dropbear})
+runprogifexists({/sbin/automount},{/etc/init.d/start_automount})
+runprogifexists({/bin/djmount},{/etc/init.d/start_upnp})
+ifmarkerfile({boot_info},{runifexists({/bin/cdkVcInfo})})
+
+# If appropriate, load smbfs driver
+if [ -e /lib/modules/$(uname -r)/kernel/fs/smbfs/smbfs.ko -o -e /lib/modules/$(uname -r)/kernel/fs/smbfs/smbfs.o ] ; then
+	loadmodule(smbfs)
+fi
+
+# Start the nfs server if /etc/exports exists
+runprogifexists({/etc/exports},{loadmodule(nfsd)
+	pidof portmap >/dev/null || portmap
+	exportfs -r
+	rpc.mountd
+	rpc.nfsd 3})	
+
+#Start the samba server if /var/etc/.sambaserver and /etc/smb.conf.dbox exist
+ifmarkerfile({sambaserver},{if [ -e /etc/smb.conf -a -x /bin/nmbd -a -x /bin/smbd ]; then
+		/bin/nmbd -D
+		/bin/smbd -D -a -s /etc/smb.conf
+	fi})
+
+ifmarkerfile({tuxmaild},{tuxmaild})
+ifmarkerfile({tuxcald},{tuxcald})
+ifmarkerfile({rdate},{rdate time.fu-berlin.de})
+ifmarkerfile({initialize},{/etc/init.d/initialize && rm /var/etc/.initialize})
 dnl
 dnl Include a local customization file, if found.
 sinclude(customizationsdir{/rcS_post.m4})dnl
@@ -366,6 +344,3 @@ if [ -e /var/etc/init.d/rcS.local ]; then
 elif [ -e /etc/init.d/rcS.local ]; then
 	. /etc/init.d/rcS.local
 fi
-
-cat /proc/uptime
-

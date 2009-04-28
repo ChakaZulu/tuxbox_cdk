@@ -29,11 +29,8 @@ PIDFILE=/var/run/automount.pid
 # The parent directory of AUTOFSMOUNT must be absolute, must exist,
 # and be writeable. The AUTOFSMOUNTDIR should not exist.
 #AUTOFSMOUNTDIR=/autofs
-AUTOFSMOUNTDIR=/tmp/automount
-MAPFILE=/var/etc/auto.net-$(tuxinfo -V)
-if [ ! -e $MAPFILE ]; then
-	MAPFILE=/etc/auto.net
-fi
+AUTOFSMOUNTDIR=/var/autofs
+MAPFILE=/etc/auto.net
 
 echo "Starting the automounter"
 
@@ -45,14 +42,13 @@ MD=/lib/modules/$(uname -r)
 if [ -x /sbin/modprobe ] ; then
     # If nfs-support is contained in the kernel, this will fail. The 
     # error can be ignored.
-    grep -q autofs4 /proc/filesystems || modprobe autofs4
     grep -q nfs /proc/filesystems || modprobe nfs
-#   grep -q cifs /proc/filesystems || modprobe cifs
+    #modprobe cifs
 else
-    grep -q sunrpc /proc/modules     || insmod $MD/kernel/net/sunrpc/sunrpc.o
-    grep -q lockd  /proc/modules     || insmod $MD/kernel/fs/lockd/lockd.o
-    grep -q nfs    /proc/filesystems || insmod $MD/kernel/fs/nfs/nfs.o
-#   grep -q cifs   /proc/filesystems || insmod $MD/kernel/fs/cifs/cifs.o
+    insmod $MD/kernel/net/sunrpc/sunrpc.o
+    insmod $MD/kernel/fs/lockd/lockd.o
+    insmod $MD/kernel/fs/cifs/cifs.o
+    insmod $MD/kernel/fs/nfs/nfs.o
 fi
 
 if [ ! -d /var/lock ]; then
