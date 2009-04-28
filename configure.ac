@@ -1003,6 +1003,7 @@ Samba server:			$enable_sambaserver
 Automount:			$enable_automount
 dosfstools:			$enable_dosfstools
 Neutrino UPnP-support:		$enable_upnp
+Esound support:			$enable_esd
 FLAC support:			$enable_flac
 German keymaps:			$enable_german_keymaps
 sqlite3 storage:		$enable_sqlite
