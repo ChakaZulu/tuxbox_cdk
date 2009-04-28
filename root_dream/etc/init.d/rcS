@@ -38,7 +38,8 @@ if [ $mID -eq 05 ] ; then
 fi
 
 /bin/mount -t ramfs none /tmp
-
+# /var/run links here
+mkdir /tmp/run
 init=0
 
 # check if /var/.init exist .. then no flash erase is needed .. this is new !
@@ -167,6 +168,7 @@ if [ -e /var/etc/init ] ; then
 fi
 
 if [ -x /etc/init.d/start_neutrino -o -x /var/etc/init.d/start_neutrino ]; then
+	ifup -a
 	exit 0
 fi
 

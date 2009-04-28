@@ -285,9 +285,10 @@ $(dreamfilesrootdir)/dreamfiles/lib/modules/2.6.9/extra/head.ko : $(flashprefix)
 		cp $(flashprefix)/dreamfiles/.version $(dreamfilesrootdir); \
 	fi
 # var_init
-	@for i in log mnt mnt/cf mnt/nfs mnt/usb run tuxbox/plugins tuxbox/config ; do \
+	@for i in log mnt mnt/cf mnt/nfs mnt/usb tuxbox/plugins tuxbox/config ; do \
 		$(INSTALL) -d $(dreamfilesrootdir)/var_init/$$i; \
 	done;
+	rm -f  $(dreamfilesrootdir)/var_init/run; ln -s /tmp/run $(dreamfilesrootdir)/var_init/
 	for i in tuxtxt enigma/cable enigma/fonts enigma/pictures enigma/resources enigma/skins enigma/terrestrial; do \
 		$(INSTALL) -d $(dreamfilesrootdir)/var_init/tuxbox/config/$$i; \
 	done;
