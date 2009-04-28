@@ -5,7 +5,7 @@
 
 contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie @LUFS@ kermit wget ncftp screen lzma_utils ntpd ntpclient links links_g esound
 
-CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma_utils .deps/ntpd .deps/ntpclient .deps/links .deps/links_g .deps/esound
+CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma_utils .deps/ntpd .deps/ntpclient .deps/links .deps/links_g .deps/esound .deps/openntpd
 
 #bzip2
 $(DEPDIR)/bzip2: bootstrap @DEPENDS_bzip2@
@@ -606,6 +606,27 @@ $(flashprefix)/root/bin/ntpclient: ntpclient | $(flashprefix)/root
 	$(INSTALL) $(targetprefix)/bin/ntpclient $(flashprefix)/root/bin
 	@FLASHROOTDIR_MODIFIED@
 
+endif
+
+$(DEPDIR)/openntpd: bootstrap @DEPENDS_openntpd@
+	@PREPARE_openntpd@
+	cd @DIR_openntpd@ && \
+		$(BUILDENV) ./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--sysconfdir=/var/etc --with-privsep-user=root && \
+		$(MAKE) all &&\
+		@INSTALL_openntpd@
+	@CLEANUP_openntpd@
+	touch $@
+
+if TARGETRULESET_FLASH
+flash-openntpd: $(flashprefix)/root/sbin/ntpd
+$(flashprefix)/root/sbin/ntpd: openntpd | $(flashprefix)/root
+	@$(INSTALL) -d $(flashprefix)/root/sbin
+	$(INSTALL) $(targetprefix)/sbin/ntpd $(flashprefix)/root/sbin
+	@FLASHROOTDIR_MODIFIED@
 endif
 
 $(DEPDIR)/esound: bootstrap @DEPENDS_esound@

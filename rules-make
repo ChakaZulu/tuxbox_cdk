@@ -107,6 +107,7 @@ links;1.0;links-1.00;links-1.00.tar.gz;extract:links-1.00.tar.gz
 links_g;2.2;links-2.2;links-2.2.tar.gz;extract:links-2.2.tar.gz
 ntpd;4.2.4p5;ntp-4.2.4p5;ntp-4.2.4p5.tar.gz:ntp.diff;extract:ntp-4.2.4p5.tar.gz;patch:ntp.diff
 ntpclient;2000_339;ntpclient;ntpclient_2000_339.tar.gz:ntpclient.diff;extract:ntpclient_2000_339.tar.gz;patch:ntpclient.diff
+openntpd;3.9p1;openntpd-3.9p1;openntpd-3.9p1.tar.gz;extract:openntpd-3.9p1.tar.gz
 esound;0.2.41;esound-0.2.41;esound-0.2.41.tar.bz2:esound.diff;extract:esound-0.2.41.tar.bz2;patch:esound.diff
 
 #

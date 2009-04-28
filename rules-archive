@@ -114,6 +114,7 @@ links-1.00.tar.gz;http://www.jikos.cz/~mikulas/links//download
 links-2.2.tar.gz;http://links.twibright.com/download
 ntp-4.2.4p5.tar.gz;http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2
 ntpclient_2000_339.tar.gz;http://doolittle.icarus.com/ntpclient
+openntpd-3.9p1.tar.gz;http://mirror.roothell.org/pub/OpenBSD/OpenNTPD
 esound-0.2.41.tar.bz2;ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2
 
 #
