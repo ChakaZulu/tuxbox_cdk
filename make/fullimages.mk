@@ -155,11 +155,12 @@ endif
 $(flashprefix)/root-squashfs.img: \
 		$(flashprefix)/root \
 		$(flashprefix)/root-enigma-squashfs
-	$(flashprefix)/mksquashfs $(flashprefix)/root-enigma-squashfs $(flashprefix)/root-squashfs.img -be -all-root
-	@if [ `stat -c %s $(flashprefix)/root-squashfs.img` -gt 5111808 ]; then \
+	-rm $@
+	$(flashprefix)/mksquashfs $(flashprefix)/root-enigma-squashfs $@ -be -all-root
+	@if [ `stat -c %s $@` -gt 5111808 ]; then \
 		echo "ERROR: SquashFS part is too big for image (max. allowed 5111808 bytes)"; \
 		rm -f $(flashprefix)/root-squashfs.img.too-big 2> /dev/null || /bin/true; \
-		mv $(flashprefix)/root-squashfs.img $(flashprefix)/root-squashfs.img.too-big; \
+		mv $@ $(flashprefix)/root-squashfs.img.too-big; \
 		exit 1; \
 	fi
 
@@ -176,11 +177,12 @@ $(flashprefix)/neutrino-squashfs.dream: \
 $(flashprefix)/root-neutrino-squashfs.img: \
 		$(flashprefix)/root \
 		$(flashprefix)/root-neutrino-squashfs
-	$(flashprefix)/mksquashfs $(flashprefix)/root-neutrino-squashfs $(flashprefix)/root-neutrino-squashfs.img -be -all-root
-	@if [ `stat -c %s $(flashprefix)/root-neutrino-squashfs.img` -gt 5111808 ]; then \
+	-rm $@
+	$(flashprefix)/mksquashfs $(flashprefix)/root-neutrino-squashfs $@ -be -all-root
+	@if [ `stat -c %s $@` -gt 5111808 ]; then \
 		echo "ERROR: SquashFS part is too big for image (max. allowed 5111808 bytes)"; \
 		rm -f $(flashprefix)/root-neutrino-squashfs.img.too-big 2> /dev/null || /bin/true; \
-		mv $(flashprefix)/root-neutrino-squashfs.img $(flashprefix)/root-neutrino-squashfs.img.too-big; \
+		mv $@ $(flashprefix)/root-neutrino-squashfs.img.too-big; \
 		exit 1; \
 	fi
 
