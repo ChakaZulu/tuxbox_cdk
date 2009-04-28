@@ -343,6 +343,11 @@ AC_ARG_ENABLE(flac,
 AM_CONDITIONAL(ENABLE_FLAC,test "$enable_flac" = "yes")
 AC_SUBST(FLACLIB)
 
+AC_ARG_ENABLE(esd,
+	AS_HELP_STRING(--enable-esd,include esd sound daemon),
+	,[enable_esd=no])
+AM_CONDITIONAL(ENABLE_ESD,test "$enable_esd" = "yes")
+
 if test "$enable_uclibc" = "yes" && test "$enable_flac" = "yes" && test "$enable_flashrules" = "yes"; then
 	echo
 	echo "*********************************************************************"
