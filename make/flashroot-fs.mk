@@ -52,7 +52,12 @@ else
 PART_TYPE=squashfs
 endif
 if BOXTYPE_DREAMBOX
+if DREAMBOX_ENABLE_SERIAL_CONSOLE
+	sed -e 's/console=null/console=ttyS0,115200/' $(AUTOMOUNT_SED_CONF) \
+		$(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig > $(KERNEL_DIR)/.config
+else
 	sed $(AUTOMOUNT_SED_CONF) $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig > $(KERNEL_DIR)/.config
+endif
 	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
 else
 if KERNEL26

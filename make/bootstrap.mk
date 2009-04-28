@@ -90,12 +90,7 @@ $(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) $(KERNEL_CIFS) $(KERNEL_AUTOMOUNT) directo
 	$(KERNEL_PREPARE)
 if KERNEL26
 if BOXTYPE_DREAMBOX
-if DREAMBOX_ENABLE_SERIAL_CONSOLE
-	sed 's/console=null/console=ttyS0,115200/' $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig \
-		> $(KERNEL_DIR)/.config
-else
 	cp $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig $(KERNEL_DIR)/.config
-endif
 else
 if BOXTYPE_IPBOX
 if BOXMODEL_IP200
