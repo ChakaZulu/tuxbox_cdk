@@ -1047,6 +1047,8 @@ root_dream/share/tuxbox/Makefile
 root_dream/share/udhcpc/Makefile
 root_dream/var_init/Makefile
 root_dream/var_init/etc/Makefile
+root_dream/var_init/etc/init.d/Makefile
+root_dream/var_init/etc/network/Makefile
 root_dream/var_init/tuxbox/Makefile
 root_dream/var_init/tuxbox/config/Makefile
 root_dream/var_init/tuxbox/config/enigma/Makefile

@@ -1,3 +1,5 @@
+SUBDIRS = network init.d
+
 FILES_FLASH_RO = \
 	group hostname hosts passwd smb.conf
 

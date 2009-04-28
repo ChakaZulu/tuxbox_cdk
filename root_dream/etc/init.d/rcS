@@ -166,6 +166,10 @@ if [ -e /var/etc/init ] ; then
 	. /var/etc/init
 fi
 
+if [ -x /etc/init.d/start_neutrino -o -x /var/etc/init.d/start_neutrino ]; then
+	exit 0
+fi
+
 if [ -e /bin/neutrino ] ; then
 	if [ ! -d /var/etc/network ]; then
 		mkdir /var/etc/network

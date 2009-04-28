@@ -1,3 +1,9 @@
 #!/bin/sh
 
 . /etc/profile
+
+if [ -x /var/etc/init.d/start_neutrino ]; then
+	exec /var/etc/init.d/start_neutrino
+elif [ -x /etc/init.d/start_neutrino ]; then
+	exec /etc/init.d/start_neutrino
+fi

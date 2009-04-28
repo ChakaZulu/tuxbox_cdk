@@ -5,7 +5,7 @@ FILES_FLASH_RO = \
 	nsswitch.conf profile protocols rpc services termcap timezone.xml \
 	vsftpd.conf
 FILES_FLASH_RW_LINK = \
-	exports group hostname hosts localtime passwd resolv.conf smb.conf
+	exports group hostname hosts localtime passwd resolv.conf smb.conf network
 
 DIR = /etc
 

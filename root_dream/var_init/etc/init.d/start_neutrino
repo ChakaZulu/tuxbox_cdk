@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# $Id: start_neutrino,v 1.1 2009/04/28 11:53:09 seife Exp $
+
+. /proc/bus/dbox.sh
+
+[ -e /var/etc/.pmt_update ] && ZAPIT="-u"
+[ -e /var/etc/neutrino-parameters ] && . /var/etc/neutrino-parameters
+sectionsd $SECTIONSD
+timerd
+zapit $ZAPIT
+nhttpd
+until neutrino -u ; do
+    echo "Neutrino exited with nonzero exit status $?, restarting..."
+    pidof sectionsd >/dev/null || sectionsd $SECTIONSD
+    pidof timerd    >/dev/null || timerd
+    pidof zapit     >/dev/null || zapit     $ZAPIT
+    pidof nhttpd    >/dev/null || nhttpd
+done
+
+[ -e /tmp/tuxmaild.pid ] && kill $( cat /tmp/tuxmaild.pid )
+[ -e /tmp/tuxcald.pid ] && kill $( cat /tmp/tuxcald.pid )
+[ -e /var/run/automount.pid ] && kill -TERM $( cat /var/run/automount.pid )
+pzapit -kill
+
+i=9
+while expr $i != 0 > /dev/null
+do
+if pidof timerd > /dev/null; then echo "Waiting for timerd (max. $i seconds)"
+elif pidof zapit > /dev/null; then echo "Waiting for zapit (max. $i seconds)"
+elif pidof tuxmaild > /dev/null; then echo "Waiting for tuxmaild (max. $i seconds)"
+elif pidof tuxcald > /dev/null; then echo "Waiting for tuxcald (max. $i seconds)"
+else break;
+fi
+i=`expr $i - 1`
+sleep 1
+done
+
+if [ -e /tmp/.nohalt ] ; then
+    killall -q sectionsd
+    killall -q timerd
+    killall -q zapit
+    killall -q nhttpd
+    echo "Neutrino and its daemons terminated (hopefully)"
+    exit
+fi
+
+if [ -e /tmp/.reboot ] ; then
+    reboot
+else
+    halt
+fi
