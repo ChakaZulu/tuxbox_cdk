@@ -90,6 +90,10 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino
 	rm -fr $@/var/*
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
+# ugly hack: neutrino uses the slightly different satellites.xml format from dbox
+	if [ -e $@/bin/neutrino ]; then \
+		cp $(flashprefix)/root/share/tuxbox/satellites.xml $@/share/tuxbox/satellites.xml; \
+	fi
 else
 	echo "/dev/mtdblock/3     /var     jffs2     defaults     0 0" >> $@/etc/fstab
 if ENABLE_IDE
