@@ -615,7 +615,7 @@ $(DEPDIR)/openntpd: bootstrap @DEPENDS_openntpd@
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
-			--sysconfdir=/var/etc --with-privsep-user=root && \
+			--sysconfdir=/var/etc --with-privsep-user=nobody --with-privsep-path=/share/empty && \
 		$(MAKE) all &&\
 		@INSTALL_openntpd@
 	@CLEANUP_openntpd@
