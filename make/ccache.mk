@@ -44,7 +44,7 @@ CCACHE_ENV = 	$(INSTALL) -d $(CCACHE_BINDIR) ;\
 
 # use ccache from your host if is installed
 if USE_CCACHEHOST
-ccache:
+$(DEPDIR)/ccache:
 	$(CCACHE_ENV) ;\
 	$(CCACHE_TEST)
 	touch $@
