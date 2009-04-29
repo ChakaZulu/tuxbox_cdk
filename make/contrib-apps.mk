@@ -632,10 +632,7 @@ endif
 $(DEPDIR)/esound: bootstrap @DEPENDS_esound@
 	@PREPARE_esound@
 	cd @DIR_esound@ && \
-		case `libtoolize --version | head -n 1 | awk '{ print $$(NF); }'` in \
-		    0.*|1.*)    autoreconf -f -i ;; \
-		    *)          autoconf && automake ;; \
-		esac && \
+		autoreconf -f -i && \
 		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
