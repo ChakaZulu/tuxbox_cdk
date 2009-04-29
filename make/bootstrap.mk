@@ -29,6 +29,7 @@ if ENABLE_IDE
 	$(INSTALL) -d $(targetprefix)/hdd
 endif
 	$(INSTALL) -d $(hostprefix)/$(target)
+	$(INSTALL) -d $(hostprefix)/bin
 	$(INSTALL) -d $(bootprefix)
 	-rm -f $(hostprefix)/$(target)/include
 	-rm -f $(hostprefix)/$(target)/lib
@@ -137,7 +138,7 @@ if !BOXTYPE_DREAMBOX
 endif
 	touch $@
 
-
+if !USE_FOREIGN_TOOLCHAIN
 $(DEPDIR)/binutils: @DEPENDS_binutils@ directories 
 	@PREPARE_binutils@
 	cd @DIR_binutils@ && \
@@ -186,6 +187,7 @@ endif
 	rm -rf $(hostprefix)/$(target)/sys-include
 	@CLEANUP_bootstrap_gcc@
 	touch $@
+endif
 
 if TARGETRULESET_UCLIBC
 if !TARGETRULESET_FLASH
@@ -216,6 +218,11 @@ endif
 	@CLEANUP_uclibc@
 	touch $@
 
+else
+if USE_FOREIGN_TOOLCHAIN
+$(DEPDIR)/libc: directories
+	cp -a $(TOOLCHAIN_PATH)/$(target)/lib $(targetprefix)/
+	touch $@
 else
 
 $(DEPDIR)/libc: @DEPENDS_glibc@ bootstrap_gcc install-linux-headers
@@ -258,12 +265,16 @@ endif
 	sed -e's, /lib/, $(targetprefix)/lib/,g' < $(targetprefix)/lib/libpthread.so > $(targetprefix)/lib/libpthread.so.new
 	mv $(targetprefix)/lib/libpthread.so.new $(targetprefix)/lib/libpthread.so
 	touch $@
-
+endif
 endif
 
 #
 # gcc second stage
 #
+if USE_FOREIGN_TOOLCHAIN
+$(DEPDIR)/gcc: libc linuxdir
+	touch $@
+else
 $(DEPDIR)/gcc: @DEPENDS_gcc@ libc
 # if we have a symlink inside the libdir (in case gcc has already been built)
 # we remove it here
@@ -302,7 +313,7 @@ endif
 	ln -sf $(hostprefix)/$(target)/lib $(hostprefix)/$(target)/lib/nof
 	@CLEANUP_gcc@
 	touch $@
-
+endif
 
 # This rule script checks if all archives are present at the given address but
 # does NOT download them.

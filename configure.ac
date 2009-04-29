@@ -4,6 +4,12 @@ AC_PREREQ(2.57a)
 AC_CANONICAL_BUILD
 AC_SUBST(build)
 
+AC_ARG_WITH(toolchain,
+	[  --with-toolchain=PATH,	do not build a toolchain but use the one at PATH],
+	[TOOLCHAIN_PATH="$withval"],[TOOLCHAIN_PATH="notset"])
+AM_CONDITIONAL(USE_FOREIGN_TOOLCHAIN,test "$TOOLCHAIN_PATH" != "notset")
+AC_SUBST(TOOLCHAIN_PATH)
+
 AC_ARG_ENABLE(uclibc,
 	AS_HELP_STRING(--enable-uclibc,	enable rules for creating uclibc linked targets),
 	,[enable_uclibc=no])
@@ -96,6 +102,10 @@ if test -z "$TARGET_CFLAGS" -o -z "$TARGET_CXXFLAGS"; then
 	else
 		TARGET_CFLAGS="$TARGET_CFLAGS -Os"
 		TARGET_LDFLAGS="-Wl,-O1"
+	fi
+	if test "$TOOLCHAIN_PATH" != "notset"; then
+		TARGET_LDFLAGS="$TARGET_LDFLAGS -L\$(targetprefix)/lib"
+		TARGET_CFLAGS="$TARGET_CFLAGS -I\$(targetprefix)/include -mcpu=$CPU_MODEL -msoft-float"
 	fi
 	TARGET_CXXFLAGS="$TARGET_CFLAGS"
 fi

@@ -1,3 +1,6 @@
+if USE_FOREIGN_TOOLCHAIN
+PATH := $(PATH):$(TOOLCHAIN_PATH)/bin
+endif
 if ENABLE_CCACHE
 PATH := $(hostprefix)/ccache-bin:$(hostprefix)/bin:$(PATH)
 else
