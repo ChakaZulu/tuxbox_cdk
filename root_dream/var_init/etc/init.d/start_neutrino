@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# $Id: start_neutrino,v 1.1 2009/04/28 11:53:09 seife Exp $
+# $Id: start_neutrino,v 1.2 2009/04/30 19:51:00 seife Exp $
 
 . /proc/bus/dbox.sh
 
-[ -e /var/etc/.pmt_update ] && ZAPIT="-u"
+[ -e /var/etc/.no_pmt_update ] || ZAPIT="-u"
 [ -e /var/etc/neutrino-parameters ] && . /var/etc/neutrino-parameters
 sectionsd $SECTIONSD
 timerd
