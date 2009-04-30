@@ -611,13 +611,15 @@ endif
 $(DEPDIR)/openntpd: bootstrap @DEPENDS_openntpd@
 	@PREPARE_openntpd@
 	cd @DIR_openntpd@ && \
-		$(BUILDENV) ./configure \
+		ln -s `which $(target)-strip` strip; \
+		echo "ac_cv_path_AR=$(target)-ar" > config.cache; \
+		$(BUILDENV) ./configure --cache-file=config.cache \
 			--build=$(build) \
 			--host=$(target) \
 			--prefix= \
 			--sysconfdir=/var/etc --with-privsep-user=nobody --with-privsep-path=/share/empty && \
 		$(MAKE) all &&\
-		@INSTALL_openntpd@
+		PATH=.:$(PATH) @INSTALL_openntpd@
 	@CLEANUP_openntpd@
 	touch $@
 
