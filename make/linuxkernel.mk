@@ -206,6 +206,12 @@ if !ENABLE_FS_NFS
 FS_NFS_SED_CONF=$(foreach param,CONFIG_NFS_FS CONFIG_NFS_V3 CONFIG_SUNRPC CONFIG_LOCKD CONFIG_LOCKD_V4 CONFIG_ROOT_NFS CONFIG_NFS_COMMON,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
 endif
 
+if DREAMBOX_ENABLE_SERIAL_CONSOLE
+DREAMBOX_SERIAL_SED=-e "s/console=null/console=ttyS0,115200/"
+else
+DREAMBOX_SERIAL_SED=-e ""
+endif
+
 kernel-cdk: $(bootprefix)/kernel-cdk
 
 if KERNEL26
