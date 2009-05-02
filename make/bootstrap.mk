@@ -67,14 +67,22 @@ KERNEL_BUILD_FILENAME = @DIR_linux_ipbox@/vmlinux
 if BOXMODEL_IP200
 IPBOX_UBOOT_TARGET = relook100s
 IPBOX_KERNEL_TARGET = mutant200s_defconfig
+IPBOX_FLASH_MAP = $(buildprefix)/config/flash_map.mutant200s
 endif
 if BOXMODEL_IP250
 IPBOX_UBOOT_TARGET = relook200s
 IPBOX_KERNEL_TARGET = relook200_defconfig
+IPBOX_FLASH_MAP = $(buildprefix)/config/flash_map.relook200s
 endif
 if BOXMODEL_IP350
 IPBOX_UBOOT_TARGET = relook210
 IPBOX_KERNEL_TARGET = relook210_defconfig
+IPBOX_FLASH_MAP = $(buildprefix)/config/flash_map.relook210
+endif
+if BOXMODEL_IP400
+IPBOX_UBOOT_TARGET = 
+IPBOX_KERNEL_TARGET = 
+IPBOX_FLASH_MAP = $(buildprefix)/config/flash_map.relook400s
 endif
 else
 if KERNEL26
