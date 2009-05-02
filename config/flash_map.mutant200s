@@ -1,0 +1,219 @@
+#!/bin/sh
+#
+# $ flash_img number
+#   print total number of partitions
+#
+# $ flash_img list
+#   list all partition
+#
+# $ flash_img name <first_part_name> [last_part_name]
+#   print partition name
+#
+# $ flash_img offset <first_part_name>
+#   print image offset from flash image
+#
+# $ flash_img start <first_part_name>
+#   print image start address in physical address
+#
+# $ flash_img size <first_part_name> [last_part_name]
+#   print image size
+#
+# $ flash_img blocks <first_part_name> [last_part_name]
+#   print image size in blocks(block size is 0x2000)
+#
+# $ flash_img check
+#   check image address
+#
+
+#set -x;
+
+if [[ -z $BLOCK_SIZE ]]; then
+	BLOCK_SIZE=0x00002000;
+fi
+
+flash_base=0xff800000;
+flash_size=0x00800000;
+
+name[0]="config";
+size[0]=0x00010000;	# what a big size... :(
+name[1]="welcome";
+size[1]=0x00030000;
+name[2]="kernel";
+size[2]=0x00140000;
+name[3]="root";
+size[3]=0x00460000;
+name[4]="db";
+size[4]=0x001f0000;
+name[5]="uboot";
+size[5]=0x00030000;
+
+function get_partition_num()
+{
+	for (( a=0; $a<${#name[*]}; a++ )); do
+		if [[ $1 == ${name[$a]} ]]; then
+			return $a;
+		fi
+		if [[ $1 == $a ]]; then
+			return $a;
+		fi
+	done
+
+	case $1 in
+		"-1")
+		# return last partition number
+		let "ret=${#name[*]}-1";
+		return $ret;
+		;;
+
+		"-2")
+		# return last partition number before u-boot
+		let "ret=${#name[*]}-2";
+		return $ret;
+		;;
+
+		"*")
+		echo failed_to_find_partition;
+		exit 1;
+		;;
+	esac
+}
+
+#get_partition_num welcome;
+#num=$?
+#echo num $num;
+
+if [[ $# = 0 ]]; then
+	echo no_parameters;
+	exit 1;
+fi
+
+case $1 in
+	"number")
+	echo ${#name[*]};
+	;;
+
+	"list")
+	from=0;
+	to=${#name[*]};
+	for (( true; $from<=$to; from++ )); do
+		echo -n ${name[$from]};
+		if [[ $from != $to ]]; then
+			echo -n " ";
+		fi
+	done
+	;;
+
+	"name")
+	get_partition_num $2;
+	from=$?
+	if [[ $# == 3 ]]; then
+		get_partition_num $3;
+		to=$?;
+	else
+		to=$from;
+	fi
+	if let "$from>$to"; then
+		echo failed_from_is_larger_than_to;
+		exit 1;
+	fi
+	for (( true; $from<=$to; from++ )); do
+		echo -n ${name[$from]};
+		if [[ $from != $to ]]; then
+			echo -n _;
+		fi
+	done
+	;;
+
+	"offset")
+	get_partition_num $2;
+	part=$?
+	part_offset=0x00000000;
+	for (( num=0; $num<$part; num++ )); do
+		let "part_offset=$part_offset+${size[$num]}";
+	done
+	printf "0x%08x" $part_offset;
+	;;
+
+	"offset_blocks")
+	get_partition_num $2;
+	part=$?
+	part_offset=0x00000000;
+	for (( num=0; $num<$part; num++ )); do
+		let "part_offset=$part_offset+${size[$num]}";
+	done
+	let "part_offset=$part_offset/$BLOCK_SIZE";
+	echo -n $part_offset;
+	;;
+
+	"start")
+	get_partition_num $2;
+	part=$?
+	part_start=$flash_base;
+	for (( num=0; $num<$part; num++ )); do
+		let "part_start=$part_start+${size[$num]}";
+	done
+	printf "0x%08x" $part_start;
+	;;
+
+	"size")
+	get_partition_num $2;
+	from=$?;
+	if [[ $# == 3 ]]; then
+		get_partition_num $3;
+		to=$?;
+	else
+		to=$from;
+	fi
+	if let "$from>$to"; then
+		echo failed_from_is_larger_than_to;
+		exit 1;
+	fi
+	part_size=0x00000000;
+	for (( true; $from<=$to; from++ )); do
+		let "part_size=$part_size+${size[$from]}";
+	done
+	printf "0x%08x" $part_size;
+	;;
+
+	"blocks")	# get block number. block size is 0x2000
+	get_partition_num $2;
+	from=$?;
+	if [[ $# == 3 ]]; then
+		get_partition_num $3;
+		to=$?;
+	else
+		to=$from;
+	fi
+	if let "$from>$to"; then
+		echo failed_from_is_larger_than_to;
+		exit 1;
+	fi
+	part_size=0x00000000;
+	for (( true; $from<=$to; from++ )); do
+		let "part_size=$part_size+${size[$from]}";
+	done
+	let "part_size=$part_size/$BLOCK_SIZE";
+	echo -n $part_size;
+	;;
+
+	"check")
+	from=0;
+	to=${#name[*]};
+	part_size=0x00000000;
+	for (( true; $from<$to; from++ )); do
+		let "part_size=$part_size+${size[$from]}";
+	done
+	if let "$part_size==$flash_size"; then
+		exit 0;
+	else
+		printf "failed. sume of partition size is 0x%08x\n" $part_size;
+		exit 1;
+	fi
+	;;
+
+	*)
+	echo wrong command. $1;
+	exit 1;
+	;;
+esac
+
