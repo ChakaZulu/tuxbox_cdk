@@ -234,7 +234,7 @@ $(DEPDIR)/libc: @DEPENDS_glibc@ bootstrap_gcc install-linux-headers
 		echo "libc_cv_forced_unwind=yes" > @DIR_glibc@/config.cache && \
 		echo "libc_cv_c_cleanup=yes" >> @DIR_glibc@/config.cache; \
 	fi
-if BOXTYPE_IPBOX
+if CPUMODEL_405
 	rm @SOURCEDIR_glibc@/sysdeps/powerpc/powerpc32/strncmp.S
 	cd @SOURCEDIR_glibc@ && patch -p1 -E -i ../Patches/glibc_ppc4xx_ibmstropt.diff
 	cd @SOURCEDIR_glibc@ && patch -p1 -E -i ../Patches/glibc-ibmppc4xx_fp_perflib.diff
@@ -285,7 +285,7 @@ $(DEPDIR)/gcc: @DEPENDS_gcc@ libc
 if TARGETRULESET_UCLIBC
 	cd @SOURCEDIR_gcc@ && patch -p1 -E -i $(buildprefix)/Patches/gcc-uclibc.diff
 endif
-if BOXTYPE_IPBOX
+if CPUMODEL_405
 	cd @SOURCEDIR_gcc@ && patch -p1 -E -i ../Patches/gcc-g++-ppc4xx.diff
 	cd @SOURCEDIR_gcc@ && patch -p1 -E -i ../Patches/gcc-ibmppc4xx_fp_perflib.diff
 endif

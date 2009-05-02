@@ -128,6 +128,8 @@ AM_CONDITIONAL(BOXMODEL_IP200,test "$BOXMODEL" = "ip200")
 AM_CONDITIONAL(BOXMODEL_IP250,test "$BOXMODEL" = "ip250")
 AM_CONDITIONAL(BOXMODEL_IP350,test "$BOXMODEL" = "ip350")
 
+AM_CONDITIONAL(CPUMODEL_405,test "$CPU_MODEL" = "405")
+
 if test "$BOXTYPE" = "dbox2"; then
 	AC_DEFINE(HAVE_DBOX_HARDWARE, 1, [building for a dbox2])
 elif test "$BOXTYPE" = "tripledragon"; then
