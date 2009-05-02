@@ -744,14 +744,6 @@ AC_SUBST(FLASHTOOL)
 AM_CONDITIONAL(FLASHTOOL_STANDARD,test "$FLASHTOOL" = "standard")
 AM_CONDITIONAL(FLASHTOOL_EXPERT,test "$FLASHTOOL" = "expert")
 
-AC_ARG_WITH(reiserfs,
-	[  --with-reiserfs=NAME dreambox reiserfs [[yes,no]]],
-	[REISERFS="$withval"],[REISERFS="no"])
-
-AC_SUBST(REISERFS)
-AM_CONDITIONAL(REISERFS_NO,test "$REISERFS" = "no")
-AM_CONDITIONAL(REISERFS_YES,test "$REISERFS" = "yes")
-
 AC_ARG_WITH(ext-flashtool,
 	[  --with-ext-flashtool=NAME dreambox ext-flashtool [[yes,no]]],
 	[EXTFLASHTOOL="$withval"],[EXTFLASHTOOL="yes"])
