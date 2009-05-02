@@ -709,6 +709,61 @@ AC_ARG_ENABLE(movieplayer2,
 	,[enable_movieplayer2=no])
 AM_CONDITIONAL(ENABLE_MOVIEPLAYER2,test "$enable_movieplayer2" = "yes")
 
+################################################################
+
+# enigma specific stuff #########################
+AC_ARG_WITH(webif,
+	[  --with-webif=NAME dreambox webif [[standard,expert]]],
+	[WEBIF="$withval"],[WEBIF="standard"])
+
+AC_SUBST(WEBIF)
+AM_CONDITIONAL(WEBIF_STANDARD,test "$WEBIF" = "standard")
+AM_CONDITIONAL(WEBIF_EXPERT,test "$WEBIF" = "expert")
+
+AC_ARG_WITH(epg,
+	[  --with-epg=NAME dreambox epg [[standard,private]]],
+	[EPG="$withval"],[EPG="standard"])
+
+AC_SUBST(EPG)
+AM_CONDITIONAL(EPG_STANDARD,test "$EPG" = "standard")
+AM_CONDITIONAL(EPG_PRIVATE,test "$EPG" = "private")
+
+AC_ARG_WITH(mhw-epg,
+	[  --with-mhw-epg          enable capture of mhw epg (default off)],
+	[MHW_EPG="$withval"],[MHW_EPG="no"])
+
+AC_SUBST(MHW_EPG)
+AM_CONDITIONAL(MHW_EPG_NO,test "$MHW_EPG" = "no")
+AM_CONDITIONAL(MHW_EPG_YES,test "$MHW_EPG" = "yes")
+
+AC_ARG_WITH(flashtool,
+	[  --with-flashtool=NAME dreambox flashtool [[standard,expert]]],
+	[FLASHTOOL="$withval"],[FLASHTOOL="standard"])
+
+AC_SUBST(FLASHTOOL)
+AM_CONDITIONAL(FLASHTOOL_STANDARD,test "$FLASHTOOL" = "standard")
+AM_CONDITIONAL(FLASHTOOL_EXPERT,test "$FLASHTOOL" = "expert")
+
+AC_ARG_WITH(reiserfs,
+	[  --with-reiserfs=NAME dreambox reiserfs [[yes,no]]],
+	[REISERFS="$withval"],[REISERFS="no"])
+
+AC_SUBST(REISERFS)
+AM_CONDITIONAL(REISERFS_NO,test "$REISERFS" = "no")
+AM_CONDITIONAL(REISERFS_YES,test "$REISERFS" = "yes")
+
+AC_ARG_WITH(ext-flashtool,
+	[  --with-ext-flashtool=NAME dreambox ext-flashtool [[yes,no]]],
+	[EXTFLASHTOOL="$withval"],[EXTFLASHTOOL="yes"])
+
+AC_ARG_WITH(enigma-debug,
+	[  --with-enigma-debug=NAME dreambox enigma-debug [[yes,no]]],
+	[ENIGMA_DEBUG="$withval"],[ENIGMA_DEBUG="yes"])
+
+AC_SUBST(ENIGMA_DEBUG)
+AM_CONDITIONAL(ENIGMA_DEBUG_NO,test "$ENIGMA_DEBUG" = "no")
+AM_CONDITIONAL(ENIGMA_DEBUG_YES,test "$ENIGMA_DEBUG" = "yes")
+
 #
 ################################################################
 
