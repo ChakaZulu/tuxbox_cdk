@@ -178,6 +178,10 @@ include make/distribution-lists.mk
 
 # /etc/update.urls contains URLs for update lists
 include make/update.urls.mk
+
+# build IPBox images
+include make/ipbox.mk
+
 endif
 
 # Files not to be deleted, even though they are intermediate products

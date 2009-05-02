@@ -15,20 +15,22 @@ if BOXTYPE_DREAMBOX
 		DEPMOD=/bin/true \
 		INSTALL_MOD_PATH=$(targetprefix)
 else
-if BOXTYPE_IPBOX
-	$(MAKE) -C linux vmlinux modules ARCH=ppc CROSS_COMPILE=$(target)-
-	cp $(KERNEL_BUILD_FILENAME) $(flashprefix)/
-	$(MAKE) -C linux modules_install ARCH=ppc CROSS_COMPILE=$(target)- DEPMOD=/bin/true INSTALL_MOD_PATH=$(flashprefix)/root
-	rm -rf $(targetprefix)/lib/modules || /bin/true
-	cp -rp $(flashprefix)/root/lib/modules $(targetprefix)/lib/
-	cp $(buildprefix)/linux/System.map $(flashprefix)/kernel_System.map
-else
 	$(MAKE) -C $(KERNEL_DIR) oldconfig ARCH=ppc
 if KERNEL26
 	$(MAKE) -C $(KERNEL_DIR) include/asm \
 		ARCH=ppc
 endif
 	$(MAKE) -C $(KERNEL_DIR) include/linux/version.h ARCH=ppc
+if BOXTYPE_IPBOX
+	$(MAKE) -C $(KERNEL_DIR) vmlinux modules \
+		ARCH=ppc \
+		CROSS_COMPILE=$(target)-
+	$(MAKE) -C $(KERNEL_DIR) modules_install \
+		ARCH=ppc \
+		CROSS_COMPILE=$(target)- \
+		DEPMOD=/bin/true \
+		INSTALL_MOD_PATH=$(targetprefix)
+else
 if KERNEL26
 	$(MAKE) -C $(KERNEL_DIR) uImage modules \
 		ARCH=ppc \
@@ -100,6 +102,10 @@ if KERNEL26
 		ln -sf $(buildprefix)/linux/usr/include/asm-generic $(hostprefix)/$(target)/include; \
 		ln -sf $(buildprefix)/linux/usr/include/mtd $(hostprefix)/$(target)/include; \
 	fi
+if BOXTYPE_IPBOX
+	ln -sf $(buildprefix)/linux/include/asm-ppc $(buildprefix)/linux/include/asm > /dev/null || /bin/true
+	ln -s $(buildprefix)/linux/include/asm-powerpc/* $(buildprefix)/linux/include/asm-ppc/ > /dev/null || /bin/true
+endif
 endif
 endif
 	touch $@
@@ -214,6 +220,7 @@ endif
 
 kernel-cdk: $(bootprefix)/kernel-cdk
 
+if BOXTYPE_DBOX2
 if KERNEL26
 $(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c-26.m4
 	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(yadd_kernel_conf) \
@@ -242,6 +249,7 @@ endif
 	$(INSTALL) -d $(targetprefix)/tmp
 	$(INSTALL) -d $(targetprefix)/proc
 	$(INSTALL) -d $(targetprefix)/var/run
+endif
 
 if ENABLE_MMC
 DRIVER_MMC=yes

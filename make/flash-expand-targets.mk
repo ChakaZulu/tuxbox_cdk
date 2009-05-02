@@ -36,7 +36,11 @@ flash-neutrino-cramfs-all: flash-neutrino-cramfs-1x flash-neutrino-cramfs-2x
 if BOXTYPE_DREAMBOX
 flash-neutrino-squashfs: $(flashprefix)/neutrino-squashfs.dream
 else
+if BOXTYPE_IPBOX
+flash-neutrino-squashfs: $(flashprefix)/neutrino-squashfs.ipbox
+else
 flash-neutrino-squashfs-all: flash-neutrino-squashfs-1x flash-neutrino-squashfs-2x
+endif
 endif
 
 flash-neutrino-jffs2-all: flash-neutrino-jffs2-1x flash-neutrino-jffs2-2x
@@ -61,7 +65,11 @@ flash-enigma-cramfs-all: flash-enigma-cramfs-1x flash-enigma-cramfs-2x
 if BOXTYPE_DREAMBOX
 flash-enigma-squashfs: $(flashprefix)/enigma-squashfs.dream
 else
+if BOXTYPE_IPBOX
+flash-enigma-squashfs: $(flashprefix)/enigma-squashfs.ipbox
+else
 flash-enigma-squashfs-all: flash-enigma-squashfs-1x flash-enigma-squashfs-2x
+endif
 endif
 
 flash-enigma-jffs2-all: flash-enigma-jffs2-1x flash-enigma-jffs2-2x

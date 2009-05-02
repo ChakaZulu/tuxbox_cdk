@@ -64,6 +64,18 @@ KERNEL_DEPENDS = @DEPENDS_linux_ipbox@
 KERNEL_DIR = @DIR_linux_ipbox@
 KERNEL_PREPARE = @PREPARE_linux_ipbox@
 KERNEL_BUILD_FILENAME = @DIR_linux_ipbox@/vmlinux
+if BOXMODEL_IP200
+IPBOX_UBOOT_TARGET = relook100s
+IPBOX_KERNEL_TARGET = mutant200s_defconfig
+endif
+if BOXMODEL_IP250
+IPBOX_UBOOT_TARGET = relook200s
+IPBOX_KERNEL_TARGET = relook200_defconfig
+endif
+if BOXMODEL_IP350
+IPBOX_UBOOT_TARGET = relook210
+IPBOX_KERNEL_TARGET = relook210_defconfig
+endif
 else
 if KERNEL26
 KERNEL_DEPENDS = @DEPENDS_linux@
@@ -94,15 +106,7 @@ if BOXTYPE_DREAMBOX
 	cp $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig $(KERNEL_DIR)/.config
 else
 if BOXTYPE_IPBOX
-if BOXMODEL_IP200
-	$(MAKE) -C linux-2.6.17 mutant200s_defconfig
-endif
-if BOXMODEL_IP250
-	$(MAKE) -C linux-2.6.17 relook200_defconfig
-endif
-if BOXMODEL_IP350
-	$(MAKE) -C linux-2.6.17 relook210_defconfig
-endif
+	$(MAKE) -C $(KERNEL_DIR) $(IPBOX_KERNEL_TARGET)
 else
 	cp Patches/linux-2.6.26.4-dbox2.config $(KERNEL_DIR)/.config
 endif
@@ -129,10 +133,6 @@ if KERNEL26
 endif
 	$(MAKE) -C $(KERNEL_DIR) include/linux/version.h \
 		ARCH=ppc
-if BOXTYPE_IPBOX
-	ln -sf $(buildprefix)/linux/include/asm-ppc $(buildprefix)/linux/include/asm > /dev/null || /bin/true
-	ln -s $(buildprefix)/linux/include/asm-powerpc/* $(buildprefix)/linux/include/asm-ppc/ > /dev/null || /bin/true
-endif
 if !BOXTYPE_DREAMBOX
 	rm $(KERNEL_DIR)/.config
 endif

@@ -42,22 +42,10 @@ $(flashprefix)/root-%.jffs2: $(flashprefix)/root-%-jffs2 $(MKJFFS2)
 	$(MKJFFS2)  -b -e 0x20000 --pad=0x7c0000 -r $< -o $@
 
 ################ $fs-to-boot.flfs*x
-if BOXTYPE_IPBOX
-if BOXMODEL_IP200
-UBOOT_TEMPLATE = relook100s.h
-endif
-if BOXMODEL_IP250
-UBOOT_TEMPLATE = relook200s.h
-endif
-if BOXMODEL_IP350
-UBOOT_TEMPLATE = relook210.h
-endif
-else
 if KERNEL26
 UBOOT_TEMPLATE = u-boot.dbox2.2_6.h.m4
 else
 UBOOT_TEMPLATE = u-boot.dbox2.h.m4
-endif
 endif
 
 if ENABLE_LZMA
@@ -95,15 +83,3 @@ $(hostprefix)/bin/mkflfs $(bootdir)/u-boot-config/$(UBOOT_TEMPLATE) \
 	$(hostprefix)/bin/mkflfs 2x -o $(flashprefix)/jffs2.flfs2x @DIR_uboot@/u-boot.stripped
 	@CLEANUP_uboot@
 	rm $(bootdir)/u-boot-config/u-boot.config
-
-if BOXTYPE_IPBOX
-$(flashprefix)/uboot.img: \
-$(bootdir)/u-boot-config/$(UBOOT_TEMPLATE)  \
-| $(flashprefix)
-	cp $(bootdir)/u-boot-config/$(UBOOT_TEMPLATE) $(bootdir)/u-boot-config/u-boot.config
-	$(MAKE) @DIR_uboot@/u-boot.ipbox
-	cp @DIR_uboot@/System.map $(flashprefix)/u-boot_System.map
-	cp @DIR_uboot@/u-boot.bin $(flashprefix)/uboot.img
-	@CLEANUP_uboot@
-	rm $(bootdir)/u-boot-config/u-boot.config
-endif

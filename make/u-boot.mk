@@ -17,26 +17,6 @@
 #	@CLEANUP_uboot@
 #	touch $@
 
-if BOXTYPE_IPBOX
-@DIR_uboot@/u-boot.ipbox: bootstrap @DEPENDS_uboot@ $(bootdir)/u-boot-config/u-boot.config
-	@PREPARE_uboot@
-	cp -pR $(bootdir)/u-boot-tuxbox/* @DIR_uboot@
-	cd @DIR_uboot@ && patch -p1 -E -i ../Patches/u-boot-1.2.0-ipbox.diff
-	cp -p $(bootdir)/u-boot-config/u-boot.config u-boot-1.2.0/include/configs/$(UBOOT_TEMPLATE)
-if BOXMODEL_IP200
-	$(MAKE) -C u-boot-1.2.0 relook100s_config
-endif
-if BOXMODEL_IP250
-	$(MAKE) -C u-boot-1.2.0 relook200s_config
-endif
-if BOXMODEL_IP350
-	$(MAKE) -C u-boot-1.2.0 relook210_config
-endif
-	$(MAKE) -C u-boot-1.2.0 CROSS_COMPILE=$(target)-
-#	@CLEANUP_uboot@
-#	touch $@
-endif
-
 yadd-u-boot: $(bootprefix)/u-boot $(bootprefix)/u-boot-yadd
 
 if KERNEL26
