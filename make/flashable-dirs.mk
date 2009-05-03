@@ -105,7 +105,9 @@ endif
 		ln -sf /var/etc/ssh $@/etc/ssh ; \
 	fi
 	ln -sf /var/etc/issue.net $@/etc/issue.net
+if !BOXTYPE_DREAMBOX
 	ln -sf /var/bin/camd2 $@/bin/camd2
+endif
 	if [ -e $@/etc/profile.local ]; then \
 		rm $@/etc/profile.local; \
 		ln -sf /var/etc/profile.local $@/etc/profile.local; \
@@ -184,7 +186,9 @@ endif
 	fi
 	ln -sf /var/etc/issue.net $@/etc/issue.net
 	ln -sf /var/etc/localtime $@/etc/localtime
+if !BOXTYPE_DREAMBOX
 	ln -sf /var/bin/camd2 $@/bin/camd2
+endif
 	if [ -e $@/etc/profile.local ]; then \
 		rm $@/etc/profile.local; \
 		ln -sf /var/etc/profile.local $@/etc/profile.local; \
@@ -221,7 +225,9 @@ endif
 	fi
 	ln -sf /var/etc/issue.net $@/etc/issue.net
 	ln -sf /var/etc/localtime $@/etc/localtime
+if !BOXTYPE_DREAMBOX
 	ln -sf /var/bin/camd2 $@/bin/camd2
+endif
 	if [ -e $@/etc/profile.local ]; then \
 		rm $@/etc/profile.local; \
 		ln -sf /var/etc/profile.local $@/etc/profile.local; \
@@ -280,7 +286,8 @@ endif
 flash-dreamfiles: $(dreamfilesrootdir)/dreamfiles/lib/modules/2.6.9/extra/head.ko
 
 $(dreamfilesrootdir)/dreamfiles/lib/modules/2.6.9/extra/head.ko : $(flashprefix)/boot 
-	@cp -R $(flashprefix)/dreamfiles/* $(dreamfilesrootdir)
+	@cp -R $(flashprefix)/dreamfiles/bin/* $(dreamfilesrootdir)
+	@cp -R $(flashprefix)/dreamfiles/share/* $(dreamfilesrootdir)
 	@if [ -f $(flashprefix)/dreamfiles/.version ] ; then \
 		cp $(flashprefix)/dreamfiles/.version $(dreamfilesrootdir); \
 	fi
@@ -296,7 +303,7 @@ $(dreamfilesrootdir)/dreamfiles/lib/modules/2.6.9/extra/head.ko : $(flashprefix)
 	@ln -sf /tmp $(dreamfilesrootdir)/var_init/tmp
 	@ln -sf /proc/mounts $(dreamfilesrootdir)/var_init/etc/mtab
 # lib
-	@for i in ar_AE cs_CZ da_DK el_GR es_ES et_EE fi_FI fr_FR hr_HR \
+	@for i in ar_AE cs_CZ da_DK el_GR es_ES et_EE fi_FI hr_HR \
 	hu_HU is_IS it_IT lt_LT nl_NL no_NO pl_PL pt_PT ro_RO ru_RU sk_SK \
 	sl_SI sr_YU sv_SE tr_TR ur_IN; do \
 		ln -sf de_DE $(dreamfilesrootdir)/lib/locale/$$i; \
@@ -305,6 +312,7 @@ if !TARGETRULESET_UCLIBC
 	@for i in ISO8859-1.so ISO8859-2.so ISO8859-7.so UNICODE.so; do \
 		cp $(targetprefix)/lib/gconv/$$i $(dreamfilesrootdir)/lib/gconv; \
 	done;
+	ln -sf libgcc_s_nof.so.1 $(dreamfilesrootdir)/lib/libgcc_s.so.1
 endif
 if BOXMODEL_DM500
 	for i in cables.xml satellites.xml terrestrial.xml; do \
@@ -322,7 +330,7 @@ if !BOXMODEL_DM7000
 endif
 if !BOXMODEL_DM56x0
 	@for i in skins/small_red*.esml skins/small_red*.info pictures/small-red pictures/triaxlogo-fs8.png ; do \
-		rm -R $(dreamfilesrootdir)/share/tuxbox/enigma/$$i; done
+		rm -Rf $(dreamfilesrootdir)/share/tuxbox/enigma/$$i; done
 endif
 if !BOXMODEL_DM500
 	@for i in cables.xml terrestrial.xml; do \

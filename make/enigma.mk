@@ -31,6 +31,8 @@ if BOXTYPE_DREAMBOX
 	@rm -rf $@/share/locale/LC_MESSAGES
 	@find $@/share/locale -name libc.mo -o -name nano.mo | xargs rm -f
 	$(INSTALL) $(appsdir)/tuxbox/enigma/po/locale.alias $@/share/locale
+	mkdir $@/lib
+	tar -C $@/lib -xjvf $(appsdir)/tuxbox/enigma/po/locale.image.tar.bz2
 	$(INSTALL) -d $@/share/tuxbox/enigma
 	$(INSTALL) -d $@/var_init/tuxbox/config/enigma
 
