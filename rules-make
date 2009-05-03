@@ -193,5 +193,8 @@ dreamdriver_dm500;20071022;dreamdriver_dm500_20071022;dreamdriver_dm500_20071022
 # ipbox
 #
 linux_ipbox;2.6.17;linux-2.6.17;linux-2.6.17.tar.bz2:linux-2.6.17.diff:linux-2.6.17-sumversion.diff:linux-2.6.17-mmc.diff:linux-2.6.17-sd.diff;remove:linux;extract:linux-2.6.17.tar.bz2;patch:linux-2.6.17.diff;patch:linux-2.6.17-sumversion.diff;patch:linux-2.6.17-mmc.diff;patch:linux-2.6.17-sd.diff;link:linux-2.6.17:linux
+dgstationdriver_cubecafe;1;dgstationdriver_cubecafe;dgstationdriver_cubecafe.tar.bz2;extract:dgstationdriver_cubecafe.tar.bz2
+dgstationdriver_mutant200s;1;dgstationdriver_mutant200s;dgstationdriver_mutant200s.tar.bz2;extract:dgstationdriver_mutant200s.tar.bz2
+dgstationdriver_prime;1;dgstationdriver_prime;dgstationdriver_prime.tar.bz2;extract:dgstationdriver_prime.tar.bz2
 
 >>?;rules-make-local

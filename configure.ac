@@ -786,6 +786,9 @@ case "${BOXTYPE}" in
 		;;
 	ipbox)
 		TUXBOX_RULES_MAKE(linux_ipbox)
+		TUXBOX_RULES_MAKE(dgstationdriver_cubecafe)
+		TUXBOX_RULES_MAKE(dgstationdriver_mutant200s)
+		TUXBOX_RULES_MAKE(dgstationdriver_prime)
 		;;
 	*)
 		TUXBOX_RULES_MAKE(linux)

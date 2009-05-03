@@ -75,8 +75,10 @@ include make/database.mk
 # FUSE and djmount for uPnP support (non-essential)
 include make/upnp.mk
 
+if !BOXTYPE_IPBOX
 # The u-boot boot loader
 include make/u-boot.mk
+endif
 
 # Build kernel and its drivers
 include make/linuxkernel.mk
@@ -163,9 +165,11 @@ include make/flashable-dirs.mk
 # Strip libraries of symbols not needed.
 include make/reduce-libs.mk
 
+if !BOXTYPE_IPBOX
 # Create the root file systems for jffs2-only, cramfs, and squashfs
 # images (containing kernel but not GUI)
 include make/flashroot-fs.mk
+endif
 
 # Create the root file system, without kernel and GUI 
 include make/flashroot.mk
@@ -179,8 +183,10 @@ include make/distribution-lists.mk
 # /etc/update.urls contains URLs for update lists
 include make/update.urls.mk
 
+if BOXTYPE_IPBOX
 # build IPBox images
 include make/ipbox.mk
+endif
 
 endif
 

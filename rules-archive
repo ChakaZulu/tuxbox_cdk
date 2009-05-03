@@ -200,3 +200,6 @@ dreamdriver_dm500_20071022.tar.bz2;http://sources.dreamboxupdate.com/download/sn
 # ipbox
 #
 linux-2.6.17.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6;ftp://ftp.kernel.org/pub/linux/kernel/v2.6
+dgstationdriver_cubecafe.tar.bz2
+dgstationdriver_mutant200s.tar.bz2
+dgstationdriver_prime.tar.bz2

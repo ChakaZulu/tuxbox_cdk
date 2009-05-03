@@ -177,5 +177,8 @@ linux_libc_headers
 # ipbox
 #
 linux_ipbox
+dgstationdriver_cubecafe
+dgstationdriver_mutant200s
+dgstationdriver_prime
 
 >>?;rules-install-local

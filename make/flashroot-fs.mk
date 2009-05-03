@@ -1,14 +1,4 @@
-if BOXTYPE_DBOX2
-U_BOOT_DEP=$(hostprefix)/bin/mkimage
-else
-if BOXTYPE_IPBOX
-U_BOOT_DEP=$(flashprefix)/u-boot.bin
-else
-U_BOOT_DEP=
-endif
-endif
-
-$(flashprefix)/root-cramfs: bootstrap $(U_BOOT_DEP)
+$(flashprefix)/root-cramfs: bootstrap $(hostprefix)/bin/mkimage
 	rm -rf $@
 if KERNEL26
 	m4 --define=rootfs=cramfs --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
@@ -31,7 +21,7 @@ endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/modules.[^d]*
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-jffs2: bootstrap $(U_BOOT_DEP)
+$(flashprefix)/root-jffs2: bootstrap $(hostprefix)/bin/mkimage
 	rm -rf $@
 if KERNEL26
 	m4 --define=rootfs=jffs2 --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
@@ -54,7 +44,7 @@ endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/modules.[^d]*
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-squashfs: bootstrap $(U_BOOT_DEP)
+$(flashprefix)/root-squashfs: bootstrap $(hostprefix)/bin/mkimage
 	rm -rf $@
 if ENABLE_LZMA
 PART_TYPE="squashfs+lzma"
@@ -65,11 +55,6 @@ if BOXTYPE_DREAMBOX
 	sed $(AUTOMOUNT_SED_CONF) $(DREAMBOX_SERIAL_SED) \
 		$(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig > $(KERNEL_DIR)/.config
 	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
-else
-if BOXTYPE_IPBOX
-	$(MAKE) -C $(KERNEL_DIR) $(IPBOX_KERNEL_TARGET)
-	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
-	$(INSTALL) -m644 $(KERNEL_BUILD_FILENAME) $@/vmlinux
 else
 if KERNEL26
 	m4 --define=rootfs=$(PART_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
@@ -87,7 +72,6 @@ else
 		-a 00000000 -e 00000000 -d $(KERNEL_BUILD_FILENAME) $@/vmlinuz
 endif
 	$(MAKE) driver targetprefix=$@
-endif
 endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/build
 	rm -f $@/lib/modules/$(KERNELVERSION)/source
