@@ -6,6 +6,9 @@ if ENABLE_AUTOMOUNT
 
 $(DEPDIR)/automount: bootstrap @DEPENDS_automount@ Patches/autofs.diff
 	@PREPARE_automount@
+if CPUMODEL_405
+	cd @DIR_automount@ && sed -i "s/823/405/" Makefile
+endif
 	cd @DIR_automount@  && \
 		$(BUILDENV) STRIP=$(target)-strip \
 		$(MAKE) && \
@@ -20,6 +23,9 @@ if TARGETRULESET_FLASH
 
 flash-automount: @DEPENDS_automount@ Patches/autofs.diff | $(flashprefix)/root
 	@PREPARE_automount@
+if CPUMODEL_405
+	cd @DIR_automount@ && sed -i "s/823/405/" Makefile
+endif
 	cd @DIR_automount@  && \
 		$(BUILDENV) STRIP=$(target)-strip \
 		$(MAKE) && \

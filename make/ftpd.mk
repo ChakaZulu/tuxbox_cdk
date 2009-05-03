@@ -4,6 +4,9 @@ $(DEPDIR)/ftpd: bootstrap @DEPENDS_ftpd@
 if KERNEL26
 	cd @DIR_ftpd@ && patch -p1 < $(buildprefix)/Patches/ftpd26.diff
 endif
+if CPUMODEL_405
+	cd @DIR_ftpd@ && sed -i "s/823/405/" Makefile
+endif
 	cd @DIR_ftpd@ && \
 		CC=$(target)-gcc \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -22,6 +25,9 @@ flash-ftpd: | $(flashprefix)/root @DEPENDS_ftpd@
 	@PREPARE_ftpd@
 if KERNEL26
 	cd @DIR_ftpd@ && patch -p1 < $(buildprefix)/Patches/ftpd26.diff
+endif
+if CPUMODEL_405
+	cd @DIR_ftpd@ && sed -i "s/823/405/" Makefile
 endif
 	cd @DIR_ftpd@ && \
 		CC=$(target)-gcc \
