@@ -286,8 +286,8 @@ endif
 flash-dreamfiles: $(dreamfilesrootdir)/dreamfiles/lib/modules/2.6.9/extra/head.ko
 
 $(dreamfilesrootdir)/dreamfiles/lib/modules/2.6.9/extra/head.ko : $(flashprefix)/boot 
-	@cp -R $(flashprefix)/dreamfiles/bin/* $(dreamfilesrootdir)
-	@cp -R $(flashprefix)/dreamfiles/share/* $(dreamfilesrootdir)
+	@cp -R $(flashprefix)/dreamfiles/bin/* $(dreamfilesrootdir)/bin
+	@cp -R $(flashprefix)/dreamfiles/share/* $(dreamfilesrootdir)/share
 	@if [ -f $(flashprefix)/dreamfiles/.version ] ; then \
 		cp $(flashprefix)/dreamfiles/.version $(dreamfilesrootdir); \
 	fi
