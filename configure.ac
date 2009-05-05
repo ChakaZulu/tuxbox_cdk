@@ -504,11 +504,11 @@ AC_ARG_WITH(hostappsdir,
 
 AC_ARG_WITH(gnuserver,
         [  --with-gnuserver=ADDRESS   the gnu server for gnu-stuff (without ftp://)],
-        [gnuserver="$with_gnuserver"],[gnuserver="NONE"])
+        [gnuserver="$with_gnuserver"],[gnuserver=ftp.gwdg.de/pub/misc/gnu/ftp/gnu])
 
 AC_ARG_WITH(defaultserver,
         [  --with-defaultserver=ADDRESS   the server that is taken if no server is given/works (without http://)],
-        [defaultserver="$with_defaultserver"],[defaultserver="NONE"])
+        [defaultserver="$with_defaultserver"],[defaultserver=www.dbox2-tuning.net/cvsdata/files])
 
 if test "$cvsdir" = "NONE"; then
 	if test "$appsdir" = "NONE"; then
@@ -546,14 +546,6 @@ case "${BOXTYPE}" in
 		startscriptdir="$cvsdir/cdk/root"
 		;;
 esac
-
-if test "$gnuserver" = "NONE"; then
-	gnuserver="ftp.gwdg.de/pub/misc/gnu/ftp/gnu"
-fi
-
-if test "$defaultserver" = "NONE"; then
-	defaultserver="tuxbox.berlios.de/pub/tuxbox/cdk/src"
-fi
 
 dircheck="ok"
 AC_MSG_CHECKING([for apps directory])
