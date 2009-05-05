@@ -66,7 +66,6 @@ KERNEL_PREPARE = @PREPARE_linux_ipbox@
 KERNEL_BUILD_FILENAME = @DIR_linux_ipbox@/vmlinux
 if BOXMODEL_IP200
 IPBOX_UBOOT_TARGET = relook100s
-IPBOX_KERNEL_TARGET = mutant200s_defconfig
 IPBOX_FLASH_MAP = $(buildprefix)/config/flash_map.mutant200s
 IPBOX_DRIVER = dgstationdriver_mutant200s
 IPBOX_DRIVER_MODDIR = $(flashprefix)/root-squashfs/lib/modules/@VERSION_linux_ipbox@-mutant200s
@@ -76,7 +75,6 @@ IPBOX_DRIVER_PREPARE = @PREPARE_dgstationdriver_mutant200s@
 endif
 if BOXMODEL_IP250
 IPBOX_UBOOT_TARGET = relook200s
-IPBOX_KERNEL_TARGET = relook200_defconfig
 IPBOX_FLASH_MAP = $(buildprefix)/config/flash_map.relook200s
 IPBOX_DRIVER = dgstationdriver_cubecafe
 IPBOX_DRIVER_MODDIR = $(flashprefix)/root-squashfs/lib/modules/@VERSION_linux_ipbox@-cubecafe
@@ -86,7 +84,6 @@ IPBOX_DRIVER_PREPARE = @PREPARE_dgstationdriver_cubecafe@
 endif
 if BOXMODEL_IP350
 IPBOX_UBOOT_TARGET = relook210
-IPBOX_KERNEL_TARGET = relook210_defconfig
 IPBOX_FLASH_MAP = $(buildprefix)/config/flash_map.relook210
 IPBOX_DRIVER = dgstationdriver_prime
 IPBOX_DRIVER_MODDIR = $(flashprefix)/root-squashfs/lib/modules/@VERSION_linux_ipbox@-cubecafe-prime
@@ -96,9 +93,11 @@ IPBOX_DRIVER_PREPARE = @PREPARE_dgstationdriver_prime@
 endif
 if BOXMODEL_IP400
 IPBOX_UBOOT_TARGET = relook400s
-IPBOX_KERNEL_TARGET = relook400_defconfig
 IPBOX_FLASH_MAP = $(buildprefix)/config/flash_map.relook400s
 IPBOX_DRIVER_MODDIR = $(flashprefix)/root-squashfs/lib/modules/@VERSION_linux_ipbox@-relook400
+IPBOX_DRIVER_DEPENDS = @DEPENDS_dgstationdriver_relook400s@
+IPBOX_DRIVER_DIR = @DIR_dgstationdriver_relook400s@
+IPBOX_DRIVER_PREPARE = @PREPARE_dgstationdriver_relook400s@
 endif
 else
 if KERNEL26
@@ -130,7 +129,7 @@ if BOXTYPE_DREAMBOX
 	cp $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig $(KERNEL_DIR)/.config
 else
 if BOXTYPE_IPBOX
-	$(MAKE) -C $(KERNEL_DIR) $(IPBOX_KERNEL_TARGET)
+	m4 -D$(BOXMODEL) -Dmmc -Dide -Dvfat -Dwlan $(flash_kernel_conf) > $(KERNEL_DIR)/.config
 else
 	cp Patches/linux-2.6.26.4-dbox2.config $(KERNEL_DIR)/.config
 endif

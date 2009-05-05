@@ -789,6 +789,7 @@ case "${BOXTYPE}" in
 		TUXBOX_RULES_MAKE(dgstationdriver_cubecafe)
 		TUXBOX_RULES_MAKE(dgstationdriver_mutant200s)
 		TUXBOX_RULES_MAKE(dgstationdriver_prime)
+		TUXBOX_RULES_MAKE(dgstationdriver_relook400s)
 		;;
 	*)
 		TUXBOX_RULES_MAKE(linux)
@@ -976,21 +977,32 @@ ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 #
 # customized linux kernel configs
 #
-if test "$enable_kernel26" = "yes"; then
-	if test "$yadd_kernel_conf" = "NONE"; then
-		yadd_kernel_conf="Patches/linux-2.6.26.4-dbox2.config"
-	fi
-	if test "$flash_kernel_conf" = "NONE"; then
-		flash_kernel_conf="Patches/linux-2.6.26.4-dbox2.config-flash"
-	fi
-else
-	if test "$yadd_kernel_conf" = "NONE"; then
-		yadd_kernel_conf="Patches/linux-2.4.35.5-dbox2.config"
-	fi
-	if test "$flash_kernel_conf" = "NONE"; then
-		flash_kernel_conf="Patches/linux-2.4.35.5-dbox2.config-flash"
-	fi
-fi
+
+case "${BOXTYPE}" in
+	ipbox)
+		if test "$flash_kernel_conf" = "NONE"; then
+			flash_kernel_conf="config/ipbox_kernel-2.6.17.config.m4"
+		fi
+		yadd_kernel_conf=""
+		;;
+	*)
+		if test "$enable_kernel26" = "yes"; then
+			if test "$yadd_kernel_conf" = "NONE"; then
+				yadd_kernel_conf="Patches/linux-2.6.26.4-dbox2.config"
+			fi
+			if test "$flash_kernel_conf" = "NONE"; then
+				flash_kernel_conf="Patches/linux-2.6.26.4-dbox2.config-flash"
+			fi
+		else
+			if test "$yadd_kernel_conf" = "NONE"; then
+				yadd_kernel_conf="Patches/linux-2.4.35.5-dbox2.config"
+			fi
+			if test "$flash_kernel_conf" = "NONE"; then
+				flash_kernel_conf="Patches/linux-2.4.35.5-dbox2.config-flash"
+			fi
+		fi
+		;;
+esac
 
 # hack
 AC_ARG_ENABLE(dreambox-serial-console,

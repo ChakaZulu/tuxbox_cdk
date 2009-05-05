@@ -1,3 +1,19 @@
+if ENABLE_MMC
+IPBOX_MMC=-Dmmc
+endif
+if ENABLE_IDE
+IPBOX_IDE=-Dide
+endif
+if ENABLE_VFAT
+IPBOX_FS_VFAT=-Dvfat
+endif
+if BOXMODEL_IP250
+IPBOX_WLAN=-Dwlan
+endif
+if BOXMODEL_IP350
+IPBOX_WLAN=-Dwlan
+endif
+
 @DIR_uboot@/u-boot.ipbox: bootstrap @DEPENDS_uboot@ $(bootdir)/u-boot-config/u-boot.config
 	@PREPARE_uboot@
 	cp -pR $(bootdir)/u-boot-tuxbox/* @DIR_uboot@
@@ -18,7 +34,7 @@ $(hostprefix)/bin/mkimage: @DEPENDS_uboot@ $(bootdir)/u-boot-config/$(IPBOX_UBOO
 
 $(flashprefix)/vmlinux: bootstrap $(IPBOX_DRIVER_DEPENDS)
 	rm -rf $@
-	$(MAKE) -C $(KERNEL_DIR) $(IPBOX_KERNEL_TARGET)
+	m4 -D$(BOXMODEL) $(IPBOX_MMC) $(IPBOX_IDE) $(IPBOX_FS_VFAT) $(IPBOX_WLAN) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
 	$(MAKE) -C $(KERNEL_DIR) vmlinux modules ARCH=ppc CROSS_COMPILE=$(target)-
 	$(INSTALL) -m644 $(KERNEL_BUILD_FILENAME) $@
 	$(MAKE) -C $(KERNEL_DIR) modules_install \
@@ -30,8 +46,8 @@ $(flashprefix)/vmlinux: bootstrap $(IPBOX_DRIVER_DEPENDS)
 	$(INSTALL) -m644 $(IPBOX_DRIVER_DIR)/head.ko $(IPBOX_DRIVER_MODDIR)/extra
 if ENABLE_MMC
 	$(INSTALL) -d $(IPBOX_DRIVER_MODDIR)/kernel/drivers/mmc
-	for i in m25p80.ko mmc_spi.ko stb25spi_bitbang.ko stb25spi_devs.ko stb25spi_scp.ko; do
-		$(INSTALL) -m644 $(IPBOX_DRIVER_DIR)/$$i $(IPBOX_DRIVER_MODDIR)/kernel/drivers/mmc
+	for i in m25p80.ko mmc_spi.ko stb25spi_bitbang.ko stb25spi_devs.ko stb25spi_scp.ko; do \
+		$(INSTALL) -v -m644 $(IPBOX_DRIVER_DIR)/$$i $(IPBOX_DRIVER_MODDIR)/kernel/drivers/mmc; \
 	done
 endif
 

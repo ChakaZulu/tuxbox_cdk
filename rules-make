@@ -196,5 +196,6 @@ linux_ipbox;2.6.17;linux-2.6.17;linux-2.6.17.tar.bz2:linux-2.6.17.diff:linux-2.6
 dgstationdriver_cubecafe;1;dgstationdriver_cubecafe;dgstationdriver_cubecafe.tar.bz2;extract:dgstationdriver_cubecafe.tar.bz2
 dgstationdriver_mutant200s;1;dgstationdriver_mutant200s;dgstationdriver_mutant200s.tar.bz2;extract:dgstationdriver_mutant200s.tar.bz2
 dgstationdriver_prime;1;dgstationdriver_prime;dgstationdriver_prime.tar.bz2;extract:dgstationdriver_prime.tar.bz2
+dgstationdriver_relook400s;1;dgstationdriver_relook400s;dgstationdriver_relook400s.tar.bz2;extract:dgstationdriver_relook400s.tar.bz2
 
 >>?;rules-make-local
