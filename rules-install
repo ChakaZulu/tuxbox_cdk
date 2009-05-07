@@ -171,12 +171,13 @@ sqlite;make:install:prefix=TARGET
 # dreambox
 #
 linux_dream
-linux_libc_headers
+linux_dream_kernel_headers
 
 #
 # ipbox
 #
 linux_ipbox
+linux_ipbox_kernel_headers
 dgstationdriver_cubecafe
 dgstationdriver_mutant200s
 dgstationdriver_prime

@@ -64,20 +64,41 @@ endif
 #	$(INSTALL) -m644 $(KERNEL_DIR)/System.map $(targetprefix)/boot/System.map-$(KERNELVERSION)
 #	touch $@
 
-$(DEPDIR)/install-linux-headers: linuxdir
 if BOXTYPE_DREAMBOX
-	@PREPARE_linux_libc_headers@
-	mv $(buildprefix)/linux-libc-headers/include/asm-ppc $(buildprefix)/linux-libc-headers/include/asm
+$(DEPDIR)/install-linux-headers: linuxdir @DEPENDS_linux_dream_kernel_headers@
+else
+if BOXTYPE_IPBOX
+$(DEPDIR)/install-linux-headers: linuxdir @DEPENDS_linux_ipbox_kernel_headers@
+else
+$(DEPDIR)/install-linux-headers: linuxdir
+endif
+endif
+if BOXTYPE_DREAMBOX
+	@PREPARE_linux_dream_kernel_headers@
+	mv $(buildprefix)/@DIR_linux_dream_kernel_headers@/include/asm-ppc $(buildprefix)/@DIR_linux_dream_kernel_headers@/include/asm
 	for i in linux asm asm_generic; do \
 		rm -R $(hostprefix)/$(target)/include/$$i 2> /dev/null || /bin/true; \
 		if [ $$i != asm_generic ] ; then \
-			mv $(buildprefix)/linux-libc-headers/include/$$i $(hostprefix)/$(target)/include; \
+			mv $(buildprefix)/@DIR_linux_dream_kernel_headers@/include/$$i $(hostprefix)/$(target)/include; \
 		fi; \
 	done;
 	for i in config.h autoconf.h; do \
 		ln -sf $(buildprefix)/linux/include/linux/$$i $(hostprefix)/$(target)/include/linux; \
 	done;
-	@CLEANUP_linux_libc_headers@
+	@CLEANUP_linux_dream_kernel_headers@
+else
+if BOXTYPE_IPBOX
+	@PREPARE_linux_ipbox_kernel_headers@
+	mv $(buildprefix)/@DIR_linux_ipbox_kernel_headers@/include/asm-powerpc $(buildprefix)/@DIR_linux_ipbox_kernel_headers@/include/asm
+	for i in linux asm asm-generic mtd scsi; do \
+		rm -R $(hostprefix)/$(target)/include/$$i 2> /dev/null || /bin/true; \
+		mv $(buildprefix)/@DIR_linux_ipbox_kernel_headers@/include/$$i $(hostprefix)/$(target)/include; \
+	done;
+	for i in config.h autoconf.h; do \
+		ln -sf $(buildprefix)/linux/include/linux/$$i $(hostprefix)/$(target)/include/linux; \
+	done;
+	echo "/* empty */" > $(hostprefix)/$(target)/include/linux/compiler.h
+	@CLEANUP_linux_ipbox_kernel_headers@
 else
 if KERNEL26
 # Kernels after 2.6.18 offer a special "headers_install" target to generate
@@ -102,9 +123,6 @@ if KERNEL26
 		ln -sf $(buildprefix)/linux/usr/include/asm-generic $(hostprefix)/$(target)/include; \
 		ln -sf $(buildprefix)/linux/usr/include/mtd $(hostprefix)/$(target)/include; \
 	fi
-if BOXTYPE_IPBOX
-	ln -sf $(buildprefix)/linux/include/asm-ppc $(buildprefix)/linux/include/asm > /dev/null || /bin/true
-	ln -s $(buildprefix)/linux/include/asm-powerpc/* $(buildprefix)/linux/include/asm-ppc/ > /dev/null || /bin/true
 endif
 endif
 endif

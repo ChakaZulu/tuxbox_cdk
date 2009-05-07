@@ -225,7 +225,7 @@ else
 KHEADERS="$(buildprefix)/$(KERNEL_DIR)/include"
 endif
 else
-KHEADERS="$(buildprefix)/$(KERNEL_DIR)/include"
+KHEADERS="$(hostprefix)/$(target)/include"
 endif
 	@PREPARE_uclibc@
 	sed $(XFS_UCLIBC_CONF) $(UCLIBC_DEBUG_SED_CONF) -e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=$(KHEADERS),g' Patches/uclibc-0.9.30.config > @DIR_uclibc@/.config

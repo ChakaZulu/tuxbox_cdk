@@ -766,11 +766,10 @@ AC_SUBST(DEPSCLEANUP)
 # core
 #
 
-
 case "${BOXTYPE}" in
 	dreambox)
 		TUXBOX_RULES_MAKE(linux_dream)
-		TUXBOX_RULES_MAKE(linux_libc_headers)
+		TUXBOX_RULES_MAKE(linux_dream_kernel_headers)
 		TUXBOX_RULES_MAKE(dreamfiles)
 		TUXBOX_RULES_MAKE(dreamdriver_dm7000)
 		TUXBOX_RULES_MAKE(dreamdriver_dm56x0)
@@ -778,6 +777,7 @@ case "${BOXTYPE}" in
 		;;
 	ipbox)
 		TUXBOX_RULES_MAKE(linux_ipbox)
+		TUXBOX_RULES_MAKE(linux_ipbox_kernel_headers)
 		TUXBOX_RULES_MAKE(dgstationdriver_cubecafe)
 		TUXBOX_RULES_MAKE(dgstationdriver_mutant200s)
 		TUXBOX_RULES_MAKE(dgstationdriver_prime)
