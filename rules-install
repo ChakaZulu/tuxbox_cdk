@@ -94,6 +94,7 @@ kermit;make:install:prefix=TARGET:INFODIR=TARGET/share/doc/kermit
 hdparm;make:install:DESTDIR=TARGET
 parted;make:install
 xfsprogs;make:install:DESTDIR=TARGET
+reiserfsprogs;make:install:DESTDIR=TARGET
 smartmontools;make:install:DESTDIR=TARGET
 wget;make:install:DESTDIR=TARGET
 screen;make:install:DESTDIR=TARGET

@@ -177,6 +177,16 @@ XFS_SED_CONF=-e ""
 endif
 endif
 
+if ENABLE_REISERFS
+REISERFS_SED_CONF=$(foreach param,CONFIG_REISERFS_FS,-e s"/^.*$(param)[= ].*/$(param)=m/")
+else
+if KERNEL26
+REISERFS_SED_CONF=$(foreach param,CONFIG_REISERFS_FS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+else
+REISERFS_SED_CONF=-e ""
+endif
+endif
+
 if ENABLE_VFAT
 VFAT_SED_CONF=$(foreach param,CONFIG_FAT_FS CONFIG_VFAT_FS,-e s"/^.*$(param)[= ].*/$(param)=m/")
 else
@@ -241,12 +251,12 @@ kernel-cdk: $(bootprefix)/kernel-cdk
 if BOXTYPE_DBOX2
 if KERNEL26
 $(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c-26.m4
-	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(yadd_kernel_conf) \
+	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(REISERFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(yadd_kernel_conf) \
 		> $(KERNEL_DIR)/.config
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 else
 $(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c.m4
-	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(yadd_kernel_conf) \
+	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(REISERFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(yadd_kernel_conf) \
 		> $(KERNEL_DIR)/.config
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif

@@ -7,6 +7,9 @@ endif
 if ENABLE_VFAT
 IPBOX_FS_VFAT=-Dvfat
 endif
+if ENABLE_REISERFS
+IPBOX_FS_REISERFS=-Dreiserfs
+endif
 if BOXMODEL_IP250
 IPBOX_WLAN=-Dwlan
 endif
@@ -34,7 +37,7 @@ $(hostprefix)/bin/mkimage: @DEPENDS_uboot@ $(bootdir)/u-boot-config/$(IPBOX_UBOO
 
 $(flashprefix)/vmlinux: bootstrap $(IPBOX_DRIVER_DEPENDS)
 	rm -rf $@
-	m4 -D$(BOXMODEL) $(IPBOX_MMC) $(IPBOX_IDE) $(IPBOX_FS_VFAT) $(IPBOX_WLAN) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
+	m4 -D$(BOXMODEL) $(IPBOX_MMC) $(IPBOX_IDE) $(IPBOX_FS_VFAT) $(IPBOX_FS_REISERFS) $(IPBOX_WLAN) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
 	$(MAKE) -C $(KERNEL_DIR) vmlinux modules ARCH=ppc CROSS_COMPILE=$(target)-
 	$(INSTALL) -m644 $(KERNEL_BUILD_FILENAME) $@
 	$(MAKE) -C $(KERNEL_DIR) modules_install \

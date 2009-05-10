@@ -1,12 +1,13 @@
 # tuxbox/enigma
 
-$(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad libid3tag libvorbisidec libpng libsigc libjpeg libungif @LIBGETTEXT@ @SQLITE@ $(targetprefix)/lib/pkgconfig/tuxbox.pc $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc $(targetprefix)/include/tuxbox/plugin.h
+$(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad libid3tag libvorbisidec libpng libsigc libjpeg libungif @LIBGETTEXT@ @SQLITE@ @REISERFSPROGS@ $(targetprefix)/lib/pkgconfig/tuxbox.pc $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc $(targetprefix)/include/tuxbox/plugin.h
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE) \
 		  --with-webif=$(WEBIF) \
 		  --with-epg=$(EPG) \
 		  --with-flashtool=$(FLASHTOOL) \
 		  --with-ext-flashtool=$(EXTFLASHTOOL) \
 		  --with-enigma-debug=$(ENIGMA_DEBUG) \
+		  --with-reiserfs=$(ENIGMA_REISERFS) \
 		  --with-mhw-epg=$(MHW_EPG)
 
 enigma: $(appsdir)/tuxbox/enigma/config.status | tuxbox_tools

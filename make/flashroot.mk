@@ -70,6 +70,9 @@ endif
 if ENABLE_XFS
 	$(MAKE) flash-xfsprogs
 endif
+if ENABLE_REISERFS
+	$(MAKE) flash-reiserfsprogs
+endif
 if ENABLE_NFSSERVER
 	$(MAKE) flash-nfsserver
 endif

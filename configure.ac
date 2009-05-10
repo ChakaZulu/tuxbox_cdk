@@ -187,12 +187,13 @@ enable_fs_cifs=yes
 enable_fs_smbfs=no
 enable_fs_lufs=yes
 enable_vfat=no
+enable_reiserfs=no
 
 AC_ARG_WITH(filesystems,[  --with-filesystems      comma seperated list of filesystems to be used,
                           first disk filesystem will be used as default for /hdd entry in /etc/fstab
                           allowed values: nfs (always enabled in yadd), cifs, smbfs,
                                           lufs (ftpfs), xfs (not kernel2.4/uClibc),
-                                          ext2, ext3, extfs (ext2/3), vfat],[
+                                          ext2, ext3, extfs (ext2/3), vfat, reiserfs],[
 if test x"${withval+set}" = xset; then
     enable_filesystems=`echo "${withval}" | sed -e 's/[[ 	,]][[ 	,]]*/,/g' -e 's/,$//' -e 's/,/ /g'`
     enable_fs_nfs=no
@@ -202,6 +203,7 @@ if test x"${withval+set}" = xset; then
     enable_ext3=no
     enable_xfs=no
     enable_vfat=no
+    enable_reiserfs=no
     DEFAULT_FS_FSTAB=""
     for i in $enable_filesystems; do
 	case $i in
@@ -216,6 +218,9 @@ if test x"${withval+set}" = xset; then
 	    xfs)		enable_xfs=yes
 				[[ "$enable_use_mmc" != "yes" ] && enable_ide=yes ]
 				[[ "$DEFAULT_FS_FSTAB" = "" ] && DEFAULT_FS_FSTAB="xfs" || /bin/true ] ;;
+	    reiserfs)		enable_reiserfs=yes
+				[[ "$enable_use_mmc" != "yes" ] && enable_ide=yes ]
+				[[ "$DEFAULT_FS_FSTAB" = "" ] && DEFAULT_FS_FSTAB="reiserfs" || /bin/true ] ;;
 	    extfs)		enable_ext2=yes; enable_ext3=yes
 				[[ "$enable_use_mmc" != "yes" ] && enable_ide=yes ]
 				[[ "$DEFAULT_FS_FSTAB" = "" ] && DEFAULT_FS_FSTAB="ext3" || /bin/true ] ;;
@@ -236,6 +241,7 @@ if test "$enable_ide" = "no" -a "$enable_mmc" = "no"; then
 	enable_ext2=no
 	enable_ext3=no
 	enable_xfs=no
+	enable_reiserfs=no
 fi
 
 # we need to check vfat support seperately because it
@@ -245,13 +251,14 @@ if test "$enable_use_mmc" != "yes" -a "$enable_ide" != "yes" -a "$enable_vfat" =
 fi
 
 # if no disc filesystem is activated, deactivate IDE and MMC support
-if ! test "$enable_ext2" = "yes" -o "$enable_ext3" = "yes" -o "$enable_xfs" = "yes" -o "$enable_vfat" = "yes"; then
+if ! test "$enable_ext2" = "yes" -o "$enable_ext3" = "yes" -o "$enable_xfs" = "yes" -o "$enable_reiserfs" = "yes" -o "$enable_vfat" = "yes"; then
 	DEFAULT_FS_FSTAB=""
 	enable_ide=no
 	enable_use_mmc=no
 	enable_ext2=no
 	enable_ext3=no
 	enable_xfs=no
+	enable_reiserfs=no
 	enable_vfat=no
 	disable_hdd_fs=yes
 else
@@ -277,6 +284,16 @@ AM_CONDITIONAL(ENABLE_MMC,test "$enable_use_mmc" = "yes")
 AM_CONDITIONAL(ENABLE_EXT2,test "$enable_ext2" = "yes")
 AM_CONDITIONAL(ENABLE_EXT3,test "$enable_ext3" = "yes")
 AM_CONDITIONAL(ENABLE_XFS,test "$enable_xfs" = "yes")
+AM_CONDITIONAL(ENABLE_REISERFS,test "$enable_reiserfs" = "yes")
+if test "$enable_reiserfs" = "yes"; then
+	REISERFSPROGS=reiserfsprogs
+	ENIGMA_REISERFS=yes
+else
+	ENIGMA_REISERFS=no
+fi
+AC_SUBST(REISERFSPROGS)
+AC_SUBST(ENIGMA_REISERFS)
+
 AC_SUBST(DEFAULT_FS_FSTAB)
 
 if test "$enable_uclibc" = "yes" -a "$enable_xfs" = "yes" -a "$enable_kernel26" != "yes"; then
@@ -894,6 +911,7 @@ TUXBOX_RULES_MAKE(utillinux)
 TUXBOX_RULES_MAKE(parted)
 TUXBOX_RULES_MAKE(hddtemp)
 TUXBOX_RULES_MAKE(xfsprogs)
+TUXBOX_RULES_MAKE(reiserfsprogs)
 TUXBOX_RULES_MAKE(smartmontools)
 
 #
@@ -1057,6 +1075,7 @@ fstab default fs:		$DEFAULT_FS_FSTAB
 IDE/MMC: Ext2 support		$enable_ext2
 IDE/MMC: Ext3 support		$enable_ext3
 IDE/MMC: XFS support		$enable_xfs
+IDE/MMC: REISERFS support	$enable_reiserfs
 IDE/MMC: VFAT support		$enable_vfat
 CIFS kernel module:		$enable_fs_cifs
 SMBFS kernel module:		$enable_fs_smbfs

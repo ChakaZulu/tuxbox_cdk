@@ -127,6 +127,7 @@ parted-1.7.1.tar.gz;http://ftp.gnu.org/pub/gnu/parted
 smartmontools-5.38.tar.gz;http://prdownloads.sourceforge.net/sourceforge/smartmontools
 util-linux-2.12r.tar.bz2;http://www.kernel.org/pub/linux/utils/util-linux/
 xfsprogs_2.9.4-1.tar.gz;http://www.dbox2-tuning.net/cvsdata/files
+reiserfsprogs-3.6.21.tar.bz2;http://www.kernel.org/pub/linux/utils/fs/reiserfs
 
 #
 # development tools

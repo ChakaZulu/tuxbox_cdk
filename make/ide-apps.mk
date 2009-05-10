@@ -336,6 +336,73 @@ $(flashprefix)/root/sbin/mkfs.xfs: bootstrap libtool @DEPENDS_e2fsprogs@ @DEPEND
 
 endif
 
+#reiserfsprogs
+# reiserfsprogs needs "special" built libtool and uuid header/lib of e2fsprogs
+$(DEPDIR)/reiserfsprogs: bootstrap libtool @DEPENDS_e2fsprogs@ @DEPENDS_reiserfsprogs@
+	@PREPARE_e2fsprogs@
+	cd @DIR_e2fsprogs@ && \
+		RANLIB=$(target)-ranlib \
+		CC=$(target)-gcc \
+		CFLAGS="-Os -msoft-float" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--prefix= \
+			--with-cc=$(target)-gcc \
+			--with-linker=$(target)-ld \
+			--disable-evms \
+			--enable-elf-shlibs \
+			--enable-htree \
+			--disable-profile \
+			--disable-swapfs \
+			--disable-debugfs \
+			--disable-image \
+			--enable-resizer \
+			--enable-dynamic-e2fsck \
+			--enable-fsck \
+			--with-gnu-ld \
+			$(E2FSPROGSOPT) \
+			--disable-nls && \
+		$(MAKE) libs && \
+		$(INSTALL) -d $(targetprefix)/include/uuid && \
+		$(INSTALL) -m 644 lib/uuid/uuid.h $(targetprefix)/include/uuid && \
+		$(INSTALL) -m 644 lib/uuid/uuid_types.h $(targetprefix)/include/uuid && \
+		$(INSTALL) lib/uuid/libuuid.a $(targetprefix)/lib && \
+		$(INSTALL) lib/uuid/libuuid.so.1.2 $(targetprefix)/lib && \
+		ln -sf libuuid.so.1.2 $(targetprefix)/lib/libuuid.so.1 && \
+		ln -sf libuuid.so.1 $(targetprefix)/lib/libuuid.so
+	@CLEANUP_e2fsprogs@
+	@PREPARE_reiserfsprogs@
+	cd @DIR_reiserfsprogs@ && \
+		LIBTOOL=$(hostprefix)/bin/libtool \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--target=$(target) \
+			--includedir=$(targetprefix)/include \
+			--prefix= && \
+		$(MAKE) && \
+		@INSTALL_reiserfsprogs@
+	@CLEANUP_reiserfsprogs@
+	touch $@
+
+if TARGETRULESET_FLASH
+
+flash-reiserfsprogs: $(flashprefix)/root/sbin/mkreiserfs $(flashprefix)/root/sbin/reiserfsck
+
+$(flashprefix)/root/sbin/mkreiserfs: bootstrap libtool reiserfsprogs | $(flashprefix)/root
+	$(INSTALL) $(targetprefix)/sbin/mkreiserfs $(flashprefix)/root/sbin
+	@FLASHROOTDIR_MODIFIED@
+
+$(flashprefix)/root/sbin/reiserfsck: bootstrap libtool reiserfsprogs | $(flashprefix)/root
+	$(INSTALL) $(targetprefix)/sbin/reiserfsck $(flashprefix)/root/sbin
+	@FLASHROOTDIR_MODIFIED@
+
+endif
+
 #smartmontools
 $(DEPDIR)/smartmontools: bootstrap @DEPENDS_smartmontools@
 	@PREPARE_smartmontools@

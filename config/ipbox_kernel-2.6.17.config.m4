@@ -1055,7 +1055,12 @@ CONFIG_EXT3_FS_XATTR=y
 CONFIG_JBD=y
 # CONFIG_JBD_DEBUG is not set
 CONFIG_FS_MBCACHE=y
-# CONFIG_REISERFS_FS is not set
+ifdef(`reiserfs',
+`CONFIG_REISERFS_FS=m
+# CONFIG_REISERFS_CHECK is not set
+# CONFIG_REISERFS_PROC_INFO is not set
+# CONFIG_REISERFS_FS_XATTR is not set',
+`# CONFIG_REISERFS_FS is not set')
 # CONFIG_JFS_FS is not set
 # CONFIG_FS_POSIX_ACL is not set
 # CONFIG_XFS_FS is not set
