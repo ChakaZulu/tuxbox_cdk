@@ -561,3 +561,33 @@ diff -u ./drivers/ide/ide.c.orig ./drivers/ide/ide.c
  
  static void ide_port_init_devices_data(ide_hwif_t *);
  
+diff -uNr linux-2.6.26.8.org/scripts/unifdef.c linux-2.6.26.8/scripts/unifdef.c
+--- ./scripts/unifdef.c	2008-11-10 20:18:24.000000000 +0100
++++ ./scripts/unifdef.c	2009-05-11 23:28:36.000000000 +0200
+@@ -206,7 +206,7 @@
+ static void             error(const char *);
+ static int              findsym(const char *);
+ static void             flushline(bool);
+-static Linetype         getline(void);
++static Linetype         parseline(void);
+ static Linetype         ifeval(const char **);
+ static void             ignoreoff(void);
+ static void             ignoreon(void);
+@@ -512,7 +512,7 @@
+ 
+ 	for (;;) {
+ 		linenum++;
+-		lineval = getline();
++		lineval = parseline();
+ 		trans_table[ifstate[depth]][lineval]();
+ 		debug("process %s -> %s depth %d",
+ 		    linetype_name[lineval],
+@@ -526,7 +526,7 @@
+  * help from skipcomment().
+  */
+ static Linetype
+-getline(void)
++parseline(void)
+ {
+ 	const char *cp;
+ 	int cursym;
