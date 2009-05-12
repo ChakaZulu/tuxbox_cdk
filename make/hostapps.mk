@@ -1,4 +1,4 @@
-$(hostappsdir)/config.status: bootstrap
+$(hostappsdir)/config.status:
 	cd $(hostappsdir) && \
 	./autogen.sh && \
 	./configure --prefix=$(hostprefix)
