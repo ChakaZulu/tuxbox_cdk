@@ -10,8 +10,11 @@ libs: \
 
 libs_optional: \
 	libcommoncplusplus libffi \
+	libboost libgmp \
 	libpcap libxml2 libungif \
 	libexpat libcrypto @SQLITE@
+
+libs_all: libs libs_optional
 
 $(DEPDIR)/libboost: bootstrap @DEPENDS_libboost@
 	@PREPARE_libboost@
