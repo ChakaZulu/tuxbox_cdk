@@ -1,13 +1,3 @@
-if TARGETRULESET_UCLIBC
-MKLIBS_UCLIBCOPTS = \
--u __fini_array_start \
--u __init_array_start \
--u __fini_array_end \
--u __preinit_array_end \
--u __init_array_end \
--u __preinit_array_start
-endif
-
 $(flashprefix)/root-neutrino-cramfs/lib/ld.so.1 \
 $(flashprefix)/root-neutrino-squashfs/lib/ld.so.1 \
 $(flashprefix)/root-neutrino-jffs2/lib/ld.so.1 \
@@ -33,7 +23,6 @@ $(flashprefix)/root-null-jffs2/lib/ld.so.1: \
 		-d $</lib \
 		-D -L $(mklibs_librarypath) \
 		--root $< \
-		${MKLIBS_UCLIBCOPTS} \
 		`find $</bin/ -path "*bin/?*" -type f` \
 		`find $</lib/ -name "libnss_*" -type f` \
 		`find $</lib/ -name "libsqlite3*" -type f` \
