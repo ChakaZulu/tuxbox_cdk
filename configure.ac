@@ -100,8 +100,16 @@ if test -z "$TARGET_CFLAGS" -o -z "$TARGET_CXXFLAGS"; then
 		TARGET_CFLAGS="$TARGET_CFLAGS -O2 -g3 -gdwarf-2"
 		TARGET_LDFLAGS=""
 	else
-		TARGET_CFLAGS="$TARGET_CFLAGS -Os"
-		TARGET_LDFLAGS="-Wl,-O1"
+		case "${BOXTYPE}" in
+			dreambox)
+				TARGET_CFLAGS="$TARGET_CFLAGS -Os -mcpu=$CPU_MODEL -msoft-float -mmultiple -mstring -meabi -ggdb3"
+				TARGET_LDFLAGS=""
+				;;
+			*)
+				TARGET_CFLAGS="$TARGET_CFLAGS -Os"
+				TARGET_LDFLAGS="-Wl,-O1"
+				;;
+		esac
 	fi
 	if test "$TOOLCHAIN_PATH" != "notset"; then
 		TARGET_LDFLAGS="$TARGET_LDFLAGS -L\$(targetprefix)/lib"
