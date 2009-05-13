@@ -303,11 +303,6 @@ $(dreamfilesrootdir)/dreamfiles/lib/modules/2.6.9/extra/head.ko : $(flashprefix)
 	@ln -sf /tmp $(dreamfilesrootdir)/var_init/tmp
 	@ln -sf /proc/mounts $(dreamfilesrootdir)/var_init/etc/mtab
 # lib
-	@for i in ar_AE cs_CZ da_DK el_GR es_ES et_EE fi_FI hr_HR \
-	hu_HU is_IS it_IT lt_LT nl_NL no_NO pl_PL pt_PT ro_RO ru_RU sk_SK \
-	sl_SI sr_YU sv_SE tr_TR ur_IN; do \
-		ln -sf de_DE $(dreamfilesrootdir)/lib/locale/$$i; \
-	done;
 if !TARGETRULESET_UCLIBC
 	@for i in ISO8859-1.so ISO8859-2.so ISO8859-7.so UNICODE.so; do \
 		cp $(targetprefix)/lib/gconv/$$i $(dreamfilesrootdir)/lib/gconv; \
@@ -323,15 +318,6 @@ else
 endif
 # misc
 	@ln -sf /var/mnt $(dreamfilesrootdir)/mnt
-if !BOXMODEL_DM7000
-	echo "i:/ezap/osd/alpha=00000000" >> $(dreamfilesrootdir)/var_init/tuxbox/config/enigma/config;
-	echo "i:/ezap/osd/brightness=00000073" >> $(dreamfilesrootdir)/var_init/tuxbox/config/enigma/config;
-	echo "i:/ezap/osd/gamma=00000066" >> $(dreamfilesrootdir)/var_init/tuxbox/config/enigma/config;
-endif
-if !BOXMODEL_DM56x0
-	@for i in skins/small_red*.esml skins/small_red*.info pictures/small-red pictures/triaxlogo-fs8.png ; do \
-		rm -Rf $(dreamfilesrootdir)/share/tuxbox/enigma/$$i; done
-endif
 if !BOXMODEL_DM500
 	@for i in cables.xml terrestrial.xml; do \
 		if [ -f $(dreamfilesrootdir)/share/tuxbox/$$i ]; then \

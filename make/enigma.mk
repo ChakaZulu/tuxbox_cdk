@@ -65,6 +65,20 @@ else
 endif
 	rm -f $@/share/zoneinfo/*tab
 	ln -sf /var/etc/localtime $@/etc
+	@for i in ar_AE cs_CZ da_DK el_GR es_ES et_EE fi_FI hr_HR \
+	hu_HU is_IS it_IT lt_LT nl_NL no_NO pl_PL pt_PT ro_RO ru_RU sk_SK \
+	sl_SI sr_YU sv_SE tr_TR ur_IN; do \
+		ln -sf de_DE $@/lib/locale/$$i; \
+	done;
+if !BOXMODEL_DM7000
+	echo "i:/ezap/osd/alpha=00000000" >> $@/var_init/tuxbox/config/enigma/config;
+	echo "i:/ezap/osd/brightness=00000073" >> $@/var_init/tuxbox/config/enigma/config;
+	echo "i:/ezap/osd/gamma=00000066" >> $@/var_init/tuxbox/config/enigma/config;
+endif
+if !BOXMODEL_DM56x0
+	@for i in skins/small_red*.esml skins/small_red*.info pictures/small-red pictures/triaxlogo-fs8.png ; do \
+		rm -Rf $@/share/tuxbox/enigma/$$i; done
+endif
 
 else
 	cp -pa $(appsdir)/tuxbox/enigma/po/locale.alias.image $@/share/locale/locale.alias
