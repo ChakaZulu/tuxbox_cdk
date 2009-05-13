@@ -46,7 +46,7 @@ squashfs;3.0;mksquashfs;squashfs3.0.tar.gz:mksquashfs_lzma.diff:lzma442.tar.bz2:
 #
 # contrib libs
 #
-libboost;boost-1.38.0;boost_1_38_0;boost_1_38_0.tar.bz2;extract:boost_1_38_0.tar.bz2
+libboost;boost-1.39.0;boost_1_39_0;boost_1_39_0.tar.bz2;extract:boost_1_39_0.tar.bz2
 libcommoncplusplus;1.0.13;commoncpp2-1.0.13;commoncpp2-1.0.13.tar.gz:libcommoncplusplus.diff;extract:commoncpp2-1.0.13.tar.gz;patch:libcommoncplusplus.diff
 libcrypto;0.9.7e;openssl-0.9.7e;openssl-0.9.7e.tar.gz:libcrypto.diff;extract:openssl-0.9.7e.tar.gz;patch:libcrypto.diff
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.gz:libcurl.diff;extract:curl-7.10.1.tar.gz;patch:libcurl.diff
