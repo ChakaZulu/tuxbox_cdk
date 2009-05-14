@@ -435,3 +435,15 @@ diff -uNr glibc-2.3.6.org/csu/Makefile glibc-2.3.6/csu/Makefile
  	   sed -e '/^#/d' -e 's/^[[:space:]]*/	/'		\
  	       -e 's/^\(.*\)$$/\"\1\\n\"/' $$files;		\
  	 fi) > $@T
+diff -uNr glibc-2.3.6.org/elf/Makefile glibc-2.3.6/elf/Makefile
+--- glibc-2.3.6.org/elf/Makefile	2005-07-18 03:19:48.000000000 +0200
++++ glibc-2.3.6/elf/Makefile	2009-04-10 18:13:57.000000000 +0200
+@@ -285,7 +285,7 @@
+ 		  $(LDFLAGS-rtld) -Wl,-z,defs -Wl,--verbose 2>&1 |	\
+ 		  LC_ALL=C \
+ 		  sed -e '/^=========/,/^=========/!d;/^=========/d'	\
+-		      -e 's/\. = 0 + SIZEOF_HEADERS;/& _begin = . - SIZEOF_HEADERS;/' \
++		      -e 's/\. = .* + SIZEOF_HEADERS;/& _begin = . - SIZEOF_HEADERS;/' \
+ 		  > $@.lds
+ 	$(LINK.o) -nostdlib -nostartfiles -shared -o $@			\
+ 		  $(LDFLAGS-rtld) -Wl,-z,defs $(z-now-$(bind-now))	\
