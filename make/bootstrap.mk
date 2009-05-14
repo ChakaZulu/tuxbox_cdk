@@ -129,7 +129,7 @@ if BOXTYPE_DREAMBOX
 	cp $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig $(KERNEL_DIR)/.config
 else
 if BOXTYPE_IPBOX
-	m4 -D$(BOXMODEL) -Dmmc -Dide -Dvfat -Dreiserfs -Dwlan $(flash_kernel_conf) > $(KERNEL_DIR)/.config
+	m4 $(IPBOX_M4_KERNEL) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
 else
 	cp Patches/linux-2.6.26.4-dbox2.config $(KERNEL_DIR)/.config
 endif

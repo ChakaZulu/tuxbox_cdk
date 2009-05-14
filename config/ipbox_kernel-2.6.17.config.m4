@@ -1045,14 +1045,22 @@ CONFIG_MMC_SPI=m,
 #
 # File systems
 #
-CONFIG_EXT2_FS=y
+ifdef(`ext2',
+`CONFIG_EXT2_FS=y
+CONFIG_JBD=y',
+`# CONFIG_EXT2_FS is not set
+# CONFIG_JBD is not set')
 # CONFIG_EXT2_FS_XATTR is not set
 # CONFIG_EXT2_FS_XIP is not set
-CONFIG_EXT3_FS=y
+ifdef(`ext3',
+`CONFIG_EXT3_FS=y
 CONFIG_EXT3_FS_XATTR=y
+CONFIG_JBD=y',
+`# CONFIG_EXT3_FS is not set
+# CONFIG_EXT3_FS_XATTR is not set
+# CONFIG_JBD is not set')
 # CONFIG_EXT3_FS_POSIX_ACL is not set
 # CONFIG_EXT3_FS_SECURITY is not set
-CONFIG_JBD=y
 # CONFIG_JBD_DEBUG is not set
 CONFIG_FS_MBCACHE=y
 ifdef(`reiserfs',
@@ -1063,7 +1071,13 @@ ifdef(`reiserfs',
 `# CONFIG_REISERFS_FS is not set')
 # CONFIG_JFS_FS is not set
 # CONFIG_FS_POSIX_ACL is not set
-# CONFIG_XFS_FS is not set
+ifdef(`xfs',
+`CONFIG_XFS_FS=m',
+`# CONFIG_XFS_FS is not set')
+# CONFIG_XFS_QUOTA is not set
+# CONFIG_XFS_SECURITY is not set
+# CONFIG_XFS_POSIX_ACL is not set
+# CONFIG_XFS_RT is not set
 # CONFIG_OCFS2_FS is not set
 # CONFIG_MINIX_FS is not set
 # CONFIG_ROMFS_FS is not set
@@ -1071,7 +1085,9 @@ CONFIG_INOTIFY=y
 # CONFIG_QUOTA is not set
 CONFIG_DNOTIFY=y
 # CONFIG_AUTOFS_FS is not set
-# CONFIG_AUTOFS4_FS is not set
+ifdef(`autofs',
+`CONFIG_AUTOFS4_FS=m',
+`# CONFIG_AUTOFS4_FS is not set')
 # CONFIG_FUSE_FS is not set
 
 #
@@ -1144,26 +1160,36 @@ CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=3
 #
 # Network File Systems
 #
-CONFIG_NFS_FS=y
+ifdef(`nfs',
+`CONFIG_NFS_FS=y
 CONFIG_NFS_V3=y
-# CONFIG_NFS_V3_ACL is not set
-CONFIG_NFS_V4=y
-CONFIG_NFS_DIRECTIO=y
-CONFIG_NFSD=m
-# CONFIG_NFSD_V3 is not set
-CONFIG_NFSD_TCP=y
-CONFIG_ROOT_NFS=y
-CONFIG_LOCKD=y
-CONFIG_LOCKD_V4=y
-CONFIG_EXPORTFS=m
-CONFIG_NFS_COMMON=y
 CONFIG_SUNRPC=y
 CONFIG_SUNRPC_GSS=y
 CONFIG_RPCSEC_GSS_KRB5=y
+CONFIG_LOCKD=y
+CONFIG_LOCKD_V4=y
+CONFIG_EXPORTFS=m
+CONFIG_ROOT_NFS=y
+CONFIG_NFS_COMMON=y
+CONFIG_NFS_DIRECTIO=y',
+`# CONFIG_NFS_FS is not set')
+ifdef(`nfsd',
+CONFIG_NFSD=m
+CONFIG_NFSD_V3=y
+CONFIG_NFSD_TCP=y',
+`# CONFIG_NFSD is not set')
 # CONFIG_RPCSEC_GSS_SPKM3 is not set
-CONFIG_SMB_FS=m
+# CONFIG_NFS_V3_ACL is not set
+# CONFIG_NFSD_V3_ACL is not set
+# CONFIG_NFS_V4 is not set
+# CONFIG_NFSD_V4 is not set
+ifdef(`smbfs',
+`CONFIG_SMB_FS=m',
+`# CONFIG_SMB_FS is not set')
 # CONFIG_SMB_NLS_DEFAULT is not set
-CONFIG_CIFS=m
+ifdef(`cifs',
+`CONFIG_CIFS=m',
+`# CONFIG_CIFS is not set')
 # CONFIG_CIFS_STATS is not set
 # CONFIG_CIFS_XATTR is not set
 # CONFIG_CIFS_EXPERIMENTAL is not set
@@ -1181,7 +1207,8 @@ CONFIG_MSDOS_PARTITION=y
 #
 # Native Language Support
 #
-CONFIG_NLS=y
+ifdef(`nls',
+`CONFIG_NLS=y
 CONFIG_NLS_DEFAULT="utf8"
 CONFIG_NLS_CODEPAGE_437=y
 # CONFIG_NLS_CODEPAGE_737 is not set
@@ -1220,7 +1247,8 @@ CONFIG_NLS_ISO8859_7=y
 # CONFIG_NLS_ISO8859_15 is not set
 # CONFIG_NLS_KOI8_R is not set
 # CONFIG_NLS_KOI8_U is not set
-CONFIG_NLS_UTF8=y
+CONFIG_NLS_UTF8=y',
+`# CONFIG_NLS is not set')
 
 #
 # IBM 40x options
