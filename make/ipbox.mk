@@ -44,6 +44,7 @@ IPBOX_M4_KERNEL += -Dwlan
 endif
 if BOXMODEL_IP350
 IPBOX_M4_KERNEL += -Dwlan
+IPBOX_M4_KERNEL += -Dusb
 endif
 
 $(hostprefix)/bin/appendbin:

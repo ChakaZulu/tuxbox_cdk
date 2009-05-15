@@ -444,7 +444,7 @@ CONFIG_BLK_DEV_IDEDMA=y
 # SCSI device support
 #
 # CONFIG_RAID_ATTRS is not set
-ifdef(`ip350',
+ifdef(`usb',
 `CONFIG_SCSI=m
 CONFIG_SCSI_PROC_FS=y
 
@@ -717,11 +717,8 @@ CONFIG_SPI_MASTER=y')
 #
 # SPI Master Controller Drivers
 #
-ifdef(`ip200',
-`CONFIG_SPI_BITBANG=m')
-ifdef(`ip250',
-`CONFIG_SPI_BITBANG=m')
-ifdef(`ip350',
+ifdef(`mmc',
+`CONFIG_SPI_BITBANG=m',
 `# CONFIG_SPI_BITBANG is not set')
 
 #
@@ -836,12 +833,12 @@ CONFIG_SOUND=y
 #
 # USB support
 #
-ifdef(`ip350',
+ifdef(`usb',
 `CONFIG_USB_ARCH_HAS_HCD=y',
 `# CONFIG_USB_ARCH_HAS_HCD is not set')
 # CONFIG_USB_ARCH_HAS_OHCI is not set
 # CONFIG_USB_ARCH_HAS_EHCI is not set
-ifdef(`ip350',
+ifdef(`usb',
 `CONFIG_USB=m
 # CONFIG_USB_DEBUG is not set
 
@@ -869,7 +866,7 @@ CONFIG_USB_ISP116X_HCD=m
 # NOTE: USB_STORAGE enables SCSI, and 'SCSI disk support'
 #
 
-ifdef(`ip350',
+ifdef(`usb',
 `#
 # may also be needed; see USB_STORAGE Help for more information
 #
