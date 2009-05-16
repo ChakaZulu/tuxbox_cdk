@@ -1,6 +1,12 @@
 #!/bin/sh
 
-# $Id: start_esound,v 1.2 2009/03/24 20:37:59 rhabarber1848 Exp $
+# $Id: start_esound,v 1.3 2009/05/16 00:32:37 rhabarber1848 Exp $
+
+x=$1
+port=""
+if [ "`expr $x - $x 2>/dev/null`" == "0" ]; then
+    port="-port $x"
+fi
 
 ESD=/bin/esd
 
@@ -8,4 +14,4 @@ if [ -x /var/bin/esd ] ; then
 	ESD=/var/bin/esd
 fi
 
-$ESD -tcp -public -nobeeps -d /dev/sound/dsp -r 44100 &
+$ESD $port -tcp -public -nobeeps -d /dev/sound/dsp -r 44100 &
