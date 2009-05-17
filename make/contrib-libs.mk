@@ -60,6 +60,7 @@ endif
 	cd @DIR_libcurl@ && \
 		$(BUILDENV) \
 		$(CURL_UCLIBC) \
+		CPPFLAGS='-I$(targetprefix)/include' \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
