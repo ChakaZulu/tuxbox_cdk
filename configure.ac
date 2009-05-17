@@ -464,8 +464,8 @@ AC_ARG_WITH(updatehttpprefix,
 	[updatehttpprefix="$with_updatehttpprefix"],[updatehttpprefix=])
 
 AC_ARG_WITH(busybox_conf,
-	[  --with-busybox-conf=M4_FILE personalized optional m4 busybox configuration file [[Patches/busybox.config.m4]]],
-	[busybox_conf="$with_busybox_conf"],[busybox_conf="Patches/busybox.config.m4"])
+	[  --with-busybox-conf=M4_FILE personalized optional m4 busybox configuration file [[config/busybox.config.m4]]],
+	[busybox_conf="$with_busybox_conf"],[busybox_conf="config/busybox.config.m4"])
 AC_SUBST(busybox_conf)
 
 AC_ARG_WITH(yadd_kernel_conf,
