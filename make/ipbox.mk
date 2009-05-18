@@ -1,3 +1,4 @@
+
 IPBOX_M4_KERNEL = -D$(BOXMODEL)
 
 if ENABLE_MMC
@@ -97,7 +98,13 @@ if ENABLE_MMC
 	done
 endif
 
-#ipbox_flash_imgs: $(flashprefix)/flash_img_low $(flashprefix)/flash_img_high $(flashprefix)/flash_img_noboot $(flashprefix)/flash_img_kernel_root
+ipbox_flash_imgs_neutrino \
+ipbox_flash_imgs_enigma: \
+ipbox_flash_imgs_%: \
+$(flashprefix)/flash_img_low_%.img \
+$(flashprefix)/flash_img_high_%.img \
+$(flashprefix)/flash_img_noboot_%.img \
+$(flashprefix)/flash_img_kernel_root_%.img
 
 $(flashprefix)/config.img:
 	dd if=/dev/zero of=$@ bs=8K count=`$(IPBOX_FLASH_MAP) blocks config`
@@ -153,9 +160,9 @@ $(flashprefix)/part_welcome.img: $(flashprefix)/welcome.img $(hostprefix)/bin/ap
 	rm -f $@
 	$(hostprefix)/bin/appendbin -bs=0x2000 $@ $< `$(IPBOX_FLASH_MAP) blocks welcome` || { rm $@; exit 1; }
 
-$(flashprefix)/flash_img_neutrino \
-$(flashprefix)/flash_img_enigma: \
-$(flashprefix)/flash_img_%: \
+$(flashprefix)/flash_img_neutrino.img \
+$(flashprefix)/flash_img_enigma.img: \
+$(flashprefix)/flash_img_%.img: \
 $(flashprefix)/part_root_%.img \
 $(flashprefix)/part_config.img \
 $(flashprefix)/part_welcome.img \
@@ -170,20 +177,132 @@ $(flashprefix)/part_uboot.img
 	dd if=$(flashprefix)/part_db.img of=$@ bs=8K seek=`$(IPBOX_FLASH_MAP) offset_blocks db` count=`$(IPBOX_FLASH_MAP) blocks db`
 	dd if=$(flashprefix)/part_uboot.img of=$@ bs=8K seek=`$(IPBOX_FLASH_MAP) offset_blocks uboot` count=`$(IPBOX_FLASH_MAP) blocks uboot`
 
-$(flashprefix)/flash_img_low: $(flashprefix)/flash_img
+$(flashprefix)/flash_img_low_neutrino.img \
+$(flashprefix)/flash_img_low_enigma.img: \
+$(flashprefix)/flash_img_low_%.img: \
+$(flashprefix)/flash_img_%.img
 	dd if=$< of=$@ bs=64K count=64
 
-$(flashprefix)/flash_img_high: $(flashprefix)/flash_img
+$(flashprefix)/flash_img_high_neutrino.img \
+$(flashprefix)/flash_img_high_enigma.img: \
+$(flashprefix)/flash_img_high_%.img: \
+$(flashprefix)/flash_img_%.img
 	dd if=$< of=$@ bs=64K skip=64 count=64
 
-$(flashprefix)/flash_img_noboot: $(flashprefix)/flash_img
+$(flashprefix)/flash_img_noboot_neutrino.img \
+$(flashprefix)/flash_img_noboot_enigma.img: \
+$(flashprefix)/flash_img_noboot_%.img: \
+$(flashprefix)/flash_img_%.img
 	dd if=$< of=$@ bs=64K count=`BLOCK_SIZE=0x10000 $(IPBOX_FLASH_MAP) blocks 0 -2`
 
-$(flashprefix)/flash_img_kernel_root: $(flashprefix)/flash_img
+$(flashprefix)/flash_img_kernel_root_neutrino.img \
+$(flashprefix)/flash_img_kernel_root_enigma.img: \
+$(flashprefix)/flash_img_kernel_root_%.img: \
+$(flashprefix)/flash_img_%.img
 	dd if=$< of=$@ bs=64K skip=`BLOCK_SIZE=0x10000 $(IPBOX_FLASH_MAP) offset_blocks kernel` count=`BLOCK_SIZE=0x10000 $(IPBOX_FLASH_MAP) blocks kernel root`
 
-$(flashprefix)/flash_img_kernel_root_db: $(flashprefix)/flash_img
+$(flashprefix)/flash_img_kernel_root_db_neutrino.img \
+$(flashprefix)/flash_img_kernel_root_db_enigma.img: \
+$(flashprefix)/flash_img_kernel_root_db_%.img: \
+$(flashprefix)/flash_img_%.img
 	dd if=$< of=$@ bs=64K skip=`BLOCK_SIZE=0x10000 $(IPBOX_FLASH_MAP) offset_blocks kernel` count=`BLOCK_SIZE=0x10000 $(IPBOX_FLASH_MAP) blocks kernel db`
 
-$(flashprefix)/flash_img_kernel_root_db_uboot: $(flashprefix)/flash_img
+$(flashprefix)/flash_img_kernel_root_db_uboot_neutrino.img \
+$(flashprefix)/flash_img_kernel_root_db_uboot_enigma.img: \
+$(flashprefix)/flash_img_kernel_root_db_uboot_%.img: \
+$(flashprefix)/flash_img_%.img
 	dd if=$< of=$@ bs=64K skip=`BLOCK_SIZE=0x10000 $(IPBOX_FLASH_MAP) offset_blocks kernel` count=`BLOCK_SIZE=0x10000 $(IPBOX_FLASH_MAP) blocks kernel uboot`
+
+
+# serial images
+
+ipbox_serial_imgs_neutrino \
+ipbox_serial_imgs_enigma: \
+ipbox_serial_imgs_%: \
+$(flashprefix)/serial_all_%.img \
+$(flashprefix)/serial_all_noboot_%.img \
+$(flashprefix)/serial_welcome.img \
+$(flashprefix)/serial_welcome_blank.img \
+$(flashprefix)/serial_kernel.img \
+$(flashprefix)/serial_kernel_root_%.img \
+$(flashprefix)/serial_kernel_root_db_%.img \
+$(flashprefix)/serial_kernel_root_db_uboot_%.img \
+$(flashprefix)/serial_root_%.img \
+$(flashprefix)/serial_db.img \
+$(flashprefix)/serial_uboot.img
+
+$(flashprefix)/serial_%: $(flashprefix)/usb_% $(hostprefix)/bin/mkdnimg
+	$(hostprefix)/bin/mkdnimg -make serialimg -model_name $(BOXMODEL) -input $< -output $@
+
+
+# USB images
+
+IPBOX_USB_OPTIONS=-vendor_id 0x00444753 -product_id 0x6c6f6f6b -hw_model 0x00020000 -hw_version 0x00010000
+
+ipbox_usb_imgs_neutrino \
+ipbox_usb_imgs_enigma: \
+ipbox_usb_imgs_%: \
+$(flashprefix)/usb_all_%.img \
+$(flashprefix)/usb_all_noboot_%.img \
+$(flashprefix)/usb_welcome.img \
+$(flashprefix)/usb_welcome_blank.img \
+$(flashprefix)/usb_kernel.img \
+$(flashprefix)/usb_kernel_root_%.img \
+$(flashprefix)/usb_kernel_root_db_%.img \
+$(flashprefix)/usb_kernel_root_db_uboot_%.img \
+$(flashprefix)/usb_root_%.img \
+$(flashprefix)/usb_db.img \
+$(flashprefix)/usb_uboot.img
+
+$(flashprefix)/usb_all_neutrino.img \
+$(flashprefix)/usb_all_enigma.img: \
+$(flashprefix)/usb_all_%.img: \
+$(flashprefix)/flash_img_%.img $(hostprefix)/bin/mkdnimg
+	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start config` -erase_size `$(IPBOX_FLASH_MAP) size config uboot` -image_name all -input $< -output $@
+
+$(flashprefix)/usb_all_noboot_neutrino.img \
+$(flashprefix)/usb_all_noboot_enigma.img: \
+$(flashprefix)/usb_all_noboot_%.img: \
+$(flashprefix)/flash_img_noboot_%.img $(hostprefix)/bin/mkdnimg
+	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start config` -erase_size `$(IPBOX_FLASH_MAP) size config db` -image_name all_noboot -input $< -output $@
+
+$(flashprefix)/usb_welcome.img: $(flashprefix)/welcome.img
+	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start welcome` -erase_size `$(IPBOX_FLASH_MAP) size welcome` -image_name welcome -input $< -output $@
+
+$(flashprefix)/usb_welcome_blank.img: $(hostprefix)/bin/mkdnimg
+	rm -f ._blank
+	touch ._blank
+	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start welcome` -erase_size `$(IPBOX_FLASH_MAP) size welcome` -image_name welcome_blank -input ._blank -output $@
+
+$(flashprefix)/usb_kernel.img: $(flashprefix)/kernel.img $(hostprefix)/bin/mkdnimg
+	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start kernel` -erase_size `$(IPBOX_FLASH_MAP) size kernel` -image_name kernel -input $< -output $@
+
+$(flashprefix)/usb_kernel_root_neutrino.img \
+$(flashprefix)/usb_kernel_root_enigma.img: \
+$(flashprefix)/usb_kernel_root_%.img: \
+$(flashprefix)/flash_img_kernel_root_%.img $(hostprefix)/bin/mkdnimg
+	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start kernel` -erase_size `$(IPBOX_FLASH_MAP) size kernel root` -image_name kernel_root -input $< -output $@
+
+$(flashprefix)/usb_kernel_root_db_neutrino.img \
+$(flashprefix)/usb_kernel_root_db_enigma.img: \
+$(flashprefix)/usb_kernel_root_db_%.img: \
+$(flashprefix)/flash_img_kernel_root_db_%.img $(hostprefix)/bin/mkdnimg
+	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start kernel` -erase_size `$(IPBOX_FLASH_MAP) size kernel db` -image_name kernel_root_db -input $< -output $@
+
+$(flashprefix)/usb_kernel_root_db_uboot_neutrino.img \
+$(flashprefix)/usb_kernel_root_db_uboot_enigma.img: \
+$(flashprefix)/usb_kernel_root_db_uboot_%.img: \
+$(flashprefix)/flash_img_kernel_root_db_uboot_%.img $(hostprefix)/bin/mkdnimg
+	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start kernel` -erase_size `$(IPBOX_FLASH_MAP) size kernel uboot` -image_name kernel_root_db_uboot -input $< -output $@
+
+$(flashprefix)/usb_root_neutrino.img \
+$(flashprefix)/usb_root_enigma.img: \
+$(flashprefix)/usb_root_%.img: \
+$(flashprefix)/root-%.squashfs $(hostprefix)/bin/mkdnimg
+	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start root` -erase_size `$(IPBOX_FLASH_MAP) size root` -image_name root -input $< -output $@
+
+$(flashprefix)/usb_db.img: $(flashprefix)/db.img $(hostprefix)/bin/mkdnimg
+	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start db` -erase_size `$(IPBOX_FLASH_MAP) size db` -image_name db -input $< -output $@
+
+$(flashprefix)/usb_uboot.img: $(flashprefix)/uboot.img $(hostprefix)/bin/mkdnimg
+	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start uboot` -erase_size `$(IPBOX_FLASH_MAP) size uboot` -image_name uboot -input $< -output $@

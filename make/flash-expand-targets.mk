@@ -37,7 +37,7 @@ if BOXTYPE_DREAMBOX
 flash-neutrino-squashfs: $(flashprefix)/neutrino-squashfs.dream
 else
 if BOXTYPE_IPBOX
-flash-neutrino-squashfs: $(flashprefix)/flash_img_neutrino
+flash-neutrino-squashfs: ipbox_flash_imgs_neutrino ipbox_serial_imgs_neutrino ipbox_usb_imgs_neutrino
 else
 flash-neutrino-squashfs-all: flash-neutrino-squashfs-1x flash-neutrino-squashfs-2x
 endif
@@ -66,7 +66,7 @@ if BOXTYPE_DREAMBOX
 flash-enigma-squashfs: $(flashprefix)/enigma-squashfs.dream
 else
 if BOXTYPE_IPBOX
-flash-enigma-squashfs: $(flashprefix)/flash_img_enigma
+flash-enigma-squashfs: ipbox_flash_imgs_enigma ipbox_serial_imgs_enigma ipbox_usb_imgs_enigma
 else
 flash-enigma-squashfs-all: flash-enigma-squashfs-1x flash-enigma-squashfs-2x
 endif
