@@ -222,7 +222,6 @@ ipbox_serial_imgs_%: \
 $(flashprefix)/serial_all_%.img \
 $(flashprefix)/serial_all_noboot_%.img \
 $(flashprefix)/serial_welcome.img \
-$(flashprefix)/serial_welcome_blank.img \
 $(flashprefix)/serial_kernel.img \
 $(flashprefix)/serial_kernel_root_%.img \
 $(flashprefix)/serial_kernel_root_db_%.img \
@@ -232,7 +231,7 @@ $(flashprefix)/serial_db.img \
 $(flashprefix)/serial_uboot.img
 
 $(flashprefix)/serial_%: $(flashprefix)/usb_% $(hostprefix)/bin/mkdnimg
-	$(hostprefix)/bin/mkdnimg -make serialimg -model_name $(BOXMODEL) -input $< -output $@
+	$(hostprefix)/bin/mkdnimg -make serialimg -model_name $(IPBOX_UBOOT_TARGET) -input $< -output $@
 
 
 # USB images
@@ -245,7 +244,6 @@ ipbox_usb_imgs_%: \
 $(flashprefix)/usb_all_%.img \
 $(flashprefix)/usb_all_noboot_%.img \
 $(flashprefix)/usb_welcome.img \
-$(flashprefix)/usb_welcome_blank.img \
 $(flashprefix)/usb_kernel.img \
 $(flashprefix)/usb_kernel_root_%.img \
 $(flashprefix)/usb_kernel_root_db_%.img \
@@ -268,11 +266,6 @@ $(flashprefix)/flash_img_noboot_%.img $(hostprefix)/bin/mkdnimg
 
 $(flashprefix)/usb_welcome.img: $(flashprefix)/welcome.img
 	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start welcome` -erase_size `$(IPBOX_FLASH_MAP) size welcome` -image_name welcome -input $< -output $@
-
-$(flashprefix)/usb_welcome_blank.img: $(hostprefix)/bin/mkdnimg
-	rm -f ._blank
-	touch ._blank
-	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start welcome` -erase_size `$(IPBOX_FLASH_MAP) size welcome` -image_name welcome_blank -input ._blank -output $@
 
 $(flashprefix)/usb_kernel.img: $(flashprefix)/kernel.img $(hostprefix)/bin/mkdnimg
 	$(hostprefix)/bin/mkdnimg -make usbimg $(IPBOX_USB_OPTIONS) -start_addr `$(IPBOX_FLASH_MAP) start kernel` -erase_size `$(IPBOX_FLASH_MAP) size kernel` -image_name kernel -input $< -output $@
