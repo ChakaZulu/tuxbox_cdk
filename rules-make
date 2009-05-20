@@ -119,7 +119,7 @@ hdparm;8.6;hdparm-8.6;hdparm-8.6.tar.gz;extract:hdparm-8.6.tar.gz;patch:hdparm.d
 parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
 smartmontools;5.38;smartmontools-5.38;smartmontools-5.38.tar.gz;extract:smartmontools-5.38.tar.gz;patch:smartmontools.diff
 utillinux;2.12r;util-linux-2.12r;util-linux-2.12r.tar.bz2;extract:util-linux-2.12r.tar.bz2;patch:util-linux.diff
-xfsprogs;2.9.4;xfsprogs-2.9.4;xfsprogs_2.9.4-1.tar.gz;extract:xfsprogs_2.9.4-1.tar.gz
+xfsprogs;2.9.4;xfsprogs-2.9.4;xfsprogs_2.9.4-1.tar.gz:xfsprogs.diff;extract:xfsprogs_2.9.4-1.tar.gz;patch:xfsprogs.diff
 reiserfsprogs;3.6.21;reiserfsprogs-3.6.21;reiserfsprogs-3.6.21.tar.bz2;extract:reiserfsprogs-3.6.21.tar.bz2
 
 #
