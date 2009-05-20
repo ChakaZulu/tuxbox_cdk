@@ -322,6 +322,7 @@ $(flashprefix)/root/sbin/mkfs.xfs: bootstrap libtool @DEPENDS_e2fsprogs@ @DEPEND
 	cd @DIR_xfsprogs@ && \
 		LIBTOOL=$(hostprefix)/bin/libtool \
 		$(BUILDENV) \
+		$(XFSPROGSOPT) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
