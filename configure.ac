@@ -80,7 +80,7 @@ AC_ARG_WITH(assume-kernelsources-old,
 AM_CONDITIONAL(ASSUME_KERNELSOURCES_OLD,test "$assume_kernelsources_old" = "yes")
 
 AC_ARG_ENABLE(flashrules,
-	AS_HELP_STRING(--enable-flashrules,	enable rules for creating flash targets),
+	AS_HELP_STRING(--disable-flashrules,	disable rules for creating flash targets - build cdk instead),
 	,[enable_flashrules=yes])
 AM_CONDITIONAL(TARGETRULESET_FLASH,test "$enable_flashrules" = "yes")
 
