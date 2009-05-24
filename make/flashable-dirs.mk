@@ -263,31 +263,37 @@ flash-bootlogos:
 	fi
 
 if BOXTYPE_DREAMBOX
+
 if BOXMODEL_DM7000
-$(flashprefix)/boot: @DEPENDS_dreamdriver_dm7000@ @DEPENDS_dreamfiles@
-	@PREPARE_dreamfiles@
+flash-dreamfiles: @DEPENDS_dreamdriver_dm7000@ @DEPENDS_dreamfiles@
 	@PREPARE_dreamdriver_dm7000@
+	cp -vR $(buildprefix)/@DIR_dreamdriver_dm7000@/dreamfiles/* $(dreamfilesrootdir)/
 endif
 if BOXMODEL_DM56x0
-$(flashprefix)/boot: @DEPENDS_dreamdriver_dm56x0@ @DEPENDS_dreamfiles@
-	@PREPARE_dreamfiles@
+flash-dreamfiles: @DEPENDS_dreamdriver_dm56x0@ @DEPENDS_dreamfiles@
 	@PREPARE_dreamdriver_dm56x0@
+	cp -vR $(buildprefix)/@DIR_dreamdriver_dm56x0@/dreamfiles/* $(dreamfilesrootdir)/
 endif
 if BOXMODEL_DM500
-$(flashprefix)/boot: @DEPENDS_dreamdriver_dm500@ @DEPENDS_dreamfiles@
-	@PREPARE_dreamfiles@
+flash-dreamfiles: @DEPENDS_dreamdriver_dm500@ @DEPENDS_dreamfiles@
 	@PREPARE_dreamdriver_dm500@
+	cp -vR $(buildprefix)/@DIR_dreamdriver_dm500@/dreamfiles/* $(dreamfilesrootdir)/
 endif
-	@for i in dreamfiles boot mkcramfs-e mksquashfs mklibs.py mksquashfs_lzma_patches.tar.bz2 ; do \
-		rm -R $(flashprefix)/$$i 2>/dev/null || /bin/true; \
-		mv $$i $(flashprefix) 2>/dev/null || /bin/true; \
-	done
-
-flash-dreamfiles: $(dreamfilesrootdir)/dreamfiles/lib/modules/2.6.9/extra/head.ko
-
-$(dreamfilesrootdir)/dreamfiles/lib/modules/2.6.9/extra/head.ko : $(flashprefix)/boot 
-	@cp -R $(flashprefix)/dreamfiles/bin/* $(dreamfilesrootdir)/bin
-	@cp -R $(flashprefix)/dreamfiles/share/* $(dreamfilesrootdir)/share
+	@PREPARE_dreamfiles@
+	cp -vR $(buildprefix)/@DIR_dreamfiles@/boot $(flashprefix)
+	cp -vR $(buildprefix)/@DIR_dreamfiles@/dreamfiles/* $(dreamfilesrootdir)/
+	cp -vR $(buildprefix)/@DIR_dreamfiles@/mkcramfs-e $(hostprefix)/bin
+	cp -vR $(buildprefix)/@DIR_dreamfiles@/mksquashfs $(hostprefix)/bin/mksquashfs-dream
+	@CLEANUP_dreamfiles@
+if BOXMODEL_DM7000
+	@CLEANUP_dreamdriver_dm7000@
+endif
+if BOXMODEL_DM56x0
+	@CLEANUP_dreamdriver_dm56x0@
+endif
+if BOXMODEL_DM500
+	@CLEANUP_dreamdriver_dm500@
+endif
 	@if [ -f $(flashprefix)/dreamfiles/.version ] ; then \
 		cp $(flashprefix)/dreamfiles/.version $(dreamfilesrootdir); \
 	fi
@@ -325,4 +331,5 @@ if !BOXMODEL_DM500
 		fi; \
 	done;
 endif
+
 endif

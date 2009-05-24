@@ -139,10 +139,10 @@ $(flashprefix)/boot-cramfs.img: $(KERNEL_BUILD_FILENAME)\
 		$(flashprefix)/boot
 	$(INSTALL) $(KERNEL_BUILD_FILENAME) $(flashprefix)/boot/root/platform/kernel/os
 if BOXMODEL_DM7000
-	$(flashprefix)/mkcramfs-e -eb $(flashprefix)/boot $(flashprefix)/boot-cramfs.img
+	$(hostprefix)/bin/mkcramfs-e -eb $(flashprefix)/boot $(flashprefix)/boot-cramfs.img
 else
 	mv $(flashprefix)/boot/root/platform/kernel/bild .
-	$(flashprefix)/mkcramfs-e -eb $(flashprefix)/boot $(flashprefix)/boot-cramfs.img
+	$(hostprefix)/bin/mkcramfs-e -eb $(flashprefix)/boot $(flashprefix)/boot-cramfs.img
 	mv ./bild $(flashprefix)/boot/root/platform/kernel
 endif
 	@if [ `stat -c %s $(flashprefix)/boot-cramfs.img` -gt 1179648 ]; then \
@@ -156,7 +156,7 @@ $(flashprefix)/root-squashfs.img: \
 		$(flashprefix)/root \
 		$(flashprefix)/root-enigma-squashfs
 	-rm $@
-	$(flashprefix)/mksquashfs $(flashprefix)/root-enigma-squashfs $@ -be -all-root
+	$(hostprefix)/bin/mksquashfs-dream $(flashprefix)/root-enigma-squashfs $@ -be -all-root
 	@if [ `stat -c %s $@` -gt 5111808 ]; then \
 		echo "ERROR: SquashFS part is too big for image (max. allowed 5111808 bytes)"; \
 		rm -f $(flashprefix)/root-squashfs.img.too-big 2> /dev/null || /bin/true; \
@@ -178,7 +178,7 @@ $(flashprefix)/root-neutrino-squashfs.img: \
 		$(flashprefix)/root \
 		$(flashprefix)/root-neutrino-squashfs
 	-rm $@
-	$(flashprefix)/mksquashfs $(flashprefix)/root-neutrino-squashfs $@ -be -all-root
+	$(hostprefix)/bin/mksquashfs-dream $(flashprefix)/root-neutrino-squashfs $@ -be -all-root
 	@if [ `stat -c %s $@` -gt 5111808 ]; then \
 		echo "ERROR: SquashFS part is too big for image (max. allowed 5111808 bytes)"; \
 		rm -f $(flashprefix)/root-neutrino-squashfs.img.too-big 2> /dev/null || /bin/true; \

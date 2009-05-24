@@ -185,10 +185,10 @@ sqlite;3.6.14;sqlite-3.6.14;sqlite-amalgamation-3.6.14.tar.gz;extract:sqlite-ama
 #
 linux_dream;2.6.9;linux-2.6.9;linux-2.6.9.tar.bz2:linuxppc-2.6.9-r1.diff.bz2:linuxppc-2.6.9-dream-s7.diff.bz2:squashfs2.2r2.diff.bz2:squashfs_lzma.diff.bz2;remove:linux;extract:linux-2.6.9.tar.bz2;patch:linuxppc-2.6.9-r1.diff.bz2;patch:linuxppc-2.6.9-dream-s7.diff.bz2;patch:squashfs2.2r2.diff.bz2;patch:squashfs_lzma.diff.bz2;link:linux-2.6.9:linux
 linux_dream_kernel_headers;2.6.9.1;linux-libc-headers-2.6.9.1;linux-libc-headers-2.6.9.1.tar.bz2:linux-libc-headers.diff;remove:linux-libc-headers;extract:linux-libc-headers-2.6.9.1.tar.bz2;patch:linux-libc-headers.diff
-dreamfiles;20061230;dreamfiles_20061230;dreamfiles_20061230.tar.bz2;extract:dreamfiles_20061230.tar.bz2
-dreamdriver_dm7000;20071022;dreamdriver_dm7000_20071022;dreamdriver_dm7000_20071022.tar.bz2;extract:dreamdriver_dm7000_20071022.tar.bz2
-dreamdriver_dm56x0;20071022;dreamdriver_dm56x0_20071022;dreamdriver_dm56x0_20071022.tar.bz2;extract:dreamdriver_dm56x0_20071022.tar.bz2
-dreamdriver_dm500;20071022;dreamdriver_dm500_20071022;dreamdriver_dm500_20071022.tar.bz2;extract:dreamdriver_dm500_20071022.tar.bz2
+dreamfiles;20061230;dreamfiles_20061230;dreamfiles_20061230.tar.bz2;dirextract:dreamfiles_20061230.tar.bz2
+dreamdriver_dm7000;20071022;dreamdriver_dm7000_20071022;dreamdriver_dm7000_20071022.tar.bz2;dirextract:dreamdriver_dm7000_20071022.tar.bz2
+dreamdriver_dm56x0;20071022;dreamdriver_dm56x0_20071022;dreamdriver_dm56x0_20071022.tar.bz2;dirextract:dreamdriver_dm56x0_20071022.tar.bz2
+dreamdriver_dm500;20071022;dreamdriver_dm500_20071022;dreamdriver_dm500_20071022.tar.bz2;dirextract:dreamdriver_dm500_20071022.tar.bz2
 
 #
 # ipbox
