@@ -35,7 +35,7 @@ AC_PROG_CC
 TUXBOX_BOXTYPE
 
 AC_ARG_ENABLE(lzma,
-	AS_HELP_STRING(--enable-lzma,use LZMA compression when generating images),
+	AS_HELP_STRING(--disable-lzma,don't use LZMA compression when generating images),
 	,[enable_lzma=yes])
 AM_CONDITIONAL(ENABLE_LZMA,test "$enable_lzma" = "yes")
 
