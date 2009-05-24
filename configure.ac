@@ -447,8 +447,12 @@ AC_ARG_WITH(serversupport,
 	[serversupport="$with_serversupport"],[serversupport="${prefix}/serversupport"])
 
 AC_ARG_WITH(ucodesdir,
-	[  --with-ucodesdir=DIR  optional directory containing ucodes [[NONE]]],
+	[  --with-ucodesdir=DIR  optional directory containing ucodes (dbox2 only) [[NONE]]],
 	[ucodesdir="$with_ucodesdir"],[ucodesdir="NONE"])
+
+if test "$BOXTYPE" != "dbox2"; then
+	ucodesdir="NONE"
+fi
 
 AC_ARG_WITH(logosdir,
 	[  --with-logosdir=DIR  optional directory containing logos [[[CVS/]logos]]],

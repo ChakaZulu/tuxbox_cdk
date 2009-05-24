@@ -29,10 +29,11 @@ endif
 	$(MAKE) $@/etc/update.urls
 
 	$(MAKE) flash-tuxinfo
-if !BOXTYPE_DREAMBOX
+if BOXTYPE_DBOX2
 	$(MAKE) flash-tools_misc
 	$(MAKE) flash-fcp
 	$(MAKE) flash-camd2
+	$(MAKE) flash-ucodes
 endif
 	$(MAKE) flash-config
 	$(MAKE) flash-busybox
@@ -49,7 +50,6 @@ endif
 	$(MAKE) flash-vncviewer
 	$(MAKE) flash-dvbsub
 	$(MAKE) flash-fx2-plugins
-	$(MAKE) flash-ucodes
 	$(MAKE) flash-lcdip
 if ENABLE_AUTOMOUNT
 	$(MAKE) flash-automount

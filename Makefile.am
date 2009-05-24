@@ -140,8 +140,10 @@ include make/hostapps.mk
 # Generate some support files for a YADD- or flashing-server
 include make/serversupport.mk
 
+if BOXTYPE_DBOX2
 # Optionally install ucodes in the image
 include make/ucodes.mk
+endif
 
 # Generate a /.version file in the image
 include make/version.mk
