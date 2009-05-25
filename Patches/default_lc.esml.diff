@@ -1,0 +1,14 @@
+--- default.esml	2005-02-02 17:21:39.000000000 +0100
++++ default.esml	2005-02-04 12:07:17.000000000 +0100
+@@ -892,9 +892,9 @@
+ 			<eLabel name="special_two" position="315:135" size="105:42" font="textinputfield.helpwidget.normal" vcenter="on" align="center" />
+ 			<eLabel text="abc &lt;-&gt; ABC" position="5:185" size="200:25" shortcut="yellow" font="textinputfield.helpwidget.normal" vcenter="on" align="center" />
+ 			<eLabel text="abc2 &lt;-&gt; 2abc" position="220:185" size="210:25" shortcut="blue" font="textinputfield.helpwidget.normal" vcenter="on" align="center" />
+-			<eLabel text="vol+" position="5:e-33" size="40:25" font="textinputfield.helpwidget.normal" vcenter="on" />
++			<eLabel pixmap="key.18" position="5:e-33" size="40:25" font="textinputfield.helpwidget.normal" vcenter="on" />
+ 			<eLabel text="insert" position="45:e-33" size="170:25" font="textinputfield.helpwidget.normal" vcenter="on" align="center" />
+-			<eLabel text="vol-" position="220:e-33" size="40:25" font="textinputfield.helpwidget.normal" vcenter="on" />
++			<eLabel pixmap="key.17" position="220:e-33" size="40:25" font="textinputfield.helpwidget.normal" vcenter="on" />
+ 			<eLabel text="remove" position="260:e-33" size="170:25" font="textinputfield.helpwidget.normal" vcenter="on" align="center" />
+ 		</eTextInputFieldHelpWidget>
+ 	</object>
