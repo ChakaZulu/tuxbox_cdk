@@ -188,7 +188,7 @@ $(DEPDIR)/dropbear: bootstrap libz @DEPENDS_dropbear@
 			--disable-utmpx \
 			--disable-wtmp \
 			--disable-wtmpx && \
-		$(MAKE) PROGRAMS="dropbear dropbearkey scp" MULTI=1 && \
+		$(MAKE) PROGRAMS="dropbear dropbearkey scp dbclient" MULTI=1 && \
 		mkdir -p $(targetprefix)/var/etc/dropbear && \
 		mkdir -p $(targetprefix)/var/.ssh && \
 		@INSTALL_dropbear@ && \
@@ -202,7 +202,7 @@ flash-dropbear: $(flashprefix)/root/sbin/dropbearmulti
 
 $(flashprefix)/root/sbin/dropbearmulti: $(DEPDIR)/dropbear | $(flashprefix)/root
 	$(INSTALL) $(targetprefix)/sbin/dropbearmulti $(flashprefix)/root/sbin
-	for i in dropbear scp dropbearkey; do \
+	for i in dropbear scp dropbearkey dbclient; do \
 		ln -sf dropbearmulti $(flashprefix)/root/sbin/$$i; done;
 	mkdir -p $(flashprefix)/root/var/.ssh
 	mkdir -p $(flashprefix)/root/var/etc/dropbear
