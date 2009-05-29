@@ -281,7 +281,8 @@ flash-dreamfiles: @DEPENDS_dreamdriver_dm500@ @DEPENDS_dreamfiles@
 endif
 	@PREPARE_dreamfiles@
 	cp -vR $(buildprefix)/@DIR_dreamfiles@/boot $(flashprefix)
-	cp -vR $(buildprefix)/@DIR_dreamfiles@/dreamfiles/* $(dreamfilesrootdir)/
+	cp -vR $(buildprefix)/@DIR_dreamfiles@/dreamfiles/bin/* $(dreamfilesrootdir)/bin
+	cp -vR $(buildprefix)/@DIR_dreamfiles@/dreamfiles/share/* $(dreamfilesrootdir)/share
 	cp -vR $(buildprefix)/@DIR_dreamfiles@/mkcramfs-e $(hostprefix)/bin
 	cp -vR $(buildprefix)/@DIR_dreamfiles@/mksquashfs $(hostprefix)/bin/mksquashfs-dream
 	@CLEANUP_dreamfiles@
