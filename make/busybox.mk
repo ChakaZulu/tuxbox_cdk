@@ -25,10 +25,13 @@ endif
 if ENABLE_FS_NFS
 BB_NFS=-Dnfs
 endif
+if BOXTYPE_DREAMBOX
+BB_BOXTYPE=-Ddreambox
+endif
 
 $(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ $(busybox_conf) Patches/busybox.diff
 	@PREPARE_busybox@
-	m4 -Dyadd $(BB_IDE) $(BB_EXT3) $(BB_KERNEL26) $(BB_CIFS) $(BB_NFS) -DPREFIX="\"$(targetprefix)\"" -Dcustomizationsdir=$(customizationsdir) $(busybox_conf) > @DIR_busybox@/.config
+	m4 -Dyadd $(BB_BOXTYPE) $(BB_IDE) $(BB_EXT3) $(BB_KERNEL26) $(BB_CIFS) $(BB_NFS) -DPREFIX="\"$(targetprefix)\"" -Dcustomizationsdir=$(customizationsdir) $(busybox_conf) > @DIR_busybox@/.config
 	cd @DIR_busybox@ && \
 		$(MAKE) all install \
 			CROSS_COMPILE=$(target)- \
@@ -41,7 +44,7 @@ if TARGETRULESET_FLASH
 
 flash-busybox: bootstrap $(flashprefix)/root @DEPENDS_busybox@ $(busybox_conf) Patches/busybox.diff
 	@PREPARE_busybox@
-	m4 -Dflash $(BB_IDE) $(BB_EXT3) $(BB_KERNEL26) $(BB_CIFS) $(BB_NFS) -DPREFIX="\"$(flashprefix)/root\"" -Dcustomizationsdir=$(customizationsdir) $(busybox_conf) > @DIR_busybox@/.config
+	m4 -Dflash $(BB_BOXTYPE) $(BB_IDE) $(BB_EXT3) $(BB_KERNEL26) $(BB_CIFS) $(BB_NFS) -DPREFIX="\"$(flashprefix)/root\"" -Dcustomizationsdir=$(customizationsdir) $(busybox_conf) > @DIR_busybox@/.config
 	cd @DIR_busybox@ && \
 		$(MAKE) all install \
 			CROSS_COMPILE=$(target)- \

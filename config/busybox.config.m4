@@ -137,7 +137,10 @@ option(`CONFIG_CATV', `y', `y')
 option(`CONFIG_CHGRP', `y', `n')
 option(`CONFIG_CHMOD', `y', `y')
 option(`CONFIG_CHOWN', `y', `n')
-option(`CONFIG_CHROOT', `y', `n')
+ifdef(`dreambox',
+`option(`CONFIG_CHROOT', `y', `y')',
+`option(`CONFIG_CHROOT', `y', `n')'
+)
 option(`CONFIG_CKSUM', `n', `n')
 option(`CONFIG_CMP', `n', `n')
 option(`CONFIG_COMM', `n', `n')
