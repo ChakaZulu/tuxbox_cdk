@@ -211,3 +211,51 @@ diff -ur busybox-busybox-1.7.2_original/util-linux/mount.c busybox-busybox-1.7.2
  	if (i & MS_REMOUNT) {
  		fstabname = bb_path_mtab_file;
  	}
+diff -U 3 -H -d -r -N -- busybox/miscutils/hdparm.c busybox-1.7.2/miscutils/hdparm.c
+--- busybox/miscutils/hdparm.c	2007-09-03 13:48:45.000000000 +0200
++++ busybox-1.7.2/miscutils/hdparm.c	2009-05-23 17:54:16.000000000 +0200
+@@ -1060,6 +1060,7 @@
+ static smallint set_sleepnow, get_sleepnow;
+ static smallint get_powermode;
+ static smallint set_apmmode, get_apmmode;
++static smallint set_acoustic, get_acoustic;
+ static int xfermode_requested;
+ static unsigned long dkeep;
+ static unsigned long standby_requested;
+@@ -1069,6 +1070,7 @@
+ static unsigned long wcache;
+ static unsigned long doorlock;
+ static unsigned long apmmode;
++static unsigned long acoustic;
+ #endif
+ USE_FEATURE_HDPARM_GET_IDENTITY(        static smallint get_IDentity;)
+ USE_FEATURE_HDPARM_HDIO_TRISTATE_HWIF(  static smallint set_busstate, get_busstate;)
+@@ -1610,6 +1612,11 @@
+ 		ioctl_or_warn(fd, HDIO_DRIVE_CMD, &args);
+ 		args[1] = 0;
+ 	}
++	if (set_acoustic) {
++		if (get_acoustic)
++			printf(" setting AAM level to 0x%02lX (%ld)\n", acoustic, acoustic);
++		ioctl(fd, HDIO_SET_ACOUSTIC, acoustic);
++	}
+ 	if (set_wcache)	{
+ #ifdef DO_FLUSHCACHE
+ #ifndef WIN_FLUSHCACHE
+@@ -1909,7 +1916,7 @@
+ 	USE_FEATURE_HDPARM_GET_IDENTITY("iI")
+ 	USE_FEATURE_HDPARM_HDIO_GETSET_DMA("d::")
+ #ifdef HDIO_DRIVE_CMD
+-	"S:D:P:X:K:A:L:W:CyYzZ"
++	"M:S:D:P:X:K:A:L:W:CyYzZ"
+ #endif
+ 	USE_FEATURE_HDPARM_HDIO_UNREGISTER_HWIF("U:")
+ #ifdef HDIO_GET_QDMA
+@@ -1948,6 +1955,7 @@
+ 		if (c == 'k') parse_opts(&get_keep, &set_keep, &keep, 0, 1);
+ 		if (c == 'a') parse_opts(&get_readahead, &set_readahead, &Xreadahead, 0, INT_MAX);
+ 		if (c == 'B') parse_opts(&get_apmmode, &set_apmmode, &apmmode, 1, 255);
++		if (c == 'M') parse_opts(&get_acoustic, &set_acoustic, &acoustic, 0, 254);
+ 		do_flush |= do_timings |= (c == 't');
+ 		do_flush |= do_ctimings |= (c == 'T');
+ #ifdef HDIO_DRIVE_CMD
