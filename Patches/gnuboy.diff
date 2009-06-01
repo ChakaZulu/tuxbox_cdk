@@ -410,3 +410,18 @@ diff -Naur gnuboy-1.0.3/sys/pc/keymap.c gnuboy-1.0.3new/sys/pc/keymap.c
  
  AC_CONFIG_HEADER(sys/nix/config.h)
  AC_OUTPUT(Makefile)
+diff -uNr gnuboy-1.0.3.org/sys/linux/joy.c gnuboy-1.0.3/sys/linux/joy.c
+--- gnuboy-1.0.3.org/sys/linux/joy.c	2001-09-23 20:01:18.000000000 +0200
++++ gnuboy-1.0.3/sys/linux/joy.c	2009-06-01 21:59:13.000000000 +0200
+@@ -1,9 +1,10 @@
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ char *strdup();
++#undef __STRICT_ANSI__
+ #include <linux/joystick.h>
++#define __STRICT_ANSI__
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
