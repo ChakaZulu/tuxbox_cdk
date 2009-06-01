@@ -134,7 +134,7 @@ AM_CONDITIONAL(CPUMODEL_405,test "$CPU_MODEL" = "405")
 if test "$BOXTYPE" = "dbox2"; then
 	AC_DEFINE(HAVE_DBOX_HARDWARE, 1, [building for a dbox2])
 elif test "$BOXTYPE" = "tripledragon"; then
-	AC_DEFINE(HAVE_TRIPLEDRAGON_HARDWARE, 1, [building for a tripledragon])
+	AC_DEFINE(HAVE_TRIPLEDRAGON, 1, [building for a tripledragon])
 elif test "$BOXTYPE" = "dreambox"; then
 	AC_DEFINE(HAVE_DREAMBOX_HARDWARE, 1, [building for a dreambox])
 elif test "$BOXTYPE" = "ipbox"; then
