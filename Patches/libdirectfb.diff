@@ -10,3 +10,14 @@ diff -uNr ../DirectFB-1.0.0.org/lib/direct/ppcasm_memcpy_cachable.S ./lib/direct
  #if defined(CONFIG_8xx) || defined(CONFIG_403GCX)
  #define L1_CACHE_LINE_SIZE       16
  #define LG_L1_CACHE_LINE_SIZE     4 
+diff -uNr DirectFB-1.0.0.org/lib/direct/system.c DirectFB-1.0.0/lib/direct/system.c
+--- DirectFB-1.0.0.org/lib/direct/system.c	2007-03-03 21:28:56.000000000 +0100
++++ DirectFB-1.0.0/lib/direct/system.c	2009-06-01 16:38:58.000000000 +0200
+@@ -62,6 +62,6 @@
+ long
+ direct_pagesize()
+ {
+-     return PAGE_SIZE;
++     return sysconf(_SC_PAGE_SIZE);
+ }
+ 
