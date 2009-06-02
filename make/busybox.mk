@@ -30,7 +30,7 @@ if ENABLE_FS_NFS
 BUSYBOX_M4 += -Dnfs
 endif
 
-$(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ $(busybox_conf) Patches/busybox.diff
+$(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ $(busybox_conf)
 	@PREPARE_busybox@
 	m4 $(BUSYBOX_M4) -Dyadd -DPREFIX="\"$(targetprefix)\"" $(busybox_conf) > @DIR_busybox@/.config
 	cd @DIR_busybox@ && \
@@ -43,7 +43,7 @@ $(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ $(busybox_conf) Patches/busybox.d
 
 if TARGETRULESET_FLASH
 
-flash-busybox: bootstrap $(flashprefix)/root @DEPENDS_busybox@ $(busybox_conf) Patches/busybox.diff
+flash-busybox: bootstrap $(flashprefix)/root @DEPENDS_busybox@ $(busybox_conf)
 	@PREPARE_busybox@
 	m4 $(BUSYBOX_M4) -Dflash -DPREFIX="\"$(flashprefix)/root\"" $(busybox_conf) > @DIR_busybox@/.config
 	cd @DIR_busybox@ && \

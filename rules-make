@@ -25,7 +25,7 @@ watchdog;5.2.4;watchdog-5.2.4.orig;watchdog_5.2.4.orig.tar.gz:watchdog.diff;extr
 #
 # root
 #
-busybox;1.7.2;busybox-1.7.2;busybox-1.7.2.tar.bz2;extract:busybox-1.7.2.tar.bz2;patch:busybox.diff
+busybox;1.7.2;busybox-1.7.2;busybox-1.7.2.tar.bz2:busybox.diff;extract:busybox-1.7.2.tar.bz2;patch:busybox.diff
 automount;4.1.4;autofs-4.1.4;autofs-4.1.4.tar.bz2;extract:autofs-4.1.4.tar.bz2;patch:autofs.diff
 nfs_utils;1.1.1;nfs-utils-1.1.1;nfs-utils-1.1.1.tar.bz2;extract:nfs-utils-1.1.1.tar.bz2;patch:nfs-utils.diff
 fusekernel;2.5.3;fuse-2.5.3;fuse-2.5.3.tar.gz;extract:fuse-2.5.3.tar.gz;patch:fuse.diff
