@@ -1,6 +1,6 @@
 diff -uNr dropbear-0.52.org/options.h dropbear-0.52/options.h
 --- dropbear-0.52.org/options.h	2008-11-11 15:13:50.000000000 +0100
-+++ dropbear-0.52/options.h	2009-01-29 17:19:29.000000000 +0100
++++ dropbear-0.52/options.h	2009-06-02 21:59:59.000000000 +0200
 @@ -21,10 +21,10 @@
  
  /* Default hostkey paths - these can be specified on the command line */
@@ -23,7 +23,7 @@ diff -uNr dropbear-0.52.org/options.h dropbear-0.52/options.h
  
  /* Set this if you want to use the DROPBEAR_SMALL_CODE option. This can save
  several kB in binary size, however will make the symmetrical ciphers (AES, DES
-@@ -51,20 +51,20 @@
+@@ -51,7 +51,7 @@
  #define DROPBEAR_SMALL_CODE
  
  /* Enable X11 Forwarding - server only */
@@ -32,17 +32,8 @@ diff -uNr dropbear-0.52.org/options.h dropbear-0.52/options.h
  
  /* Enable TCP Fowarding */
  /* 'Local' is "-L" style (client listening port forwarded via server)
-  * 'Remote' is "-R" style (server listening port forwarded via client) */
- 
--#define ENABLE_CLI_LOCALTCPFWD
--#define ENABLE_CLI_REMOTETCPFWD
-+/*#define ENABLE_CLI_LOCALTCPFWD*/
-+/*#define ENABLE_CLI_REMOTETCPFWD*/
- 
--#define ENABLE_SVR_LOCALTCPFWD
--#define ENABLE_SVR_REMOTETCPFWD
-+/*#define ENABLE_SVR_LOCALTCPFWD*/
-+/*#define ENABLE_SVR_REMOTETCPFWD*/
+@@ -64,7 +64,7 @@
+ #define ENABLE_SVR_REMOTETCPFWD
  
  /* Enable Authentication Agent Forwarding - server only for now */
 -#define ENABLE_AGENTFWD
