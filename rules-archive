@@ -93,7 +93,7 @@ console-data_1999.08.29.orig.tar.gz;ftp://ftp.gnome.org/mirror/debian-archive/di
 console-tools-0.2.3.tar.gz;http://prdownloads.sourceforge.net/sourceforge/lct
 kbd-1.14.1.tar.gz;ftp://ftp.altlinux.org/pub/people/legion/kbd
 fbset-2.1.tar.gz;ftp://ftp.nz.debian.org/gentoo/distfiles
-lirc-0.6.6.tar.bz2;http://unusedino.de/lirc/software
+lirc-0.8.5.tar.bz2;http://unusedino.de/lirc/software
 openssh-3.8p1.tar.gz;http://www.eng.lsu.edu/mirrors/openssh
 tcpdump-3.9.4.tar.gz;http://www.tcpdump.org/release
 bonnie++-1.03a.tgz;http://www.coker.com.au/bonnie++

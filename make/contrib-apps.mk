@@ -124,7 +124,7 @@ $(DEPDIR)/fbset: bootstrap @DEPENDS_fbset@
 	touch $@
 
 #lirc
-$(DEPDIR)/lirc: bootstrap @DEPENDS_lirc@ Patches/lirc.diff
+$(DEPDIR)/lirc: bootstrap @DEPENDS_lirc@
 	@PREPARE_lirc@
 	cd @DIR_lirc@ && \
 		$(BUILDENV) \
@@ -134,7 +134,7 @@ $(DEPDIR)/lirc: bootstrap @DEPENDS_lirc@ Patches/lirc.diff
 			--host=$(target) \
 			--prefix=$(targetprefix) \
 			--with-devdir=/dev \
-			--with-driver=none \
+			--with-driver=tuxbox \
 			--with-kerneldir=$(buildprefix)/linux \
 			--with-moduledir=$(targetprefix)/lib/modules/$(KERNELVERSION)/misc \
 			--without-x && \
