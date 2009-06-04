@@ -32,7 +32,7 @@ endif
 
 $(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ $(busybox_conf)
 	@PREPARE_busybox@
-	m4 $(BUSYBOX_M4) -Dyadd $(busybox_conf) | m4 -DPREFIX="\"$(targetprefix)\"" > @DIR_busybox@/.config
+	m4 $(BUSYBOX_M4) -Dyadd -DPREFIX=\`\"$(targetprefix)\"\' $(busybox_conf) > @DIR_busybox@/.config
 	cd @DIR_busybox@ && \
 		$(MAKE) all install \
 			CROSS_COMPILE=$(target)- \
