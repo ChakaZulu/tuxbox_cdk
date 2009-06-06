@@ -166,7 +166,7 @@ endif
 endif
 
 #parted
-$(DEPDIR)/parted: bootstrap libreadline e2fsprogs @DEPENDS_parted@
+$(DEPDIR)/parted: bootstrap libreadline libncurses e2fsprogs @DEPENDS_parted@
 	@PREPARE_parted@
 	cd @DIR_parted@ && \
 		CC=$(target)-gcc \
