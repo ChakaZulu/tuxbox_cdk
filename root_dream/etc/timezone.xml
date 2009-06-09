@@ -1,79 +1,79 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 
 <timezone>
-	<zone name="(GMT-12:00) International Date Line West" zone="Kwajalein" />
-	<zone name="(GMT-11:00) Midway Island, Samoa" zone="Midway" />
-	<zone name="(GMT-10:00) Hawaii" zone="Honululu" />
-	<zone name="(GMT-09:00) Alaska" zone="Anchorage" />
-	<zone name="(GMT-08:00) Pacific Time (US and Canada), Tijuana" zone="Tijuana" />
-	<zone name="(GMT-07:00) Arizona" zone="MST7MDT" />
-	<zone name="(GMT-07:00) Chihuahua, La Paz, Mazatlan" zone="MST7MDT" />
-	<zone name="(GMT-07:00) Mountain Time (US &amp; Canada) " zone="MST7MDT" />
-	<zone name="(GMT-06:00) Central America" zone="CST6CDT" />
-	<zone name="(GMT-06:00) Central Time (US and Canada)" zone="CST6CDT" />
-	<zone name="(GMT-06:00) Guadalajara, Mexico City, Monterrey" zone="CST6CDT" />
-	<zone name="(GMT-06:00) Saskatchewan" zone="Saskatchewan" />
-	<zone name="(GMT-05:00) Bogota, Lima, Quito" zone="Bogota" />
-	<zone name="(GMT-05:00) Eastern Time (Us and Canada)" zone="EST5EDT" />
-	<zone name="(GMT-05:00) Indiana (East)" zone="EST" />
-	<zone name="(GMT-04:00) Atlantic Time (Canada)" zone="Atlantic" />
-	<zone name="(GMT-04:00) Caracas, La Paz" zone="Caracas" />
-	<zone name="(GMT-04:00) Santiago" zone="Santiago" />
-	<zone name="(GMT-03:30) Newfoundland" zone="Newfoundland" />
-	<zone name="(GMT-03:00) Brasilia" zone="East" />
-	<zone name="(GMT-03:00) Buenos Aires, Georgetown" zone="West" />
-	<zone name="(GMT-03:00) Greenland" zone="Danmarkshavn" />
-	<zone name="(GMT-02:00) Mid-Atlantic" zone="Noronha" />
-	<zone name="(GMT-01:00) Azores" zone="Azores" />
-	<zone name="(GMT-01:00) Cape Verde Is." zone="Cape_Verde" />
-	<zone name="(GMT) Casablanca, Monrovia" zone="Casablanca" />
-	<zone name="(GMT) Greenwich Mean Time : Dublin, Lisbon, London" zone="Dublin" />
-	<zone name="(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Vienna" zone="CET" />
-	<zone name="(GMT+01:00) Belgrade, Bratislava, Budapest, Prague" zone="CET" />
-	<zone name="(GMT+01:00) Brussels, Copenhagen, Madrid, Paris" zone="CET" />
-	<zone name="(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb" zone="CET" />
-	<zone name="(GMT+01:00) West Central Africa" zone="Kinshasa" />
-	<zone name="(GMT+02:00) Athens, Istanbul, Minsk" zone="Istanbul" />
-	<zone name="(GMT+02:00) Bucharest" zone="Istanbul" />
-	<zone name="(GMT+02:00) Harare, Pretoria" zone="Harare" />
-	<zone name="(GMT+02:00) Helsinki, Kyiv, Sofia" zone="Istanbul" />
-	<zone name="(GMT+02:00) Riga, Tallinn, Vilnius" zone="Istanbul" />
-	<zone name="(GMT+02:00) Jerusalem" zone="Jerusalem" />
-	<zone name="(GMT+03:00) Baghdad" zone="Baghdad" />
-	<zone name="(GMT+03:00) Kuwait, Riyadh" zone="Riyadh" />
-	<zone name="(GMT+03:00) Moscow, St. Petersburg, Volgograd" zone="Moscow" />
-	<zone name="(GMT+03:00) Nairobi" zone="Nairobi" />
-	<zone name="(GMT+03:30) Tehran" zone="Tehran" />
-	<zone name="(GMT+04:00) Abu Dhabi, Muscat" zone="Muscat" />
-	<zone name="(GMT+04:00) Baku, Tbilisi, Yerevan" zone="Baku" />
-	<zone name="(GMT+04:30) Kabul" zone="Kabul" />
-	<zone name="(GMT+05:00) Ekaterinburg" zone="Omsk" />
-	<zone name="(GMT+05:00) Islamabad, Karachi, Tashkent" zone="Tashkent" />
-	<zone name="(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi" zone="Calcutta" />
-	<zone name="(GMT+05:45) Kathmandu" zone="Katmandu" />
-	<zone name="(GMT+06:00) Almaty, Novosibirsk" zone="Almaty" />
-	<zone name="(GMT+06:00) Astana, Dhaka" zone="Dhaka" />
-	<zone name="(GMT+06:00) Sri Jayawardenepura" zone="Colombo" />
-	<zone name="(GMT+06:30) Rangoon" zone="Rangoon" />
-	<zone name="(GMT+07:00) Bangkok, Hanoi, Jakarta" zone="Bangkok" />
-	<zone name="(GMT+07:00) Krasnoyarsk" zone="Krasnoyarsk" />
-	<zone name="(GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi" zone="Hong_Kong" />
-	<zone name="(GMT+08:00) Irkutsk, Ulaan Bataar" zone="Irkutsk" />
-	<zone name="(GMT+08:00) Kuala Lumpur, Singapore" zone="Kuala_Lumpur" />
-	<zone name="(GMT+08:00) Perth" zone="Perth" />
-	<zone name="(GMT+08:00) Taipei" zone="Taipei" />
-	<zone name="(GMT+09:00) Osaka, Sapporo, Tokyo" zone="Tokyo" />
-	<zone name="(GMT+09:00) Seoul" zone="Seoul" />
-	<zone name="(GMT+09:00) Yakutsk" zone="Yakutsk" />
-	<zone name="(GMT+09:30) Adelaide" zone="Adelaide" />
-	<zone name="(GMT+09:30) Darwin" zone="Darwin" />
-	<zone name="(GMT+10:00) Brisbane" zone="Bisbane" />
-	<zone name="(GMT+10:00) Canberra, Melbourne, Sydney" zone="Sydney" />
-	<zone name="(GMT+10:00) Guam, Port Moresby" zone="Guam" />
-	<zone name="(GMT+10:00) Hobart" zone="Hobart" />
-	<zone name="(GMT+10:00) Vladivostok" zone="Vladivostok" />
-	<zone name="(GMT+11:00) Magadan, Solomon Is., New Caledonia" zone="Magadan" />
-	<zone name="(GMT+12:00) Auckland, Wellington" zone="Auckland" />
-	<zone name="(GMT+12:00) Fiji, Kamchatka, Marshall Is." zone="Fiji" />
-	<zone name="(GMT+13:00) Nukualofa" zone="Tongatapu" />
+	<zone name="(GMT-12:00) International Date Line West" zone="Kwajalein" tz=" MHT-12" />
+	<zone name="(GMT-11:00) Midway Island, Samoa" zone="Midway" tz="SST11" />
+	<zone name="(GMT-10:00) Hawaii" zone="Honululu" tz="HAW10" />
+	<zone name="(GMT-09:00) Alaska" zone="Anchorage" tz="AKST9AKDT" />
+	<zone name="(GMT-08:00) Pacific Time (US and Canada), Tijuana" zone="Tijuana" tz="PST8PDT"/>
+	<zone name="(GMT-07:00) Arizona" zone="MST7MDT" tz="MST7MDT" />
+	<zone name="(GMT-07:00) Chihuahua, La Paz, Mazatlan" zone="MST7MDT" tz="MST7MDT"/>
+	<zone name="(GMT-07:00) Mountain Time (US &amp; Canada) " zone="MST7MDT" tz="MST7MDT"/>
+	<zone name="(GMT-06:00) Central America" zone="CST6CDT" tz="CST6CDT" />
+	<zone name="(GMT-06:00) Central Time (US and Canada)" zone="CST6CDT" tz="CST6CDT" />
+	<zone name="(GMT-06:00) Guadalajara, Mexico City, Monterrey" zone="CST6CDT" tz="CST6CDT" />
+	<zone name="(GMT-06:00) Saskatchewan" zone="Saskatchewan" tz="CST6" />
+	<zone name="(GMT-05:00) Bogota, Lima, Quito" zone="Bogota" tz="COT5" />
+	<zone name="(GMT-05:00) Eastern Time (Us and Canada)" zone="EST5EDT" tz="EST5EDT" />
+	<zone name="(GMT-05:00) Indiana (East)" zone="EST" tz="EST5" />
+	<zone name="(GMT-04:00) Atlantic Time (Canada)" zone="Atlantic" tz="AST4ADT"/>
+	<zone name="(GMT-04:00) Caracas, La Paz" zone="Caracas" tz="VET4" />
+	<zone name="(GMT-04:00) Santiago" zone="Santiago" tz="GMT-4" />
+	<zone name="(GMT-03:30) Newfoundland" zone="Newfoundland" tz="NST+3:30NDT+2:30,M4.1.0/00:01:00,M10.5.0/00:01:00" />
+	<zone name="(GMT-03:00) Brasilia" zone="East" tz="BRST+3BRDT+2,M10.3.0,M2.3.0" />
+	<zone name="(GMT-03:00) Buenos Aires, Georgetown" zone="West" tz="UTC+3" />
+	<zone name="(GMT-03:00) Greenland" zone="Danmarkshavn" tz="GMT0" />
+	<zone name="(GMT-02:00) Mid-Atlantic" zone="Noronha" tz="FNT2" />
+	<zone name="(GMT-01:00) Azores" zone="Azores" tz="AZOT1AZOST,M3.5.0/0,M10.5.0/1" />
+	<zone name="(GMT-01:00) Cape Verde Is." zone="Cape_Verde" tz="CVT1" />
+	<zone name="(GMT) Casablanca, Monrovia" zone="Casablanca" tz="WET0" />
+	<zone name="(GMT) Greenwich Mean Time : Dublin, Lisbon, London" zone="Dublin" tz="GMT+0IST-1,M3.5.0/01:00:00,M10.5.0/02:00:00" />
+	<zone name="(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Vienna" zone="CET" tz="CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00"/>
+	<zone name="(GMT+01:00) Belgrade, Bratislava, Budapest, Prague" zone="CET" tz="CET-1CEST,M3.5.0/2,M10.5.0/3" />
+	<zone name="(GMT+01:00) Brussels, Copenhagen, Madrid, Paris" zone="CET" tz="CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00" />
+	<zone name="(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb" zone="CET" tz="CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00" />
+	<zone name="(GMT+01:00) West Central Africa" zone="Kinshasa" tz="WAT-1" />
+	<zone name="(GMT+02:00) Athens, Istanbul, Minsk" zone="Istanbul" tz="EET-2EEST-3,M3.5.0/03:00:00,M10.5.0/04:00:00"/>
+	<zone name="(GMT+02:00) Bucharest" zone="Istanbul" tz="EET-2EEST-3,M3.5.0/03:00:00,M10.5.0/04:00:00" />
+	<zone name="(GMT+02:00) Harare, Pretoria" zone="Harare" tz="CAT-2" />
+	<zone name="(GMT+02:00) Helsinki, Kyiv, Sofia" zone="Istanbul" tz="EET-2EEST-3,M3.5.0/03:00:00,M10.5.0/04:00:00"/>
+	<zone name="(GMT+02:00) Riga, Tallinn, Vilnius" zone="Istanbul" tz="EET-2EEST,M3.5.0/3,M10.5.0/4"/>
+	<zone name="(GMT+02:00) Jerusalem" zone="Jerusalem" tz="UTC-3" />
+	<zone name="(GMT+03:00) Baghdad" zone="Baghdad" tz="AST-3ADT,J91/3,J274/4" />
+	<zone name="(GMT+03:00) Kuwait, Riyadh" zone="Riyadh" tz="AST-3" />
+	<zone name="(GMT+03:00) Moscow, St. Petersburg, Volgograd" zone="Moscow" tz="MSK-3MSD,M3.5.0/2,M10.5.0/3" />
+	<zone name="(GMT+03:00) Nairobi" zone="Nairobi" tz="EAT-3"/>
+	<zone name="(GMT+03:30) Tehran" zone="Tehran" tz="GMT+3:30" />
+	<zone name="(GMT+04:00) Abu Dhabi, Muscat" zone="Muscat" tz="GST-4" />
+	<zone name="(GMT+04:00) Baku, Tbilisi, Yerevan" zone="Baku" tz="AZT-4AZST,M3.5.0/1,M10.5.0/1" />
+	<zone name="(GMT+04:30) Kabul" zone="Kabul" tz="AFT-4:30" />
+	<zone name="(GMT+05:00) Ekaterinburg" zone="Omsk" tz="OMST-6OMSST,M3.5.0,M10.5.0/3" />
+	<zone name="(GMT+05:00) Islamabad, Karachi, Tashkent" zone="Tashkent" tz="UZT-5" />
+	<zone name="(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi" zone="Calcutta" tz="IST-5:30" />
+	<zone name="(GMT+05:45) Kathmandu" zone="Katmandu" tz="NPT-5:45" />
+	<zone name="(GMT+06:00) Almaty, Novosibirsk" zone="Almaty" tz="ALMT-6" />
+	<zone name="(GMT+06:00) Astana, Dhaka" zone="Dhaka" tz="BDT-6" />
+	<zone name="(GMT+06:00) Sri Jayawardenepura" zone="Colombo" tz="LKT-6" />
+	<zone name="(GMT+06:30) Rangoon" zone="Rangoon" tz="MMT-6:30" />
+	<zone name="(GMT+07:00) Bangkok, Hanoi, Jakarta" zone="Bangkok" tz="ICT-7" />
+	<zone name="(GMT+07:00) Krasnoyarsk" zone="Krasnoyarsk" tz="KRAT-7KRAST,M3.5.0,M10.5.0/3" />
+	<zone name="(GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi" zone="Hong_Kong" tz="HKT-8" />
+	<zone name="(GMT+08:00) Irkutsk, Ulaan Bataar" zone="Irkutsk" tz="IRKT-8IRKST,M3.5.0,M10.5.0/3" />
+	<zone name="(GMT+08:00) Kuala Lumpur, Singapore" zone="Kuala_Lumpur" tz="MYT-8" />
+	<zone name="(GMT+08:00) Perth" zone="Perth" tz="WST-8" />
+	<zone name="(GMT+08:00) Taipei" zone="Taipei" tz="CST-8" />
+	<zone name="(GMT+09:00) Osaka, Sapporo, Tokyo" zone="Tokyo" tz="JST-9" />
+	<zone name="(GMT+09:00) Seoul" zone="Seoul" tz="KST-9" />
+	<zone name="(GMT+09:00) Yakutsk" zone="Yakutsk" tz="YAKT-9YAKST,M3.5.0,M10.5.0/3" />
+	<zone name="(GMT+09:30) Adelaide" zone="Adelaide" tz="CST-9:30CDT-10:30,M10.5.0/02:00:00,M3.5.0/03:00:00" />
+	<zone name="(GMT+09:30) Darwin" zone="Darwin" tz="CST-9:30" />
+	<zone name="(GMT+10:00) Brisbane" zone="Bisbane" tz="EST-10" />
+	<zone name="(GMT+10:00) Canberra, Melbourne, Sydney" zone="Sydney" tz="EST-10EDT-11,M10.5.0/02:00:00,M3.5.0/03:00:00" />
+	<zone name="(GMT+10:00) Guam, Port Moresby" zone="Guam" tz="ChST-10" />
+	<zone name="(GMT+10:00) Hobart" zone="Hobart" tz="AEST-10EDT-11,M10.1.0/02:00:00,M3.5.0/03:00:00" />
+	<zone name="(GMT+10:00) Vladivostok" zone="Vladivostok" tz="VLAT-10VLAST,M3.5.0,M10.5.0/3" />
+	<zone name="(GMT+11:00) Magadan, Solomon Is., New Caledonia" zone="Magadan" tz="MAGT-11MAGST,M3.5.0,M10.5.0/3" />
+	<zone name="(GMT+12:00) Auckland, Wellington" zone="Auckland" tz="NZST-12NZDT-13,M10.1.0/02:00:00,M3.3.0/03:00:00" />
+	<zone name="(GMT+12:00) Fiji, Kamchatka, Marshall Is." zone="Fiji" tz="FJT-12" />
+	<zone name="(GMT+13:00) Nukualofa" zone="Tongatapu" tz="TOT-13" />
 </timezone>
