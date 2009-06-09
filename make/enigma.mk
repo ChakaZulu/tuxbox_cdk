@@ -1,6 +1,17 @@
 # tuxbox/enigma
 
 $(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad libid3tag libvorbisidec libpng libsigc libjpeg libungif @LIBGETTEXT@ @SQLITE@ @REISERFSPROGS@ $(targetprefix)/lib/pkgconfig/tuxbox.pc $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc $(targetprefix)/include/tuxbox/plugin.h
+if TARGETRULESET_UCLIBC
+	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE) \
+		  --with-webif=$(WEBIF) \
+		  --with-epg=$(EPG) \
+		  --with-flashtool=$(FLASHTOOL) \
+		  --with-ext-flashtool=$(EXTFLASHTOOL) \
+		  --with-enigma-debug=$(ENIGMA_DEBUG) \
+		  --with-reiserfs=$(ENIGMA_REISERFS) \
+		  --with-mhw-epg=$(MHW_EPG) \
+		  --enable-uclibc=yes 
+else
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE) \
 		  --with-webif=$(WEBIF) \
 		  --with-epg=$(EPG) \
@@ -9,6 +20,7 @@ $(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad 
 		  --with-enigma-debug=$(ENIGMA_DEBUG) \
 		  --with-reiserfs=$(ENIGMA_REISERFS) \
 		  --with-mhw-epg=$(MHW_EPG)
+endif
 
 enigma: $(appsdir)/tuxbox/enigma/config.status | tuxbox_tools
 	$(MAKE) -C $(appsdir)/tuxbox/enigma all install
@@ -64,7 +76,9 @@ else
 	done;
 endif
 	rm -f $@/share/zoneinfo/*tab
+if !TARGETRULESET_UCLIBC
 	ln -sf /var/etc/localtime $@/etc
+endif
 	@for i in ar_AE cs_CZ da_DK el_GR es_ES et_EE fi_FI hr_HR \
 	hu_HU is_IS it_IT lt_LT nl_NL no_NO pl_PL pt_PT ro_RO ru_RU sk_SK \
 	sl_SI sr_YU sv_SE tr_TR ur_IN; do \
