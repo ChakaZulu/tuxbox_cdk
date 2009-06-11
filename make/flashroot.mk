@@ -51,6 +51,10 @@ endif
 	$(MAKE) flash-dvbsub
 	$(MAKE) flash-fx2-plugins
 	$(MAKE) flash-lcdip
+if BOXTYPE_DREAMBOX
+	$(MAKE) flash-pip
+	$(MAKE) flash-mosaic
+endif
 if ENABLE_AUTOMOUNT
 	$(MAKE) flash-automount
 endif

@@ -72,6 +72,24 @@ flash-vncviewer: $(appsdir)/tuxbox/plugins/config.status
 	@FLASHROOTDIR_MODIFIED@
 endif
 
+pip: $(appsdir)/tuxbox/plugins/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/plugins/pip all install
+
+if TARGETRULESET_FLASH
+flash-pip: $(appsdir)/tuxbox/plugins/config.status $(flashprefix)/root
+	$(MAKE) -C $(appsdir)/tuxbox/plugins/pip all install prefix=$(flashprefix)/root
+	@FLASHROOTDIR_MODIFIED@
+endif
+
+mosaic: $(appsdir)/tuxbox/plugins/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/plugins/mosaic all install
+
+if TARGETRULESET_FLASH
+flash-mosaic: $(appsdir)/tuxbox/plugins/config.status $(flashprefix)/root
+	$(MAKE) -C $(appsdir)/tuxbox/plugins/mosaic all install prefix=$(flashprefix)/root
+	@FLASHROOTDIR_MODIFIED@
+endif
+
 dvbsub: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/dvbsub all install
 
