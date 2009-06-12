@@ -99,7 +99,7 @@ tcpdump-3.9.4.tar.gz;http://www.tcpdump.org/release
 bonnie++-1.03a.tgz;http://www.coker.com.au/bonnie++
 lsof_4.80.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/OLD
 dosfstools_2.11.orig.tar.gz;http://ftp.debian.org/debian/pool/main/d/dosfstools
-DirectFB-examples-0.9.22.tar.gz;http://www.directfb.org/downloads/Old
+DirectFB-examples-1.0.0.tar.gz;http://www.directfb.org/downloads/Old
 vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://prdownloads.sourceforge.net/sourceforge/lufs
 dropbear-0.52.tar.bz2;http://www.ucc.asn.au/~matt/dropbear

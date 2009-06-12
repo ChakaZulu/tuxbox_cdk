@@ -85,7 +85,7 @@ bzip2;1.0.2;bzip2-1.0.2;bzip2-1.0.2.tar.gz:bzip2.diff;extract:bzip2-1.0.2.tar.gz
 console_data;1999.08.29;console-data-1999.08.29;console-data_1999.08.29.orig.tar.gz;extract:console-data_1999.08.29.orig.tar.gz
 console_tools;0.2.3;console-tools-0.2.3;console-tools-0.2.3.tar.gz:console-tools.diff;extract:console-tools-0.2.3.tar.gz;patch:console-tools.diff
 kbd;1.14.1;kbd-1.14.1;kbd-1.14.1.tar.gz:kbd.diff;extract:kbd-1.14.1.tar.gz;patch:kbd.diff
-directfb_examples;0.9.22;DirectFB-examples-0.9.22;DirectFB-examples-0.9.22.tar.gz;extract:DirectFB-examples-0.9.22.tar.gz
+directfb_examples;1.0.0;DirectFB-examples-1.0.0;DirectFB-examples-1.0.0.tar.gz;extract:DirectFB-examples-1.0.0.tar.gz
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.8.5;lirc-0.8.5;lirc-0.8.5.tar.bz2;extract:lirc-0.8.5.tar.bz2
 lsof;4.80;lsof_4.80;lsof_4.80.tar.gz:lsof.diff;extract:lsof_4.80.tar.gz
