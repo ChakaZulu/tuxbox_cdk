@@ -1,2776 +1,6 @@
-diff -Naur vdr-1.2.6/Makefile vdr-1.2.6.new/Makefile
---- vdr-1.2.6/Makefile	2003-08-09 13:09:45.000000000 +0200
-+++ vdr-1.2.6.new/Makefile	2006-11-21 22:07:44.000000000 +0100
-@@ -14,10 +14,7 @@
- CXX      ?= g++
- CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
- 
--DVBDIR   = ../DVB
- DTVDIR   = ./libdtv
--MANDIR   = /usr/local/man
--BINDIR   = /usr/local/bin
- 
- PLUGINDIR= ./PLUGINS
- PLUGINLIBDIR= $(PLUGINDIR)/lib
-@@ -29,19 +26,24 @@
- 
- -include Make.config
- 
--INCLUDES = -I$(DVBDIR)/include
-+INCLUDES = -I$(DVBDIR)/include -I$(DRIVERDIR)/include
- 
- DTVLIB   = $(DTVDIR)/libdtv.a
- 
-+#NDLIB = $(APPSDIR)/tuxbox/neutrino/src/driver/libneutrino_driver.a
-+
- OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbosd.o\
-        dvbplayer.o dvbspu.o eit.o eitscan.o font.o i18n.o interface.o keys.o\
-        lirc.o menu.o menuitems.o osdbase.o osd.o player.o plugin.o rcu.o\
-        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sources.o\
--       spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o
-+       spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o \
-+       fbosd.o framebuffer.o
- 
- OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
- FIXFONT = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
- 
-+NO_KBD=1
-+
- ifndef NO_KBD
- DEFINES += -DREMOTE_KBD
- endif
-@@ -112,7 +114,8 @@
- # Plugins:
- 
- plugins: include-dir
--	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" all; done
-+	@rm -f $(PLUGINDIR)/src/dbox2/libvdr-dbox2.so
-+	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" PPREFIX=$(PREFIX) DDIR=$(DRIVERDIR) all; done
- 
- plugins-clean:
- 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
-@@ -128,6 +131,10 @@
-             mkdir $(VIDEODIR);\
-             cp *.conf $(VIDEODIR);\
-             fi
-+	@if [ ! -d $(PLUGINIDIR) ]; then\
-+		 mkdir -p $(PLUGINIDIR);\
-+		 fi
-+	cp $(PLUGINDIR)/lib/libvdr* $(PLUGINIDIR)
- 
- # Source documentation:
- 
-@@ -147,4 +154,3 @@
- fontclean:
- 	-rm -f fontfix.c fontosd.c
- CLEAN: clean fontclean
--
-diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/COPYING vdr-1.2.6.new/PLUGINS/src/dbox2/COPYING
---- vdr-1.2.6/PLUGINS/src/dbox2/COPYING	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/dbox2/COPYING	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,340 @@
-+		    GNU GENERAL PUBLIC LICENSE
-+		       Version 2, June 1991
-+
-+ Copyright (C) 1989, 1991 Free Software Foundation, Inc.
-+                       59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-+ Everyone is permitted to copy and distribute verbatim copies
-+ of this license document, but changing it is not allowed.
-+
-+			    Preamble
-+
-+  The licenses for most software are designed to take away your
-+freedom to share and change it.  By contrast, the GNU General Public
-+License is intended to guarantee your freedom to share and change free
-+software--to make sure the software is free for all its users.  This
-+General Public License applies to most of the Free Software
-+Foundation's software and to any other program whose authors commit to
-+using it.  (Some other Free Software Foundation software is covered by
-+the GNU Library General Public License instead.)  You can apply it to
-+your programs, too.
-+
-+  When we speak of free software, we are referring to freedom, not
-+price.  Our General Public Licenses are designed to make sure that you
-+have the freedom to distribute copies of free software (and charge for
-+this service if you wish), that you receive source code or can get it
-+if you want it, that you can change the software or use pieces of it
-+in new free programs; and that you know you can do these things.
-+
-+  To protect your rights, we need to make restrictions that forbid
-+anyone to deny you these rights or to ask you to surrender the rights.
-+These restrictions translate to certain responsibilities for you if you
-+distribute copies of the software, or if you modify it.
-+
-+  For example, if you distribute copies of such a program, whether
-+gratis or for a fee, you must give the recipients all the rights that
-+you have.  You must make sure that they, too, receive or can get the
-+source code.  And you must show them these terms so they know their
-+rights.
-+
-+  We protect your rights with two steps: (1) copyright the software, and
-+(2) offer you this license which gives you legal permission to copy,
-+distribute and/or modify the software.
-+
-+  Also, for each author's protection and ours, we want to make certain
-+that everyone understands that there is no warranty for this free
-+software.  If the software is modified by someone else and passed on, we
-+want its recipients to know that what they have is not the original, so
-+that any problems introduced by others will not reflect on the original
-+authors' reputations.
-+
-+  Finally, any free program is threatened constantly by software
-+patents.  We wish to avoid the danger that redistributors of a free
-+program will individually obtain patent licenses, in effect making the
-+program proprietary.  To prevent this, we have made it clear that any
-+patent must be licensed for everyone's free use or not licensed at all.
-+
-+  The precise terms and conditions for copying, distribution and
-+modification follow.
-+
-+		    GNU GENERAL PUBLIC LICENSE
-+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-+
-+  0. This License applies to any program or other work which contains
-+a notice placed by the copyright holder saying it may be distributed
-+under the terms of this General Public License.  The "Program", below,
-+refers to any such program or work, and a "work based on the Program"
-+means either the Program or any derivative work under copyright law:
-+that is to say, a work containing the Program or a portion of it,
-+either verbatim or with modifications and/or translated into another
-+language.  (Hereinafter, translation is included without limitation in
-+the term "modification".)  Each licensee is addressed as "you".
-+
-+Activities other than copying, distribution and modification are not
-+covered by this License; they are outside its scope.  The act of
-+running the Program is not restricted, and the output from the Program
-+is covered only if its contents constitute a work based on the
-+Program (independent of having been made by running the Program).
-+Whether that is true depends on what the Program does.
-+
-+  1. You may copy and distribute verbatim copies of the Program's
-+source code as you receive it, in any medium, provided that you
-+conspicuously and appropriately publish on each copy an appropriate
-+copyright notice and disclaimer of warranty; keep intact all the
-+notices that refer to this License and to the absence of any warranty;
-+and give any other recipients of the Program a copy of this License
-+along with the Program.
-+
-+You may charge a fee for the physical act of transferring a copy, and
-+you may at your option offer warranty protection in exchange for a fee.
-+
-+  2. You may modify your copy or copies of the Program or any portion
-+of it, thus forming a work based on the Program, and copy and
-+distribute such modifications or work under the terms of Section 1
-+above, provided that you also meet all of these conditions:
-+
-+    a) You must cause the modified files to carry prominent notices
-+    stating that you changed the files and the date of any change.
-+
-+    b) You must cause any work that you distribute or publish, that in
-+    whole or in part contains or is derived from the Program or any
-+    part thereof, to be licensed as a whole at no charge to all third
-+    parties under the terms of this License.
-+
-+    c) If the modified program normally reads commands interactively
-+    when run, you must cause it, when started running for such
-+    interactive use in the most ordinary way, to print or display an
-+    announcement including an appropriate copyright notice and a
-+    notice that there is no warranty (or else, saying that you provide
-+    a warranty) and that users may redistribute the program under
-+    these conditions, and telling the user how to view a copy of this
-+    License.  (Exception: if the Program itself is interactive but
-+    does not normally print such an announcement, your work based on
-+    the Program is not required to print an announcement.)
-+
-+These requirements apply to the modified work as a whole.  If
-+identifiable sections of that work are not derived from the Program,
-+and can be reasonably considered independent and separate works in
-+themselves, then this License, and its terms, do not apply to those
-+sections when you distribute them as separate works.  But when you
-+distribute the same sections as part of a whole which is a work based
-+on the Program, the distribution of the whole must be on the terms of
-+this License, whose permissions for other licensees extend to the
-+entire whole, and thus to each and every part regardless of who wrote it.
-+
-+Thus, it is not the intent of this section to claim rights or contest
-+your rights to work written entirely by you; rather, the intent is to
-+exercise the right to control the distribution of derivative or
-+collective works based on the Program.
-+
-+In addition, mere aggregation of another work not based on the Program
-+with the Program (or with a work based on the Program) on a volume of
-+a storage or distribution medium does not bring the other work under
-+the scope of this License.
-+
-+  3. You may copy and distribute the Program (or a work based on it,
-+under Section 2) in object code or executable form under the terms of
-+Sections 1 and 2 above provided that you also do one of the following:
-+
-+    a) Accompany it with the complete corresponding machine-readable
-+    source code, which must be distributed under the terms of Sections
-+    1 and 2 above on a medium customarily used for software interchange; or,
-+
-+    b) Accompany it with a written offer, valid for at least three
-+    years, to give any third party, for a charge no more than your
-+    cost of physically performing source distribution, a complete
-+    machine-readable copy of the corresponding source code, to be
-+    distributed under the terms of Sections 1 and 2 above on a medium
-+    customarily used for software interchange; or,
-+
-+    c) Accompany it with the information you received as to the offer
-+    to distribute corresponding source code.  (This alternative is
-+    allowed only for noncommercial distribution and only if you
-+    received the program in object code or executable form with such
-+    an offer, in accord with Subsection b above.)
-+
-+The source code for a work means the preferred form of the work for
-+making modifications to it.  For an executable work, complete source
-+code means all the source code for all modules it contains, plus any
-+associated interface definition files, plus the scripts used to
-+control compilation and installation of the executable.  However, as a
-+special exception, the source code distributed need not include
-+anything that is normally distributed (in either source or binary
-+form) with the major components (compiler, kernel, and so on) of the
-+operating system on which the executable runs, unless that component
-+itself accompanies the executable.
-+
-+If distribution of executable or object code is made by offering
-+access to copy from a designated place, then offering equivalent
-+access to copy the source code from the same place counts as
-+distribution of the source code, even though third parties are not
-+compelled to copy the source along with the object code.
-+
-+  4. You may not copy, modify, sublicense, or distribute the Program
-+except as expressly provided under this License.  Any attempt
-+otherwise to copy, modify, sublicense or distribute the Program is
-+void, and will automatically terminate your rights under this License.
-+However, parties who have received copies, or rights, from you under
-+this License will not have their licenses terminated so long as such
-+parties remain in full compliance.
-+
-+  5. You are not required to accept this License, since you have not
-+signed it.  However, nothing else grants you permission to modify or
-+distribute the Program or its derivative works.  These actions are
-+prohibited by law if you do not accept this License.  Therefore, by
-+modifying or distributing the Program (or any work based on the
-+Program), you indicate your acceptance of this License to do so, and
-+all its terms and conditions for copying, distributing or modifying
-+the Program or works based on it.
-+
-+  6. Each time you redistribute the Program (or any work based on the
-+Program), the recipient automatically receives a license from the
-+original licensor to copy, distribute or modify the Program subject to
-+these terms and conditions.  You may not impose any further
-+restrictions on the recipients' exercise of the rights granted herein.
-+You are not responsible for enforcing compliance by third parties to
-+this License.
-+
-+  7. If, as a consequence of a court judgment or allegation of patent
-+infringement or for any other reason (not limited to patent issues),
-+conditions are imposed on you (whether by court order, agreement or
-+otherwise) that contradict the conditions of this License, they do not
-+excuse you from the conditions of this License.  If you cannot
-+distribute so as to satisfy simultaneously your obligations under this
-+License and any other pertinent obligations, then as a consequence you
-+may not distribute the Program at all.  For example, if a patent
-+license would not permit royalty-free redistribution of the Program by
-+all those who receive copies directly or indirectly through you, then
-+the only way you could satisfy both it and this License would be to
-+refrain entirely from distribution of the Program.
-+
-+If any portion of this section is held invalid or unenforceable under
-+any particular circumstance, the balance of the section is intended to
-+apply and the section as a whole is intended to apply in other
-+circumstances.
-+
-+It is not the purpose of this section to induce you to infringe any
-+patents or other property right claims or to contest validity of any
-+such claims; this section has the sole purpose of protecting the
-+integrity of the free software distribution system, which is
-+implemented by public license practices.  Many people have made
-+generous contributions to the wide range of software distributed
-+through that system in reliance on consistent application of that
-+system; it is up to the author/donor to decide if he or she is willing
-+to distribute software through any other system and a licensee cannot
-+impose that choice.
-+
-+This section is intended to make thoroughly clear what is believed to
-+be a consequence of the rest of this License.
-+
-+  8. If the distribution and/or use of the Program is restricted in
-+certain countries either by patents or by copyrighted interfaces, the
-+original copyright holder who places the Program under this License
-+may add an explicit geographical distribution limitation excluding
-+those countries, so that distribution is permitted only in or among
-+countries not thus excluded.  In such case, this License incorporates
-+the limitation as if written in the body of this License.
-+
-+  9. The Free Software Foundation may publish revised and/or new versions
-+of the General Public License from time to time.  Such new versions will
-+be similar in spirit to the present version, but may differ in detail to
-+address new problems or concerns.
-+
-+Each version is given a distinguishing version number.  If the Program
-+specifies a version number of this License which applies to it and "any
-+later version", you have the option of following the terms and conditions
-+either of that version or of any later version published by the Free
-+Software Foundation.  If the Program does not specify a version number of
-+this License, you may choose any version ever published by the Free Software
-+Foundation.
-+
-+  10. If you wish to incorporate parts of the Program into other free
-+programs whose distribution conditions are different, write to the author
-+to ask for permission.  For software which is copyrighted by the Free
-+Software Foundation, write to the Free Software Foundation; we sometimes
-+make exceptions for this.  Our decision will be guided by the two goals
-+of preserving the free status of all derivatives of our free software and
-+of promoting the sharing and reuse of software generally.
-+
-+			    NO WARRANTY
-+
-+  11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
-+FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN
-+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
-+PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED
-+OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS
-+TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE
-+PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,
-+REPAIR OR CORRECTION.
-+
-+  12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
-+REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,
-+INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING
-+OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED
-+TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY
-+YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER
-+PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
-+POSSIBILITY OF SUCH DAMAGES.
-+
-+		     END OF TERMS AND CONDITIONS
-+
-+	    How to Apply These Terms to Your New Programs
-+
-+  If you develop a new program, and you want it to be of the greatest
-+possible use to the public, the best way to achieve this is to make it
-+free software which everyone can redistribute and change under these terms.
-+
-+  To do so, attach the following notices to the program.  It is safest
-+to attach them to the start of each source file to most effectively
-+convey the exclusion of warranty; and each file should have at least
-+the "copyright" line and a pointer to where the full notice is found.
-+
-+    <one line to give the program's name and a brief idea of what it does.>
-+    Copyright (C) <year>  <name of author>
-+
-+    This program is free software; you can redistribute it and/or modify
-+    it under the terms of the GNU General Public License as published by
-+    the Free Software Foundation; either version 2 of the License, or
-+    (at your option) any later version.
-+
-+    This program is distributed in the hope that it will be useful,
-+    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+    GNU General Public License for more details.
-+
-+    You should have received a copy of the GNU General Public License
-+    along with this program; if not, write to the Free Software
-+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-+
-+
-+Also add information on how to contact you by electronic and paper mail.
-+
-+If the program is interactive, make it output a short notice like this
-+when it starts in an interactive mode:
-+
-+    Gnomovision version 69, Copyright (C) year name of author
-+    Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-+    This is free software, and you are welcome to redistribute it
-+    under certain conditions; type `show c' for details.
-+
-+The hypothetical commands `show w' and `show c' should show the appropriate
-+parts of the General Public License.  Of course, the commands you use may
-+be called something other than `show w' and `show c'; they could even be
-+mouse-clicks or menu items--whatever suits your program.
-+
-+You should also get your employer (if you work as a programmer) or your
-+school, if any, to sign a "copyright disclaimer" for the program, if
-+necessary.  Here is a sample; alter the names:
-+
-+  Yoyodyne, Inc., hereby disclaims all copyright interest in the program
-+  `Gnomovision' (which makes passes at compilers) written by James Hacker.
-+
-+  <signature of Ty Coon>, 1 April 1989
-+  Ty Coon, President of Vice
-+
-+This General Public License does not permit incorporating your program into
-+proprietary programs.  If your program is a subroutine library, you may
-+consider it more useful to permit linking proprietary applications with the
-+library.  If this is what you want to do, use the GNU Library General
-+Public License instead of this License.
-diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/HISTORY vdr-1.2.6.new/PLUGINS/src/dbox2/HISTORY
---- vdr-1.2.6/PLUGINS/src/dbox2/HISTORY	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/dbox2/HISTORY	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,6 @@
-+VDR Plugin 'dbox2' Revision History
-+------------------------------------
-+
-+2003-05-16: Version 0.0.1
-+
-+- Initial revision.
-diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/Makefile vdr-1.2.6.new/PLUGINS/src/dbox2/Makefile
---- vdr-1.2.6/PLUGINS/src/dbox2/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/dbox2/Makefile	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,85 @@
-+#
-+# Makefile for a Video Disk Recorder plugin
-+#
-+# $Id$
-+
-+# The official name of this plugin.
-+# This name will be used in the '-P...' option of VDR to load the plugin.
-+# By default the main source file also carries this name.
-+#
-+PLUGIN = dbox2
-+
-+LCDLIB = -L$(PPREFIX)/cdkroot/lib -llcddisplay -lfreetype
-+CONLIB = $(PPREFIX)/cdkroot/lib/libtuxbox-connection.a
-+
-+### The version number of this plugin (taken from the main source file):
-+
-+VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ print $$6 }' | sed -e 's/[";]//g')
-+
-+### The C++ compiler and options:
-+
-+CXX      = powerpc-tuxbox-linux-gnu-g++
-+CXXFLAGS ?= -mcpu=823  -msoft-float -mmultiple -mstring -meabi -O3 -g -D_GNU_SOURCE
-+
-+### The directory environment:
-+
-+DVBDIR = ../../../../DVB
-+VDRDIR = ../../..
-+LIBDIR = ../../lib
-+TMPDIR = /tmp
-+
-+### Allow user defined options to overwrite defaults:
-+
-+-include $(VDRDIR)/Make.config
-+
-+### The version number of VDR (taken from VDR's "config.h"):
-+
-+VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
-+
-+### The name of the distribution archive:
-+
-+ARCHIVE = $(PLUGIN)-$(VERSION)
-+PACKAGE = vdr-$(ARCHIVE)
-+
-+### Includes and Defines (add further entries here):
-+
-+INCLUDES += -I$(VDRDIR)/include -I$(PPREFIX)/cdkroot/include/tuxbox -I$(DDIR)/include -I$(DDIR)/dvb/include
-+
-+DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"' -DPREFIX='"$(PPREFIX)"'
-+
-+### The object files (add further files here):
-+
-+OBJS = $(PLUGIN).o ccam.o lcddisplay.o plugins.o 
-+
-+### Implicit rules:
-+
-+%.o: %.c
-+	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
-+
-+# Dependencies:
-+
-+MAKEDEP = $(CXX) -MM -MG
-+DEPFILE = .dependencies
-+$(DEPFILE): Makefile
-+	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
-+
-+-include $(DEPFILE)
-+
-+### Targets:
-+
-+all: libvdr-$(PLUGIN).so
-+
-+libvdr-$(PLUGIN).so: $(OBJS)
-+	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LCDLIB) $(CONLIB) -lpng -lz -o $@
-+	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
-+
-+dist: clean
-+	@-rm -rf $(TMPDIR)/$(ARCHIVE)
-+	@mkdir $(TMPDIR)/$(ARCHIVE)
-+	@cp -a * $(TMPDIR)/$(ARCHIVE)
-+	@tar czf $(PACKAGE).tgz -C $(TMPDIR) $(ARCHIVE)
-+	@-rm -rf $(TMPDIR)/$(ARCHIVE)
-+	@echo Distribution package created as $(PACKAGE).tgz
-+
-+clean:
-+	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
-diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/README vdr-1.2.6.new/PLUGINS/src/dbox2/README
---- vdr-1.2.6/PLUGINS/src/dbox2/README	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/dbox2/README	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,11 @@
-+This is a "plugin" for the Video Disk Recorder (VDR).
-+
-+Written by:                  Alexander Olk <xenomorph2l@onlinehome.de>
-+
-+Project's homepage:          -n/a-
-+
-+Latest version available at: -n/a-
-+
-+See the file COPYING for license information.
-+
-+Description: Dbox2 plugin
-diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/ccam.c vdr-1.2.6.new/PLUGINS/src/dbox2/ccam.c
---- vdr-1.2.6/PLUGINS/src/dbox2/ccam.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/dbox2/ccam.c	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,172 @@
-+/*
-+ * ccam.c: A plugin for the Video Disk Recorder
-+ *
-+ * See the README file for copyright information and how to reach the author.
-+ *
-+ * $Id$
-+ */
-+
-+#include "ccam.h"
-+#include <vdr/channels.h>
-+#include <vdr/eit.h>
-+#include <vdr/ci.h>
-+#include <connection/basicclient.h>
-+#include <vdr/tools.h>
-+
-+#define CAMD_UDS_NAME  "/tmp/camd.socket"
-+
-+class CCaPmt : public CBasicClient 
-+{
-+	private:
-+		int 		length;
-+		int 		esInfoLengthPos;
-+		uint8_t 	capmt[2048];
-+	protected:
-+		virtual const unsigned char   	getVersion   () const { return 0x9F; };
-+		virtual const          char * 		getSocketName() const { return CAMD_UDS_NAME; };
-+	public:
-+		CCaPmt( int ProgramNumber );
-+		void 		AddPid( int Pid );
-+		void 		AddCaDescriptor( int Length, uint8_t *Data );
-+		bool 		sendData();
-+
-+};
-+
-+#define CPCI_OK_DESCRAMBLING  	0x01
-+#define CPLM_ONLY				0x03
-+#define CPLM_TS					0x04
-+
-+CCaPmt::CCaPmt( int ProgramNumber )
-+{
-+	length = 0;
-+  	capmt[length++] = CPLM_ONLY; // FIXME: Do we need Transponderchange -> 0x04
-+  	capmt[length++] = ( ProgramNumber >> 8 ) & 0xFF;
-+  	capmt[length++] =  ProgramNumber & 0xFF;
-+  	capmt[length++] = 0x01; // version_number, current_next_indicator - apparently vn doesn't matter, but cni must be 1
-+  	esInfoLengthPos = length;
-+  	capmt[length++] = 0x00; // program_info_length H (at program level)
-+  	capmt[length++] = 0x00; // program_info_length L
-+}
-+
-+void CCaPmt::AddPid( int Pid )
-+{
-+  	capmt[length++] = 0x00; //XXX stream_type (apparently doesn't matter)
-+  	capmt[length++] = ( Pid >> 8 ) & 0xFF;
-+  	capmt[length++] = Pid & 0xFF;
-+  	esInfoLengthPos = length;
-+  	capmt[length++] = 0x00; // ES_info_length H (at ES level)
-+  	capmt[length++] = 0x00; // ES_info_length L
-+}
-+
-+void CCaPmt::AddCaDescriptor( int Length, uint8_t *Data )
-+{
-+  	if ( esInfoLengthPos )
-+		{
-+     			if ( length + Length < int ( sizeof( capmt ) ) )
-+					{
-+        				capmt[length++] = CPCI_OK_DESCRAMBLING;
-+        				memcpy( capmt + length, Data, Length );
-+        				length += Length;
-+        				int l = length - esInfoLengthPos - 2;
-+        				capmt[esInfoLengthPos]     = ( l >> 8 ) & 0xFF;
-+        				capmt[esInfoLengthPos + 1] =  l & 0xFF;
-+        			}
-+     			else
-+        			esyslog( "ERROR: buffer overflow in CA descriptor" );
-+
-+     			esInfoLengthPos = 0;
-+     		}
-+  	else
-+     		esyslog( "ERROR: adding CA descriptor without Pid!" );
-+}
-+
-+#define SIZE_INDICATOR 0x80
-+
-+static uint8_t *SetLength( uint8_t *Data, int Length )
-+{
-+  	uint8_t *p = Data;
-+	
-+  	if ( Length < 128 )
-+		*p++ = Length;
-+  	else
-+		{
-+     			int n = sizeof( Length );
-+     			for ( int i = n - 1; i >= 0; i-- )
-+					{
-+         				int b = ( Length >> ( 8 * i ) ) & 0xFF;
-+         				if ( p != Data || b )
-+            				*++p = b;
-+         			}
-+     			*Data = ( p - Data ) | SIZE_INDICATOR;
-+     			p++;
-+     		}
-+  return p;
-+}
-+
-+bool CCaPmt::sendData()
-+{
-+	if ( !open_connection() )
-+		return false;
-+	
-+	uint8_t buffer[2048];
-+	uint8_t *p = buffer;
-+	
-+	*p++ = 0x9F;
-+	*p++ = 0x80;
-+  	*p++ = 0x32;
-+
-+	p = SetLength( p,length );
-+
-+	if ( p - buffer + length < int ( sizeof( buffer ) ) )
-+		{
-+			memcpy( p, capmt, length );
-+			p += length;
-+		}
-+	bool return_value = send_data( (const char*)buffer, p-buffer );
-+
-+	close_connection();
-+	return return_value;
-+}
-+
-+
-+CCam::CCam(void)
-+{
-+ 	channel=NULL;
-+}
-+
-+void CCam::setCaPmt(cChannel *channel)
-+{
-+	uchar buffer[2048];
-+	int length = 0;
-+	int count = 0;
-+
-+	// we need this...
-+	// vdr needs some time to filter the ca descriptors
-+	// the routine tries MAXCACOUNT times (my Nokia Sat box needs about 50-70 tries)
-+	// FIXME: if you switch to a Premiere channel, you do not have subsribed, switching takes to long,
-+	// because the routine then tries MAXCACOUNT times
-+	// hmm, need to find a better way...
-+	#define MAXCACOUNT	100
-+	#define TIMETOWAIT	10000
-+	do
-+		{
-+			count++;
-+			usleep( TIMETOWAIT );
-+			length = cSIProcessor::GetCaDescriptors( channel->Source(), channel->Frequency(), channel->Sid(), NULL, sizeof( buffer ), buffer );
-+		} while ( ( length == 0 ) && ( count<MAXCACOUNT ) );
-+
-+	if ( length > 0 )
-+		{
-+			CCaPmt CaPmt( channel->Sid() );
-+			CaPmt.AddCaDescriptor( length, buffer );
-+			if ( channel->Vpid() )
-+				CaPmt.AddPid( channel->Vpid() );
-+			if ( channel->Apid1() )
-+				CaPmt.AddPid( channel->Apid1() );
-+			if ( channel->Apid2() )
-+				CaPmt.AddPid( channel->Apid2() );
-+			if ( channel->Dpid1() )
-+				CaPmt.AddPid( channel->Dpid1() );
-+			CaPmt.sendData();
-+		}
-+}
-diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/ccam.h vdr-1.2.6.new/PLUGINS/src/dbox2/ccam.h
---- vdr-1.2.6/PLUGINS/src/dbox2/ccam.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/dbox2/ccam.h	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,26 @@
-+/*
-+ * ccam.h: A plugin for the Video Disk Recorder
-+ *
-+ * See the README file for copyright information and how to reach the author.
-+ *
-+ * $Id$
-+ */
-+
-+#ifndef _CCAM_H_
-+#define _CCAM_H_
-+
-+#include <vdr/channels.h>
-+
-+#define CAMD_UDS_NAME  "/tmp/camd.socket"
-+
-+class CCam 
-+{
-+	public:
-+		CCam( void );
-+		void 		setCaPmt( cChannel *inchannel );
-+
-+	private:
-+		cChannel 	*channel;
-+};
-+
-+#endif
-diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/dbox2.c vdr-1.2.6.new/PLUGINS/src/dbox2/dbox2.c
---- vdr-1.2.6/PLUGINS/src/dbox2/dbox2.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/dbox2/dbox2.c	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,147 @@
-+/*
-+ * dbox2.c: A plugin for the Video Disk Recorder
-+ *
-+ * See the README file for copyright information and how to reach the author.
-+ *
-+ * $Id$
-+ */
-+
-+#include <vdr/plugin.h>
-+#include <vdr/status.h>
-+#include <vdr/channels.h>
-+#include "ccam.h"
-+#include "lcddisplay.h"
-+#include "plugins.h"
-+
-+static const char *VERSION        = "0.0.1";
-+static const char *DESCRIPTION    = "DBox2 handling";
-+static const char *MAINMENUENTRY  = "DBox2";
-+
-+// cMyStatusMonitor..
-+
-+class cMyStatusMonitor : public cStatus 
-+{
-+	public:
-+		cMyStatusMonitor( CCam *incam );
-+	private:
-+		CCam 			*cam;
-+		cChannel		*channel;
-+	protected:
-+  		virtual void 	ChannelSwitch( const cDevice *Device, int ChannelNumber );
-+  };
-+
-+cMyStatusMonitor::cMyStatusMonitor( CCam *incam )
-+{
-+	cam = incam;
-+}
-+
-+void cMyStatusMonitor::ChannelSwitch( const cDevice *Device, int ChannelNumber )
-+{
-+	// ChannelNumber=0 before Channel is switched... >0 channel that has beend switched to
-+	if ( ChannelNumber )
-+  		{
-+			channel = NULL;
-+			channel = Channels.GetByNumber( ChannelNumber );
-+			if ( channel != NULL )
-+				if ( channel->Ca() == 101 )  // 101 = Premiere
-+					{
-+						cam->setCaPmt( channel );
-+					}
-+
-+		// show service name on lcd display
-+		cLcdDisplay::getInstance()->ShowServiceName( channel->Name() );
-+	}
-+}
-+
-+//--------------------------------------------------------
-+
-+class cPluginDbox2 : public cPlugin 
-+{
-+	private:
-+  		// Add any member variables or functions you may need here.
-+  		cMyStatusMonitor 	*statusMonitor;
-+  		CCam 			*cam;
-+	public:
-+  		cPluginDbox2( void );
-+  		virtual ~cPluginDbox2();
-+  		virtual const char *Version( void ) { return VERSION; }
-+  		virtual const char *Description( void ) { return DESCRIPTION; }
-+  		virtual const char *CommandLineHelp( void );
-+  		virtual bool ProcessArgs( int argc, char *argv[] );
-+  		virtual bool Start( void );
-+  		virtual void Housekeeping( void );
-+  		virtual const char *MainMenuEntry( void ) { return MAINMENUENTRY; }
-+  		virtual cOsdObject *MainMenuAction( void );
-+  		virtual cMenuSetupPage *SetupMenu( void );
-+  		virtual bool SetupParse( const char *Name, const char *Value );
-+  		virtual void *GetSetData( int what );
-+};
-+
-+cPluginDbox2::cPluginDbox2( void )
-+{
-+	// Initialize any member variables here.
-+	// DON'T DO ANYTHING ELSE THAT MAY HAVE SIDE EFFECTS, REQUIRE GLOBAL
-+	// VDR OBJECTS TO EXIST OR PRODUCE ANY OUTPUT!
-+	statusMonitor = NULL;
-+	cam = NULL;
-+}
-+
-+cPluginDbox2::~cPluginDbox2()
-+{
-+	// Clean up after yourself!
-+	cLcdDisplay::getInstance()->ShowServiceName( "Goodbye" );
-+	delete statusMonitor;
-+	delete cam;
-+}
-+
-+const char *cPluginDbox2::CommandLineHelp( void )
-+{
-+	// Return a string that describes all known command line options.
-+	return NULL;
-+}
-+
-+bool cPluginDbox2::ProcessArgs( int argc, char *argv[] )
-+{
-+	// Implement command line argument processing here if applicable.
-+	return true;
-+}
-+
-+bool cPluginDbox2::Start( void )
-+{
-+  	// Start any background activities the plugin shall perform.
-+  	cam = new CCam();
-+  	statusMonitor = new cMyStatusMonitor( cam );
-+  	cLcdDisplay::getInstance();
-+  	return true;
-+}
-+
-+void cPluginDbox2::Housekeeping( void )
-+{
-+	// Perform any cleanup or other regular tasks.
-+}
-+
-+cOsdObject *cPluginDbox2::MainMenuAction( void )
-+{
-+  	// Perform the action when selected from the main VDR menu.
-+  	cDbox2PluginMenu *db2pmenu = new cDbox2PluginMenu();
-+	return db2pmenu;
-+}
-+
-+cMenuSetupPage *cPluginDbox2::SetupMenu( void )
-+{
-+  	// Return a setup menu in case the plugin supports one.
-+	return NULL;
-+}
-+
-+bool cPluginDbox2::SetupParse( const char *Name, const char *Value )
-+{
-+  	// Parse your own setup parameters and store their values.
-+	return false;
-+}
-+
-+void *cPluginDbox2::GetSetData( int what )
-+{
-+	return NULL;
-+}
-+
-+VDRPLUGINCREATOR( cPluginDbox2 ); // Don't touch this!
-diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.c vdr-1.2.6.new/PLUGINS/src/dbox2/lcddisplay.c
---- vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/dbox2/lcddisplay.c	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,80 @@
-+/*
-+ * lcddisplay.h: A plugin for the Video Disk Recorder
-+ *
-+ * See the README file for copyright information and how to reach the author.
-+ *
-+ * $Id$
-+ */
-+
-+ // this is only the first attempt for accessing the dbox lcd display... it uses the lcddisplay library and the fonts implemented
-+ // in vdr (to be honest, those fonts are a little bit to big :) but for the first implementation it works)
-+ // TODO: 	- if channelname is to long and there is a <space> in the channel name, start new line
-+ //		- new method for center messages
-+ //		- and a lot of other changes.
-+
-+#include "lcddisplay.h"
-+#include <vdr/tools.h>
-+#include <vdr/font.h>
-+
-+cLcdDisplay *cLcdDisplay::mpLcdDisplay = NULL;
-+
-+cLcdDisplay *cLcdDisplay::getInstance( void )
-+{
-+	if ( mpLcdDisplay == NULL )
-+		{
-+			mpLcdDisplay = new cLcdDisplay();
-+		}
-+	return mpLcdDisplay;
-+}
-+
-+cLcdDisplay::cLcdDisplay( void )
-+{
-+	if ( !lcd.isAvailable() )
-+		{
-+			esyslog( "No lcd support\n" );
-+		}
-+
-+	pFont = NULL;
-+	pFont = new cFont( fontOsd );
-+
-+	ShowServiceName( "vdr" );
-+}
-+
-+cLcdDisplay::~cLcdDisplay( void )
-+{
-+	delete pFont;
-+}
-+
-+void cLcdDisplay::ShowServiceName( const char *name )
-+{
-+	lcd.draw_fill_rect( 2, 2, LCD_COLS, 54, CLCDDisplay::PIXEL_OFF );
-+
-+	int x = 2;
-+	int y = 2;
-+
-+	for ( const char *p = name; *p; p++ )
-+		{
-+			const cFont::tCharData *cd = pFont->CharData( *p );
-+
-+			for ( int row = 0; row < pFont->Height( *p ); row++ )
-+				{
-+					cFont::tPixelData PixelData = cd->lines[row];
-+					for ( int col = cd->width; col-- > 0; )
-+						{
-+							lcd.draw_point( x + col, y + row, ( PixelData & 1 ) ? CLCDDisplay::PIXEL_ON : CLCDDisplay::PIXEL_OFF );
-+							PixelData >>= 1;
-+						}
-+				}
-+			x += pFont->Width( *p );
-+			if ( x > LCD_COLS )
-+				{
-+					x = 2;
-+					y += pFont->Height( *p );
-+					if ( y > 40 ) break;
-+				}
-+		}
-+
-+	lcd.update();
-+}
-+
-+
-diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.h vdr-1.2.6.new/PLUGINS/src/dbox2/lcddisplay.h
---- vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/dbox2/lcddisplay.h	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,32 @@
-+/*
-+ * lcddisplay.c: A plugin for the Video Disk Recorder
-+ *
-+ * See the README file for copyright information and how to reach the author.
-+ *
-+ * $Id$
-+ */
-+
-+#ifndef __LCDDISPLAY_H__
-+#define __LCDDISPLAY_H_
-+
-+#include <lcddisplay/lcddisplay.h>
-+#include <vdr/font.h>
-+
-+class cLcdDisplay 
-+{
-+	private:
-+
-+		CLCDDisplay	lcd;
-+		cFont		*pFont;
-+
-+ 	public:
-+
-+		static cLcdDisplay 		*getInstance( void );
-+		static cLcdDisplay 		*mpLcdDisplay;
-+		cLcdDisplay( void );
-+		~cLcdDisplay( void );
-+
-+		void ShowServiceName( const char *name );
-+};
-+
-+#endif
-diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/plugins.c vdr-1.2.6.new/PLUGINS/src/dbox2/plugins.c
---- vdr-1.2.6/PLUGINS/src/dbox2/plugins.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/dbox2/plugins.c	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,415 @@
-+/*
-+ * plugins.c: for dbox2 plugin
-+ *
-+ * See the README file for copyright information and how to reach the author.
-+ *
-+ * $Id$
-+ */
-+ 
-+// TODO: 	- clear lcd after plugin ends
-+// 			- fix rc (!?!)
-+//			- halt siprocessor thread during plugin execution (eats to much system capacity)
-+//			- some other fixes :)
-+
-+#include <dirent.h>
-+#include "plugins.h"
-+#include <string>
-+//#include <stdio.h>
-+#include <stdlib.h>
-+#include <plugin.h>
-+#include <vdr/framebuffer.h>
-+#include <vdr/tools.h>
-+#include <vdr/channels.h>
-+#include <vdr/device.h>
-+#include <dlfcn.h>
-+#include "../remote/remote.h"
-+#include <vdr/plugin.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <vdr/device.h>
-+#include "lcddisplay.h"
-+#include <vdr/dvbdevice.h>
-+
-+class cPOsdItem : public cOsdItem
-+{
-+	public:
-+		cPOsdItem( const char *text, int mitem, cDbox2Plugin *inp ) : cOsdItem( text ) { menu_item = mitem; pPlugin = inp; }
-+		virtual void Set( void ) { }
-+		eOSState ProcessKey( eKeys Key )
-+			{
-+				if ( Key == kOk )
-+					{
-+						cPlugin *vdrplugin = cPluginManager::GetPlugin( "remote" );
-+						if ( vdrplugin != NULL )
-+							vdrplugin->GetSetData( RSTOPREMOTE ); // stops remote thread
-+						cDvbDevice *dvbdevice = cDvbDevice::getInstance();
-+						
-+						if ( dvbdevice != NULL )  // stop filtering // 
-+							dvbdevice->SiP(false);
-+						
-+						pPlugin->startPlugin( menu_item );
-+						
-+						if ( dvbdevice != NULL ) // start filtering again
-+							dvbdevice->SiP(true); 
-+						if ( vdrplugin != NULL )
-+							vdrplugin->GetSetData( RSTARTREMOTE ); // starts remote thread
-+						vdrplugin = NULL;
-+					}
-+				return Key == kOk ? osEnd : cOsdItem::ProcessKey( Key );
-+			};
-+
-+	protected:
-+		int menu_item;
-+
-+	private:
-+		cDbox2Plugin *pPlugin;
-+};
-+
-+cDbox2PluginMenu::cDbox2PluginMenu( void ) :
-+cOsdMenu( "DBox2 Plugins" )
-+{
-+	cDbox2Plugin *pPlugin = new cDbox2Plugin();
-+
-+	Clear();
-+	SetHasHotkeys();
-+
-+	int numPlugins = pPlugin->getPlugins();
-+
-+	for ( int i = 0; i < numPlugins; i++)
-+		{
-+			Add(new cPOsdItem( hk ( pPlugin->getPname( i ).c_str() ), i , pPlugin ) );
-+		}
-+}
-+
-+cDbox2Plugin::cDbox2Plugin( void )
-+{
-+}
-+
-+cDbox2Plugin::~cDbox2Plugin( void )
-+{
-+	the_plugins.clear();
-+}
-+
-+void cDbox2Plugin::readSpecs( std::string fname )
-+{
-+	FILE *infile = fopen( fname.c_str(), "r" );
-+
-+	char buf[128];
-+	structplugin sp;
-+
-+	sp.soname = fname.substr( 0, fname.find( ".cfg" ) ) + ".so";
-+
-+	while ( fgets( buf, 127, infile ))
-+		{
-+			std::string parsestring = buf;
-+			std::string command( parsestring, 0, parsestring.find( "=" ) );
-+			std::string param( parsestring, parsestring.find( "=" ) +1, parsestring.length() );
-+
-+			if ( command == "pluginversion" )
-+				{
-+					sp.version = atoi( param.c_str() );
-+					continue;
-+				}
-+
-+			if ( command == "name" )
-+				{
-+					sp.name = param;
-+					continue;
-+				}
-+			if ( command == "desc" )
-+				{
-+					sp.desc = param;
-+					continue;
-+				}
-+			if ( command == "depend" )
-+				{
-+					sp.depend = param;
-+					continue;
-+				}
-+			if ( command == "needfb" )
-+				{
-+					sp.needfb = atoi( param.c_str() ) ? true : false;
-+					continue;
-+				}
-+			if ( command == "needrc" )
-+				{
-+					sp.needrc = atoi( param.c_str() ) ? true : false;
-+					continue;
-+				}
-+			if ( command == "needlcd" )
-+				{
-+					sp.needlcd = atoi( param.c_str() ) ? true : false;
-+					continue;
-+				}
-+			if ( command == "needvtxtpid" )
-+				{
-+					sp.needvtxtpid = atoi( param.c_str() ) ? true : false;
-+					continue;
-+				}
-+			if ( command == "pigon" )
-+				{
-+					sp.pigon = atoi( param.c_str() ) ? true : false;
-+					continue;
-+				}
-+			if ( command == "needoffsets" )
-+				{
-+					sp.needoffsets = atoi( param.c_str() ) ? true : false;
-+					continue;
-+				}
-+		}
-+
-+	the_plugins.push_back( sp );
-+	fclose( infile );
-+}
-+
-+int cDbox2Plugin::getPlugins( void )
-+{
-+	std::string  sdir = DBPLUGINDIR "/" ;
-+	struct dirent **namelist;
-+
-+	int anzahl = 0;
-+	int num = scandir(  sdir.c_str(), &namelist, 0, alphasort );
-+
-+	if ( num < 0 )
-+		{
-+			// scandir error...
-+			esyslog("plugin.c cannot scan dir");
-+			return 0;
-+		}
-+
-+	for ( int i; i < num; i++)
-+		{
-+			std::string pname = namelist[i]->d_name;
-+
-+			if ( pname.find( ".cfg" ) != std::string::npos )
-+				{
-+					anzahl++;
-+					readSpecs( sdir + pname );
-+				}
-+			free( namelist[i] );
-+		}
-+	free( namelist );
-+
-+	sort( the_plugins.begin(), the_plugins.end() );
-+
-+	return anzahl;
-+}
-+
-+void cDbox2Plugin::startPlugin( int num )
-+{
-+	PluginExec execPlugin;
-+	char depstring[129];
-+	char			*argv[20];
-+	void			*libhandle[20];
-+	int			argc, i, lcd_fd =-1;
-+	char			*p;
-+	char			*np;
-+	void			*handle;
-+	char			*error;
-+	int			tpid = 0;
-+
-+	PluginParam *startparam;
-+	PluginParam *tmpparam;
-+
-+	startparam = 0;
-+	tmpparam = startparam;
-+
-+	setfb( CFrameBuffer::getInstance()->getFileHandle() );
-+
-+	if ( the_plugins[num].needfb )
-+		startparam = makeParam( P_ID_FBUFFER, startparam );
-+
-+	if ( the_plugins[num].needrc )
-+		{
-+			cPlugin *vdrplugin = cPluginManager::GetPlugin( "remote" );
-+			int *rcfh = ( int *) vdrplugin->GetSetData( RDATAFILEHANDLE );
-+			setrc( *rcfh );
-+			vdrplugin = NULL;
-+			//addParm( P_ID_RCBLK_ANF, g_settings.repeat_genericblocker );
-+			//addParm( P_ID_RCBLK_REP, g_settings.repeat_blocker );
-+
-+			startparam = makeParam( P_ID_RCINPUT, startparam );
-+			//startparam = makeParam( P_ID_RCBLK_ANF, startparam );
-+			//startparam = makeParam( P_ID_RCBLK_REP, startparam );
-+		}
-+	if ( the_plugins[num].needlcd )
-+		{
-+			if( ( lcd_fd=open("/dev/dbox/lcd0", O_RDWR ) ) < 0 )
-+				setlcd( 0 );
-+			else
-+				setlcd( lcd_fd );
-+
-+			startparam = makeParam( P_ID_LCD, startparam );
-+		}
-+	if ( the_plugins[num].needvtxtpid )
-+		{
-+			cChannel *channel = Channels.GetByNumber( cDevice::CurrentChannel() );
-+			tpid = channel->Tpid();
-+			if ( tpid )
-+				setvtxtpid( tpid );
-+			else
-+				setvtxtpid( 0 );
-+			channel = NULL;
-+			startparam = makeParam( P_ID_VTXTPID, startparam );
-+
-+			// stop vtxt
-+			if ( tpid )
-+				{
-+					cDevice::PrimaryDevice()-> vtxtPid( false );
-+					usleep( 1000 );
-+				}
-+		}
-+	if ( the_plugins[num].needoffsets )
-+		{
-+			//addParm( P_ID_VFORMAT, g_settings.video_Format );
-+			addParm( P_ID_OFF_X, 0 );
-+			addParm( P_ID_OFF_Y, 0 );
-+			addParm( P_ID_END_X, 720 );
-+			addParm( P_ID_END_Y, 576 );
-+
-+			//startparam = makeParam( P_ID_VFORMAT, startparam );
-+			startparam = makeParam( P_ID_OFF_X, startparam );
-+			startparam = makeParam( P_ID_OFF_Y, startparam );
-+			startparam = makeParam( P_ID_END_X, startparam );
-+			startparam = makeParam( P_ID_END_Y, startparam );
-+		}
-+
-+	PluginParam *par = startparam;
-+
-+	std::string pluginname = the_plugins[num].soname;
-+
-+	strcpy( depstring, the_plugins[num].depend.c_str() );
-+
-+	argc=0;
-+	if ( depstring[0] )
-+		{
-+			p = depstring;
-+			while( 1 )
-+				{
-+					argv[ argc ] = p;
-+					argc++;
-+					np = strchr( p, ',' );
-+					if ( !np )
-+						break;
-+
-+					*np = 0;
-+					p = np+1;
-+					if ( argc == 20 )
-+						break;
-+				}
-+		}
-+
-+	for( i = 0; i < argc; i++ )
-+		{
-+			std::string libname = argv[i];
-+			isyslog( "try load shared lib : %s\n", argv[i] );
-+			libname = *argv[i] == '/' ? argv[i] : ( DBPLUGINDIR  "/" + libname ).c_str();
-+			// kill that damned newline char, grrr
-+			if ( libname[libname.length()-1] == 10 ) libname[libname.length()-1] = 0;
-+			libhandle[i] = dlopen ( libname.c_str(), RTLD_NOW | RTLD_GLOBAL );
-+			if ( !libhandle )
-+				{
-+					fputs ( dlerror(), stderr );
-+					break;
-+				}
-+		}
-+	while ( i == argc )
-+		{
-+			handle = dlopen ( the_plugins[num].soname.c_str(), RTLD_NOW | RTLD_GLOBAL );
-+			if ( !handle )
-+				{
-+					fputs ( dlerror(), stderr );
-+					break;
-+				}
-+			execPlugin = ( PluginExec ) dlsym( handle, "plugin_exec" );
-+			if ( ( error = dlerror() ) != NULL )
-+				{
-+					fputs( error, stderr );
-+					dlclose( handle );
-+					break;
-+				}
-+			isyslog( "try plugin exec...\n" );
-+			execPlugin( startparam );
-+			dlclose( handle );
-+			isyslog( "plugin exec done...\n" );
-+
-+			if ( the_plugins[num].needvtxtpid )
-+				{
-+					if ( tpid )
-+						{
-+							cDevice::PrimaryDevice()->vtxtPid( true );
-+						}
-+				}
-+			if ( the_plugins[num].needlcd )
-+				{
-+					if( lcd_fd != -1 )
-+						close( lcd_fd );
-+					cChannel *channel = Channels.GetByNumber( cDevice::CurrentChannel() );
-+					cLcdDisplay::getInstance()->ShowServiceName( channel->Name() );
-+				}
-+
-+    			if ( the_plugins[num].needfb )
-+    				{
-+    					CFrameBuffer::getInstance()->ClearFrameBuffer();;
-+    					CFrameBuffer::getInstance()->paintBackgroundBoxRel( 0, 0, 720, 576 );
-+    				}
-+
-+		//redraw menue...
-+			break;	// break every time - never loop - run once !!!
-+		}
-+
-+	/* unload shared libs */
-+	for( i = 0; i < argc; i++ )
-+		{
-+			if ( libhandle[i] )
-+				dlclose( libhandle[i] );
-+			else
-+				break;
-+		}
-+}
-+
-+PluginParam* cDbox2Plugin::makeParam( const char * const id, PluginParam *next )
-+{
-+	PluginParam *startparam = new PluginParam;
-+
-+	startparam->next = next;
-+	startparam->id = id;
-+	startparam->val = new char[params.find(id)->second.length() + 2];
-+/*	strcpy( startparam->id, id.c_str() ); */
-+	strcpy( startparam->val, params.find(id)->second.c_str() );
-+
-+	return startparam;
-+}
-+
-+void cDbox2Plugin::addParm( std::string cmd, std::string value )
-+{
-+	params[cmd] = value;
-+}
-+
-+void cDbox2Plugin::addParm( std::string cmd, int value )
-+{
-+	char aval[10];
-+	sprintf( aval, "%d", value );
-+
-+	addParm( cmd, aval );
-+}
-+
-+void cDbox2Plugin::setfb( int fd )
-+{
-+	addParm( P_ID_FBUFFER, fd );
-+}
-+
-+void cDbox2Plugin::setrc( int fd )
-+{
-+	addParm( P_ID_RCINPUT, fd );
-+}
-+
-+void cDbox2Plugin::setlcd( int fd )
-+{
-+	addParm( P_ID_LCD, fd );
-+}
-+
-+void cDbox2Plugin::setvtxtpid( int fd )
-+{
-+	addParm( P_ID_VTXTPID, fd );
-+}
-diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/plugins.h vdr-1.2.6.new/PLUGINS/src/dbox2/plugins.h
---- vdr-1.2.6/PLUGINS/src/dbox2/plugins.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/dbox2/plugins.h	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,76 @@
-+/*
-+ * plugins.h: for dbox2 plugin
-+ *
-+ * See the README file for copyright information and how to reach the author.
-+ *
-+ * $Id$
-+ */
-+
-+#ifndef __PLUGINS_H_
-+#define __PLUGINS_H_
-+
-+#include <vdr/osd.h>
-+#include <vector>
-+#include <string>
-+#include <map>
-+#include <plugin.h>
-+
-+#define DBPLUGINDIR "/lib/tuxbox/plugins"
-+
-+class cDbox2PluginMenu : public cOsdMenu
-+{
-+	public:
-+		cDbox2PluginMenu( void );
-+};
-+
-+class cDbox2Plugin
-+{
-+	public:
-+		struct structplugin
-+			{
-+				std::string name;
-+				std::string desc;
-+				std::string depend;
-+				std::string soname;
-+				int version;
-+				bool needfb;
-+				bool needrc;
-+				bool needlcd;
-+				bool needvtxtpid;
-+				bool pigon;
-+				bool needoffsets;
-+				bool operator < ( const structplugin &p ) const
-+					{
-+						bool result = this->name < p.name;
-+						return result;
-+					}
-+			  } ;
-+
-+	public:
-+		cDbox2Plugin( void );
-+		~cDbox2Plugin( void );
-+
-+		int getPlugins( void );
-+		void startPlugin( int num );
-+		std::string &getPname( int num ) { return the_plugins[num].name; }
-+		PluginParam* makeParam( const char * const id, PluginParam *next );
-+
-+	private:
-+		std::vector<structplugin> the_plugins;
-+		std::map<std::string, std::string> params;
-+
-+		void readSpecs( std::string fname );
-+
-+		void addParm( std::string cmd, std::string value );
-+		void addParm( std::string cmd, int value );
-+		void setfb( int fd );
-+		void setrc( int fd );
-+		void setlcd( int fd );
-+		void setvtxtpid( int fd );
-+};
-+
-+#endif
-+
-+
-+
-+
-diff -Naur vdr-1.2.6/PLUGINS/src/hello/Makefile vdr-1.2.6.new/PLUGINS/src/hello/Makefile
---- vdr-1.2.6/PLUGINS/src/hello/Makefile	2002-12-13 15:54:14.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/hello/Makefile	1970-01-01 01:00:00.000000000 +0100
-@@ -1,82 +0,0 @@
--#
--# Makefile for a Video Disk Recorder plugin
--#
--# $Id: Makefile 1.8 2002/12/13 14:54:14 kls Exp $
--
--# The official name of this plugin.
--# This name will be used in the '-P...' option of VDR to load the plugin.
--# By default the main source file also carries this name.
--#
--PLUGIN = hello
--
--### The version number of this plugin (taken from the main source file):
--
--VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ print $$6 }' | sed -e 's/[";]//g')
--
--### The C++ compiler and options:
--
--CXX      ?= g++
--CXXFLAGS ?= -O2 -Wall -Woverloaded-virtual
--
--### The directory environment:
--
--DVBDIR = ../../../../DVB
--VDRDIR = ../../..
--LIBDIR = ../../lib
--TMPDIR = /tmp
--
--### Allow user defined options to overwrite defaults:
--
---include $(VDRDIR)/Make.config
--
--### The version number of VDR (taken from VDR's "config.h"):
--
--VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
--
--### The name of the distribution archive:
--
--ARCHIVE = $(PLUGIN)-$(VERSION)
--PACKAGE = vdr-$(ARCHIVE)
--
--### Includes and Defines (add further entries here):
--
--INCLUDES += -I$(VDRDIR)/include -I$(DVBDIR)/include
--
--DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
--
--### The object files (add further files here):
--
--OBJS = $(PLUGIN).o i18n.o
--
--### Implicit rules:
--
--%.o: %.c
--	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
--
--# Dependencies:
--
--MAKEDEP = g++ -MM -MG
--DEPFILE = .dependencies
--$(DEPFILE): Makefile
--	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
--
---include $(DEPFILE)
--
--### Targets:
--
--all: libvdr-$(PLUGIN).so
--
--libvdr-$(PLUGIN).so: $(OBJS)
--	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
--	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
--
--dist: clean
--	@-rm -rf $(TMPDIR)/$(ARCHIVE)
--	@mkdir $(TMPDIR)/$(ARCHIVE)
--	@cp -a * $(TMPDIR)/$(ARCHIVE)
--	@tar czf $(PACKAGE).tgz -C $(TMPDIR) $(ARCHIVE)
--	@-rm -rf $(TMPDIR)/$(ARCHIVE)
--	@echo Distribution package created as $(PACKAGE).tgz
--
--clean:
--	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
-diff -Naur vdr-1.2.6/PLUGINS/src/remote/COPYING vdr-1.2.6.new/PLUGINS/src/remote/COPYING
---- vdr-1.2.6/PLUGINS/src/remote/COPYING	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/remote/COPYING	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,340 @@
-+		    GNU GENERAL PUBLIC LICENSE
-+		       Version 2, June 1991
-+
-+ Copyright (C) 1989, 1991 Free Software Foundation, Inc.
-+                       59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-+ Everyone is permitted to copy and distribute verbatim copies
-+ of this license document, but changing it is not allowed.
-+
-+			    Preamble
-+
-+  The licenses for most software are designed to take away your
-+freedom to share and change it.  By contrast, the GNU General Public
-+License is intended to guarantee your freedom to share and change free
-+software--to make sure the software is free for all its users.  This
-+General Public License applies to most of the Free Software
-+Foundation's software and to any other program whose authors commit to
-+using it.  (Some other Free Software Foundation software is covered by
-+the GNU Library General Public License instead.)  You can apply it to
-+your programs, too.
-+
-+  When we speak of free software, we are referring to freedom, not
-+price.  Our General Public Licenses are designed to make sure that you
-+have the freedom to distribute copies of free software (and charge for
-+this service if you wish), that you receive source code or can get it
-+if you want it, that you can change the software or use pieces of it
-+in new free programs; and that you know you can do these things.
-+
-+  To protect your rights, we need to make restrictions that forbid
-+anyone to deny you these rights or to ask you to surrender the rights.
-+These restrictions translate to certain responsibilities for you if you
-+distribute copies of the software, or if you modify it.
-+
-+  For example, if you distribute copies of such a program, whether
-+gratis or for a fee, you must give the recipients all the rights that
-+you have.  You must make sure that they, too, receive or can get the
-+source code.  And you must show them these terms so they know their
-+rights.
-+
-+  We protect your rights with two steps: (1) copyright the software, and
-+(2) offer you this license which gives you legal permission to copy,
-+distribute and/or modify the software.
-+
-+  Also, for each author's protection and ours, we want to make certain
-+that everyone understands that there is no warranty for this free
-+software.  If the software is modified by someone else and passed on, we
-+want its recipients to know that what they have is not the original, so
-+that any problems introduced by others will not reflect on the original
-+authors' reputations.
-+
-+  Finally, any free program is threatened constantly by software
-+patents.  We wish to avoid the danger that redistributors of a free
-+program will individually obtain patent licenses, in effect making the
-+program proprietary.  To prevent this, we have made it clear that any
-+patent must be licensed for everyone's free use or not licensed at all.
-+
-+  The precise terms and conditions for copying, distribution and
-+modification follow.
-+
-+		    GNU GENERAL PUBLIC LICENSE
-+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-+
-+  0. This License applies to any program or other work which contains
-+a notice placed by the copyright holder saying it may be distributed
-+under the terms of this General Public License.  The "Program", below,
-+refers to any such program or work, and a "work based on the Program"
-+means either the Program or any derivative work under copyright law:
-+that is to say, a work containing the Program or a portion of it,
-+either verbatim or with modifications and/or translated into another
-+language.  (Hereinafter, translation is included without limitation in
-+the term "modification".)  Each licensee is addressed as "you".
-+
-+Activities other than copying, distribution and modification are not
-+covered by this License; they are outside its scope.  The act of
-+running the Program is not restricted, and the output from the Program
-+is covered only if its contents constitute a work based on the
-+Program (independent of having been made by running the Program).
-+Whether that is true depends on what the Program does.
-+
-+  1. You may copy and distribute verbatim copies of the Program's
-+source code as you receive it, in any medium, provided that you
-+conspicuously and appropriately publish on each copy an appropriate
-+copyright notice and disclaimer of warranty; keep intact all the
-+notices that refer to this License and to the absence of any warranty;
-+and give any other recipients of the Program a copy of this License
-+along with the Program.
-+
-+You may charge a fee for the physical act of transferring a copy, and
-+you may at your option offer warranty protection in exchange for a fee.
-+
-+  2. You may modify your copy or copies of the Program or any portion
-+of it, thus forming a work based on the Program, and copy and
-+distribute such modifications or work under the terms of Section 1
-+above, provided that you also meet all of these conditions:
-+
-+    a) You must cause the modified files to carry prominent notices
-+    stating that you changed the files and the date of any change.
-+
-+    b) You must cause any work that you distribute or publish, that in
-+    whole or in part contains or is derived from the Program or any
-+    part thereof, to be licensed as a whole at no charge to all third
-+    parties under the terms of this License.
-+
-+    c) If the modified program normally reads commands interactively
-+    when run, you must cause it, when started running for such
-+    interactive use in the most ordinary way, to print or display an
-+    announcement including an appropriate copyright notice and a
-+    notice that there is no warranty (or else, saying that you provide
-+    a warranty) and that users may redistribute the program under
-+    these conditions, and telling the user how to view a copy of this
-+    License.  (Exception: if the Program itself is interactive but
-+    does not normally print such an announcement, your work based on
-+    the Program is not required to print an announcement.)
-+
-+These requirements apply to the modified work as a whole.  If
-+identifiable sections of that work are not derived from the Program,
-+and can be reasonably considered independent and separate works in
-+themselves, then this License, and its terms, do not apply to those
-+sections when you distribute them as separate works.  But when you
-+distribute the same sections as part of a whole which is a work based
-+on the Program, the distribution of the whole must be on the terms of
-+this License, whose permissions for other licensees extend to the
-+entire whole, and thus to each and every part regardless of who wrote it.
-+
-+Thus, it is not the intent of this section to claim rights or contest
-+your rights to work written entirely by you; rather, the intent is to
-+exercise the right to control the distribution of derivative or
-+collective works based on the Program.
-+
-+In addition, mere aggregation of another work not based on the Program
-+with the Program (or with a work based on the Program) on a volume of
-+a storage or distribution medium does not bring the other work under
-+the scope of this License.
-+
-+  3. You may copy and distribute the Program (or a work based on it,
-+under Section 2) in object code or executable form under the terms of
-+Sections 1 and 2 above provided that you also do one of the following:
-+
-+    a) Accompany it with the complete corresponding machine-readable
-+    source code, which must be distributed under the terms of Sections
-+    1 and 2 above on a medium customarily used for software interchange; or,
-+
-+    b) Accompany it with a written offer, valid for at least three
-+    years, to give any third party, for a charge no more than your
-+    cost of physically performing source distribution, a complete
-+    machine-readable copy of the corresponding source code, to be
-+    distributed under the terms of Sections 1 and 2 above on a medium
-+    customarily used for software interchange; or,
-+
-+    c) Accompany it with the information you received as to the offer
-+    to distribute corresponding source code.  (This alternative is
-+    allowed only for noncommercial distribution and only if you
-+    received the program in object code or executable form with such
-+    an offer, in accord with Subsection b above.)
-+
-+The source code for a work means the preferred form of the work for
-+making modifications to it.  For an executable work, complete source
-+code means all the source code for all modules it contains, plus any
-+associated interface definition files, plus the scripts used to
-+control compilation and installation of the executable.  However, as a
-+special exception, the source code distributed need not include
-+anything that is normally distributed (in either source or binary
-+form) with the major components (compiler, kernel, and so on) of the
-+operating system on which the executable runs, unless that component
-+itself accompanies the executable.
-+
-+If distribution of executable or object code is made by offering
-+access to copy from a designated place, then offering equivalent
-+access to copy the source code from the same place counts as
-+distribution of the source code, even though third parties are not
-+compelled to copy the source along with the object code.
-+
-+  4. You may not copy, modify, sublicense, or distribute the Program
-+except as expressly provided under this License.  Any attempt
-+otherwise to copy, modify, sublicense or distribute the Program is
-+void, and will automatically terminate your rights under this License.
-+However, parties who have received copies, or rights, from you under
-+this License will not have their licenses terminated so long as such
-+parties remain in full compliance.
-+
-+  5. You are not required to accept this License, since you have not
-+signed it.  However, nothing else grants you permission to modify or
-+distribute the Program or its derivative works.  These actions are
-+prohibited by law if you do not accept this License.  Therefore, by
-+modifying or distributing the Program (or any work based on the
-+Program), you indicate your acceptance of this License to do so, and
-+all its terms and conditions for copying, distributing or modifying
-+the Program or works based on it.
-+
-+  6. Each time you redistribute the Program (or any work based on the
-+Program), the recipient automatically receives a license from the
-+original licensor to copy, distribute or modify the Program subject to
-+these terms and conditions.  You may not impose any further
-+restrictions on the recipients' exercise of the rights granted herein.
-+You are not responsible for enforcing compliance by third parties to
-+this License.
-+
-+  7. If, as a consequence of a court judgment or allegation of patent
-+infringement or for any other reason (not limited to patent issues),
-+conditions are imposed on you (whether by court order, agreement or
-+otherwise) that contradict the conditions of this License, they do not
-+excuse you from the conditions of this License.  If you cannot
-+distribute so as to satisfy simultaneously your obligations under this
-+License and any other pertinent obligations, then as a consequence you
-+may not distribute the Program at all.  For example, if a patent
-+license would not permit royalty-free redistribution of the Program by
-+all those who receive copies directly or indirectly through you, then
-+the only way you could satisfy both it and this License would be to
-+refrain entirely from distribution of the Program.
-+
-+If any portion of this section is held invalid or unenforceable under
-+any particular circumstance, the balance of the section is intended to
-+apply and the section as a whole is intended to apply in other
-+circumstances.
-+
-+It is not the purpose of this section to induce you to infringe any
-+patents or other property right claims or to contest validity of any
-+such claims; this section has the sole purpose of protecting the
-+integrity of the free software distribution system, which is
-+implemented by public license practices.  Many people have made
-+generous contributions to the wide range of software distributed
-+through that system in reliance on consistent application of that
-+system; it is up to the author/donor to decide if he or she is willing
-+to distribute software through any other system and a licensee cannot
-+impose that choice.
-+
-+This section is intended to make thoroughly clear what is believed to
-+be a consequence of the rest of this License.
-+
-+  8. If the distribution and/or use of the Program is restricted in
-+certain countries either by patents or by copyrighted interfaces, the
-+original copyright holder who places the Program under this License
-+may add an explicit geographical distribution limitation excluding
-+those countries, so that distribution is permitted only in or among
-+countries not thus excluded.  In such case, this License incorporates
-+the limitation as if written in the body of this License.
-+
-+  9. The Free Software Foundation may publish revised and/or new versions
-+of the General Public License from time to time.  Such new versions will
-+be similar in spirit to the present version, but may differ in detail to
-+address new problems or concerns.
-+
-+Each version is given a distinguishing version number.  If the Program
-+specifies a version number of this License which applies to it and "any
-+later version", you have the option of following the terms and conditions
-+either of that version or of any later version published by the Free
-+Software Foundation.  If the Program does not specify a version number of
-+this License, you may choose any version ever published by the Free Software
-+Foundation.
-+
-+  10. If you wish to incorporate parts of the Program into other free
-+programs whose distribution conditions are different, write to the author
-+to ask for permission.  For software which is copyrighted by the Free
-+Software Foundation, write to the Free Software Foundation; we sometimes
-+make exceptions for this.  Our decision will be guided by the two goals
-+of preserving the free status of all derivatives of our free software and
-+of promoting the sharing and reuse of software generally.
-+
-+			    NO WARRANTY
-+
-+  11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
-+FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN
-+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
-+PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED
-+OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS
-+TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE
-+PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,
-+REPAIR OR CORRECTION.
-+
-+  12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
-+REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,
-+INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING
-+OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED
-+TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY
-+YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER
-+PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
-+POSSIBILITY OF SUCH DAMAGES.
-+
-+		     END OF TERMS AND CONDITIONS
-+
-+	    How to Apply These Terms to Your New Programs
-+
-+  If you develop a new program, and you want it to be of the greatest
-+possible use to the public, the best way to achieve this is to make it
-+free software which everyone can redistribute and change under these terms.
-+
-+  To do so, attach the following notices to the program.  It is safest
-+to attach them to the start of each source file to most effectively
-+convey the exclusion of warranty; and each file should have at least
-+the "copyright" line and a pointer to where the full notice is found.
-+
-+    <one line to give the program's name and a brief idea of what it does.>
-+    Copyright (C) <year>  <name of author>
-+
-+    This program is free software; you can redistribute it and/or modify
-+    it under the terms of the GNU General Public License as published by
-+    the Free Software Foundation; either version 2 of the License, or
-+    (at your option) any later version.
-+
-+    This program is distributed in the hope that it will be useful,
-+    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+    GNU General Public License for more details.
-+
-+    You should have received a copy of the GNU General Public License
-+    along with this program; if not, write to the Free Software
-+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-+
-+
-+Also add information on how to contact you by electronic and paper mail.
-+
-+If the program is interactive, make it output a short notice like this
-+when it starts in an interactive mode:
-+
-+    Gnomovision version 69, Copyright (C) year name of author
-+    Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-+    This is free software, and you are welcome to redistribute it
-+    under certain conditions; type `show c' for details.
-+
-+The hypothetical commands `show w' and `show c' should show the appropriate
-+parts of the General Public License.  Of course, the commands you use may
-+be called something other than `show w' and `show c'; they could even be
-+mouse-clicks or menu items--whatever suits your program.
-+
-+You should also get your employer (if you work as a programmer) or your
-+school, if any, to sign a "copyright disclaimer" for the program, if
-+necessary.  Here is a sample; alter the names:
-+
-+  Yoyodyne, Inc., hereby disclaims all copyright interest in the program
-+  `Gnomovision' (which makes passes at compilers) written by James Hacker.
-+
-+  <signature of Ty Coon>, 1 April 1989
-+  Ty Coon, President of Vice
-+
-+This General Public License does not permit incorporating your program into
-+proprietary programs.  If your program is a subroutine library, you may
-+consider it more useful to permit linking proprietary applications with the
-+library.  If this is what you want to do, use the GNU Library General
-+Public License instead of this License.
-diff -Naur vdr-1.2.6/PLUGINS/src/remote/FAQ vdr-1.2.6.new/PLUGINS/src/remote/FAQ
---- vdr-1.2.6/PLUGINS/src/remote/FAQ	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/remote/FAQ	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,111 @@
-+Remote Control Mini-FAQ (En, 2003-03-31)
-+========================================
-+
-+Q: Which hardware is supported?
-+A: Configurations which have been reported to work:
-+
-+type          connector         ir protocol
-+-------------------------------------------
-+Activy 300                      RCMM
-+DVB-S 1.3[1]  J2                RC5
-+DVB-S 1.5[1]  ???               ???
-+DVB-S 1.6[1]  CI module         RC5
-+DVB-S 2.1     ir connector      RC5
-+DVB-S 2.2     ir connector      RC5
-+
-+[1] Probably DVB-S board revisions 1.3/1.5/1.6 work with:
-+- J2 connector (if no CI module has been connected)
-+- ir receiver connected to the CI module
-+
-+Please report if you have a working configuration not listed here. Thx.
-+
-+------------------------------------------------------------------------------
-+
-+Q: What is the expected behavior of evtest?
-+A: You should see something like this:
-+
-+./evtest /dev/input/event0
-+Input driver version is 1.0.0
-+Input device ID: bus 0x0 vendor 0x0 product 0x0 version 0x0
-+Input device name: "DVB on-card IR receiver"
-+Supported events:
-+  Event type 1 (Key)
-+    Event code 2 (1)
-+    Event code 3 (2)
-+    Event code 4 (3)
-+    Event code 5 (4)
-+    Event code 6 (5)
-+    Event code 7 (6)
-+    Event code 8 (7)
-+    Event code 9 (8)
-+    Event code 10 (9)
-+    Event code 11 (0)
-+    Event code 113 (Mute)
-+    Event code 114 (VolumeDown)
-+    Event code 115 (VolumeUp)
-+    Event code 154 (CycleWindows)
-+    Event code 353 (Select)
-+    Event code 360 (Vendor)
-+    Event code 375 (Screen)
-+    Event code 377 (TV)
-+    Event code 385 (Radio)
-+    Event code 402 (ChannelUp)
-+    Event code 403 (ChannelDown)
-+Testing ... (interrupt to exit)
-+Event: time 1047342384.790038, type 1 (Key), code 402 (ChannelUp), value 1
-+Event: time 1047342385.290630, type 1 (Key), code 402 (ChannelUp), value 0
-+
-+'DVB on-card IR receiver' indicates that you are using the correct device.
-+'Event:' lines are the result of pressing the 'Up' key on the remote control.
-+
-+------------------------------------------------------------------------------
-+
-+Q: evtest does not show any events.
-+A: Try this checklist:
-+
-+0. compile everything:
-+   cd DVB/driver
-+   make
-+   makedev.napi
-+   cd DVB/apps/av7110_loadkeys
-+   make
-+
-+1. load the driver
-+   cd DVB/driver
-+   make insmod
-+
-+2. load the keymap [see note below]
-+   cd DVB/apps/av7110_loadkeys
-+   ./av7110_loadkeys hauppauge.rc5 > /proc/av7110_ir
-+
-+3. run evtest
-+   ./evtest /dev/input/event0
-+
-+If this does not work, try
-+   ./evtest /dev/input/event1
-+   ./evtest /dev/input/event2
-+   ./evtest /dev/input/event3
-+   ...
-+
-+One of these should work. (If your device is not '/dev/input/event0', 
-+you have to specify this device with the '-i' command line option of
-+the remote control plugin.)
-+
-+Note:
-+   The keymap above works for the RC5 remote of a DVB-S Nexus 2.1 card.
-+   For RCMM receivers, use a .rcmm keymap, i.e. 'activy.rcmm'.
-+   If unsure, you might also try
-+   ./av7110_loadkeys -i hauppauge.rc5 > /proc/av7110_ir
-+   ./av7110_loadkeys activy.rcmm > /proc/av7110_ir
-+   ./av7110_loadkeys -i activy.rcmm > /proc/av7110_ir
-+
-+------------------------------------------------------------------------------
-+
-+Q: It still doesn't work. Any other idea?
-+A: Verify that the plug of the remote control receiver is connected properly.
-+   :)
-+
-+------------------------------------------------------------------------------
-+
-+Q: How do I have to modify 'runvdr' to load the keymap?
-+A: Take a look at the script 'runvdr.remote' in sub-directory 'misc'.
-\ No newline at end of file
-diff -Naur vdr-1.2.6/PLUGINS/src/remote/HISTORY vdr-1.2.6.new/PLUGINS/src/remote/HISTORY
---- vdr-1.2.6/PLUGINS/src/remote/HISTORY	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/remote/HISTORY	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,13 @@
-+VDR Plugin 'remote' Revision History
-+------------------------------------
-+
-+2002-10-14: Version 0.0.1
-+
-+- Initial revision.
-+
-+
-+2002-03-31: Version 0.1.0
-+
-+- Support autorepeat on /dev/input/eventX with following API-3 drivers:
-+  o DVB HEAD (2003-03-31 and later)
-+  o dvb kernel (2003-03-31 and later)
-diff -Naur vdr-1.2.6/PLUGINS/src/remote/Makefile vdr-1.2.6.new/PLUGINS/src/remote/Makefile
---- vdr-1.2.6/PLUGINS/src/remote/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/remote/Makefile	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,80 @@
-+#
-+# Makefile for a Video Disk Recorder plugin
-+#
-+# $Id$
-+
-+# The official name of this plugin.
-+# This name will be used in the '-P...' option of VDR to load the plugin.
-+# By default the main source file also carries this name.
-+#
-+PLUGIN = remote
-+
-+### The version number of this plugin (taken from the main source file):
-+
-+VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ print $$6 }' | sed -e 's/[";]//g')
-+
-+### The directory environment:
-+
-+DVBDIR = ../../../../DVB
-+VDRDIR = ../../..
-+LIBDIR = ../../lib
-+TMPDIR = /tmp
-+
-+### The version number of VDR (taken from VDR's "config.h"):
-+
-+VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
-+
-+### The name of the distribution archive:
-+
-+ARCHIVE = $(PLUGIN)-$(VERSION)
-+PACKAGE = vdr-$(ARCHIVE)
-+
-+### Includes and Defines (add further entries here):
-+
-+-include $(VDRDIR)/Make.config
-+INCLUDES += -I$(VDRDIR)/include
-+
-+DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
-+
-+### The object files (add further files here):
-+
-+OBJS = $(PLUGIN).o
-+
-+### The C++ compiler and options:
-+
-+CXX      = powerpc-tuxbox-linux-gnu-g++
-+#CXXFLAGS = -O3 -Wall -Woverloaded-virtual -msoft-float
-+CXXFLAGS = -mcpu=823 -msoft-float -mmultiple -mstring -meabi -O3 -g -DREMOTE_
-+
-+### Implicit rules:
-+
-+%.o: %.c
-+	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
-+
-+# Dependencies:
-+
-+MAKEDEP = $(CXX) -MM -MG
-+DEPFILE = .dependencies
-+$(DEPFILE): Makefile
-+	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
-+
-+-include $(DEPFILE)
-+
-+### Targets:
-+
-+all: libvdr-$(PLUGIN).so
-+
-+libvdr-$(PLUGIN).so: $(OBJS)
-+	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
-+	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
-+
-+dist: clean
-+	@-rm -rf $(TMPDIR)/$(ARCHIVE)
-+	@mkdir $(TMPDIR)/$(ARCHIVE)
-+	@cp -a * $(TMPDIR)/$(ARCHIVE)
-+	@tar czf $(PACKAGE).tgz -C $(TMPDIR) $(ARCHIVE)
-+	@-rm -rf $(TMPDIR)/$(ARCHIVE)
-+	@echo Distribution package created as $(PACKAGE).tgz
-+
-+clean:
-+	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
-diff -Naur vdr-1.2.6/PLUGINS/src/remote/README vdr-1.2.6.new/PLUGINS/src/remote/README
---- vdr-1.2.6/PLUGINS/src/remote/README	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/remote/README	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,113 @@
-+remote - a remote control plugin for the Video Disk Recorder (VDR)
-+==================================================================
-+
-+Written by:                   Oliver Endriss <o.endriss@gmx.de>
-+
-+Latest version available at:  http://endriss.escape.bei.t-online.de/vdr
-+
-+Requirements:                 VDR 1.1.13 or later
-+
-+Distributed under GPL, see the file COPYING for license information.
-+
-+
-+Description:
-+------------
-+This plugin supports the built-in remote control port of the DVB-S Rev. 2.1/2.2
-+(and the J2 or CAM connectors of some other boards, see file FAQ).
-+It is primarily intended for use with the new DVB driver (NEWSTRUCT and later,
-+i.e. API versions 2 and 3), but may be used with the old driver, too.
-+
-+When the plugin is loaded for the first time, vdr will prompt you to learn
-+the keys of the remote control. It is possible to use several devices at the
-+same time, but this is not very important right now...
-+
-+Supported kernel devices:
-+- new DVB driver (API-2, API-3): /dev/input/eventX
-+- old DVB driver (API-1): /dev/lirc
-+- keyboard: /dev/console, /dev/ttyX
-+
-+
-+Installation:
-+-------------
-+The remote plugin is installed as usual:
-+- cd VDR/PLUGINS/src
-+- tar xfz vdr-remote-0.1.0.tgz
-+- ln -s remote-0.1.0 remote
-+- cd ../..
-+- make plugins
-+
-+
-+API-3 driver (version 1.0.0, CVS HEAD, CVS dvb-kernel) 
-+------------------------------------------------------
-+Remote control events are passed through '/device/input/eventX'.
-+Since the /dev/input protocol is standardized in the kernel, there is a
-+chance that this plugin will work with other /dev/input devices, too.
-+However, this has not been tested yet...
-+The -i option allows you to specify the name of the /dev/input device.
-+
-+Before submitting a bug report, please verify that driver and remote control
-+are working properly. You may do this using the 'evtest' tool supplied
-+with the driver (directory 'DVB/apps/av7110_loadkeys').
-+Verify that the device node exists and you have read access rights.
-+You have to select the correct remote control type, inversion setting and
-+keymap using the tool 'av7110_loadkeys'. Please read the file README in
-+the directory 'DVB/apps/av7110_loadkeys'.
-+If you still have problems, take a look on the checklist in file 'FAQ'.
-+
-+If you'd like to use autorepeat, you have to use CVS HEAD, CVS dvb-kernel
-+2003-03-31 or later (or the next 1.0.0 release, of course).
-+The feature is automatically detected and used.
-+
-+BTW, these drivers might also be useful, if the remote control of your
-+TV set interferes with the remote control of your DVB-S. See the file
-+'DVB/apps/av7110_loadkeys/README' for information how to enable 
-+checking of the device address.
-+
-+
-+API-2 (CVS NEWSTRUCT)
-+---------------------
-+Since the NEWSTRUCT branch is obsolete, there is no reason to use this
-+driver anymore. See API-3 above.
-+
-+
-+API-1 (old driver, version 0.9.4)
-+---------------------------------
-+The old DVB driver provides a module (DVB/driver/lirc/lirc_dvb.o) which
-+connects to the LIRC device ('/dev/lirc', lirc_dev.o).
-+Using the -l option, it is possible to use '/dev/lirc' as a direct input
-+device, i.e. lircd is *not* needed. However, the lirc_dev.o driver
-+supplied by the LIRC package is still required (and must be loaded).
-+If you use this option, you should know what you are doing. :-)
-+
-+
-+TTY devices
-+-----------
-+The -t option may be used to specify a virtual console as an input device.
-+This is useful, if you haven't compiled keyboard support into your VDR.
-+
-+
-+Summary of command line options:
-+--------------------------------
-+-i dev, --input dev   select device which supports the /dev/input protocol
-+-l dev, --lirc dev    select device which uses the /dev/lirc protocol
-+-t dev, --tty dev     select terminal device
-+
-+
-+Examples:
-+---------
-+vdr -Premote
-+    use default device, same as '-i /dev/input/event0'
-+
-+vdr -P"remote -i /dev/input/event2"
-+    use specified input device '/dev/input/event2'
-+
-+vdr -P"remote -l /dev/lirc"
-+    use lirc kernel device
-+
-+vdr -P"remote -i /dev/input/event0 -i /dev/input/event2 -t /dev/tty10"
-+    use multiple devices
-+
-+
-+Have fun,
-+
-+Oliver
-diff -Naur vdr-1.2.6/PLUGINS/src/remote/remote.c vdr-1.2.6.new/PLUGINS/src/remote/remote.c
---- vdr-1.2.6/PLUGINS/src/remote/remote.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/remote/remote.c	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,426 @@
-+/*
-+ * remote.c: Remote Control plugin for the Video Disk Recorder
-+ *
-+ * See the README file for copyright information and how to reach the author.
-+ *
-+ * $Id$
-+ */
-+
-+#include <stdio.h>
-+#include <sys/fcntl.h>
-+#include <getopt.h>
-+#include <termios.h>
-+#include <linux/input.h>
-+#include "remote.h"
-+
-+//#define DEBUG
-+
-+#ifdef DEBUG
-+#define DSYSLOG(x...)    dsyslog(x)
-+#else
-+#define DSYSLOG(x...)
-+#endif
-+
-+//------------------------------------------------------------------------------
-+
-+cRemoteGeneric::cRemoteGeneric(const char *name, int f, char *d)
-+:cRemote(name)
-+{
-+    fh = f;
-+    device = d;
-+    polldelay     = 40;   // ms
-+    repeatdelay   = 350;  // ms
-+    repeatfreq    = 100;  // ms
-+    repeattimeout = 500;  // ms
-+}
-+
-+cRemoteGeneric::~cRemoteGeneric()
-+{
-+    Cancel();
-+}
-+
-+void cRemoteGeneric::Action(void)
-+{
-+    int now, first = 0, last = 0;
-+    uint64 code, lastcode = INVALID_KEY;
-+    bool repeat = false;
-+
-+    for (;;)
-+    {
-+        if (polldelay)
-+            delay_ms(polldelay);
-+
-+        code = getKey();
-+        if (code == INVALID_KEY)
-+        {
-+            esyslog("error reading '%s'\n", device);
-+            delay_ms(100*polldelay);
-+            continue;
-+        }
-+
-+        now = time_ms();
-+
-+        if (keyPressed(code))
-+        {
-+            // key down
-+            if (now - last > repeattimeout)
-+            {
-+                if (repeat)
-+                {
-+                    Put(lastcode,false,true);
-+                    DSYSLOG("%s: timeout %016llx\n", device, code);
-+                    repeat = false;
-+                }
-+                lastcode = INVALID_KEY;
-+            }
-+
-+            if (code != lastcode)
-+            {
-+                Put(code);
-+                DSYSLOG("%s: press %016llx\n", device, code);
-+                lastcode = code;
-+                last = first = now;
-+                repeat = false;
-+            }
-+            else
-+            {
-+                if (now - first < repeatdelay || now - last < repeatfreq)
-+                    continue;
-+                Put(code,true);
-+                DSYSLOG("%s: repeat %016llx\n", device, code);
-+                last = now;
-+                repeat = true;
-+            }
-+        }
-+        else
-+        {
-+            // key up
-+            if (repeat)
-+            {
-+                Put(lastcode,false,true);
-+                DSYSLOG("%s: release %016llx\n", device, lastcode);
-+                repeat = false;
-+            }
-+            lastcode = INVALID_KEY;
-+        }
-+    }/* for */
-+}
-+
-+//------------------------------------------------------------------------------
-+
-+cRemoteDevInput::cRemoteDevInput(const char *name, int f, char *d)
-+:cRemoteGeneric(name, f, d)
-+{
-+    unsigned long data[EV_MAX];
-+
-+    Start();
-+
-+    memset (data, 0, sizeof data);
-+    ioctl(f, EVIOCGBIT(0,EV_MAX), data);
-+
-+#define BITS_PER_LONG	(sizeof(unsigned long) * 8)
-+
-+    if ( data[EV_REP/BITS_PER_LONG] & (1 << EV_REP%BITS_PER_LONG) )
-+    {
-+        // autorepeat driver
-+        DSYSLOG("%s: supports autorepeat!", d);
-+        polldelay = 0;
-+    }
-+    else
-+    {
-+        // non-autorepeat drivers
-+        polldelay = repeatdelay = repeatfreq = repeattimeout = 0;
-+    }
-+}
-+
-+uint64 cRemoteDevInput::getKey(void)
-+{
-+    struct input_event ev;
-+    int n;
-+    uint64 code;
-+
-+    n = read(fh, &ev, sizeof ev);
-+    if (n == sizeof ev)
-+    {
-+        if (ev.value)
-+            ev.value = 1;
-+        code = ((uint64)ev.value << 32) | ((uint64)ev.type << 16) | (uint64)ev.code;
-+    }
-+    else
-+        code = INVALID_KEY;
-+    return code;
-+}
-+
-+bool cRemoteDevInput::keyPressed(uint64 code)
-+{
-+    return (code & 0xFFFF00000000ULL);
-+}
-+
-+void cRemoteDevInput::RCmd( bool onoff )
-+{
-+	switch ( onoff )
-+		{
-+			case false:
-+					usleep( 1000 );
-+					Start();
-+				break;
-+			case true:
-+					Cancel();
-+				break;
-+		}
-+}
-+
-+
-+//------------------------------------------------------------------------------
-+
-+class cRemoteDevLirc : protected cRemoteGeneric
-+{
-+protected:
-+  virtual uint64 getKey(void);
-+  virtual bool keyPressed(uint64 code);
-+public:
-+  cRemoteDevLirc(const char *name, int f, char *d)
-+  :cRemoteGeneric(name, f, d) { Start(); }
-+  virtual void RCmd( bool onoff );
-+};
-+
-+uint64 cRemoteDevLirc::getKey(void)
-+{
-+    unsigned long code;
-+    int n;
-+
-+    n = read(fh, &code, sizeof code);
-+    if (n != sizeof code)
-+        return INVALID_KEY;
-+    else
-+        return (uint64)code;
-+}
-+
-+bool cRemoteDevLirc::keyPressed(uint64 code)
-+{
-+    return (code & 0x80);
-+}
-+
-+void cRemoteDevLirc::RCmd( bool onoff )
-+{
-+	switch ( onoff )
-+		{
-+			case false:
-+					Start();
-+				break;
-+			case true:
-+					Cancel();
-+				break;
-+		}
-+}
-+
-+//------------------------------------------------------------------------------
-+
-+class cRemoteDevTty : protected cRemoteGeneric
-+{
-+private:
-+  struct termios tm;
-+protected:
-+  virtual uint64 getKey(void);
-+  virtual bool keyPressed(uint64 code);
-+public:
-+  cRemoteDevTty(const char *name, int f, char *d);
-+  virtual ~cRemoteDevTty();
-+  virtual void RCmd( bool onoff );
-+};
-+
-+cRemoteDevTty::cRemoteDevTty(const char *name, int f, char *d)
-+:cRemoteGeneric(name, f, d)
-+{
-+    struct termios t;
-+
-+    if (!tcgetattr(f, &tm))
-+    {
-+        t = tm;   
-+        t.c_lflag &= ~(ICANON | ECHO);
-+        tcsetattr(f, TCSANOW, &t);
-+    }
-+    polldelay     = 0;
-+    repeattimeout = 80;
-+    Start();
-+}
-+
-+cRemoteDevTty::~cRemoteDevTty()
-+{
-+    tcsetattr(fh, TCSANOW, &tm);
-+}
-+
-+uint64 cRemoteDevTty::getKey(void)
-+{
-+    int n;
-+    uint64 code = 0;
-+
-+    n = read(fh, &code, sizeof code);
-+    return (n > 0) ? code : INVALID_KEY;
-+}
-+
-+bool cRemoteDevTty::keyPressed(uint64 code)
-+{
-+    return true;
-+}
-+
-+void cRemoteDevTty::RCmd( bool onoff )
-+{
-+	switch ( onoff )
-+		{
-+			case false:
-+					Start();
-+				break;
-+			case true:
-+					Cancel();
-+				break;
-+		}
-+}
-+
-+//------------------------------------------------------------------------------
-+
-+void *cPluginRemote::GetSetData( int what )
-+{
-+	if ( what == RDATAFILEHANDLE )
-+		{
-+			return fh;
-+		}
-+	else
-+	if ( what == RSTOPREMOTE )
-+		{
-+			if ( prdi != NULL )
-+				prdi->RCmd( true );
-+			return NULL;
-+		}
-+	if ( what == RSTARTREMOTE )
-+		{
-+			if ( prdi != NULL )
-+				prdi->RCmd( false );
-+			return NULL;
-+		}
-+	return NULL;
-+}
-+
-+cPluginRemote::cPluginRemote(void)
-+{
-+    for (int i = 0; i < NUMREMOTES; i++)
-+    {
-+        devtyp[i] = '\0';
-+        devnam[i] = NULL;
-+        fh[i] = -1;
-+    }
-+    devcnt = 0;
-+}
-+
-+cPluginRemote::~cPluginRemote()
-+{
-+    // must not delete any remotes, see PLUGINS.html!
-+
-+    for (int i = 0; i < devcnt; i++)
-+    {
-+        if (fh[i] >= 0)
-+            close(fh[i]);
-+        fh[i] = -1;
-+    }
-+    devcnt = 0;
-+}
-+
-+const char *cPluginRemote::CommandLineHelp(void)
-+{
-+    return "  -i dev,   --input=dev    kernel input device (/dev/input/...)\n"
-+           "  -l dev,   --lirc=dev     kernel lirc device (/dev/lirc)\n"
-+           "  -t dev,   --tty=dev      tty device\n";
-+}
-+
-+bool cPluginRemote::ProcessArgs(int argc, char *argv[])
-+{
-+    static struct option long_options[] =
-+            { { "input", required_argument, NULL, 'i' },
-+              { "lirc",  required_argument, NULL, 'l' },
-+              { "tty",   required_argument, NULL, 't' },
-+              { NULL } };
-+    int c;
-+
-+    while ((c = getopt_long(argc, argv, "i:l:t:", long_options, NULL)) != -1)
-+    {
-+        switch (c)
-+        {
-+          case 'i':
-+          case 'l':
-+          case 't':
-+              if (devcnt >= NUMREMOTES)
-+              {
-+                  esyslog("%s: too many remotes", Name());
-+                  return false;
-+              }
-+              devtyp[devcnt] = c;
-+              devnam[devcnt] = optarg;
-+	      devcnt++;
-+              break;
-+
-+          default:
-+              esyslog("%s: invalid argument", Name());
-+              return false;
-+        }
-+    }
-+
-+    return true;
-+}
-+
-+bool cPluginRemote::Start(void)
-+{
-+    char nam[25];
-+    bool ok = false;
-+
-+    // defaults
-+    if (devcnt == 0)
-+    {
-+        devtyp[0] = 'i';
-+        devnam[0] = "/dev/input/event0";
-+        devcnt = 1;
-+    }
-+
-+    for (int i = 0; i < devcnt; i++)
-+    {
-+        fh[i] = open(devnam[i], O_RDONLY);
-+        if (fh[i] < 0)
-+        {
-+            esyslog("%s: unable to open '%s'", Name(), devnam[i]);
-+            continue;
-+        }
-+	
-+        // at least, one device opened successfully
-+        ok = true;
-+        dsyslog("%s: using '%s'", Name(), devnam[i]);
-+
-+        // build name for remote.conf
-+        char *cp = strrchr(devnam[i], '/');
-+	if (cp)
-+            sprintf (nam, "%s-%s", Name(), cp+1);
-+        else
-+            sprintf (nam, "%s-%u", Name(), i);
-+
-+	switch (devtyp[i])
-+        {
-+            case 'i':
-+                prdi = new cRemoteDevInput(nam,fh[i],devnam[i]);
-+                break;
-+
-+            case 'l':
-+                new cRemoteDevLirc(nam,fh[i],devnam[i]);
-+                break;
-+
-+            case 't':
-+                new cRemoteDevTty(nam,fh[i],devnam[i]);
-+                break;
-+        }
-+    }
-+    
-+    if (!ok)
-+        esyslog("%s: fatal error - unable to open input device", Name());
-+    return ok;
-+}
-+
-+//------------------------------------------------------------------------------
-+
-+VDRPLUGINCREATOR(cPluginRemote); // Don't touch this!
-diff -Naur vdr-1.2.6/PLUGINS/src/remote/remote.h vdr-1.2.6.new/PLUGINS/src/remote/remote.h
---- vdr-1.2.6/PLUGINS/src/remote/remote.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/PLUGINS/src/remote/remote.h	2006-11-21 22:07:44.000000000 +0100
-@@ -0,0 +1,71 @@
-+#ifndef __REMOTE_H__
-+#define __REMOTE_H__
-+
-+#include <vdr/plugin.h>
-+#include <vdr/remote.h>
-+#include <vdr/thread.h>
-+
-+#define NUMREMOTES      5         // maximum number of remote control devices
-+
-+#define RDATAFILEHANDLE 	1
-+#define RSTOPREMOTE		2
-+#define RSTARTREMOTE		3
-+
-+static const char *VERSION        = "0.1.0";
-+static const char *DESCRIPTION    = "Remote control";
-+
-+class cRemoteGeneric : protected cRemote, protected cThread
-+{
-+protected:
-+  static const uint64 INVALID_KEY = (uint64) -1;
-+  int fh;
-+  char *device;
-+  int polldelay;
-+  int repeatdelay;
-+  int repeatfreq;
-+  int repeattimeout;
-+  cRemoteGeneric(const char *name, int f, char *d);
-+  virtual ~cRemoteGeneric();
-+  virtual uint64 getKey(void) = 0;
-+  virtual bool keyPressed(uint64 code) = 0;
-+  virtual void Action(void);
-+public:
-+	  virtual void RCmd( bool onoff ) = 0;
-+};
-+
-+class cRemoteDevInput : protected cRemoteGeneric
-+{
-+protected:
-+  virtual uint64 getKey(void);
-+  virtual bool keyPressed(uint64 code);
-+public:
-+  cRemoteDevInput(const char *name, int f, char *d);
-+  virtual void RCmd( bool onoff );
-+};
-+
-+
-+class cPluginRemote : public cPlugin
-+{
-+private:
-+  int  devcnt;
-+  char devtyp[NUMREMOTES];
-+  char *devnam[NUMREMOTES];
-+  int  fh[NUMREMOTES];
-+  cRemoteDevInput * prdi;
-+public:
-+  cPluginRemote(void);
-+  virtual ~cPluginRemote();
-+  virtual const char *Version(void) { return VERSION; }
-+  virtual const char *Description(void) { return DESCRIPTION; }
-+  virtual const char *CommandLineHelp(void);
-+  virtual bool ProcessArgs(int argc, char *argv[]);
-+  virtual bool Start(void);
-+  virtual void *GetSetData( int what );
-+};
-+
-+#endif
-+
-+
-+
-+
-+
 diff -Naur vdr-1.2.6/config.c vdr-1.2.6.new/config.c
 --- vdr-1.2.6/config.c	2003-10-17 16:11:27.000000000 +0200
-+++ vdr-1.2.6.new/config.c	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/config.c	2009-06-14 03:05:47.000000000 +0200
 @@ -272,6 +272,7 @@
    UseSubtitle = 1;
    RecordingDirs = 1;
@@ -2797,7 +27,7 @@ diff -Naur vdr-1.2.6/config.c vdr-1.2.6.new/config.c
    Store("OSDwidth",           OSDwidth);
 diff -Naur vdr-1.2.6/config.h vdr-1.2.6.new/config.h
 --- vdr-1.2.6/config.h	2003-11-14 14:29:13.000000000 +0100
-+++ vdr-1.2.6.new/config.h	2006-11-21 23:01:11.000000000 +0100
++++ vdr-1.2.6.new/config.h	2009-06-14 03:05:47.000000000 +0200
 @@ -137,7 +137,7 @@
    bool Save(void)
    {
@@ -2817,7 +47,7 @@ diff -Naur vdr-1.2.6/config.h vdr-1.2.6.new/config.h
    int OSDwidth, OSDheight;
 diff -Naur vdr-1.2.6/device.c vdr-1.2.6.new/device.c
 --- vdr-1.2.6/device.c	2003-11-07 14:16:12.000000000 +0100
-+++ vdr-1.2.6.new/device.c	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/device.c	2009-06-14 03:05:47.000000000 +0200
 @@ -37,6 +37,7 @@
    cardIndex = nextCardIndex++;
  
@@ -2851,7 +81,7 @@ diff -Naur vdr-1.2.6/device.c vdr-1.2.6.new/device.c
    return false;
 diff -Naur vdr-1.2.6/device.h vdr-1.2.6.new/device.h
 --- vdr-1.2.6/device.h	2003-11-07 14:15:45.000000000 +0100
-+++ vdr-1.2.6.new/device.h	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/device.h	2009-06-14 03:05:47.000000000 +0200
 @@ -198,6 +198,7 @@
    bool active;
    virtual void Action(void);
@@ -2879,7 +109,7 @@ diff -Naur vdr-1.2.6/device.h vdr-1.2.6.new/device.h
           ///< (default is PAL).
 diff -Naur vdr-1.2.6/dvbdevice.c vdr-1.2.6.new/dvbdevice.c
 --- vdr-1.2.6/dvbdevice.c	2003-11-09 12:08:22.000000000 +0100
-+++ vdr-1.2.6.new/dvbdevice.c	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/dvbdevice.c	2009-06-14 03:05:47.000000000 +0200
 @@ -22,6 +22,8 @@
  #include <linux/dvb/dmx.h>
  #include <linux/dvb/frontend.h>
@@ -3400,7 +630,7 @@ diff -Naur vdr-1.2.6/dvbdevice.c vdr-1.2.6.new/dvbdevice.c
  void cDvbDevice::PlayAudio(const uchar *Data, int Length)
 diff -Naur vdr-1.2.6/dvbdevice.h vdr-1.2.6.new/dvbdevice.h
 --- vdr-1.2.6/dvbdevice.h	2003-11-07 14:17:13.000000000 +0100
-+++ vdr-1.2.6.new/dvbdevice.h	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/dvbdevice.h	2009-06-14 03:05:47.000000000 +0200
 @@ -36,6 +36,9 @@
           ///< Initializes the DVB devices.
           ///< Must be called before accessing any DVB functions.
@@ -3421,7 +651,7 @@ diff -Naur vdr-1.2.6/dvbdevice.h vdr-1.2.6.new/dvbdevice.h
  // Audio facilities
 diff -Naur vdr-1.2.6/dvbosd.c vdr-1.2.6.new/dvbosd.c
 --- vdr-1.2.6/dvbosd.c	2003-04-12 14:10:12.000000000 +0200
-+++ vdr-1.2.6.new/dvbosd.c	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/dvbosd.c	2009-06-14 03:05:47.000000000 +0200
 @@ -13,14 +13,18 @@
  #include <sys/unistd.h>
  #include "tools.h"
@@ -3485,7 +715,7 @@ diff -Naur vdr-1.2.6/dvbosd.c vdr-1.2.6.new/dvbosd.c
  bool cDvbOsd::OpenWindow(cWindow *Window)
 diff -Naur vdr-1.2.6/dvbosd.h vdr-1.2.6.new/dvbosd.h
 --- vdr-1.2.6/dvbosd.h	2002-11-01 11:05:47.000000000 +0100
-+++ vdr-1.2.6.new/dvbosd.h	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/dvbosd.h	2009-06-14 03:05:47.000000000 +0200
 @@ -11,13 +11,16 @@
  #define __DVBOSD_H
  
@@ -3517,7 +747,7 @@ diff -Naur vdr-1.2.6/dvbosd.h vdr-1.2.6.new/dvbosd.h
  #endif //__DVBOSD_H
 diff -Naur vdr-1.2.6/eit.c vdr-1.2.6.new/eit.c
 --- vdr-1.2.6/eit.c	2003-10-12 13:05:42.000000000 +0200
-+++ vdr-1.2.6.new/eit.c	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/eit.c	2009-06-14 03:05:47.000000000 +0200
 @@ -38,6 +38,8 @@
  #include "libdtv/libdtv.h"
  #include "videodir.h"
@@ -3608,7 +838,7 @@ diff -Naur vdr-1.2.6/eit.c vdr-1.2.6.new/eit.c
 +}
 diff -Naur vdr-1.2.6/eit.h vdr-1.2.6.new/eit.h
 --- vdr-1.2.6/eit.h	2003-05-17 11:15:56.000000000 +0200
-+++ vdr-1.2.6.new/eit.h	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/eit.h	2009-06-14 03:05:47.000000000 +0200
 @@ -134,6 +134,23 @@
  
  }SIP_FILTER;
@@ -3645,7 +875,7 @@ diff -Naur vdr-1.2.6/eit.h vdr-1.2.6.new/eit.h
    };
 diff -Naur vdr-1.2.6/fbosd.c vdr-1.2.6.new/fbosd.c
 --- vdr-1.2.6/fbosd.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/fbosd.c	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/fbosd.c	2009-06-14 03:05:47.000000000 +0200
 @@ -0,0 +1,305 @@
 +/*
 + * fbosd.c replaces hardware osd driver
@@ -3954,7 +1184,7 @@ diff -Naur vdr-1.2.6/fbosd.c vdr-1.2.6.new/fbosd.c
 +};
 diff -Naur vdr-1.2.6/fbosd.h vdr-1.2.6.new/fbosd.h
 --- vdr-1.2.6/fbosd.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/fbosd.h	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/fbosd.h	2009-06-14 03:05:47.000000000 +0200
 @@ -0,0 +1,86 @@
 +/*
 + * fbosd.h
@@ -4044,7 +1274,7 @@ diff -Naur vdr-1.2.6/fbosd.h vdr-1.2.6.new/fbosd.h
 +
 diff -Naur vdr-1.2.6/framebuffer.c vdr-1.2.6.new/framebuffer.c
 --- vdr-1.2.6/framebuffer.c	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/framebuffer.c	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/framebuffer.c	2009-06-14 03:05:47.000000000 +0200
 @@ -0,0 +1,414 @@
 +/*
 +	Neutrino-GUI  -   DBoxII-Project
@@ -4462,7 +1692,7 @@ diff -Naur vdr-1.2.6/framebuffer.c vdr-1.2.6.new/framebuffer.c
 +}
 diff -Naur vdr-1.2.6/framebuffer.h vdr-1.2.6.new/framebuffer.h
 --- vdr-1.2.6/framebuffer.h	1970-01-01 01:00:00.000000000 +0100
-+++ vdr-1.2.6.new/framebuffer.h	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/framebuffer.h	2009-06-14 03:05:47.000000000 +0200
 @@ -0,0 +1,114 @@
 +/*
 +	Neutrino-GUI  -   DBoxII-Project
@@ -4578,9 +1808,76 @@ diff -Naur vdr-1.2.6/framebuffer.h vdr-1.2.6.new/framebuffer.h
 +
 +
 +#endif
+diff -Naur vdr-1.2.6/Makefile vdr-1.2.6.new/Makefile
+--- vdr-1.2.6/Makefile	2003-08-09 13:09:45.000000000 +0200
++++ vdr-1.2.6.new/Makefile	2009-06-14 03:05:47.000000000 +0200
+@@ -14,10 +14,7 @@
+ CXX      ?= g++
+ CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
+ 
+-DVBDIR   = ../DVB
+ DTVDIR   = ./libdtv
+-MANDIR   = /usr/local/man
+-BINDIR   = /usr/local/bin
+ 
+ PLUGINDIR= ./PLUGINS
+ PLUGINLIBDIR= $(PLUGINDIR)/lib
+@@ -29,19 +26,24 @@
+ 
+ -include Make.config
+ 
+-INCLUDES = -I$(DVBDIR)/include
++INCLUDES = -I$(DVBDIR)/include -I$(DRIVERDIR)/include
+ 
+ DTVLIB   = $(DTVDIR)/libdtv.a
+ 
++#NDLIB = $(APPSDIR)/tuxbox/neutrino/src/driver/libneutrino_driver.a
++
+ OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbosd.o\
+        dvbplayer.o dvbspu.o eit.o eitscan.o font.o i18n.o interface.o keys.o\
+        lirc.o menu.o menuitems.o osdbase.o osd.o player.o plugin.o rcu.o\
+        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sources.o\
+-       spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o
++       spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o \
++       fbosd.o framebuffer.o
+ 
+ OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
+ FIXFONT = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
+ 
++NO_KBD=1
++
+ ifndef NO_KBD
+ DEFINES += -DREMOTE_KBD
+ endif
+@@ -112,7 +114,8 @@
+ # Plugins:
+ 
+ plugins: include-dir
+-	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" all; done
++	@rm -f $(PLUGINDIR)/src/dbox2/libvdr-dbox2.so
++	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" PPREFIX=$(PREFIX) DDIR=$(DRIVERDIR) all; done
+ 
+ plugins-clean:
+ 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
+@@ -128,6 +131,10 @@
+             mkdir $(VIDEODIR);\
+             cp *.conf $(VIDEODIR);\
+             fi
++	@if [ ! -d $(PLUGINIDIR) ]; then\
++		 mkdir -p $(PLUGINIDIR);\
++		 fi
++	cp $(PLUGINDIR)/lib/libvdr* $(PLUGINIDIR)
+ 
+ # Source documentation:
+ 
+@@ -147,4 +154,3 @@
+ fontclean:
+ 	-rm -f fontfix.c fontosd.c
+ CLEAN: clean fontclean
+-
 diff -Naur vdr-1.2.6/menu.c vdr-1.2.6.new/menu.c
 --- vdr-1.2.6/menu.c	2003-10-03 16:36:20.000000000 +0200
-+++ vdr-1.2.6.new/menu.c	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/menu.c	2009-06-14 03:05:47.000000000 +0200
 @@ -2044,15 +2044,18 @@
  
  cMenuSetupDVB::cMenuSetupDVB(void)
@@ -4611,7 +1908,7 @@ diff -Naur vdr-1.2.6/menu.c vdr-1.2.6.new/menu.c
  }
 diff -Naur vdr-1.2.6/plugin.c vdr-1.2.6.new/plugin.c
 --- vdr-1.2.6/plugin.c	2003-08-30 16:52:58.000000000 +0200
-+++ vdr-1.2.6.new/plugin.c	2006-11-21 23:11:57.000000000 +0100
++++ vdr-1.2.6.new/plugin.c	2009-06-14 03:05:47.000000000 +0200
 @@ -112,6 +112,11 @@
    return MakeDirs(buffer, true) ? buffer : NULL;
  }
@@ -4635,7 +1932,7 @@ diff -Naur vdr-1.2.6/plugin.c vdr-1.2.6.new/plugin.c
       }
 diff -Naur vdr-1.2.6/plugin.h vdr-1.2.6.new/plugin.h
 --- vdr-1.2.6/plugin.h	2003-05-09 16:57:55.000000000 +0200
-+++ vdr-1.2.6.new/plugin.h	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/plugin.h	2009-06-14 03:05:47.000000000 +0200
 @@ -47,6 +47,8 @@
  
    void RegisterI18n(const tI18nPhrase * const Phrases);
@@ -4645,9 +1942,2712 @@ diff -Naur vdr-1.2.6/plugin.h vdr-1.2.6.new/plugin.h
    static void SetConfigDirectory(const char *Dir);
    static const char *ConfigDirectory(const char *PluginName = NULL);
    };
+diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/ccam.c vdr-1.2.6.new/PLUGINS/src/dbox2/ccam.c
+--- vdr-1.2.6/PLUGINS/src/dbox2/ccam.c	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/dbox2/ccam.c	2009-06-14 03:23:37.000000000 +0200
+@@ -0,0 +1,172 @@
++/*
++ * ccam.c: A plugin for the Video Disk Recorder
++ *
++ * See the README file for copyright information and how to reach the author.
++ *
++ * $Id$
++ */
++
++#include "ccam.h"
++#include <vdr/channels.h>
++#include <vdr/eit.h>
++#include <vdr/ci.h>
++#include <connection/basicclient.h>
++#include <vdr/tools.h>
++
++#define CAMD_UDS_NAME  "/tmp/camd.socket"
++
++class CCaPmt : public CBasicClient 
++{
++	private:
++		int 		length;
++		int 		esInfoLengthPos;
++		uint8_t 	capmt[2048];
++	protected:
++		virtual unsigned char   	getVersion   () const { return 0x9F; };
++		virtual const          char * 		getSocketName() const { return CAMD_UDS_NAME; };
++	public:
++		CCaPmt( int ProgramNumber );
++		void 		AddPid( int Pid );
++		void 		AddCaDescriptor( int Length, uint8_t *Data );
++		bool 		sendData();
++
++};
++
++#define CPCI_OK_DESCRAMBLING  	0x01
++#define CPLM_ONLY				0x03
++#define CPLM_TS					0x04
++
++CCaPmt::CCaPmt( int ProgramNumber )
++{
++	length = 0;
++  	capmt[length++] = CPLM_ONLY; // FIXME: Do we need Transponderchange -> 0x04
++  	capmt[length++] = ( ProgramNumber >> 8 ) & 0xFF;
++  	capmt[length++] =  ProgramNumber & 0xFF;
++  	capmt[length++] = 0x01; // version_number, current_next_indicator - apparently vn doesn't matter, but cni must be 1
++  	esInfoLengthPos = length;
++  	capmt[length++] = 0x00; // program_info_length H (at program level)
++  	capmt[length++] = 0x00; // program_info_length L
++}
++
++void CCaPmt::AddPid( int Pid )
++{
++  	capmt[length++] = 0x00; //XXX stream_type (apparently doesn't matter)
++  	capmt[length++] = ( Pid >> 8 ) & 0xFF;
++  	capmt[length++] = Pid & 0xFF;
++  	esInfoLengthPos = length;
++  	capmt[length++] = 0x00; // ES_info_length H (at ES level)
++  	capmt[length++] = 0x00; // ES_info_length L
++}
++
++void CCaPmt::AddCaDescriptor( int Length, uint8_t *Data )
++{
++  	if ( esInfoLengthPos )
++		{
++     			if ( length + Length < int ( sizeof( capmt ) ) )
++					{
++        				capmt[length++] = CPCI_OK_DESCRAMBLING;
++        				memcpy( capmt + length, Data, Length );
++        				length += Length;
++        				int l = length - esInfoLengthPos - 2;
++        				capmt[esInfoLengthPos]     = ( l >> 8 ) & 0xFF;
++        				capmt[esInfoLengthPos + 1] =  l & 0xFF;
++        			}
++     			else
++        			esyslog( "ERROR: buffer overflow in CA descriptor" );
++
++     			esInfoLengthPos = 0;
++     		}
++  	else
++     		esyslog( "ERROR: adding CA descriptor without Pid!" );
++}
++
++#define SIZE_INDICATOR 0x80
++
++static uint8_t *SetLength( uint8_t *Data, int Length )
++{
++  	uint8_t *p = Data;
++	
++  	if ( Length < 128 )
++		*p++ = Length;
++  	else
++		{
++     			int n = sizeof( Length );
++     			for ( int i = n - 1; i >= 0; i-- )
++					{
++         				int b = ( Length >> ( 8 * i ) ) & 0xFF;
++         				if ( p != Data || b )
++            				*++p = b;
++         			}
++     			*Data = ( p - Data ) | SIZE_INDICATOR;
++     			p++;
++     		}
++  return p;
++}
++
++bool CCaPmt::sendData()
++{
++	if ( !open_connection() )
++		return false;
++	
++	uint8_t buffer[2048];
++	uint8_t *p = buffer;
++	
++	*p++ = 0x9F;
++	*p++ = 0x80;
++  	*p++ = 0x32;
++
++	p = SetLength( p,length );
++
++	if ( p - buffer + length < int ( sizeof( buffer ) ) )
++		{
++			memcpy( p, capmt, length );
++			p += length;
++		}
++	bool return_value = send_data( (const char*)buffer, p-buffer );
++
++	close_connection();
++	return return_value;
++}
++
++
++CCam::CCam(void)
++{
++ 	channel=NULL;
++}
++
++void CCam::setCaPmt(cChannel *channel)
++{
++	uchar buffer[2048];
++	int length = 0;
++	int count = 0;
++
++	// we need this...
++	// vdr needs some time to filter the ca descriptors
++	// the routine tries MAXCACOUNT times (my Nokia Sat box needs about 50-70 tries)
++	// FIXME: if you switch to a Premiere channel, you do not have subsribed, switching takes to long,
++	// because the routine then tries MAXCACOUNT times
++	// hmm, need to find a better way...
++	#define MAXCACOUNT	100
++	#define TIMETOWAIT	10000
++	do
++		{
++			count++;
++			usleep( TIMETOWAIT );
++			length = cSIProcessor::GetCaDescriptors( channel->Source(), channel->Frequency(), channel->Sid(), NULL, sizeof( buffer ), buffer );
++		} while ( ( length == 0 ) && ( count<MAXCACOUNT ) );
++
++	if ( length > 0 )
++		{
++			CCaPmt CaPmt( channel->Sid() );
++			CaPmt.AddCaDescriptor( length, buffer );
++			if ( channel->Vpid() )
++				CaPmt.AddPid( channel->Vpid() );
++			if ( channel->Apid1() )
++				CaPmt.AddPid( channel->Apid1() );
++			if ( channel->Apid2() )
++				CaPmt.AddPid( channel->Apid2() );
++			if ( channel->Dpid1() )
++				CaPmt.AddPid( channel->Dpid1() );
++			CaPmt.sendData();
++		}
++}
+diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/ccam.h vdr-1.2.6.new/PLUGINS/src/dbox2/ccam.h
+--- vdr-1.2.6/PLUGINS/src/dbox2/ccam.h	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/dbox2/ccam.h	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,26 @@
++/*
++ * ccam.h: A plugin for the Video Disk Recorder
++ *
++ * See the README file for copyright information and how to reach the author.
++ *
++ * $Id$
++ */
++
++#ifndef _CCAM_H_
++#define _CCAM_H_
++
++#include <vdr/channels.h>
++
++#define CAMD_UDS_NAME  "/tmp/camd.socket"
++
++class CCam 
++{
++	public:
++		CCam( void );
++		void 		setCaPmt( cChannel *inchannel );
++
++	private:
++		cChannel 	*channel;
++};
++
++#endif
+diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/COPYING vdr-1.2.6.new/PLUGINS/src/dbox2/COPYING
+--- vdr-1.2.6/PLUGINS/src/dbox2/COPYING	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/dbox2/COPYING	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,340 @@
++		    GNU GENERAL PUBLIC LICENSE
++		       Version 2, June 1991
++
++ Copyright (C) 1989, 1991 Free Software Foundation, Inc.
++                       59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ Everyone is permitted to copy and distribute verbatim copies
++ of this license document, but changing it is not allowed.
++
++			    Preamble
++
++  The licenses for most software are designed to take away your
++freedom to share and change it.  By contrast, the GNU General Public
++License is intended to guarantee your freedom to share and change free
++software--to make sure the software is free for all its users.  This
++General Public License applies to most of the Free Software
++Foundation's software and to any other program whose authors commit to
++using it.  (Some other Free Software Foundation software is covered by
++the GNU Library General Public License instead.)  You can apply it to
++your programs, too.
++
++  When we speak of free software, we are referring to freedom, not
++price.  Our General Public Licenses are designed to make sure that you
++have the freedom to distribute copies of free software (and charge for
++this service if you wish), that you receive source code or can get it
++if you want it, that you can change the software or use pieces of it
++in new free programs; and that you know you can do these things.
++
++  To protect your rights, we need to make restrictions that forbid
++anyone to deny you these rights or to ask you to surrender the rights.
++These restrictions translate to certain responsibilities for you if you
++distribute copies of the software, or if you modify it.
++
++  For example, if you distribute copies of such a program, whether
++gratis or for a fee, you must give the recipients all the rights that
++you have.  You must make sure that they, too, receive or can get the
++source code.  And you must show them these terms so they know their
++rights.
++
++  We protect your rights with two steps: (1) copyright the software, and
++(2) offer you this license which gives you legal permission to copy,
++distribute and/or modify the software.
++
++  Also, for each author's protection and ours, we want to make certain
++that everyone understands that there is no warranty for this free
++software.  If the software is modified by someone else and passed on, we
++want its recipients to know that what they have is not the original, so
++that any problems introduced by others will not reflect on the original
++authors' reputations.
++
++  Finally, any free program is threatened constantly by software
++patents.  We wish to avoid the danger that redistributors of a free
++program will individually obtain patent licenses, in effect making the
++program proprietary.  To prevent this, we have made it clear that any
++patent must be licensed for everyone's free use or not licensed at all.
++
++  The precise terms and conditions for copying, distribution and
++modification follow.
++
++		    GNU GENERAL PUBLIC LICENSE
++   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
++
++  0. This License applies to any program or other work which contains
++a notice placed by the copyright holder saying it may be distributed
++under the terms of this General Public License.  The "Program", below,
++refers to any such program or work, and a "work based on the Program"
++means either the Program or any derivative work under copyright law:
++that is to say, a work containing the Program or a portion of it,
++either verbatim or with modifications and/or translated into another
++language.  (Hereinafter, translation is included without limitation in
++the term "modification".)  Each licensee is addressed as "you".
++
++Activities other than copying, distribution and modification are not
++covered by this License; they are outside its scope.  The act of
++running the Program is not restricted, and the output from the Program
++is covered only if its contents constitute a work based on the
++Program (independent of having been made by running the Program).
++Whether that is true depends on what the Program does.
++
++  1. You may copy and distribute verbatim copies of the Program's
++source code as you receive it, in any medium, provided that you
++conspicuously and appropriately publish on each copy an appropriate
++copyright notice and disclaimer of warranty; keep intact all the
++notices that refer to this License and to the absence of any warranty;
++and give any other recipients of the Program a copy of this License
++along with the Program.
++
++You may charge a fee for the physical act of transferring a copy, and
++you may at your option offer warranty protection in exchange for a fee.
++
++  2. You may modify your copy or copies of the Program or any portion
++of it, thus forming a work based on the Program, and copy and
++distribute such modifications or work under the terms of Section 1
++above, provided that you also meet all of these conditions:
++
++    a) You must cause the modified files to carry prominent notices
++    stating that you changed the files and the date of any change.
++
++    b) You must cause any work that you distribute or publish, that in
++    whole or in part contains or is derived from the Program or any
++    part thereof, to be licensed as a whole at no charge to all third
++    parties under the terms of this License.
++
++    c) If the modified program normally reads commands interactively
++    when run, you must cause it, when started running for such
++    interactive use in the most ordinary way, to print or display an
++    announcement including an appropriate copyright notice and a
++    notice that there is no warranty (or else, saying that you provide
++    a warranty) and that users may redistribute the program under
++    these conditions, and telling the user how to view a copy of this
++    License.  (Exception: if the Program itself is interactive but
++    does not normally print such an announcement, your work based on
++    the Program is not required to print an announcement.)
++
++These requirements apply to the modified work as a whole.  If
++identifiable sections of that work are not derived from the Program,
++and can be reasonably considered independent and separate works in
++themselves, then this License, and its terms, do not apply to those
++sections when you distribute them as separate works.  But when you
++distribute the same sections as part of a whole which is a work based
++on the Program, the distribution of the whole must be on the terms of
++this License, whose permissions for other licensees extend to the
++entire whole, and thus to each and every part regardless of who wrote it.
++
++Thus, it is not the intent of this section to claim rights or contest
++your rights to work written entirely by you; rather, the intent is to
++exercise the right to control the distribution of derivative or
++collective works based on the Program.
++
++In addition, mere aggregation of another work not based on the Program
++with the Program (or with a work based on the Program) on a volume of
++a storage or distribution medium does not bring the other work under
++the scope of this License.
++
++  3. You may copy and distribute the Program (or a work based on it,
++under Section 2) in object code or executable form under the terms of
++Sections 1 and 2 above provided that you also do one of the following:
++
++    a) Accompany it with the complete corresponding machine-readable
++    source code, which must be distributed under the terms of Sections
++    1 and 2 above on a medium customarily used for software interchange; or,
++
++    b) Accompany it with a written offer, valid for at least three
++    years, to give any third party, for a charge no more than your
++    cost of physically performing source distribution, a complete
++    machine-readable copy of the corresponding source code, to be
++    distributed under the terms of Sections 1 and 2 above on a medium
++    customarily used for software interchange; or,
++
++    c) Accompany it with the information you received as to the offer
++    to distribute corresponding source code.  (This alternative is
++    allowed only for noncommercial distribution and only if you
++    received the program in object code or executable form with such
++    an offer, in accord with Subsection b above.)
++
++The source code for a work means the preferred form of the work for
++making modifications to it.  For an executable work, complete source
++code means all the source code for all modules it contains, plus any
++associated interface definition files, plus the scripts used to
++control compilation and installation of the executable.  However, as a
++special exception, the source code distributed need not include
++anything that is normally distributed (in either source or binary
++form) with the major components (compiler, kernel, and so on) of the
++operating system on which the executable runs, unless that component
++itself accompanies the executable.
++
++If distribution of executable or object code is made by offering
++access to copy from a designated place, then offering equivalent
++access to copy the source code from the same place counts as
++distribution of the source code, even though third parties are not
++compelled to copy the source along with the object code.
++
++  4. You may not copy, modify, sublicense, or distribute the Program
++except as expressly provided under this License.  Any attempt
++otherwise to copy, modify, sublicense or distribute the Program is
++void, and will automatically terminate your rights under this License.
++However, parties who have received copies, or rights, from you under
++this License will not have their licenses terminated so long as such
++parties remain in full compliance.
++
++  5. You are not required to accept this License, since you have not
++signed it.  However, nothing else grants you permission to modify or
++distribute the Program or its derivative works.  These actions are
++prohibited by law if you do not accept this License.  Therefore, by
++modifying or distributing the Program (or any work based on the
++Program), you indicate your acceptance of this License to do so, and
++all its terms and conditions for copying, distributing or modifying
++the Program or works based on it.
++
++  6. Each time you redistribute the Program (or any work based on the
++Program), the recipient automatically receives a license from the
++original licensor to copy, distribute or modify the Program subject to
++these terms and conditions.  You may not impose any further
++restrictions on the recipients' exercise of the rights granted herein.
++You are not responsible for enforcing compliance by third parties to
++this License.
++
++  7. If, as a consequence of a court judgment or allegation of patent
++infringement or for any other reason (not limited to patent issues),
++conditions are imposed on you (whether by court order, agreement or
++otherwise) that contradict the conditions of this License, they do not
++excuse you from the conditions of this License.  If you cannot
++distribute so as to satisfy simultaneously your obligations under this
++License and any other pertinent obligations, then as a consequence you
++may not distribute the Program at all.  For example, if a patent
++license would not permit royalty-free redistribution of the Program by
++all those who receive copies directly or indirectly through you, then
++the only way you could satisfy both it and this License would be to
++refrain entirely from distribution of the Program.
++
++If any portion of this section is held invalid or unenforceable under
++any particular circumstance, the balance of the section is intended to
++apply and the section as a whole is intended to apply in other
++circumstances.
++
++It is not the purpose of this section to induce you to infringe any
++patents or other property right claims or to contest validity of any
++such claims; this section has the sole purpose of protecting the
++integrity of the free software distribution system, which is
++implemented by public license practices.  Many people have made
++generous contributions to the wide range of software distributed
++through that system in reliance on consistent application of that
++system; it is up to the author/donor to decide if he or she is willing
++to distribute software through any other system and a licensee cannot
++impose that choice.
++
++This section is intended to make thoroughly clear what is believed to
++be a consequence of the rest of this License.
++
++  8. If the distribution and/or use of the Program is restricted in
++certain countries either by patents or by copyrighted interfaces, the
++original copyright holder who places the Program under this License
++may add an explicit geographical distribution limitation excluding
++those countries, so that distribution is permitted only in or among
++countries not thus excluded.  In such case, this License incorporates
++the limitation as if written in the body of this License.
++
++  9. The Free Software Foundation may publish revised and/or new versions
++of the General Public License from time to time.  Such new versions will
++be similar in spirit to the present version, but may differ in detail to
++address new problems or concerns.
++
++Each version is given a distinguishing version number.  If the Program
++specifies a version number of this License which applies to it and "any
++later version", you have the option of following the terms and conditions
++either of that version or of any later version published by the Free
++Software Foundation.  If the Program does not specify a version number of
++this License, you may choose any version ever published by the Free Software
++Foundation.
++
++  10. If you wish to incorporate parts of the Program into other free
++programs whose distribution conditions are different, write to the author
++to ask for permission.  For software which is copyrighted by the Free
++Software Foundation, write to the Free Software Foundation; we sometimes
++make exceptions for this.  Our decision will be guided by the two goals
++of preserving the free status of all derivatives of our free software and
++of promoting the sharing and reuse of software generally.
++
++			    NO WARRANTY
++
++  11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
++FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN
++OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
++PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED
++OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS
++TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE
++PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,
++REPAIR OR CORRECTION.
++
++  12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
++WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
++REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,
++INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING
++OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED
++TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY
++YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER
++PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
++POSSIBILITY OF SUCH DAMAGES.
++
++		     END OF TERMS AND CONDITIONS
++
++	    How to Apply These Terms to Your New Programs
++
++  If you develop a new program, and you want it to be of the greatest
++possible use to the public, the best way to achieve this is to make it
++free software which everyone can redistribute and change under these terms.
++
++  To do so, attach the following notices to the program.  It is safest
++to attach them to the start of each source file to most effectively
++convey the exclusion of warranty; and each file should have at least
++the "copyright" line and a pointer to where the full notice is found.
++
++    <one line to give the program's name and a brief idea of what it does.>
++    Copyright (C) <year>  <name of author>
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++
++
++Also add information on how to contact you by electronic and paper mail.
++
++If the program is interactive, make it output a short notice like this
++when it starts in an interactive mode:
++
++    Gnomovision version 69, Copyright (C) year name of author
++    Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
++    This is free software, and you are welcome to redistribute it
++    under certain conditions; type `show c' for details.
++
++The hypothetical commands `show w' and `show c' should show the appropriate
++parts of the General Public License.  Of course, the commands you use may
++be called something other than `show w' and `show c'; they could even be
++mouse-clicks or menu items--whatever suits your program.
++
++You should also get your employer (if you work as a programmer) or your
++school, if any, to sign a "copyright disclaimer" for the program, if
++necessary.  Here is a sample; alter the names:
++
++  Yoyodyne, Inc., hereby disclaims all copyright interest in the program
++  `Gnomovision' (which makes passes at compilers) written by James Hacker.
++
++  <signature of Ty Coon>, 1 April 1989
++  Ty Coon, President of Vice
++
++This General Public License does not permit incorporating your program into
++proprietary programs.  If your program is a subroutine library, you may
++consider it more useful to permit linking proprietary applications with the
++library.  If this is what you want to do, use the GNU Library General
++Public License instead of this License.
+diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/dbox2.c vdr-1.2.6.new/PLUGINS/src/dbox2/dbox2.c
+--- vdr-1.2.6/PLUGINS/src/dbox2/dbox2.c	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/dbox2/dbox2.c	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,147 @@
++/*
++ * dbox2.c: A plugin for the Video Disk Recorder
++ *
++ * See the README file for copyright information and how to reach the author.
++ *
++ * $Id$
++ */
++
++#include <vdr/plugin.h>
++#include <vdr/status.h>
++#include <vdr/channels.h>
++#include "ccam.h"
++#include "lcddisplay.h"
++#include "plugins.h"
++
++static const char *VERSION        = "0.0.1";
++static const char *DESCRIPTION    = "DBox2 handling";
++static const char *MAINMENUENTRY  = "DBox2";
++
++// cMyStatusMonitor..
++
++class cMyStatusMonitor : public cStatus 
++{
++	public:
++		cMyStatusMonitor( CCam *incam );
++	private:
++		CCam 			*cam;
++		cChannel		*channel;
++	protected:
++  		virtual void 	ChannelSwitch( const cDevice *Device, int ChannelNumber );
++  };
++
++cMyStatusMonitor::cMyStatusMonitor( CCam *incam )
++{
++	cam = incam;
++}
++
++void cMyStatusMonitor::ChannelSwitch( const cDevice *Device, int ChannelNumber )
++{
++	// ChannelNumber=0 before Channel is switched... >0 channel that has beend switched to
++	if ( ChannelNumber )
++  		{
++			channel = NULL;
++			channel = Channels.GetByNumber( ChannelNumber );
++			if ( channel != NULL )
++				if ( channel->Ca() == 101 )  // 101 = Premiere
++					{
++						cam->setCaPmt( channel );
++					}
++
++		// show service name on lcd display
++		cLcdDisplay::getInstance()->ShowServiceName( channel->Name() );
++	}
++}
++
++//--------------------------------------------------------
++
++class cPluginDbox2 : public cPlugin 
++{
++	private:
++  		// Add any member variables or functions you may need here.
++  		cMyStatusMonitor 	*statusMonitor;
++  		CCam 			*cam;
++	public:
++  		cPluginDbox2( void );
++  		virtual ~cPluginDbox2();
++  		virtual const char *Version( void ) { return VERSION; }
++  		virtual const char *Description( void ) { return DESCRIPTION; }
++  		virtual const char *CommandLineHelp( void );
++  		virtual bool ProcessArgs( int argc, char *argv[] );
++  		virtual bool Start( void );
++  		virtual void Housekeeping( void );
++  		virtual const char *MainMenuEntry( void ) { return MAINMENUENTRY; }
++  		virtual cOsdObject *MainMenuAction( void );
++  		virtual cMenuSetupPage *SetupMenu( void );
++  		virtual bool SetupParse( const char *Name, const char *Value );
++  		virtual void *GetSetData( int what );
++};
++
++cPluginDbox2::cPluginDbox2( void )
++{
++	// Initialize any member variables here.
++	// DON'T DO ANYTHING ELSE THAT MAY HAVE SIDE EFFECTS, REQUIRE GLOBAL
++	// VDR OBJECTS TO EXIST OR PRODUCE ANY OUTPUT!
++	statusMonitor = NULL;
++	cam = NULL;
++}
++
++cPluginDbox2::~cPluginDbox2()
++{
++	// Clean up after yourself!
++	cLcdDisplay::getInstance()->ShowServiceName( "Goodbye" );
++	delete statusMonitor;
++	delete cam;
++}
++
++const char *cPluginDbox2::CommandLineHelp( void )
++{
++	// Return a string that describes all known command line options.
++	return NULL;
++}
++
++bool cPluginDbox2::ProcessArgs( int argc, char *argv[] )
++{
++	// Implement command line argument processing here if applicable.
++	return true;
++}
++
++bool cPluginDbox2::Start( void )
++{
++  	// Start any background activities the plugin shall perform.
++  	cam = new CCam();
++  	statusMonitor = new cMyStatusMonitor( cam );
++  	cLcdDisplay::getInstance();
++  	return true;
++}
++
++void cPluginDbox2::Housekeeping( void )
++{
++	// Perform any cleanup or other regular tasks.
++}
++
++cOsdObject *cPluginDbox2::MainMenuAction( void )
++{
++  	// Perform the action when selected from the main VDR menu.
++  	cDbox2PluginMenu *db2pmenu = new cDbox2PluginMenu();
++	return db2pmenu;
++}
++
++cMenuSetupPage *cPluginDbox2::SetupMenu( void )
++{
++  	// Return a setup menu in case the plugin supports one.
++	return NULL;
++}
++
++bool cPluginDbox2::SetupParse( const char *Name, const char *Value )
++{
++  	// Parse your own setup parameters and store their values.
++	return false;
++}
++
++void *cPluginDbox2::GetSetData( int what )
++{
++	return NULL;
++}
++
++VDRPLUGINCREATOR( cPluginDbox2 ); // Don't touch this!
+diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/HISTORY vdr-1.2.6.new/PLUGINS/src/dbox2/HISTORY
+--- vdr-1.2.6/PLUGINS/src/dbox2/HISTORY	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/dbox2/HISTORY	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,6 @@
++VDR Plugin 'dbox2' Revision History
++------------------------------------
++
++2003-05-16: Version 0.0.1
++
++- Initial revision.
+diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.c vdr-1.2.6.new/PLUGINS/src/dbox2/lcddisplay.c
+--- vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.c	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/dbox2/lcddisplay.c	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,80 @@
++/*
++ * lcddisplay.h: A plugin for the Video Disk Recorder
++ *
++ * See the README file for copyright information and how to reach the author.
++ *
++ * $Id$
++ */
++
++ // this is only the first attempt for accessing the dbox lcd display... it uses the lcddisplay library and the fonts implemented
++ // in vdr (to be honest, those fonts are a little bit to big :) but for the first implementation it works)
++ // TODO: 	- if channelname is to long and there is a <space> in the channel name, start new line
++ //		- new method for center messages
++ //		- and a lot of other changes.
++
++#include "lcddisplay.h"
++#include <vdr/tools.h>
++#include <vdr/font.h>
++
++cLcdDisplay *cLcdDisplay::mpLcdDisplay = NULL;
++
++cLcdDisplay *cLcdDisplay::getInstance( void )
++{
++	if ( mpLcdDisplay == NULL )
++		{
++			mpLcdDisplay = new cLcdDisplay();
++		}
++	return mpLcdDisplay;
++}
++
++cLcdDisplay::cLcdDisplay( void )
++{
++	if ( !lcd.isAvailable() )
++		{
++			esyslog( "No lcd support\n" );
++		}
++
++	pFont = NULL;
++	pFont = new cFont( fontOsd );
++
++	ShowServiceName( "vdr" );
++}
++
++cLcdDisplay::~cLcdDisplay( void )
++{
++	delete pFont;
++}
++
++void cLcdDisplay::ShowServiceName( const char *name )
++{
++	lcd.draw_fill_rect( 2, 2, LCD_COLS, 54, CLCDDisplay::PIXEL_OFF );
++
++	int x = 2;
++	int y = 2;
++
++	for ( const char *p = name; *p; p++ )
++		{
++			const cFont::tCharData *cd = pFont->CharData( *p );
++
++			for ( int row = 0; row < pFont->Height( *p ); row++ )
++				{
++					cFont::tPixelData PixelData = cd->lines[row];
++					for ( int col = cd->width; col-- > 0; )
++						{
++							lcd.draw_point( x + col, y + row, ( PixelData & 1 ) ? CLCDDisplay::PIXEL_ON : CLCDDisplay::PIXEL_OFF );
++							PixelData >>= 1;
++						}
++				}
++			x += pFont->Width( *p );
++			if ( x > LCD_COLS )
++				{
++					x = 2;
++					y += pFont->Height( *p );
++					if ( y > 40 ) break;
++				}
++		}
++
++	lcd.update();
++}
++
++
+diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.h vdr-1.2.6.new/PLUGINS/src/dbox2/lcddisplay.h
+--- vdr-1.2.6/PLUGINS/src/dbox2/lcddisplay.h	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/dbox2/lcddisplay.h	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,32 @@
++/*
++ * lcddisplay.c: A plugin for the Video Disk Recorder
++ *
++ * See the README file for copyright information and how to reach the author.
++ *
++ * $Id$
++ */
++
++#ifndef __LCDDISPLAY_H__
++#define __LCDDISPLAY_H_
++
++#include <lcddisplay/lcddisplay.h>
++#include <vdr/font.h>
++
++class cLcdDisplay 
++{
++	private:
++
++		CLCDDisplay	lcd;
++		cFont		*pFont;
++
++ 	public:
++
++		static cLcdDisplay 		*getInstance( void );
++		static cLcdDisplay 		*mpLcdDisplay;
++		cLcdDisplay( void );
++		~cLcdDisplay( void );
++
++		void ShowServiceName( const char *name );
++};
++
++#endif
+diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/Makefile vdr-1.2.6.new/PLUGINS/src/dbox2/Makefile
+--- vdr-1.2.6/PLUGINS/src/dbox2/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/dbox2/Makefile	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,85 @@
++#
++# Makefile for a Video Disk Recorder plugin
++#
++# $Id$
++
++# The official name of this plugin.
++# This name will be used in the '-P...' option of VDR to load the plugin.
++# By default the main source file also carries this name.
++#
++PLUGIN = dbox2
++
++LCDLIB = -L$(PPREFIX)/cdkroot/lib -llcddisplay -lfreetype
++CONLIB = $(PPREFIX)/cdkroot/lib/libtuxbox-connection.a
++
++### The version number of this plugin (taken from the main source file):
++
++VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ print $$6 }' | sed -e 's/[";]//g')
++
++### The C++ compiler and options:
++
++CXX      = powerpc-tuxbox-linux-gnu-g++
++CXXFLAGS ?= -mcpu=823  -msoft-float -mmultiple -mstring -meabi -O3 -g -D_GNU_SOURCE
++
++### The directory environment:
++
++DVBDIR = ../../../../DVB
++VDRDIR = ../../..
++LIBDIR = ../../lib
++TMPDIR = /tmp
++
++### Allow user defined options to overwrite defaults:
++
++-include $(VDRDIR)/Make.config
++
++### The version number of VDR (taken from VDR's "config.h"):
++
++VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
++
++### The name of the distribution archive:
++
++ARCHIVE = $(PLUGIN)-$(VERSION)
++PACKAGE = vdr-$(ARCHIVE)
++
++### Includes and Defines (add further entries here):
++
++INCLUDES += -I$(VDRDIR)/include -I$(PPREFIX)/cdkroot/include/tuxbox -I$(DDIR)/include -I$(DDIR)/dvb/include
++
++DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"' -DPREFIX='"$(PPREFIX)"'
++
++### The object files (add further files here):
++
++OBJS = $(PLUGIN).o ccam.o lcddisplay.o plugins.o 
++
++### Implicit rules:
++
++%.o: %.c
++	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
++
++# Dependencies:
++
++MAKEDEP = $(CXX) -MM -MG
++DEPFILE = .dependencies
++$(DEPFILE): Makefile
++	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
++
++-include $(DEPFILE)
++
++### Targets:
++
++all: libvdr-$(PLUGIN).so
++
++libvdr-$(PLUGIN).so: $(OBJS)
++	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LCDLIB) $(CONLIB) -lpng -lz -o $@
++	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
++
++dist: clean
++	@-rm -rf $(TMPDIR)/$(ARCHIVE)
++	@mkdir $(TMPDIR)/$(ARCHIVE)
++	@cp -a * $(TMPDIR)/$(ARCHIVE)
++	@tar czf $(PACKAGE).tgz -C $(TMPDIR) $(ARCHIVE)
++	@-rm -rf $(TMPDIR)/$(ARCHIVE)
++	@echo Distribution package created as $(PACKAGE).tgz
++
++clean:
++	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
+diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/plugins.c vdr-1.2.6.new/PLUGINS/src/dbox2/plugins.c
+--- vdr-1.2.6/PLUGINS/src/dbox2/plugins.c	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/dbox2/plugins.c	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,415 @@
++/*
++ * plugins.c: for dbox2 plugin
++ *
++ * See the README file for copyright information and how to reach the author.
++ *
++ * $Id$
++ */
++ 
++// TODO: 	- clear lcd after plugin ends
++// 			- fix rc (!?!)
++//			- halt siprocessor thread during plugin execution (eats to much system capacity)
++//			- some other fixes :)
++
++#include <dirent.h>
++#include "plugins.h"
++#include <string>
++//#include <stdio.h>
++#include <stdlib.h>
++#include <plugin.h>
++#include <vdr/framebuffer.h>
++#include <vdr/tools.h>
++#include <vdr/channels.h>
++#include <vdr/device.h>
++#include <dlfcn.h>
++#include "../remote/remote.h"
++#include <vdr/plugin.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <vdr/device.h>
++#include "lcddisplay.h"
++#include <vdr/dvbdevice.h>
++
++class cPOsdItem : public cOsdItem
++{
++	public:
++		cPOsdItem( const char *text, int mitem, cDbox2Plugin *inp ) : cOsdItem( text ) { menu_item = mitem; pPlugin = inp; }
++		virtual void Set( void ) { }
++		eOSState ProcessKey( eKeys Key )
++			{
++				if ( Key == kOk )
++					{
++						cPlugin *vdrplugin = cPluginManager::GetPlugin( "remote" );
++						if ( vdrplugin != NULL )
++							vdrplugin->GetSetData( RSTOPREMOTE ); // stops remote thread
++						cDvbDevice *dvbdevice = cDvbDevice::getInstance();
++						
++						if ( dvbdevice != NULL )  // stop filtering // 
++							dvbdevice->SiP(false);
++						
++						pPlugin->startPlugin( menu_item );
++						
++						if ( dvbdevice != NULL ) // start filtering again
++							dvbdevice->SiP(true); 
++						if ( vdrplugin != NULL )
++							vdrplugin->GetSetData( RSTARTREMOTE ); // starts remote thread
++						vdrplugin = NULL;
++					}
++				return Key == kOk ? osEnd : cOsdItem::ProcessKey( Key );
++			};
++
++	protected:
++		int menu_item;
++
++	private:
++		cDbox2Plugin *pPlugin;
++};
++
++cDbox2PluginMenu::cDbox2PluginMenu( void ) :
++cOsdMenu( "DBox2 Plugins" )
++{
++	cDbox2Plugin *pPlugin = new cDbox2Plugin();
++
++	Clear();
++	SetHasHotkeys();
++
++	int numPlugins = pPlugin->getPlugins();
++
++	for ( int i = 0; i < numPlugins; i++)
++		{
++			Add(new cPOsdItem( hk ( pPlugin->getPname( i ).c_str() ), i , pPlugin ) );
++		}
++}
++
++cDbox2Plugin::cDbox2Plugin( void )
++{
++}
++
++cDbox2Plugin::~cDbox2Plugin( void )
++{
++	the_plugins.clear();
++}
++
++void cDbox2Plugin::readSpecs( std::string fname )
++{
++	FILE *infile = fopen( fname.c_str(), "r" );
++
++	char buf[128];
++	structplugin sp;
++
++	sp.soname = fname.substr( 0, fname.find( ".cfg" ) ) + ".so";
++
++	while ( fgets( buf, 127, infile ))
++		{
++			std::string parsestring = buf;
++			std::string command( parsestring, 0, parsestring.find( "=" ) );
++			std::string param( parsestring, parsestring.find( "=" ) +1, parsestring.length() );
++
++			if ( command == "pluginversion" )
++				{
++					sp.version = atoi( param.c_str() );
++					continue;
++				}
++
++			if ( command == "name" )
++				{
++					sp.name = param;
++					continue;
++				}
++			if ( command == "desc" )
++				{
++					sp.desc = param;
++					continue;
++				}
++			if ( command == "depend" )
++				{
++					sp.depend = param;
++					continue;
++				}
++			if ( command == "needfb" )
++				{
++					sp.needfb = atoi( param.c_str() ) ? true : false;
++					continue;
++				}
++			if ( command == "needrc" )
++				{
++					sp.needrc = atoi( param.c_str() ) ? true : false;
++					continue;
++				}
++			if ( command == "needlcd" )
++				{
++					sp.needlcd = atoi( param.c_str() ) ? true : false;
++					continue;
++				}
++			if ( command == "needvtxtpid" )
++				{
++					sp.needvtxtpid = atoi( param.c_str() ) ? true : false;
++					continue;
++				}
++			if ( command == "pigon" )
++				{
++					sp.pigon = atoi( param.c_str() ) ? true : false;
++					continue;
++				}
++			if ( command == "needoffsets" )
++				{
++					sp.needoffsets = atoi( param.c_str() ) ? true : false;
++					continue;
++				}
++		}
++
++	the_plugins.push_back( sp );
++	fclose( infile );
++}
++
++int cDbox2Plugin::getPlugins( void )
++{
++	std::string  sdir = DBPLUGINDIR "/" ;
++	struct dirent **namelist;
++
++	int anzahl = 0;
++	int num = scandir(  sdir.c_str(), &namelist, 0, alphasort );
++
++	if ( num < 0 )
++		{
++			// scandir error...
++			esyslog("plugin.c cannot scan dir");
++			return 0;
++		}
++
++	for ( int i; i < num; i++)
++		{
++			std::string pname = namelist[i]->d_name;
++
++			if ( pname.find( ".cfg" ) != std::string::npos )
++				{
++					anzahl++;
++					readSpecs( sdir + pname );
++				}
++			free( namelist[i] );
++		}
++	free( namelist );
++
++	sort( the_plugins.begin(), the_plugins.end() );
++
++	return anzahl;
++}
++
++void cDbox2Plugin::startPlugin( int num )
++{
++	PluginExec execPlugin;
++	char depstring[129];
++	char			*argv[20];
++	void			*libhandle[20];
++	int			argc, i, lcd_fd =-1;
++	char			*p;
++	char			*np;
++	void			*handle;
++	char			*error;
++	int			tpid = 0;
++
++	PluginParam *startparam;
++	PluginParam *tmpparam;
++
++	startparam = 0;
++	tmpparam = startparam;
++
++	setfb( CFrameBuffer::getInstance()->getFileHandle() );
++
++	if ( the_plugins[num].needfb )
++		startparam = makeParam( P_ID_FBUFFER, startparam );
++
++	if ( the_plugins[num].needrc )
++		{
++			cPlugin *vdrplugin = cPluginManager::GetPlugin( "remote" );
++			int *rcfh = ( int *) vdrplugin->GetSetData( RDATAFILEHANDLE );
++			setrc( *rcfh );
++			vdrplugin = NULL;
++			//addParm( P_ID_RCBLK_ANF, g_settings.repeat_genericblocker );
++			//addParm( P_ID_RCBLK_REP, g_settings.repeat_blocker );
++
++			startparam = makeParam( P_ID_RCINPUT, startparam );
++			//startparam = makeParam( P_ID_RCBLK_ANF, startparam );
++			//startparam = makeParam( P_ID_RCBLK_REP, startparam );
++		}
++	if ( the_plugins[num].needlcd )
++		{
++			if( ( lcd_fd=open("/dev/dbox/lcd0", O_RDWR ) ) < 0 )
++				setlcd( 0 );
++			else
++				setlcd( lcd_fd );
++
++			startparam = makeParam( P_ID_LCD, startparam );
++		}
++	if ( the_plugins[num].needvtxtpid )
++		{
++			cChannel *channel = Channels.GetByNumber( cDevice::CurrentChannel() );
++			tpid = channel->Tpid();
++			if ( tpid )
++				setvtxtpid( tpid );
++			else
++				setvtxtpid( 0 );
++			channel = NULL;
++			startparam = makeParam( P_ID_VTXTPID, startparam );
++
++			// stop vtxt
++			if ( tpid )
++				{
++					cDevice::PrimaryDevice()-> vtxtPid( false );
++					usleep( 1000 );
++				}
++		}
++	if ( the_plugins[num].needoffsets )
++		{
++			//addParm( P_ID_VFORMAT, g_settings.video_Format );
++			addParm( P_ID_OFF_X, 0 );
++			addParm( P_ID_OFF_Y, 0 );
++			addParm( P_ID_END_X, 720 );
++			addParm( P_ID_END_Y, 576 );
++
++			//startparam = makeParam( P_ID_VFORMAT, startparam );
++			startparam = makeParam( P_ID_OFF_X, startparam );
++			startparam = makeParam( P_ID_OFF_Y, startparam );
++			startparam = makeParam( P_ID_END_X, startparam );
++			startparam = makeParam( P_ID_END_Y, startparam );
++		}
++
++	PluginParam *par = startparam;
++
++	std::string pluginname = the_plugins[num].soname;
++
++	strcpy( depstring, the_plugins[num].depend.c_str() );
++
++	argc=0;
++	if ( depstring[0] )
++		{
++			p = depstring;
++			while( 1 )
++				{
++					argv[ argc ] = p;
++					argc++;
++					np = strchr( p, ',' );
++					if ( !np )
++						break;
++
++					*np = 0;
++					p = np+1;
++					if ( argc == 20 )
++						break;
++				}
++		}
++
++	for( i = 0; i < argc; i++ )
++		{
++			std::string libname = argv[i];
++			isyslog( "try load shared lib : %s\n", argv[i] );
++			libname = *argv[i] == '/' ? argv[i] : ( DBPLUGINDIR  "/" + libname ).c_str();
++			// kill that damned newline char, grrr
++			if ( libname[libname.length()-1] == 10 ) libname[libname.length()-1] = 0;
++			libhandle[i] = dlopen ( libname.c_str(), RTLD_NOW | RTLD_GLOBAL );
++			if ( !libhandle )
++				{
++					fputs ( dlerror(), stderr );
++					break;
++				}
++		}
++	while ( i == argc )
++		{
++			handle = dlopen ( the_plugins[num].soname.c_str(), RTLD_NOW | RTLD_GLOBAL );
++			if ( !handle )
++				{
++					fputs ( dlerror(), stderr );
++					break;
++				}
++			execPlugin = ( PluginExec ) dlsym( handle, "plugin_exec" );
++			if ( ( error = dlerror() ) != NULL )
++				{
++					fputs( error, stderr );
++					dlclose( handle );
++					break;
++				}
++			isyslog( "try plugin exec...\n" );
++			execPlugin( startparam );
++			dlclose( handle );
++			isyslog( "plugin exec done...\n" );
++
++			if ( the_plugins[num].needvtxtpid )
++				{
++					if ( tpid )
++						{
++							cDevice::PrimaryDevice()->vtxtPid( true );
++						}
++				}
++			if ( the_plugins[num].needlcd )
++				{
++					if( lcd_fd != -1 )
++						close( lcd_fd );
++					cChannel *channel = Channels.GetByNumber( cDevice::CurrentChannel() );
++					cLcdDisplay::getInstance()->ShowServiceName( channel->Name() );
++				}
++
++    			if ( the_plugins[num].needfb )
++    				{
++    					CFrameBuffer::getInstance()->ClearFrameBuffer();;
++    					CFrameBuffer::getInstance()->paintBackgroundBoxRel( 0, 0, 720, 576 );
++    				}
++
++		//redraw menue...
++			break;	// break every time - never loop - run once !!!
++		}
++
++	/* unload shared libs */
++	for( i = 0; i < argc; i++ )
++		{
++			if ( libhandle[i] )
++				dlclose( libhandle[i] );
++			else
++				break;
++		}
++}
++
++PluginParam* cDbox2Plugin::makeParam( const char * const id, PluginParam *next )
++{
++	PluginParam *startparam = new PluginParam;
++
++	startparam->next = next;
++	startparam->id = id;
++	startparam->val = new char[params.find(id)->second.length() + 2];
++/*	strcpy( startparam->id, id.c_str() ); */
++	strcpy( startparam->val, params.find(id)->second.c_str() );
++
++	return startparam;
++}
++
++void cDbox2Plugin::addParm( std::string cmd, std::string value )
++{
++	params[cmd] = value;
++}
++
++void cDbox2Plugin::addParm( std::string cmd, int value )
++{
++	char aval[10];
++	sprintf( aval, "%d", value );
++
++	addParm( cmd, aval );
++}
++
++void cDbox2Plugin::setfb( int fd )
++{
++	addParm( P_ID_FBUFFER, fd );
++}
++
++void cDbox2Plugin::setrc( int fd )
++{
++	addParm( P_ID_RCINPUT, fd );
++}
++
++void cDbox2Plugin::setlcd( int fd )
++{
++	addParm( P_ID_LCD, fd );
++}
++
++void cDbox2Plugin::setvtxtpid( int fd )
++{
++	addParm( P_ID_VTXTPID, fd );
++}
+diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/plugins.h vdr-1.2.6.new/PLUGINS/src/dbox2/plugins.h
+--- vdr-1.2.6/PLUGINS/src/dbox2/plugins.h	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/dbox2/plugins.h	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,76 @@
++/*
++ * plugins.h: for dbox2 plugin
++ *
++ * See the README file for copyright information and how to reach the author.
++ *
++ * $Id$
++ */
++
++#ifndef __PLUGINS_H_
++#define __PLUGINS_H_
++
++#include <vdr/osd.h>
++#include <vector>
++#include <string>
++#include <map>
++#include <plugin.h>
++
++#define DBPLUGINDIR "/lib/tuxbox/plugins"
++
++class cDbox2PluginMenu : public cOsdMenu
++{
++	public:
++		cDbox2PluginMenu( void );
++};
++
++class cDbox2Plugin
++{
++	public:
++		struct structplugin
++			{
++				std::string name;
++				std::string desc;
++				std::string depend;
++				std::string soname;
++				int version;
++				bool needfb;
++				bool needrc;
++				bool needlcd;
++				bool needvtxtpid;
++				bool pigon;
++				bool needoffsets;
++				bool operator < ( const structplugin &p ) const
++					{
++						bool result = this->name < p.name;
++						return result;
++					}
++			  } ;
++
++	public:
++		cDbox2Plugin( void );
++		~cDbox2Plugin( void );
++
++		int getPlugins( void );
++		void startPlugin( int num );
++		std::string &getPname( int num ) { return the_plugins[num].name; }
++		PluginParam* makeParam( const char * const id, PluginParam *next );
++
++	private:
++		std::vector<structplugin> the_plugins;
++		std::map<std::string, std::string> params;
++
++		void readSpecs( std::string fname );
++
++		void addParm( std::string cmd, std::string value );
++		void addParm( std::string cmd, int value );
++		void setfb( int fd );
++		void setrc( int fd );
++		void setlcd( int fd );
++		void setvtxtpid( int fd );
++};
++
++#endif
++
++
++
++
+diff -Naur vdr-1.2.6/PLUGINS/src/dbox2/README vdr-1.2.6.new/PLUGINS/src/dbox2/README
+--- vdr-1.2.6/PLUGINS/src/dbox2/README	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/dbox2/README	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,11 @@
++This is a "plugin" for the Video Disk Recorder (VDR).
++
++Written by:                  Alexander Olk <xenomorph2l@onlinehome.de>
++
++Project's homepage:          -n/a-
++
++Latest version available at: -n/a-
++
++See the file COPYING for license information.
++
++Description: Dbox2 plugin
+diff -Naur vdr-1.2.6/PLUGINS/src/hello/Makefile vdr-1.2.6.new/PLUGINS/src/hello/Makefile
+--- vdr-1.2.6/PLUGINS/src/hello/Makefile	2002-12-13 15:54:14.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/hello/Makefile	1970-01-01 01:00:00.000000000 +0100
+@@ -1,82 +0,0 @@
+-#
+-# Makefile for a Video Disk Recorder plugin
+-#
+-# $Id: Makefile 1.8 2002/12/13 14:54:14 kls Exp $
+-
+-# The official name of this plugin.
+-# This name will be used in the '-P...' option of VDR to load the plugin.
+-# By default the main source file also carries this name.
+-#
+-PLUGIN = hello
+-
+-### The version number of this plugin (taken from the main source file):
+-
+-VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ print $$6 }' | sed -e 's/[";]//g')
+-
+-### The C++ compiler and options:
+-
+-CXX      ?= g++
+-CXXFLAGS ?= -O2 -Wall -Woverloaded-virtual
+-
+-### The directory environment:
+-
+-DVBDIR = ../../../../DVB
+-VDRDIR = ../../..
+-LIBDIR = ../../lib
+-TMPDIR = /tmp
+-
+-### Allow user defined options to overwrite defaults:
+-
+--include $(VDRDIR)/Make.config
+-
+-### The version number of VDR (taken from VDR's "config.h"):
+-
+-VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
+-
+-### The name of the distribution archive:
+-
+-ARCHIVE = $(PLUGIN)-$(VERSION)
+-PACKAGE = vdr-$(ARCHIVE)
+-
+-### Includes and Defines (add further entries here):
+-
+-INCLUDES += -I$(VDRDIR)/include -I$(DVBDIR)/include
+-
+-DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
+-
+-### The object files (add further files here):
+-
+-OBJS = $(PLUGIN).o i18n.o
+-
+-### Implicit rules:
+-
+-%.o: %.c
+-	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
+-
+-# Dependencies:
+-
+-MAKEDEP = g++ -MM -MG
+-DEPFILE = .dependencies
+-$(DEPFILE): Makefile
+-	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
+-
+--include $(DEPFILE)
+-
+-### Targets:
+-
+-all: libvdr-$(PLUGIN).so
+-
+-libvdr-$(PLUGIN).so: $(OBJS)
+-	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
+-	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
+-
+-dist: clean
+-	@-rm -rf $(TMPDIR)/$(ARCHIVE)
+-	@mkdir $(TMPDIR)/$(ARCHIVE)
+-	@cp -a * $(TMPDIR)/$(ARCHIVE)
+-	@tar czf $(PACKAGE).tgz -C $(TMPDIR) $(ARCHIVE)
+-	@-rm -rf $(TMPDIR)/$(ARCHIVE)
+-	@echo Distribution package created as $(PACKAGE).tgz
+-
+-clean:
+-	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
+diff -Naur vdr-1.2.6/PLUGINS/src/remote/COPYING vdr-1.2.6.new/PLUGINS/src/remote/COPYING
+--- vdr-1.2.6/PLUGINS/src/remote/COPYING	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/remote/COPYING	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,340 @@
++		    GNU GENERAL PUBLIC LICENSE
++		       Version 2, June 1991
++
++ Copyright (C) 1989, 1991 Free Software Foundation, Inc.
++                       59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ Everyone is permitted to copy and distribute verbatim copies
++ of this license document, but changing it is not allowed.
++
++			    Preamble
++
++  The licenses for most software are designed to take away your
++freedom to share and change it.  By contrast, the GNU General Public
++License is intended to guarantee your freedom to share and change free
++software--to make sure the software is free for all its users.  This
++General Public License applies to most of the Free Software
++Foundation's software and to any other program whose authors commit to
++using it.  (Some other Free Software Foundation software is covered by
++the GNU Library General Public License instead.)  You can apply it to
++your programs, too.
++
++  When we speak of free software, we are referring to freedom, not
++price.  Our General Public Licenses are designed to make sure that you
++have the freedom to distribute copies of free software (and charge for
++this service if you wish), that you receive source code or can get it
++if you want it, that you can change the software or use pieces of it
++in new free programs; and that you know you can do these things.
++
++  To protect your rights, we need to make restrictions that forbid
++anyone to deny you these rights or to ask you to surrender the rights.
++These restrictions translate to certain responsibilities for you if you
++distribute copies of the software, or if you modify it.
++
++  For example, if you distribute copies of such a program, whether
++gratis or for a fee, you must give the recipients all the rights that
++you have.  You must make sure that they, too, receive or can get the
++source code.  And you must show them these terms so they know their
++rights.
++
++  We protect your rights with two steps: (1) copyright the software, and
++(2) offer you this license which gives you legal permission to copy,
++distribute and/or modify the software.
++
++  Also, for each author's protection and ours, we want to make certain
++that everyone understands that there is no warranty for this free
++software.  If the software is modified by someone else and passed on, we
++want its recipients to know that what they have is not the original, so
++that any problems introduced by others will not reflect on the original
++authors' reputations.
++
++  Finally, any free program is threatened constantly by software
++patents.  We wish to avoid the danger that redistributors of a free
++program will individually obtain patent licenses, in effect making the
++program proprietary.  To prevent this, we have made it clear that any
++patent must be licensed for everyone's free use or not licensed at all.
++
++  The precise terms and conditions for copying, distribution and
++modification follow.
++
++		    GNU GENERAL PUBLIC LICENSE
++   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
++
++  0. This License applies to any program or other work which contains
++a notice placed by the copyright holder saying it may be distributed
++under the terms of this General Public License.  The "Program", below,
++refers to any such program or work, and a "work based on the Program"
++means either the Program or any derivative work under copyright law:
++that is to say, a work containing the Program or a portion of it,
++either verbatim or with modifications and/or translated into another
++language.  (Hereinafter, translation is included without limitation in
++the term "modification".)  Each licensee is addressed as "you".
++
++Activities other than copying, distribution and modification are not
++covered by this License; they are outside its scope.  The act of
++running the Program is not restricted, and the output from the Program
++is covered only if its contents constitute a work based on the
++Program (independent of having been made by running the Program).
++Whether that is true depends on what the Program does.
++
++  1. You may copy and distribute verbatim copies of the Program's
++source code as you receive it, in any medium, provided that you
++conspicuously and appropriately publish on each copy an appropriate
++copyright notice and disclaimer of warranty; keep intact all the
++notices that refer to this License and to the absence of any warranty;
++and give any other recipients of the Program a copy of this License
++along with the Program.
++
++You may charge a fee for the physical act of transferring a copy, and
++you may at your option offer warranty protection in exchange for a fee.
++
++  2. You may modify your copy or copies of the Program or any portion
++of it, thus forming a work based on the Program, and copy and
++distribute such modifications or work under the terms of Section 1
++above, provided that you also meet all of these conditions:
++
++    a) You must cause the modified files to carry prominent notices
++    stating that you changed the files and the date of any change.
++
++    b) You must cause any work that you distribute or publish, that in
++    whole or in part contains or is derived from the Program or any
++    part thereof, to be licensed as a whole at no charge to all third
++    parties under the terms of this License.
++
++    c) If the modified program normally reads commands interactively
++    when run, you must cause it, when started running for such
++    interactive use in the most ordinary way, to print or display an
++    announcement including an appropriate copyright notice and a
++    notice that there is no warranty (or else, saying that you provide
++    a warranty) and that users may redistribute the program under
++    these conditions, and telling the user how to view a copy of this
++    License.  (Exception: if the Program itself is interactive but
++    does not normally print such an announcement, your work based on
++    the Program is not required to print an announcement.)
++
++These requirements apply to the modified work as a whole.  If
++identifiable sections of that work are not derived from the Program,
++and can be reasonably considered independent and separate works in
++themselves, then this License, and its terms, do not apply to those
++sections when you distribute them as separate works.  But when you
++distribute the same sections as part of a whole which is a work based
++on the Program, the distribution of the whole must be on the terms of
++this License, whose permissions for other licensees extend to the
++entire whole, and thus to each and every part regardless of who wrote it.
++
++Thus, it is not the intent of this section to claim rights or contest
++your rights to work written entirely by you; rather, the intent is to
++exercise the right to control the distribution of derivative or
++collective works based on the Program.
++
++In addition, mere aggregation of another work not based on the Program
++with the Program (or with a work based on the Program) on a volume of
++a storage or distribution medium does not bring the other work under
++the scope of this License.
++
++  3. You may copy and distribute the Program (or a work based on it,
++under Section 2) in object code or executable form under the terms of
++Sections 1 and 2 above provided that you also do one of the following:
++
++    a) Accompany it with the complete corresponding machine-readable
++    source code, which must be distributed under the terms of Sections
++    1 and 2 above on a medium customarily used for software interchange; or,
++
++    b) Accompany it with a written offer, valid for at least three
++    years, to give any third party, for a charge no more than your
++    cost of physically performing source distribution, a complete
++    machine-readable copy of the corresponding source code, to be
++    distributed under the terms of Sections 1 and 2 above on a medium
++    customarily used for software interchange; or,
++
++    c) Accompany it with the information you received as to the offer
++    to distribute corresponding source code.  (This alternative is
++    allowed only for noncommercial distribution and only if you
++    received the program in object code or executable form with such
++    an offer, in accord with Subsection b above.)
++
++The source code for a work means the preferred form of the work for
++making modifications to it.  For an executable work, complete source
++code means all the source code for all modules it contains, plus any
++associated interface definition files, plus the scripts used to
++control compilation and installation of the executable.  However, as a
++special exception, the source code distributed need not include
++anything that is normally distributed (in either source or binary
++form) with the major components (compiler, kernel, and so on) of the
++operating system on which the executable runs, unless that component
++itself accompanies the executable.
++
++If distribution of executable or object code is made by offering
++access to copy from a designated place, then offering equivalent
++access to copy the source code from the same place counts as
++distribution of the source code, even though third parties are not
++compelled to copy the source along with the object code.
++
++  4. You may not copy, modify, sublicense, or distribute the Program
++except as expressly provided under this License.  Any attempt
++otherwise to copy, modify, sublicense or distribute the Program is
++void, and will automatically terminate your rights under this License.
++However, parties who have received copies, or rights, from you under
++this License will not have their licenses terminated so long as such
++parties remain in full compliance.
++
++  5. You are not required to accept this License, since you have not
++signed it.  However, nothing else grants you permission to modify or
++distribute the Program or its derivative works.  These actions are
++prohibited by law if you do not accept this License.  Therefore, by
++modifying or distributing the Program (or any work based on the
++Program), you indicate your acceptance of this License to do so, and
++all its terms and conditions for copying, distributing or modifying
++the Program or works based on it.
++
++  6. Each time you redistribute the Program (or any work based on the
++Program), the recipient automatically receives a license from the
++original licensor to copy, distribute or modify the Program subject to
++these terms and conditions.  You may not impose any further
++restrictions on the recipients' exercise of the rights granted herein.
++You are not responsible for enforcing compliance by third parties to
++this License.
++
++  7. If, as a consequence of a court judgment or allegation of patent
++infringement or for any other reason (not limited to patent issues),
++conditions are imposed on you (whether by court order, agreement or
++otherwise) that contradict the conditions of this License, they do not
++excuse you from the conditions of this License.  If you cannot
++distribute so as to satisfy simultaneously your obligations under this
++License and any other pertinent obligations, then as a consequence you
++may not distribute the Program at all.  For example, if a patent
++license would not permit royalty-free redistribution of the Program by
++all those who receive copies directly or indirectly through you, then
++the only way you could satisfy both it and this License would be to
++refrain entirely from distribution of the Program.
++
++If any portion of this section is held invalid or unenforceable under
++any particular circumstance, the balance of the section is intended to
++apply and the section as a whole is intended to apply in other
++circumstances.
++
++It is not the purpose of this section to induce you to infringe any
++patents or other property right claims or to contest validity of any
++such claims; this section has the sole purpose of protecting the
++integrity of the free software distribution system, which is
++implemented by public license practices.  Many people have made
++generous contributions to the wide range of software distributed
++through that system in reliance on consistent application of that
++system; it is up to the author/donor to decide if he or she is willing
++to distribute software through any other system and a licensee cannot
++impose that choice.
++
++This section is intended to make thoroughly clear what is believed to
++be a consequence of the rest of this License.
++
++  8. If the distribution and/or use of the Program is restricted in
++certain countries either by patents or by copyrighted interfaces, the
++original copyright holder who places the Program under this License
++may add an explicit geographical distribution limitation excluding
++those countries, so that distribution is permitted only in or among
++countries not thus excluded.  In such case, this License incorporates
++the limitation as if written in the body of this License.
++
++  9. The Free Software Foundation may publish revised and/or new versions
++of the General Public License from time to time.  Such new versions will
++be similar in spirit to the present version, but may differ in detail to
++address new problems or concerns.
++
++Each version is given a distinguishing version number.  If the Program
++specifies a version number of this License which applies to it and "any
++later version", you have the option of following the terms and conditions
++either of that version or of any later version published by the Free
++Software Foundation.  If the Program does not specify a version number of
++this License, you may choose any version ever published by the Free Software
++Foundation.
++
++  10. If you wish to incorporate parts of the Program into other free
++programs whose distribution conditions are different, write to the author
++to ask for permission.  For software which is copyrighted by the Free
++Software Foundation, write to the Free Software Foundation; we sometimes
++make exceptions for this.  Our decision will be guided by the two goals
++of preserving the free status of all derivatives of our free software and
++of promoting the sharing and reuse of software generally.
++
++			    NO WARRANTY
++
++  11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
++FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN
++OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
++PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED
++OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS
++TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE
++PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,
++REPAIR OR CORRECTION.
++
++  12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
++WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
++REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,
++INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING
++OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED
++TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY
++YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER
++PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
++POSSIBILITY OF SUCH DAMAGES.
++
++		     END OF TERMS AND CONDITIONS
++
++	    How to Apply These Terms to Your New Programs
++
++  If you develop a new program, and you want it to be of the greatest
++possible use to the public, the best way to achieve this is to make it
++free software which everyone can redistribute and change under these terms.
++
++  To do so, attach the following notices to the program.  It is safest
++to attach them to the start of each source file to most effectively
++convey the exclusion of warranty; and each file should have at least
++the "copyright" line and a pointer to where the full notice is found.
++
++    <one line to give the program's name and a brief idea of what it does.>
++    Copyright (C) <year>  <name of author>
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++
++
++Also add information on how to contact you by electronic and paper mail.
++
++If the program is interactive, make it output a short notice like this
++when it starts in an interactive mode:
++
++    Gnomovision version 69, Copyright (C) year name of author
++    Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
++    This is free software, and you are welcome to redistribute it
++    under certain conditions; type `show c' for details.
++
++The hypothetical commands `show w' and `show c' should show the appropriate
++parts of the General Public License.  Of course, the commands you use may
++be called something other than `show w' and `show c'; they could even be
++mouse-clicks or menu items--whatever suits your program.
++
++You should also get your employer (if you work as a programmer) or your
++school, if any, to sign a "copyright disclaimer" for the program, if
++necessary.  Here is a sample; alter the names:
++
++  Yoyodyne, Inc., hereby disclaims all copyright interest in the program
++  `Gnomovision' (which makes passes at compilers) written by James Hacker.
++
++  <signature of Ty Coon>, 1 April 1989
++  Ty Coon, President of Vice
++
++This General Public License does not permit incorporating your program into
++proprietary programs.  If your program is a subroutine library, you may
++consider it more useful to permit linking proprietary applications with the
++library.  If this is what you want to do, use the GNU Library General
++Public License instead of this License.
+diff -Naur vdr-1.2.6/PLUGINS/src/remote/FAQ vdr-1.2.6.new/PLUGINS/src/remote/FAQ
+--- vdr-1.2.6/PLUGINS/src/remote/FAQ	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/remote/FAQ	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,111 @@
++Remote Control Mini-FAQ (En, 2003-03-31)
++========================================
++
++Q: Which hardware is supported?
++A: Configurations which have been reported to work:
++
++type          connector         ir protocol
++-------------------------------------------
++Activy 300                      RCMM
++DVB-S 1.3[1]  J2                RC5
++DVB-S 1.5[1]  ???               ???
++DVB-S 1.6[1]  CI module         RC5
++DVB-S 2.1     ir connector      RC5
++DVB-S 2.2     ir connector      RC5
++
++[1] Probably DVB-S board revisions 1.3/1.5/1.6 work with:
++- J2 connector (if no CI module has been connected)
++- ir receiver connected to the CI module
++
++Please report if you have a working configuration not listed here. Thx.
++
++------------------------------------------------------------------------------
++
++Q: What is the expected behavior of evtest?
++A: You should see something like this:
++
++./evtest /dev/input/event0
++Input driver version is 1.0.0
++Input device ID: bus 0x0 vendor 0x0 product 0x0 version 0x0
++Input device name: "DVB on-card IR receiver"
++Supported events:
++  Event type 1 (Key)
++    Event code 2 (1)
++    Event code 3 (2)
++    Event code 4 (3)
++    Event code 5 (4)
++    Event code 6 (5)
++    Event code 7 (6)
++    Event code 8 (7)
++    Event code 9 (8)
++    Event code 10 (9)
++    Event code 11 (0)
++    Event code 113 (Mute)
++    Event code 114 (VolumeDown)
++    Event code 115 (VolumeUp)
++    Event code 154 (CycleWindows)
++    Event code 353 (Select)
++    Event code 360 (Vendor)
++    Event code 375 (Screen)
++    Event code 377 (TV)
++    Event code 385 (Radio)
++    Event code 402 (ChannelUp)
++    Event code 403 (ChannelDown)
++Testing ... (interrupt to exit)
++Event: time 1047342384.790038, type 1 (Key), code 402 (ChannelUp), value 1
++Event: time 1047342385.290630, type 1 (Key), code 402 (ChannelUp), value 0
++
++'DVB on-card IR receiver' indicates that you are using the correct device.
++'Event:' lines are the result of pressing the 'Up' key on the remote control.
++
++------------------------------------------------------------------------------
++
++Q: evtest does not show any events.
++A: Try this checklist:
++
++0. compile everything:
++   cd DVB/driver
++   make
++   makedev.napi
++   cd DVB/apps/av7110_loadkeys
++   make
++
++1. load the driver
++   cd DVB/driver
++   make insmod
++
++2. load the keymap [see note below]
++   cd DVB/apps/av7110_loadkeys
++   ./av7110_loadkeys hauppauge.rc5 > /proc/av7110_ir
++
++3. run evtest
++   ./evtest /dev/input/event0
++
++If this does not work, try
++   ./evtest /dev/input/event1
++   ./evtest /dev/input/event2
++   ./evtest /dev/input/event3
++   ...
++
++One of these should work. (If your device is not '/dev/input/event0', 
++you have to specify this device with the '-i' command line option of
++the remote control plugin.)
++
++Note:
++   The keymap above works for the RC5 remote of a DVB-S Nexus 2.1 card.
++   For RCMM receivers, use a .rcmm keymap, i.e. 'activy.rcmm'.
++   If unsure, you might also try
++   ./av7110_loadkeys -i hauppauge.rc5 > /proc/av7110_ir
++   ./av7110_loadkeys activy.rcmm > /proc/av7110_ir
++   ./av7110_loadkeys -i activy.rcmm > /proc/av7110_ir
++
++------------------------------------------------------------------------------
++
++Q: It still doesn't work. Any other idea?
++A: Verify that the plug of the remote control receiver is connected properly.
++   :)
++
++------------------------------------------------------------------------------
++
++Q: How do I have to modify 'runvdr' to load the keymap?
++A: Take a look at the script 'runvdr.remote' in sub-directory 'misc'.
+\ No newline at end of file
+diff -Naur vdr-1.2.6/PLUGINS/src/remote/HISTORY vdr-1.2.6.new/PLUGINS/src/remote/HISTORY
+--- vdr-1.2.6/PLUGINS/src/remote/HISTORY	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/remote/HISTORY	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,13 @@
++VDR Plugin 'remote' Revision History
++------------------------------------
++
++2002-10-14: Version 0.0.1
++
++- Initial revision.
++
++
++2002-03-31: Version 0.1.0
++
++- Support autorepeat on /dev/input/eventX with following API-3 drivers:
++  o DVB HEAD (2003-03-31 and later)
++  o dvb kernel (2003-03-31 and later)
+diff -Naur vdr-1.2.6/PLUGINS/src/remote/Makefile vdr-1.2.6.new/PLUGINS/src/remote/Makefile
+--- vdr-1.2.6/PLUGINS/src/remote/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/remote/Makefile	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,80 @@
++#
++# Makefile for a Video Disk Recorder plugin
++#
++# $Id$
++
++# The official name of this plugin.
++# This name will be used in the '-P...' option of VDR to load the plugin.
++# By default the main source file also carries this name.
++#
++PLUGIN = remote
++
++### The version number of this plugin (taken from the main source file):
++
++VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ print $$6 }' | sed -e 's/[";]//g')
++
++### The directory environment:
++
++DVBDIR = ../../../../DVB
++VDRDIR = ../../..
++LIBDIR = ../../lib
++TMPDIR = /tmp
++
++### The version number of VDR (taken from VDR's "config.h"):
++
++VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
++
++### The name of the distribution archive:
++
++ARCHIVE = $(PLUGIN)-$(VERSION)
++PACKAGE = vdr-$(ARCHIVE)
++
++### Includes and Defines (add further entries here):
++
++-include $(VDRDIR)/Make.config
++INCLUDES += -I$(VDRDIR)/include
++
++DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
++
++### The object files (add further files here):
++
++OBJS = $(PLUGIN).o
++
++### The C++ compiler and options:
++
++CXX      = powerpc-tuxbox-linux-gnu-g++
++#CXXFLAGS = -O3 -Wall -Woverloaded-virtual -msoft-float
++CXXFLAGS = -mcpu=823 -msoft-float -mmultiple -mstring -meabi -O3 -g -DREMOTE_
++
++### Implicit rules:
++
++%.o: %.c
++	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
++
++# Dependencies:
++
++MAKEDEP = $(CXX) -MM -MG
++DEPFILE = .dependencies
++$(DEPFILE): Makefile
++	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
++
++-include $(DEPFILE)
++
++### Targets:
++
++all: libvdr-$(PLUGIN).so
++
++libvdr-$(PLUGIN).so: $(OBJS)
++	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
++	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
++
++dist: clean
++	@-rm -rf $(TMPDIR)/$(ARCHIVE)
++	@mkdir $(TMPDIR)/$(ARCHIVE)
++	@cp -a * $(TMPDIR)/$(ARCHIVE)
++	@tar czf $(PACKAGE).tgz -C $(TMPDIR) $(ARCHIVE)
++	@-rm -rf $(TMPDIR)/$(ARCHIVE)
++	@echo Distribution package created as $(PACKAGE).tgz
++
++clean:
++	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
+diff -Naur vdr-1.2.6/PLUGINS/src/remote/README vdr-1.2.6.new/PLUGINS/src/remote/README
+--- vdr-1.2.6/PLUGINS/src/remote/README	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/remote/README	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,113 @@
++remote - a remote control plugin for the Video Disk Recorder (VDR)
++==================================================================
++
++Written by:                   Oliver Endriss <o.endriss@gmx.de>
++
++Latest version available at:  http://endriss.escape.bei.t-online.de/vdr
++
++Requirements:                 VDR 1.1.13 or later
++
++Distributed under GPL, see the file COPYING for license information.
++
++
++Description:
++------------
++This plugin supports the built-in remote control port of the DVB-S Rev. 2.1/2.2
++(and the J2 or CAM connectors of some other boards, see file FAQ).
++It is primarily intended for use with the new DVB driver (NEWSTRUCT and later,
++i.e. API versions 2 and 3), but may be used with the old driver, too.
++
++When the plugin is loaded for the first time, vdr will prompt you to learn
++the keys of the remote control. It is possible to use several devices at the
++same time, but this is not very important right now...
++
++Supported kernel devices:
++- new DVB driver (API-2, API-3): /dev/input/eventX
++- old DVB driver (API-1): /dev/lirc
++- keyboard: /dev/console, /dev/ttyX
++
++
++Installation:
++-------------
++The remote plugin is installed as usual:
++- cd VDR/PLUGINS/src
++- tar xfz vdr-remote-0.1.0.tgz
++- ln -s remote-0.1.0 remote
++- cd ../..
++- make plugins
++
++
++API-3 driver (version 1.0.0, CVS HEAD, CVS dvb-kernel) 
++------------------------------------------------------
++Remote control events are passed through '/device/input/eventX'.
++Since the /dev/input protocol is standardized in the kernel, there is a
++chance that this plugin will work with other /dev/input devices, too.
++However, this has not been tested yet...
++The -i option allows you to specify the name of the /dev/input device.
++
++Before submitting a bug report, please verify that driver and remote control
++are working properly. You may do this using the 'evtest' tool supplied
++with the driver (directory 'DVB/apps/av7110_loadkeys').
++Verify that the device node exists and you have read access rights.
++You have to select the correct remote control type, inversion setting and
++keymap using the tool 'av7110_loadkeys'. Please read the file README in
++the directory 'DVB/apps/av7110_loadkeys'.
++If you still have problems, take a look on the checklist in file 'FAQ'.
++
++If you'd like to use autorepeat, you have to use CVS HEAD, CVS dvb-kernel
++2003-03-31 or later (or the next 1.0.0 release, of course).
++The feature is automatically detected and used.
++
++BTW, these drivers might also be useful, if the remote control of your
++TV set interferes with the remote control of your DVB-S. See the file
++'DVB/apps/av7110_loadkeys/README' for information how to enable 
++checking of the device address.
++
++
++API-2 (CVS NEWSTRUCT)
++---------------------
++Since the NEWSTRUCT branch is obsolete, there is no reason to use this
++driver anymore. See API-3 above.
++
++
++API-1 (old driver, version 0.9.4)
++---------------------------------
++The old DVB driver provides a module (DVB/driver/lirc/lirc_dvb.o) which
++connects to the LIRC device ('/dev/lirc', lirc_dev.o).
++Using the -l option, it is possible to use '/dev/lirc' as a direct input
++device, i.e. lircd is *not* needed. However, the lirc_dev.o driver
++supplied by the LIRC package is still required (and must be loaded).
++If you use this option, you should know what you are doing. :-)
++
++
++TTY devices
++-----------
++The -t option may be used to specify a virtual console as an input device.
++This is useful, if you haven't compiled keyboard support into your VDR.
++
++
++Summary of command line options:
++--------------------------------
++-i dev, --input dev   select device which supports the /dev/input protocol
++-l dev, --lirc dev    select device which uses the /dev/lirc protocol
++-t dev, --tty dev     select terminal device
++
++
++Examples:
++---------
++vdr -Premote
++    use default device, same as '-i /dev/input/event0'
++
++vdr -P"remote -i /dev/input/event2"
++    use specified input device '/dev/input/event2'
++
++vdr -P"remote -l /dev/lirc"
++    use lirc kernel device
++
++vdr -P"remote -i /dev/input/event0 -i /dev/input/event2 -t /dev/tty10"
++    use multiple devices
++
++
++Have fun,
++
++Oliver
+diff -Naur vdr-1.2.6/PLUGINS/src/remote/remote.c vdr-1.2.6.new/PLUGINS/src/remote/remote.c
+--- vdr-1.2.6/PLUGINS/src/remote/remote.c	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/remote/remote.c	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,426 @@
++/*
++ * remote.c: Remote Control plugin for the Video Disk Recorder
++ *
++ * See the README file for copyright information and how to reach the author.
++ *
++ * $Id$
++ */
++
++#include <stdio.h>
++#include <sys/fcntl.h>
++#include <getopt.h>
++#include <termios.h>
++#include <linux/input.h>
++#include "remote.h"
++
++//#define DEBUG
++
++#ifdef DEBUG
++#define DSYSLOG(x...)    dsyslog(x)
++#else
++#define DSYSLOG(x...)
++#endif
++
++//------------------------------------------------------------------------------
++
++cRemoteGeneric::cRemoteGeneric(const char *name, int f, char *d)
++:cRemote(name)
++{
++    fh = f;
++    device = d;
++    polldelay     = 40;   // ms
++    repeatdelay   = 350;  // ms
++    repeatfreq    = 100;  // ms
++    repeattimeout = 500;  // ms
++}
++
++cRemoteGeneric::~cRemoteGeneric()
++{
++    Cancel();
++}
++
++void cRemoteGeneric::Action(void)
++{
++    int now, first = 0, last = 0;
++    uint64 code, lastcode = INVALID_KEY;
++    bool repeat = false;
++
++    for (;;)
++    {
++        if (polldelay)
++            delay_ms(polldelay);
++
++        code = getKey();
++        if (code == INVALID_KEY)
++        {
++            esyslog("error reading '%s'\n", device);
++            delay_ms(100*polldelay);
++            continue;
++        }
++
++        now = time_ms();
++
++        if (keyPressed(code))
++        {
++            // key down
++            if (now - last > repeattimeout)
++            {
++                if (repeat)
++                {
++                    Put(lastcode,false,true);
++                    DSYSLOG("%s: timeout %016llx\n", device, code);
++                    repeat = false;
++                }
++                lastcode = INVALID_KEY;
++            }
++
++            if (code != lastcode)
++            {
++                Put(code);
++                DSYSLOG("%s: press %016llx\n", device, code);
++                lastcode = code;
++                last = first = now;
++                repeat = false;
++            }
++            else
++            {
++                if (now - first < repeatdelay || now - last < repeatfreq)
++                    continue;
++                Put(code,true);
++                DSYSLOG("%s: repeat %016llx\n", device, code);
++                last = now;
++                repeat = true;
++            }
++        }
++        else
++        {
++            // key up
++            if (repeat)
++            {
++                Put(lastcode,false,true);
++                DSYSLOG("%s: release %016llx\n", device, lastcode);
++                repeat = false;
++            }
++            lastcode = INVALID_KEY;
++        }
++    }/* for */
++}
++
++//------------------------------------------------------------------------------
++
++cRemoteDevInput::cRemoteDevInput(const char *name, int f, char *d)
++:cRemoteGeneric(name, f, d)
++{
++    unsigned long data[EV_MAX];
++
++    Start();
++
++    memset (data, 0, sizeof data);
++    ioctl(f, EVIOCGBIT(0,EV_MAX), data);
++
++#define BITS_PER_LONG	(sizeof(unsigned long) * 8)
++
++    if ( data[EV_REP/BITS_PER_LONG] & (1 << EV_REP%BITS_PER_LONG) )
++    {
++        // autorepeat driver
++        DSYSLOG("%s: supports autorepeat!", d);
++        polldelay = 0;
++    }
++    else
++    {
++        // non-autorepeat drivers
++        polldelay = repeatdelay = repeatfreq = repeattimeout = 0;
++    }
++}
++
++uint64 cRemoteDevInput::getKey(void)
++{
++    struct input_event ev;
++    int n;
++    uint64 code;
++
++    n = read(fh, &ev, sizeof ev);
++    if (n == sizeof ev)
++    {
++        if (ev.value)
++            ev.value = 1;
++        code = ((uint64)ev.value << 32) | ((uint64)ev.type << 16) | (uint64)ev.code;
++    }
++    else
++        code = INVALID_KEY;
++    return code;
++}
++
++bool cRemoteDevInput::keyPressed(uint64 code)
++{
++    return (code & 0xFFFF00000000ULL);
++}
++
++void cRemoteDevInput::RCmd( bool onoff )
++{
++	switch ( onoff )
++		{
++			case false:
++					usleep( 1000 );
++					Start();
++				break;
++			case true:
++					Cancel();
++				break;
++		}
++}
++
++
++//------------------------------------------------------------------------------
++
++class cRemoteDevLirc : protected cRemoteGeneric
++{
++protected:
++  virtual uint64 getKey(void);
++  virtual bool keyPressed(uint64 code);
++public:
++  cRemoteDevLirc(const char *name, int f, char *d)
++  :cRemoteGeneric(name, f, d) { Start(); }
++  virtual void RCmd( bool onoff );
++};
++
++uint64 cRemoteDevLirc::getKey(void)
++{
++    unsigned long code;
++    int n;
++
++    n = read(fh, &code, sizeof code);
++    if (n != sizeof code)
++        return INVALID_KEY;
++    else
++        return (uint64)code;
++}
++
++bool cRemoteDevLirc::keyPressed(uint64 code)
++{
++    return (code & 0x80);
++}
++
++void cRemoteDevLirc::RCmd( bool onoff )
++{
++	switch ( onoff )
++		{
++			case false:
++					Start();
++				break;
++			case true:
++					Cancel();
++				break;
++		}
++}
++
++//------------------------------------------------------------------------------
++
++class cRemoteDevTty : protected cRemoteGeneric
++{
++private:
++  struct termios tm;
++protected:
++  virtual uint64 getKey(void);
++  virtual bool keyPressed(uint64 code);
++public:
++  cRemoteDevTty(const char *name, int f, char *d);
++  virtual ~cRemoteDevTty();
++  virtual void RCmd( bool onoff );
++};
++
++cRemoteDevTty::cRemoteDevTty(const char *name, int f, char *d)
++:cRemoteGeneric(name, f, d)
++{
++    struct termios t;
++
++    if (!tcgetattr(f, &tm))
++    {
++        t = tm;   
++        t.c_lflag &= ~(ICANON | ECHO);
++        tcsetattr(f, TCSANOW, &t);
++    }
++    polldelay     = 0;
++    repeattimeout = 80;
++    Start();
++}
++
++cRemoteDevTty::~cRemoteDevTty()
++{
++    tcsetattr(fh, TCSANOW, &tm);
++}
++
++uint64 cRemoteDevTty::getKey(void)
++{
++    int n;
++    uint64 code = 0;
++
++    n = read(fh, &code, sizeof code);
++    return (n > 0) ? code : INVALID_KEY;
++}
++
++bool cRemoteDevTty::keyPressed(uint64 code)
++{
++    return true;
++}
++
++void cRemoteDevTty::RCmd( bool onoff )
++{
++	switch ( onoff )
++		{
++			case false:
++					Start();
++				break;
++			case true:
++					Cancel();
++				break;
++		}
++}
++
++//------------------------------------------------------------------------------
++
++void *cPluginRemote::GetSetData( int what )
++{
++	if ( what == RDATAFILEHANDLE )
++		{
++			return fh;
++		}
++	else
++	if ( what == RSTOPREMOTE )
++		{
++			if ( prdi != NULL )
++				prdi->RCmd( true );
++			return NULL;
++		}
++	if ( what == RSTARTREMOTE )
++		{
++			if ( prdi != NULL )
++				prdi->RCmd( false );
++			return NULL;
++		}
++	return NULL;
++}
++
++cPluginRemote::cPluginRemote(void)
++{
++    for (int i = 0; i < NUMREMOTES; i++)
++    {
++        devtyp[i] = '\0';
++        devnam[i] = NULL;
++        fh[i] = -1;
++    }
++    devcnt = 0;
++}
++
++cPluginRemote::~cPluginRemote()
++{
++    // must not delete any remotes, see PLUGINS.html!
++
++    for (int i = 0; i < devcnt; i++)
++    {
++        if (fh[i] >= 0)
++            close(fh[i]);
++        fh[i] = -1;
++    }
++    devcnt = 0;
++}
++
++const char *cPluginRemote::CommandLineHelp(void)
++{
++    return "  -i dev,   --input=dev    kernel input device (/dev/input/...)\n"
++           "  -l dev,   --lirc=dev     kernel lirc device (/dev/lirc)\n"
++           "  -t dev,   --tty=dev      tty device\n";
++}
++
++bool cPluginRemote::ProcessArgs(int argc, char *argv[])
++{
++    static struct option long_options[] =
++            { { "input", required_argument, NULL, 'i' },
++              { "lirc",  required_argument, NULL, 'l' },
++              { "tty",   required_argument, NULL, 't' },
++              { NULL } };
++    int c;
++
++    while ((c = getopt_long(argc, argv, "i:l:t:", long_options, NULL)) != -1)
++    {
++        switch (c)
++        {
++          case 'i':
++          case 'l':
++          case 't':
++              if (devcnt >= NUMREMOTES)
++              {
++                  esyslog("%s: too many remotes", Name());
++                  return false;
++              }
++              devtyp[devcnt] = c;
++              devnam[devcnt] = optarg;
++	      devcnt++;
++              break;
++
++          default:
++              esyslog("%s: invalid argument", Name());
++              return false;
++        }
++    }
++
++    return true;
++}
++
++bool cPluginRemote::Start(void)
++{
++    char nam[25];
++    bool ok = false;
++
++    // defaults
++    if (devcnt == 0)
++    {
++        devtyp[0] = 'i';
++        devnam[0] = "/dev/input/event0";
++        devcnt = 1;
++    }
++
++    for (int i = 0; i < devcnt; i++)
++    {
++        fh[i] = open(devnam[i], O_RDONLY);
++        if (fh[i] < 0)
++        {
++            esyslog("%s: unable to open '%s'", Name(), devnam[i]);
++            continue;
++        }
++	
++        // at least, one device opened successfully
++        ok = true;
++        dsyslog("%s: using '%s'", Name(), devnam[i]);
++
++        // build name for remote.conf
++        char *cp = strrchr(devnam[i], '/');
++	if (cp)
++            sprintf (nam, "%s-%s", Name(), cp+1);
++        else
++            sprintf (nam, "%s-%u", Name(), i);
++
++	switch (devtyp[i])
++        {
++            case 'i':
++                prdi = new cRemoteDevInput(nam,fh[i],devnam[i]);
++                break;
++
++            case 'l':
++                new cRemoteDevLirc(nam,fh[i],devnam[i]);
++                break;
++
++            case 't':
++                new cRemoteDevTty(nam,fh[i],devnam[i]);
++                break;
++        }
++    }
++    
++    if (!ok)
++        esyslog("%s: fatal error - unable to open input device", Name());
++    return ok;
++}
++
++//------------------------------------------------------------------------------
++
++VDRPLUGINCREATOR(cPluginRemote); // Don't touch this!
+diff -Naur vdr-1.2.6/PLUGINS/src/remote/remote.h vdr-1.2.6.new/PLUGINS/src/remote/remote.h
+--- vdr-1.2.6/PLUGINS/src/remote/remote.h	1970-01-01 01:00:00.000000000 +0100
++++ vdr-1.2.6.new/PLUGINS/src/remote/remote.h	2009-06-14 03:05:47.000000000 +0200
+@@ -0,0 +1,71 @@
++#ifndef __REMOTE_H__
++#define __REMOTE_H__
++
++#include <vdr/plugin.h>
++#include <vdr/remote.h>
++#include <vdr/thread.h>
++
++#define NUMREMOTES      5         // maximum number of remote control devices
++
++#define RDATAFILEHANDLE 	1
++#define RSTOPREMOTE		2
++#define RSTARTREMOTE		3
++
++static const char *VERSION        = "0.1.0";
++static const char *DESCRIPTION    = "Remote control";
++
++class cRemoteGeneric : protected cRemote, protected cThread
++{
++protected:
++  static const uint64 INVALID_KEY = (uint64) -1;
++  int fh;
++  char *device;
++  int polldelay;
++  int repeatdelay;
++  int repeatfreq;
++  int repeattimeout;
++  cRemoteGeneric(const char *name, int f, char *d);
++  virtual ~cRemoteGeneric();
++  virtual uint64 getKey(void) = 0;
++  virtual bool keyPressed(uint64 code) = 0;
++  virtual void Action(void);
++public:
++	  virtual void RCmd( bool onoff ) = 0;
++};
++
++class cRemoteDevInput : protected cRemoteGeneric
++{
++protected:
++  virtual uint64 getKey(void);
++  virtual bool keyPressed(uint64 code);
++public:
++  cRemoteDevInput(const char *name, int f, char *d);
++  virtual void RCmd( bool onoff );
++};
++
++
++class cPluginRemote : public cPlugin
++{
++private:
++  int  devcnt;
++  char devtyp[NUMREMOTES];
++  char *devnam[NUMREMOTES];
++  int  fh[NUMREMOTES];
++  cRemoteDevInput * prdi;
++public:
++  cPluginRemote(void);
++  virtual ~cPluginRemote();
++  virtual const char *Version(void) { return VERSION; }
++  virtual const char *Description(void) { return DESCRIPTION; }
++  virtual const char *CommandLineHelp(void);
++  virtual bool ProcessArgs(int argc, char *argv[]);
++  virtual bool Start(void);
++  virtual void *GetSetData( int what );
++};
++
++#endif
++
++
++
++
++
 diff -Naur vdr-1.2.6/recording.c vdr-1.2.6.new/recording.c
 --- vdr-1.2.6/recording.c	2003-11-08 16:25:35.000000000 +0100
-+++ vdr-1.2.6.new/recording.c	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/recording.c	2009-06-14 03:05:47.000000000 +0200
 @@ -784,6 +784,14 @@
  // The minimum age of an index file for considering it no longer to be written:
  #define MININDEXAGE    3600 // seconds
@@ -4683,7 +4683,7 @@ diff -Naur vdr-1.2.6/recording.c vdr-1.2.6.new/recording.c
          close(f);
 diff -Naur vdr-1.2.6/thread.c vdr-1.2.6.new/thread.c
 --- vdr-1.2.6/thread.c	2003-05-18 14:45:13.000000000 +0200
-+++ vdr-1.2.6.new/thread.c	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/thread.c	2009-06-14 03:05:47.000000000 +0200
 @@ -391,4 +391,3 @@
       _exit(0);
       }
@@ -4691,7 +4691,7 @@ diff -Naur vdr-1.2.6/thread.c vdr-1.2.6.new/thread.c
 -
 diff -Naur vdr-1.2.6/vdr.c vdr-1.2.6.new/vdr.c
 --- vdr-1.2.6/vdr.c	2003-09-14 11:36:54.000000000 +0200
-+++ vdr-1.2.6.new/vdr.c	2006-11-21 22:07:44.000000000 +0100
++++ vdr-1.2.6.new/vdr.c	2009-06-14 03:05:47.000000000 +0200
 @@ -69,6 +69,12 @@
    signal(signum, SignalHandler);
  }
