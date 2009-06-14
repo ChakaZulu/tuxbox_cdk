@@ -914,6 +914,7 @@ TUXBOX_RULES_MAKE(ntpclient)
 TUXBOX_RULES_MAKE(openntpd)
 TUXBOX_RULES_MAKE(esound)
 TUXBOX_RULES_MAKE(python)
+TUXBOX_RULES_MAKE(ser2net)
 
 #
 # ide apps
