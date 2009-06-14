@@ -305,6 +305,7 @@ $(DEPDIR)/vdr: bootstrap @DEPENDS_vdr@
 		$(BUILDENV) \
 		DVBDIR="$(driverdir)/dvb" \
 		$(MAKE) all DRIVERDIR=$(driverdir) && \
+		$(BUILDENV) \
 		$(MAKE) plugins PREFIX=$(prefix) DRIVERDIR=$(driverdir) && \
 		@INSTALL_vdr@
 	@CLEANUP_vdr@
