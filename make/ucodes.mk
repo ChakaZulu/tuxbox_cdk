@@ -1,3 +1,5 @@
+if BOXTYPE_DBOX2
+
 yadd-ucodes ucodes:
 	$(INSTALL) -d $(targetprefix)/var/tuxbox/ucodes
 	if [ -d $(ucodesdir) ] ; then \
@@ -13,6 +15,8 @@ flash-ucodes:
 		cp -dp $(ucodesdir)/* $(flashprefix)/root/var/tuxbox/ucodes; \
 	fi || true
 	@FLASHROOTDIR_MODIFIED@
+
+endif
 
 endif
 
