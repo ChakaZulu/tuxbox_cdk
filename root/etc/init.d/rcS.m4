@@ -307,6 +307,7 @@ runifexists({/bin/loadkeys},{/share/keymaps/i386/qwertz/de-latin1-nodeadkeys.kma
 runifexists({/sbin/inetd})
 runprogifexists({/sbin/sshd},{/etc/init.d/start_sshd},{&})
 runifexists({/sbin/dropbear})
+runprogifexists({/etc/ser2net.conf},{ser2net})
 runprogifexists({/sbin/automount},{/etc/init.d/start_automount})
 runprogifexists({/bin/djmount},{/etc/init.d/start_upnp})
 ifmarkerfile({boot_info},{runifexists({/bin/cdkVcInfo})})
@@ -323,7 +324,7 @@ runprogifexists({/etc/exports},{loadmodule(nfsd)
 	rpc.mountd
 	rpc.nfsd 3})	
 
-#Start the samba server if /var/etc/.sambaserver and /etc/smb.conf.dbox exist
+# Start the samba server if /var/etc/.sambaserver and /etc/smb.conf.dbox exist
 ifmarkerfile({sambaserver},{if [ -e /etc/smb.conf -a -x /bin/nmbd -a -x /bin/smbd ]; then
 		/bin/nmbd -D
 		/bin/smbd -D -a -s /etc/smb.conf

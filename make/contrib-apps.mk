@@ -3,9 +3,9 @@
 #   contrib apps
 #
 
-contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie @LUFS@ kermit wget ncftp screen lzma_utils ntpd ntpclient links links_g esound
+contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie @LUFS@ kermit wget ncftp screen lzma_utils ntpd ntpclient links links_g esound python ser2net
 
-CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma_utils .deps/ntpd .deps/ntpclient .deps/links .deps/links_g .deps/esound .deps/openntpd
+CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma_utils .deps/ntpd .deps/ntpclient .deps/links .deps/links_g .deps/esound .deps/openntpd .deps/python .deps/ser2net
 
 #bzip2
 $(DEPDIR)/bzip2: bootstrap @DEPENDS_bzip2@
@@ -683,4 +683,18 @@ $(DEPDIR)/python: bootstrap libz @DEPENDS_python@
 		$(MAKE) all && \
 		@INSTALL_python@
 	@CLEANUP_python@
+	touch $@
+
+$(DEPDIR)/ser2net: bootstrap @DEPENDS_ser2net@
+	@PREPARE_ser2net@
+	cd @DIR_ser2net@ && \
+		autoreconf -f -i && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) && \
+		$(MAKE) && \
+		@INSTALL_ser2net@
+	@CLEANUP_ser2net@
 	touch $@

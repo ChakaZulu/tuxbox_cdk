@@ -107,6 +107,7 @@ ntpclient;install:-m755:ntpclient:TARGET/bin
 openntpd;make:install:DESTDIR=TARGET
 esound;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libesd.la
 python;make:install
+ser2net;make:install
 
 #
 # msttf

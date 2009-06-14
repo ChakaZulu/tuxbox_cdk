@@ -1,0 +1,63 @@
+diff -Naur ser2net-2.5.orig/Makefile.am ser2net-2.5/Makefile.am
+--- ser2net-2.5.orig/Makefile.am	2005-12-30 01:03:32.000000000 +0100
++++ ser2net-2.5/Makefile.am	2009-06-14 20:41:11.000000000 +0200
+@@ -1,3 +1,5 @@
++installdir=$(sysconfdir)
++install_DATA = ser2net.conf
+ sbin_PROGRAMS = ser2net
+ AM_CFLAGS=-Wall
+ ser2net_SOURCES = controller.c dataxfer.c devcfg.c readconfig.c selector.c \
+diff -Naur ser2net-2.5.orig/ser2net.conf ser2net-2.5/ser2net.conf
+--- ser2net-2.5.orig/ser2net.conf	2007-11-16 15:52:05.000000000 +0100
++++ ser2net-2.5/ser2net.conf	2009-06-14 20:47:51.000000000 +0200
+@@ -61,29 +61,26 @@
+ # ports, this allows the same serial port to have both telnet and raw
+ # protocols.
+ 
+-BANNER:banner1:Welcome to ser2net TCP port \p device \d\r\n\
+-second line \
+-third line\r\n
++BANNER:banner:\r\nser2net port \p device \d [\s] (Tuxbox)\r\n\r\n
+ 
+-BANNER:banner2:this is ser2net TCP port \p device \d\r\n\
+-second line \
+-third line\r\n
++#2001:raw:600:/dev/ttyS0:9600 NONE 1STOPBIT 8DATABITS XONXOFF LOCAL -RTSCTS
++##2002:raw:600:/dev/ttyS1:9600 NONE 1STOPBIT 8DATABITS XONXOFF LOCAL -RTSCTS
++#2003:raw:5:/dev/ttyS2:9600
++#2004:raw:5:/dev/ttyS3:115200
++#2005:raw:5:/dev/ttyS4:9600
++#2006:raw:5:/dev/ttyS5:9600
++#2007:raw:5:/dev/ttyS6:9600
++#3001:telnet:0:/dev/ttyS0:19200 remctl banner1
++#3011:telnet:3:/dev/ttyS0:19200 banner2
++##3002:telnet:0:/dev/ttyS1:9600
++#3003:telnet:0:/dev/ttyS2:9600 banner3
++#3004:telnet:0:/dev/ttyS3:115200
++#3005:telnet:0:/dev/ttyS4:9600
++#3006:telnet:0:/dev/ttyS5:9600
++#3007:telnet:0:/dev/ttyS6:9600
++#5001:rawlp:10:/dev/lp0
+ 
+-BANNER:banner3:this is ser2net TCP port \p device \d  serial parms \s\r\n
+-
+-2001:raw:600:/dev/ttyS0:9600 NONE 1STOPBIT 8DATABITS XONXOFF LOCAL -RTSCTS
+-#2002:raw:600:/dev/ttyS1:9600 NONE 1STOPBIT 8DATABITS XONXOFF LOCAL -RTSCTS
+-2003:raw:5:/dev/ttyS2:9600
+-2004:raw:5:/dev/ttyS3:115200
+-2005:raw:5:/dev/ttyS4:9600
+-2006:raw:5:/dev/ttyS5:9600
+-2007:raw:5:/dev/ttyS6:9600
+-3001:telnet:0:/dev/ttyS0:19200 remctl banner1
+-3011:telnet:3:/dev/ttyS0:19200 banner2
+-#3002:telnet:0:/dev/ttyS1:9600
+-3003:telnet:0:/dev/ttyS2:9600 banner3
+-3004:telnet:0:/dev/ttyS3:115200
+-3005:telnet:0:/dev/ttyS4:9600
+-3006:telnet:0:/dev/ttyS5:9600
+-3007:telnet:0:/dev/ttyS6:9600
+-5001:rawlp:10:/dev/lp0
++5000:telnet:0:/dev/tts/0:9600  8DATABITS NONE 1STOPBIT -RTSCTS banner
++5001:telnet:0:/dev/tts/0:57600 8DATABITS NONE 1STOPBIT -RTSCTS banner
++6000:telnet:0:/dev/tts/1:9600  8DATABITS NONE 1STOPBIT -RTSCTS banner
++6001:telnet:0:/dev/tts/1:57600 8DATABITS NONE 1STOPBIT -RTSCTS banner
