@@ -1,8 +1,8 @@
 EXTRA_DIST = \
-	rcS.m4 start start_enigma start_lcars start_neutrino start_sshd halt start_radiobox start_esound
+	rcS.m4 start start_enigma start_lcars start_neutrino start_sshd halt start_radiobox start_esound start_vdr
 
 FILES_EXEC = \
-	rcS start start_enigma start_lcars start_neutrino start_sshd halt start_upnp initialize start_radiobox start_esound
+	rcS start start_enigma start_lcars start_neutrino start_sshd halt start_upnp initialize start_radiobox start_esound start_vdr
 
 if ENABLE_AUTOMOUNT
 FILES_EXEC += start_automount
