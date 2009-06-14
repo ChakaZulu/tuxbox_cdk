@@ -658,3 +658,29 @@ $(flashprefix)/root/bin/esd: $(DEPDIR)/esound | $(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 
 endif
+
+$(DEPDIR)/python: bootstrap libz @DEPENDS_python@
+	@PREPARE_python@
+	cd @DIR_python@ && \
+		for f1 in config.guess config.sub; do ln -s $(buildprefix)/Patches/$$f1 $$f1; done && \
+		autoconf && \
+		$(BUILDENV) \
+		LDSHARED=powerpc-tuxbox-linux-gnu-ld \
+		CROSS_ROOT=$(targetprefix) \
+		CROSS_COMPILING=yes \
+		PYTHON_FOR_BUILD=/usr/bin/python \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix=$(targetprefix) \
+			--with-threads \
+			--with-pymalloc \
+			--with-cyclic-gc \
+			--without-cxx \
+			--with-signal-module \
+			--with-wctype-functions \
+			--enable-shared && \
+		$(MAKE) all && \
+		@INSTALL_python@
+	@CLEANUP_python@
+	touch $@

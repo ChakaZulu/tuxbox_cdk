@@ -913,6 +913,7 @@ TUXBOX_RULES_MAKE(ntpd)
 TUXBOX_RULES_MAKE(ntpclient)
 TUXBOX_RULES_MAKE(openntpd)
 TUXBOX_RULES_MAKE(esound)
+TUXBOX_RULES_MAKE(python)
 
 #
 # ide apps
