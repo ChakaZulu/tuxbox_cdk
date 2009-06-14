@@ -6,6 +6,12 @@ if ENABLE_IDE
 HDD_MOUNT_ENTRY=/dev/ide/host0/bus0/target0/lun0/part2	/hdd	$(DEFAULT_FS_FSTAB)	\
 defaults	1 2
 endif
+if BOXTYPE_IPBOX
+VAR_MOUNT_ENTRY=/dev/mtdblock/1
+endif
+if BOXTYPE_DBOX2
+VAR_MOUNT_ENTRY=/dev/mtdblock/3
+endif
 
 $(flashprefix)/var-neutrino $(flashprefix)/var-enigma $(flashprefix)/var-radiobox: \
 $(flashprefix)/var-%: \
@@ -95,7 +101,7 @@ if BOXTYPE_DREAMBOX
 		cp $(flashprefix)/root/share/tuxbox/satellites.xml $@/share/tuxbox/satellites.xml; \
 	fi
 else
-	echo "/dev/mtdblock/3     /var     jffs2     defaults     0 0" >> $@/etc/fstab
+	echo "$(VAR_MOUNT_ENTRY)     /var     jffs2     defaults     0 0" >> $@/etc/fstab
 if ENABLE_IDE
 	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
 endif
@@ -140,7 +146,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-radiobox
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
 else
-	echo "/dev/mtdblock/3     /var     jffs2     defaults     0 0" >> $@/etc/fstab
+	echo "$(VAR_MOUNT_ENTRY)     /var     jffs2     defaults     0 0" >> $@/etc/fstab
 if ENABLE_IDE
 	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
 endif
@@ -175,7 +181,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-enigma
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
 else
-	echo "/dev/mtdblock/3     /var     jffs2     defaults     0 0" >> $@/etc/fstab
+	echo "$(VAR_MOUNT_ENTRY)     /var     jffs2     defaults     0 0" >> $@/etc/fstab
 if ENABLE_IDE
 	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
 endif
@@ -214,7 +220,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino $(flashpr
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
 else
-	echo "/dev/mtdblock/3     /var     jffs2     defaults     0 0" >> $@/etc/fstab
+	echo "$(VAR_MOUNT_ENTRY)     /var     jffs2     defaults     0 0" >> $@/etc/fstab
 if ENABLE_IDE
 	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
 endif
