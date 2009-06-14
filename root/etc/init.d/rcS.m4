@@ -244,9 +244,7 @@ else
 		loadmodule(cam, mio=0xC000000 firmware=/var/tuxbox/ucodes/cam-alpha.bin)
 	elif [ $VENDOR_ID -eq 2 ]; then
 		# Philips
-		ifmarkerfile({tda80xx.o},
-			{loadmodule(tda80xx)},
-			{loadmodule(tda8044h)})
+		loadmodule(tda8044h)
 		loadmodule(cam, mio=0xC040000 firmware=/var/tuxbox/ucodes/cam-alpha.bin)
 	elif [ $VENDOR_ID -eq 3 ]; then
 		# Sagem
