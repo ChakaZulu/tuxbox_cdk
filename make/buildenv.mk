@@ -14,6 +14,7 @@ BUILDENV := \
 	CXX=$(target)-g++ \
 	NM=$(target)-nm \
 	RANLIB=$(target)-ranlib \
+	STRIP=$(target)-strip \
 	CFLAGS="$(TARGET_CFLAGS)" \
 	CXXFLAGS="$(TARGET_CFLAGS)" \
 	LDFLAGS="$(TARGET_LDFLAGS)" \

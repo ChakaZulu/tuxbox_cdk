@@ -121,7 +121,7 @@ Python-2.5.4.tar.bz2;http://www.python.org/ftp/python/2.5.4
 #
 # ide apps
 #
-hdparm-8.6.tar.gz;http://prdownloads.sourceforge.net/sourceforge/hdparm
+hdparm-9.15.tar.gz;http://prdownloads.sourceforge.net/sourceforge/hdparm
 hddtemp-0.3-beta15.tar.bz2;http://savannah.c3sl.ufpr.br/hddtemp
 e2fsprogs-1.40.8.tar.gz;http://prdownloads.sourceforge.net/sourceforge/e2fsprogs
 parted-1.7.1.tar.gz;http://ftp.gnu.org/pub/gnu/parted
