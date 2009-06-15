@@ -22,7 +22,7 @@ endif
 	$(INSTALL) -d $(targetprefix)/tmp
 	$(INSTALL) -d $(targetprefix)/var
 	$(INSTALL) -d $(targetprefix)/var/etc
-	$(INSTALL) -d $(targetprefix)/var/run
+	ln -sf /tmp $(targetprefix)/var/run
 	$(INSTALL) -d $(targetprefix)/var/tuxbox/boot
 	$(INSTALL) -d $(targetprefix)$(UCODEDIR)
 if ENABLE_IDE

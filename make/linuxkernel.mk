@@ -275,7 +275,7 @@ endif
 	$(INSTALL) -m644 $(KERNEL_DIR)/System.map $(targetprefix)/boot/System.map-$(KERNELVERSION)
 	$(INSTALL) -d $(targetprefix)/tmp
 	$(INSTALL) -d $(targetprefix)/proc
-	$(INSTALL) -d $(targetprefix)/var/run
+	ln -sf /tmp $(targetprefix)/var/run
 endif
 
 if ENABLE_MMC
