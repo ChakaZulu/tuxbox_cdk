@@ -1,3 +1,3 @@
 Makefile
 rcS
-start_sshd
+rcS.insmod
