@@ -1,0 +1,24 @@
+Index: b/client.c
+===================================================================
+--- a/client.c
++++ b/client.c
+@@ -308,12 +308,19 @@ client_update(struct ntp_peer *p)
+ 		}
+ 
+ 	for (; i < OFFSET_ARRAY_SIZE; i++)
+ 		if (p->reply[i].good) {
+ 			good++;
++#if 0
+ 			if (p->reply[i].delay < p->reply[best].delay)
+ 				best = i;
++#else
++/* the dbox2 clock is pretty unstable, so we always want to
++   use the latest, most actual delay. This leads to better
++   results overall */
++			best = i;
++#endif
+ 		}
+ 
+ 	if (good < 8)
+ 		return (-1);
+ 
