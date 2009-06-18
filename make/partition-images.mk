@@ -42,11 +42,7 @@ $(flashprefix)/root-%.jffs2: $(flashprefix)/root-%-jffs2 $(MKJFFS2)
 	$(MKJFFS2)  -b -e 0x20000 --pad=0x7c0000 -r $< -o $@
 
 ################ $fs-to-boot.flfs*x
-if KERNEL26
-UBOOT_TEMPLATE = u-boot.dbox2.2_6.h.m4
-else
 UBOOT_TEMPLATE = u-boot.dbox2.h.m4
-endif
 
 if ENABLE_LZMA
 POSSIBLY_LZMA=--define=lzma=1
