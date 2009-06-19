@@ -217,7 +217,11 @@ if !TARGETRULESET_FLASH
 UCLIBC_DEBUG_SED_CONF=$(foreach param,DODEBUG DODEBUG_PT SUPPORT_LD_DEBUG SUPPORT_LD_DEBUG_EARLY UCLIBC_MALLOC_DEBUGGING,-e s"/^.*$(param)[= ].*/$(param)=y/")
 endif
 
+if ASSUME_KERNELSOURCES_OLD
+$(DEPDIR)/libc: @DEPENDS_uclibc@ bootstrap_gcc | install-linux-headers
+else
 $(DEPDIR)/libc: @DEPENDS_uclibc@ bootstrap_gcc install-linux-headers
+endif
 if BOXTYPE_DBOX2
 if KERNEL26
 KHEADERS="$(buildprefix)/$(KERNEL_DIR)/usr/include"
@@ -248,7 +252,11 @@ $(DEPDIR)/libc: directories
 	touch $@
 else
 
+if ASSUME_KERNELSOURCES_OLD
+$(DEPDIR)/libc: @DEPENDS_glibc@ bootstrap_gcc | install-linux-headers
+else
 $(DEPDIR)/libc: @DEPENDS_glibc@ bootstrap_gcc install-linux-headers
+endif
 	@PREPARE_glibc@
 	touch @DIR_glibc@/config.cache
 	@if [ $(GLIBC_PTHREADS) = "nptl" ]; then \
