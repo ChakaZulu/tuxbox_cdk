@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# module search path
+export MODDIR="/lib/modules/"$(uname -r)
+
+case "$1" in
+	resume)
+	if [ -e /var/etc/.usb ]
+	then
+		$0 start
+	fi
+	;;
+	start)
+	echo "[$0] starting usb support"
+	insmod $MODDIR/kernel/drivers/usb/core/usbcore.ko
+	insmod $MODDIR/kernel/drivers/usb/host/isp116x-hcd.ko
+	insmod $MODDIR/kernel/drivers/usb/serial/usbserial.ko
+	insmod $MODDIR/kernel/drivers/usb/serial/cp2101.ko
+	insmod $MODDIR/kernel/drivers/usb/serial/ftdi_sio.ko
+	insmod $MODDIR/kernel/drivers/scsi/scsi_mod.ko
+	insmod $MODDIR/kernel/drivers/usb/storage/usb-storage.ko
+	insmod $MODDIR/kernel/drivers/scsi/sd_mod.ko
+	insmod $MODDIR/kernel/drivers/scsi/sg.ko
+# mark as started for later resumes
+	touch /var/etc/.usb
+# mount USB
+	sleep 10
+	echo "[$0] mounting usb "
+	mount /dev/scsi/host0/bus0/target0/lun0/part1 /usb
+	if [ -e /var/etc/.usbswp ]
+	then
+		sleep 5
+		echo "[$0] create usb-swap"
+		swapon /usb/swap*
+	fi
+	;;
+	stop)
+	echo "[$0] stopping usb support"
+	if [ -e /var/etc/.usbswap* ]
+	then
+		echo "[$0] stopping usb-swap"
+		swapoff /var/mnt/usb/swap*
+	fi
+	rmmod sg
+	rmmod sd_mod
+	rmmod usb-storage
+	rmmod scsi_mod
+	rmmod ftdi_sio
+	rmmod cp2101
+	rmmod usbserial
+	rmmod isp116x-hcd
+	rmmod usbcore
+
+	# remove flag
+	rm -f /var/etc/.usb
+	;;
+	*)
+	echo "[$0] usage: $0 [start|stop|resume]"
+	;;
+esac
+

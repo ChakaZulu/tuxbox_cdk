@@ -1,0 +1,74 @@
+#!/bin/sh
+
+case $1 in
+	resume)
+	echo "[mmc] resuming support"
+	if [ -e /var/etc/.mmc ] 
+	then
+		insmod stb25spi_devs.ko
+		insmod spi_bitbang.ko
+		insmod stb25spi_scp.ko
+		insmod mmc_spi.ko
+	fi
+	;;
+	start)
+	echo "[mmc] trying to start supoort ..."
+	insmod stb25spi_devs.ko
+	insmod spi_bitbang.ko
+	insmod stb25spi_scp.ko
+	insmod mmc_spi.ko
+	touch /var/etc/.mmc
+	# mount MMC
+	sleep 10
+	echo "[$0] mounting usb "
+	mount /dev/mmc/blk0/part1 /var/mnt/mmc
+	if [ -e /var/etc/.mmcswp ]
+	then
+		sleep 5
+		echo "[$0] create usb-swap"
+		swapon /var/mnt/mmc/swap*
+	fi
+	echo "[mmc] support successfully started"
+	;;
+	stop)
+	echo "[$0] stopping mmcswap support"
+	if [ -e /var/etc/.mmcswap* ]
+	then
+		echo "[$0] stopping usb-swap"
+		swapoff /var/mnt/mmc/swap*
+	fi
+	echo "[mmc] trying to stop support ..."
+	if [ -e /var/etc/.mmc ]
+	then
+		rmmod mmc_spi.ko
+		rmmod stb25spi_scp.ko
+		rmmod spi_bitbang.ko
+		rmmod stb25spi_devs.ko
+		rm -f /var/etc/.mmc
+		echo "[mmc] support successfully stopped"
+	else
+		echo "[mmc] support was not started"
+	fi
+	;;
+	pause)
+	echo "[mmc] trying to pause support ..."
+	if [ -e /var/etc/.mmc ]
+	then
+		rmmod mmc_spi.ko
+		rmmod stb25spi_scp.ko
+		rmmod spi_bitbang.ko
+		rmmod stb25spi_devs.ko
+		echo "[mmc] support successfully paused"
+	else
+		echo "[mmc] support was not paused"
+	fi
+	;;
+	*)
+	echo "[mmc] start/stop mmc support"
+	echo "[mmc] usage: $0 [start|stop|resume]"
+	;;
+esac
+
+
+
+

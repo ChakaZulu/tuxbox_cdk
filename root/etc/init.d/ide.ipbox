@@ -1,0 +1,62 @@
+#!/bin/sh
+
+case $1 in
+	resume)
+	echo "[$0] resuming ide support"
+	if [ -e /var/etc/.ide ] ; then
+		$0 start
+	fi
+	;;
+
+	start)
+	echo "[$0] trying to start ide supoort ..."
+	if [ -e /var/etc/.hddpart1 ] ; then 
+		/sbin/swapon $(cat /var/etc/.hddpart1 2>/dev/null) && /bin/mount -n -t tmpfs tmpfs /tmp -o size=128M,remount
+	fi
+
+	if [ -e /var/etc/.hddpart2 ] ; then
+		mount -t $(cat /var/etc/.hddpart2 2>/dev/null) /hdd/movies
+	fi
+
+	if [ -e /var/etc/.hddpart3 ] ; then
+		mount -t $(cat /var/etc/.hddpart3 2>/dev/null) /hdd/music
+	fi
+
+	if [ -e /var/etc/.hddpart4 ] ; then
+		mount -t $(cat /var/etc/.hddpart4 2>/dev/null) /hdd/pictures
+	fi
+
+	if [ -e /var/etc/opt_hdparm ] ; then
+		hdparm $(cat /var/etc/opt_hdparm 2>/dev/null)
+	fi
+	touch /var/etc/.ide
+	echo "[$0] ide support successfully started"
+	;;
+	
+	stop)
+	echo "[$0] trying to stop ide support ..."
+	if [ -e /var/etc/.ide ] ;	then
+		if [ -e /var/etc/.hddpart1 ] ; then 
+			/sbin/swapoff -a
+		fi
+
+		if [ -e /var/etc/.hddpart2 ] ; then
+			umount /hdd/movies
+		fi
+
+		if [ -e /var/etc/.hddpart3 ] ; then
+			umount /hdd/music
+		fi
+
+		if [ -e /var/etc/.hddpart4 ] ; then
+			umount /hdd/pictures
+		fi
+		rm -f /var/etc/.ide
+		echo "[$0] ide support successfully stoped"
+	else
+		echo "[$0] ide support was not started"
+	fi
+	;;
+esac
+
+

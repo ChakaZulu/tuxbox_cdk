@@ -1,0 +1,47 @@
+#!/bin/sh
+
+case $1 in
+	resume)
+	echo "[$0] resuming support"
+	if [ -e /var/etc/.smbfs ] 
+	then
+		insmod smbfs.ko
+		echo "[$0] support successfully resumed"
+	else
+		echo "[$0] support was not started"
+	fi
+	;;
+	start)
+	echo "[$0] starting supoort ..."
+	insmod smbfs.ko
+	touch /var/etc/.smbfs
+	echo "[$0] support successfully started"
+	;;
+	stop)
+	echo "[$0] trying to stop support ..."
+	if [ -e /var/etc/.smbfs ]
+	then
+		rmmod smbfs.ko
+		rm -f /var/etc/.smbfs
+		echo "[$0] support successfully stopped"
+	else
+		echo "[$0] support was not started"
+	fi
+	;;
+	pause)
+	echo "[$0] trying to pause support ..."
+	if [ -e /var/etc/.smbfs ]
+	then
+		rmmod smbfs.ko
+		echo "[$0] support successfully paused"
+	else
+		echo "[$0] support was not paused"
+	fi
+	;;
+	*)
+	echo "[$0] start/stop samba support"
+	echo "[$0] usage: $0 [start|stop|resume]"
+	;;
+esac
+
+

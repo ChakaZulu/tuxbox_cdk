@@ -1,0 +1,37 @@
+#!/bin/sh
+
+case $1 in
+	resume)
+	echo "[$0] resuming support"
+	if [ -e /var/etc/.crond ] 
+	then
+		/sbin/crond
+		echo "[$0] support successfully resumed"
+	else
+		echo "[$0] support was not started"
+	fi
+	;;
+	start)
+	echo "[$0] starting supoort ..."
+	/sbin/crond
+	touch /var/etc/.crond
+	echo "[$0] support successfully started"
+	;;
+	stop)
+	echo "[$0] trying to stop support ..."
+	if [ -e /var/etc/.crond ]
+	then
+		kill `pidof crond`
+		rm -f /var/etc/.crond
+		echo "[$0] support successfully stopped"
+	else
+		echo "[$0] support was not started"
+	fi
+	;;
+	*)
+	echo "[$0] start/stop crond support"
+	echo "[$0] usage: $0 [start|stop|resume]"
+	;;
+esac
+
+

@@ -1,0 +1,49 @@
+#!/bin/sh
+
+case "$1" in
+	resume)
+	if [ -e /var/etc/.nfs ]
+	then 
+		$0 start
+	fi
+	;;
+	start)
+	echo "[$0] starting nfs server"
+
+	[ ! -d /var/lib/nfs ] && mkdir /var/lib/nfs
+	[ ! -d /var/lib/nfs/sm ] && mkdir /var/lib/nfs/sm
+	[ ! -d /var/lib/nfs/sm.bak ] && mkdir /var/lib/nfs/sm.bak
+	[ ! -f /var/lib/nfs/etab ] && touch /var/lib/nfs/etab
+	[ ! -f /var/lib/nfs/xtab ] && touch /var/lib/nfs/xtab
+	[ ! -f /var/lib/nfs/rmtab ] && touch /var/lib/nfs/rmtab
+	[ ! -f /var/lib/nfs/state ] && touch /var/lib/nfs/state
+
+	insmod exportfs
+	insmod nfsd
+
+	/sbin/portmap
+	/sbin/rpc.mountd 
+	/sbin/rpc.nfsd 5
+	/sbin/exportfs -ra
+
+	# mark as started for later resumes
+	touch /var/etc/.nfs
+	;;			
+	stop)
+	echo "[$0] stopping nfs server"
+	/sbin/exportfs -ua > /dev/null	
+	killall rpc.nfsd > /dev/null
+	killall rpc.mountd > /dev/null
+	killall portmap > /dev/null
+	rm -rf /var/lib/nfs
+	rmmod nfsd	
+	rmmod exportfs
+
+	# remove flag
+	rm -f /var/etc/.nfs
+	;;
+	*)
+	echo "[$0] usage: $0 [start|stop|resume]"
+	;;
+esac
+

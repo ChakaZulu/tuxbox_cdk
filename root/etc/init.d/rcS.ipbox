@@ -1,0 +1,163 @@
+#!/bin/sh
+
+/bin/mount -n -t sysfs none /sys
+/bin/mount -n -t proc proc /proc
+/bin/mount -n -t devpts devpts /dev/pts
+export INSMOD="/sbin/insmod"
+export MODDIR="/lib/modules/"$(uname -r)
+#export TZ=CET-1CEST,M3.5.0/2,M10.5.0/3
+/etc/init.d/init1
+
+#set environment variables ( mID )
+. /proc/bus/dbox.sh
+
+/bin/mount -t jffs2 /dev/mtdblock/1 /var
+/bin/mount -t ramfs none /tmp
+
+rm -rf /var/tmp
+ln -sf /tmp /var/tmp
+
+# create some symbolic links
+ln -sf sound/dsp /dev/dsp
+ln -sf fb/0 /dev/fb0
+ln -s /dev/input/mice /dev/psaux
+ln -s /dev/input/mice /dev/mouse
+
+# doing network config
+/bin/hostname -F /var/etc/hostname
+
+/sbin/ifconfig lo 127.0.0.1 netmask 255.0.0.0 up
+ifup -a
+/sbin/inetd &
+
+# bringing eth0 up
+ifup eth0
+
+
+# change into folder in RAM ( ramfs )
+cd /tmp
+
+export LD_LIBRARY_PATH=/tmp:/var/lib:/lib:$LD_LIBRARY_PATH
+export PATH=/tmp:/var/bin:$PATH
+
+#check if DM7000
+if [ $mID -eq 05 ] ; then
+	if [ -e /var/etc/.corefiles ] ; then
+		# enable corefiles (for debugging)
+		echo "/hdd/%e-sig-%s.core" > /proc/sys/kernel/core_pattern
+		ulimit -c unlimited
+	fi
+	# sleep after 10min
+	hdparm -S 120 /dev/ide/host0/bus0/target0/lun0/disc
+	# accustic management
+	hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc
+
+	mount -n -t usbfs usbfs /proc/bus/usb
+	mount /dev/ide/host0/bus0/target0/lun0/part1 /hdd
+	mount /dev/scsi/host0/bus0/target0/lun0/part1 /mnt/usb
+fi
+
+#check if Relook400
+if [ $mID -eq 40 ] ; then
+	if [ -e /var/etc/.corefiles ] ; then
+		# enable corefiles (for debugging)
+		echo "/hdd/%e-sig-%s.core" > /proc/sys/kernel/core_pattern
+		ulimit -c unlimited
+	fi
+	# sleep after 10min
+	hdparm -S 120 /dev/ide/host0/bus0/target0/lun0/disc
+	# accustic management
+	hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc
+
+	mount /dev/ide/host0/bus0/target0/lun0/part1 /hdd
+fi
+
+#check if CubeCaFe
+if [ $mID -eq 25 ] ; then
+	# remap some rc keys
+	/bin/rcremap
+
+	if [ -e /var/etc/.corefiles ] ; then
+		# enable corefiles (for debugging)
+		echo "/hdd/%e-sig-%s.core" > /proc/sys/kernel/core_pattern
+		ulimit -c unlimited
+	fi
+
+	# call init script from ide setup menu
+	/etc/init.d/ide resume
+
+	# this is not needed any more, cause we handle this in ide setup menu
+	#
+	# sleep after 10min
+	# hdparm -S 120 /dev/ide/host0/bus0/target0/lun0/disc
+	# accustic management
+	# hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc
+	# mount /dev/ide/host0/bus0/target0/lun0/part1 /hdd
+fi
+
+#check if CubeCaFe Prime
+if [ $mID -eq 26 ] ; then
+	# remap some rc keys
+	/bin/rcremap
+
+	if [ -e /var/etc/.corefiles ] ; then
+		# enable corefiles (for debugging)
+		echo "/hdd/%e-sig-%s.core" > /proc/sys/kernel/core_pattern
+		ulimit -c unlimited
+	fi
+
+	# call init script from ide setup menu
+    	#/etc/init.d/ide resume
+
+	# this is not needed any more, cause we handle this in ide setup menu
+	#
+	# sleep after 10min
+	# hdparm -S 120 /dev/ide/host0/bus0/target0/lun0/disc
+	# accustic management
+	# hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc
+	# mount /dev/ide/host0/bus0/target0/lun0/part1 /hdd
+
+
+fi
+# start usb support - mount is not so nice here, should be changed to s.t. like ide setup
+if [ -e /var/etc/.usb ] ; then
+    /etc/init.d/usb resume
+    echo "usb resume"
+fi
+
+# run scheduled installation
+if [ -e /var/etc/install.tar ] ; then
+	/bin/tar xvf /var/etc/install.tar -C /tmp
+	/tmp/install
+	rm /var/etc/install.tar
+fi
+
+# mmc support
+if [ -e /var/etc/.mmc ] ; then
+/etc/init.d/mmc resume
+fi
+# ide support
+if [ -e /var/etc/.ide ] ; then
+/etc/init.d/ide resume
+fi
+# smbfs support
+if [ -e /var/etc/.smbfs ] ; then
+/etc/init.d/smbfs resume
+fi
+# cifs support
+if [ -e /var/etc/.cifs ] ; then
+/etc/init.d/cifs resume
+fi
+# user initializations
+if [ -e /var/etc/init ] ; then
+	/var/etc/init
+fi
+# automount support
+if [ -e /var/etc/.automount ] ; then
+/etc/init.d/start_automount resume
+fi
+
+#execute laucher in flash
+/etc/init.d/start
+
+exit 0

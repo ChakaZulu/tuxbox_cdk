@@ -1,0 +1,71 @@
+#!/bin/sh
+
+# This script starts the automounter. It is basically an example that
+# can be customized by the user.
+
+# Useful commands:
+
+# Force unmount of unused automounted file systems:
+# 	kill -USR1 `cat /var/run/automount.pid`	
+# Unmount and exit cleanly:
+# 	kill -TERM `cat /var/run/automount.pid`
+
+
+# Production parameters
+TIMEOUT=600
+DEBUG=
+VERBOSE=
+# Use ghosting, does not break anything if kernel support not present. 
+GHOSTING=-g
+
+# Debug parameters (note that DEBUG and VERBOSE are meaningful only with
+# syslogd)
+#TIMEOUT=30
+#DEBUG=-d
+#VERBOSE=-v
+
+PIDFILE=/var/run/automount.pid
+
+# The parent directory of AUTOFSMOUNT must be absolute, must exist,
+# and be writeable. The AUTOFSMOUNTDIR should not exist.
+#
+# i mount all my nfs mounts below /tmp. If the mount fails, and something
+# wants to write to the mount, all that will happen is that the box will
+# go OOM and crash. If this happens in /var, your jffs2 will explode.
+AUTOFSMOUNTDIR=/tmp/autofs
+#
+MAPFILE=/var/etc/auto.net
+
+case "$1" in
+	resume)
+	if [ -e /var/etc/.automount ]
+	then
+		$0 start
+	fi
+	;;
+	start)
+	echo "Starting the automounter"
+
+	MD=/lib/modules/$(uname -r)/
+	grep -q autofs4 /proc/modules || insmod $MD/kernel/fs/autofs4/autofs4.ko
+	mkdir /tmp/lock
+	ln -sf /tmp/lock /var
+	touch /var/etc/.automount
+	if [ -e $MAPFILE ] ; then
+    		automount $DEBUG $GHOSTING $VERBOSE -t $TIMEOUT -p $PIDFILE $AUTOFSMOUNTDIR file $MAPFILE
+	fi
+	;;
+	stop)
+	echo "[$0] stopping automount"
+	if [ -e /var/etc/.automount ]
+	then
+		echo "[$0] stopping automount"
+		kill -TERM `cat /var/run/automount.pid`
+	fi
+	# remove flag
+	rm /var/etc/.automount
+	;;
+	*)
+	echo "[$0] usage: $0 [start|stop|resume]"
+	;;
+esac
