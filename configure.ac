@@ -848,7 +848,6 @@ TUXBOX_RULES_MAKE(mrouted)
 TUXBOX_RULES_MAKE(samba)
 TUXBOX_RULES_MAKE(cramfs)
 TUXBOX_RULES_MAKE(squashfs)
-TUXBOX_RULES_MAKE(dosfstools)
 #
 # contrib libs
 #
@@ -927,6 +926,7 @@ TUXBOX_RULES_MAKE(hddtemp)
 TUXBOX_RULES_MAKE(xfsprogs)
 TUXBOX_RULES_MAKE(reiserfsprogs)
 TUXBOX_RULES_MAKE(smartmontools)
+TUXBOX_RULES_MAKE(dosfstools)
 
 #
 # ccache
