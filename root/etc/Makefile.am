@@ -3,7 +3,11 @@ EXPORTS=exports
 endif
 
 if ENABLE_SAMBASERVER
+if BOXTYPE_IPBOX
+SMBCONF=smb.conf.ipbox
+else
 SMBCONF=smb.conf
+endif
 SMBPASSWD=smbpasswd
 endif
 
@@ -14,9 +18,19 @@ FILES_FLASH_RO = \
 	fstab host.conf inittab mime.types nsswitch.conf \
 	protocols termcap timezone.xml
 
+if BOXTYPE_IPBOX
+FILES_FLASH_RO += rpc.ipbox
+endif
+
 FILES_FLASH_RW = \
-	group hostname hosts inetd.conf passwd profile resolv.conf services modules.conf \
+	group hostname hosts inetd.conf passwd resolv.conf services modules.conf \
 	$(EXPORTS) $(SMBCONF) $(SMBPASSWD)
+
+if BOXTYPE_IPBOX
+FILES_FLASH_RW += profile.ipbox
+else
+FILES_FLASH_RW += profile
+endif
 
 if ENABLE_AUTOMOUNT
 FILES_FLASH_RW += auto.net

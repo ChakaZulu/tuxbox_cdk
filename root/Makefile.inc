@@ -20,7 +20,7 @@ install-flash: $(FILES_FLASH_RO) $(FILES_FLASH_RW) $(FILES_FLASH_RO_EXEC) $(FILE
 	@files="$(FILES_FLASH_RO)" ; \
 	for i in $$files ; do \
 		install -d $(flashprefix_ro)$(DIR) ; \
-		file=`echo "$$i" | sed -e 's,-flash$$,,'` ; \
+		file=`echo "$$i" | sed -e 's,.$(BOXTYPE)$$,,' -e 's,-flash$$,,'` ; \
 		echo "install -m644 $$i $(flashprefix_ro)$(DIR)/$$file" ; \
 		rm -f $(flashprefix_ro)$(DIR)/$$file ; \
 		install -m644 $$i $(flashprefix_ro)$(DIR)/$$file ; \
@@ -28,7 +28,7 @@ install-flash: $(FILES_FLASH_RO) $(FILES_FLASH_RW) $(FILES_FLASH_RO_EXEC) $(FILE
 	@files="$(FILES_FLASH_RW)" ; \
 	for i in $$files ; do \
 		install -d $(flashprefix_rw)$(DIR) ; \
-		file=`echo "$$i" | sed -e 's,-flash$$,,'` ; \
+		file=`echo "$$i" | sed -e 's,.$(BOXTYPE)$$,,' -e 's,-flash$$,,'` ; \
 		echo "install -m644 $$i $(flashprefix_rw)$(DIR)/$$file" ; \
 		rm -f $(flashprefix_rw)$(DIR)/$$file ; \
 		install -m644 $$i $(flashprefix_rw)$(DIR)/$$file ; \
@@ -47,7 +47,7 @@ endif
 	@files="$(FILES_FLASH_RO_EXEC)" ; \
 	for i in $$files ; do \
 		install -d $(flashprefix_ro)$(DIR) ; \
-		file=`echo "$$i" | sed -e 's,-flash$$,,'` ; \
+		file=`echo "$$i" | sed -e 's,.$(BOXTYPE)$$,,' -e 's,-flash$$,,'` ; \
 		echo "install -m755 $$i $(flashprefix_ro)$(DIR)/$$file" ; \
 		rm -f $(flashprefix_ro)$(DIR)/$$file ; \
 		install -m755 $$i $(flashprefix_ro)$(DIR)/$$file ; \
@@ -55,7 +55,7 @@ endif
 	@files="$(FILES_FLASH_RW_EXEC)" ; \
 	for i in $$files ; do \
 		install -d $(flashprefix_rw)$(DIR) ; \
-		file=`echo "$$i" | sed -e 's,-flash$$,,'` ; \
+		file=`echo "$$i" | sed -e 's,.$(BOXTYPE)$$,,' -e 's,-flash$$,,'` ; \
 		echo "install -m755 $$i $(flashprefix_rw)$(DIR)/$$file" ; \
 		rm -f $(flashprefix_rw)$(DIR)/$$file ; \
 		install -m755 $$i $(flashprefix_rw)$(DIR)/$$file ; \
@@ -68,7 +68,7 @@ endif
 	@files="$(FILES_FLASH_RW_LINK)" ; \
 	for i in $$files ; do \
 		install -d $(flashprefix_rw)$(DIR) ; \
-		file=`echo "$$i" | sed -e 's,-flash$$,,'` ; \
+		file=`echo "$$i" | sed -e 's,.$(BOXTYPE)$$,,' -e 's,-flash$$,,'` ; \
 		rm -f $(flashprefix_rw)$(DIR)/$$file ; \
 		if [ "$(flashprefix_rw)" != "$(flashprefix_ro)" ] ; then \
 			echo "Linking $(DIR)/$$file to /var$(DIR)/$$file" ; \
