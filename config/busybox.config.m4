@@ -34,8 +34,6 @@ option(`CONFIG_FEATURE_HAVE_RPC', `y', `y')
 option(`CONFIG_SELINUX', `n', `n')
 option(`CONFIG_FEATURE_PREFER_APPLETS', `n', `n')
 CONFIG_BUSYBOX_EXEC_PATH="/proc/self/exe"
-dnl In images, passwd is residing in /var/etc, the Filesystem Hierarchy Standard (http://www.pathname.com/fhs/) notwithstanding :-\
-option(`CONFIG_AUTH_IN_VAR_ETC', `n', `y')
 
 #
 # Build Options
