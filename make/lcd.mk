@@ -16,4 +16,8 @@ flash-lcdip: lcd $(flashprefix)/root
 	$(MAKE) -C $(appsdir)/tuxbox/lcd/lcdip install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 
+flash-lcdcmd: lcd $(flashprefix)/root
+	$(MAKE) -C $(appsdir)/tuxbox/lcd/lcdcmd install prefix=$(flashprefix)/root
+	@FLASHROOTDIR_MODIFIED@
+
 endif
