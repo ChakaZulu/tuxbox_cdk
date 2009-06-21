@@ -52,17 +52,21 @@ endif
 	$(MAKE) flash-dvbsub
 	$(MAKE) flash-fx2-plugins
 if BOXTYPE_DREAMBOX
+# TODO: pip and mosaic only work with neutrino...
 	$(MAKE) flash-pip
 	$(MAKE) flash-mosaic
+if ENABLE_IDE
 	$(MAKE) flash-e2fsprogs
 	$(MAKE) flash-sfdisk
+endif
 	$(MAKE) flash-dvbsnoop
 endif
 if ENABLE_AUTOMOUNT
 	$(MAKE) flash-automount
 endif
-if !BOXTYPE_DREAMBOX
+if BOXTYPE_DBOX2
 if KERNEL26
+# those right now only make sense on dbox2 since the other platforms use devfs
 	$(MAKE) flash-makedevices
 	$(MAKE) flash-hotplug
 endif
