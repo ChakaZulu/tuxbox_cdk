@@ -28,17 +28,18 @@ if ENABLE_IDE
 endif
 	$(MAKE) $@/etc/update.urls
 
-	$(MAKE) flash-tuxinfo
 if BOXTYPE_DBOX2
+	$(MAKE) flash-tuxinfo
 	$(MAKE) flash-tools_misc
 	$(MAKE) flash-fcp
 	$(MAKE) flash-camd2
 	$(MAKE) flash-ucodes
+	$(MAKE) flash-satfind
+	$(MAKE) flash-lcdip
 endif
 	$(MAKE) flash-config
 	$(MAKE) flash-busybox
 	$(MAKE) flash-ftpd
-	$(MAKE) flash-satfind
 	$(MAKE) flash-streampes
 if ENABLE_FS_LUFS
 	$(MAKE) flash-lufsd
@@ -50,17 +51,21 @@ endif
 	$(MAKE) flash-vncviewer
 	$(MAKE) flash-dvbsub
 	$(MAKE) flash-fx2-plugins
-	$(MAKE) flash-lcdip
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-pip
 	$(MAKE) flash-mosaic
+	$(MAKE) flash-e2fsprogs
+	$(MAKE) flash-sfdisk
+	$(MAKE) flash-dvbsnoop
 endif
 if ENABLE_AUTOMOUNT
 	$(MAKE) flash-automount
 endif
+if !BOXTYPE_DREAMBOX
 if KERNEL26
 	$(MAKE) flash-makedevices
 	$(MAKE) flash-hotplug
+endif
 endif
 if ENABLE_DOSFSTOOLS
 	$(MAKE) flash-dosfstools
