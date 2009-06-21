@@ -291,6 +291,10 @@ endif
 	cp -vR $(buildprefix)/@DIR_dreamfiles@/dreamfiles/share/* $(dreamfilesrootdir)/share
 	cp -vR $(buildprefix)/@DIR_dreamfiles@/mkcramfs-e $(hostprefix)/bin
 	cp -vR $(buildprefix)/@DIR_dreamfiles@/mksquashfs $(hostprefix)/bin/mksquashfs-dream
+if !TARGETRULESET_UCLIBC
+	$(INSTALL) -d $(dreamfilesrootdir)/lib/gconv
+	cp -vR $(buildprefix)/@DIR_dreamfiles@/dreamfiles/lib/gconv/* $(dreamfilesrootdir)/lib/gconv
+endif
 	@CLEANUP_dreamfiles@
 if BOXMODEL_DM7000
 	@CLEANUP_dreamdriver_dm7000@
@@ -320,6 +324,7 @@ if !TARGETRULESET_UCLIBC
 	@for i in ISO8859-1.so ISO8859-2.so ISO8859-7.so UNICODE.so; do \
 		cp $(targetprefix)/lib/gconv/$$i $(dreamfilesrootdir)/lib/gconv; \
 	done;
+	$(target)-strip $(dreamfilesrootdir)/lib/gconv/*.so 2>/dev/null || /bin/true
 	ln -sf libgcc_s_nof.so.1 $(dreamfilesrootdir)/lib/libgcc_s.so.1
 endif
 if BOXMODEL_DM500
