@@ -146,17 +146,19 @@ $(flashprefix)/root/sbin/e2fsck: bootstrap @DEPENDS_e2fsprogs@ | $(flashprefix)/
 		$(MAKE) libs progs && \
 		$(MAKE) install-libs && \
 		@INSTALL_e2fsprogs@
+if !BOXTYPE_DREAMBOX
 	$(INSTALL) $(targetprefix)/sbin/badblocks $(flashprefix)/root/sbin/
 	$(INSTALL) $(targetprefix)/sbin/resize2fs $(flashprefix)/root/sbin/
 	$(INSTALL) $(targetprefix)/sbin/tune2fs $(flashprefix)/root/sbin/
 	$(INSTALL) $(targetprefix)/sbin/fsck $(flashprefix)/root/sbin/
+	$(INSTALL) $(targetprefix)/sbin/e2label $(flashprefix)/root/sbin/
+endif
 	$(INSTALL) $(targetprefix)/sbin/e2fsck $(flashprefix)/root/sbin/
 	$(INSTALL) $(targetprefix)/sbin/mke2fs $(flashprefix)/root/sbin/
 if ENABLE_EXT2
 	@ln -sf mke2fs $(flashprefix)/root/sbin/mkfs.ext2
 	@ln -sf e2fsck $(flashprefix)/root/sbin/fsck.ext2
 endif
-	$(INSTALL) $(targetprefix)/sbin/e2label $(flashprefix)/root/sbin/
 if ENABLE_EXT3
 	@ln -sf mke2fs $(flashprefix)/root/sbin/mkfs.ext3
 	@ln -sf e2fsck $(flashprefix)/root/sbin/fsck.ext3
