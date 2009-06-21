@@ -6,7 +6,7 @@
 
 $(KERNEL_BUILD_FILENAME): bootstrap linuxdir install-linux-headers $(KERNEL_DIR)/.config
 if BOXTYPE_DREAMBOX
-	$(MAKE) -C $(KERNEL_DIR) zImage modules \
+	$(MAKE) -j $(J) -C $(KERNEL_DIR) zImage modules \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)-
 	$(MAKE) -C $(KERNEL_DIR) modules_install \
@@ -22,7 +22,7 @@ if KERNEL26
 endif
 	$(MAKE) -C $(KERNEL_DIR) include/linux/version.h ARCH=ppc
 if BOXTYPE_IPBOX
-	$(MAKE) -C $(KERNEL_DIR) vmlinux modules \
+	$(MAKE) -j $(J) -C $(KERNEL_DIR) vmlinux modules \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)-
 	$(MAKE) -C $(KERNEL_DIR) modules_install \
@@ -32,7 +32,7 @@ if BOXTYPE_IPBOX
 		INSTALL_MOD_PATH=$(targetprefix)
 else
 if KERNEL26
-	$(MAKE) -C $(KERNEL_DIR) uImage modules \
+	$(MAKE) -j $(J) -C $(KERNEL_DIR) uImage modules \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)-
 	$(MAKE) -C $(KERNEL_DIR) modules_install \
@@ -40,7 +40,7 @@ if KERNEL26
 		CROSS_COMPILE=$(target)- \
 		INSTALL_MOD_PATH=$(targetprefix)
 else
-	$(MAKE) -C $(KERNEL_DIR) zImage modules \
+	$(MAKE) -j $(J) -C $(KERNEL_DIR) zImage modules \
 		ARCH=ppc \
 		CROSS_COMPILE=$(target)-
 	$(MAKE) -C $(KERNEL_DIR) modules_install \
