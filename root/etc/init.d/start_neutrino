@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: start_neutrino,v 1.36 2009/04/30 19:50:59 seife Exp $
+# $Id: start_neutrino,v 1.37 2009/06/26 13:22:34 rhabarber1848 Exp $
 
 date -s 010101001970
 # openntpd support...
@@ -25,10 +25,10 @@ zapit $ZAPIT
 nhttpd
 until neutrino -f -u ; do
     echo "Neutrino exited with nonzero exit status, restarting..."
-    pidof sectionsd >/dev/null || sectionsd $SECTIONSD
+    pidof sectionsd >/dev/null && sectionsdcontrol --nopause || sectionsd $SECTIONSD
     pidof timerd    >/dev/null || timerd
     pidof camd2     >/dev/null || camd2
-    pidof zapit     >/dev/null || zapit $ZAPIT
+    pidof zapit     >/dev/null && pzapit -lsb || zapit $ZAPIT
     pidof nhttpd    >/dev/null || nhttpd
 done
 
