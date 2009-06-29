@@ -87,6 +87,9 @@ include make/dvb-config.mk
 include make/dvbsnoop.mk
 
 # A nonessential library
+include make/libdvbsi++.mk
+
+# A nonessential library
 include make/libdvb++.mk
 
 # The zapit daemon
