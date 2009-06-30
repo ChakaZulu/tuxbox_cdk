@@ -30,8 +30,10 @@ $(flashprefix)/root-% $(flashprefix)/root
 	fi
 	$(INSTALL) -d $@/plugins
 	$(INSTALL) -d $@/tuxbox/plugins
+if BOXTYPE_DBOX2
 	$(MAKE) -C $(appsdir)/tuxbox/tools/camd install prefix=$@
 	$(target)-strip --remove-section=.comment --remove-section=.note $@/bin/camd2
+endif
 	@TUXBOX_CUSTOMIZE@
 
 $(flashprefix)/var-enigma+neutrino: \
@@ -53,8 +55,10 @@ endif
 	fi
 	$(INSTALL) -d $@/plugins
 	$(INSTALL) -d $@/tuxbox/plugins
+if BOXTYPE_DBOX2
 	$(MAKE) -C $(appsdir)/tuxbox/tools/camd install prefix=$@
 	$(target)-strip --remove-section=.comment --remove-section=.note $@/bin/camd2
+endif
 	@TUXBOX_CUSTOMIZE@
 
 $(flashprefix)/root-neutrino-jffs2 $(flashprefix)/root-enigma-jffs2 \
@@ -111,7 +115,7 @@ endif
 		ln -sf /var/etc/ssh $@/etc/ssh ; \
 	fi
 	ln -sf /var/etc/issue.net $@/etc/issue.net
-if !BOXTYPE_DREAMBOX
+if BOXTYPE_DBOX2
 	ln -sf /var/bin/camd2 $@/bin/camd2
 endif
 	if [ -e $@/etc/profile.local ]; then \
@@ -156,7 +160,9 @@ endif
 		ln -sf /var/etc/ssh $@/etc/ssh ; \
 	fi
 	ln -sf /var/etc/issue.net $@/etc/issue.net
+if BOXTYPE_DBOX2
 	ln -sf /var/bin/camd2 $@/bin/camd2
+endif
 	if [ -e $@/etc/profile.local ]; then \
 		rm $@/etc/profile.local; \
 		ln -sf /var/etc/profile.local $@/etc/profile.local; \
@@ -192,7 +198,7 @@ endif
 	fi
 	ln -sf /var/etc/issue.net $@/etc/issue.net
 	ln -sf /var/etc/localtime $@/etc/localtime
-if !BOXTYPE_DREAMBOX
+if BOXTYPE_DBOX2
 	ln -sf /var/bin/camd2 $@/bin/camd2
 endif
 	if [ -e $@/etc/profile.local ]; then \
@@ -231,7 +237,7 @@ endif
 	fi
 	ln -sf /var/etc/issue.net $@/etc/issue.net
 	ln -sf /var/etc/localtime $@/etc/localtime
-if !BOXTYPE_DREAMBOX
+if BOXTYPE_DBOX2
 	ln -sf /var/bin/camd2 $@/bin/camd2
 endif
 	if [ -e $@/etc/profile.local ]; then \
