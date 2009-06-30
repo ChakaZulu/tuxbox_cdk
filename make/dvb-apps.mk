@@ -60,3 +60,47 @@ $(DEPDIR)/vls: bootstrap libdvbpsi @DEPENDS_vls@
 		@INSTALL_vls@
 	@CLEANUP_vls@
 	touch $@
+
+# dvb/dvbsnoop
+
+$(appsdir)/dvb/dvbsnoop/config.status: bootstrap
+	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE) CPPFLAGS="$(CPPFLAGS) -I$(driverdir)/dvb/include"
+
+$(DEPDIR)/dvbsnoop: $(appsdir)/dvb/dvbsnoop/config.status
+	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
+
+if TARGETRULESET_FLASH
+flash-dvbsnoop: $(appsdir)/dvb/dvbsnoop/config.status $(flashprefix)/root
+	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install prefix=$(flashprefix)/root
+	@FLASHROOTDIR_MODIFIED@
+endif
+
+# dvb/libdvb++
+
+$(appsdir)/dvb/libdvb++/config.status: bootstrap libdvbsi++
+	cd $(appsdir)/dvb/libdvb++ && $(CONFIGURE) CPPFLAGS="$(CPPFLAGS) -I$(driverdir)/dvb/include"
+
+$(DEPDIR)/libdvb++: $(appsdir)/dvb/libdvb++/config.status
+	$(MAKE) -C $(appsdir)/dvb/libdvb++ all install
+	touch $@
+
+# dvb/libdvbsi++
+
+$(appsdir)/dvb/libdvbsi++/config.status: bootstrap
+	cd $(appsdir)/dvb/libdvbsi++ && $(CONFIGURE) CPPFLAGS="$(CPPFLAGS) -I$(driverdir)/dvb/include"
+
+$(DEPDIR)/libdvbsi++: $(appsdir)/dvb/libdvbsi++/config.status
+	$(MAKE) -C $(appsdir)/dvb/libdvbsi++ all install
+	touch $@
+
+# dvb/tools
+
+# This file serves as a marker
+$(appsdir)/dvb/tools/stream/streampes:
+	$(MAKE) dvb_tools
+
+$(appsdir)/dvb/tools/config.status: bootstrap $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc
+	cd $(appsdir)/dvb/tools && $(CONFIGURE)
+
+dvb_tools: $(appsdir)/dvb/tools/config.status
+	$(MAKE) -C $(appsdir)/dvb/tools all install

@@ -60,14 +60,11 @@ include make/java-stuff.mk
 # Gaming platforms (gnuboy scummvm sdldoom)
 include make/fun.mk
 
-# Nonessential DVB application 
+# Nonessential DVB application incl. dvbsnoop
 include make/dvb-apps.mk
 
 # Bluetooth (nonessential)
 include make/bluetooth.mk
-
-# Database
-include make/database.mk
 
 # FUSE and djmount for uPnP support (non-essential)
 include make/upnp.mk
@@ -83,23 +80,8 @@ include make/linuxkernel.mk
 # Install dvb configuration files (cables.xml & satellites.xml)
 include make/dvb-config.mk
 
-# dvbsnoop is a tool for analyzing dvb streams (non-essential)
-include make/dvbsnoop.mk
-
-# A nonessential library
-include make/libdvbsi++.mk
-
-# A nonessential library
-include make/libdvb++.mk
-
 # The zapit daemon
 include make/zapit.mk
-
-# More dvb tools, of which only streampes is installed per default
-include make/dvb_tools.mk
-
-# More misc libs, mostly nonessential
-include make/misc_libs.mk
 
 # Misc tools, not essential
 include make/misc_tools.mk
@@ -118,9 +100,6 @@ include make/lcd.mk
 
 # Essential, and some less essential, libraries
 include make/tuxbox_libs.mk
-
-# A small, but absolutely essential library
-include make/libtuxbox.mk
 
 # The Neutrino GUI
 include make/neutrino.mk
