@@ -36,7 +36,7 @@ sinclude(customizationsdir{/rcS_pre.m4})dnl
 #
 PATH=/sbin:/bin
 ifdef({insmod},{IM=/sbin/{insmod}
-MD=/lib/modules/$(uname -r)/misc/
+#MD=/lib/modules/$(uname -r)/misc/
 })dnl
 
 # extract kernel minor without using cut
@@ -124,7 +124,13 @@ if [ $KMINOR -ge 6 ]; then
 
 	ln -sf /dev/fb0 /dev/fb/0
 	ln -sf /dev/tty0 /dev/vc/0
-		
+	ln -sf /dev/tty1 /dev/vc/1
+	ln -sf /dev/tty2 /dev/vc/2
+	ln -sf /dev/tty3 /dev/vc/3
+	ln -sf /dev/tty4 /dev/vc/4
+	ln -sf /dev/tty5 /dev/vc/5
+	ln -sf /dev/tty6 /dev/vc/6
+
 	mount /dev/pts
 fi
 

@@ -153,6 +153,10 @@ sub process_make_prepare (@)
 
       $output .= " )";
     }
+    elsif ( $_[0] eq "apatch" )
+    {
+      $output .= "( cd " . $dir . "; patch -p1 < ../Archive/" . $_[1] . " )";
+    }
     elsif ( $_[0] =~ m/patch(time)?(-(\d+))?/ )
     {
       $_ = "-p1 ";

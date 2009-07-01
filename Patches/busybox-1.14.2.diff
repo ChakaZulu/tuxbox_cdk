@@ -1,0 +1,739 @@
+diff -ur busybox-1.13.2.orig/modutils/insmod.c busybox-1.13.2/modutils/insmod.c
+--- busybox-1.13.2.orig/modutils/insmod.c	2008-11-09 18:28:03.000000000 +0100
++++ busybox-1.13.2/modutils/insmod.c	2009-01-26 21:39:32.000000000 +0100
+@@ -10,11 +10,42 @@
+ #include "libbb.h"
+ #include "modutils.h"
+ 
++#include <sys/utsname.h>
++static char *m_filename;
++static char *m_fullName;
++
++static int FAST_FUNC check_module_name_match(const char *filename,
++		struct stat *statbuf UNUSED_PARAM,
++		void *userdata, int depth UNUSED_PARAM)
++{
++	char *fullname = (char *) userdata;
++	char *tmp;
++
++	if (fullname[0] == '\0')
++		return FALSE;
++
++	tmp = bb_get_last_path_component_nostrip(filename);
++	if (strcmp(tmp, fullname) == 0) {
++		/* Stop searching if we find a match */
++		m_filename = xstrdup(filename);
++		return FALSE;
++	}
++	return TRUE;
++}
++
+ int insmod_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+ int insmod_main(int argc UNUSED_PARAM, char **argv)
+ {
+ 	char *filename;
+ 	int rc;
++int len;
++char *tmp;
++char *tmp2;
++int k_version = 0;
++struct stat st;
++struct utsname uts;
++char *m_name;
++FILE *fp;
+ 
+ 	USE_FEATURE_2_4_MODULES(
+ 		getopt32(argv, INSMOD_OPTS INSMOD_ARGS);
+@@ -25,9 +56,107 @@
+ 	if (!filename)
+ 		bb_show_usage();
+ 
+-	rc = bb_init_module(filename, parse_cmdline_module_options(argv));
++	/* Grab the module name */
++	tmp = xstrdup(filename);
++	len = strlen(filename);
++
++	if (uname(&uts) == 0) {
++		if (uts.release[0] == '2') {
++			k_version = uts.release[2] - '0';
++		}
++	}
++
++#if ENABLE_FEATURE_2_6_MODULES
++	if (k_version > 4 && len > 3 && tmp[len - 3] == '.'
++	 && tmp[len - 2] == 'k' && tmp[len - 1] == 'o'
++	) {
++		len -= 3;
++		tmp[len] = '\0';
++	} else
++#endif
++		if (len > 2 && tmp[len - 2] == '.' && tmp[len - 1] == 'o') {
++			len -= 2;
++			tmp[len] = '\0';
++		}
++
++
++#if ENABLE_FEATURE_2_6_MODULES
++	if (k_version > 4)
++		m_fullName = xasprintf("%s.ko", tmp);
++	else
++#endif
++		m_fullName = xasprintf("%s.o", tmp);
++
++	if (!m_name) {
++		m_name = tmp;
++	}
++	free(tmp);
++
++	/* first look in /var/lib/modules */
++	tmp2 = alloca(strlen(m_fullName) + sizeof("/var/lib/modules/"));
++	strcpy(tmp2, "/var/lib/modules/");
++	strcat(tmp2, m_fullName);
++	if (stat(tmp2, &st) >= 0 && S_ISREG(st.st_mode) && (fp = fopen(tmp2, "r")) != NULL) {
++		m_filename = xstrdup(tmp2);
++		printf("insmod: preferring module %s\n", m_filename);
++	} else
++	/* Get a filedesc for the module.  Check that we have a complete path */
++	if (stat(filename, &st) < 0 || !S_ISREG(st.st_mode)
++	 || (fp = fopen_for_read(filename)) == NULL
++	) {
++		/* Hmm.  Could not open it.  First search under /lib/modules/`uname -r`,
++		 * but do not error out yet if we fail to find it... */
++		if (k_version) {	/* uname succeedd */
++			char *module_dir;
++			char *tmdn;
++
++			tmdn = concat_path_file(CONFIG_DEFAULT_MODULES_DIR, uts.release);
++			/* Jump through hoops in case /lib/modules/`uname -r`
++			 * is a symlink.  We do not want recursive_action to
++			 * follow symlinks, but we do want to follow the
++			 * /lib/modules/`uname -r` dir, So resolve it ourselves
++			 * if it is a link... */
++			module_dir = xmalloc_readlink(tmdn);
++			if (!module_dir)
++				module_dir = xstrdup(tmdn);
++			recursive_action(module_dir, ACTION_RECURSE,
++					check_module_name_match, NULL, m_fullName, 0);
++			free(module_dir);
++			free(tmdn);
++		}
++
++		/* Check if we have found anything yet */
++		if (!m_filename || ((fp = fopen_for_read(m_filename)) == NULL)) {
++			int r;
++			char *module_dir;
++
++			free(m_filename);
++			m_filename = NULL;
++			module_dir = xmalloc_readlink(CONFIG_DEFAULT_MODULES_DIR);
++			if (!module_dir)
++				module_dir = xstrdup(CONFIG_DEFAULT_MODULES_DIR);
++			/* No module found under /lib/modules/`uname -r`, this
++			 * time cast the net a bit wider.  Search /lib/modules/ */
++			r = recursive_action(module_dir, ACTION_RECURSE,
++					check_module_name_match, NULL, m_fullName, 0);
++			if (r)
++				bb_error_msg_and_die("%s: module not found", m_fullName);
++			free(module_dir);
++			if (m_filename == NULL
++			 || ((fp = fopen_for_read(m_filename)) == NULL)
++			) {
++				bb_error_msg_and_die("%s: module not found", m_fullName);
++			}
++		}
++	} else 
++		m_filename = xstrdup(filename);
++
++
++
++
++	rc = bb_init_module(m_filename, parse_cmdline_module_options(argv));
+ 	if (rc)
+-		bb_error_msg("can't insert '%s': %s", filename, moderror(rc));
++		bb_error_msg("can't insert '%s': %s", m_filename, moderror(rc));
+ 
+ 	return rc;
+ }
+diff -ur busybox-1.13.2.orig/networking/ifupdown.c busybox-1.13.2/networking/ifupdown.c
+--- busybox-1.13.2.orig/networking/ifupdown.c	2008-11-09 18:27:59.000000000 +0100
++++ busybox-1.13.2/networking/ifupdown.c	2009-01-26 21:34:41.000000000 +0100
+@@ -993,7 +993,7 @@
+ 
+ static int execute_all(struct interface_defn_t *ifd, const char *opt)
+ {
+-	int i;
++	int i, fd;
+ 	char *buf;
+ 	for (i = 0; i < ifd->n_options; i++) {
+ 		if (strcmp(ifd->option[i].name, opt) == 0) {
+@@ -1003,9 +1003,15 @@
+ 		}
+ 	}
+ 
+-	buf = xasprintf("run-parts /etc/network/if-%s.d", opt);
+-	/* heh, we don't bother free'ing it */
+-	return doit(buf);
++	buf = xasprintf("/etc/network/if-%s.d", opt);
++	if ((fd = open(buf, O_RDONLY)) >= 0) {
++		close(fd);
++		buf = xasprintf("run-parts /etc/network/if-%s.d", opt);
++		if (doit(buf) != 1) {
++			return 0;
++		}
++	}
++	return 1;
+ }
+ 
+ static int check(char *str)
+--- busybox-1.14.0.orig/modutils/Config.in	2009-04-14 01:42:55.000000000 +0200
++++ busybox-1.14.0/modutils/Config.in	2009-04-16 21:59:27.000000000 +0200
+@@ -211,7 +211,7 @@
+ config DEFAULT_MODULES_DIR
+ 	string "Default directory containing modules"
+ 	default "/lib/modules"
+-	depends on DEPMOD || MODPROBE || MODPROBE_SMALL
++	depends on DEPMOD || MODPROBE || MODPROBE_SMALL || INSMOD
+ 	help
+ 	  Directory that contains kernel modules.
+ 	  Defaults to "/lib/modules"
+--- busybox-1.14.0.orig/miscutils/fbsplash.c	2009-04-14 01:43:04.000000000 +0200
++++ busybox-1.14.0/miscutils/fbsplash.c	2009-04-18 21:47:50.000000000 +0200
+@@ -1,6 +1,7 @@
+ /* vi: set sw=4 ts=4: */
+ /*
+- * Copyright (C) 2008 Michele Sanges <michele.sanges@gmail.com>
++ * Copyright (C) 2008 Michele Sanges <michele.sanges@otomelara.it>,
++ * <michele.sanges@gmail.it>
+  *
+  * Licensed under GPLv2 or later, see file LICENSE in this tarball for details.
+  *
+@@ -27,17 +28,23 @@
+ /* If you want logging messages on /tmp/fbsplash.log... */
+ #define DEBUG 0
+ 
+-#define BYTES_PER_PIXEL 2
++#define BYTES_PER_PIXEL 1
+ 
++#if (BYTES_PER_PIXEL == 1)
++typedef unsigned char DATA;
++#else
+ typedef unsigned short DATA;
++#endif
++
++#define MAX_CONFIG_NB	9
+ 
+ struct globals {
+ #if DEBUG
+-	bool bdebug_messages;	// enable/disable logging
+-	FILE *logfile_fd;	// log file
++	bool bdebug_messages;		// enable/disable logging
++	FILE *logfile_fd;		// log file
+ #endif
+-	unsigned char *addr;	// pointer to framebuffer memory
+-	unsigned ns[7];		// n-parameters
++	unsigned char *addr;		// pointer to framebuffer memory
++	unsigned ns[MAX_CONFIG_NB];	// n-parameters
+ 	const char *image_filename;
+ 	struct fb_var_screeninfo scr_var;
+ 	struct fb_fix_screeninfo scr_fix;
+@@ -54,6 +61,8 @@
+ #define nbar_colr	ns[4]	// progress bar color red component
+ #define nbar_colg	ns[5]	// progress bar color green component
+ #define nbar_colb	ns[6]	// progress bar color blue component
++#define img_posx	ns[7]	// image horizontal position
++#define img_posy	ns[8]	// image vertical position
+ 
+ #if DEBUG
+ #define DEBUG_MESSAGE(strMessage, args...) \
+@@ -77,17 +86,15 @@
+ 	// framebuffer properties
+ 	xioctl(fbfd, FBIOGET_VSCREENINFO, &G.scr_var);
+ 	xioctl(fbfd, FBIOGET_FSCREENINFO, &G.scr_fix);
+-
+-	if (G.scr_var.bits_per_pixel != 16)
+-		bb_error_msg_and_die("only 16 bpp is supported");
+-
++	if (G.scr_var.bits_per_pixel != 8*BYTES_PER_PIXEL)
++		bb_error_msg_and_die("only %d bpp is supported", BYTES_PER_PIXEL*8);
+ 	// map the device in memory
+ 	G.addr = mmap(NULL,
+ 			G.scr_var.xres * G.scr_var.yres
+ 			* BYTES_PER_PIXEL /*(G.scr_var.bits_per_pixel / 8)*/ ,
+ 			PROT_WRITE, MAP_SHARED, fbfd, 0);
+ 	if (G.addr == MAP_FAILED)
+-		bb_perror_msg_and_die("mmap");
++		bb_perror_msg_and_die("can't mmap %s", strfb_device);
+ 	close(fbfd);
+ }
+ 
+@@ -100,6 +107,20 @@
+ 	int cnt;
+ 	DATA thispix;
+ 	DATA *ptr1, *ptr2;
++#if (BYTES_PER_PIXEL == 1)
++	unsigned char nred = G.nbar_colr;
++	unsigned char ngreen =  G.nbar_colg;
++	unsigned char nblue = G.nbar_colb;
++
++	nred   >>= 6;  // 2-bit red
++	ngreen >>= 6;  // 2-bit green
++	nblue  >>= 6;  // 2-bit blue
++	thispix = (nblue << 2) + (ngreen << (2+2)) + (nred << (2+2+2));
++	if (thispix >= 240) 
++		thispix = 255;
++	else
++		thispix += 16;
++#else
+ 	unsigned char nred = G.nbar_colr/2;
+ 	unsigned char ngreen =  G.nbar_colg/2;
+ 	unsigned char nblue = G.nbar_colb/2;
+@@ -108,6 +129,7 @@
+ 	ngreen >>= 2;  // 6-bit green
+ 	nblue  >>= 3;  // 5-bit blue
+ 	thispix = nblue + (ngreen << 5) + (nred << (5+6));
++#endif
+ 
+ 	// horizontal lines
+ 	ptr1 = (DATA*)(G.addr + (G.nbar_posy * G.scr_var.xres + G.nbar_posx) * BYTES_PER_PIXEL);
+@@ -121,7 +143,7 @@
+ 	// vertical lines
+ 	ptr1 = (DATA*)(G.addr + (G.nbar_posy * G.scr_var.xres + G.nbar_posx) * BYTES_PER_PIXEL);
+ 	ptr2 = (DATA*)(G.addr + (G.nbar_posy * G.scr_var.xres + G.nbar_posx + G.nbar_width - 1) * BYTES_PER_PIXEL);
+-	cnt = G.nbar_height - 1 /* HUH?!  G.nbar_posy + G.nbar_height - 1 - G.nbar_posy*/;
++	cnt = G.nbar_posy + G.nbar_height - 1 - G.nbar_posy;
+ 	do {
+ 		*ptr1 = thispix; ptr1 += G.scr_var.xres;
+ 		*ptr2 = thispix; ptr2 += G.scr_var.xres;
+@@ -142,11 +164,21 @@
+ 	DATA thispix;
+ 	DATA *ptr;
+ 
++#if (BYTES_PER_PIXEL == 1)
++	nred   >>= 6;  // 2-bit red
++	ngreen >>= 6;  // 2-bit green
++	nblue  >>= 6;  // 2-bit blue
++	thispix = (nblue << 2) + (ngreen << (2+2)) + (nred << (2+2+2));
++	if (thispix >= 240) 
++		thispix = 255;
++	else
++		thispix += 16;
++#else
+ 	nred   >>= 3;  // 5-bit red
+ 	ngreen >>= 2;  // 6-bit green
+ 	nblue  >>= 3;  // 5-bit blue
+ 	thispix = nblue + (ngreen << 5) + (nred << (5+6));
+-
++#endif
+ 	cnt1 = ny2pos - ny1pos;
+ 	nypos = ny1pos;
+ 	do {
+@@ -200,7 +232,11 @@
+ 		while (i >= 0) {
+ 			// draw one-line thick "rectangle"
+ 			// top line will have gray lvl 200, bottom one 100
++#if (BYTES_PER_PIXEL == 1)
++			unsigned gray_level = 224;
++#else
+ 			unsigned gray_level = 100 + i*100/height;
++#endif
+ 			fb_drawfullrectangle(
+ 					left_x, top_y, left_x + width, top_y,
+ 					gray_level, gray_level, gray_level);
+@@ -216,50 +252,36 @@
+  */
+ static void fb_drawimage(void)
+ {
+-	char *head, *ptr;
++	char head[256];
++	char s[80];
+ 	FILE *theme_file;
+ 	unsigned char *pixline;
+ 	unsigned i, j, width, height, line_size;
+ 
++	memset(head, 0, sizeof(head));
+ 	theme_file = xfopen_stdin(G.image_filename);
+-	head = xmalloc(256);
+ 
+-	/* parse ppm header
+-	 * - A ppm image’s magic number is the two characters "P6".
+-	 * - Whitespace (blanks, TABs, CRs, LFs).
+-	 * - A width, formatted as ASCII characters in decimal.
+-	 * - Whitespace.
+-	 * - A height, again in ASCII decimal.
+-	 * - Whitespace.
+-	 * - The maximum color value (Maxval), again in ASCII decimal. Must be
+-	 *   less than 65536.
+-	 * - Newline or other single whitespace character.
+-	 * - A raster of Width * Height pixels in triplets of rgb
+-	 *   in pure binary by 1 (or not implemented 2) bytes.
+-	 */
++	// parse ppm header
+ 	while (1) {
+-		if (fgets(head, 256, theme_file) == NULL
+-			/* do not overrun the buffer */
+-			|| strlen(bb_common_bufsiz1) >= sizeof(bb_common_bufsiz1) - 256)
++		if (fgets(s, sizeof(s), theme_file) == NULL)
++			bb_error_msg_and_die("bad PPM file '%s'", G.image_filename);
++
++		if (s[0] == '#')
++			continue;
++
++		if (strlen(head) + strlen(s) >= sizeof(head))
++			bb_error_msg_and_die("bad PPM file '%s'", G.image_filename);
++
++		strcat(head, s);
++		if (head[0] != 'P' || head[1] != '6')
+ 			bb_error_msg_and_die("bad PPM file '%s'", G.image_filename);
+ 
+-		ptr = memchr(skip_whitespace(head), '#', 256);
+-		if (ptr != NULL)
+-			*ptr = 0; /* ignore comments */
+-		strcat(bb_common_bufsiz1, head);
+ 		// width, height, max_color_val
+-		if (sscanf(bb_common_bufsiz1, "P6 %u %u %u", &width, &height, &i) == 3
+-			&& i <= 255)
++		if (sscanf(head, "P6 %u %u %u", &width, &height, &i) == 3)
+ 			break;
+-		/* If we do not find a signature throughout the whole file then
+-		   we will diagnose this via EOF on read in the head of the loop.  */
++// TODO: i must be <= 255!
+ 	}
+ 
+-	if (ENABLE_FEATURE_CLEAN_UP)
+-		free(head);
+-	if (width != G.scr_var.xres || height != G.scr_var.yres)
+-		bb_error_msg_and_die("PPM %dx%d does not match screen %dx%d",
+-							 width, height, G.scr_var.xres, G.scr_var.yres);
+ 	line_size = width*3;
+ 	if (width > G.scr_var.xres)
+ 		width = G.scr_var.xres;
+@@ -269,21 +291,30 @@
+ 	pixline = xmalloc(line_size);
+ 	for (j = 0; j < height; j++) {
+ 		unsigned char *pixel = pixline;
+-		DATA *src = (DATA *)(G.addr + j * G.scr_fix.line_length);
++		DATA *src = (DATA *)(G.addr+G.img_posx + (G.img_posy+j) * G.scr_fix.line_length);
+ 
+ 		if (fread(pixline, 1, line_size, theme_file) != line_size)
+ 			bb_error_msg_and_die("bad PPM file '%s'", G.image_filename);
+ 		for (i = 0; i < width; i++) {
+-			unsigned thispix;
++			DATA thispix;
++#if (BYTES_PER_PIXEL == 1)
++			thispix = (((unsigned)pixel[0]     ) & 0xc0)
++				| (((unsigned)pixel[1] >> 2) & 0x30)
++				| (((unsigned)pixel[2] >> 4) & 0x0c);
++			if (thispix >= 240) 
++				thispix = 255;
++			else
++				thispix += 16;
++#else
+ 			thispix = (((unsigned)pixel[0] << 8) & 0xf800)
+ 				| (((unsigned)pixel[1] << 3) & 0x07e0)
+ 				| (((unsigned)pixel[2] >> 3));
++#endif
+ 			*src++ = thispix;
+ 			pixel += 3;
+ 		}
+ 	}
+-	if (ENABLE_FEATURE_CLEAN_UP)
+-		free(pixline);
++	free(pixline);
+ 	fclose(theme_file);
+ }
+ 
+@@ -298,6 +329,7 @@
+ 		"BAR_WIDTH\0" "BAR_HEIGHT\0"
+ 		"BAR_LEFT\0" "BAR_TOP\0"
+ 		"BAR_R\0" "BAR_G\0" "BAR_B\0"
++		"IMG_LEFT\0" "IMG_TOP\0"
+ #if DEBUG
+ 		"DEBUG\0"
+ #endif
+@@ -309,11 +341,11 @@
+ 		unsigned val = xatoi_u(token[1]);
+ 		int i = index_in_strings(param_names, token[0]);
+ 		if (i < 0)
+-			bb_error_msg_and_die("syntax error: %s", token[0]);
+-		if (i >= 0 && i < 7)
++			bb_error_msg_and_die("syntax error: '%s'", token[0]);
++		if (i >= 0 && i < MAX_CONFIG_NB)
+ 			G.ns[i] = val;
+ #if DEBUG
+-		if (i == 7) {
++		if (i == MAX_CONFIG_NB) {
+ 			G.bdebug_messages = val;
+ 			if (G.bdebug_messages)
+ 				G.logfile_fd = xfopen_for_write("/tmp/fbsplash.log");
+@@ -323,6 +355,54 @@
+ 	config_close(parser);
+ }
+ 
++static void fb_init_palette(const char *strfb_device)
++{
++	unsigned short red[256];
++	unsigned short green[256];
++	unsigned short blue[256];
++	int i,j;
++	struct fb_cmap colormap;
++	int count;
++	int fd = xopen(strfb_device, O_RDWR);
++	DATA *src = (DATA *)(G.addr);
++
++	colormap.red = red;
++	colormap.green = green;
++	colormap.blue = blue;
++	colormap.transp = 0;
++	colormap.start = 16;
++	colormap.len = 240;
++
++	count = 0;
++	red[count] = 0;	green[count] = 0; blue[count++] = 0;
++	red[count] = 0;	green[count] = 0; blue[count++] = 0xffff;
++	red[count] = 0;	green[count] = 0xfff; blue[count++] = 0;
++	red[count] = 0;	green[count] = 0; blue[count++] = 0;
++	red[count] = 0xffff;	green[count] = 0; blue[count++] = 0;
++	red[count] = 0;	green[count] = 0; blue[count++] = 0;
++	red[count] = 0;	green[count] = 0; blue[count++] = 0;
++	red[count] = 0;	green[count] = 0; blue[count++] = 0;
++	red[count] = 0;	green[count] = 0; blue[count++] = 0;
++	red[count] = 0;	green[count] = 0; blue[count++] = 0;
++	red[count] = 0xffff;	green[count] = 0xffff; blue[count++] = 0xffff;
++
++	for (count = 0; count < 240; count++) {
++		red[count+16] = ((count+16) & 0xc0) << 8;
++		green[count+16] = ((count+16) & 0x30) << 10;
++		blue[count+16] = ((count+16) & 0x0c) << 12;
++	}
++
++	for (j = 0; j < G.scr_var.yres; j++) {
++		for (i = 0; i < G.scr_var.xres; i++) {
++			*src++ = 16;
++		}
++	}
++
++	if (ioctl(fd, FBIOPUTCMAP, &colormap) < 0) {
++		perror("FBIOPUTCMAP");
++	}
++
++}
+ 
+ int fbsplash_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+ int fbsplash_main(int argc UNUSED_PARAM, char **argv)
+@@ -347,8 +427,8 @@
+ 		init(cfg_filename);
+ 
+ 	// We must have -s IMG
+-	if (!G.image_filename)
+-		bb_show_usage();
++//	if (!G.image_filename)
++//		bb_show_usage();
+ 
+ 	fb_open(fb_device);
+ 
+@@ -357,7 +437,10 @@
+ 		full_write(STDOUT_FILENO, "\x1b" "[?25l", 6);
+ 	}
+ 
+-	fb_drawimage();
++	fb_init_palette(fb_device);
++
++	if (G.image_filename)
++		fb_drawimage();
+ 
+ 	if (!fifo_filename)
+ 		return EXIT_SUCCESS;
+--- busybox-1.14.0.orig/libbb/procps.c	2009-04-14 01:43:00.000000000 +0200
++++ busybox-1.14.0/libbb/procps.c	2009-04-18 20:22:50.000000000 +0200
+@@ -322,6 +322,20 @@
+ 				sp->state[2] = ' ';
+ 		}
+ 
++		{
++			char *cp;
++			strcpy(filename_tail, "/status");
++			n = read_to_buf(filename, buf);
++			if (n < 0)
++				break;
++			cp = strstr(buf, "VmRSS:");
++			if (cp) {
++				n = sscanf(cp, "VmRSS: %u kB", &sp->vsz);
++				if (n < 1)
++					break;
++			}
++		}
++
+ #if ENABLE_FEATURE_TOPMEM
+ 		if (flags & (PSSCAN_SMAPS)) {
+ 			FILE *file;
+diff -Naur busybox-1.14.0_patched/util-linux/mount.c busybox-1.14.0_original/util-linux/mount.c
+--- busybox-1.14.0_patched/util-linux/mount.c	2009-04-14 01:43:11.000000000 +0200
++++ busybox-1.14.0_original/util-linux/mount.c	2009-04-19 13:41:08.000000000 +0200
+@@ -392,6 +392,24 @@
+ void delete_block_backed_filesystems(void);
+ #endif
+ 
++// for using with tuxbox it's usefully to have an alternate path in /var/etc, because /etc/ is not writable
++static const char *get_fstab()
++{
++const char *var_fstabname = "/var/etc/fstab";
++const char *res;
++FILE * f= fopen (var_fstabname,"r");
++	if (!f) {
++	printf("mount: using /etc/fstab\n");
++	res = "/etc/fstab";
++	}
++	else {
++	printf("mount: using %s\n", var_fstabname);
++	res =   var_fstabname;
++	fclose(f);
++	}
++	return res;
++}
++
+ // Perform actual mount of specific filesystem at specific location.
+ // NB: mp->xxx fields may be trashed on exit
+ static int mount_it_now(struct mntent *mp, long vfsflags, char *filteropts)
+@@ -1866,14 +1884,14 @@
+ 		return rc;
+ 	}
+ 
+-	// Open either fstab or mtab
+-	fstabname = "/etc/fstab";
+-	if (i & MS_REMOUNT) {
++  	// Open either fstab or mtab
++ 	fstabname = get_fstab();
++  	if (i & MS_REMOUNT) {
+ 		// WARNING. I am not sure this matches util-linux's
+ 		// behavior. It's possible util-linux does not
+ 		// take -o opts from mtab (takes only mount source).
+-		fstabname = bb_path_mtab_file;
+-	}
++  		fstabname = bb_path_mtab_file;
++  	}
+ 	fstab = setmntent(fstabname, "r");
+ 	if (!fstab)
+ 		bb_perror_msg_and_die("cannot read %s", fstabname);
+diff -Naur busybox-1.14.0_patched/util-linux/swaponoff.c busybox-1.14.0_original/util-linux/swaponoff.c
+--- busybox-1.14.0_patched/util-linux/swaponoff.c	2009-04-14 01:43:11.000000000 +0200
++++ busybox-1.14.0_original/util-linux/swaponoff.c	2009-04-19 13:41:08.000000000 +0200
+@@ -21,6 +21,8 @@
+ #define g_flags 0
+ #endif
+ 
++//const char *getFstab();
++
+ static int swap_enable_disable(char *device)
+ {
+ 	int status;
+@@ -48,15 +50,36 @@
+ 	return 0;
+ }
+ 
++// for using with tuxbox it's usefully to have an alternate path in /var/etc, because /etc/ is not writable
++static const char *getFstab()
++{
++	const char *var_fstabname = "/var/etc/fstab";
++	const char *res;
++	FILE * f= fopen (var_fstabname,"r");
++	if (!f) {
++		printf("swapon: using /etc/fstab\n");
++		res = "/etc/fstab";
++	}
++	else {
++		printf("swapon: using %s\n", var_fstabname);
++		res =   var_fstabname;
++		fclose(f);
++	}
++	return res;
++}
++
+ static int do_em_all(void)
+ {
+ 	struct mntent *m;
++	const char *fstabname;
+ 	FILE *f;
+ 	int err;
+ 
+-	f = setmntent("/etc/fstab", "r");
++	fstabname = getFstab();
++
++	f = setmntent(fstabname, "r");
+ 	if (f == NULL)
+-		bb_perror_msg_and_die("/etc/fstab");
++		bb_perror_msg_and_die(fstabname);
+ 
+ 	err = 0;
+ 	while ((m = getmntent(f)) != NULL)
+diff -uNr busybox-1.14.1.org/miscutils/hdparm.c busybox-1.14.1/miscutils/hdparm.c
+--- busybox-1.14.1.org/miscutils/hdparm.c	2009-05-27 18:00:23.000000000 +0200
++++ busybox-1.14.1/miscutils/hdparm.c	2009-06-21 20:46:58.000000000 +0200
+@@ -283,6 +283,7 @@
+ 	smallint set_sleepnow, get_sleepnow;
+ 	smallint get_powermode;
+ 	smallint set_apmmode, get_apmmode;
++	smallint set_acoustic, get_acoustic;
+ 	int xfermode_requested;
+ 	unsigned long dkeep;
+ 	unsigned long standby_requested; /* 0..255 */
+@@ -292,6 +293,7 @@
+ 	unsigned long wcache;
+ 	unsigned long doorlock;
+ 	unsigned long apmmode;
++	unsigned long acoustic;
+ #endif
+ 	USE_FEATURE_HDPARM_GET_IDENTITY(        smallint get_IDentity;)
+ 	USE_FEATURE_HDPARM_HDIO_TRISTATE_HWIF(  smallint set_busstate, get_busstate;)
+@@ -376,6 +378,9 @@
+ #define get_powermode      (G.get_powermode          )
+ #define set_apmmode        (G.set_apmmode            )
+ #define get_apmmode        (G.get_apmmode            )
++#define set_acoustic       (G.set_acoustic           )
++#define get_acoustic       (G.get_acoustic           )
++#define acoustic           (G.acoustic               )
+ #define xfermode_requested (G.xfermode_requested     )
+ #define dkeep              (G.dkeep                  )
+ #define standby_requested  (G.standby_requested      )
+@@ -1660,6 +1665,11 @@
+ 		ioctl_or_warn(fd, HDIO_DRIVE_CMD, &args);
+ 		args[1] = 0;
+ 	}
++	if (set_acoustic) {
++		if (get_acoustic)
++			printf(" setting AAM level to 0x%02lX (%ld)\n", acoustic, acoustic);
++		ioctl(fd, HDIO_SET_ACOUSTIC, acoustic);
++	}
+ 	if (set_wcache)	{
+ #ifdef DO_FLUSHCACHE
+ #ifndef WIN_FLUSHCACHE
+@@ -1963,7 +1973,7 @@
+ 	USE_FEATURE_HDPARM_GET_IDENTITY("iI")
+ 	USE_FEATURE_HDPARM_HDIO_GETSET_DMA("d::")
+ #ifdef HDIO_DRIVE_CMD
+-	"S:D:P:X:K:A:L:W:CyYzZ"
++	"M:S:D:P:X:K:A:L:W:CyYzZ"
+ #endif
+ 	USE_FEATURE_HDPARM_HDIO_UNREGISTER_HWIF("U:")
+ #ifdef HDIO_GET_QDMA
+@@ -2001,6 +2011,7 @@
+ 		if (c == 'k') parse_opts(&get_keep, &set_keep, &keep, 0, 1);
+ 		if (c == 'a') parse_opts(&get_readahead, &set_readahead, &Xreadahead, 0, INT_MAX);
+ 		if (c == 'B') parse_opts(&get_apmmode, &set_apmmode, &apmmode, 1, 255);
++		if (c == 'M') parse_opts(&get_acoustic, &set_acoustic, &acoustic, 0, 254);
+ 		do_flush |= do_timings |= (c == 't');
+ 		do_flush |= do_ctimings |= (c == 'T');
+ #ifdef HDIO_DRIVE_CMD
+diff -uNr busybox-1.14.2.org/init/init.c busybox-1.14.2/init/init.c
+--- busybox-1.14.2.org/init/init.c	2009-06-22 00:32:00.000000000 +0200
++++ busybox-1.14.2/init/init.c	2009-06-26 15:33:19.000000000 +0200
+@@ -192,8 +192,10 @@
+ 		/* Not a linux terminal, probably serial console.
+ 		 * Force the TERM setting to vt102
+ 		 * if TERM is set to linux (the default) */
++/*
+ 		if (!s || strcmp(s, "linux") == 0)
+ 			putenv((char*)"TERM=vt102");
++*/
+ 		if (!ENABLE_FEATURE_INIT_SYSLOG)
+ 			log_console = NULL;
+ 	} else if (!s)
