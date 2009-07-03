@@ -16,20 +16,20 @@ flash-all-all-1x: flash-neutrino-all-1x flash-enigma-all-1x flash-enigma+neutrin
 
 flash-all-all-2x: flash-neutrino-all-2x flash-enigma-all-2x flash-enigma+neutrino-all-2x
 
-flash-neutrino-all-1x: flash-neutrino-cramfs-1x flash-neutrino-squashfs-1x flash-neutrino-jffs2-1x
+flash-neutrino-all-1x: flash-neutrino-squashfs-1x flash-neutrino-jffs2-1x
 
-flash-radiobox-all-1x: flash-radiobox-cramfs-1x flash-radiobox-squashfs-1x flash-radiobox-jffs2-1x
+flash-radiobox-all-1x: flash-radiobox-squashfs-1x flash-radiobox-jffs2-1x
 
-flash-enigma-all-1x: flash-enigma-cramfs-1x flash-enigma-squashfs-1x flash-enigma-jffs2-1x
+flash-enigma-all-1x: flash-enigma-squashfs-1x flash-enigma-jffs2-1x
 
 
-flash-neutrino-all-2x: flash-neutrino-cramfs-2x flash-neutrino-squashfs-2x flash-neutrino-jffs2-2x
+flash-neutrino-all-2x: flash-neutrino-squashfs-2x flash-neutrino-jffs2-2x
 
-flash-radiobox-all-2x: flash-radiobox-cramfs-2x flash-radiobox-squashfs-2x flash-radiobox-jffs2-2x
+flash-radiobox-all-2x: flash-radiobox-squashfs-2x flash-radiobox-jffs2-2x
 
-flash-enigma-all-2x: flash-enigma-cramfs-2x flash-enigma-squashfs-2x flash-enigma-jffs2-2x
+flash-enigma-all-2x: flash-enigma-squashfs-2x flash-enigma-jffs2-2x
 
-flash-neutrino-all-all: flash-neutrino-cramfs-all flash-neutrino-squashfs-all flash-neutrino-jffs2-all 
+flash-neutrino-all-all: flash-neutrino-squashfs-all flash-neutrino-jffs2-all
 
 flash-neutrino-cramfs-all: flash-neutrino-cramfs-1x flash-neutrino-cramfs-2x
 
@@ -47,7 +47,7 @@ flash-neutrino-jffs2-all: flash-neutrino-jffs2-1x flash-neutrino-jffs2-2x
 
 #
 
-flash-radiobox-all-all: flash-radiobox-cramfs-all flash-radiobox-squashfs-all flash-radiobox-jffs2-all
+flash-radiobox-all-all: flash-radiobox-squashfs-all flash-radiobox-jffs2-all
 
 flash-radiobox-cramfs-all: flash-radiobox-cramfs-1x flash-radiobox-cramfs-2x
 
@@ -58,7 +58,7 @@ flash-radiobox-jffs2-all: flash-radiobox-jffs2-1x flash-radiobox-jffs2-2x
 
 #
 
-flash-enigma-all-all: flash-enigma-cramfs-all flash-enigma-squashfs-all flash-enigma-jffs2-all 
+flash-enigma-all-all: flash-enigma-squashfs-all flash-enigma-jffs2-all
 
 flash-enigma-cramfs-all: flash-enigma-cramfs-1x flash-enigma-cramfs-2x
 
