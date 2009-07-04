@@ -86,7 +86,9 @@ endif
 endif
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-neutrino-cramfs $(flashprefix)/root-neutrino-squashfs: \
+$(flashprefix)/root-neutrino-cramfs \
+$(flashprefix)/root-neutrino-squashfs \
+$(flashprefix)/root-neutrino-squashfs_nolzma: \
 $(flashprefix)/root-neutrino-%: \
 $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino
 	rm -rf $@
@@ -130,7 +132,9 @@ if !KERNEL26
 endif
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-radiobox-cramfs $(flashprefix)/root-radiobox-squashfs: \
+$(flashprefix)/root-radiobox-cramfs \
+$(flashprefix)/root-radiobox-squashfs \
+$(flashprefix)/root-radiobox-squashfs_nolzma: \
 $(flashprefix)/root-radiobox-%: \
 $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-radiobox
 	rm -rf $@
@@ -172,7 +176,9 @@ if !KERNEL26
 endif
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-enigma-cramfs $(flashprefix)/root-enigma-squashfs: \
+$(flashprefix)/root-enigma-cramfs \
+$(flashprefix)/root-enigma-squashfs \
+$(flashprefix)/root-enigma-squashfs_nolzma: \
 $(flashprefix)/root-enigma-%: \
 $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-enigma
 	rm -rf $@
@@ -210,7 +216,8 @@ if !KERNEL26
 endif
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-enigma+neutrino-squashfs: \
+$(flashprefix)/root-enigma+neutrino-squashfs \
+$(flashprefix)/root-enigma+neutrino-squashfs_nolzma: \
 $(flashprefix)/root-enigma+neutrino-%: \
 $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino $(flashprefix)/root-enigma flash-lcdmenu
 	rm -rf $@

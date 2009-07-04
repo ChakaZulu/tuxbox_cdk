@@ -25,12 +25,22 @@ $(flashprefix)/root-radiobox.squashfs \
 $(flashprefix)/root-neutrino.squashfs \
 $(flashprefix)/root-enigma+neutrino.squashfs \
 $(flashprefix)/root-enigma.squashfs: \
-$(flashprefix)/root-%.squashfs: $(flashprefix)/root-%-squashfs $(MKSQUASHFS)
+$(flashprefix)/root-%.squashfs: $(flashprefix)/root-%-squashfs $(hostprefix)/bin/mksquashfs-lzma
 	rm -f $@
-	$(MKSQUASHFS) $< $@ -be
+	$(hostprefix)/bin/mksquashfs-lzma $< $@ -be
 	chmod 644 $@
 	@TUXBOX_CUSTOMIZE@
-	
+
+$(flashprefix)/root-radiobox.squashfs_nolzma \
+$(flashprefix)/root-neutrino.squashfs_nolzma \
+$(flashprefix)/root-enigma+neutrino.squashfs_nolzma \
+$(flashprefix)/root-enigma.squashfs_nolzma: \
+$(flashprefix)/root-%.squashfs_nolzma: $(flashprefix)/root-%-squashfs_nolzma $(hostprefix)/bin/mksquashfs-nolzma
+	rm -f $@
+	$(hostprefix)/bin/mksquashfs-nolzma $< $@ -be
+	chmod 644 $@
+	@TUXBOX_CUSTOMIZE@
+
 $(flashprefix)/root-radiobox.jffs2 \
 $(flashprefix)/root-neutrino.jffs2 \
 $(flashprefix)/root-enigma.jffs2 $(flashprefix)/root-lcars.jffs2 $(flashprefix)/root-null.jffs2: \
@@ -43,12 +53,6 @@ $(flashprefix)/root-%.jffs2: $(flashprefix)/root-%-jffs2 $(MKJFFS2)
 
 ################ $fs-to-boot.flfs*x
 UBOOT_TEMPLATE = u-boot.dbox2.h.m4
-
-if ENABLE_LZMA
-POSSIBLY_LZMA=--define=lzma=1
-else
-POSSIBLY_LZMA=--define=lzma=0
-endif
 
 $(flashprefix)/cramfs.flfs1x $(flashprefix)/cramfs.flfs2x: \
 $(hostprefix)/bin/mkflfs $(bootdir)/u-boot-config/$(UBOOT_TEMPLATE) \
@@ -63,10 +67,20 @@ $(hostprefix)/bin/mkflfs $(bootdir)/u-boot-config/$(UBOOT_TEMPLATE) \
 $(flashprefix)/squashfs.flfs1x $(flashprefix)/squashfs.flfs2x: \
 $(hostprefix)/bin/mkflfs $(bootdir)/u-boot-config/$(UBOOT_TEMPLATE)  \
 | $(flashprefix)
-	m4 --define=rootfstype=squashfs --define=rootsize=$(ROOT_PARTITION_SIZE) $(POSSIBLY_LZMA) $(bootdir)/u-boot-config/$(UBOOT_TEMPLATE) > $(bootdir)/u-boot-config/u-boot.config
+	m4 --define=rootfstype=squashfs --define=rootsize=$(ROOT_PARTITION_SIZE) --define=lzma=1 $(bootdir)/u-boot-config/$(UBOOT_TEMPLATE) > $(bootdir)/u-boot-config/u-boot.config
 	$(MAKE) @DIR_uboot@/u-boot.stripped
 	$(hostprefix)/bin/mkflfs 1x -o $(flashprefix)/squashfs.flfs1x @DIR_uboot@/u-boot.stripped
 	$(hostprefix)/bin/mkflfs 2x -o $(flashprefix)/squashfs.flfs2x @DIR_uboot@/u-boot.stripped
+	@CLEANUP_uboot@
+	rm $(bootdir)/u-boot-config/u-boot.config
+
+$(flashprefix)/squashfs_nolzma.flfs1x $(flashprefix)/squashfs_nolzma.flfs2x: \
+$(hostprefix)/bin/mkflfs $(bootdir)/u-boot-config/$(UBOOT_TEMPLATE)  \
+| $(flashprefix)
+	m4 --define=rootfstype=squashfs --define=rootsize=$(ROOT_PARTITION_SIZE) --define=lzma=0 $(bootdir)/u-boot-config/$(UBOOT_TEMPLATE) > $(bootdir)/u-boot-config/u-boot.config
+	$(MAKE) @DIR_uboot@/u-boot.stripped
+	$(hostprefix)/bin/mkflfs 1x -o $(flashprefix)/squashfs_nolzma.flfs1x @DIR_uboot@/u-boot.stripped
+	$(hostprefix)/bin/mkflfs 2x -o $(flashprefix)/squashfs_nolzma.flfs2x @DIR_uboot@/u-boot.stripped
 	@CLEANUP_uboot@
 	rm $(bootdir)/u-boot-config/u-boot.config
 

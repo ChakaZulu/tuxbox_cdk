@@ -129,11 +129,8 @@ endif
 	touch $@
 
 
-if ENABLE_LZMA
 LZMA_SED_CONF=$(foreach param,CONFIG_SQUASHFS_LZMA,-e s"/^.*$(param)[= ].*/$(param)=y/")
-else
-LZMA_SED_CONF=$(foreach param,CONFIG_SQUASHFS_LZMA,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
-endif
+NOLZMA_SED_CONF=$(foreach param,CONFIG_SQUASHFS_LZMA,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
 
 if ENABLE_IDE
 IDE_SED_CONF=$(foreach param,CONFIG_IDE CONFIG_BLK_DEV_IDE CONFIG_BLK_DEV_IDEDISK,-e s"/^.*$(param)[= ].*/$(param)=m/")

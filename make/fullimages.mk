@@ -46,6 +46,20 @@ $(flashprefix)/neutrino-squashfs.img%: \
 	@TUXBOX_CHECKIMAGE@
 	@TUXBOX_CUSTOMIZE@
 
+$(flashprefix)/neutrino-squashfs_nolzma.img1x $(flashprefix)/neutrino-squashfs_nolzma.img2x:\
+$(flashprefix)/neutrino-squashfs_nolzma.img%: \
+		$(flashprefix)/squashfs_nolzma.flfs% \
+		$(flashprefix)/root-neutrino.squashfs_nolzma \
+		$(flashprefix)/var-neutrino.jffs2 \
+		$(hostprefix)/bin/checkImage
+	$(hostappsdir)/flash/flashmanage.pl -i $@ -o build \
+		--rootsize=$(ROOT_PARTITION_SIZE) \
+		--part ppcboot=$< \
+		--part root=$(word 2,$+) \
+		--part var=$(word 3,$+)
+	@TUXBOX_CHECKIMAGE@
+	@TUXBOX_CUSTOMIZE@
+
 $(flashprefix)/neutrino-jffs2.img1x $(flashprefix)/neutrino-jffs2.img2x: \
 $(flashprefix)/neutrino-jffs2.img%: \
 		$(flashprefix)/jffs2.flfs% \
@@ -118,6 +132,20 @@ $(flashprefix)/enigma-squashfs.img1x $(flashprefix)/enigma-squashfs.img2x: \
 $(flashprefix)/enigma-squashfs.img%: \
 		$(flashprefix)/squashfs.flfs% \
 		$(flashprefix)/root-enigma.squashfs \
+		$(flashprefix)/var-enigma.jffs2 \
+		$(hostprefix)/bin/checkImage
+	$(hostappsdir)/flash/flashmanage.pl -i $@ -o build \
+		--rootsize=$(ROOT_PARTITION_SIZE) \
+		--part ppcboot=$< \
+		--part root=$(word 2,$+) \
+		--part var=$(word 3,$+)
+	@TUXBOX_CHECKIMAGE@
+	@TUXBOX_CUSTOMIZE@
+
+$(flashprefix)/enigma-squashfs_nolzma.img1x $(flashprefix)/enigma-squashfs_nolzma.img2x: \
+$(flashprefix)/enigma-squashfs_nolzma.img%: \
+		$(flashprefix)/squashfs_nolzma.flfs% \
+		$(flashprefix)/root-enigma.squashfs_nolzma \
 		$(flashprefix)/var-enigma.jffs2 \
 		$(hostprefix)/bin/checkImage
 	$(hostappsdir)/flash/flashmanage.pl -i $@ -o build \
@@ -225,6 +253,20 @@ $(flashprefix)/enigma+neutrino-squashfs.img1x $(flashprefix)/enigma+neutrino-squ
 $(flashprefix)/enigma+neutrino-squashfs.img%: \
 		$(flashprefix)/squashfs.flfs% \
 		$(flashprefix)/root-enigma+neutrino.squashfs \
+		$(flashprefix)/var-enigma+neutrino.jffs2 \
+		$(hostprefix)/bin/checkImage
+	$(hostappsdir)/flash/flashmanage.pl -i $@ -o build \
+		--rootsize=$(ROOT_PARTITION_SIZE) \
+		--part ppcboot=$< \
+		--part root=$(word 2,$+) \
+		--part var=$(word 3,$+)
+	@TUXBOX_CHECKIMAGE@
+	@TUXBOX_CUSTOMIZE@
+
+$(flashprefix)/enigma+neutrino-squashfs_nolzma.img1x $(flashprefix)/enigma+neutrino-squashfs_nolzma.img2x:\
+$(flashprefix)/enigma+neutrino-squashfs_nolzma.img%: \
+		$(flashprefix)/squashfs_nolzma.flfs% \
+		$(flashprefix)/root-enigma+neutrino.squashfs_nolzma \
 		$(flashprefix)/var-enigma+neutrino.jffs2 \
 		$(hostprefix)/bin/checkImage
 	$(hostappsdir)/flash/flashmanage.pl -i $@ -o build \

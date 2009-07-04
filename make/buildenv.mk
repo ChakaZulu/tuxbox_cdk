@@ -62,11 +62,6 @@ endif
 if TARGETRULESET_FLASH
 CONFIGURE_OPTS_DEBUG = \
 	--without-debug
-if ENABLE_LZMA
-MKSQUASHFS = $(hostprefix)/bin/mksquashfs-lzma
-else
-MKSQUASHFS = $(hostprefix)/bin/mksquashfs-nolzma
-endif
 endif
 
 if ENABLE_UPNP

@@ -34,11 +34,6 @@ AC_PROG_CC
 
 TUXBOX_BOXTYPE
 
-AC_ARG_ENABLE(lzma,
-	AS_HELP_STRING(--disable-lzma,don't use LZMA compression when generating images),
-	,[enable_lzma=yes])
-AM_CONDITIONAL(ENABLE_LZMA,test "$enable_lzma" = "yes")
-
 AC_ARG_ENABLE(nptl,
 	AS_HELP_STRING(--disable-nptl,do not use native posix threads for glibc (only meaningful for kernel 2.6.x, default for 2.4.x)),
 	,[
@@ -398,17 +393,9 @@ AC_ARG_WITH(rootpartitionsize,
 AC_SUBST(ROOT_PARTITION_SIZE)
 
 AC_ARG_WITH(flashfstype,
-	[  --with-flashfstype=FS_TYPE	type of flash root filesystem partition for the yadd kernel],
-	[FLASH_FS_TYPE="$withval"],[FLASH_FS_TYPE="NONE"])
+	[  --with-flashfstype=FS_TYPE	type of flash root filesystem partition for the yadd kernel (squashfs+lzma/squashfs)],
+	[FLASH_FS_TYPE="$withval"],[FLASH_FS_TYPE="squashfs+lzma"])
 AC_SUBST(FLASH_FS_TYPE)
-
-if test "$FLASH_FS_TYPE" = "NONE"; then
-	if test "$ENABLE_LZMA" = "yes"; then
-		FLASH_FS_TYPE="squashfs+lzma"
-	else
-		FLASH_FS_TYPE="squashfs"
-	fi
-fi
 
 AC_ARG_WITH(defaultlocale,
 	[  --with-defaultlocale=LOCALE	default locale],
@@ -1067,7 +1054,6 @@ host prefix:			$hostprefix
 boot prefix:			$bootprefix
 build prefix:			$buildprefix
 root partition size:		$ROOT_PARTITION_SIZE
-LZMA support:			$enable_lzma
 default locale:			$DEFAULTLOCALE
 serversupport:			$serversupport
 checkImage:			$CHECKIMAGE_BEHAVIOR

@@ -29,25 +29,30 @@ $(hostprefix)/bin/mkcramfs: @DEPENDS_cramfs@
 #
 # mksquashfs with or without LZMA support
 #
-mksquashfs: $(MKSQUASHFS)
-$(MKSQUASHFS): @DEPENDS_squashfs@
+$(hostprefix)/bin/mksquashfs-lzma: directories @DEPENDS_squashfs@
 	rm -rf @DIR_squashfs@
 	mkdir -p @DIR_squashfs@
 	cd @DIR_squashfs@ && \
 	gunzip -cd ../Archive/squashfs3.0.tar.gz | TAPE=- tar -x
-if ENABLE_LZMA
 	cd @DIR_squashfs@ && \
 	bunzip2 -cd ../Archive/lzma442.tar.bz2 | TAPE=- tar -x && \
 	patch -p1 < ../Patches/lzma_zlib-stream.diff && \
 	patch -p0 < ../Patches/mksquashfs_lzma.diff
 	$(MAKE) -C @DIR_squashfs@/C/7zip/Compress/LZMA_Lib
-endif
+	$(MAKE) -C @DIR_squashfs@/squashfs3.0/squashfs-tools
+	$(INSTALL) -m755 @DIR_squashfs@/squashfs3.0/squashfs-tools/mksquashfs $@
+	rm -rf @DIR_squashfs@
+
+$(hostprefix)/bin/mksquashfs-nolzma: directories @DEPENDS_squashfs@
+	rm -rf @DIR_squashfs@
+	mkdir -p @DIR_squashfs@
+	cd @DIR_squashfs@ && \
+	gunzip -cd ../Archive/squashfs3.0.tar.gz | TAPE=- tar -x
 	$(MAKE) -C @DIR_squashfs@/squashfs3.0/squashfs-tools
 	$(INSTALL) -m755 @DIR_squashfs@/squashfs3.0/squashfs-tools/mksquashfs $@
 	rm -rf @DIR_squashfs@
 
 endif
-
 
 # if we cannot use the host's depmod for whatever reason, use this one.
 $(DEPDIR)/host_module_init_tools: $(hostprefix)/bin/depmod
