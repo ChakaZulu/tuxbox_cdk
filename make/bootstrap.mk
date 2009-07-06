@@ -115,14 +115,14 @@ endif
 endif
 
 if ENABLE_FS_CIFS
-KERNEL_CIFS=Archive/cifs-1.20c-2.4.tar.gz
+KERNEL_DEPENDS += Archive/cifs-1.20c-2.4.tar.gz
 endif
 
 if ENABLE_AUTOMOUNT
-KERNEL_AUTOMOUNT=Archive/autofs4-2.4-module-20050404.tar.gz
+KERNEL_DEPENDS += Archive/autofs4-2.4-module-20050404.tar.gz
 endif
 
-$(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) $(KERNEL_CIFS) $(KERNEL_AUTOMOUNT) directories
+$(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) directories
 	$(KERNEL_PREPARE)
 if KERNEL26
 if BOXTYPE_DREAMBOX
