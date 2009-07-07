@@ -198,7 +198,7 @@ $(DEPDIR)/hddtemp: bootstrap @DEPENDS_hddtemp@
 			--prefix= && \
 		$(MAKE) all && \
 		$(MAKE) install DESTDIR=$(targetprefix)
-		$(INSTALL) -m 644 Patches/hddtemp.db $(targetprefix)/share/tuxbox
+		$(INSTALL) -m 644 config/hddtemp.db $(targetprefix)/share/tuxbox
 	@CLEANUP_hddtemp@
 	touch $@ 
 
