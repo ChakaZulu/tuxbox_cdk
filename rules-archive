@@ -121,6 +121,9 @@ openntpd-3.9p1.tar.gz;http://mirror.roothell.org/pub/OpenBSD/OpenNTPD
 esound-0.2.41.tar.bz2;ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2
 Python-2.5.4.tar.bz2;http://www.python.org/ftp/python/2.5.4
 ser2net-2.5.tar.gz;http://prdownloads.sourceforge.net/sourceforge/ser2net
+ucl-1.03.tar.gz;http://www.oberhumer.com/opensource/ucl/download
+lzma443.tar.bz2;http://prdownloads.sourceforge.net/sourceforge/sevenzip
+upx-3.03-src.tar.bz2;http://upx.sourceforge.net/download
 
 #
 # ide apps

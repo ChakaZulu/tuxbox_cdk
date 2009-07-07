@@ -111,6 +111,9 @@ openntpd;3.9p1;openntpd-3.9p1;openntpd-3.9p1.tar.gz:openntpd-always-use-latest-o
 esound;0.2.41;esound-0.2.41;esound-0.2.41.tar.bz2:esound.diff;extract:esound-0.2.41.tar.bz2;patch:esound.diff
 python;2.5.4;Python-2.5.4;Python-2.5.4.tar.bz2:python.diff;extract:Python-2.5.4.tar.bz2;patch:python.diff
 ser2net;2.5;ser2net-2.5;ser2net-2.5.tar.gz:ser2net.diff;extract:ser2net-2.5.tar.gz;patch:ser2net.diff
+ucl;1.03;ucl-1.03;ucl-1.03.tar.gz;extract:ucl-1.03.tar.gz
+lzma443;443;lzma443
+upx_host;3.03;upx-3.03-src;upx-3.03-src.tar.bz2:lzma443.tar.bz2:upx.diff;extract:upx-3.03-src.tar.bz2;patch:upx.diff
 
 #
 # ide/hdd apps

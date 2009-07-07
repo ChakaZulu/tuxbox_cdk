@@ -1,0 +1,12 @@
+diff -uNr upx-3.03-src.org/src/msg.cpp upx-3.03-src/src/msg.cpp
+--- upx-3.03-src.org/src/msg.cpp	2008-04-27 17:03:00.000000000 +0200
++++ upx-3.03-src/src/msg.cpp	2009-07-01 00:50:01.000000000 +0200
+@@ -57,7 +57,7 @@
+     fflush(stdout); fflush(stderr);
+     if (f == NULL)
+         f = stdout;
+-    con_fprintf(f,clear_line_msg);
++    con_fprintf(f, "%s", clear_line_msg);
+     fflush(f);
+     printSetNl(0);
+ }

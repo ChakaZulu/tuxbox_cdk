@@ -108,6 +108,8 @@ openntpd;make:install:DESTDIR=TARGET
 esound;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libesd.la
 python;make:install
 ser2net;make:install
+ucl;make:install
+upx_host;make:all;install:-m755:src/upx.out:HOST/bin/upx
 
 #
 # msttf

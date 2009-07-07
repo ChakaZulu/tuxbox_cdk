@@ -698,3 +698,27 @@ $(DEPDIR)/ser2net: bootstrap @DEPENDS_ser2net@
 		@INSTALL_ser2net@
 	@CLEANUP_ser2net@
 	touch $@
+
+$(DEPDIR)/ucl: @DEPENDS_ucl@
+	@PREPARE_ucl@
+	cd @DIR_ucl@ && \
+		./configure \
+			--enable-shared \
+			--disable-static \
+			--prefix=$(hostprefix) && \
+		@INSTALL_ucl@
+	@CLEANUP_ucl@
+	touch $@
+
+$(DEPDIR)/upx_host: directories ucl @DEPENDS_upx_host@
+	@PREPARE_upx_host@
+	mkdir -p @DIR_upx_host@/lzma443
+	cd @DIR_upx_host@/lzma443 && \
+	bunzip2 -cd $(buildprefix)/Archive/lzma443.tar.bz2 | TAPE=- tar -x
+	cd @DIR_upx_host@ && \
+		UPX_UCLDIR=$(hostprefix) \
+		UPX_LZMADIR=$(buildprefix)/@DIR_upx_host@/lzma443 \
+		LIBS="-Wl,-R$(hostprefix)/lib -Wl,-L$(hostprefix)/lib" \
+		@INSTALL_upx_host@
+	@CLEANUP_upx_host@
+	touch $@

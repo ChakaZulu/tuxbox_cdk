@@ -447,3 +447,24 @@ diff -uNr glibc-2.3.6.org/elf/Makefile glibc-2.3.6/elf/Makefile
  		  > $@.lds
  	$(LINK.o) -nostdlib -nostartfiles -shared -o $@			\
  		  $(LDFLAGS-rtld) -Wl,-z,defs $(z-now-$(bind-now))	\
+diff -uNr glibc-2.3.6.org/elf/rtld.c glibc-2.3.6/elf/rtld.c
+--- glibc-2.3.6.org/elf/rtld.c	2005-04-06 04:49:51.000000000 +0200
++++ glibc-2.3.6/elf/rtld.c	2009-07-07 07:38:06.000000000 +0200
+@@ -285,7 +285,6 @@
+   GL(dl_rtld_map).l_tls_offset = info->l.l_tls_offset;
+   GL(dl_rtld_map).l_tls_modid = 1;
+ # else
+-  assert (info->l.l_tls_modid == 0);
+ #  if NO_TLS_OFFSET != 0
+   GL(dl_rtld_map).l_tls_offset = NO_TLS_OFFSET;
+ #  endif
+@@ -373,6 +372,9 @@
+        ++cnt)
+     bootstrap_map.l_info[cnt] = 0;
+ # endif
++# if USE___THREAD
++  bootstrap_map.l_tls_modid = 0;
++# endif
+ #endif
+ 
+   /* Figure out the run-time load address of the dynamic linker itself.  */
