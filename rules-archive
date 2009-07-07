@@ -32,6 +32,9 @@ ccache-2.4.tar.gz;http://samba.org/ftp/ccache
 # root
 #
 busybox-1.14.2.tar.bz2;http://www.busybox.net/downloads
+busybox-1.14.2-df.patch;http://busybox.net/downloads/fixes-1.14.2
+busybox-1.14.2-ls.patch;http://busybox.net/downloads/fixes-1.14.2
+busybox-1.14.2-udhcpd.patch;http://busybox.net/downloads/fixes-1.14.2
 autofs-4.1.4.tar.bz2;ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4
 nfs-utils-1.1.1.tar.bz2;ftp://ftp.kernel.org/pub/linux/utils/nfs
 fuse-2.5.3.tar.gz;http://prdownloads.sourceforge.net/sourceforge/fuse

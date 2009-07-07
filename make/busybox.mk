@@ -30,7 +30,13 @@ if ENABLE_FS_NFS
 BUSYBOX_M4 += -Dnfs
 endif
 
-$(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ $(busybox_conf)
+# this variable is needed because cdk/rules.pl assumes *.patch can be found in cdk/Patches
+BUSYBOX_PATCHES = \
+Archive/busybox-1.14.2-df.patch \
+Archive/busybox-1.14.2-ls.patch \
+Archive/busybox-1.14.2-udhcpd.patch
+
+$(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ $(BUSYBOX_PATCHES) $(busybox_conf)
 	@PREPARE_busybox@
 	m4 $(BUSYBOX_M4) -Dyadd -DPREFIX=\`\"$(targetprefix)\"\' $(busybox_conf) > @DIR_busybox@/.config
 	cd @DIR_busybox@ && \
@@ -43,7 +49,7 @@ $(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ $(busybox_conf)
 
 if TARGETRULESET_FLASH
 
-flash-busybox: bootstrap $(flashprefix)/root @DEPENDS_busybox@ $(busybox_conf)
+flash-busybox: bootstrap $(flashprefix)/root @DEPENDS_busybox@ $(BUSYBOX_PATCHES) $(busybox_conf)
 	@PREPARE_busybox@
 	m4 $(BUSYBOX_M4) -Dflash -DPREFIX=\`\"$(flashprefix)/root\"\' $(busybox_conf) > @DIR_busybox@/.config
 	cd @DIR_busybox@ && \
