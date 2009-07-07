@@ -216,7 +216,7 @@ $(flashprefix)/root/sbin/hddtemp: bootstrap @DEPENDS_hddtemp@ | $(flashprefix)/r
 			--prefix= && \
 		$(MAKE) all && \
 		$(MAKE) install DESTDIR=$(flashprefix)/root
-		$(INSTALL) -m 644 Patches/hddtemp.db $(flashprefix)/root/share/tuxbox
+		$(INSTALL) -m 644 config/hddtemp.db $(flashprefix)/root/share/tuxbox
 	@CLEANUP_hddtemp@
 	@FLASHROOTDIR_MODIFIED@
 	@TUXBOX_CUSTOMIZE@
