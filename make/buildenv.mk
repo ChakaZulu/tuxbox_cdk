@@ -94,6 +94,11 @@ CONFIGURE_OPTS_HTTP_UPDATE = \
 	--disable-http-update
 endif
 
+if ENABLE_FREESATEPG
+CONFIGURE_OPTS_EPG = \
+	--enable-freesatepg
+endif
+
 CONFIGURE = \
 	./autogen.sh && \
 	CC=$(target)-gcc \
@@ -110,6 +115,7 @@ CONFIGURE = \
 	$(CONFIGURE_OPTS_IDE) \
 	$(CONFIGURE_OPTS_SQLITE) \
 	$(CONFIGURE_OPTS_CCACHE) \
+	$(CONFIGURE_OPTS_EPG) \
 	$(CONFIGURE_OPTS_HTTP_UPDATE)
 
 ACLOCAL_AMFLAGS = -I .
