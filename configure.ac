@@ -708,6 +708,11 @@ ccache is not yet installed, but installation starts on first build of cdk envir
 ----------------------------------------"
 	fi
 fi
+# UK FreeSat EPG #########################
+AC_ARG_ENABLE(freesatepg,
+	AS_HELP_STRING(--enable-freesatepg,enable UK FreeSat EPG),
+	,[enable_freesatepg=no])
+AM_CONDITIONAL(ENABLE_FREESATEPG,test "$enable_freesatepg" = "yes")
 #
 ################################################################
 
