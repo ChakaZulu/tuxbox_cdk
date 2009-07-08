@@ -316,7 +316,7 @@ $(DEPDIR)/libncurses: bootstrap @DEPENDS_libncurses@
 	@CLEANUP_libncurses@
 	touch $@
 
-$(DEPDIR)/libpcap: bootstrap @DEPENDS_libpcap@ Patches/libpcap.diff
+$(DEPDIR)/libpcap: bootstrap @DEPENDS_libpcap@
 	@PREPARE_libpcap@
 	cd @DIR_libpcap@ && \
 		$(BUILDENV) \

@@ -5,7 +5,7 @@
 
 dvb_apps: dvbdate dvbstream dvbtext dvbtune vls
 
-$(DEPDIR)/dvbdate: bootstrap @DEPENDS_dvbdate@ Patches/dvbdate.diff
+$(DEPDIR)/dvbdate: bootstrap @DEPENDS_dvbdate@
 	@PREPARE_dvbdate@
 	cd @DIR_dvbdate@ && \
 		$(MAKE) dvbdate \
@@ -26,7 +26,7 @@ $(DEPDIR)/dvbstream: bootstrap @DEPENDS_dvbstream@
 	@CLEANUP_dvbstream@
 	touch $@
 
-$(DEPDIR)/dvbtext: bootstrap @DEPENDS_dvbtext@ Patches/dvbtext.diff
+$(DEPDIR)/dvbtext: bootstrap @DEPENDS_dvbtext@
 	@PREPARE_dvbtext@
 	cd @DIR_dvbtext@ && \
 		$(target)-gcc $(TARGET_CFLAGS) -I$(driverdir)/dvb/include -DNEWSTRUCT -o dvbtext dvbtext.c && \

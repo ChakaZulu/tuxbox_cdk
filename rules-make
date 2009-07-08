@@ -64,7 +64,7 @@ libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch
 libmad;0.15.1b;libmad-0.15.1b;libmad-0.15.1b.tar.gz:libmad.diff;extract:libmad-0.15.1b.tar.gz;patch:libmad.diff
 libid3tag;0.15.1b;libid3tag-0.15.1b;libid3tag-0.15.1b.tar.gz:libid3tag.diff;extract:libid3tag-0.15.1b.tar.gz;patch:libid3tag.diff
 libncurses;5.3;ncurses-5.3;ncurses-5.3.tar.gz;extract:ncurses-5.3.tar.gz
-libpcap;0.9.4;libpcap-0.9.4;libpcap-0.9.4.tar.gz;extract:libpcap-0.9.4.tar.gz;patch:libpcap.diff
+libpcap;0.9.4;libpcap-0.9.4;libpcap-0.9.4.tar.gz:libpcap.diff;extract:libpcap-0.9.4.tar.gz;patch:libpcap.diff
 libpng;1.2.37;libpng-1.2.37;libpng-1.2.37.tar.bz2;extract:libpng-1.2.37.tar.bz2
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.6;SDL-1.2.6;SDL-1.2.6.tar.gz:sdl.diff;extract:SDL-1.2.6.tar.gz;patch:sdl.diff
@@ -118,7 +118,7 @@ upx_host;3.03;upx-3.03-src;upx-3.03-src.tar.bz2:lzma443.tar.bz2:upx.diff;extract
 #
 # ide/hdd apps
 #
-e2fsprogs;1.41.6;e2fsprogs-1.41.6;e2fsprogs-1.41.6.tar.gz;extract:e2fsprogs-1.41.6.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
+e2fsprogs;1.41.6;e2fsprogs-1.41.6;e2fsprogs-1.41.6.tar.gz:e2fsprogs_gcc4_build_fix.diff;extract:e2fsprogs-1.41.6.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
 hddtemp;0.3-beta15;hddtemp-0.3-beta15;hddtemp-0.3-beta15.tar.bz2;extract:hddtemp-0.3-beta15.tar.bz2
 hdparm;9.15;hdparm-9.15;hdparm-9.15.tar.gz;extract:hdparm-9.15.tar.gz
 parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
@@ -159,15 +159,15 @@ kaffeh;1.0.6;kaffe-1.0.6;kaffe-1.0.6.tar.gz:kaffeh.diff;extract:kaffe-1.0.6.tar.
 #
 gnuboy;1.0.3;gnuboy-1.0.3;gnuboy-1.0.3.tar.gz:gnuboy.diff;extract:gnuboy-1.0.3.tar.gz;patch:gnuboy.diff
 scummvm;0.5.1;scummvm-0.5.1;scummvm-0.5.1.tar.bz2:scummvm-0.5.1.diff;extract:scummvm-0.5.1.tar.bz2;patch:scummvm-0.5.1.diff
-sdldoom;1.10;sdldoom-1.10;sdldoom-1.10.tar.gz;extract:sdldoom-1.10.tar.gz;patch:sdldoom.diff
+sdldoom;1.10;sdldoom-1.10;sdldoom-1.10.tar.gz:sdldoom.diff;extract:sdldoom-1.10.tar.gz;patch:sdldoom.diff
 tinygl;0.4;TinyGL;TinyGL-0.4.tar.gz:TinyGL.diff;extract:TinyGL-0.4.tar.gz;patch:TinyGL.diff
 
 #
 # dvb apps
 #
-dvbdate;0.1;dvbdate-0.1;dvbdate-0.1.tar.gz;extract:dvbdate-0.1.tar.gz;patch:dvbdate.diff
+dvbdate;0.1;dvbdate-0.1;dvbdate-0.1.tar.gz:dvbdate.diff;extract:dvbdate-0.1.tar.gz;patch:dvbdate.diff
 dvbstream;0.5;dvbstream-0.5;dvbstream-0.5.tar.gz;extract:dvbstream-0.5.tar.gz
-dvbtext;0.1;dvbtext-0.1;dvbtext-0.1.tar.gz;extract:dvbtext-0.1.tar.gz;patch:dvbtext.diff
+dvbtext;0.1;dvbtext-0.1;dvbtext-0.1.tar.gz:dvbtext.diff;extract:dvbtext-0.1.tar.gz;patch:dvbtext.diff
 dvbtune;0.5;dvbtune-0.5;dvbtune-0.5.tar.gz;extract:dvbtune-0.5.tar.gz
 vls;0.4.0;vls-0.4.0;vls-0.4.0.tar.bz2:vls.diff;extract:vls-0.4.0.tar.bz2;patch:vls.diff
 
