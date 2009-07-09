@@ -3,9 +3,9 @@
 #   contrib apps
 #
 
-contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie @LUFS@ kermit wget ncftp screen lzma_utils ntpd ntpclient links links_g esound python ser2net
+contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie @LUFS@ kermit wget ncftp screen lzma lzma_host ntpd ntpclient links links_g esound python ser2net
 
-CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma_utils .deps/ntpd .deps/ntpclient .deps/links .deps/links_g .deps/esound .deps/openntpd .deps/python .deps/ser2net
+CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma .deps/lzma_host .deps/ntpd .deps/ntpclient .deps/links .deps/links_g .deps/esound .deps/openntpd .deps/python .deps/ser2net
 
 #bzip2
 $(DEPDIR)/bzip2: bootstrap @DEPENDS_bzip2@
@@ -461,36 +461,41 @@ $(flashprefix)/root/bin/screen: screen | $(flashprefix)/root
 
 endif
 
-#lzma_utils
-$(DEPDIR)/lzma_utils: bootstrap @DEPENDS_lzma_utils@
-	@PREPARE_lzma_utils@
-	cd @DIR_lzma_utils@ && \
+#lzma
+$(DEPDIR)/lzma: bootstrap @DEPENDS_lzma@
+	@PREPARE_lzma@
+	cd @DIR_lzma@ && \
 		$(BUILDENV) \
-		./configure \
-			--build=$(build) \
-			--host=$(target) \
-			--prefix=&& \
-		$(MAKE) all && \
-		@INSTALL_lzma_utils@
-	@CLEANUP_lzma_utils@
+		$(MAKE) -C CPP/7zip/Compress/LZMA_Alone -f makefile.gcc && \
+		@INSTALL_lzma@
+	@CLEANUP_lzma@
 	touch $@
 
 if TARGETRULESET_FLASH
-flash-lzma_utils: $(flashprefix)/root/bin/lzma
+flash-lzma: $(flashprefix)/root/bin/lzma
+flash-lzma_alone: $(flashprefix)/root/bin/lzma_alone
 
-$(flashprefix)/root/bin/lzma: lzma_utils | $(flashprefix)/root
+$(flashprefix)/root/bin/lzma: lzma | $(flashprefix)/root
 	rm -f $(flashprefix)/root/bin/lzma
 	@$(INSTALL) -d $(flashprefix)/root/bin
-	@for i in lzdiff lzgrep lzma lzmadec lzmainfo lzmore; do \
-	$(INSTALL) $(targetprefix)/bin/$$i $(flashprefix)/root/bin; done;
-		@ln -sf lzma $(flashprefix)/root/bin/lzcat
-		@ln -sf lzdiff $(flashprefix)/root/bin/lzcmp
-		@ln -sf lzgrep $(flashprefix)/root/bin/lzfgrep
-		@ln -sf lzgrep $(flashprefix)/root/bin/lzegrep
-		@ln -sf lzmore $(flashprefix)/root/bin/lzless
+	$(INSTALL) $(targetprefix)/bin/lzma $(flashprefix)/root/bin; done
+	@FLASHROOTDIR_MODIFIED@
+
+$(flashprefix)/root/bin/lzma_alone: lzma | $(flashprefix)/root
+	rm -f $(flashprefix)/root/bin/lzma_alone
+	@$(INSTALL) -d $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/lzma_alone $(flashprefix)/root/bin; done
 	@FLASHROOTDIR_MODIFIED@
 
 endif
+
+$(DEPDIR)/lzma_host: directories @DEPENDS_lzma_host@
+	@PREPARE_lzma_host@
+	cd @DIR_lzma_host@ && \
+		$(MAKE) -C CPP/7zip/Compress/LZMA_Alone -f makefile.gcc && \
+		@INSTALL_lzma_host@
+	@CLEANUP_lzma_host@
+	touch $@
 
 $(DEPDIR)/links: bootstrap @DEPENDS_links@
 	@PREPARE_links@

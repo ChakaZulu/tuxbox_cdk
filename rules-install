@@ -99,7 +99,6 @@ smartmontools;make:install:DESTDIR=TARGET
 wget;make:install:DESTDIR=TARGET
 screen;make:install:DESTDIR=TARGET
 ncftp;make:install:DESTDIR=TARGET
-lzma_utils;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/liblzmadec.la
 links;make:install:DESTDIR=TARGET
 links_g;install:-m755:links:TARGET/bin/links_g
 ntpd;make:install:DESTDIR=TARGET
@@ -110,6 +109,8 @@ python;make:install
 ser2net;make:install
 ucl;make:install
 upx_host;make:all;install:-m755:src/upx.out:HOST/bin/upx
+lzma;install:-m755:CPP/7zip/Compress/LZMA_Alone/lzma:TARGET/bin;install:-m755:CPP/7zip/Compress/LZMA_Alone/lzma_alone:TARGET/bin
+lzma_host;install:-m755:CPP/7zip/Compress/LZMA_Alone/lzma:HOST/bin;install:-m755:CPP/7zip/Compress/LZMA_Alone/lzma_alone:HOST/bin
 
 #
 # msttf

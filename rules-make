@@ -102,7 +102,6 @@ samba;1.9.18p8;samba-1.9.18p8;samba-1.9.18p8.tar.gz:samba_ppc.diff;extract:samba
 wget;1.11.4;wget-1.11.4;wget-1.11.4.tar.bz2;extract:wget-1.11.4.tar.bz2
 ncftp;3.2.2;ncftp-3.2.2;ncftp-3.2.2-src.tar.bz2;extract:ncftp-3.2.2-src.tar.bz2
 screen;4.0.2;screen-4.0.2;screen-4.0.2.tar.gz:screen.diff;extract:screen-4.0.2.tar.gz;patch:screen.diff
-lzma_utils;4.32.7;lzma-4.32.7;lzma-4.32.7.tar.gz;extract:lzma-4.32.7.tar.gz
 links;1.0;links-1.00;links-1.00.tar.gz;extract:links-1.00.tar.gz
 links_g;2.2;links-2.2;links-2.2.tar.gz;extract:links-2.2.tar.gz
 ntpd;4.2.4p5;ntp-4.2.4p5;ntp-4.2.4p5.tar.gz:ntp.diff;extract:ntp-4.2.4p5.tar.gz;patch:ntp.diff
@@ -114,6 +113,8 @@ ser2net;2.5;ser2net-2.5;ser2net-2.5.tar.gz:ser2net.diff;extract:ser2net-2.5.tar.
 ucl;1.03;ucl-1.03;ucl-1.03.tar.gz;extract:ucl-1.03.tar.gz
 lzma443;443;lzma443
 upx_host;3.03;upx-3.03-src;upx-3.03-src.tar.bz2:lzma443.tar.bz2:upx.diff;extract:upx-3.03-src.tar.bz2;patch:upx.diff
+lzma;4.65;lzma-4.65;lzma465.tar.bz2:lzma.diff;dirextract:lzma465.tar.bz2;patch:lzma.diff
+lzma_host;4.65;lzma-4.65;lzma465.tar.bz2:lzma.diff;dirextract:lzma465.tar.bz2;patch:lzma.diff
 
 #
 # ide/hdd apps
