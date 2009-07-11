@@ -64,7 +64,7 @@ $(DEPDIR)/vls: bootstrap libdvbpsi @DEPENDS_vls@
 # dvb/dvbsnoop
 
 $(appsdir)/dvb/dvbsnoop/config.status: bootstrap
-	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE) CPPFLAGS="$(CPPFLAGS) -I$(driverdir)/dvb/include"
+	cd $(appsdir)/dvb/dvbsnoop && $(CONFIGURE)
 
 $(DEPDIR)/dvbsnoop: $(appsdir)/dvb/dvbsnoop/config.status
 	$(MAKE) -C $(appsdir)/dvb/dvbsnoop all install
