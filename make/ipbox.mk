@@ -107,7 +107,7 @@ $(flashprefix)/root-squashfs: bootstrap $(IPBOX_DRIVER_DEPENDS)
 	$(INSTALL) -m644 $(KERNEL_BUILD_FILENAME) $(flashprefix)/vmlinux
 	$(MAKE) -C $(KERNEL_DIR) modules_install \
 		ARCH=ppc CROSS_COMPILE=$(target)- \
-		DEPMOD=/bin/true INSTALL_MOD_PATH=$@
+		INSTALL_MOD_PATH=$@
 	cp $(buildprefix)/linux/System.map $(flashprefix)/kernel_System.map
 	$(IPBOX_DRIVER_PREPARE)
 	$(INSTALL) -d $(IPBOX_DRIVER_MODDIR)/extra
