@@ -1,0 +1,25 @@
+#!/bin/bash
+cd .. && CURRENT_PATH=`pwd`;
+cd cdk
+./autogen.sh;
+# boxtype dm500 dm56x0 or dm7000
+TYPE=$1
+if test -z "$TYPE"; then
+	TYPE=dm7000
+fi
+./configure \
+	--with-boxtype="dreambox" \
+	--with-boxmodel=$TYPE \
+	--with-webif=expert \
+	--prefix=$CURRENT_PATH/root \
+	--with-cvsdir=$CURRENT_PATH \
+	--enable-maintainer-mode \
+	--enable-flashrules \
+	--with-mhw-epg=no \
+	--with-flashtool=standard \
+	--with-ext-flashtool=yes \
+	--with-enigma-debug=yes \
+	--enable-ide \
+	--enable-kernel26 \
+	--with-filesystems=ext3 
+
