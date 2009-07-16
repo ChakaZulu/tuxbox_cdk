@@ -389,6 +389,8 @@ $(DEPDIR)/reiserfsprogs: bootstrap libtool @DEPENDS_e2fsprogs@ @DEPENDS_reiserfs
 			--prefix= && \
 		$(MAKE) && \
 		@INSTALL_reiserfsprogs@
+		@ln -sf mkreiserfs $(targetprefix)/sbin/mkfs.reiserfs
+		@ln -sf reiserfsck $(targetprefix)/sbin/fsck.reiserfs
 	@CLEANUP_reiserfsprogs@
 	touch $@
 
@@ -398,10 +400,12 @@ flash-reiserfsprogs: $(flashprefix)/root/sbin/mkreiserfs $(flashprefix)/root/sbi
 
 $(flashprefix)/root/sbin/mkreiserfs: bootstrap libtool reiserfsprogs | $(flashprefix)/root
 	$(INSTALL) $(targetprefix)/sbin/mkreiserfs $(flashprefix)/root/sbin
+	@ln -sf mkreiserfs $(flashprefix)/root/sbin/mkfs.reiserfs
 	@FLASHROOTDIR_MODIFIED@
 
 $(flashprefix)/root/sbin/reiserfsck: bootstrap libtool reiserfsprogs | $(flashprefix)/root
 	$(INSTALL) $(targetprefix)/sbin/reiserfsck $(flashprefix)/root/sbin
+	@ln -sf reiserfsck $(flashprefix)/root/sbin/fsck.reiserfs
 	@FLASHROOTDIR_MODIFIED@
 
 endif
