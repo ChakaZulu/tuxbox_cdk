@@ -17,7 +17,8 @@
 #	@CLEANUP_uboot@
 #	touch $@
 
-yadd-u-boot: $(bootprefix)/u-boot $(bootprefix)/u-boot-yadd
+yadd-u-boot: $(bootprefix)/u-boot
+yadd-u-boot-bootmanager: $(bootprefix)/u-boot-yadd
 
 if KERNEL26
 $(bootprefix)/u-boot \
@@ -46,8 +47,8 @@ $(bootprefix)/README.u-boot:
 	@echo "The default u-boot relies on a DHCP-server (a bootp server will not"	 > $@
 	@echo "do) to tell the name of the kernel file, and the location of the"	>> $@
 	@echo "NFS-root. Sometimes this is not available, for example when using the"	>> $@
-	@echo "Windows dBox manager. For these cases, an alternate u-boot is"		>> $@
-	@echo "provided, which, out-of-the-box, has the file name u-boot-yadd. This"	>> $@
+	@echo "Windows dBox manager. For these cases, an alternate u-boot can be built"	>> $@
+	@echo "by make yadd-u-boot-bootmanager, which will be named u-boot-yadd. This"	>> $@
 	@echo "offers less flexibility, having most file names/paths compiled in. Using">> $@
 	@echo "this u-boot for booting, the file name of the kernel is \"kernel-yadd",\"	>> $@
 	@echo "and the NFS root will be \"yaddroot\"."					>> $@
