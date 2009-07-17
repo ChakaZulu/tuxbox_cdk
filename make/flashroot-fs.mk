@@ -12,7 +12,7 @@ if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $@/vmlinuz
 else
 	$(hostprefix)/bin/mkimage \
-		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
+		-n 'Linux-$(KERNELVERSION)' -A ppc -O linux -T kernel -C gzip \
 		-a 00000000 -e 00000000 -d $(KERNEL_BUILD_FILENAME) $@/vmlinuz
 endif
 	$(MAKE) driver targetprefix=$@
@@ -35,7 +35,7 @@ if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $@/vmlinuz
 else
 	$(hostprefix)/bin/mkimage \
-		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
+		-n 'Linux-$(KERNELVERSION)' -A ppc -O linux -T kernel -C gzip \
 		-a 00000000 -e 00000000 -d $(KERNEL_BUILD_FILENAME) $@/vmlinuz
 endif
 	$(MAKE) driver targetprefix=$@
@@ -63,7 +63,7 @@ if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_BUILD_FILENAME) $@/vmlinuz
 else
 	$(hostprefix)/bin/mkimage \
-		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
+		-n 'Linux-$(KERNELVERSION)' -A ppc -O linux -T kernel -C gzip \
 		-a 00000000 -e 00000000 -d $(KERNEL_BUILD_FILENAME) $@/vmlinuz
 endif
 	$(MAKE) driver targetprefix=$@
@@ -92,7 +92,7 @@ if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_BUILD_FILENAME) $@/vmlinuz
 else
 	$(hostprefix)/bin/mkimage \
-		-n 'dbox2' -A ppc -O linux -T kernel -C gzip \
+		-n 'Linux-$(KERNELVERSION)' -A ppc -O linux -T kernel -C gzip \
 		-a 00000000 -e 00000000 -d $(KERNEL_BUILD_FILENAME) $@/vmlinuz
 endif
 	$(MAKE) driver targetprefix=$@
