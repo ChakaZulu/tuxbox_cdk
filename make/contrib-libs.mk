@@ -206,7 +206,7 @@ $(DEPDIR)/libffi: bootstrap @DEPENDS_libffi@
 $(DEPDIR)/libfreetype: bootstrap @DEPENDS_libfreetype@
 	@PREPARE_libfreetype@
 	cd @DIR_libfreetype@ && \
-		CC=$(target)-gcc \
+		$(BUILDENV) \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -456,7 +456,7 @@ $(DEPDIR)/libxml2: bootstrap @DEPENDS_libxml2@
 $(DEPDIR)/libz: bootstrap @DEPENDS_libz@
 	@PREPARE_libz@
 	cd @DIR_libz@ && \
-		CC=$(target)-gcc \
+		$(BUILDENV) \
 		./configure \
 			--prefix= \
 			--shared && \
