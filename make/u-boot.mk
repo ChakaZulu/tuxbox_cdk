@@ -17,7 +17,7 @@
 #	@CLEANUP_uboot@
 #	touch $@
 
-yadd-u-boot: $(bootprefix)/u-boot
+yadd-u-boot: $(bootprefix)/u-boot $(bootprefix)/README.u-boot
 yadd-u-boot-bootmanager: $(bootprefix)/u-boot-yadd
 
 if KERNEL26
@@ -35,7 +35,7 @@ endif
 	@CLEANUP_uboot@
 	rm $(bootdir)/u-boot-config/u-boot.config
 
-$(bootprefix)/u-boot-yadd: @DEPENDS_uboot@ $(bootdir)/u-boot-config/u-boot.yadd.dbox2.h $(bootprefix)/README.u-boot
+$(bootprefix)/u-boot-yadd: @DEPENDS_uboot@ $(bootdir)/u-boot-config/u-boot.yadd.dbox2.h 
 	ln -sf ./u-boot.yadd.dbox2.h $(bootdir)/u-boot-config/u-boot.config
 	$(MAKE) @DIR_uboot@/u-boot.stripped
 	$(INSTALL) -d $(bootprefix)
