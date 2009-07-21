@@ -31,6 +31,7 @@ CONFIGURE_OPTS = \
 	--with-driver=$(driverdir) \
 	--with-boxtype=$(BOXTYPE) \
 	--with-target=cdk
+
 if BOXTYPE_DREAMBOX
 CONFIGURE_OPTS += --with-boxmodel=$(BOXMODEL) \
 		  --with-dvbincludes=$(driverdir)/oldapi/include
@@ -50,53 +51,58 @@ endif
 endif
 
 if MAINTAINER_MODE
-CONFIGURE_OPTS_MAINTAINER = \
+CONFIGURE_OPTS += \
 	--enable-maintainer-mode
 endif
 
 if TARGETRULESET_UCLIBC
-CONFIGURE_OPTS_UCLIBC = \
+CONFIGURE_OPTS += \
 	--enable-uclibc
 endif
 
 if TARGETRULESET_FLASH
-CONFIGURE_OPTS_DEBUG = \
+CONFIGURE_OPTS += \
 	--without-debug
 endif
 
 if ENABLE_UPNP
-CONFIGURE_OPTS_UPNP = \
+CONFIGURE_OPTS += \
 	--enable-upnp
 endif
 
 if ENABLE_FLAC
-CONFIGURE_OPTS_FLAC =  \
+CONFIGURE_OPTS += \
 	--enable-flac
 endif
 
 if ENABLE_IDE
-CONFIGURE_OPTS_IDE =  \
+CONFIGURE_OPTS += \
 	--enable-ide
 endif
 
 if ENABLE_CCACHE
-CONFIGURE_OPTS_CCACHE = \
+CONFIGURE_OPTS += \
 	--enable-ccache
 endif
 
 if ENABLE_SQLITE
-CONFIGURE_OPTS_SQLITE = \
+CONFIGURE_OPTS += \
 	--enable-sqlite
 endif
 
 if DISABLE_UPDATE_HTTP
-CONFIGURE_OPTS_HTTP_UPDATE = \
+CONFIGURE_OPTS += \
 	--disable-http-update
 endif
 
 if ENABLE_FREESATEPG
-CONFIGURE_OPTS_EPG = \
+CONFIGURE_OPTS += \
 	--enable-freesatepg
+endif
+
+if ENABLE_ESD
+CONFIGURE_OPTS += \
+	--enable-esd
 endif
 
 CONFIGURE = \
@@ -106,17 +112,7 @@ CONFIGURE = \
 	CFLAGS="-Wall $(TARGET_CFLAGS)" \
 	CXXFLAGS="-Wall $(TARGET_CXXFLAGS)" \
 	LDFLAGS="$(TARGET_LDFLAGS)" \
-	./configure $(CONFIGURE_OPTS) \
-	$(CONFIGURE_OPTS_MAINTAINER) \
-	$(CONFIGURE_OPTS_UCLIBC) \
-	$(CONFIGURE_OPTS_DEBUG) \
-	$(CONFIGURE_OPTS_UPNP) \
-	$(CONFIGURE_OPTS_FLAC) \
-	$(CONFIGURE_OPTS_IDE) \
-	$(CONFIGURE_OPTS_SQLITE) \
-	$(CONFIGURE_OPTS_CCACHE) \
-	$(CONFIGURE_OPTS_EPG) \
-	$(CONFIGURE_OPTS_HTTP_UPDATE)
+	./configure $(CONFIGURE_OPTS)
 
 ACLOCAL_AMFLAGS = -I .
 
@@ -125,4 +121,3 @@ CONFIG_STATUS_DEPENDENCIES = \
 	$(top_srcdir)/rules-install $(top_srcdir)/rules-install-flash \
 	$(top_srcdir)/rules-make \
 	Makefile-archive
-
