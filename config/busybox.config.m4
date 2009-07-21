@@ -439,9 +439,11 @@ option(`CONFIG_LSMOD', `n', `y')
 option(`CONFIG_FEATURE_LSMOD_PRETTY_2_6_OUTPUT', `n', `n')
 ifdef(`kernel26',
 `option(`CONFIG_MODPROBE', `y', `y')
-option(`CONFIG_FEATURE_2_4_MODULES', `y', `y')',
+option(`CONFIG_FEATURE_2_4_MODULES', `n', `n')
+option(`CONFIG_FEATURE_2_6_MODULES', `y', `y')',
 `option(`CONFIG_MODPROBE', `n', `n')
-option(`CONFIG_FEATURE_2_4_MODULES', `y', `y')'
+option(`CONFIG_FEATURE_2_4_MODULES', `y', `y')
+option(`CONFIG_FEATURE_2_6_MODULES', `n', `n')'
 )
 # CONFIG_FEATURE_MODPROBE_BLACKLIST is not set
 option(`CONFIG_DEPMOD', `n', `n')

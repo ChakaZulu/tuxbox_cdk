@@ -737,3 +737,19 @@ diff -uNr busybox-1.14.2.org/init/init.c busybox-1.14.2/init/init.c
  		if (!ENABLE_FEATURE_INIT_SYSLOG)
  			log_console = NULL;
  	} else if (!s)
+--- busybox-1.14.2.org/modutils/Config.in	2009-06-22 00:40:29.000000000 +0200
++++ busybox-1.14.2/modutils/Config.in	2009-07-15 07:47:34.000000000 +0200
+@@ -122,6 +122,13 @@
+ 	  This increases size considerably. Say N unless you plan
+ 	  to run ancient kernels.
+ 
++config FEATURE_2_6_MODULES
++	bool "Support version 2.6 Linux kernels"
++	default n
++	depends on INSMOD || RMMOD || LSMOD
++	help
++	  Support module loading for 2.6.x Linux kernels.
++
+ config FEATURE_INSMOD_VERSION_CHECKING
+ 	bool "Enable module version checking"
+ 	default n
