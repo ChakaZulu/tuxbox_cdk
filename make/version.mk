@@ -12,7 +12,7 @@ $(flashprefix)/root/.version: $(flashprefix)/root
 	else \
 		echo "version=1200`date +%Y%m%d%H%M`" 	>  $@;	\
 		echo "creator=`id -un`" 		>> $@;	\
-		echo "imagename=newmake-image" 		>> $@;	\
+		echo "imagename=tuxbox-image" 		>> $@;	\
 		echo "homepage=http://www.tuxbox.org" 	>> $@;	\
 	fi
 	@FLASHROOTDIR_MODIFIED@
@@ -23,7 +23,7 @@ $(targetprefix)/.version: $(targetprefix)
 	else \
 		echo "version=1200`date +%Y%m%d%H%M`" 	 > $@;	\
 		echo "creator=`id -un`" 		>> $@;	\
-		echo "imagename=newmake-yadd" 		>> $@;	\
+		echo "imagename=tuxbox-yadd" 		>> $@;	\
 		echo "homepage=http://www.tuxbox.org" 	>> $@;	\
 	fi
 
