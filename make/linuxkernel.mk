@@ -4,7 +4,7 @@
 # as a target.
 # This is deliberate, and makes the target "private".
 
-$(KERNEL_BUILD_FILENAME): bootstrap linuxdir install-linux-headers $(KERNEL_DIR)/.config
+$(KERNEL_BUILD_FILENAME): bootstrap_gcc linuxdir install-linux-headers $(KERNEL_DIR)/.config
 if BOXTYPE_DREAMBOX
 	$(MAKE) -j $(J) -C $(KERNEL_DIR) zImage modules \
 		ARCH=ppc \

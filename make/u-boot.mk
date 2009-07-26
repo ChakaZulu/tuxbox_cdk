@@ -6,7 +6,7 @@
 # Makefile does not have as an explicit target.
 # This is deliberate, and makes the target sort-of "private".
 
-@DIR_uboot@/u-boot.stripped: bootstrap @DEPENDS_uboot@ $(bootdir)/u-boot-config/u-boot.config
+@DIR_uboot@/u-boot.stripped: bootstrap_gcc @DEPENDS_uboot@ $(bootdir)/u-boot-config/u-boot.config
 	@PREPARE_uboot@
 	cp -pR $(bootdir)/u-boot-tuxbox/* @DIR_uboot@
 	cd @DIR_uboot@ && patch -p1 -E -i ../Patches/u-boot-1.2.0.diff
