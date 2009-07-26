@@ -15,7 +15,23 @@ $(hostprefix)/bin/mkflfs: $(hostappsdir)/config.status
 $(hostprefix)/bin/checkImage: $(hostappsdir)/config.status
 	$(MAKE) -C $(hostappsdir)/checkImage install INSTALLDIR=$(hostprefix)/bin
 
-$(hostprefix)/bin/mkfs.jffs2: $(hostappsdir)/config.status
+$(DEPDIR)/liblzma465: @DEPENDS_liblzma465@ directories
+	@PREPARE_liblzma465@
+	cd @DIR_liblzma465@/C && \
+		$(CC) -c $(CFLAGS) -o LzmaDec.o LzmaDec.c && \
+		$(CC) -c $(CFLAGS) -o LzmaEnc.o LzmaEnc.c && \
+		$(CC) -c $(CFLAGS) -o LzFind.o LzFind.c && \
+		$(AR) rcs liblzma.a LzmaDec.o LzmaEnc.o LzFind.o && \
+		ranlib liblzma.a && \
+		$(INSTALL) -D liblzma.a $(hostprefix)/lib/liblzma465.a && \
+		$(INSTALL) -d $(hostprefix)/include/lzma465 && \
+		$(INSTALL) LzmaDec.h $(hostprefix)/include/lzma465/ && \
+		$(INSTALL) LzmaEnc.h $(hostprefix)/include/lzma465/ && \
+		$(INSTALL) Types.h $(hostprefix)/include/lzma465/
+	@CLEANUP_liblzma465@
+	touch $@
+
+$(hostprefix)/bin/mkfs.jffs2: liblzma465 $(hostappsdir)/config.status
 	$(MAKE) -C $(hostappsdir)/mkfs.jffs2 install INSTALLDIR=$(hostprefix)/bin
 
 $(hostprefix)/bin/mkcramfs: @DEPENDS_cramfs@

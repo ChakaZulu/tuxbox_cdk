@@ -136,12 +136,8 @@ $(flashprefix)/welcome.img: ../config/bootlogo.m1v $(hostprefix)/bin/convbmp $(h
 $(flashprefix)/var_neutrino.img \
 $(flashprefix)/var_enigma.img: \
 $(flashprefix)/var_%.img: \
-$(flashprefix)/var-% $(MKJFFS2)
-	@if [ "$(MKJFFS2)" = "/bin/false" ] ; then \
-		echo "FATAL ERROR: No mkjffs2 or mkfs.jffs2 available"; \
-		false; \
-	fi
-	$(MKJFFS2) -d $< -b -e 65536 -o $@
+$(flashprefix)/var-% $(hostprefix)/bin/mkfs.jffs2
+	$(hostprefix)/bin/mkfs.jffs2 -x lzma -d $< -b -e 65536 -o $@
 
 $(flashprefix)/part_var_neutrino.img \
 $(flashprefix)/part_var_enigma.img: \

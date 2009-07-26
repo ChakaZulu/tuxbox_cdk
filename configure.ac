@@ -642,15 +642,6 @@ if test "$enable_flashrules" = "yes"; then
 		AC_MSG_WARN(using tuxbox cramfs)
 		MKCRAMFS=$hostprefix/bin/mkcramfs
 	fi
-	AC_PATH_PROG(MKJFFS2,mkjffs2,no)
-	if test "$MKJFFS2" = "no"; then
-		AC_PATH_PROG(MKFSJFFS2,mkfs.jffs2,no)
-		if test "$MKFSJFFS2" = "no"; then
-			AC_MSG_WARN(using tuxbox mkfs.jffs2)
-			MKFSJFFS2="$hostprefix/bin/mkfs.jffs2"
-		fi
-		MKJFFS2="$MKFSJFFS2"
-	fi
 fi
 
 
@@ -875,6 +866,7 @@ TUXBOX_RULES_MAKE(libiconv)
 TUXBOX_RULES_MAKE(libtool)
 TUXBOX_RULES_MAKE(libFLAC)
 TUXBOX_RULES_MAKE(libgettext)
+TUXBOX_RULES_MAKE(liblzma465)
 
 #
 # contrib apps

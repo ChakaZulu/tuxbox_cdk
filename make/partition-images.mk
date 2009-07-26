@@ -5,12 +5,8 @@ $(flashprefix)/var-radiobox.jffs2 \
 $(flashprefix)/var-neutrino.jffs2 \
 $(flashprefix)/var-enigma+neutrino.jffs2 \
 $(flashprefix)/var-enigma.jffs2: \
-$(flashprefix)/var-%.jffs2: $(flashprefix)/var-% $(MKJFFS2)
-	@if [ "$(MKJFFS2)" = "/bin/false" ] ; then \
-		echo "FATAL ERROR: No mkjffs2 or mkfs.jffs2 available"; \
-		false; \
-	fi
-	$(MKJFFS2) -b -e 131072 -p -r $< -o $@
+$(flashprefix)/var-%.jffs2: $(flashprefix)/var-% $(hostprefix)/bin/mkfs.jffs2
+	$(hostprefix)/bin/mkfs.jffs2 -x lzma -b -e 131072 -p -r $< -o $@
 
 
 ####### root-$gui.$fstype
@@ -44,12 +40,8 @@ $(flashprefix)/root-%.squashfs_nolzma: $(flashprefix)/root-%-squashfs_nolzma $(h
 $(flashprefix)/root-radiobox.jffs2 \
 $(flashprefix)/root-neutrino.jffs2 \
 $(flashprefix)/root-enigma.jffs2 $(flashprefix)/root-lcars.jffs2 $(flashprefix)/root-null.jffs2: \
-$(flashprefix)/root-%.jffs2: $(flashprefix)/root-%-jffs2 $(MKJFFS2)
-	@if [ "$(MKJFFS2)" = "/bin/false" ] ; then \
-		echo "FATAL ERROR: No mkjffs2 or mkfs.jffs2 available"; \
-		false; \
-	fi
-	$(MKJFFS2)  -b -e 0x20000 --pad=0x7c0000 -r $< -o $@
+$(flashprefix)/root-%.jffs2: $(flashprefix)/root-%-jffs2 $(hostprefix)/bin/mkfs.jffs2
+	$(hostprefix)/bin/mkfs.jffs2 -x lzma -b -e 0x20000 --pad=0x7c0000 -r $< -o $@
 
 ################ $fs-to-boot.flfs*x
 UBOOT_TEMPLATE = u-boot.dbox2.h.m4
