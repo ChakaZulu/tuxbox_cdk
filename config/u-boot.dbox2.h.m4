@@ -150,6 +150,11 @@ ifdef(`rootsize',,`define(`rootsize',`0x660000')')dnl
 #define CONFIG_DBOX2_ENV_READ_NFS	"/var/tuxbox/boot/boot.conf"
 //#define CONFIG_DBOX2_ENV_READ_TFTP	"boot.conf"
 
+#elif (UBOOT_TYPE == UBOOT_TYPE_FLASHER)
+#define	CONFIG_BOOTCOMMAND							\
+	"tftp \"dboxflash.img\";protect off 10020000 107fffff; "		\
+	"erase 10020000 107fffff;cp.l 100000 10020000 1F8000;reset "
+
 #elif (UBOOT_TYPE == UBOOT_TYPE_IDE)
 #define	CONFIG_BOOTCOMMAND 							\
 	"setenv bootargs root=/dev/ide/host0/bus0/target0/lun0/part2 " 		\
@@ -263,6 +268,8 @@ ifdef(`lzma',`#define CONFIG_LZMA		1	/* kernel LZMA decompression	*/')
 
 #define CONFIG_TUXBOX_NETWORK			1
 ifelse(uboottype,`yadd',`#define CONFIG_TUXBOX_BOOTMANAGER 1')
+ifelse(uboottype,`flasher',`#define CONFIG_TUXBOX_BOOTMANAGER 1
+#define DBOXFLASHER 1')
 
 #ifdef	CONFIG_LCD_BOARD
 #define	CONFIG_DBOX2_LCD_INFO			1
@@ -270,6 +277,8 @@ ifelse(uboottype,`yadd',`#define CONFIG_TUXBOX_BOOTMANAGER 1')
 
 #if (UBOOT_TYPE == UBOOT_TYPE_SQUASHFS) || (UBOOT_TYPE == UBOOT_TYPE_JFFS2) || (UBOOT_TYPE == UBOOT_TYPE_IDE)
 #define	CONFIG_DBOX2_LCD_LOGO_FS 		VAR_DIR_INFO "tuxbox/boot/logo-lcd"
+#elif (UBOOT_TYPE == UBOOT_TYPE_FLASHER)
+#define	CONFIG_DBOX2_LCD_LOGO_TFTP		"dboxflasher-lcd"
 #else
 /*#define	CONFIG_DBOX2_LCD_LOGO_TFTP		"logo-lcd"*/
 #define	CONFIG_DBOX2_LCD_LOGO_NFS		"/var/tuxbox/boot/logo-lcd"
@@ -283,6 +292,8 @@ ifelse(uboottype,`yadd',`#define CONFIG_TUXBOX_BOOTMANAGER 1')
 #define	CONFIG_DBOX2_FB_LOGO			1
 #if (UBOOT_TYPE == UBOOT_TYPE_SQUASHFS) || (UBOOT_TYPE == UBOOT_TYPE_JFFS2) || (UBOOT_TYPE == UBOOT_TYPE_IDE)
 #define	CONFIG_DBOX2_FB_LOGO_FS			VAR_DIR_INFO "tuxbox/boot/logo-fb"
+#elif (UBOOT_TYPE == UBOOT_TYPE_FLASHER)
+#define	CONFIG_DBOX2_FB_LOGO_TFTP		"dboxflasher-fb"
 #else
 //#define	CONFIG_DBOX2_FB_LOGO_TFTP		"logo-fb"
 #define	CONFIG_DBOX2_FB_LOGO_NFS		"/var/tuxbox/boot/logo-fb"
@@ -330,7 +341,11 @@ ifelse(uboottype,`yadd',`#define CONFIG_TUXBOX_BOOTMANAGER 1')
 #define CONFIG_SYS_MEMTEST_START	0x0400000	/* memtest works on	*/
 #define CONFIG_SYS_MEMTEST_END		0x1800000	/* 4 ... 24 MB in DRAM	*/
 
+#if (UBOOT_TYPE == UBOOT_TYPE_FLASHER)
+#define	CONFIG_SYS_LOAD_ADDR		0x100000	/* default load address	*/
+#else
 #define	CONFIG_SYS_LOAD_ADDR		0x200000	/* default load address	*/
+#endif
 
 #define	CONFIG_SYS_HZ			1000	/* decrementer freq: 1 ms ticks	*/
 

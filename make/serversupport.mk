@@ -76,8 +76,9 @@ $(serversupport)/etc/hosts: Makefile
 
 dboxflasher: $(bootprefix)/dboxflasher
 
-$(bootprefix)/dboxflasher: $(bootdir)/u-boot-config/u-boot.flasher.dbox2.h
-	ln -sf $(bootdir)/u-boot-config/u-boot.flasher.dbox2.h $(bootdir)/u-boot-config/u-boot.config
+$(bootprefix)/dboxflasher: config/u-boot.dbox2.h.m4
+	m4 --define=uboottype=flasher \
+		config/u-boot.dbox2.h.m4 > $(bootdir)/u-boot-config/u-boot.config
 	$(MAKE) @DIR_uboot@/u-boot.stripped
 	$(INSTALL) -d $(bootprefix)
 	$(INSTALL) -m644 @DIR_uboot@/u-boot.stripped $@
