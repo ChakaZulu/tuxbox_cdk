@@ -40,12 +40,12 @@ yadd-all: yadd-none plugins neutrino enigma lcars
 	@TUXBOX_YADD_CUSTOMIZE@
 
 yadd-bootlogos:
-	$(INSTALL) -d $(bootprefix)
+	$(INSTALL) -d $(targetprefix)/var/tuxbox/boot
 	if [ -e $(logosdir)/logo-lcd  ] ; then \
-		 cp $(logosdir)/logo-lcd $(bootprefix) ; \
+		 cp $(logosdir)/logo-lcd $(targetprefix)/var/tuxbox/boot ; \
 	fi
 	if [ -e $(logosdir)/logo-fb ] ; then \
-		 cp $(logosdir)/logo-fb $(bootprefix) ; \
+		 cp $(logosdir)/logo-fb $(targetprefix)/var/tuxbox/boot ; \
 	fi
 
 extra: libs libs_optional contrib_apps fun dvb_apps root_optional udev devel devel_optional

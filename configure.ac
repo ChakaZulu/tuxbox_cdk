@@ -788,6 +788,7 @@ case "${BOXTYPE}" in
 		TUXBOX_RULES_MAKE(dreamdriver_dm500)
 		;;
 	ipbox)
+		TUXBOX_RULES_MAKE(uboot_ipbox)
 		TUXBOX_RULES_MAKE(linux_ipbox)
 		TUXBOX_RULES_MAKE(linux_ipbox_kernel_headers)
 		TUXBOX_RULES_MAKE(dgstationdriver_cubecafe)

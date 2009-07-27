@@ -74,22 +74,22 @@ $(hostprefix)/bin/mkwelcomeimg:
 
 # U-Boot
 
-@DIR_uboot@/u-boot.ipbox: bootstrap @DEPENDS_uboot@ $(bootdir)/u-boot-config/u-boot.config
-	@PREPARE_uboot@
-	cp -pR $(bootdir)/u-boot-tuxbox/* @DIR_uboot@
-	cd @DIR_uboot@ && patch -p1 -E -i ../Patches/u-boot-1.2.0-ipbox.diff
-	cp -p $(bootdir)/u-boot-config/u-boot.config u-boot-1.2.0/include/configs/$(IPBOX_UBOOT_TARGET).h
-	$(MAKE) -C @DIR_uboot@ $(IPBOX_UBOOT_TARGET)_config
-	$(MAKE) -C @DIR_uboot@ CROSS_COMPILE=$(target)-
-	$(INSTALL) @DIR_uboot@/tools/mkimage $(hostprefix)/bin
+@DIR_uboot_ipbox@/u-boot.ipbox: bootstrap_gcc @DEPENDS_uboot_ipbox@ $(bootdir)/u-boot-config/u-boot.config
+	@PREPARE_uboot_ipbox@
+	cp -pR $(bootdir)/u-boot-tuxbox/* @DIR_uboot_ipbox@
+	cd @DIR_uboot_ipbox@ && patch -p1 -E -i ../Patches/@DIR_uboot_ipbox@-ipbox.diff
+	cp -p $(bootdir)/u-boot-config/u-boot.config @DIR_uboot_ipbox@/include/configs/$(IPBOX_UBOOT_TARGET).h
+	$(MAKE) -C @DIR_uboot_ipbox@ $(IPBOX_UBOOT_TARGET)_config
+	$(MAKE) -C @DIR_uboot_ipbox@ CROSS_COMPILE=$(target)-
+	$(INSTALL) @DIR_uboot_ipbox@/tools/mkimage $(hostprefix)/bin
 
 $(flashprefix)/u-boot.bin \
-$(hostprefix)/bin/mkimage: @DEPENDS_uboot@ $(bootdir)/u-boot-config/$(IPBOX_UBOOT_TARGET).h
+$(hostprefix)/bin/mkimage: @DEPENDS_uboot_ipbox@ $(bootdir)/u-boot-config/$(IPBOX_UBOOT_TARGET).h
 	ln -sf ./$(IPBOX_UBOOT_TARGET).h $(bootdir)/u-boot-config/u-boot.config
-	$(MAKE) @DIR_uboot@/u-boot.ipbox
-	cp @DIR_uboot@/System.map $(flashprefix)/u-boot_System.map
-	cp @DIR_uboot@/u-boot.bin $(flashprefix)/
-	@CLEANUP_uboot@
+	$(MAKE) @DIR_uboot_ipbox@/u-boot.ipbox
+	cp @DIR_uboot_ipbox@/System.map $(flashprefix)/u-boot_System.map
+	cp @DIR_uboot_ipbox@/u-boot.bin $(flashprefix)/
+	@CLEANUP_uboot_ipbox@
 	rm $(bootdir)/u-boot-config/u-boot.config
 
 $(flashprefix)/part_uboot.img: $(flashprefix)/u-boot.bin $(hostprefix)/bin/appendbin

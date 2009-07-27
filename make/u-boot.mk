@@ -9,7 +9,7 @@
 @DIR_uboot@/u-boot.stripped: bootstrap_gcc @DEPENDS_uboot@ $(bootdir)/u-boot-config/u-boot.config
 	@PREPARE_uboot@
 	cp -pR $(bootdir)/u-boot-tuxbox/* @DIR_uboot@
-	cd @DIR_uboot@ && patch -p1 -E -i ../Patches/u-boot-1.2.0.diff
+	cd @DIR_uboot@ && patch -p1 -E -i ../Patches/u-boot-2009.08.diff
 	cp -p $(bootdir)/u-boot-config/u-boot.config @DIR_uboot@/include/configs/dbox2.h
 	$(MAKE) -C @DIR_uboot@ dbox2_config
 	$(MAKE) -C @DIR_uboot@ CROSS_COMPILE=$(target)- u-boot.stripped
@@ -20,23 +20,20 @@
 yadd-u-boot: $(bootprefix)/u-boot $(bootprefix)/README.u-boot
 yadd-u-boot-bootmanager: $(bootprefix)/u-boot-yadd
 
+$(bootprefix)/u-boot $(hostprefix)/bin/mkimage: @DEPENDS_uboot@
 if KERNEL26
-$(bootprefix)/u-boot \
-$(hostprefix)/bin/mkimage: @DEPENDS_uboot@ $(bootdir)/u-boot-config/u-boot.cdk.2_6.dbox2.h
-	ln -sf ./u-boot.cdk.2_6.dbox2.h $(bootdir)/u-boot-config/u-boot.config
-else 
-$(bootprefix)/u-boot \
-$(hostprefix)/bin/mkimage: @DEPENDS_uboot@ $(bootdir)/u-boot-config/u-boot.cdk.dbox2.h
-	ln -sf ./u-boot.cdk.dbox2.h $(bootdir)/u-boot-config/u-boot.config
+	m4 --define=uboottype=cdk26 config/u-boot.dbox2.h.m4 > $(bootdir)/u-boot-config/u-boot.config
+else
+	m4 --define=uboottype=cdk config/u-boot.dbox2.h.m4 > $(bootdir)/u-boot-config/u-boot.config
 endif
 	$(MAKE) @DIR_uboot@/u-boot.stripped
 	$(INSTALL) -d $(bootprefix)
-	$(INSTALL) -m644 @DIR_uboot@/u-boot.stripped $(bootprefix)/u-boot
+	$(INSTALL) -m644 @DIR_uboot@/u-boot.stripped $@
 	@CLEANUP_uboot@
 	rm $(bootdir)/u-boot-config/u-boot.config
 
-$(bootprefix)/u-boot-yadd: @DEPENDS_uboot@ $(bootdir)/u-boot-config/u-boot.yadd.dbox2.h 
-	ln -sf ./u-boot.yadd.dbox2.h $(bootdir)/u-boot-config/u-boot.config
+$(bootprefix)/u-boot-yadd: @DEPENDS_uboot@
+	m4 --define=uboottype=yadd config/u-boot.dbox2.h.m4 > $(bootdir)/u-boot-config/u-boot.config
 	$(MAKE) @DIR_uboot@/u-boot.stripped
 	$(INSTALL) -d $(bootprefix)
 	$(INSTALL) -m644 @DIR_uboot@/u-boot.stripped $@
