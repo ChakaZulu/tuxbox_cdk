@@ -3096,3 +3096,28 @@ diff -uNr u-boot-2009.08-rc1.org/tools/Makefile u-boot-2009.08-rc1/tools/Makefil
  $(obj)mpc86x_clk$(SFX):	$(obj)mpc86x_clk.o
  	$(CC) $(CFLAGS) $(HOST_LDFLAGS) -o $@ $^
  	$(STRIP) $@
+diff -uNr u-boot-2009.08-rc1.org/net/nfs.c u-boot-2009.08-rc1/net/nfs.c
+--- u-boot-2009.08-rc1.org/net/nfs.c	2009-07-27 10:37:37.000000000 +0200
++++ u-boot-2009.08-rc1/net/nfs.c	2009-07-28 09:17:35.000000000 +0200
+@@ -35,7 +35,7 @@
+ 
+ #define HASHES_PER_LINE 65	/* Number of "loading" hashes per line	*/
+ #define NFS_RETRY_COUNT 30
+-#define NFS_TIMEOUT 2000UL
++#define NFS_TIMEOUT 5000UL
+ 
+ static int fs_mounted = 0;
+ static unsigned long rpc_id = 0;
+@@ -587,10 +587,12 @@
+ static void
+ NfsTimeout (void)
+ {
++/*
+ 	if ( NfsTimeoutCount++ < NFS_RETRY_COUNT ) {
+ 		NfsSend ();
+ 		return;
+ 	}
++*/
+ 	puts ("Timeout\n");
+ 	NetState = NETLOOP_FAIL;
+ 	return;
