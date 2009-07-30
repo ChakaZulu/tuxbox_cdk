@@ -185,7 +185,7 @@ bluez_utils;2.4;bluez-utils-2.4;bluez-utils-2.4.tar.gz;extract:bluez-utils-2.4.t
 #
 # database
 #
-sqlite;3.6.15;sqlite-3.6.15;sqlite-amalgamation-3.6.15.tar.gz;extract:sqlite-amalgamation-3.6.15.tar.gz
+sqlite;3.6.16;sqlite-3.6.16;sqlite-amalgamation-3.6.16.tar.gz;extract:sqlite-amalgamation-3.6.16.tar.gz
 
 #
 # dreambox
