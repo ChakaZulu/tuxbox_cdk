@@ -3122,3 +3122,151 @@ diff -uNr u-boot-2009.08-rc1.org/Makefile u-boot-2009.08-rc1/Makefile
  		@cmp -s $@ $@.tmp && rm -f $@.tmp || mv -f $@.tmp $@
  
  $(TIMESTAMP_FILE):
+diff -uNr u-boot.org/fs/jffs2/compr_lzma.c u-boot/fs/jffs2/compr_lzma.c
+--- u-boot.org/fs/jffs2/compr_lzma.c	1970-01-01 01:00:00.000000000 +0100
++++ u-boot/fs/jffs2/compr_lzma.c	2009-07-27 11:38:46.000000000 +0200
+@@ -0,0 +1,62 @@
++/*
++ * JFFS2 -- Journalling Flash File System, Version 2.
++ *
++ * Copyright (C) 2008 Nikos Mavrogiannopoulos.
++ *
++ * compr_lzma is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *               
++ * compr_lzma is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *                               
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <common.h>
++#include <config.h>
++#include <jffs2/jffs2.h>
++#include <lzma/LzmaTypes.h>
++#include <lzma/LzmaDec.h>
++#include <malloc.h>
++
++static void *SzAlloc(void *p, size_t size) { p = p; return malloc(size); }
++static void SzFree(void *p, void *address) { p = p; free(address); }
++
++static int jffs2_lzma_decompress(unsigned char *data_in, unsigned char *cpage_out,
++		SizeT srclen, SizeT destlen)
++{
++	int ret;
++	ISzAlloc g_Alloc;
++	SizeT data_out_size = destlen;
++	SizeT data_in_size = srclen - LZMA_PROPS_SIZE;
++	ELzmaStatus state;
++	memset(&state, 0, sizeof(state));
++	
++	if (srclen < LZMA_PROPS_SIZE)
++		return -1;
++	
++	g_Alloc.Alloc = SzAlloc;
++	g_Alloc.Free = SzFree;
++
++	ret = LzmaDecode(
++		cpage_out, &data_out_size, 
++		data_in+LZMA_PROPS_SIZE, &data_in_size, 
++		data_in, LZMA_PROPS_SIZE, 
++		LZMA_FINISH_ANY, &state, &g_Alloc);
++	
++	if (ret != SZ_OK)
++		return -1;
++
++	return 0;
++}
++
++int lzma_decompress(unsigned char *data_in, unsigned char *cpage_out,
++		      SizeT srclen, SizeT destlen)
++{
++	return jffs2_lzma_decompress (data_in, cpage_out, srclen, destlen);
++}
+diff -uNr u-boot.org/fs/jffs2/jffs2_1pass.c u-boot/fs/jffs2/jffs2_1pass.c
+--- u-boot.org/fs/jffs2/jffs2_1pass.c	2009-07-27 09:19:30.000000000 +0200
++++ u-boot/fs/jffs2/jffs2_1pass.c	2009-07-27 09:44:53.000000000 +0200
+@@ -781,6 +781,11 @@
+ 				case JFFS2_COMPR_ZLIB:
+ 					ret = zlib_decompress(src, lDest, jNode->csize, jNode->dsize);
+ 					break;
++#if defined(CONFIG_JFFS2_LZMA)
++				case JFFS2_COMPR_LZMA:
++					ret = lzma_decompress(src, lDest, jNode->csize, jNode->dsize);
++					break;
++#endif
+ #if defined(CONFIG_JFFS2_LZO_LZARI)
+ 				case JFFS2_COMPR_LZO:
+ 					ret = lzo_decompress(src, lDest, jNode->csize, jNode->dsize);
+diff -uNr u-boot.org/fs/jffs2/jffs2_nand_1pass.c u-boot/fs/jffs2/jffs2_nand_1pass.c
+--- u-boot.org/fs/jffs2/jffs2_nand_1pass.c	2009-07-27 09:19:30.000000000 +0200
++++ u-boot/fs/jffs2/jffs2_nand_1pass.c	2009-07-27 09:46:03.000000000 +0200
+@@ -344,6 +344,11 @@
+ 			case JFFS2_COMPR_ZLIB:
+ 				ret = zlib_decompress(src, dst, inode->csize, inode->dsize);
+ 				break;
++#if defined(CONFIG_JFFS2_LZMA)
++			case JFFS2_COMPR_LZMA:
++				ret = lzma_decompress(src, dst, inode->csize, inode->dsize);
++				break;
++#endif
+ #if defined(CONFIG_JFFS2_LZO_LZARI)
+ 			case JFFS2_COMPR_LZO:
+ 				ret = lzo_decompress(src, dst, inode->csize, inode->dsize);
+diff -uNr u-boot.org/fs/jffs2/Makefile u-boot/fs/jffs2/Makefile
+--- u-boot.org/fs/jffs2/Makefile	2009-07-27 06:57:57.000000000 +0200
++++ u-boot/fs/jffs2/Makefile	2009-07-27 09:28:35.000000000 +0200
+@@ -29,6 +29,7 @@
+ ifdef CONFIG_CMD_JFFS2
+ COBJS-$(CONFIG_JFFS2_LZO_LZARI) += compr_lzari.o
+ COBJS-$(CONFIG_JFFS2_LZO_LZARI) += compr_lzo.o
++COBJS-$(CONFIG_JFFS2_LZMA) += compr_lzma.o
+ COBJS-y += compr_rtime.o
+ COBJS-y += compr_rubin.o
+ COBJS-y += compr_zlib.o
+diff -uNr u-boot.org/include/jffs2/jffs2.h u-boot/include/jffs2/jffs2.h
+--- u-boot.org/include/jffs2/jffs2.h	2009-07-27 06:57:58.000000000 +0200
++++ u-boot/include/jffs2/jffs2.h	2009-07-27 10:39:13.000000000 +0200
+@@ -41,6 +41,10 @@
+ #include <asm/types.h>
+ #include <jffs2/load_kernel.h>
+ 
++#if defined(CONFIG_JFFS2_LZMA)
++#include <lzma/LzmaTypes.h>
++#endif
++
+ #define JFFS2_SUPER_MAGIC 0x72b6
+ 
+ /* Values we may expect to find in the 'magic' field */
+@@ -68,12 +72,13 @@
+ #define JFFS2_COMPR_COPY	0x04
+ #define JFFS2_COMPR_DYNRUBIN	0x05
+ #define JFFS2_COMPR_ZLIB	0x06
++#define JFFS2_COMPR_LZMA	0x15
+ #if defined(CONFIG_JFFS2_LZO_LZARI)
+ #define JFFS2_COMPR_LZO		0x07
+ #define JFFS2_COMPR_LZARI	0x08
+-#define JFFS2_NUM_COMPR		9
++#define JFFS2_NUM_COMPR		10
+ #else
+-#define JFFS2_NUM_COMPR		7
++#define JFFS2_NUM_COMPR		8
+ #endif
+ 
+ /* Compatibility flags. */
+@@ -226,6 +231,10 @@
+ 		unsigned long sourcelen, unsigned long dstlen);
+ long zlib_decompress(unsigned char *data_in, unsigned char *cpage_out,
+ 		__u32 srclen, __u32 destlen);
++#if defined(CONFIG_JFFS2_LZMA)
++int lzma_decompress(unsigned char *data_in, unsigned char *cpage_out,
++		SizeT srclen, SizeT destlen);
++#endif
+ #if defined(CONFIG_JFFS2_LZO_LZARI)
+ int lzo_decompress(unsigned char *data_in, unsigned char *cpage_out,
+ 		u32 srclen, u32 destlen);
