@@ -122,7 +122,7 @@ if ENABLE_AUTOMOUNT
 KERNEL_DEPENDS += Archive/autofs4-2.4-module-20050404.tar.gz
 endif
 
-$(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) directories
+$(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) @DEPENDS_liblzma465@ directories
 	$(KERNEL_PREPARE)
 if KERNEL26
 if BOXTYPE_DREAMBOX
@@ -147,6 +147,11 @@ if ENABLE_AUTOMOUNT
 	cd $(KERNEL_DIR) && gunzip -cd $(buildprefix)/Archive/autofs4-2.4-module-20050404.tar.gz | TAPE=- tar -x
 	cd $(KERNEL_DIR) && patch -p1 -E -i ./autofs4-2.4/module-patches/autofs4-2.4.29.patch
 endif
+	@PREPARE_liblzma465@
+	mv @DIR_liblzma465@/C/Lz* $(KERNEL_DIR)/fs/jffs2/
+	mv @DIR_liblzma465@/C/Types.h $(KERNEL_DIR)/fs/jffs2/
+	@CLEANUP_liblzma465@
+	cd $(KERNEL_DIR) && patch -p1 -E -i $(buildprefix)/Patches/linux-2.4-jffs2_lzma.diff
 endif
 	$(MAKE) -C $(KERNEL_DIR) oldconfig \
 		ARCH=ppc
