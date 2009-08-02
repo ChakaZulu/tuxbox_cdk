@@ -24,10 +24,10 @@ endif
 $(flashprefix)/root-jffs2: bootstrap $(hostprefix)/bin/mkimage
 	rm -rf $@
 if KERNEL26
-	m4 --define=rootfs=jffs2 --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
+	m4 --define=rootfs=jffs2 Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 	sed -e 's/.*CONFIG_JFFS2_FS[= ].*$$/CONFIG_JFFS2_FS=y/' $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(REISERFS_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_NFS_SED_CONF) $(VFAT_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
 else
-	m4 --define=rootfs=jffs2 --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
+	m4 --define=rootfs=jffs2 Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 	sed -e 's/.*CONFIG_JFFS2_FS[= ].*$$/CONFIG_JFFS2_FS=y/' $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(REISERFS_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_NFS_SED_CONF) $(VFAT_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
 endif
 	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
