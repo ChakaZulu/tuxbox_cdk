@@ -80,7 +80,7 @@ $(hostprefix)/bin/mkflfs config/u-boot.dbox2.h.m4  \
 $(flashprefix)/jffs2.flfs1x $(flashprefix)/jffs2.flfs2x: \
 $(hostprefix)/bin/mkflfs config/u-boot.dbox2.h.m4 \
 | $(flashprefix)
-	m4 --define=uboottype=jffs2 --define=rootsize=$(ROOT_PARTITION_SIZE) \
+	m4 --define=uboottype=jffs2 \
 		config/u-boot.dbox2.h.m4 > $(bootdir)/u-boot-config/u-boot.config
 	$(MAKE) @DIR_uboot@/u-boot.stripped
 	$(hostprefix)/bin/mkflfs 1x -o $(flashprefix)/jffs2.flfs1x @DIR_uboot@/u-boot.stripped
