@@ -120,7 +120,7 @@ lzma_host;4.65;lzma-4.65;lzma465.tar.bz2:lzma.diff;dirextract:lzma465.tar.bz2;pa
 #
 # ide/hdd apps
 #
-e2fsprogs;1.41.6;e2fsprogs-1.41.6;e2fsprogs-1.41.6.tar.gz:e2fsprogs_gcc4_build_fix.diff;extract:e2fsprogs-1.41.6.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
+e2fsprogs;1.41.8;e2fsprogs-1.41.8;e2fsprogs-1.41.8.tar.gz:e2fsprogs_gcc4_build_fix.diff;extract:e2fsprogs-1.41.8.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
 hddtemp;0.3-beta15;hddtemp-0.3-beta15;hddtemp-0.3-beta15.tar.bz2;extract:hddtemp-0.3-beta15.tar.bz2
 hdparm;9.15;hdparm-9.15;hdparm-9.15.tar.gz;extract:hdparm-9.15.tar.gz
 parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
