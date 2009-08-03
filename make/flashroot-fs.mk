@@ -1,4 +1,4 @@
-$(flashprefix)/root-cramfs: bootstrap $(hostprefix)/bin/mkimage
+$(flashprefix)/root-cramfs: bootstrap_gcc $(hostprefix)/bin/mkimage
 	rm -rf $@
 if KERNEL26
 	m4 --define=rootfs=cramfs --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
@@ -21,7 +21,7 @@ endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/modules.[^d]*
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-jffs2: bootstrap $(hostprefix)/bin/mkimage
+$(flashprefix)/root-jffs2: bootstrap_gcc $(hostprefix)/bin/mkimage
 	rm -rf $@
 if KERNEL26
 	m4 --define=rootfs=jffs2 Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
@@ -44,7 +44,7 @@ endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/modules.[^d]*
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-squashfs: bootstrap $(hostprefix)/bin/mkimage
+$(flashprefix)/root-squashfs: bootstrap_gcc $(hostprefix)/bin/mkimage
 	rm -rf $@
 if BOXTYPE_DREAMBOX
 	sed $(AUTOMOUNT_SED_CONF) $(DREAMBOX_SERIAL_SED) \
@@ -73,7 +73,7 @@ endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/modules.[^d]*
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-squashfs_nolzma: bootstrap $(hostprefix)/bin/mkimage
+$(flashprefix)/root-squashfs_nolzma: bootstrap_gcc $(hostprefix)/bin/mkimage
 	rm -rf $@
 if BOXTYPE_DREAMBOX
 	sed $(AUTOMOUNT_SED_CONF) $(DREAMBOX_SERIAL_SED) \
