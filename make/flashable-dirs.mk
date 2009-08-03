@@ -268,7 +268,9 @@ $(flashprefix)/root-null-jffs2: $(flashprefix)/root $(flashprefix)/root-jffs2
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root/lib:$(flashprefix)/root-jffs2/lib:$(targetprefix)/lib
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
 	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@
+if !KERNEL26
 	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
+endif
 	@TUXBOX_CUSTOMIZE@
 
 ## "Private"
