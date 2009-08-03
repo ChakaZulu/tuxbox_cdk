@@ -14,8 +14,6 @@
 	$(MAKE) -C @DIR_uboot@ dbox2_config
 	$(MAKE) -C @DIR_uboot@ CROSS_COMPILE=$(target)- u-boot.stripped
 	$(INSTALL) @DIR_uboot@/tools/mkimage $(hostprefix)/bin
-#	@CLEANUP_uboot@
-#	touch $@
 
 yadd-u-boot: $(bootprefix)/u-boot $(bootprefix)/README.u-boot
 yadd-u-boot-bootmanager: $(bootprefix)/u-boot-yadd
@@ -28,7 +26,7 @@ else
 endif
 	$(MAKE) @DIR_uboot@/u-boot.stripped
 	$(INSTALL) -d $(bootprefix)
-	$(INSTALL) -m644 @DIR_uboot@/u-boot.stripped $@
+	$(INSTALL) -m644 @DIR_uboot@/u-boot.stripped $(bootprefix)/u-boot
 	@CLEANUP_uboot@
 	rm $(bootdir)/u-boot-config/u-boot.config
 
