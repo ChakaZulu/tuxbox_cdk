@@ -28,6 +28,7 @@ $(flashprefix)/root-null-jffs2/lib/ld.so.1: \
 		-D -L $(mklibs_librarypath) \
 		--root $< \
 		`find $</bin/ -path "*bin/?*" -type f` \
+		`find $</var/bin/ -path "*bin/?*" -type f` \
 		`find $</lib/ -name "libnss_*" -type f` \
 		`find $</lib/ -name "libsqlite3*" -type f` \
 		`find $</lib/ -name "*.so" -type f` \
