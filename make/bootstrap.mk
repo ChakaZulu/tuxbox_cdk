@@ -124,6 +124,7 @@ endif
 
 $(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) @DEPENDS_liblzma465@ directories
 	$(KERNEL_PREPARE)
+	@PREPARE_liblzma465@
 if KERNEL26
 if BOXTYPE_DREAMBOX
 	cp $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig $(KERNEL_DIR)/.config
@@ -134,6 +135,11 @@ else
 	cp Patches/linux-2.6.26.4-dbox2.config $(KERNEL_DIR)/.config
 endif
 endif
+	$(INSTALL) -d $(KERNEL_DIR)/lib/lzma/
+	$(INSTALL) -d $(KERNEL_DIR)/include/linux/lzma/
+	mv @DIR_liblzma465@/C/Lz*.c $(KERNEL_DIR)/lib/lzma/
+	mv @DIR_liblzma465@/C/*.h $(KERNEL_DIR)/include/linux/lzma/
+	cd $(KERNEL_DIR) && patch -p1 -E -i $(buildprefix)/Patches/linux-2.6-jffs2_lzma.diff
 else
 	cp Patches/linux-2.4.35.5-dbox2.config $(KERNEL_DIR)/.config
 if ENABLE_FS_LUFS
@@ -147,12 +153,11 @@ if ENABLE_AUTOMOUNT
 	cd $(KERNEL_DIR) && gunzip -cd $(buildprefix)/Archive/autofs4-2.4-module-20050404.tar.gz | TAPE=- tar -x
 	cd $(KERNEL_DIR) && patch -p1 -E -i ./autofs4-2.4/module-patches/autofs4-2.4.29.patch
 endif
-	@PREPARE_liblzma465@
 	mv @DIR_liblzma465@/C/Lz* $(KERNEL_DIR)/fs/jffs2/
 	mv @DIR_liblzma465@/C/Types.h $(KERNEL_DIR)/fs/jffs2/
-	@CLEANUP_liblzma465@
 	cd $(KERNEL_DIR) && patch -p1 -E -i $(buildprefix)/Patches/linux-2.4-jffs2_lzma.diff
 endif
+	@CLEANUP_liblzma465@
 	$(MAKE) -C $(KERNEL_DIR) oldconfig \
 		ARCH=ppc
 if KERNEL26
