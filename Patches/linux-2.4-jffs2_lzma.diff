@@ -177,7 +177,7 @@ diff -uNr linux-2.4.37.2.org/fs/jffs2/compr_lzma.c linux-2.4.37.2/fs/jffs2/compr
 +    .name = "lzma",
 +    .disabled = 0,
 +    .compr = JFFS2_COMPR_LZMA,
-+    .compress = &jffs2_lzma_compress,
++    .compress = NULL,
 +    .decompress = &jffs2_lzma_decompress,
 +};
 +
