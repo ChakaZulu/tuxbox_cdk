@@ -31,10 +31,8 @@ BUSYBOX_M4 += -Dnfs
 endif
 
 # this variable is needed because cdk/rules.pl assumes *.patch can be found in cdk/Patches
-BUSYBOX_PATCHES = \
-Archive/busybox-1.14.2-df.patch \
-Archive/busybox-1.14.2-ls.patch \
-Archive/busybox-1.14.2-udhcpd.patch
+#BUSYBOX_PATCHES = \
+#Archive/busybox-1.14.2-udhcpd.patch
 
 $(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ $(BUSYBOX_PATCHES) $(busybox_conf)
 	@PREPARE_busybox@
