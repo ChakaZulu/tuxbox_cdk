@@ -128,9 +128,14 @@ endif
 endif
 	touch $@
 
+SQUASHFS_SED_CONF=$(foreach param,CONFIG_SQUASHFS,-e s"/^.*$(param)[= ].*/$(param)=y/")
+SQUASHFS_NO_SED_CONF=$(foreach param,CONFIG_SQUASHFS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+SQUASHFS_LZMA_SED_CONF=$(foreach param,CONFIG_SQUASHFS_LZMA,-e s"/^.*$(param)[= ].*/$(param)=y/")
+SQUASHFS_NOLZMA_SED_CONF=$(foreach param,CONFIG_SQUASHFS_LZMA,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
 
-LZMA_SED_CONF=$(foreach param,CONFIG_SQUASHFS_LZMA,-e s"/^.*$(param)[= ].*/$(param)=y/")
-NOLZMA_SED_CONF=$(foreach param,CONFIG_SQUASHFS_LZMA,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+JFFS2_SED_CONF=$(foreach param,CONFIG_JFFS2_FS,-e s"/^.*$(param)[= ].*/$(param)=y/")
+JFFS2_LZMA_SED_CONF=$(foreach param,CONFIG_JFFS2_LZMA,-e s"/^.*$(param)[= ].*/$(param)=y/")
+JFFS2_NOLZMA_SED_CONF=$(foreach param,CONFIG_JFFS2_LZMA,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
 
 if ENABLE_IDE
 IDE_SED_CONF=$(foreach param,CONFIG_IDE CONFIG_BLK_DEV_IDE CONFIG_BLK_DEV_IDEDISK,-e s"/^.*$(param)[= ].*/$(param)=m/")
@@ -248,15 +253,25 @@ kernel-cdk: $(bootprefix)/kernel-cdk
 if BOXTYPE_DBOX2
 if KERNEL26
 $(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c-26.m4
-	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(REISERFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(yadd_kernel_conf) \
-		> $(KERNEL_DIR)/.config
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 else
 $(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c.m4
-	sed $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(REISERFS_SED_CONF) $(VFAT_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(yadd_kernel_conf) \
-		> $(KERNEL_DIR)/.config
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif
+	sed $(SQUASHFS_SED_CONF) $(SQUASHFS_LZMA_SED_CONF) \
+		$(JFFS2_SED_CONF) $(JFFS2_LZMA_SED_CONF) \
+		$(IDE_SED_CONF) \
+		$(EXT2_SED_CONF) \
+		$(EXT3_SED_CONF) \
+		$(XFS_SED_CONF) \
+		$(REISERFS_SED_CONF) \
+		$(VFAT_SED_CONF) \
+		$(NFSSERVER_SED_CONF) \
+		$(FS_CIFS_SED_CONF) \
+		$(FS_SMBFS_SED_CONF) \
+		$(AUTOMOUNT_SED_CONF) \
+		$(yadd_kernel_conf) \
+		> $(KERNEL_DIR)/.config
 	$(MAKE) $(KERNEL_BUILD_FILENAME)
 if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $@
