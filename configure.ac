@@ -657,7 +657,7 @@ AM_CONDITIONAL(ENABLE_CCACHE,test "$enable_ccache" = "yes")
 AC_SUBST(CCACHE)
 
 
-hostccachedir=$(dirname `which ccache`)
+hostccachedir=$(dirname `which ccache` 2>/dev/null)
 if  [[ -e $hostccachedir/ccache ]]; then
 	ccachedir=$hostccachedir
 	AM_CONDITIONAL(USE_CCACHEHOST, true)
