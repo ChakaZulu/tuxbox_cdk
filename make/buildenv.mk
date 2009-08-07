@@ -105,6 +105,11 @@ CONFIGURE_OPTS += \
 	--enable-esd
 endif
 
+if ENABLE_RADIOTEXT
+CONFIGURE_OPTS += \
+	--enable-radiotext
+endif
+
 CONFIGURE = \
 	./autogen.sh && \
 	CC=$(target)-gcc \

@@ -378,6 +378,11 @@ AC_ARG_ENABLE(esd,
 	,[enable_esd=no])
 AM_CONDITIONAL(ENABLE_ESD,test "$enable_esd" = "yes")
 
+AC_ARG_ENABLE(radiotext,
+	AS_HELP_STRING(--enable-radiotext,include Neutrino Radiotext support),
+	,[enable_radiotext=no])
+AM_CONDITIONAL(ENABLE_RADIOTEXT,test "$enable_radiotext" = "yes")
+
 if test "$enable_uclibc" = "yes" && test "$enable_flac" = "yes" && test "$enable_flashrules" = "yes"; then
 	echo
 	echo "*********************************************************************"
@@ -1088,6 +1093,7 @@ Automount:			$enable_automount
 dosfstools:			$enable_dosfstools
 Neutrino UPnP-support:		$enable_upnp
 Esound support:			$enable_esd
+Radiotext support:		$enable_radiotext
 FLAC support:			$enable_flac
 German keymaps:			$enable_german_keymaps
 sqlite3 storage:		$enable_sqlite
