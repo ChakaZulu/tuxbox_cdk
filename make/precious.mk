@@ -6,7 +6,11 @@
 $(flashprefix)/neutrino-cramfs.img% $(flashprefix)/enigma-cramfs.img% \
 $(flashprefix)/neutrino-squashfs.img% $(flashprefix)/enigma-squashfs.img% \
 $(flashprefix)/neutrino-jffs2.img% $(flashprefix)/enigma-jffs2.img% \
+$(flashprefix)/neutrino-jffs2_lzma.img% $(flashprefix)/enigma-jffs2_lzma.img% \
+$(flashprefix)/neutrino-jffs2_lzma_klzma.img% $(flashprefix)/enigma-jffs2_lzma_klzma.img% \
 $(flashprefix)/enigma+neutrino-squashfs.img% \
+$(flashprefix)/enigma+neutrino-jffs2_lzma.img% \
+$(flashprefix)/enigma+neutrino-jffs2_lzma_klzma.img% \
 $(flashprefix)/var-%.jffs2 \
 $(flashprefix)/root-%.jffs2 \
 $(flashprefix)/root-%.cramfs $(flashprefix)/root-%.squashfs \

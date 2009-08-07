@@ -1,6 +1,6 @@
 ifdef(`rootsize',,`define(`rootsize',`0x660000')')dnl
 /*
- * $Id: dbox2-flash.c.m4,v 1.2 2009/01/06 21:40:13 dbt Exp $
+ * $Id: dbox2-flash.c.m4,v 1.3 2009/08/07 07:27:04 rhabarber1848 Exp $
  *
  * D-Box 2 flash driver
  */
@@ -33,7 +33,7 @@ static struct mtd_partition partition_info[]= {
 	.mask_flags	= 0
 	},
 ifelse(rootfs,`jffs2',`	{
-	.name		= "root (jffs2)",	
+	.name		= "root (ifdef(`jffs2lzma',`jffs2+lzma',`jffs2'))",
 	.size		= 0x7c0000, 
 	.offset		= MTDPART_OFS_APPEND, 
 	.mask_flags	= 0

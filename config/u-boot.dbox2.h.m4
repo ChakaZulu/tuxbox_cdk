@@ -236,12 +236,12 @@ ifelse(uboottype,`squashfs', ifdef(`lzma',`#define CONFIG_SQUASHFS_LZMA 1'))
 
 #elif (UBOOT_TYPE == UBOOT_TYPE_JFFS2)
 #define CONFIG_CMD_JFFS2
+#define CONFIG_LZMA		1
+#define CONFIG_JFFS2_LZMA	1
 #define CONFIG_FS		(CONFIG_FS_JFFS2)
 #define	CFG_FS_PART0_TYPE	CONFIG_FS_JFFS2
 #define	CFG_FS_PART0_OFFSET	0x10040000
 #define	CFG_FS_PART0_SIZE	0x7c0000
-ifdef(`lzma',`#define CONFIG_LZMA		1
-#define CONFIG_JFFS2_LZMA		1')
 #endif
 
 #if (UBOOT_TYPE == UBOOT_TYPE_IDE)

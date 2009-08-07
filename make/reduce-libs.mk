@@ -2,17 +2,27 @@ $(flashprefix)/root-neutrino-cramfs/lib/ld.so.1 \
 $(flashprefix)/root-neutrino-squashfs/lib/ld.so.1 \
 $(flashprefix)/root-neutrino-squashfs_nolzma/lib/ld.so.1 \
 $(flashprefix)/root-neutrino-jffs2/lib/ld.so.1 \
+$(flashprefix)/root-neutrino-jffs2_lzma/lib/ld.so.1 \
+$(flashprefix)/root-neutrino-jffs2_lzma_klzma/lib/ld.so.1 \
 $(flashprefix)/root-radiobox-cramfs/lib/ld.so.1 \
 $(flashprefix)/root-radiobox-squashfs/lib/ld.so.1 \
 $(flashprefix)/root-radiobox-squashfs_nolzma/lib/ld.so.1 \
 $(flashprefix)/root-radiobox-jffs2/lib/ld.so.1 \
+$(flashprefix)/root-radiobox-jffs2_lzma/lib/ld.so.1 \
+$(flashprefix)/root-radiobox-jffs2_lzma_klzma/lib/ld.so.1 \
 $(flashprefix)/root-enigma-cramfs/lib/ld.so.1 \
 $(flashprefix)/root-enigma-squashfs/lib/ld.so.1 \
 $(flashprefix)/root-enigma-squashfs_nolzma/lib/ld.so.1 \
 $(flashprefix)/root-enigma-jffs2/lib/ld.so.1 \
+$(flashprefix)/root-enigma-jffs2_lzma/lib/ld.so.1 \
+$(flashprefix)/root-enigma-jffs2_lzma_klzma/lib/ld.so.1 \
 $(flashprefix)/root-enigma+neutrino-squashfs/lib/ld.so.1 \
 $(flashprefix)/root-enigma+neutrino-squashfs_nolzma/lib/ld.so.1 \
+$(flashprefix)/root-enigma+neutrino-jffs2_lzma/lib/ld.so.1 \
+$(flashprefix)/root-enigma+neutrino-jffs2_lzma_klzma/lib/ld.so.1 \
 $(flashprefix)/root-lcars-jffs2/lib/ld.so.1 \
+$(flashprefix)/root-null-jffs2_lzma/lib/ld.so.1 \
+$(flashprefix)/root-null-jffs2_lzma_klzma/lib/ld.so.1 \
 $(flashprefix)/root-null-jffs2/lib/ld.so.1: \
 %/lib/ld.so.1: %
 	find $</lib -maxdepth 1 -type f -o -type l | xargs rm -f

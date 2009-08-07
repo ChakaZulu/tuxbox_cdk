@@ -43,6 +43,24 @@ $(flashprefix)/root-enigma.jffs2 $(flashprefix)/root-lcars.jffs2 $(flashprefix)/
 $(flashprefix)/root-%.jffs2: $(flashprefix)/root-%-jffs2 $(hostprefix)/bin/mkfs.jffs2
 	$(hostprefix)/bin/mkfs.jffs2 -x lzma -b -e 0x20000 --pad=0x7c0000 -r $< -o $@
 
+$(flashprefix)/root-radiobox.jffs2_lzma \
+$(flashprefix)/root-neutrino.jffs2_lzma \
+$(flashprefix)/root-enigma+neutrino.jffs2_lzma \
+$(flashprefix)/root-enigma.jffs2_lzma \
+$(flashprefix)/root-lcars.jffs2_lzma \
+$(flashprefix)/root-null.jffs2_lzma: \
+$(flashprefix)/root-%.jffs2_lzma: $(flashprefix)/root-%-jffs2_lzma $(hostprefix)/bin/mkfs.jffs2
+	$(hostprefix)/bin/mkfs.jffs2 -b -e 0x20000 --pad=0x7c0000 -r $< -o $@
+
+$(flashprefix)/root-radiobox.jffs2_lzma_klzma \
+$(flashprefix)/root-neutrino.jffs2_lzma_klzma \
+$(flashprefix)/root-enigma+neutrino.jffs2_lzma_klzma \
+$(flashprefix)/root-enigma.jffs2_lzma_klzma \
+$(flashprefix)/root-lcars.jffs2_lzma_klzma \
+$(flashprefix)/root-null.jffs2_lzma_klzma: \
+$(flashprefix)/root-%.jffs2_lzma_klzma: $(flashprefix)/root-%-jffs2_lzma_klzma $(hostprefix)/bin/mkfs.jffs2
+	$(hostprefix)/bin/mkfs.jffs2 -b -e 0x20000 --pad=0x7c0000 -r $< -o $@
+
 ################ $fs-to-boot.flfs*x
 $(flashprefix)/cramfs.flfs1x $(flashprefix)/cramfs.flfs2x: \
 $(hostprefix)/bin/mkflfs config/u-boot.dbox2.h.m4 \
