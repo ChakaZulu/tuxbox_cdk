@@ -135,11 +135,13 @@ else
 	cp Patches/linux-2.6.26.4-dbox2.config $(KERNEL_DIR)/.config
 endif
 endif
+if BOXTYPE_DBOX2
 	$(INSTALL) -d $(KERNEL_DIR)/lib/lzma/
 	$(INSTALL) -d $(KERNEL_DIR)/include/linux/lzma/
 	mv @DIR_liblzma465@/C/Lz*.c $(KERNEL_DIR)/lib/lzma/
 	mv @DIR_liblzma465@/C/*.h $(KERNEL_DIR)/include/linux/lzma/
 	cd $(KERNEL_DIR) && patch -p1 -E -i $(buildprefix)/Patches/linux-2.6-jffs2_lzma.diff
+endif
 else
 	cp Patches/linux-2.4.35.5-dbox2.config $(KERNEL_DIR)/.config
 if ENABLE_FS_LUFS
