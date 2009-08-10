@@ -2945,14 +2945,6 @@ diff -uNr u-boot-2009.08-rc1.org/Makefile u-boot-2009.08-rc1/Makefile
 diff -uNr u-boot-2009.08-rc1.org/net/bootp.c u-boot-2009.08-rc1/net/bootp.c
 --- u-boot-2009.08-rc1.org/net/bootp.c	2009-07-27 10:37:37.000000000 +0200
 +++ u-boot-2009.08-rc1/net/bootp.c	2009-07-27 15:48:23.000000000 +0200
-@@ -15,6 +15,7 @@
- 
- #ifdef DEBUG_BOOTP_EXT
- #define debug_ext(fmt,args...)	printf (fmt ,##args)
-+#define debug(fmt,args...)	printf (fmt ,##args)
- #else
- #define debug_ext(fmt,args...)
- #endif
 @@ -351,7 +352,17 @@
  		}
  	}
@@ -2995,7 +2987,7 @@ diff -uNr u-boot-2009.08-rc1.org/net/bootp.c u-boot-2009.08-rc1/net/bootp.c
  				break;
  #endif
 -			printf ("*** Unhandled DHCP Option in OFFER/ACK: %d\n", *popt);
-+			debug_ext("*** Unhandled DHCP Option in OFFER/ACK: %d\n", *popt);
++			debug("*** Unhandled DHCP Option in OFFER/ACK: %d\n", *popt);
  			break;
  		}
  		popt += oplen + 2;	/* Process next option */
