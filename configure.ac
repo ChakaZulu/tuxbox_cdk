@@ -384,6 +384,15 @@ AM_CONDITIONAL(ENABLE_FLAC,test "$enable_flac" = "yes")
 AM_CONDITIONAL(ENABLE_AUDIOPLAYER,test "$enable_audioplayer" = "yes")
 AC_SUBST(NEUTRINO_AUDIOPLAYER_DEPS)
 
+AC_ARG_ENABLE(pictureviewer,
+	AS_HELP_STRING(--disable-pictureviewer,include Neutrino pictureviewer),
+	,[enable_pictureviewer=yes])
+AM_CONDITIONAL(ENABLE_PICTUREVIEWER,test "$enable_pictureviewer" = "yes")
+if test "$enable_pictureviewer" = "yes"; then
+	NEUTRINO_PICTUREVIEWER_DEPS="libjpeg libpng"
+fi
+AC_SUBST(NEUTRINO_PICTUREVIEWER_DEPS)
+
 AC_ARG_ENABLE(esd,
 	AS_HELP_STRING(--enable-esd,include esd sound daemon),
 	,[enable_esd=no])
@@ -1104,6 +1113,7 @@ Automount:			$enable_automount
 dosfstools:			$enable_dosfstools
 Neutrino UPnP-support:		$enable_upnp
 Neutrino Audioplayer:		$enable_audioplayer
+Neutrino Pictureviewer:		$enable_pictureviewer
 Esound support:			$enable_esd
 Radiotext support:		$enable_radiotext
 FLAC support:			$enable_flac

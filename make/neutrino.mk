@@ -5,7 +5,7 @@ CONFIGURE_OPTS_MP2 = \
 	--enable-movieplayer2
 endif
 
-$(appsdir)/tuxbox/neutrino/config.status: bootstrap $(appsdir)/dvb/zapit/src/zapit libboost libjpeg libcurl libfreetype libpng esound @NEUTRINO_AUDIOPLAYER_DEPS@ $(targetprefix)/lib/pkgconfig/tuxbox-tuxtxt.pc $(targetprefix)/include/tuxbox/plugin.h
+$(appsdir)/tuxbox/neutrino/config.status: bootstrap $(appsdir)/dvb/zapit/src/zapit libboost libcurl libfreetype esound @NEUTRINO_AUDIOPLAYER_DEPS@ @NEUTRINO_PICTUREVIEWER_DEPS@ $(targetprefix)/lib/pkgconfig/tuxbox-tuxtxt.pc $(targetprefix)/include/tuxbox/plugin.h
 	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE) $(CONFIGURE_OPTS_MP2)
 
 neutrino: $(appsdir)/tuxbox/neutrino/config.status

@@ -115,6 +115,11 @@ CONFIGURE_OPTS += \
 	--disable-audioplayer
 endif
 
+if !ENABLE_PICTUREVIEWER
+CONFIGURE_OPTS += \
+	--disable-pictureviewer
+endif
+
 CONFIGURE = \
 	./autogen.sh && \
 	CC=$(target)-gcc \
