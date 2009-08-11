@@ -6,7 +6,7 @@
 libs: \
 	libcurl libdirectfb libdirectfbpp libppdirectfb libdvbpsi \
 	libfreetype libjpeg libmad libid3tag libncurses libpng \
-	libreadline libsdl libsigc libz libdvb libtool @FLACLIB@
+	libreadline libsdl libsigc libz libdvb libtool libFLAC
 
 libs_optional: \
 	libcommoncplusplus libffi \

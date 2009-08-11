@@ -110,6 +110,11 @@ CONFIGURE_OPTS += \
 	--enable-radiotext
 endif
 
+if !ENABLE_AUDIOPLAYER
+CONFIGURE_OPTS += \
+	--disable-audioplayer
+endif
+
 CONFIGURE = \
 	./autogen.sh && \
 	CC=$(target)-gcc \

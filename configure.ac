@@ -361,17 +361,28 @@ AM_CONDITIONAL(ENABLE_DOSFSTOOLS,test "$enable_dosfstools" = "yes")
 AC_SUBST(DOSFSTOOLS)
 
 AC_ARG_ENABLE(upnp,
-	AS_HELP_STRING(--enable-upnp,include upnp support),
+	AS_HELP_STRING(--enable-upnp,include upnp support - depends on audioplayer),
 	,[enable_upnp=no])
-AM_CONDITIONAL(ENABLE_UPNP,test "$enable_upnp" = "yes")
 
 AC_ARG_ENABLE(flac,
-	AS_HELP_STRING(--enable-flac,include Neutrino flac audio decoder with libFLAC),
+	AS_HELP_STRING(--enable-flac,include Neutrino flac audio support  - depends on audioplayer),
 	[case "${enableval}" in
 		yes) FLACLIB=libFLAC ;;
 	esac],[enable_flac=no])
+
+AC_ARG_ENABLE(audioplayer,
+	AS_HELP_STRING(--disable-audioplayer,include Neutrino audioplayer/internetradio),
+	,[enable_audioplayer=yes])
+if test "$enable_audioplayer" = "yes"; then
+	NEUTRINO_AUDIOPLAYER_DEPS="libid3tag libmad libvorbisidec $FLACLIB"
+else
+	enable_upnp=no
+	enable_flac=no
+fi
+AM_CONDITIONAL(ENABLE_UPNP,test "$enable_upnp" = "yes")
 AM_CONDITIONAL(ENABLE_FLAC,test "$enable_flac" = "yes")
-AC_SUBST(FLACLIB)
+AM_CONDITIONAL(ENABLE_AUDIOPLAYER,test "$enable_audioplayer" = "yes")
+AC_SUBST(NEUTRINO_AUDIOPLAYER_DEPS)
 
 AC_ARG_ENABLE(esd,
 	AS_HELP_STRING(--enable-esd,include esd sound daemon),
@@ -1092,6 +1103,7 @@ Samba server:			$enable_sambaserver
 Automount:			$enable_automount
 dosfstools:			$enable_dosfstools
 Neutrino UPnP-support:		$enable_upnp
+Neutrino Audioplayer:		$enable_audioplayer
 Esound support:			$enable_esd
 Radiotext support:		$enable_radiotext
 FLAC support:			$enable_flac
