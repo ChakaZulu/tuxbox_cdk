@@ -34,13 +34,12 @@ $(DEPDIR)/dvbtext: bootstrap @DEPENDS_dvbtext@
 	@CLEANUP_dvbtext@
 	touch $@
 
-# dvbtune build is broken since ages...
 $(DEPDIR)/dvbtune: bootstrap @DEPENDS_dvbtune@
 	@PREPARE_dvbtune@
 	cd @DIR_dvbtune@ && \
 		$(MAKE) \
 			$(BUILDENV) \
-			CPPFLAGS="-I$(driverdir)/dvb/include -DNEWSTRUCT" && \
+			CPPFLAGS="-I$(DVB_INCLUDESDIR) -DNEWSTRUCT" && \
 		@INSTALL_dvbtune@
 	@CLEANUP_dvbtune@
 	touch $@

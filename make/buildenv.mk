@@ -24,30 +24,31 @@ DEPDIR = .deps
 
 VPATH = $(DEPDIR)
 
+if BOXTYPE_DBOX2
+if KERNEL26
+DVB_INCLUDESDIR = $(targetprefix)/include
+else
+DVB_INCLUDESDIR = $(driverdir)/dvb/include
+endif
+else
+# tested with Dreambox & IPBox
+DVB_INCLUDESDIR = $(driverdir)/oldapi/include
+endif
+
 CONFIGURE_OPTS = \
 	--build=$(build) \
 	--host=$(target) \
 	--prefix=$(targetprefix) \
 	--with-driver=$(driverdir) \
+	--with-dvbincludes=$(DVB_INCLUDESDIR) \
 	--with-boxtype=$(BOXTYPE) \
 	--with-target=cdk
 
 if BOXTYPE_DREAMBOX
-CONFIGURE_OPTS += --with-boxmodel=$(BOXMODEL) \
-		  --with-dvbincludes=$(driverdir)/oldapi/include
+CONFIGURE_OPTS += --with-boxmodel=$(BOXMODEL)
 endif
 if BOXTYPE_IPBOX
-CONFIGURE_OPTS += --with-boxmodel=$(BOXMODEL) \
-		  --with-dvbincludes=$(driverdir)/oldapi/include
-endif
-if BOXTYPE_DBOX2
-if KERNEL26
-CONFIGURE_OPTS += \
-	--with-dvbincludes=$(targetprefix)/include
-else
-CONFIGURE_OPTS += \
-	--with-dvbincludes=$(driverdir)/dvb/include
-endif
+CONFIGURE_OPTS += --with-boxmodel=$(BOXMODEL)
 endif
 
 if MAINTAINER_MODE

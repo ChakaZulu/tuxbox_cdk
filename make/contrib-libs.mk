@@ -148,19 +148,11 @@ $(DEPDIR)/libppdirectfb: bootstrap libdirectfb @DEPENDS_libppdirectfb@
 
 $(DEPDIR)/libdvb: bootstrap @DEPENDS_libdvb@
 	@PREPARE_libdvb@
-if !KERNEL26
 	cd @DIR_libdvb@ && \
 		$(MAKE) libdvb.a libdvbci.a libdvbmpegtools.a \
 		$(BUILDENV) \
-		CFLAGS="$(TARGET_CFLAGS) -I$(driverdir)/dvb/include -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" && \
+		CFLAGS="$(TARGET_CFLAGS) -I$(DVB_INCLUDESDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" && \
 		@INSTALL_libdvb@
-else
-	cd @DIR_libdvb@ && \
-		$(MAKE) libdvb.a libdvbci.a libdvbmpegtools.a \
-		$(BUILDENV) \
-		CFLAGS="$(TARGET_CFLAGS) -I$(targetprefix)/include -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" && \
-		@INSTALL_libdvb@
-endif
 	@CLEANUP_libdvb@
 	touch $@
 
