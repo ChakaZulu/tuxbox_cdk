@@ -393,6 +393,11 @@ if test "$enable_pictureviewer" = "yes"; then
 fi
 AC_SUBST(NEUTRINO_PICTUREVIEWER_DEPS)
 
+AC_ARG_ENABLE(movieplayer,
+	AS_HELP_STRING(--disable-movieplayer,include Neutrino movieplayer),
+	,[enable_movieplayer=yes])
+AM_CONDITIONAL(ENABLE_MOVIEPLAYER,test "$enable_movieplayer" = "yes")
+
 AC_ARG_ENABLE(esd,
 	AS_HELP_STRING(--enable-esd,include esd sound daemon),
 	,[enable_esd=no])
@@ -1113,6 +1118,7 @@ Automount:			$enable_automount
 dosfstools:			$enable_dosfstools
 Neutrino UPnP-support:		$enable_upnp
 Neutrino Audioplayer:		$enable_audioplayer
+Neutrino Movieplayer:		$enable_movieplayer
 Neutrino Pictureviewer:		$enable_pictureviewer
 Esound support:			$enable_esd
 Radiotext support:		$enable_radiotext
