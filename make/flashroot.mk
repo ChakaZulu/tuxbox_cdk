@@ -30,13 +30,13 @@ endif
 
 if BOXTYPE_DBOX2
 	$(MAKE) flash-tuxinfo
-	$(MAKE) flash-tools_misc
-	$(MAKE) flash-fcp
 	$(MAKE) flash-camd2
 	$(MAKE) flash-ucodes
 	$(MAKE) flash-satfind
 	$(MAKE) flash-lcdip
 endif
+	$(MAKE) flash-tools_misc
+	$(MAKE) flash-fcp
 	$(MAKE) flash-config
 	$(MAKE) flash-busybox
 	$(MAKE) flash-ftpd
