@@ -76,6 +76,11 @@ CONFIGURE_OPTS += \
 	--enable-flac
 endif
 
+if ENABLE_LIRC
+CONFIGURE_OPTS += \
+	--enable-lirc
+endif
+
 if ENABLE_IDE
 CONFIGURE_OPTS += \
 	--enable-ide

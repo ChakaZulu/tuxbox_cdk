@@ -126,6 +126,11 @@ AC_ARG_ENABLE(lirc,
 	[case "${enableval}" in
 		yes) LIRC=lirc ;;
 	esac], [enable_lirc=no])
+# only the dbox2 has IR send, AFAIK
+if test "$BOXTYPE" != "dbox2"; then
+	enable_lirc=no
+fi
+
 AM_CONDITIONAL(ENABLE_LIRC,test "$enable_lirc" = "yes")
 AC_SUBST(LIRC)
 
@@ -1116,6 +1121,7 @@ NFS server:			$enable_nfsserver
 Samba server:			$enable_sambaserver
 Automount:			$enable_automount
 dosfstools:			$enable_dosfstools
+LIRC				$enable_lirc
 Neutrino UPnP-support:		$enable_upnp
 Neutrino Audioplayer:		$enable_audioplayer
 Neutrino Movieplayer:		$enable_movieplayer

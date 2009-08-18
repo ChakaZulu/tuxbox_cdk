@@ -1,6 +1,6 @@
 # tuxbox/radiobox
 
-$(appsdir)/tuxbox/radiobox/config.status: bootstrap libboost libcurl libfreetype libmad libid3tag libvorbisidec libtuxbox misc_libs tuxbox_libs misc_tools @LUFS@ lirc
+$(appsdir)/tuxbox/radiobox/config.status: bootstrap libboost libcurl libfreetype libmad libid3tag libvorbisidec libtuxbox misc_libs tuxbox_libs misc_tools @LUFS@ @LIRC@
 	cd $(appsdir)/tuxbox/radiobox && $(CONFIGURE)
 
 radiobox: $(appsdir)/tuxbox/radiobox/config.status
