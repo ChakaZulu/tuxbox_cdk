@@ -1646,11 +1646,12 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
   * Sorting is done while adding fragments to the lists, which is more or less a
   * bubble sort. This takes a lot of time, and is most probably not an issue if
   * the boot filesystem is always mounted readonly.
-@@ -119,7 +119,6 @@
+@@ -119,8 +119,6 @@
  #include <watchdog.h>
  #include <jffs2/jffs2.h>
  #include <jffs2/jffs2_1pass.h>
 -#include <linux/mtd/compat.h>
+-#include <asm/errno.h>
  
  #include "jffs2_private.h"
  
@@ -2098,12 +2099,34 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
  	}
  	/* ok so the name of the new file to find is in tmp */
  	/* if it starts with a slash it is root based else shared dirs */
-@@ -1200,132 +1195,6 @@
+@@ -1201,167 +1195,6 @@
  	return 0;
  }
  
+-#ifdef CONFIG_JFFS2_SUMMARY
+-static u32 sum_get_unaligned32(u32 *ptr)
+-{
+-	u32 val;
+-	u8 *p = (u8 *)ptr;
+-
+-	val = *p | (*(p + 1) << 8) | (*(p + 2) << 16) | (*(p + 3) << 24);
+-
+-	return __le32_to_cpu(val);
+-}
+-
+-static u16 sum_get_unaligned16(u16 *ptr)
+-{
+-	u16 val;
+-	u8 *p = (u8 *)ptr;
+-
+-	val = *p | (*(p + 1) << 8);
+-
+-	return __le16_to_cpu(val);
+-}
+-
 -#define dbg_summary(...) do {} while (0);
--/* Process the stored summary information - helper function for
+-/*
+- * Process the stored summary information - helper function for
 - * jffs2_sum_scan_sumnode()
 - */
 -
@@ -2112,54 +2135,64 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
 -				struct b_lists *pL)
 -{
 -	void *sp;
--	int i;
+-	int i, pass;
+-	void *ret;
 -
--	sp = summary->sum;
+-	for (pass = 0; pass < 2; pass++) {
+-		sp = summary->sum;
 -
--	for (i = 0; i < summary->sum_num; i++) {
--		dbg_summary("processing summary index %d\n", i);
+-		for (i = 0; i < summary->sum_num; i++) {
+-			struct jffs2_sum_unknown_flash *spu = sp;
+-			dbg_summary("processing summary index %d\n", i);
 -
--		switch (((struct jffs2_sum_unknown_flash *)sp)->nodetype) {
--			case JFFS2_NODETYPE_INODE: {
+-			switch (sum_get_unaligned16(&spu->nodetype)) {
+-				case JFFS2_NODETYPE_INODE: {
 -				struct jffs2_sum_inode_flash *spi;
--				spi = sp;
+-					if (pass) {
+-						spi = sp;
 -
--				dbg_summary("Inode at 0x%08x-0x%08x\n",
--					    offset + spi->offset,
--					    offset + spi->offset + spi->totlen);
+-						ret = insert_node(&pL->frag,
+-							(u32)part->offset +
+-							offset +
+-							sum_get_unaligned32(
+-								&spi->offset));
+-						if (ret == NULL)
+-							return -1;
+-					}
 -
--				if (insert_node(&pL->frag, (u32) part->offset +
--						offset + spi->offset) == NULL)
--					return -1;
+-					sp += JFFS2_SUMMARY_INODE_SIZE;
 -
--				sp += JFFS2_SUMMARY_INODE_SIZE;
+-					break;
+-				}
+-				case JFFS2_NODETYPE_DIRENT: {
+-					struct jffs2_sum_dirent_flash *spd;
+-					spd = sp;
+-					if (pass) {
+-						ret = insert_node(&pL->dir,
+-							(u32) part->offset +
+-							offset +
+-							sum_get_unaligned32(
+-								&spd->offset));
+-						if (ret == NULL)
+-							return -1;
+-					}
 -
--				break;
--			}
+-					sp += JFFS2_SUMMARY_DIRENT_SIZE(
+-							spd->nsize);
 -
--			case JFFS2_NODETYPE_DIRENT: {
--				struct jffs2_sum_dirent_flash *spd;
--				spd = sp;
--
--				dbg_summary("Dirent at 0x%08x-0x%08x\n",
--					    offset + spd->offset,
--					    offset + spd->offset + spd->totlen);
--
--				if (insert_node(&pL->dir, (u32) part->offset +
--						offset + spd->offset) == NULL)
--					return -1;
--
--				sp += JFFS2_SUMMARY_DIRENT_SIZE(spd->nsize);
--
--				break;
--			}
--			default : {
--				uint16_t nodetype =
--					((struct jffs2_sum_unknown_flash *)
--					 sp)->nodetype;
--				printf("Unsupported node type %x found in "
--						"summary!\n", nodetype);
--				break;
+-					break;
+-				}
+-				default : {
+-					uint16_t nodetype = sum_get_unaligned16(
+-								&spu->nodetype);
+-					printf("Unsupported node type %x found"
+-							" in summary!\n",
+-							nodetype);
+-					if ((nodetype & JFFS2_COMPAT_MASK) ==
+-							JFFS2_FEATURE_INCOMPAT)
+-						return -EIO;
+-					return -EBADMSG;
+-				}
 -			}
 -		}
 -	}
@@ -2217,6 +2250,8 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
 -		dbg_summary("Summary : CLEANMARKER node \n");
 -
 -	ret = jffs2_sum_process_sum_data(part, offset, summary, pL);
+-	if (ret == -EBADMSG)
+-		return 0;
 -	if (ret)
 -		return ret;		/* real error */
 -
@@ -2227,6 +2262,7 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
 -
 -	return 0;
 -}
+-#endif /* CONFIG_JFFS2_SUMMARY */
 -
  #ifdef DEBUG_FRAGMENTS
  static void
@@ -2280,7 +2316,7 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
  
  	/* turn off the lcd.  Refreshing the lcd adds 50% overhead to the */
  	/* jffs2 list building enterprise nope.  in newer versions the overhead is */
-@@ -1421,245 +1277,71 @@
+@@ -1457,260 +1277,71 @@
  	/* if we are building a list we need to refresh the cache. */
  	jffs_init_1pass_list(part);
  	pL = (struct b_lists *)part->jffs2_priv;
@@ -2294,13 +2330,16 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
 -		uint32_t buf_ofs = sector_ofs;
 -		uint32_t buf_len;
 -		uint32_t ofs, prevofs;
+-#ifdef CONFIG_JFFS2_SUMMARY
 -		struct jffs2_sum_marker *sm;
 -		void *sumptr = NULL;
 -		uint32_t sumlen;
 -		int ret;
+-#endif
 -
 -		WATCHDOG_RESET();
 -
+-#ifdef CONFIG_JFFS2_SUMMARY
 -		buf_len = sizeof(*sm);
 -
 -		/* Read as much as we want into the _end_ of the preallocated
@@ -2321,6 +2360,8 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
 -				if (!sumptr) {
 -					putstr("Can't get memory for summary "
 -							"node!\n");
+-					free(buf);
+-					jffs2_free_cache(part);
 -					return 0;
 -				}
 -				memcpy(sumptr + sumlen - buf_len, buf +
@@ -2342,8 +2383,11 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
 -
 -			if (buf_size && sumlen > buf_size)
 -				free(sumptr);
--			if (ret < 0)
+-			if (ret < 0) {
+-				free(buf);
+-				jffs2_free_cache(part);
 -				return 0;
+-			}
 -			if (ret)
 -				continue;
 -
@@ -2352,7 +2396,8 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
 +			printf("\b\b%c ", spinner[counter++ % sizeof(spinner)]);
 +			oldoffset = offset;
  		}
- 
+-#endif /* CONFIG_JFFS2_SUMMARY */
+-
 -		buf_len = EMPTY_SCAN_SIZE(part->sector_size);
 -
 -		get_fl_mem((u32)part->offset + buf_ofs, buf_len, buf);
@@ -2370,7 +2415,7 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
 -
 -		ofs += sector_ofs;
 -		prevofs = ofs - 1;
--
+ 
 -	scan_more:
 -		while (ofs < sector_ofs + part->sector_size) {
 -			if (ofs == prevofs) {
@@ -2466,10 +2511,13 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
 +				    inode_crc((struct jffs2_raw_inode *) node) &&
 +				    data_crc((struct jffs2_raw_inode *) node)) {
  				if (insert_node(&pL->frag, (u32) part->offset +
--						ofs) == NULL)
+-						ofs) == NULL) {
+-					free(buf);
+-					jffs2_free_cache(part);
 +						offset) == NULL) {
 +					put_fl_mem(node);
  					return 0;
+ 				}
 -				if (max_totlen < node->totlen)
 -					max_totlen = node->totlen;
 -				break;
@@ -2483,7 +2531,7 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
 -						   buf_len, buf);
 -					buf_ofs = ofs;
 -					node = (void *)buf;
- 				}
+-				}
 -
 -				if (!dirent_crc((struct jffs2_raw_dirent *)
 -							node) ||
@@ -2498,13 +2546,15 @@ diff -uNr u-boot-2009.08-rc1.org/fs/jffs2/jffs2_1pass.c u-boot-2009.08-rc1/fs/jf
  				if (! (counterN%100))
  					puts ("\b\b.  ");
  				if (insert_node(&pL->dir, (u32) part->offset +
--						ofs) == NULL)
+-						ofs) == NULL) {
+-					free(buf);
+-					jffs2_free_cache(part);
 +						offset) == NULL) {
 +					put_fl_mem(node);
  					return 0;
+ 				}
 -				if (max_totlen < node->totlen)
 -					max_totlen = node->totlen;
-+				}
  				counterN++;
 -				break;
 -			case JFFS2_NODETYPE_CLEANMARKER:
