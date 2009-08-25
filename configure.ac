@@ -405,8 +405,11 @@ AM_CONDITIONAL(ENABLE_MOVIEPLAYER,test "$enable_movieplayer" = "yes")
 
 AC_ARG_ENABLE(esd,
 	AS_HELP_STRING(--enable-esd,include esd sound daemon),
-	,[enable_esd=no])
+	[case "${enableval}" in
+		yes) ESOUND=esound ;;
+	esac],[enable_esd=no])
 AM_CONDITIONAL(ENABLE_ESD,test "$enable_esd" = "yes")
+AC_SUBST(ESOUND)
 
 AC_ARG_ENABLE(radiotext,
 	AS_HELP_STRING(--enable-radiotext,include Neutrino Radiotext support),
