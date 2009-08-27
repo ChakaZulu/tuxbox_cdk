@@ -80,5 +80,3 @@ $(hostprefix)/bin/depmod:
 		$(MAKE)
 	$(INSTALL) -m755 @DIR_module_init_tools@/depmod $@
 	@CLEANUP_module_init_tools@
-
-.PHONY: $(hostappsdir)/config.status
