@@ -78,5 +78,5 @@ endif
 	done
 	@dirs="$(SUBDIRS)" ; \
 	for d in $$dirs ; do \
-		$(MAKE) -C $$d $(AM_MAKEFLAGS) install-flash ; \
+		$(MAKE) -C $$d $(AM_MAKEFLAGS) install-flash || exit 1 ; \
 	done
