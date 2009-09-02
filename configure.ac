@@ -143,7 +143,7 @@ AM_CONDITIONAL(ENABLE_CDKVCINFO,test "$enable_cdkVcInfo" = "yes")
 AC_SUBST(CDKVCINFO)
 
 AC_ARG_ENABLE(openvpn,
-	AS_HELP_STRING(--enable-openvpn,		include OpenVPN in yadds and images, build tun kernel module),
+	AS_HELP_STRING(--enable-openvpn,		include OpenVPN in yadds and images and build tun kernel module),
 	[case "${enableval}" in
 		yes) OPENVPN=openvpn ;;
 	esac],[enable_openvpn=no])
