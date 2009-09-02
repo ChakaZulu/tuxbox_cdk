@@ -116,6 +116,7 @@ lzma443;443;lzma443
 upx_host;3.03;upx-3.03-src;upx-3.03-src.tar.bz2:lzma443.tar.bz2:upx.diff;extract:upx-3.03-src.tar.bz2;patch:upx.diff
 lzma;4.65;lzma-4.65;lzma465.tar.bz2:lzma.diff;dirextract:lzma465.tar.bz2;patch:lzma.diff
 lzma_host;4.65;lzma-4.65;lzma465.tar.bz2:lzma.diff;dirextract:lzma465.tar.bz2;patch:lzma.diff
+openvpn;2.0.9;openvpn-2.0.9;openvpn-2.0.9.tar.gz;extract:openvpn-2.0.9.tar.gz
 
 #
 # ide/hdd apps

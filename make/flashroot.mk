@@ -80,6 +80,9 @@ endif
 if ENABLE_CDKVCINFO
 	$(MAKE) flash-cdkVcInfo
 endif
+if ENABLE_OPENVPN
+	$(MAKE) flash-openvpn
+endif
 if ENABLE_XFS
 	$(MAKE) flash-xfsprogs
 endif

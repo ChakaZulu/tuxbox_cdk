@@ -30,6 +30,10 @@ if ENABLE_FS_NFS
 BUSYBOX_M4 += -Dnfs
 endif
 
+if ENABLE_OPENVPN
+BUSYBOX_M4 += -Dopenvpn
+endif
+
 # this variable is needed because cdk/rules.pl assumes *.patch can be found in cdk/Patches
 #BUSYBOX_PATCHES = \
 #Archive/busybox-1.14.2-udhcpd.patch

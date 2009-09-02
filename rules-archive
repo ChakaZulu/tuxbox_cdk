@@ -121,6 +121,7 @@ ucl-1.03.tar.gz;http://www.oberhumer.com/opensource/ucl/download
 lzma443.tar.bz2;http://prdownloads.sourceforge.net/sourceforge/sevenzip
 lzma465.tar.bz2;http://prdownloads.sourceforge.net/sourceforge/sevenzip
 upx-3.03-src.tar.bz2;http://upx.sourceforge.net/download
+openvpn-2.0.9.tar.gz;http://openvpn.net/release
 
 #
 # ide apps

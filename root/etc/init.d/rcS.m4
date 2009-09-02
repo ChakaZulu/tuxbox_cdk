@@ -336,6 +336,10 @@ ifmarkerfile({sambaserver},{if [ -e /etc/smb.conf -a -x /bin/nmbd -a -x /bin/smb
 		/bin/smbd -D -a -s /etc/smb.conf
 	fi})
 
+# Start the OpenVPN server if present
+runprogifexists({/sbin/openvpn},{loadmodule(tun)
+	openvpn --cd /tmp --daemon})
+
 ifmarkerfile({tuxmaild},{tuxmaild})
 ifmarkerfile({tuxcald},{tuxcald})
 ifmarkerfile({rdate},{rdate time.fu-berlin.de})

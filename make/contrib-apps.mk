@@ -3,9 +3,9 @@
 #   contrib apps
 #
 
-contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie @LUFS@ kermit wget ncftp screen lzma lzma_host ntpd ntpclient links links_g esound python ser2net
+contrib_apps: bzip2 console_data kbd fbset lirc lsof dropbear ssh tcpdump bonnie @LUFS@ kermit wget ncftp screen lzma lzma_host ntpd ntpclient links links_g esound python ser2net @OPENVPN@
 
-CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma .deps/lzma_host .deps/ntpd .deps/ntpclient .deps/links .deps/links_g .deps/esound .deps/openntpd .deps/python .deps/ser2net
+CONTRIB_DEPSCLEANUP = rm -f .deps/bzip2 .deps/console_data .deps/kbd .deps/directfb_examples .deps/fbset .deps/lirc .deps/lsof .deps/ssh .deps/tcpdump .deps/bonnie .deps/vdr .deps/lufs .deps/dropbear .deps/kermit .deps/wget .deps/ncftp .deps/screen .deps/lzma .deps/lzma_host .deps/ntpd .deps/ntpclient .deps/links .deps/links_g .deps/esound .deps/openntpd .deps/python .deps/ser2net .deps/openvpn
 
 #bzip2
 $(DEPDIR)/bzip2: bootstrap @DEPENDS_bzip2@
@@ -727,3 +727,30 @@ $(DEPDIR)/upx_host: directories ucl @DEPENDS_upx_host@
 		@INSTALL_upx_host@
 	@CLEANUP_upx_host@
 	touch $@
+
+if ENABLE_OPENVPN
+$(DEPDIR)/openvpn: bootstrap libcrypto @DEPENDS_openvpn@
+	@PREPARE_openvpn@
+	cd @DIR_openvpn@ && \
+		$(BUILDENV) \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--disable-lzo && \
+		$(MAKE) all && \
+	@INSTALL_openvpn@
+	@CLEANUP_openvpn@
+	touch $@
+
+if TARGETRULESET_FLASH
+flash-openvpn: $(flashprefix)/root/sbin/openvpn
+
+$(flashprefix)/root/sbin/openvpn: libcrypto openvpn | $(flashprefix)/root
+	rm -f $(flashprefix)/root/sbin/openvpn
+	@$(INSTALL) -d $(flashprefix)/root/sbin
+	$(INSTALL) $(targetprefix)/sbin/openvpn $(flashprefix)/root/sbin
+	@FLASHROOTDIR_MODIFIED@
+
+endif
+endif

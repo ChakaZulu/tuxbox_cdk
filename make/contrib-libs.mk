@@ -39,11 +39,14 @@ $(DEPDIR)/libcommoncplusplus: bootstrap libxml2 @DEPENDS_libcommoncplusplus@
 	@CLEANUP_libcommoncplusplus@
 	touch $@
 
+if !ENABLE_OPENVPN
+OPENVPN_NOMD4=no-md4
+endif
 $(DEPDIR)/libcrypto: bootstrap @DEPENDS_libcrypto@
 	@PREPARE_libcrypto@
 	cd @DIR_libcrypto@ && \
 		sed -e 's|__TUXBOX_CC__|$(target)-gcc|' -e 's|__TUXBOX_CFLAGS__|$(TARGET_CFLAGS)|' ./Configure > ./Configure.tuxbox && \
-		sh ./Configure.tuxbox shared no-hw no-idea no-md2 no-md4 no-mdc2 no-rc2 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
+		sh ./Configure.tuxbox shared no-hw no-idea no-md2 $(OPENVPN_NOMD4) no-mdc2 no-rc2 no-rc5 tuxbox --prefix=/ --openssldir=/ && \
 		$(MAKE) depend && \
 		$(MAKE) -j $(J) all && \
 		@INSTALL_libcrypto@

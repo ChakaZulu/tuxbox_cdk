@@ -222,6 +222,12 @@ else
 AUTOMOUNT_SED_CONF=$(foreach param,CONFIG_AUTOFS4_FS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
 endif
 
+if ENABLE_OPENVPN
+OPENVPN_SED_CONF=$(foreach param,CONFIG_TUN,-e s"/^.*$(param)[= ].*/$(param)=m/")
+else
+OPENVPN_SED_CONF=$(foreach param,CONFIG_TUN,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+endif
+
 if ENABLE_NFSSERVER
 if KERNEL26
 NFSSERVER_SED_CONF=$(foreach param,CONFIG_NFSD CONFIG_EXPORTFS,-e s"/^.*$(param)[= ].*/$(param)=m/")
@@ -270,6 +276,7 @@ endif
 		$(FS_CIFS_SED_CONF) \
 		$(FS_SMBFS_SED_CONF) \
 		$(AUTOMOUNT_SED_CONF) \
+		$(OPENVPN_SED_CONF) \
 		$(yadd_kernel_conf) \
 		> $(KERNEL_DIR)/.config
 	$(MAKE) $(KERNEL_BUILD_FILENAME)

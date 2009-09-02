@@ -142,6 +142,14 @@ AC_ARG_ENABLE(cdkVcInfo,
 AM_CONDITIONAL(ENABLE_CDKVCINFO,test "$enable_cdkVcInfo" = "yes")
 AC_SUBST(CDKVCINFO)
 
+AC_ARG_ENABLE(openvpn,
+	AS_HELP_STRING(--enable-openvpn,		include OpenVPN in yadds and images, build tun kernel module),
+	[case "${enableval}" in
+		yes) OPENVPN=openvpn ;;
+	esac],[enable_openvpn=no])
+AM_CONDITIONAL(ENABLE_OPENVPN,test "$enable_openvpn" = "yes")
+AC_SUBST(OPENVPN)
+
 AC_ARG_ENABLE(german_keymaps,
 	AS_HELP_STRING(--enable-german-keymaps,	include loadkey and German keymaps in yadds and images),
 	[case "${enableval}" in
@@ -940,6 +948,7 @@ TUXBOX_RULES_MAKE(ucl)
 TUXBOX_RULES_MAKE(upx_host)
 TUXBOX_RULES_MAKE(lzma)
 TUXBOX_RULES_MAKE(lzma_host)
+TUXBOX_RULES_MAKE(openvpn)
 
 #
 # ide apps
@@ -1121,6 +1130,7 @@ SMBFS kernel module:		$enable_fs_smbfs
 LUFS kernel module:		$enable_fs_lufs
 NFS kernel module:		$enable_fs_nfs
 NFS server:			$enable_nfsserver
+OpenVPN:			$enable_openvpn
 Samba server:			$enable_sambaserver
 Automount:			$enable_automount
 dosfstools:			$enable_dosfstools

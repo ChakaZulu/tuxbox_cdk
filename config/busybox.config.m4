@@ -765,7 +765,10 @@ option(`CONFIG_FEATURE_WGET_AUTHENTICATION', `y', `y')
 option(`CONFIG_FEATURE_WGET_LONG_OPTIONS', `y', `y')
 option(`CONFIG_ZCIP', `n', `n')
 # CONFIG_TCPSVD is not set
-# CONFIG_TUNCTL is not set
+ifdef(`openvpn',
+`option(`CONFIG_TUNCTL', `y', `y')',
+`# CONFIG_TUNCTL is not set'
+)
 # CONFIG_FEATURE_TUNCTL_UG is not set
 # CONFIG_UDPSVD is not set
 
