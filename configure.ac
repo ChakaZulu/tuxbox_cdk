@@ -606,8 +606,10 @@ case "${BOXTYPE}" in
 		;;
 	*)
 		startscriptdir="$cvsdir/cdk/root"
+		MKIMAGE=$hostprefix/bin/mkimage
 		;;
 esac
+AC_SUBST(MKIMAGE)
 
 dircheck="ok"
 AC_MSG_CHECKING([for apps directory])

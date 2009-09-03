@@ -1,4 +1,4 @@
-$(flashprefix)/root-cramfs: bootstrap_gcc $(hostprefix)/bin/mkimage
+$(flashprefix)/root-cramfs: bootstrap_gcc $(MKIMAGE)
 	rm -rf $@
 if KERNEL26
 	m4 --define=rootfs=cramfs --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
@@ -21,7 +21,7 @@ endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/modules.[^d]*
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-jffs2: bootstrap_gcc $(hostprefix)/bin/mkimage
+$(flashprefix)/root-jffs2: bootstrap_gcc $(MKIMAGE)
 	rm -rf $@
 if KERNEL26
 	m4 --define=rootfs=jffs2 Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
@@ -54,7 +54,7 @@ endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/modules.[^d]*
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-jffs2_lzma: bootstrap_gcc $(hostprefix)/bin/mkimage
+$(flashprefix)/root-jffs2_lzma: bootstrap_gcc $(MKIMAGE)
 	rm -rf $@
 if KERNEL26
 	m4 --define=rootfs=jffs2 --define=jffs2lzma Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
@@ -87,7 +87,7 @@ endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/modules.[^d]*
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-jffs2_lzma_klzma: bootstrap_gcc lzma_host $(hostprefix)/bin/mkimage
+$(flashprefix)/root-jffs2_lzma_klzma: bootstrap_gcc lzma_host $(MKIMAGE)
 	rm -rf $@
 if KERNEL26
 	m4 --define=rootfs=jffs2 --define=jffs2lzma Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
@@ -123,7 +123,7 @@ endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/modules.[^d]*
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-squashfs: bootstrap_gcc $(hostprefix)/bin/mkimage
+$(flashprefix)/root-squashfs: bootstrap_gcc $(MKIMAGE)
 	rm -rf $@
 if BOXTYPE_DREAMBOX
 	sed $(AUTOMOUNT_SED_CONF) $(DREAMBOX_SERIAL_SED) \
@@ -162,7 +162,7 @@ endif
 	rm -f $@/lib/modules/$(KERNELVERSION)/modules.[^d]*
 	@TUXBOX_CUSTOMIZE@
 
-$(flashprefix)/root-squashfs_nolzma: bootstrap_gcc $(hostprefix)/bin/mkimage
+$(flashprefix)/root-squashfs_nolzma: bootstrap_gcc $(MKIMAGE)
 	rm -rf $@
 if BOXTYPE_DREAMBOX
 	sed $(AUTOMOUNT_SED_CONF) $(DREAMBOX_SERIAL_SED) \

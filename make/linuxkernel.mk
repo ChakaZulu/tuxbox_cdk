@@ -258,10 +258,10 @@ kernel-cdk: $(bootprefix)/kernel-cdk
 
 if BOXTYPE_DBOX2
 if KERNEL26
-$(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c-26.m4
+$(bootprefix)/kernel-cdk: linuxdir $(MKIMAGE) $(yadd_kernel_conf) Patches/dbox2-flash.c-26.m4
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 else
-$(bootprefix)/kernel-cdk: linuxdir $(hostprefix)/bin/mkimage $(yadd_kernel_conf) Patches/dbox2-flash.c.m4
+$(bootprefix)/kernel-cdk: linuxdir $(MKIMAGE) $(yadd_kernel_conf) Patches/dbox2-flash.c.m4
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif
 	sed $(SQUASHFS_SED_CONF) $(SQUASHFS_LZMA_SED_CONF) \
