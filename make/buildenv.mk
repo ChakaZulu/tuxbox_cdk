@@ -86,6 +86,11 @@ CONFIGURE_OPTS += \
 	--enable-ide
 endif
 
+if ENABLE_CCACHE 	 
+CONFIGURE_OPTS += \
+	--enable-ccache 	 
+endif
+
 if ENABLE_SQLITE
 CONFIGURE_OPTS += \
 	--enable-sqlite
