@@ -266,9 +266,10 @@ else
 	loadmodule(dbox2_fp_napi)
 
 	# Possibly turn off the watchdog on AVIA 500
-	ifmarkerfile({no_watchdog},
-		{loadmodule(avia_av, firmware=/var/tuxbox/ucodes no_watchdog=1)},
-		{loadmodule(avia_av, firmware=/var/tuxbox/ucodes)})
+	AVOPTS=""
+	ifmarkerfile({no_watchdog},{AVOPTS="${{AVOPTS}}no_watchdog=1 "})
+	ifmarkerfile({sptsfix},{AVOPTS="${{AVOPTS}}sptsfix=1 "})
+	loadmodule(avia_av, {firmware=/var/tuxbox/ucodes ${AVOPTS}})
 
 	# Bei Avia_gt hw_sections und nowatchdog abfragen
 	GTOPTS=""
