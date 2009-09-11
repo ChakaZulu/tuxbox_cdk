@@ -51,6 +51,22 @@ $(DEPDIR)/gdb-remote: @DEPENDS_gdb@
 	@CLEANUP_gdb@
 	touch $@
 
+$(DEPDIR)/valgrind: bootstrap @DEPENDS_valgrind@
+	@PREPARE_valgrind@
+	cd @DIR_valgrind@ && \
+		$(BUILDENV) \
+		ac_cv_path_GDB=/bin/gdb \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--enable-only32bit \
+			--disable-tls \
+			--prefix= && \
+		$(MAKE) all && \
+		@INSTALL_valgrind@
+	@CLEANUP_valgrind@
+	touch $@
+
 $(DEPDIR)/insight: @DEPENDS_insight@
 	@PREPARE_insight@
 	cd @DIR_insight@ && \

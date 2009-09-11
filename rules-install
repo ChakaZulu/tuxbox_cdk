@@ -124,6 +124,7 @@ msttf
 # development tools
 #
 gdb;make:install-gdb:prefix=TARGET
+valgrind;make:install:prefix=TARGET
 insight;make:install-gdb:prefix=TARGET
 ltrace;make:install:DESTDIR=TARGET
 strace;make:install:prefix=TARGET

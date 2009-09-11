@@ -139,6 +139,7 @@ reiserfsprogs-3.6.21.tar.bz2;http://www.kernel.org/pub/linux/utils/fs/reiserfs
 # development tools
 #
 gdb-6.8.tar.bz2;ftp://sources.redhat.com/pub/gdb/releases
+valgrind-3.3.1.tar.bz2;http://valgrind.org/downloads
 insight-6.1.tar.bz2;ftp://sources.redhat.com/pub/gdb/old-releases
 ltrace_0.3.26.tar.gz;http://ftp.cica.es/guadalinex/mirror/debian/pool/main/l/ltrace
 strace-4.5.18.tar.bz2;http://prdownloads.sourceforge.net/sourceforge/strace
