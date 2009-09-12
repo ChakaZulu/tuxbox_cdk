@@ -121,7 +121,7 @@ openvpn;2.0.9;openvpn-2.0.9;openvpn-2.0.9.tar.gz;extract:openvpn-2.0.9.tar.gz
 #
 # ide/hdd apps
 #
-e2fsprogs;1.41.8;e2fsprogs-1.41.8;e2fsprogs-1.41.8.tar.gz:e2fsprogs_gcc4_build_fix.diff;extract:e2fsprogs-1.41.8.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
+e2fsprogs;1.41.9;e2fsprogs-1.41.9;e2fsprogs-1.41.9.tar.gz:e2fsprogs_gcc4_build_fix.diff;extract:e2fsprogs-1.41.9.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
 hddtemp;0.3-beta15;hddtemp-0.3-beta15;hddtemp-0.3-beta15.tar.bz2;extract:hddtemp-0.3-beta15.tar.bz2
 hdparm;9.15;hdparm-9.15;hdparm-9.15.tar.gz;extract:hdparm-9.15.tar.gz
 parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz

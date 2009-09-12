@@ -128,7 +128,7 @@ openvpn-2.0.9.tar.gz;http://openvpn.net/release
 #
 hdparm-9.15.tar.gz;http://prdownloads.sourceforge.net/sourceforge/hdparm
 hddtemp-0.3-beta15.tar.bz2;http://savannah.c3sl.ufpr.br/hddtemp
-e2fsprogs-1.41.8.tar.gz;http://prdownloads.sourceforge.net/sourceforge/e2fsprogs
+e2fsprogs-1.41.9.tar.gz;http://prdownloads.sourceforge.net/sourceforge/e2fsprogs
 parted-1.7.1.tar.gz;http://ftp.gnu.org/pub/gnu/parted
 smartmontools-5.38.tar.gz;http://prdownloads.sourceforge.net/sourceforge/smartmontools
 util-linux-2.12r.tar.bz2;http://www.kernel.org/pub/linux/utils/util-linux/
