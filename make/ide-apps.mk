@@ -107,6 +107,7 @@ $(DEPDIR)/e2fsprogs: bootstrap @DEPENDS_e2fsprogs@
 			--disable-nls && \
 		$(MAKE) libs progs && \
 		$(MAKE) install-libs && \
+		ln -sf /proc/mounts $(targetprefix)/etc/mtab && \
 		@INSTALL_e2fsprogs@
 	@CLEANUP_e2fsprogs@
 	touch $@
@@ -145,6 +146,7 @@ $(flashprefix)/root/sbin/e2fsck: bootstrap @DEPENDS_e2fsprogs@ | $(flashprefix)/
 			--disable-nls && \
 		$(MAKE) libs progs && \
 		$(MAKE) install-libs && \
+		ln -sf /proc/mounts $(flashprefix)/root/etc/mtab && \
 		@INSTALL_e2fsprogs@
 if !BOXTYPE_DREAMBOX
 	$(INSTALL) $(targetprefix)/sbin/badblocks $(flashprefix)/root/sbin/
