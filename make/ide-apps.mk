@@ -8,7 +8,6 @@ ide_apps: hdparm utillinux e2fsprogs parted hddtemp xfsprogs smartmontools @DOSF
 
 IDE_DEPSCLEANUP = rm -f .deps/hdparm .deps/e2fsprogs .deps/utillinux .deps/parted .deps/hddtemp .deps/xfsprogs .deps/smartmontools
 
-if ENABLE_IDE
 #hdparm
 $(DEPDIR)/hdparm: bootstrap @DEPENDS_hdparm@
 	@PREPARE_hdparm@
@@ -472,7 +471,5 @@ $(flashprefix)/root/sbin/mkfs.msdos: dosfstools | $(flashprefix)/root
 		@ln -sf dosfsck $(flashprefix)/root/sbin/fsck.msdos
 		@ln -sf dosfsck $(flashprefix)/root/sbin/fsck.vfat
 	@FLASHROOTDIR_MODIFIED@
-
-endif
 
 endif
