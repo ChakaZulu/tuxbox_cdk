@@ -1043,19 +1043,18 @@ CONFIG_MMC_SPI=m,
 # File systems
 #
 ifdef(`ext2',
-`CONFIG_EXT2_FS=y
-CONFIG_JBD=y',
-`# CONFIG_EXT2_FS is not set
-# CONFIG_JBD is not set')
+`CONFIG_EXT2_FS=y',
+`# CONFIG_EXT2_FS is not set')
 # CONFIG_EXT2_FS_XATTR is not set
 # CONFIG_EXT2_FS_XIP is not set
 ifdef(`ext3',
 `CONFIG_EXT3_FS=y
-CONFIG_EXT3_FS_XATTR=y
-CONFIG_JBD=y',
+CONFIG_EXT3_FS_XATTR=y',
 `# CONFIG_EXT3_FS is not set
-# CONFIG_EXT3_FS_XATTR is not set
-# CONFIG_JBD is not set')
+# CONFIG_EXT3_FS_XATTR is not set')
+ifdef(`extfs',
+`CONFIG_JBD=y',
+`# CONFIG_JBD is not set')
 # CONFIG_EXT3_FS_POSIX_ACL is not set
 # CONFIG_EXT3_FS_SECURITY is not set
 # CONFIG_JBD_DEBUG is not set

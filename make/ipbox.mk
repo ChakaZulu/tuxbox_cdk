@@ -1,51 +1,13 @@
 
-IPBOX_M4_KERNEL = -D$(BOXMODEL)
-
 if ENABLE_MMC
-IPBOX_M4_KERNEL += -Dmmc
-endif
-if ENABLE_IDE
-IPBOX_M4_KERNEL += -Dide
-endif
-if ENABLE_EXT2
-IPBOX_M4_KERNEL += -Dext2
-endif
-if ENABLE_EXT3
-IPBOX_M4_KERNEL += -Dext3
-endif
-if ENABLE_XFS
-IPBOX_M4_KERNEL += -Dxfs
-endif
-if ENABLE_VFAT
-IPBOX_M4_KERNEL += -Dvfat
-IPBOX_M4_KERNEL += -Dnls
-endif
-if ENABLE_REISERFS
-IPBOX_M4_KERNEL += -Dreiserfs
-endif
-if ENABLE_FS_CIFS
-IPBOX_M4_KERNEL += -Dcifs
-IPBOX_M4_KERNEL += -Dnls
-endif
-if ENABLE_FS_SMBFS
-IPBOX_M4_KERNEL += -Dsmbfs
-IPBOX_M4_KERNEL += -Dnls
-endif
-if ENABLE_AUTOMOUNT
-IPBOX_M4_KERNEL += -Dautofs
-endif
-if ENABLE_NFSSERVER
-IPBOX_M4_KERNEL += -Dnfsd
-endif
-if ENABLE_FS_NFS
-IPBOX_M4_KERNEL += -Dnfs
+KERNEL_M4 += -Dmmc
 endif
 if BOXMODEL_IP250
-IPBOX_M4_KERNEL += -Dwlan
+KERNEL_M4 += -Dwlan
 endif
 if BOXMODEL_IP350
-IPBOX_M4_KERNEL += -Dwlan
-IPBOX_M4_KERNEL += -Dusb
+KERNEL_M4 += -Dwlan
+KERNEL_M4 += -Dusb
 endif
 
 ipbox_flash_imgs_neutrino \
@@ -102,7 +64,7 @@ $(flashprefix)/part_uboot.img: $(flashprefix)/u-boot.bin $(hostprefix)/bin/appen
 $(flashprefix)/vmlinux \
 $(flashprefix)/root-squashfs: bootstrap $(IPBOX_DRIVER_DEPENDS)
 	rm -rf $@
-	m4 $(IPBOX_M4_KERNEL) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
+	m4 -Dflash $(KERNEL_M4) $(kernel_conf) > $(KERNEL_DIR)/.config
 	$(MAKE) -C $(KERNEL_DIR) vmlinux modules ARCH=ppc CROSS_COMPILE=$(target)-
 	$(INSTALL) -m644 $(KERNEL_BUILD_FILENAME) $(flashprefix)/vmlinux
 	$(MAKE) -C $(KERNEL_DIR) modules_install \

@@ -129,11 +129,7 @@ if KERNEL26
 if BOXTYPE_DREAMBOX
 	cp $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig $(KERNEL_DIR)/.config
 else
-if BOXTYPE_IPBOX
-	m4 $(IPBOX_M4_KERNEL) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
-else
-	cp Patches/linux-2.6.26.4-dbox2.config $(KERNEL_DIR)/.config
-endif
+	m4 $(KERNEL_M4) $(kernel_conf) > $(KERNEL_DIR)/.config
 endif
 if BOXTYPE_DBOX2
 	$(INSTALL) -d $(KERNEL_DIR)/lib/lzma/
@@ -143,7 +139,7 @@ if BOXTYPE_DBOX2
 	cd $(KERNEL_DIR) && patch -p1 -E -i $(buildprefix)/Patches/linux-2.6-jffs2_lzma.diff
 endif
 else
-	cp Patches/linux-2.4.35.5-dbox2.config $(KERNEL_DIR)/.config
+	m4 $(KERNEL_M4) $(kernel_conf) > $(KERNEL_DIR)/.config
 if ENABLE_FS_LUFS
 	cd $(KERNEL_DIR) && patch -p1 -E -i $(buildprefix)/Patches/linux-2.4.33-dbox2-lufs.diff
 endif

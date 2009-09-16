@@ -2,11 +2,10 @@ $(flashprefix)/root-cramfs: bootstrap_gcc $(MKIMAGE)
 	rm -rf $@
 if KERNEL26
 	m4 --define=rootfs=cramfs --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
-	sed -e 's/.*CONFIG_CRAMFS[= ].*$$/CONFIG_CRAMFS=y/' $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(REISERFS_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_NFS_SED_CONF) $(VFAT_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(OPENVPN_SED_CONF) $(flash_kernel_conf) > $(KERNEL_DIR)/.config
 else
 	m4 --define=rootfs=cramfs --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
-	sed -e 's/.*CONFIG_CRAMFS[= ].*$$/CONFIG_CRAMFS=y/' $(IDE_SED_CONF) $(EXT2_SED_CONF) $(EXT3_SED_CONF) $(XFS_SED_CONF) $(REISERFS_SED_CONF) $(NFSSERVER_SED_CONF) $(FS_NFS_SED_CONF) $(VFAT_SED_CONF) $(FS_CIFS_SED_CONF) $(FS_SMBFS_SED_CONF) $(AUTOMOUNT_SED_CONF) $(OPENVPN_SED_CONF) Patches/linux-2.4.35.5-dbox2.config-flash > $(KERNEL_DIR)/.config
 endif
+	m4 -Dflash -Djffs2 -Dcramfs $(KERNEL_M4) $(kernel_conf) > $(KERNEL_DIR)/.config
 	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
 if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $@/vmlinuz
@@ -28,18 +27,7 @@ if KERNEL26
 else
 	m4 --define=rootfs=jffs2 Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif
-	sed $(JFFS2_SED_CONF) $(JFFS2_NOLZMA_SED_CONF) $(SQUASHFS_NO_SED_CONF) \
-		$(IDE_SED_CONF) \
-		$(EXT2_SED_CONF) $(EXT3_SED_CONF) \
-		$(XFS_SED_CONF) \
-		$(REISERFS_SED_CONF) \
-		$(NFSSERVER_SED_CONF) $(FS_NFS_SED_CONF) \
-		$(VFAT_SED_CONF) \
-		$(FS_CIFS_SED_CONF) \
-		$(FS_SMBFS_SED_CONF) \
-		$(AUTOMOUNT_SED_CONF) \
-		$(OPENVPN_SED_CONF) \
-		$(flash_kernel_conf) > $(KERNEL_DIR)/.config
+	m4 -Dflash -Djffs2 $(KERNEL_M4) $(kernel_conf) > $(KERNEL_DIR)/.config
 	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
 if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $@/vmlinuz
@@ -61,18 +49,7 @@ if KERNEL26
 else
 	m4 --define=rootfs=jffs2 --define=jffs2lzma Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif
-	sed $(JFFS2_SED_CONF) $(JFFS2_LZMA_SED_CONF) $(SQUASHFS_NO_SED_CONF) \
-		$(IDE_SED_CONF) \
-		$(EXT2_SED_CONF) $(EXT3_SED_CONF) \
-		$(XFS_SED_CONF) \
-		$(REISERFS_SED_CONF) \
-		$(NFSSERVER_SED_CONF) $(FS_NFS_SED_CONF) \
-		$(VFAT_SED_CONF) \
-		$(FS_CIFS_SED_CONF) \
-		$(FS_SMBFS_SED_CONF) \
-		$(AUTOMOUNT_SED_CONF) \
-		$(OPENVPN_SED_CONF) \
-		$(flash_kernel_conf) > $(KERNEL_DIR)/.config
+	m4 -Dflash -Djffs2 -Djffs2lzma $(KERNEL_M4) $(kernel_conf) > $(KERNEL_DIR)/.config
 	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
 if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $@/vmlinuz
@@ -94,18 +71,7 @@ if KERNEL26
 else
 	m4 --define=rootfs=jffs2 --define=jffs2lzma Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif
-	sed $(JFFS2_SED_CONF) $(JFFS2_LZMA_SED_CONF) $(SQUASHFS_NO_SED_CONF) \
-		$(IDE_SED_CONF) \
-		$(EXT2_SED_CONF) $(EXT3_SED_CONF) \
-		$(XFS_SED_CONF) \
-		$(REISERFS_SED_CONF) \
-		$(NFSSERVER_SED_CONF) $(FS_NFS_SED_CONF) \
-		$(VFAT_SED_CONF) \
-		$(FS_CIFS_SED_CONF) \
-		$(FS_SMBFS_SED_CONF) \
-		$(AUTOMOUNT_SED_CONF) \
-		$(OPENVPN_SED_CONF) \
-		$(flash_kernel_conf) > $(KERNEL_DIR)/.config
+	m4 -Dflash -Djffs2 -Djffs2lzma $(KERNEL_M4) $(kernel_conf) > $(KERNEL_DIR)/.config
 	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
 	rm -f $(dir $(KERNEL_BUILD_FILENAME))vmlinux.lzma
 if KERNEL26
@@ -135,18 +101,7 @@ if KERNEL26
 else
 	m4 --define=rootfs="squashfs+lzma" --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif
-	sed $(SQUASHFS_SED_CONF) $(SQUASHFS_LZMA_SED_CONF) $(JFFS2_SED_CONF) \
-		$(IDE_SED_CONF) \
-		$(EXT2_SED_CONF) $(EXT3_SED_CONF) \
-		$(XFS_SED_CONF) \
-		$(REISERFS_SED_CONF) \
-		$(NFSSERVER_SED_CONF) $(FS_NFS_SED_CONF) \
-		$(VFAT_SED_CONF) \
-		$(FS_CIFS_SED_CONF) \
-		$(FS_SMBFS_SED_CONF) \
-		$(AUTOMOUNT_SED_CONF) \
-		$(OPENVPN_SED_CONF) \
-		$(flash_kernel_conf) > $(KERNEL_DIR)/.config
+	m4 -Dflash -Djffs2 -Dsquashfs -Dsquashfslzma $(KERNEL_M4) $(kernel_conf) > $(KERNEL_DIR)/.config
 	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
 if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_BUILD_FILENAME) $@/vmlinuz
@@ -174,18 +129,7 @@ if KERNEL26
 else
 	m4 --define=rootfs=squashfs --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif
-	sed $(SQUASHFS_SED_CONF) $(SQUASHFS_NOLZMA_SED_CONF) $(JFFS2_SED_CONF) \
-		$(IDE_SED_CONF) \
-		$(EXT2_SED_CONF) $(EXT3_SED_CONF) \
-		$(XFS_SED_CONF) \
-		$(REISERFS_SED_CONF) \
-		$(NFSSERVER_SED_CONF) $(FS_NFS_SED_CONF) \
-		$(VFAT_SED_CONF) \
-		$(FS_CIFS_SED_CONF) \
-		$(FS_SMBFS_SED_CONF) \
-		$(AUTOMOUNT_SED_CONF) \
-		$(OPENVPN_SED_CONF) \
-		$(flash_kernel_conf) > $(KERNEL_DIR)/.config
+	m4 -Dflash -Djffs2 -Dsquashfs $(KERNEL_M4) $(kernel_conf) > $(KERNEL_DIR)/.config
 	$(MAKE) $(KERNEL_BUILD_FILENAME) targetprefix=$@
 if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_BUILD_FILENAME) $@/vmlinuz

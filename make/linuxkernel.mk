@@ -128,124 +128,53 @@ endif
 endif
 	touch $@
 
-SQUASHFS_SED_CONF=$(foreach param,CONFIG_SQUASHFS,-e s"/^.*$(param)[= ].*/$(param)=y/")
-SQUASHFS_NO_SED_CONF=$(foreach param,CONFIG_SQUASHFS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
-SQUASHFS_LZMA_SED_CONF=$(foreach param,CONFIG_SQUASHFS_LZMA,-e s"/^.*$(param)[= ].*/$(param)=y/")
-SQUASHFS_NOLZMA_SED_CONF=$(foreach param,CONFIG_SQUASHFS_LZMA,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+KERNEL_M4 = -D$(BOXTYPE)
 
-JFFS2_SED_CONF=$(foreach param,CONFIG_JFFS2_FS,-e s"/^.*$(param)[= ].*/$(param)=y/")
-JFFS2_LZMA_SED_CONF=$(foreach param,CONFIG_JFFS2_LZMA,-e s"/^.*$(param)[= ].*/$(param)=y/")
-JFFS2_NOLZMA_SED_CONF=$(foreach param,CONFIG_JFFS2_LZMA,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+if BOXTYPE_DREAMBOX
+KERNEL_M4 += -D$(BOXMODEL)
+endif
+if BOXTYPE_IPBOX
+KERNEL_M4 += -D$(BOXMODEL)
+endif
 
 if ENABLE_IDE
-IDE_SED_CONF=$(foreach param,CONFIG_IDE CONFIG_BLK_DEV_IDE CONFIG_BLK_DEV_IDEDISK,-e s"/^.*$(param)[= ].*/$(param)=m/")
-else
-if KERNEL26
-IDE_SED_CONF=$(foreach param,CONFIG_IDE CONFIG_BLK_DEV_IDE CONFIG_BLK_DEV_IDEDISK CONFIG_MSDOS_PARTITION,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
-else
-IDE_SED_CONF=$(foreach param,CONFIG_MSDOS_PARTITION,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+KERNEL_M4 += -Dide
 endif
-endif
-
 if ENABLE_EXT2
-EXT2_SED_CONF=$(foreach param,CONFIG_EXT2_FS CONFIG_JBD,-e s"/^.*$(param)[= ].*/$(param)=m/")
-else
-if KERNEL26
-EXT2_SED_CONF=$(foreach param,CONFIG_EXT2_FS CONFIG_JBD,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
-else
-EXT2_SED_CONF=-e ""
+KERNEL_M4 += -Dext2 -Dextfs
 endif
-endif
-
 if ENABLE_EXT3
-EXT3_SED_CONF=$(foreach param,CONFIG_EXT3_FS CONFIG_JBD,-e s"/^.*$(param)[= ].*/$(param)=m/")
-else
-if KERNEL26
-EXT3_SED_CONF=$(foreach param,CONFIG_EXT3_FS CONFIG_JBD,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
-else
-EXT3_SED_CONF=-e ""
+KERNEL_M4 += -Dext3 -Dextfs
 endif
-endif
-
 if ENABLE_XFS
-XFS_SED_CONF=$(foreach param,CONFIG_XFS_FS,-e s"/^.*$(param)[= ].*/$(param)=m/")
+KERNEL_M4 += -Dxfs
 XFS_UCLIBC_CONF=$(foreach param,UCLIBC_HAS_OBSOLETE_BSD_SIGNAL UCLIBC_SV4_DEPRECATED,-e s"/^.*$(param)[= ].*/$(param)=y/")
 else
 XFS_UCLIBC_CONF=-e ""
-if KERNEL26
-XFS_SED_CONF=$(foreach param,CONFIG_XFS_FS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
-else
-XFS_SED_CONF=-e ""
 endif
-endif
-
 if ENABLE_REISERFS
-REISERFS_SED_CONF=$(foreach param,CONFIG_REISERFS_FS,-e s"/^.*$(param)[= ].*/$(param)=m/")
-else
-if KERNEL26
-REISERFS_SED_CONF=$(foreach param,CONFIG_REISERFS_FS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
-else
-REISERFS_SED_CONF=-e ""
+KERNEL_M4 += -Dreiserfs
 endif
-endif
-
 if ENABLE_VFAT
-VFAT_SED_CONF=$(foreach param,CONFIG_FAT_FS CONFIG_VFAT_FS,-e s"/^.*$(param)[= ].*/$(param)=m/")
-else
-if KERNEL26
-VFAT_SED_CONF=$(foreach param,CONFIG_FAT_FS CONFIG_MSDOS_FS CONFIG_VFAT_FS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
-else
-VFAT_SED_CONF=-e ""
+KERNEL_M4 += -Dvfat -Dnls
 endif
-endif
-
 if ENABLE_FS_CIFS
-FS_CIFS_SED_CONF=-e ""
-else
-FS_CIFS_SED_CONF=$(foreach param,CONFIG_CIFS CONFIG_CIFS_POSIX,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+KERNEL_M4 += -Dcifs -Dnls
 endif
-
 if ENABLE_FS_SMBFS
-FS_SMBFS_SED_CONF=$(foreach param,CONFIG_SMB_FS CONFIG_NLS,-e s"/^.*$(param)[= ].*/$(param)=m/")
-else
-FS_SMBFS_SED_CONF=$(foreach param,CONFIG_SMB_FS CONFIG_SMB_UNIX CONFIG_NLS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+KERNEL_M4 += -Dsmbfs -Dnls
 endif
-
 if ENABLE_AUTOMOUNT
-if BOXTYPE_DREAMBOX
-# this replaces cdk/Patches/linux-enable-autofs.diff from the dreambox branch
-AUTOMOUNT_SED_CONF=$(foreach param,CONFIG_AUTOFS4_FS,-e s"/^.*$(param)[= ].*/\$(param)=m/")
-else
-AUTOMOUNT_SED_CONF=-e ""
+KERNEL_M4 += -Dautofs
 endif
-else
-AUTOMOUNT_SED_CONF=$(foreach param,CONFIG_AUTOFS4_FS,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
-endif
-
 if ENABLE_OPENVPN
-OPENVPN_SED_CONF=$(foreach param,CONFIG_TUN,-e s"/^.*$(param)[= ].*/$(param)=m/")
-else
-OPENVPN_SED_CONF=$(foreach param,CONFIG_TUN,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+KERNEL_M4 += -Dtun
 endif
-
 if ENABLE_NFSSERVER
-if KERNEL26
-NFSSERVER_SED_CONF=$(foreach param,CONFIG_NFSD CONFIG_EXPORTFS,-e s"/^.*$(param)[= ].*/$(param)=m/")
-NFSSERVER_SED_CONF+=$(foreach param,CONFIG_NFSD_V3 CONFIG_NFSD_TCP,-e s"/^.*$(param)[= ].*/$(param)=y/")
-else
-NFSSERVER_SED_CONF=$(foreach param,CONFIG_NFSD CONFIG_NFSD_V3 CONFIG_NFSD_TCP,-e s"/^.*$(param)[= ].*/$(param)=m/")
+KERNEL_M4 += -Dnfsd
 endif
-else
-if KERNEL26
-NFSSERVER_SED_CONF=$(foreach param,CONFIG_NFSD CONFIG_NFSD_V3 CONFIG_NFSD_TCP,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
-else
-NFSSERVER_SED_CONF=-e ""
-endif
-endif
-
-# this option is ignored for target kernel-cdk, yadd needs NFS
-if !ENABLE_FS_NFS
-FS_NFS_SED_CONF=$(foreach param,CONFIG_NFS_FS CONFIG_NFS_V3 CONFIG_SUNRPC CONFIG_LOCKD CONFIG_LOCKD_V4 CONFIG_ROOT_NFS CONFIG_NFS_COMMON,-e s"/^.*$(param)[= ].*/\# $(param) is not set/")
+if ENABLE_FS_NFS
+KERNEL_M4 += -Dnfs
 endif
 
 if DREAMBOX_ENABLE_SERIAL_CONSOLE
@@ -258,27 +187,13 @@ kernel-cdk: $(bootprefix)/kernel-cdk
 
 if BOXTYPE_DBOX2
 if KERNEL26
-$(bootprefix)/kernel-cdk: linuxdir $(MKIMAGE) $(yadd_kernel_conf) Patches/dbox2-flash.c-26.m4
+$(bootprefix)/kernel-cdk: linuxdir $(MKIMAGE) $(kernel_conf) Patches/dbox2-flash.c-26.m4
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c-26.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 else
-$(bootprefix)/kernel-cdk: linuxdir $(MKIMAGE) $(yadd_kernel_conf) Patches/dbox2-flash.c.m4
+$(bootprefix)/kernel-cdk: linuxdir $(MKIMAGE) $(kernel_conf) Patches/dbox2-flash.c.m4
 	m4 --define=rootfs=$(FLASH_FS_TYPE) --define=rootsize=$(ROOT_PARTITION_SIZE) Patches/dbox2-flash.c.m4 > linux/drivers/mtd/maps/dbox2-flash.c
 endif
-	sed $(SQUASHFS_SED_CONF) $(SQUASHFS_LZMA_SED_CONF) \
-		$(JFFS2_SED_CONF) $(JFFS2_LZMA_SED_CONF) \
-		$(IDE_SED_CONF) \
-		$(EXT2_SED_CONF) \
-		$(EXT3_SED_CONF) \
-		$(XFS_SED_CONF) \
-		$(REISERFS_SED_CONF) \
-		$(VFAT_SED_CONF) \
-		$(NFSSERVER_SED_CONF) \
-		$(FS_CIFS_SED_CONF) \
-		$(FS_SMBFS_SED_CONF) \
-		$(AUTOMOUNT_SED_CONF) \
-		$(OPENVPN_SED_CONF) \
-		$(yadd_kernel_conf) \
-		> $(KERNEL_DIR)/.config
+	m4 -Dyadd -Dsquashfs -Dsquashfslzma -Djffs2 -Djffs2lzma $(KERNEL_M4) -Dnfs $(kernel_conf) > $(KERNEL_DIR)/.config
 	$(MAKE) $(KERNEL_BUILD_FILENAME)
 if KERNEL26
 	$(INSTALL) -m644 $(KERNEL_DIR)/arch/ppc/boot/images/uImage $@

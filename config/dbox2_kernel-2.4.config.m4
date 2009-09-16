@@ -1,3 +1,6 @@
+define(`dooption',`ifelse(`$2',`n', `# $1 is not set', `$1=$2')')dnl
+ifdef(`yadd',`define(`option',`dooption($1,$2)')',`define(`option',`dooption($1,$3)')')dnl
+
 #
 # Automatically generated make config: don't edit
 #
@@ -73,7 +76,7 @@ CONFIG_TASK_SIZE=0x80000000
 # CONFIG_PCI is not set
 CONFIG_NET=y
 # CONFIG_SYSCTL is not set
-# CONFIG_SYSVIPC is not set
+option(`CONFIG_SYSVIPC', `y', `n')
 # CONFIG_BSD_PROCESS_ACCT is not set
 CONFIG_KCORE_ELF=y
 CONFIG_BINFMT_ELF=y
@@ -226,7 +229,10 @@ CONFIG_UNIX=y
 CONFIG_INET=y
 # CONFIG_IP_MULTICAST is not set
 # CONFIG_IP_ADVANCED_ROUTER is not set
-# CONFIG_IP_PNP is not set
+option(`CONFIG_IP_PNP', `y', `n')
+# CONFIG_IP_PNP_DHCP is not set
+option(`CONFIG_IP_PNP_BOOTP', `y', `n')
+# CONFIG_IP_PNP_RARP is not set
 # CONFIG_NET_IPIP is not set
 # CONFIG_NET_IPGRE is not set
 # CONFIG_ARPD is not set
@@ -271,12 +277,16 @@ CONFIG_INET=y
 #
 # ATA/IDE/MFM/RLL support
 #
-# CONFIG_IDE is not set
+ifdef(`ide',
+`CONFIG_IDE=m',
+`# CONFIG_IDE is not set')
 
 #
 # IDE, ATA and ATAPI Block devices
 #
-# CONFIG_BLK_DEV_IDE is not set
+ifdef(`ide',
+`CONFIG_BLK_DEV_IDE=m',
+`# CONFIG_BLK_DEV_IDE is not set')
 
 #
 # Please see Documentation/ide.txt for help/info on IDE drives
@@ -284,7 +294,9 @@ CONFIG_INET=y
 # CONFIG_BLK_DEV_HD_IDE is not set
 # CONFIG_BLK_DEV_HD is not set
 # CONFIG_BLK_DEV_IDE_SATA is not set
-# CONFIG_BLK_DEV_IDEDISK is not set
+ifdef(`ide',
+`CONFIG_BLK_DEV_IDEDISK=m',
+`# CONFIG_BLK_DEV_IDEDISK is not set')
 # CONFIG_IDEDISK_MULTI_MODE is not set
 # CONFIG_IDEDISK_STROKE is not set
 # CONFIG_BLK_DEV_IDECS is not set
@@ -328,7 +340,9 @@ CONFIG_NETDEVICES=y
 # CONFIG_DUMMY is not set
 # CONFIG_BONDING is not set
 # CONFIG_EQUALIZER is not set
-# CONFIG_TUN is not set
+ifdef(`tun',
+`CONFIG_TUN=m',
+`# CONFIG_TUN is not set')
 # CONFIG_ETHERTAP is not set
 
 #
@@ -626,8 +640,12 @@ CONFIG_VIDEO_DEV=y
 # CONFIG_QUOTA is not set
 # CONFIG_QFMT_V2 is not set
 # CONFIG_AUTOFS_FS is not set
-CONFIG_AUTOFS4_FS=y
-# CONFIG_REISERFS_FS is not set
+ifdef(`autofs',
+`CONFIG_AUTOFS4_FS=y',
+`# CONFIG_AUTOFS4_FS is not set')
+ifdef(`reiserfs',
+`CONFIG_REISERFS_FS=m',
+`# CONFIG_REISERFS_FS is not set')
 # CONFIG_REISERFS_CHECK is not set
 # CONFIG_REISERFS_PROC_INFO is not set
 # CONFIG_ADFS_FS is not set
@@ -638,37 +656,56 @@ CONFIG_AUTOFS4_FS=y
 # CONFIG_BEFS_FS is not set
 # CONFIG_BEFS_DEBUG is not set
 # CONFIG_BFS_FS is not set
-# CONFIG_EXT3_FS is not set
-# CONFIG_JBD is not set
+ifdef(`ext3',
+`CONFIG_EXT3_FS=m',
+`# CONFIG_EXT3_FS is not set')
+ifdef(`extfs',
+`CONFIG_JBD=m',
+`# CONFIG_JBD is not set')
 # CONFIG_JBD_DEBUG is not set
-# CONFIG_FAT_FS is not set
+ifdef(`vfat',
+`CONFIG_FAT_FS=m
+CONFIG_VFAT_FS=m
+CONFIG_FAT_DEFAULT_CODEPAGE=437
+CONFIG_FAT_DEFAULT_IOCHARSET="iso8859-1"',
+`# CONFIG_FAT_FS is not set
+# CONFIG_VFAT_FS is not set')
 # CONFIG_MSDOS_FS is not set
 # CONFIG_UMSDOS_FS is not set
-# CONFIG_VFAT_FS is not set
 # CONFIG_EFS_FS is not set
 # CONFIG_JFFS_FS is not set
-CONFIG_JFFS2_FS=y
+ifdef(`jffs2',
+`CONFIG_JFFS2_FS=y
 CONFIG_JFFS2_FS_DEBUG=0
 CONFIG_JFFS2_FS_WRITEBUFFER=y
 CONFIG_JFFS2_ZLIB=y
 CONFIG_JFFS2_RTIME=y
+CONFIG_JFFS2_CMODE_PRIORITY=y',
+`# CONFIG_JFFS2_FS is not set')
 # CONFIG_JFFS2_RUBIN is not set
 # CONFIG_JFFS2_LZO is not set
 # CONFIG_JFFS2_LZARI is not set
-# CONFIG_JFFS2_LZMA is not set
 # CONFIG_JFFS2_CMODE_NONE is not set
-CONFIG_JFFS2_CMODE_PRIORITY=y
+ifdef(`jffs2lzma',
+`CONFIG_JFFS2_LZMA=y',
+`# CONFIG_JFFS2_LZMA is not set')
 # CONFIG_JFFS2_CMODE_SIZE is not set
 # CONFIG_JFFS2_PROC is not set
-# CONFIG_CRAMFS is not set
-CONFIG_SQUASHFS=y
+ifdef(`cramfs',
+`CONFIG_CRAMFS=y',
+`# CONFIG_CRAMFS is not set')
+ifdef(`squashfs',
+`CONFIG_SQUASHFS=y
 CONFIG_SQUASHFS_EMBEDDED=y
-CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=3
+CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=3',
+`# CONFIG_SQUASHFS is not set')
 # CONFIG_SQUASHFS_VMALLOC is not set
-CONFIG_SQUASHFS_LZMA=y
+ifdef(`squashfslzma',
+`CONFIG_SQUASHFS_LZMA=y
 CONFIG_SQUASHFS_LZMA_LC=3
 CONFIG_SQUASHFS_LZMA_LP=0
-CONFIG_SQUASHFS_LZMA_PB=2
+CONFIG_SQUASHFS_LZMA_PB=2',
+`# CONFIG_SQUASHFS_LZMA is not set')
 CONFIG_TMPFS=y
 CONFIG_RAMFS=y
 # CONFIG_ISO9660_FS is not set
@@ -690,13 +727,17 @@ CONFIG_DEVFS_MOUNT=y
 # CONFIG_QNX4FS_FS is not set
 # CONFIG_QNX4FS_RW is not set
 # CONFIG_ROMFS_FS is not set
-# CONFIG_EXT2_FS is not set
+ifdef(`ext2',
+`CONFIG_EXT2_FS=m',
+`# CONFIG_EXT2_FS is not set')
 # CONFIG_SYSV_FS is not set
 # CONFIG_UDF_FS is not set
 # CONFIG_UDF_RW is not set
 # CONFIG_UFS_FS is not set
 # CONFIG_UFS_FS_WRITE is not set
-# CONFIG_XFS_FS is not set
+ifdef(`xfs',
+`CONFIG_XFS_FS=m',
+`# CONFIG_XFS_FS is not set')
 # CONFIG_XFS_QUOTA is not set
 # CONFIG_XFS_RT is not set
 # CONFIG_XFS_TRACE is not set
@@ -707,22 +748,41 @@ CONFIG_DEVFS_MOUNT=y
 #
 # CONFIG_CODA_FS is not set
 # CONFIG_INTERMEZZO_FS is not set
-CONFIG_NFS_FS=m
+ifdef(`nfs',
+`option(`CONFIG_NFS_FS', `y', `m')
+option(`CONFIG_ROOT_NFS', `y', `n')
 CONFIG_NFS_V3=y
-# CONFIG_NFS_DIRECTIO is not set
+option(`CONFIG_SUNRPC', `y', `m')
+option(`CONFIG_LOCKD', `y', `m')
+CONFIG_LOCKD_V4=y',
+`# CONFIG_NFS_FS is not set
+# CONFIG_NFS_V3 is not set
+# CONFIG_SUNRPC is not set
+# CONFIG_LOCKD is not set
+# CONFIG_LOCKD_V4 is not set
 # CONFIG_ROOT_NFS is not set
-# CONFIG_NFSD is not set
+# CONFIG_NFS_COMMON is not set')
+# CONFIG_NFS_DIRECTIO is not set
+ifdef(`nfsd',
+`CONFIG_NFSD=m
+CONFIG_EXPORTFS=m
+CONFIG_NFSD_V3=y
+CONFIG_NFSD_TCP=y',
+`# CONFIG_NFSD is not set
 # CONFIG_NFSD_V3 is not set
-# CONFIG_NFSD_TCP is not set
-CONFIG_SUNRPC=m
-CONFIG_LOCKD=m
-CONFIG_LOCKD_V4=y
-CONFIG_CIFS=m
+# CONFIG_NFSD_TCP is not set')
+ifdef(`cifs',
+`option(`CONFIG_CIFS', `y', `m')
+CONFIG_CIFS_POSIX=y',
+`# CONFIG_CIFS is not set
+# CONFIG_CIFS_POSIX is not set')
 # CONFIG_CIFS_STATS is not set
-CONFIG_CIFS_POSIX=y
-# CONFIG_SMB_FS is not set
+ifdef(`smbfs',
+`option(`CONFIG_SMB_FS', `y', `m')
+CONFIG_SMB_UNIX=y',
+`# CONFIG_SMB_FS is not set
+# CONFIG_SMB_UNIX is not set')
 # CONFIG_SMB_NLS_DEFAULT is not set
-CONFIG_SMB_UNIX=y
 # CONFIG_NCP_FS is not set
 # CONFIG_NCPFS_PACKET_SIGNING is not set
 # CONFIG_NCPFS_IOCTL_LOCKING is not set
@@ -739,8 +799,11 @@ CONFIG_LUFS_FS=m
 # Partition Types
 #
 # CONFIG_PARTITION_ADVANCED is not set
-CONFIG_MSDOS_PARTITION=y
-# CONFIG_SMB_NLS is not set
+ifdef(`ide',
+`CONFIG_MSDOS_PARTITION=y',
+`# CONFIG_MSDOS_PARTITION is not set')
+ifdef(`nls',
+`CONFIG_SMB_NLS=y
 CONFIG_NLS=y
 
 #
@@ -783,7 +846,9 @@ CONFIG_NLS_DEFAULT="iso8859-1"
 # CONFIG_NLS_ISO8859_15 is not set
 # CONFIG_NLS_KOI8_R is not set
 # CONFIG_NLS_KOI8_U is not set
-# CONFIG_NLS_UTF8 is not set
+# CONFIG_NLS_UTF8 is not set',
+`# CONFIG_NLS is not set
+# CONFIG_SMB_NLS is not set')
 
 #
 # Sound

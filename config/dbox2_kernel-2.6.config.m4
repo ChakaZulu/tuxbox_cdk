@@ -1,7 +1,8 @@
+define(`dooption',`ifelse(`$2',`n', `# $1 is not set', `$1=$2')')dnl
+ifdef(`yadd',`define(`option',`dooption($1,$2)')',`define(`option',`dooption($1,$3)')')dnl
+
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.26.4-dbox2
-# Thu Jul 17 14:12:25 2008
 #
 CONFIG_WORD_SIZE=32
 CONFIG_MMU=y
@@ -30,7 +31,8 @@ CONFIG_INIT_ENV_ARG_LIMIT=32
 CONFIG_LOCALVERSION=""
 # CONFIG_LOCALVERSION_AUTO is not set
 CONFIG_SWAP=y
-# CONFIG_SYSVIPC is not set
+option(`CONFIG_SYSVIPC', `y', `n')
+option(`CONFIG_SYSVIPC_SYSCTL', `y', `n')
 # CONFIG_POSIX_MQUEUE is not set
 # CONFIG_BSD_PROCESS_ACCT is not set
 # CONFIG_TASKSTATS is not set
@@ -43,29 +45,32 @@ CONFIG_LOG_BUF_SHIFT=14
 # CONFIG_RELAY is not set
 CONFIG_NAMESPACES=y
 # CONFIG_UTS_NS is not set
+# CONFIG_IPC_NS is not set
 # CONFIG_USER_NS is not set
 # CONFIG_PID_NS is not set
 # CONFIG_BLK_DEV_INITRD is not set
 CONFIG_CC_OPTIMIZE_FOR_SIZE=y
 CONFIG_SYSCTL=y
-CONFIG_EMBEDDED=y
-# CONFIG_SYSCTL_SYSCALL is not set
+option(`CONFIG_EMBEDDED', `n', `y')
+option(`CONFIG_SYSCTL_SYSCALL', `y', `n')
+option(`CONFIG_SYSCTL_SYSCALL_CHECK', `y', `n')
 CONFIG_KALLSYMS=y
+# CONFIG_KALLSYMS_ALL is not set
 # CONFIG_KALLSYMS_EXTRA_PASS is not set
 CONFIG_HOTPLUG=y
 CONFIG_PRINTK=y
 CONFIG_BUG=y
-# CONFIG_ELF_CORE is not set
+option(`CONFIG_ELF_CORE', `y', `n')
 CONFIG_COMPAT_BRK=y
 CONFIG_BASE_FULL=y
 CONFIG_FUTEX=y
 CONFIG_ANON_INODES=y
 CONFIG_EPOLL=y
-# CONFIG_SIGNALFD is not set
-# CONFIG_TIMERFD is not set
-# CONFIG_EVENTFD is not set
-# CONFIG_SHMEM is not set
-# CONFIG_VM_EVENT_COUNTERS is not set
+option(`CONFIG_SIGNALFD', `y', `n')
+option(`CONFIG_TIMERFD', `y', `n')
+option(`CONFIG_EVENTFD', `y', `n')
+option(`CONFIG_SHMEM', `y', `n')
+option(`CONFIG_VM_EVENT_COUNTERS', `y', `n')
 CONFIG_SLAB=y
 # CONFIG_SLUB is not set
 # CONFIG_SLOB is not set
@@ -79,7 +84,7 @@ CONFIG_HAVE_KPROBES=y
 CONFIG_PROC_PAGE_MONITOR=y
 CONFIG_SLABINFO=y
 CONFIG_RT_MUTEXES=y
-CONFIG_TINY_SHMEM=y
+option(`CONFIG_TINY_SHMEM', `n', `y')
 CONFIG_BASE_SMALL=0
 CONFIG_MODULES=y
 # CONFIG_MODULE_FORCE_LOAD is not set
@@ -227,7 +232,10 @@ CONFIG_INET=y
 # CONFIG_IP_MULTICAST is not set
 # CONFIG_IP_ADVANCED_ROUTER is not set
 CONFIG_IP_FIB_HASH=y
-# CONFIG_IP_PNP is not set
+option(`CONFIG_IP_PNP', `y', `n')
+option(`CONFIG_IP_PNP_DHCP', `y', `n')
+# CONFIG_IP_PNP_BOOTP is not set
+# CONFIG_IP_PNP_RARP is not set
 # CONFIG_NET_IPIP is not set
 # CONFIG_NET_IPGRE is not set
 # CONFIG_ARPD is not set
@@ -296,6 +304,8 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
 CONFIG_STANDALONE=y
 CONFIG_PREVENT_FIRMWARE_BUILD=y
 CONFIG_FW_LOADER=y
+# CONFIG_DEBUG_DRIVER is not set
+# CONFIG_DEBUG_DEVRES is not set
 # CONFIG_SYS_HYPERVISOR is not set
 # CONFIG_CONNECTOR is not set
 CONFIG_MTD=y
@@ -310,8 +320,9 @@ CONFIG_MTD_PARTITIONS=y
 # User Modules And Translation Layers
 #
 CONFIG_MTD_CHAR=y
-CONFIG_MTD_BLKDEVS=y
-CONFIG_MTD_BLOCK=y
+option(`CONFIG_MTD_BLKDEVS', `n', `y')
+option(`CONFIG_MTD_BLOCK', `n', `y')
+# CONFIG_MTD_BLOCK_RO is not set
 # CONFIG_FTL is not set
 # CONFIG_NFTL is not set
 # CONFIG_INFTL is not set
@@ -387,16 +398,20 @@ CONFIG_BLK_DEV_LOOP=y
 CONFIG_MISC_DEVICES=y
 # CONFIG_EEPROM_93CX6 is not set
 # CONFIG_ENCLOSURE_SERVICES is not set
-CONFIG_HAVE_IDE=y
+
+ifdef(`ide',
+`CONFIG_HAVE_IDE=y
 CONFIG_IDE=m
 CONFIG_IDE_MAX_HWIFS=4
-CONFIG_BLK_DEV_IDE=m
+CONFIG_BLK_DEV_IDE=m',
+`# CONFIG_HAVE_IDE is not set
+# CONFIG_IDE is not set')
 
 #
 # Please see Documentation/ide/ide.txt for help/info on IDE drives
 #
 # CONFIG_BLK_DEV_IDE_SATA is not set
-CONFIG_BLK_DEV_IDEDISK=m
+CONFIG_BLK_DEV_IDEDISK=y
 # CONFIG_IDEDISK_MULTI_MODE is not set
 # CONFIG_BLK_DEV_IDECD is not set
 # CONFIG_BLK_DEV_IDECD_VERBOSE_ERRORS is not set
@@ -430,7 +445,9 @@ CONFIG_NETDEVICES=y
 # CONFIG_BONDING is not set
 # CONFIG_MACVLAN is not set
 # CONFIG_EQUALIZER is not set
-# CONFIG_TUN is not set
+ifdef(`tun',
+`CONFIG_TUN=m',
+`# CONFIG_TUN is not set')
 # CONFIG_VETH is not set
 # CONFIG_PHYLIB is not set
 CONFIG_NET_ETHERNET=y
@@ -564,7 +581,6 @@ CONFIG_I2C_BOARDINFO=y
 # CONFIG_I2C_DEBUG_ALGO is not set
 # CONFIG_I2C_DEBUG_BUS is not set
 # CONFIG_I2C_DEBUG_CHIP is not set
-
 # CONFIG_SPI is not set
 # CONFIG_W1 is not set
 # CONFIG_POWER_SUPPLY is not set
@@ -650,7 +666,7 @@ CONFIG_FB_CFB_IMAGEBLIT=y
 # CONFIG_FB_SYS_IMAGEBLIT is not set
 # CONFIG_FB_FOREIGN_ENDIAN is not set
 # CONFIG_FB_SYS_FOPS is not set
-CONFIG_FB_DEFERRED_IO=y
+option(`CONFIG_FB_DEFERRED_IO', `n', `y')
 # CONFIG_FB_SVGALIB is not set
 # CONFIG_FB_MACMODES is not set
 # CONFIG_FB_BACKLIGHT is not set
@@ -715,27 +731,39 @@ CONFIG_SOUND=y
 # CONFIG_EDAC is not set
 # CONFIG_RTC_CLASS is not set
 # CONFIG_DMADEVICES is not set
-
 # CONFIG_UIO is not set
 
 #
 # File systems
 #
-CONFIG_EXT2_FS=m
+ifdef(`ext2',
+`CONFIG_EXT2_FS=m',
+`# CONFIG_EXT2_FS is not set')
 # CONFIG_EXT2_FS_XATTR is not set
 # CONFIG_EXT2_FS_XIP is not set
-CONFIG_EXT3_FS=m
-# CONFIG_EXT3_FS_XATTR is not set
+ifdef(`ext3',
+`CONFIG_EXT3_FS=m
+option(`CONFIG_EXT3_FS_XATTR', `y', `n')',
+`# CONFIG_EXT3_FS is not set
+# CONFIG_EXT3_FS_XATTR is not set')
+# CONFIG_EXT3_FS_POSIX_ACL is not set
+# CONFIG_EXT3_FS_SECURITY is not set
 # CONFIG_EXT4DEV_FS is not set
-CONFIG_JBD=m
+ifdef(`extfs',
+`CONFIG_JBD=m',
+`# CONFIG_JBD is not set')
 CONFIG_FS_MBCACHE=y
-CONFIG_REISERFS_FS=m
+ifdef(`reiserfs',
+`CONFIG_REISERFS_FS=m',
+`# CONFIG_REISERFS_FS is not set')
 # CONFIG_REISERFS_CHECK is not set
 # CONFIG_REISERFS_PROC_INFO is not set
 # CONFIG_REISERFS_FS_XATTR is not set
 # CONFIG_JFS_FS is not set
 # CONFIG_FS_POSIX_ACL is not set
-CONFIG_XFS_FS=m
+ifdef(`xfs',
+`CONFIG_XFS_FS=m',
+`# CONFIG_XFS_FS is not set')
 # CONFIG_XFS_QUOTA is not set
 # CONFIG_XFS_POSIX_ACL is not set
 # CONFIG_XFS_RT is not set
@@ -746,23 +774,34 @@ CONFIG_DNOTIFY=y
 # CONFIG_INOTIFY is not set
 # CONFIG_QUOTA is not set
 # CONFIG_AUTOFS_FS is not set
-CONFIG_AUTOFS4_FS=m
+ifdef(`autofs',
+`CONFIG_AUTOFS4_FS=y',
+`# CONFIG_AUTOFS4_FS is not set')
 # CONFIG_FUSE_FS is not set
 
 #
 # CD-ROM/DVD Filesystems
 #
 # CONFIG_ISO9660_FS is not set
+# CONFIG_JOLIET is not set
+# CONFIG_ZISOFS is not set
 # CONFIG_UDF_FS is not set
+# CONFIG_UDF_NLS is not set
 
 #
 # DOS/FAT/NT Filesystems
 #
-# CONFIG_MSDOS_FS is not set
-# CONFIG_VFAT_FS is not set
+ifdef(`vfat',
+`CONFIG_FAT_FS=m
+CONFIG_VFAT_FS=m
 CONFIG_FAT_DEFAULT_CODEPAGE=437
-CONFIG_FAT_DEFAULT_IOCHARSET="iso8859-1"
+CONFIG_FAT_DEFAULT_IOCHARSET="iso8859-1"',
+`# CONFIG_FAT_FS is not set
+# CONFIG_VFAT_FS is not set')
+# CONFIG_MSDOS_FS is not set
 # CONFIG_NTFS_FS is not set
+# CONFIG_NTFS_DEBUG is not set
+# CONFIG_NTFS_RW is not set
 
 #
 # Pseudo filesystems
@@ -786,28 +825,38 @@ CONFIG_TMPFS=y
 # CONFIG_BEFS_FS is not set
 # CONFIG_BFS_FS is not set
 # CONFIG_EFS_FS is not set
-CONFIG_JFFS2_FS=y
+ifdef(`jffs2',
+`CONFIG_JFFS2_FS=y
 CONFIG_JFFS2_FS_DEBUG=0
 CONFIG_JFFS2_FS_WRITEBUFFER=y
+CONFIG_JFFS2_ZLIB=y
+CONFIG_JFFS2_RTIME=y
+CONFIG_JFFS2_COMPRESSION_OPTIONS=y
+CONFIG_JFFS2_CMODE_PRIORITY=y',
+`# CONFIG_JFFS2_FS is not set')
+ifdef(`jffs2lzma',
+`CONFIG_JFFS2_LZMA=y',
+`# CONFIG_JFFS2_LZMA is not set')
 # CONFIG_JFFS2_FS_WBUF_VERIFY is not set
 # CONFIG_JFFS2_SUMMARY is not set
 # CONFIG_JFFS2_FS_XATTR is not set
-CONFIG_JFFS2_COMPRESSION_OPTIONS=y
-CONFIG_JFFS2_ZLIB=y
 # CONFIG_JFFS2_LZO is not set
-# CONFIG_JFFS2_LZMA is not set
-CONFIG_JFFS2_RTIME=y
 # CONFIG_JFFS2_RUBIN is not set
 # CONFIG_JFFS2_CMODE_NONE is not set
-CONFIG_JFFS2_CMODE_PRIORITY=y
 # CONFIG_JFFS2_CMODE_SIZE is not set
 # CONFIG_JFFS2_CMODE_FAVOURLZO is not set
-# CONFIG_CRAMFS is not set
-# CONFIG_SQUASHFS is not set
-# CONFIG_SQUASHFS_LZMA is not set
+ifdef(`cramfs',
+`CONFIG_CRAMFS=y',
+`# CONFIG_CRAMFS is not set')
+ifdef(`squashfs',
+`CONFIG_SQUASHFS=y
 CONFIG_SQUASHFS_EMBEDDED=y
-CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=1
+CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=1',
+`# CONFIG_SQUASHFS is not set')
 # CONFIG_SQUASHFS_VMALLOC is not set
+ifdef(`squashfslzma',
+`CONFIG_SQUASHFS_LZMA=y',
+`# CONFIG_SQUASHFS_LZMA is not set')
 # CONFIG_VXFS_FS is not set
 # CONFIG_MINIX_FS is not set
 # CONFIG_HPFS_FS is not set
@@ -816,25 +865,41 @@ CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=1
 # CONFIG_SYSV_FS is not set
 # CONFIG_UFS_FS is not set
 CONFIG_NETWORK_FILESYSTEMS=y
-CONFIG_NFS_FS=m
+ifdef(`nfs',
+`option(`CONFIG_NFS_FS', `y', `m')
+option(`CONFIG_ROOT_NFS', `y', `n')
 CONFIG_NFS_V3=y
+option(`CONFIG_SUNRPC', `y', `m')
+option(`CONFIG_LOCKD', `y', `m')
+CONFIG_NFS_COMMON=y
+CONFIG_LOCKD_V4=y',
+`# CONFIG_NFS_FS is not set
+# CONFIG_NFS_V3 is not set
+# CONFIG_SUNRPC is not set
+# CONFIG_LOCKD is not set
+# CONFIG_LOCKD_V4 is not set
+# CONFIG_ROOT_NFS is not set
+# CONFIG_NFS_COMMON is not set')
 # CONFIG_NFS_V3_ACL is not set
 # CONFIG_NFS_V4 is not set
-CONFIG_NFSD=m
-CONFIG_NFSD_V3=y
+ifdef(`nfsd',
+`CONFIG_NFSD=m
+CONFIG_EXPORTFS=m
+CONFIG_NFSD_V3=y',
+`# CONFIG_NFSD is not set
+# CONFIG_NFSD_V3 is not set')
 # CONFIG_NFSD_V3_ACL is not set
 # CONFIG_NFSD_V4 is not set
-CONFIG_LOCKD=m
-CONFIG_LOCKD_V4=y
-CONFIG_EXPORTFS=m
-CONFIG_NFS_COMMON=y
-CONFIG_SUNRPC=m
 # CONFIG_SUNRPC_BIND34 is not set
 # CONFIG_RPCSEC_GSS_KRB5 is not set
 # CONFIG_RPCSEC_GSS_SPKM3 is not set
-# CONFIG_SMB_FS is not set
+ifdef(`smbfs',
+`option(`CONFIG_SMB_FS', `y', `m')',
+`# CONFIG_SMB_FS is not set')
 # CONFIG_SMB_NLS_DEFAULT is not set
-CONFIG_CIFS=m
+ifdef(`cifs',
+`option(`CONFIG_CIFS', `y', `m')',
+`# CONFIG_CIFS is not set')
 # CONFIG_CIFS_STATS is not set
 # CONFIG_CIFS_WEAK_PW_HASH is not set
 # CONFIG_CIFS_XATTR is not set
@@ -853,7 +918,9 @@ CONFIG_PARTITION_ADVANCED=y
 # CONFIG_AMIGA_PARTITION is not set
 # CONFIG_ATARI_PARTITION is not set
 # CONFIG_MAC_PARTITION is not set
-CONFIG_MSDOS_PARTITION=y
+ifdef(`ide',
+`CONFIG_MSDOS_PARTITION=y',
+`# CONFIG_MSDOS_PARTITION is not set')
 # CONFIG_BSD_DISKLABEL is not set
 # CONFIG_MINIX_SUBPARTITION is not set
 # CONFIG_SOLARIS_X86_PARTITION is not set
@@ -865,10 +932,10 @@ CONFIG_MSDOS_PARTITION=y
 # CONFIG_KARMA_PARTITION is not set
 # CONFIG_EFI_PARTITION is not set
 # CONFIG_SYSV68_PARTITION is not set
-
-# CONFIG_NLS is not set
+ifdef(`nls',
+`CONFIG_NLS=y
 CONFIG_NLS_DEFAULT="iso8859-1"
-CONFIG_NLS_CODEPAGE_437=m
+CONFIG_NLS_CODEPAGE_437=y
 # CONFIG_NLS_CODEPAGE_737 is not set
 # CONFIG_NLS_CODEPAGE_775 is not set
 # CONFIG_NLS_CODEPAGE_850 is not set
@@ -905,7 +972,9 @@ CONFIG_NLS_ISO8859_1=m
 # CONFIG_NLS_ISO8859_15 is not set
 # CONFIG_NLS_KOI8_R is not set
 # CONFIG_NLS_KOI8_U is not set
-# CONFIG_NLS_UTF8 is not set
+# CONFIG_NLS_UTF8 is not set',
+`# CONFIG_NLS is not set
+# CONFIG_SMB_NLS is not set')
 
 # CONFIG_DLM is not set
 
@@ -936,12 +1005,12 @@ CONFIG_BITREVERSE=y
 # CONFIG_GENERIC_FIND_FIRST_BIT is not set
 # CONFIG_CRC_CCITT is not set
 # CONFIG_CRC16 is not set
-# CONFIG_CRC_ITU_T is not set
+option(`CONFIG_CRC_ITU_T', `y', `n')
 CONFIG_CRC32=y
 # CONFIG_CRC7 is not set
 # CONFIG_LIBCRC32C is not set
-CONFIG_ZLIB_INFLATE=y
-CONFIG_ZLIB_DEFLATE=y
+option(`CONFIG_ZLIB_INFLATE', `n', `y')
+option(`CONFIG_ZLIB_DEFLATE', `n', `y')
 CONFIG_PLIST=y
 CONFIG_HAS_IOMEM=y
 CONFIG_HAS_IOPORT=y
@@ -958,9 +1027,34 @@ CONFIG_FRAME_WARN=1024
 # CONFIG_UNUSED_SYMBOLS is not set
 # CONFIG_DEBUG_FS is not set
 # CONFIG_HEADERS_CHECK is not set
-# CONFIG_DEBUG_KERNEL is not set
-# CONFIG_DEBUG_BUGVERBOSE is not set
+option(`CONFIG_DEBUG_KERNEL', `y', `n')
+option(`CONFIG_DEBUG_BUGVERBOSE', `y', `n')
+# CONFIG_DEBUG_SHIRQ is not set
+# CONFIG_DETECT_SOFTLOCKUP is not set
+# CONFIG_SCHED_DEBUG is not set
+# CONFIG_SCHEDSTATS is not set
+# CONFIG_TIMER_STATS is not set
+# CONFIG_DEBUG_OBJECTS is not set
+# CONFIG_DEBUG_SLAB is not set
+# CONFIG_DEBUG_RT_MUTEXES is not set
+# CONFIG_RT_MUTEX_TESTER is not set
+# CONFIG_DEBUG_SPINLOCK is not set
+# CONFIG_DEBUG_MUTEXES is not set
+# CONFIG_DEBUG_SPINLOCK_SLEEP is not set
+# CONFIG_DEBUG_LOCKING_API_SELFTESTS is not set
+# CONFIG_DEBUG_KOBJECT is not set
+# CONFIG_DEBUG_INFO is not set
+# CONFIG_DEBUG_VM is not set
+# CONFIG_DEBUG_WRITECOUNT is not set
+# CONFIG_DEBUG_LIST is not set
+# CONFIG_DEBUG_SG is not set
+# CONFIG_BOOT_PRINTK_DELAY is not set
+# CONFIG_RCU_TORTURE_TEST is not set
+# CONFIG_BACKTRACE_SELF_TEST is not set
+# CONFIG_FAULT_INJECTION is not set
 # CONFIG_SAMPLES is not set
+# CONFIG_XMON is not set
+# CONFIG_BDI_SWITCH is not set
 
 #
 # Security options

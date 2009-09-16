@@ -505,15 +505,10 @@ AC_ARG_WITH(busybox_conf,
 	[busybox_conf="$with_busybox_conf"],[busybox_conf="config/busybox.config.m4"])
 AC_SUBST(busybox_conf)
 
-AC_ARG_WITH(yadd_kernel_conf,
-	[  --with-yadd-kernel-conf=FILE optional personalized linux kernel config file for nfs rootfs [[Patches/linux-KERNEL_VERSION-dbox2.config]]],
-	[yadd_kernel_conf="$with_yadd_kernel_conf"],[yadd_kernel_conf="NONE"])
-AC_SUBST(yadd_kernel_conf)
-
-AC_ARG_WITH(flash_kernel_conf,
-	[  --with-flash-kernel-conf=FILE optional personalized linux kernel config file for flash rootfs [[Patches/linux-KERNEL_VERSION-dbox2.config-flash]]],
-	[flash_kernel_conf="$with_flash_kernel_conf"],[flash_kernel_conf="NONE"])
-AC_SUBST(flash_kernel_conf)
+AC_ARG_WITH(kernel_conf,
+	[  --with-kernel-conf=FILE optional personalized linux kernel config file [[config/dbox2_kernel-KERNEL_VERSION.config.m4]]],
+	[kernel_conf="$with_kernel_conf"],[kernel_conf="NONE"])
+AC_SUBST(kernel_conf)
 
 buildprefix=`pwd`
 AC_SUBST(targetprefix)
@@ -1042,25 +1037,18 @@ ${srcdir}/rules-archive.pl ${srcdir}/rules-archive > Makefile-archive
 
 case "${BOXTYPE}" in
 	ipbox)
-		if test "$flash_kernel_conf" = "NONE"; then
-			flash_kernel_conf="config/ipbox_kernel-2.6.17.config.m4"
+		if test "$kernel_conf" = "NONE"; then
+			kernel_conf="config/ipbox_kernel-2.6.17.config.m4"
 		fi
-		yadd_kernel_conf=""
 		;;
 	*)
 		if test "$enable_kernel26" = "yes"; then
-			if test "$yadd_kernel_conf" = "NONE"; then
-				yadd_kernel_conf="Patches/linux-2.6.26.4-dbox2.config"
-			fi
-			if test "$flash_kernel_conf" = "NONE"; then
-				flash_kernel_conf="Patches/linux-2.6.26.4-dbox2.config-flash"
+			if test "$kernel_conf" = "NONE"; then
+				kernel_conf="config/dbox2_kernel-2.6.config.m4"
 			fi
 		else
-			if test "$yadd_kernel_conf" = "NONE"; then
-				yadd_kernel_conf="Patches/linux-2.4.35.5-dbox2.config"
-			fi
-			if test "$flash_kernel_conf" = "NONE"; then
-				flash_kernel_conf="Patches/linux-2.4.35.5-dbox2.config-flash"
+			if test "$kernel_conf" = "NONE"; then
+				kernel_conf="config/dbox2_kernel-2.4.config.m4"
 			fi
 		fi
 		;;
@@ -1093,8 +1081,7 @@ summary:
 ----------------------------------------
 target cpu/boxtype:		$CPU_MODEL/$BOXTYPE $BOXMODEL
 kernel:				$used_kernelversion
-used yadd kernel config:	$yadd_kernel_conf
-used flash kernel config:	$flash_kernel_conf
+kernel config:			$kernel_conf
 libc:				$used_libc
 threads:			$GLIBC_PTHREADS
 target:				$target
