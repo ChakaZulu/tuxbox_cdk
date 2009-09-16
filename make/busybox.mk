@@ -35,11 +35,7 @@ BUSYBOX_M4 += -Dopenvpn
 endif
 
 # this variable is needed because cdk/rules.pl assumes *.patch can be found in cdk/Patches
-BUSYBOX_PATCHES = \
-Archive/busybox-1.14.3-ash.patch \
-Archive/busybox-1.14.3-httpd.patch \
-Archive/busybox-1.14.3-modprobe.patch \
-Archive/busybox-1.14.3-trylink-gc-sections.patch
+#BUSYBOX_PATCHES =
 
 $(DEPDIR)/busybox: bootstrap @DEPENDS_busybox@ $(BUSYBOX_PATCHES) $(busybox_conf)
 	@PREPARE_busybox@
