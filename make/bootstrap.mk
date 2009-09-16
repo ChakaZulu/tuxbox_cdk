@@ -220,9 +220,22 @@ endif
 	touch $@
 endif
 
+UCLIBC_M4 =
+
 if TARGETRULESET_UCLIBC
+
 if !TARGETRULESET_FLASH
-UCLIBC_DEBUG_SED_CONF=$(foreach param,DODEBUG DODEBUG_PT SUPPORT_LD_DEBUG SUPPORT_LD_DEBUG_EARLY UCLIBC_MALLOC_DEBUGGING,-e s"/^.*$(param)[= ].*/$(param)=y/")
+UCLIBC_M4 += -Ddebug
+endif
+
+if BOXTYPE_DBOX2
+if KERNEL26
+UCLIBC_M4 += -DKHEADERS=\`\"$(buildprefix)/$(KERNEL_DIR)/usr/include\"\'
+else
+UCLIBC_M4 += -DKHEADERS=\`\"$(buildprefix)/$(KERNEL_DIR)/include\"\'
+endif
+else
+UCLIBC_M4 += -DKHEADERS=\`\"$(hostprefix)/$(target)/include\"\'
 endif
 
 if ASSUME_KERNELSOURCES_OLD
@@ -230,17 +243,8 @@ $(DEPDIR)/libc: @DEPENDS_uclibc@ bootstrap_gcc | install-linux-headers
 else
 $(DEPDIR)/libc: @DEPENDS_uclibc@ bootstrap_gcc install-linux-headers
 endif
-if BOXTYPE_DBOX2
-if KERNEL26
-KHEADERS="$(buildprefix)/$(KERNEL_DIR)/usr/include"
-else
-KHEADERS="$(buildprefix)/$(KERNEL_DIR)/include"
-endif
-else
-KHEADERS="$(hostprefix)/$(target)/include"
-endif
 	@PREPARE_uclibc@
-	sed $(XFS_UCLIBC_CONF) $(UCLIBC_DEBUG_SED_CONF) -e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=$(KHEADERS),g' Patches/uclibc-0.9.30.config > @DIR_uclibc@/.config
+	m4 $(UCLIBC_M4) config/uclibc.config.m4 > @DIR_uclibc@/.config
 	$(MAKE) -C @DIR_uclibc@ oldconfig ARCH=ppc
 	cd @DIR_uclibc@ && \
 		$(BUILDENV) \
