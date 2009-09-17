@@ -148,7 +148,6 @@ KERNEL_M4 += -Dext3 -Dextfs
 endif
 if ENABLE_XFS
 KERNEL_M4 += -Dxfs
-UCLIBC_M4 += -Dxfs
 endif
 if ENABLE_REISERFS
 KERNEL_M4 += -Dreiserfs
