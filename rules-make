@@ -36,7 +36,7 @@ module_init_tools;3.2.1;module-init-tools-3.2.1;module-init-tools-3.2.1.tar.bz2:
 modutils;2.4.26;modutils-2.4.26;modutils-2.4.26.tar.bz2:modutils.diff;extract:modutils-2.4.26.tar.bz2;patch:modutils.diff
 netkit_telnet;0.17;netkit-telnet-0.17;netkit-telnet-0.17.tar.gz:netkit-telnet.diff;extract:netkit-telnet-0.17.tar.gz;patch:netkit-telnet.diff
 portmap;5;portmap_5beta;portmap_5beta.tar.gz:portmap-5.diff;extract:portmap_5beta.tar.gz;patch:portmap-5.diff
-procps;3.2.7;procps-3.2.7;procps-3.2.7.tar.gz:procps.diff;extract:procps-3.2.7.tar.gz;patch:procps.diff
+procps;3.2.8;procps-3.2.8;procps-3.2.8.tar.gz:procps.diff;extract:procps-3.2.8.tar.gz;patch:procps.diff
 udev;030;udev-030;udev-030.tar.gz:udev.diff;extract:udev-030.tar.gz;patch:udev.diff
 mrouted;3.9-beta3;mrouted-3.9-beta3.orig;mrouted_3.9-beta3.orig.tar.gz:mrouted_3.9-beta3-3.diff;extract:mrouted_3.9-beta3.orig.tar.gz;patch:mrouted_3.9-beta3-3.diff
 
@@ -46,7 +46,7 @@ squashfs;3.0;mksquashfs;squashfs3.0.tar.gz:mksquashfs_lzma.diff:lzma442.tar.bz2:
 #
 # contrib libs
 #
-libboost;boost-1.39.0;boost_1_39_0;boost_1_39_0.tar.bz2;extract:boost_1_39_0.tar.bz2
+libboost;boost-1.40.0;boost_1_40_0;boost_1_40_0.tar.bz2;extract:boost_1_40_0.tar.bz2
 libcommoncplusplus;1.0.13;commoncpp2-1.0.13;commoncpp2-1.0.13.tar.gz:libcommoncplusplus.diff;extract:commoncpp2-1.0.13.tar.gz;patch:libcommoncplusplus.diff
 libcrypto;0.9.7e;openssl-0.9.7e;openssl-0.9.7e.tar.gz:libcrypto.diff;extract:openssl-0.9.7e.tar.gz;patch:libcrypto.diff
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.gz:libcurl.diff;extract:curl-7.10.1.tar.gz;patch:libcurl.diff
@@ -65,11 +65,11 @@ libmad;0.15.1b;libmad-0.15.1b;libmad-0.15.1b.tar.gz:libmad.diff;extract:libmad-0
 libid3tag;0.15.1b;libid3tag-0.15.1b;libid3tag-0.15.1b.tar.gz:libid3tag.diff;extract:libid3tag-0.15.1b.tar.gz;patch:libid3tag.diff
 libncurses;5.3;ncurses-5.3;ncurses-5.3.tar.gz;extract:ncurses-5.3.tar.gz
 libpcap;0.9.4;libpcap-0.9.4;libpcap-0.9.4.tar.gz:libpcap.diff;extract:libpcap-0.9.4.tar.gz;patch:libpcap.diff
-libpng;1.2.39;libpng-1.2.39;libpng-1.2.39.tar.bz2;extract:libpng-1.2.39.tar.bz2
+libpng;1.2.40;libpng-1.2.40;libpng-1.2.40.tar.bz2;extract:libpng-1.2.40.tar.bz2
 libreadline;4.3;readline-4.3;readline-4.3.tar.gz:readline.diff;extract:readline-4.3.tar.gz;patch:readline.diff
 libsdl;1.2.6;SDL-1.2.6;SDL-1.2.6.tar.gz:sdl.diff;extract:SDL-1.2.6.tar.gz;patch:sdl.diff
-libsigc;1.2.5;libsigc++-1.2.5;libsigc++-1.2.5.tar.gz;extract:libsigc++-1.2.5.tar.gz
-libvorbisidec;1.0.2+svn14261;libvorbisidec-1.0.2+svn14261;libvorbisidec_1.0.2+svn14261.orig.tar.gz:tremor.diff;extract:libvorbisidec_1.0.2+svn14261.orig.tar.gz;patch:tremor.diff
+libsigc;1.2.7;libsigc++-1.2.7;libsigc++-1.2.7.tar.gz;extract:libsigc++-1.2.7.tar.gz
+libvorbisidec;1.0.2+svn15687;libvorbisidec-1.0.2+svn15687;libvorbisidec_1.0.2+svn15687.orig.tar.gz:tremor.diff;extract:libvorbisidec_1.0.2+svn15687.orig.tar.gz;patch:tremor.diff
 libxml2;2.4.30;libxml2-2.4.30;libxml2-2.4.30.tar.gz:libxml2.diff;extract:libxml2-2.4.30.tar.gz;patch:libxml2.diff
 libz;1.2.3;zlib-1.2.3;zlib-1.2.3.tar.bz2;extract:zlib-1.2.3.tar.bz2
 libglib;2.8.3;glib-2.8.3;glib-2.8.3.tar.gz;extract:glib-2.8.3.tar.gz
@@ -90,7 +90,7 @@ directfb_examples;1.0.0;DirectFB-examples-1.0.0;DirectFB-examples-1.0.0.tar.gz;e
 fbset;2.1;fbset-2.1;fbset-2.1.tar.gz:fbset.diff;extract:fbset-2.1.tar.gz;patch:fbset.diff
 lirc;0.8.5;lirc-0.8.5;lirc-0.8.5.tar.bz2;extract:lirc-0.8.5.tar.bz2
 lsof;4.80;lsof_4.80;lsof_4.80.tar.gz:lsof.diff;extract:lsof_4.80.tar.gz
-dosfstools;3.0.3;dosfstools-3.0.3;dosfstools-3.0.3.tar.bz2;extract:dosfstools-3.0.3.tar.bz2
+dosfstools;3.0.5;dosfstools-3.0.5;dosfstools-3.0.5.tar.bz2;extract:dosfstools-3.0.5.tar.bz2
 ssh;3.8p1;openssh-3.8p1;openssh-3.8p1.tar.gz:ssh.diff;extract:openssh-3.8p1.tar.gz;patch:ssh.diff
 tcpdump;3.9.4;tcpdump-3.9.4;tcpdump-3.9.4.tar.gz:tcpdump.diff;extract:tcpdump-3.9.4.tar.gz;patch:tcpdump.diff
 bonnie;1.03a;bonnie++-1.03a;bonnie++-1.03a.tgz;extract:bonnie++-1.03a.tgz
@@ -123,7 +123,7 @@ openvpn;2.0.9;openvpn-2.0.9;openvpn-2.0.9.tar.gz;extract:openvpn-2.0.9.tar.gz
 #
 e2fsprogs;1.41.9;e2fsprogs-1.41.9;e2fsprogs-1.41.9.tar.gz:e2fsprogs_gcc4_build_fix.diff;extract:e2fsprogs-1.41.9.tar.gz;patch:e2fsprogs_gcc4_build_fix.diff
 hddtemp;0.3-beta15;hddtemp-0.3-beta15;hddtemp-0.3-beta15.tar.bz2;extract:hddtemp-0.3-beta15.tar.bz2
-hdparm;9.15;hdparm-9.15;hdparm-9.15.tar.gz;extract:hdparm-9.15.tar.gz
+hdparm;9.27;hdparm-9.27;hdparm-9.27.tar.gz;extract:hdparm-9.27.tar.gz
 parted;1.7.1;parted-1.7.1;parted-1.7.1.tar.gz;extract:parted-1.7.1.tar.gz
 smartmontools;5.38;smartmontools-5.38;smartmontools-5.38.tar.gz;extract:smartmontools-5.38.tar.gz;patch:smartmontools.diff
 utillinux;2.12r;util-linux-2.12r;util-linux-2.12r.tar.bz2;extract:util-linux-2.12r.tar.bz2;patch:util-linux.diff
@@ -187,7 +187,7 @@ bluez_utils;2.4;bluez-utils-2.4;bluez-utils-2.4.tar.gz;extract:bluez-utils-2.4.t
 #
 # database
 #
-sqlite;3.6.16;sqlite-3.6.16;sqlite-amalgamation-3.6.16.tar.gz;extract:sqlite-amalgamation-3.6.16.tar.gz
+sqlite;3.6.18;sqlite-3.6.18;sqlite-amalgamation-3.6.18.tar.gz;extract:sqlite-amalgamation-3.6.18.tar.gz
 
 #
 # dreambox

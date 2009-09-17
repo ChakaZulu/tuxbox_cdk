@@ -43,7 +43,7 @@ netkit-base-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/base
 netkit-rsh-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 netkit-telnet-0.17.tar.gz;ftp://ftp.uk.linux.org/pub/linux/Networking/netkit
 portmap_5beta.tar.gz;ftp://ftp.porcupine.org/pub/security
-procps-3.2.7.tar.gz;http://procps.sourceforge.net/
+procps-3.2.8.tar.gz;http://procps.sourceforge.net/
 udev-030.tar.gz;http://www.kernel.org/pub/linux/utils/kernel/hotplug
 vsftpd-1.2.2.tar.gz;ftp://vsftpd.beasts.org/users/cevans
 mrouted_3.9-beta3.orig.tar.gz;http://archive.debian.org/debian-archive/debian/dists/Debian-2.2/non-free/source/net
@@ -58,21 +58,21 @@ curl-7.10.1.tar.gz;http://curl.haxx.se/download/archeology
 freetype-2.1.4.tar.bz2;http://prdownloads.sourceforge.net/sourceforge/freetype
 ncurses-5.3.tar.gz;ftp://$(gnuserver)/ncurses
 jpegsrc.v6b.tar.gz;http://www.xfig.org/software/jpeg
-libpng-1.2.39.tar.bz2;http://prdownloads.sourceforge.net/sourceforge/libpng
+libpng-1.2.40.tar.bz2;http://prdownloads.sourceforge.net/sourceforge/libpng
 libxml2-2.4.30.tar.gz;ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.4
 zlib-1.2.3.tar.bz2;http://www.gzip.org/zlib;http://www.zlib.net
 libffi-1.20.tar.gz;ftp://sources.redhat.com/pub/libffi
 SDL-1.2.6.tar.gz;http://www.libsdl.org/release
 readline-4.3.tar.gz;ftp://$(gnuserver)/readline
-libsigc++-1.2.5.tar.gz;http://prdownloads.sourceforge.net/sourceforge/libsigc
+libsigc++-1.2.7.tar.gz;http://ftp.gnome.org/pub/GNOME/sources/libsigc++/1.2
 libpcap-0.9.4.tar.gz;http://www.tcpdump.org/release
 commoncpp2-1.0.13.tar.gz;ftp://$(gnuserver)/commonc++
 libdvbpsi-0.1.3.tar.bz2;http://www.videolan.org/pub/videolan/libdvbpsi/0.1.3
 DirectFB-1.0.0.tar.gz;http://directfb.org/downloads/Old
 DFB++-1.0.0.tar.gz;http://directfb.org/downloads/Extras
 ++DFB-1.0.0.tar.gz;http://directfb.org/downloads/Extras
-boost_1_39_0.tar.bz2;http://prdownloads.sourceforge.net/sourceforge/boost
-libvorbisidec_1.0.2+svn14261.orig.tar.gz;http://ftp.debian.org/debian/pool/main/libv/libvorbisidec
+boost_1_40_0.tar.bz2;http://prdownloads.sourceforge.net/sourceforge/boost
+libvorbisidec_1.0.2+svn15687.orig.tar.gz;http://ftp.debian.org/debian/pool/main/libv/libvorbisidec
 fribidi-0.10.4.tar.bz2
 expat-1.95.6.tar.gz;http://prdownloads.sourceforge.net/sourceforge/expat
 libdvb-0.5.5.1.tar.gz;http://www.metzlerbros.org/dvb
@@ -98,7 +98,7 @@ openssh-3.8p1.tar.gz;http://www.eng.lsu.edu/mirrors/openssh
 tcpdump-3.9.4.tar.gz;http://www.tcpdump.org/release
 bonnie++-1.03a.tgz;http://www.coker.com.au/bonnie++
 lsof_4.80.tar.gz;ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/OLD
-dosfstools-3.0.3.tar.bz2;http://www.daniel-baumann.ch/software/dosfstools/
+dosfstools-3.0.5.tar.bz2;http://www.daniel-baumann.ch/software/dosfstools/
 DirectFB-examples-1.0.0.tar.gz;http://www.directfb.org/downloads/Old
 vdr-1.2.6.tar.bz2;ftp://ftp.cadsoft.de/pub/people/kls/vdr
 lufs-0.9.7.tar.gz;http://prdownloads.sourceforge.net/sourceforge/lufs
@@ -126,7 +126,7 @@ openvpn-2.0.9.tar.gz;http://openvpn.net/release
 #
 # ide apps
 #
-hdparm-9.15.tar.gz;http://prdownloads.sourceforge.net/sourceforge/hdparm
+hdparm-9.27.tar.gz;http://prdownloads.sourceforge.net/sourceforge/hdparm
 hddtemp-0.3-beta15.tar.bz2;http://savannah.c3sl.ufpr.br/hddtemp
 e2fsprogs-1.41.9.tar.gz;http://prdownloads.sourceforge.net/sourceforge/e2fsprogs
 parted-1.7.1.tar.gz;http://ftp.gnu.org/pub/gnu/parted
@@ -188,7 +188,7 @@ lzma442.tar.bz2;http://prdownloads.sourceforge.net/sourceforge/sevenzip
 #
 # database
 #
-sqlite-amalgamation-3.6.16.tar.gz;http://www.sqlite.org
+sqlite-amalgamation-3.6.18.tar.gz;http://www.sqlite.org
 
 #
 # dreambox
