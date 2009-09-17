@@ -63,6 +63,15 @@ flash-tuxcal: $(appsdir)/tuxbox/plugins/config.status $(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 endif
 
+tuxclock: $(appsdir)/tuxbox/plugins/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/plugins/tuxclock all install
+
+if TARGETRULESET_FLASH
+flash-tuxclock: $(appsdir)/tuxbox/plugins/config.status $(flashprefix)/root
+	$(MAKE) -C $(appsdir)/tuxbox/plugins/tuxclock all install prefix=$(flashprefix)/root
+	@FLASHROOTDIR_MODIFIED@
+endif
+
 vncviewer: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/vncviewer all install
 

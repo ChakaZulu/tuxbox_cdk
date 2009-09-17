@@ -343,6 +343,7 @@ runprogifexists({/sbin/openvpn},{loadmodule(tun)
 
 ifmarkerfile({tuxmaild},{tuxmaild})
 ifmarkerfile({tuxcald},{tuxcald})
+ifmarkerfile({tuxclockd},{tuxclockd})
 ifmarkerfile({rdate},{rdate time.fu-berlin.de})
 ifmarkerfile({initialize},{/etc/init.d/initialize && rm /var/etc/.initialize})
 dnl
