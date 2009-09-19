@@ -24,7 +24,7 @@ while ( <RULES> )
       }
       elsif ( $_ =~ m#^http://# )
       {
-        $output .= " || \\\n\twget -c -P Archive " . $_ . "/" . $file;
+        $output .= " || \\\n\twget -t 2 -T 10 -c -P Archive " . $_ . "/" . $file;
       }
     }
     $output .= " || \\\n\twget -c -P Archive http://www.dbox2-tuning.net/cvsdata/files/" . $file;
