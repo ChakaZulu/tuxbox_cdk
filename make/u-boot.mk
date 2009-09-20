@@ -38,6 +38,18 @@ $(bootprefix)/u-boot-yadd: @DEPENDS_uboot@
 	@CLEANUP_uboot@
 	rm $(bootdir)/u-boot-config/u-boot.config
 
+ide-u-boot: $(flashprefix)/ide.flfs1x $(flashprefix)/ide.flfs2x
+
+$(flashprefix)/ide.flfs1x $(flashprefix)/ide.flfs2x: \
+$(hostprefix)/bin/mkflfs config/u-boot.dbox2.h.m4  \
+| $(flashprefix)
+	m4 --define=uboottype=ide config/u-boot.dbox2.h.m4 > $(bootdir)/u-boot-config/u-boot.config
+	$(MAKE) @DIR_uboot@/u-boot.stripped
+	$(hostprefix)/bin/mkflfs 1x -o $(flashprefix)/ide.flfs1x @DIR_uboot@/u-boot.stripped
+	$(hostprefix)/bin/mkflfs 2x -o $(flashprefix)/ide.flfs2x @DIR_uboot@/u-boot.stripped
+	@CLEANUP_uboot@
+	rm $(bootdir)/u-boot-config/u-boot.config
+
 $(bootprefix)/README.u-boot:
 	@echo "The default u-boot relies on a DHCP-server (a bootp server will not"	 > $@
 	@echo "do) to tell the name of the kernel file, and the location of the"	>> $@
