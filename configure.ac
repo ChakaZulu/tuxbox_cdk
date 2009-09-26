@@ -438,8 +438,8 @@ AM_CONDITIONAL(ENABLE_ESD,test "$enable_esd" = "yes")
 AC_SUBST(ESOUND)
 
 AC_ARG_ENABLE(radiotext,
-	AS_HELP_STRING(--enable-radiotext,include Neutrino Radiotext support),
-	,[enable_radiotext=no])
+	AS_HELP_STRING(--disable-radiotext,include Neutrino Radiotext support),
+	,[enable_radiotext=yes])
 AM_CONDITIONAL(ENABLE_RADIOTEXT,test "$enable_radiotext" = "yes")
 
 if test "$enable_uclibc" = "yes" && test "$enable_flac" = "yes" && test "$enable_flashrules" = "yes"; then
