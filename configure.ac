@@ -346,9 +346,26 @@ AC_ARG_ENABLE(automount,
 		no) enable_automount=no ;;
 	esac],[enable_automount=yes])
 
-# if no filesystem is active, deactivate automounter
+AC_ARG_ENABLE(gui-mount,
+	AS_HELP_STRING(--disable-gui-mount,disable GUI mount functionality),
+	,[enable_gui_mount=yes])
+
+# if no filesystem is active, deactivate mounting
 if test "$disable_net_fs" = "yes" -a "$disable_hdd_fs" = "yes"; then
 	enable_automount=no
+	enable_gui_mount=no
+fi
+
+# enable GUI mount if at least one filesystem is used and automount is disabled
+if test "$disable_net_fs" = "no" -o "$disable_hdd_fs" = "no"; then
+	if test "$enable_automount" = "no"; then
+		enable_gui_mount=yes
+	fi
+fi
+
+# always enable GUI mount for lufs/ftpfs because automount can not be used with lufs
+if test "$enable_fs_lufs" = "yes"; then
+	enable_gui_mount=yes
 fi
 
 if test "$enable_automount" = "yes"; then
@@ -356,6 +373,7 @@ if test "$enable_automount" = "yes"; then
 fi
 AC_SUBST(AUTOMOUNT)
 AM_CONDITIONAL(ENABLE_AUTOMOUNT,test "$enable_automount" = "yes")
+AM_CONDITIONAL(ENABLE_GUI_MOUNT,test "$enable_gui_mount" = "yes")
 
 AC_ARG_ENABLE(sambaserver,
 	AS_HELP_STRING(--enable-sambaserver,    enable the dBox samba server),
@@ -1129,6 +1147,7 @@ Neutrino UPnP-support:		$enable_upnp
 Neutrino Audioplayer:		$enable_audioplayer
 Neutrino Movieplayer:		$enable_movieplayer
 Neutrino Pictureviewer:		$enable_pictureviewer
+Neutrino Mount:			$enable_gui_mount
 Esound support:			$enable_esd
 Radiotext support:		$enable_radiotext
 FLAC support:			$enable_flac

@@ -131,6 +131,11 @@ CONFIGURE_OPTS += \
 	--disable-movieplayer
 endif
 
+if !ENABLE_GUI_MOUNT
+CONFIGURE_OPTS += \
+	--disable-gui-mount
+endif
+
 CONFIGURE = \
 	./autogen.sh && \
 	CC=$(target)-gcc \
