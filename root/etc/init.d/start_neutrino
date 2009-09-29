@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: start_neutrino,v 1.37 2009/06/26 13:22:34 rhabarber1848 Exp $
+# $Id: start_neutrino,v 1.38 2009/09/29 21:25:25 rhabarber1848 Exp $
 
 date -s 010101001970
 # openntpd support...
@@ -22,7 +22,9 @@ if [ ! -e /var/etc/.no_pmt_update -a `cat /proc/bus/avia_version` = "avia600" ] 
 fi
 zapit $ZAPIT
 
-nhttpd
+# start nhttpd a bit later, for faster startup
+{ sleep 20; nhttpd; } &
+
 until neutrino -f -u ; do
     echo "Neutrino exited with nonzero exit status, restarting..."
     pidof sectionsd >/dev/null && sectionsdcontrol --nopause || sectionsd $SECTIONSD
