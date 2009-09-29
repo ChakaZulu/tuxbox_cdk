@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # $ flash_img number
 #   print total number of partitions
