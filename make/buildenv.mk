@@ -136,6 +136,11 @@ CONFIGURE_OPTS += \
 	--disable-gui-mount
 endif
 
+if !ENABLE_INTERNAL_TUXTXT
+CONFIGURE_OPTS += \
+	--disable-internal-tuxtxt
+endif
+
 CONFIGURE = \
 	./autogen.sh && \
 	CC=$(target)-gcc \

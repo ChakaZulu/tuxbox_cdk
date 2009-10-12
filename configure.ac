@@ -442,6 +442,11 @@ AC_ARG_ENABLE(radiotext,
 	,[enable_radiotext=yes])
 AM_CONDITIONAL(ENABLE_RADIOTEXT,test "$enable_radiotext" = "yes")
 
+AC_ARG_ENABLE(internal-tuxtxt,
+	AS_HELP_STRING(--disable-internal-tuxtxt,[include internal Tuxtxt, use only external Tuxtxt plugin when disabled]),
+	,[enable_internal_tuxtxt=yes])
+AM_CONDITIONAL(ENABLE_INTERNAL_TUXTXT,test "$enable_internal_tuxtxt" = "yes")
+
 if test "$enable_uclibc" = "yes" && test "$enable_flac" = "yes" && test "$enable_flashrules" = "yes"; then
 	echo
 	echo "*********************************************************************"
@@ -1150,6 +1155,7 @@ Neutrino Pictureviewer:		$enable_pictureviewer
 Neutrino Mount:			$enable_gui_mount
 Esound support:			$enable_esd
 Radiotext support:		$enable_radiotext
+Internal Tuxtxt support:	$enable_internal_tuxtxt
 FLAC support:			$enable_flac
 German keymaps:			$enable_german_keymaps
 sqlite3 storage:		$enable_sqlite
