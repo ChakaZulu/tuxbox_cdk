@@ -28,8 +28,7 @@ PIDFILE=/var/run/automount.pid
 
 # The parent directory of AUTOFSMOUNT must be absolute, must exist,
 # and be writeable. The AUTOFSMOUNTDIR should not exist.
-#AUTOFSMOUNTDIR=/autofs
-AUTOFSMOUNTDIR=/var/autofs
+AUTOFSMOUNTDIR=/tmp/autofs
 MAPFILE=/etc/auto.net
 
 echo "Starting the automounter"
