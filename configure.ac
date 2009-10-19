@@ -825,11 +825,9 @@ AC_ARG_WITH(ext-flashtool,
 
 AC_ARG_WITH(enigma-debug,
 	[  --with-enigma-debug=NAME dreambox enigma-debug [[yes,no]]],
-	[ENIGMA_DEBUG="$withval"],[ENIGMA_DEBUG="yes"])
+	[ENIGMA_DEBUG="$withval"],[ENIGMA_DEBUG="no"])
 
 AC_SUBST(ENIGMA_DEBUG)
-AM_CONDITIONAL(ENIGMA_DEBUG_NO,test "$ENIGMA_DEBUG" = "no")
-AM_CONDITIONAL(ENIGMA_DEBUG_YES,test "$ENIGMA_DEBUG" = "yes")
 
 #
 ################################################################
