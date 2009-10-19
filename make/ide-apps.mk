@@ -199,6 +199,7 @@ $(DEPDIR)/hddtemp: bootstrap @DEPENDS_hddtemp@
 			--prefix= && \
 		$(MAKE) all && \
 		$(MAKE) install DESTDIR=$(targetprefix)
+		$(INSTALL) -d $(targetprefix)/share/tuxbox
 		$(INSTALL) -m 644 config/hddtemp.db $(targetprefix)/share/tuxbox
 	@CLEANUP_hddtemp@
 	touch $@ 
@@ -217,6 +218,7 @@ $(flashprefix)/root/sbin/hddtemp: bootstrap @DEPENDS_hddtemp@ | $(flashprefix)/r
 			--prefix= && \
 		$(MAKE) all && \
 		$(MAKE) install DESTDIR=$(flashprefix)/root
+		$(INSTALL) -d $(flashprefix)/root/share/tuxbox
 		$(INSTALL) -m 644 config/hddtemp.db $(flashprefix)/root/share/tuxbox
 	@CLEANUP_hddtemp@
 	@FLASHROOTDIR_MODIFIED@
