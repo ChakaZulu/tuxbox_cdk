@@ -115,11 +115,11 @@ endif
 endif
 
 if ENABLE_FS_CIFS
-KERNEL_DEPENDS += Archive/cifs-1.20c-2.4.tar.gz
+KERNEL_DEPENDS += $(archivedir)/cifs-1.20c-2.4.tar.gz
 endif
 
 if ENABLE_AUTOMOUNT
-KERNEL_DEPENDS += Archive/autofs4-2.4-module-20050404.tar.gz
+KERNEL_DEPENDS += $(archivedir)/autofs4-2.4-module-20050404.tar.gz
 endif
 
 $(DEPDIR)/linuxdir: $(KERNEL_DEPENDS) @DEPENDS_liblzma465@ directories
@@ -144,11 +144,11 @@ if ENABLE_FS_LUFS
 	cd $(KERNEL_DIR) && patch -p1 -E -i $(buildprefix)/Patches/linux-2.4.33-dbox2-lufs.diff
 endif
 if ENABLE_FS_CIFS
-	gunzip -cd $(buildprefix)/Archive/cifs-1.20c-2.4.tar.gz | TAPE=- tar -x
+	gunzip -cd $(archivedir)/cifs-1.20c-2.4.tar.gz | TAPE=- tar -x
 	cd $(KERNEL_DIR) && patch -p1 -E -i ./cifs_24.patch
 endif
 if ENABLE_AUTOMOUNT
-	cd $(KERNEL_DIR) && gunzip -cd $(buildprefix)/Archive/autofs4-2.4-module-20050404.tar.gz | TAPE=- tar -x
+	cd $(KERNEL_DIR) && gunzip -cd $(archivedir)/autofs4-2.4-module-20050404.tar.gz | TAPE=- tar -x
 	cd $(KERNEL_DIR) && patch -p1 -E -i ./autofs4-2.4/module-patches/autofs4-2.4.29.patch
 endif
 	mv @DIR_liblzma465@/C/Lz* $(KERNEL_DIR)/fs/jffs2/

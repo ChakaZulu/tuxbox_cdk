@@ -562,6 +562,10 @@ else
 fi
 AC_SUBST(TUXBOX_CHECKIMAGE)
 
+AC_ARG_WITH(archivedir,
+	[  --with-archivedir=DIR   where to store downloaded files [[Archive/]]],
+	[archivedir="$with_archivedir"],[archivedir="$buildprefix/Archive"])
+
 AC_ARG_WITH(cvsdir,
 	[  --with-cvsdir=DIR       where to find the cvs],
 	[cvsdir="$with_cvsdir"],[cvsdir="NONE"])
@@ -673,6 +677,7 @@ AC_SUBST(hostappsdir)
 AC_SUBST(startscriptdir)
 AC_SUBST(gnuserver)
 AC_SUBST(defaultserver)
+AC_SUBST(archivedir)
 
 AC_PATH_PROG(M4,m4,no)
 if test "$M4" = "no"; then
@@ -1126,6 +1131,7 @@ host apps directory:		$hostappsdir
 logo directory:			$logosdir
 customization directory:	$customizationsdir
 ucode directory:		$ucodesdir
+archive directory:		$archivedir
 GNU server:			$gnuserver
 default server:			$defaultserver
 update http prefix:		$updatehttpprefix

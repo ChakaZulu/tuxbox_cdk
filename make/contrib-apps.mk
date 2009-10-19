@@ -719,7 +719,7 @@ $(DEPDIR)/upx_host: directories ucl @DEPENDS_upx_host@
 	@PREPARE_upx_host@
 	mkdir -p @DIR_upx_host@/lzma443
 	cd @DIR_upx_host@/lzma443 && \
-	bunzip2 -cd $(buildprefix)/Archive/lzma443.tar.bz2 | TAPE=- tar -x
+	bunzip2 -cd $(archivedir)/lzma443.tar.bz2 | TAPE=- tar -x
 	cd @DIR_upx_host@ && \
 		UPX_UCLDIR=$(hostprefix) \
 		UPX_LZMADIR=$(buildprefix)/@DIR_upx_host@/lzma443 \

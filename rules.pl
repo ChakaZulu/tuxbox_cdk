@@ -48,11 +48,11 @@ sub process_make_depends (@)
   {
     if ( $_ =~ m#\.(diff|tar)\.(bz2|gz)$# )
     {
-      $output .= "Archive/" . $_ . " ";
+      $output .= "\\\$(archivedir)/" . $_ . " ";
     }
     elsif ( $_ =~ m#\.(bz2|gz)$# )
     {
-      $output .= "Archive/" . $_ . " ";
+      $output .= "\\\$(archivedir)/" . $_ . " ";
     }
     elsif ( $_ =~ m#\.(config|diff|patch)$# )
     {
@@ -60,15 +60,15 @@ sub process_make_depends (@)
     }
     elsif ( $_ =~ m#\.exe$# )
     {
-      $output .= "Archive/" . $_ . " ";
+      $output .= "\\\$(archivedir)/" . $_ . " ";
     }
     elsif ( $_ =~ m#\.tgz$# )
     {
-      $output .= "Archive/" . $_ . " ";
+      $output .= "\\\$(archivedir)/" . $_ . " ";
     }
     elsif ( $_ =~ m#\.zip$# )
     {
-      $output .= "Archive/" . $_ . " ";
+      $output .= "\\\$(archivedir)/" . $_ . " ";
     }
     else
     {
@@ -106,23 +106,23 @@ sub process_make_prepare (@)
     {
       if ( $_[1] =~ m#\.tar\.bz2$# )
       {
-	$output .= "bunzip2 -cd Archive/" . $_[1] . " | TAPE=- tar -x";
+	$output .= "bunzip2 -cd \\\$(archivedir)/" . $_[1] . " | TAPE=- tar -x";
       }
       elsif ( $_[1] =~ m#\.tar\.gz$# )
       {
-	$output .= "gunzip -cd Archive/" . $_[1] . " | TAPE=- tar -x";
+	$output .= "gunzip -cd \\\$(archivedir)/" . $_[1] . " | TAPE=- tar -x";
       }
       elsif ( $_[1] =~ m#\.tgz$# )
       {
-	$output .= "gunzip -cd Archive/" . $_[1] . " | TAPE=- tar -x";
+	$output .= "gunzip -cd \\\$(archivedir)/" . $_[1] . " | TAPE=- tar -x";
       }
       elsif ( $_[1] =~ m#\.exe$# )
       {
-	$output .= "cabextract Archive/" . $_[1];
+	$output .= "cabextract \\\$(archivedir)/" . $_[1];
       }
       elsif ( $_[1] =~ m#\.zip$# )
       {
-	$output .= "unzip -d $_[2] Archive/" . $_[1];
+	$output .= "unzip -d $_[2] \\\$(archivedir)/" . $_[1];
       }
       else
       {
@@ -136,15 +136,15 @@ sub process_make_prepare (@)
 
       if ( $_[1] =~ m#\.tar\.bz2$# )
       {
-	$output .= "bunzip2 -cd ../Archive/" . $_[1] . " | tar -x";
+	$output .= "bunzip2 -cd \\\$(archivedir)/" . $_[1] . " | tar -x";
       }
       elsif ( $_[1] =~ m#\.tar\.gz$# )
       {
-	$output .= "gunzip -cd ../Archive/" . $_[1] . " | tar -x";
+	$output .= "gunzip -cd \\\$(archivedir)/" . $_[1] . " | tar -x";
       }
       elsif ( $_[1] =~ m#\.exe$# )
       {
-	$output .= "cabextract ../Archive/" . $_[1];
+	$output .= "cabextract \\\$(archivedir)/" . $_[1];
       }
       else
       {
@@ -155,7 +155,7 @@ sub process_make_prepare (@)
     }
     elsif ( $_[0] eq "apatch" )
     {
-      $output .= "( cd " . $dir . "; patch -p1 < ../Archive/" . $_[1] . " )";
+      $output .= "( cd " . $dir . "; patch -p1 < \\\$(archivedir)/" . $_[1] . " )";
     }
     elsif ( $_[0] =~ m/patch(time)?(-(\d+))?/ )
     {
@@ -164,11 +164,11 @@ sub process_make_prepare (@)
       $_ .= "-Z " if defined $1;
       if ( $_[1] =~ m#\.bz2$# )
       {
-	$output .= "( cd " . $dir . "; bunzip2 -cd ../Archive/" . $_[1] . " | patch $_ )";
+	$output .= "( cd " . $dir . "; bunzip2 -cd \\\$(archivedir)/" . $_[1] . " | patch $_ )";
       }
       elsif ( $_[1] =~ m#\.gz$# )
       {
-	$output .= "( cd " . $dir . "; gunzip -cd ../Archive/" . $_[1] . " | patch $_ )";
+	$output .= "( cd " . $dir . "; gunzip -cd \\\$(archivedir)/" . $_[1] . " | patch $_ )";
       }
       else
       {

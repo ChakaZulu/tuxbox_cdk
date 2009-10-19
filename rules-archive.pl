@@ -13,21 +13,22 @@ while ( <RULES> )
   {
     @_ = split ( /;/, $_ );
     my $file = $_[0];
-    $head .= " Archive/" . $file;
-    $output .= "Archive/" . $file . ":\n\tfalse";
+    $head .= " \$(archivedir)/" . $file;
+    $output .= "\$(archivedir)/" . $file . ":\n\tfalse || ";
+    $output .= "mkdir -p \$(archivedir) && ( \\\n\t";
     shift @_;
     foreach ( @_ )
     {
       if ( $_ =~ m#^ftp://# )
       {
-        $output .= " || \\\n\twget -c --passive-ftp -P Archive " . $_ . "/" . $file;
+        $output .= "wget -c --passive-ftp -P \$(archivedir) " . $_ . "/" . $file . " || \\\n\t";
       }
       elsif ( $_ =~ m#^http://# )
       {
-        $output .= " || \\\n\twget -t 2 -T 10 -c -P Archive " . $_ . "/" . $file;
+        $output .= "wget -t 2 -T 10 -c -P \$(archivedir) " . $_ . "/" . $file . " || \\\n\t";
       }
     }
-    $output .= " || \\\n\twget -c -P Archive http://www.dbox2-tuning.net/cvsdata/files/" . $file;
+    $output .= "wget -c -P \$(archivedir) http://www.dbox2-tuning.net/cvsdata/files/" . $file . " )";
     $output .= "\n\t\@touch \$\@";
     $output .= "\n\n";
   }

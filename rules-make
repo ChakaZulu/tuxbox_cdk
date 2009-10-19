@@ -5,7 +5,7 @@
 #   version
 #   directory
 #   source files and patches (separated by ':')
-#   rules ('extract', 'dirextract', 'patch' or 'patch-X' for 'patch -pX', 'apatch' to patch with files in cdk/Archive/, 'move', 'remove', 'link') and arguments
+#   rules ('extract', 'dirextract', 'patch' or 'patch-X' for 'patch -pX', 'apatch' to patch with files in $archivedir/, 'move', 'remove', 'link') and arguments
 #   ...
 #
 
