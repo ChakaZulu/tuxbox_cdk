@@ -105,7 +105,7 @@ lufs-0.9.7.tar.gz;http://prdownloads.sourceforge.net/sourceforge/lufs
 dropbear-0.52.tar.bz2;http://www.ucc.asn.au/~matt/dropbear
 cku211.tar.gz;ftp://kermit.columbia.edu/kermit/archives
 libtool-1.5.22.tar.gz;ftp://ftp.gnu.org/gnu/libtool
-samba-1.9.18p8.tar.gz;http://mirrors.xmission.com/samba/ftp/stable
+samba-1.9.18p8.tar.gz;http://www.samba.org/samba/ftp/old-versions
 wget-1.11.4.tar.bz2;http://ftp.gnu.org/pub/gnu/wget
 ncftp-3.2.2-src.tar.bz2;ftp://ftp.ncftp.com/ncftp
 screen-4.0.2.tar.gz;ftp://ftp.gnu.org/pub/gnu/screen
