@@ -70,6 +70,7 @@ $(DEPDIR)/valgrind: bootstrap @DEPENDS_valgrind@
 $(DEPDIR)/insight: @DEPENDS_insight@
 	@PREPARE_insight@
 	cd @DIR_insight@ && \
+		CONFIG_SHELL=/bin/bash \
 		./configure \
 			--build=$(build) \
 			--host=$(build) \
