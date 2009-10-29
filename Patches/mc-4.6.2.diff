@@ -36,3 +36,111 @@ diff -uNr mc-4.6.2.org/src/tty.h mc-4.6.2/src/tty.h
  #endif /* USE_NCURSES */
  
  /* {{{ Input }}} */
+diff -uNr mc-4.6.2.org/autogen.sh mc-4.6.2/autogen.sh
+--- mc-4.6.2.org/autogen.sh	2009-10-29 16:33:24.000000000 +0100
++++ mc-4.6.2/autogen.sh	2009-10-29 16:33:32.000000000 +0100
+@@ -75,6 +75,8 @@
+   { echo "autoconf failed to generate vfs/samba/configure" >&2; exit 1; }
+ ) || exit 1
+ 
++exit 0
++
+ if test -x $srcdir/configure.mc; then
+   $srcdir/configure.mc "$@"
+ else
+diff -uNr mc-4.6.2.org/src/Makefile.am mc-4.6.2/src/Makefile.am
+--- mc-4.6.2.org/src/Makefile.am	2009-02-01 20:30:21.000000000 +0100
++++ mc-4.6.2/src/Makefile.am	2009-10-29 16:42:27.000000000 +0100
+@@ -13,14 +13,14 @@
+ AM_CPPFLAGS = -DDATADIR=\""$(pkgdatadir)/"\" -DLOCALEDIR=\""$(localedir)"\"
+ endif
+ 
+-noinst_PROGRAMS = man2hlp
+-man2hlp_LDADD = $(GLIB_LIBS)
++#noinst_PROGRAMS = man2hlp
++#man2hlp_LDADD = $(GLIB_LIBS)
+ 
+ mcmfmt_SOURCES = mfmt.c
+ 
+ cons_saver_SOURCES = cons.saver.c
+ 
+-man2hlp_SOURCES = man2hlp.c glibcompat.c
++#man2hlp_SOURCES = man2hlp.c glibcompat.c
+ 
+ if INCLUDED_SLANG
+ SLANGLIB = ../slang/libmcslang.a
+@@ -71,7 +71,7 @@
+ mc_SOURCES = $(SRCS)
+ endif
+ 
+-EXTRA_DIST = ChangeLog OChangeLog man2hlp.c $(CHARSET_SRC)
++EXTRA_DIST = ChangeLog OChangeLog $(CHARSET_SRC)
+ 
+ # automated testing
+ 
+diff -uNr mc-4.6.2.org/src/man2hlp.c mc-4.6.2/src/man2hlp.c
+--- mc-4.6.2.org/src/man2hlp.c	2009-02-01 20:30:21.000000000 +0100
++++ mc-4.6.2/src/man2hlp.c	2009-10-29 16:27:34.000000000 +0100
+@@ -18,17 +18,11 @@
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+ 
+-#include <config.h>
+-
+ #include <stdarg.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-
+-#include <glib.h>
+-
+ #include "help.h"
+-#include "glibcompat.h"
+ 
+ #define BUFFER_SIZE 256
+ 
+@@ -146,7 +140,7 @@
+ 
+     f = fopen (filename, flags);
+     if (f == NULL) {
+-	g_snprintf (tmp, sizeof (tmp), "man2hlp: Cannot open file \"%s\"",
++	snprintf (tmp, sizeof (tmp), "man2hlp: Cannot open file \"%s\"",
+ 		    filename);
+ 	perror (tmp);
+ 	exit (3);
+@@ -290,7 +284,7 @@
+     char buffer[BUFFER_SIZE];
+ 
+     va_start (args, format);
+-    g_vsnprintf (buffer, sizeof (buffer), format, args);
++    vsnprintf (buffer, sizeof (buffer), format, args);
+     va_end (args);
+     print_string (buffer);
+ }
+@@ -584,7 +578,7 @@
+     } else {
+ 	/* Other commands are ignored */
+ 	char warn_str[BUFFER_SIZE];
+-	g_snprintf (warn_str, sizeof (warn_str),
++	snprintf (warn_str, sizeof (warn_str),
+ 		    "Warning: unsupported command %s", buffer);
+ 	print_error (warn_str);
+ 	return;
+@@ -615,7 +609,7 @@
+ 	/* Bold text or italics text */
+ 	if (buffer[0] == '.' && (buffer[1] == 'I' || buffer[1] == 'B'))
+ 	    for (buffer += 2; *buffer == ' ' || *buffer == '\t'; buffer++);
+-	g_strlcpy (old, buffer, sizeof (old));
++	strncpy (old, buffer, sizeof (old));
+ 	link_flag = 3;
+ 	break;
+     case 3:
+@@ -813,7 +807,7 @@
+ 	    }
+ 	}
+ 	if (!found) {
+-	    g_snprintf (buffer, sizeof (buffer), "Stale link \"%s\"",
++	    snprintf (buffer, sizeof (buffer), "Stale link \"%s\"",
+ 			current_link->linkname);
+ 	    c_in = current_link->filename;
+ 	    in_row = current_link->line;

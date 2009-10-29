@@ -141,7 +141,9 @@ $(DEPDIR)/joe: bootstrap libncurses @DEPENDS_joe@
 $(DEPDIR)/mc: bootstrap libglib libncurses @DEPENDS_mc@
 	@PREPARE_mc@
 	cd @DIR_mc@ && \
+		./autogen.sh && \
 		$(BUILDENV) \
+		CONFIG_SHELL=/bin/bash \
 		./configure \
 			--build=$(build) \
 			--host=$(target) \
@@ -149,6 +151,7 @@ $(DEPDIR)/mc: bootstrap libglib libncurses @DEPENDS_mc@
 			--without-gpm-mouse \
 			--with-screen=ncurses \
 			--without-x && \
+		$(CC) -o src/man2hlp src/man2hlp.c && \
 		$(MAKE) all && \
 		@INSTALL_mc@
 	@CLEANUP_mc@
