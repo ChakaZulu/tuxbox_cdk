@@ -9,7 +9,8 @@ $(appsdir)/tuxbox/neutrino/config.status: bootstrap $(appsdir)/dvb/zapit/src/zap
 	cd $(appsdir)/tuxbox/neutrino && $(CONFIGURE) $(CONFIGURE_OPTS_MP2)
 
 neutrino: $(appsdir)/tuxbox/neutrino/config.status
-	$(MAKE) -C $(appsdir)/tuxbox/neutrino all install
+	$(MAKE) -C $(appsdir)/tuxbox/neutrino all
+	$(MAKE) -C $(appsdir)/tuxbox/neutrino install
 	$(MAKE) neutrino-additional-fonts
 
 if TARGETRULESET_FLASH
