@@ -174,10 +174,18 @@ if ENABLE_FS_NFS
 KERNEL_M4 += -Dnfs
 endif
 
+if BOXTYPE_DREAMBOX
+if ENABLE_AUTOMOUNT
+# this replaces cdk/Patches/linux-enable-autofs.diff from the dreambox branch
+AUTOMOUNT_SED_CONF=-e s"/^.*CONFIG_AUTOFS4_FS[= ].*/CONFIG_AUTOFS4_FS=m/"
+else
+AUTOMOUNT_SED_CONF=-e ""
+endif
 if DREAMBOX_ENABLE_SERIAL_CONSOLE
 DREAMBOX_SERIAL_SED=-e "s/console=null/console=ttyS0,115200/"
 else
 DREAMBOX_SERIAL_SED=-e ""
+endif
 endif
 
 kernel-cdk: $(bootprefix)/kernel-cdk
