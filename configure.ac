@@ -456,6 +456,15 @@ if test "$enable_uclibc" = "yes" && test "$enable_flac" = "yes" && test "$enable
 	exit 1
 fi
 
+AC_ARG_ENABLE(fx2plugins,
+	AS_HELP_STRING(--disable-fx2plugins,   disable fx2-plugins (games) for gui's ),
+	,[enable_fx2plugins=yes])
+if test "$enable_fx2plugins" = "yes"; then
+	FX2PLUGINS=fx2-plugins
+fi
+AC_SUBST(FX2PLUGINS)
+AM_CONDITIONAL(ENABLE_FX2PLUGINS,test "$enable_fx2plugins" = "yes")
+
 AC_ARG_WITH(rootpartitionsize,
 	[  --with-rootpartitionsize=SIZE	size of the root partition],
 	[ROOT_PARTITION_SIZE="$withval"],[ROOT_PARTITION_SIZE="0x660000"])
@@ -1161,6 +1170,7 @@ Esound support:			$enable_esd
 Radiotext support:		$enable_radiotext
 Internal Tuxtxt support:	$enable_internal_tuxtxt
 FLAC support:			$enable_flac
+FX2 plugins (games):		$enable_fx2plugins
 German keymaps:			$enable_german_keymaps
 sqlite3 storage:		$enable_sqlite
 ccache support:			$enable_ccache

@@ -24,10 +24,10 @@ yadd-none: bare-os config tuxbox_tools procps lcd ftpd yadd-ucodes yadd-bootlogo
 yadd-micro-neutrino: bare-os config yadd-ucodes camd2 switch neutrino
 	@TUXBOX_YADD_CUSTOMIZE@
 
-yadd-neutrino: yadd-none neutrino-plugins fx2-plugins @ESOUND@ neutrino
+yadd-neutrino: yadd-none neutrino-plugins @FX2PLUGINS@ @ESOUND@ neutrino
 	@TUXBOX_YADD_CUSTOMIZE@
 
-yadd-enigma: yadd-none enigma-plugins fx2-plugins enigma
+yadd-enigma: yadd-none enigma-plugins @FX2PLUGINS@ enigma
 	@TUXBOX_YADD_CUSTOMIZE@
 
 yadd-lcars: yadd-none lcars

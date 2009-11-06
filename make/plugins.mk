@@ -3,7 +3,7 @@
 $(appsdir)/tuxbox/plugins/config.status: bootstrap libfreetype libcurl libz libsigc libpng $(targetprefix)/lib/pkgconfig/tuxbox.pc $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc $(targetprefix)/lib/pkgconfig/tuxbox-tuxtxt.pc
 	cd $(appsdir)/tuxbox/plugins && $(CONFIGURE)
 
-plugins: neutrino-plugins enigma-plugins fx2-plugins
+plugins: neutrino-plugins enigma-plugins @FX2PLUGINS@
 
 neutrino-plugins: $(targetprefix)/include/tuxbox/plugin.h tuxmail tuxtxt tuxcom tuxcal vncviewer dvbsub
 

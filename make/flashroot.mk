@@ -50,7 +50,9 @@ endif
 	$(MAKE) flash-tuxcom
 	$(MAKE) flash-vncviewer
 	$(MAKE) flash-dvbsub
+if ENABLE_FX2PLUGINS
 	$(MAKE) flash-fx2-plugins
+endif
 if BOXTYPE_DREAMBOX
 # TODO: pip and mosaic only work with neutrino...
 	$(MAKE) flash-pip
