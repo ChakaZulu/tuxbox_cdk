@@ -78,6 +78,7 @@ libiconv;1.9.1;libiconv-1.9.1;libiconv-1.9.1.tar.gz;extract:libiconv-1.9.1.tar.g
 libFLAC;1.2.0;flac-1.2.0;flac-1.2.0.tar.gz;extract:flac-1.2.0.tar.gz;patch:flac.diff
 libgettext;0.17;gettext-0.17;gettext-0.17.tar.gz:gettext.diff;extract:gettext-0.17.tar.gz;patch:gettext.diff
 liblzma465;465;liblzma465;lzma465.tar.bz2;dirextract:lzma465.tar.bz2
+libfaad2;2.7;faad2-2.7;faad2-2.7.tar.bz2;extract:faad2-2.7.tar.bz2
 
 #
 # contrib apps

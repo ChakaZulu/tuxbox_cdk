@@ -589,3 +589,19 @@ $(flashprefix)/root/bin/sqlite3: @DEPENDS_sqlite@ | $(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 
 endif
+
+$(DEPDIR)/libfaad2: bootstrap @DEPENDS_libfaad2@
+	@PREPARE_libfaad2@
+	sed -i 's,-iquote $$(top_srcdir),-DFIXED_POINT -I$$(top_srcdir),g' faad2-2.7/libfaad/Makefile.am
+	sed -i 's,-iquote $$(top_srcdir),-DFIXED_POINT -I$$(top_srcdir),g' faad2-2.7/libfaad/Makefile.in
+	cd @DIR_libfaad2@ && \
+		$(BUILDENV) \
+		./configure \
+			--host=$(target) \
+			--build=$(build) \
+			--without-xmms \
+			--prefix= && \
+		$(MAKE) && \
+		@INSTALL_libfaad2@
+	@CLEANUP_libfaad2@
+	touch $@

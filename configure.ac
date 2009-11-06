@@ -946,6 +946,7 @@ TUXBOX_RULES_MAKE(libtool)
 TUXBOX_RULES_MAKE(libFLAC)
 TUXBOX_RULES_MAKE(libgettext)
 TUXBOX_RULES_MAKE(liblzma465)
+TUXBOX_RULES_MAKE(libfaad2)
 
 #
 # contrib apps

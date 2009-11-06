@@ -70,6 +70,7 @@ libiconv;make:install:DESTDIR=TARGET
 libFLAC;make:install: -C src/libFLAC DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libFLAC.la
 libgettext;make:install: -C intl DESTDIR=TARGET
 liblzma465
+libfaad2;make:install:DESTDIR=TARGET
 
 #
 # contrib apps
