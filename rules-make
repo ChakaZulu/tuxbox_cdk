@@ -166,6 +166,7 @@ gnuboy;1.0.3;gnuboy-1.0.3;gnuboy-1.0.3.tar.gz:gnuboy.diff;extract:gnuboy-1.0.3.t
 scummvm;0.5.1;scummvm-0.5.1;scummvm-0.5.1.tar.bz2:scummvm-0.5.1.diff;extract:scummvm-0.5.1.tar.bz2;patch:scummvm-0.5.1.diff
 sdldoom;1.10;sdldoom-1.10;sdldoom-1.10.tar.gz:sdldoom.diff;extract:sdldoom-1.10.tar.gz;patch:sdldoom.diff
 tinygl;0.4;TinyGL;TinyGL-0.4.tar.gz:TinyGL.diff;extract:TinyGL-0.4.tar.gz;patch:TinyGL.diff
+tuxfrodo;beta8;tuxfrodo-beta8;tuxfrodo_beta8.tar.bz2;dirextract:tuxfrodo_beta8.tar.bz2
 
 #
 # dvb apps

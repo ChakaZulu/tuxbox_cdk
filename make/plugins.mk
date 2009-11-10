@@ -7,8 +7,11 @@ plugins: neutrino-plugins enigma-plugins @FX2PLUGINS@
 
 neutrino-plugins: $(targetprefix)/include/tuxbox/plugin.h tuxmail tuxtxt tuxcom tuxcal vncviewer dvbsub
 
-fx2-plugins: $(appsdir)/tuxbox/plugins/config.status
+fx2-plugins: $(appsdir)/tuxbox/plugins/config.status @DEPENDS_tuxfrodo@
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/fx2 all install
+	@PREPARE_tuxfrodo@
+	tar -C $(targetprefix)/lib/tuxbox/plugins/c64emu/ -xjvf @DIR_tuxfrodo@/hdd/c64emu/roms.tar.bz2
+	@CLEANUP_tuxfrodo@
 
 enigma-plugins: @LIBGETTEXT@ $(appsdir)/tuxbox/plugins/config.status $(targetprefix)/include/tuxbox/plugin.h
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/enigma all install
