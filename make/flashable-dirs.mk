@@ -461,5 +461,9 @@ if !BOXMODEL_DM500
 		fi; \
 	done;
 endif
+if !BOXMODEL_DM56x0
+	@for i in skins/small_red*.esml skins/small_red*.info pictures/small-red pictures/triaxlogo-fs8.png ; do \
+		rm -Rf $(dreamfilesrootdir)/share/tuxbox/enigma/$$i; done
+endif
 
 endif

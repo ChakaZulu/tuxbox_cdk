@@ -77,10 +77,6 @@ if !BOXMODEL_DM7000
 	echo "i:/ezap/osd/brightness=00000073" >> $@/var_init/tuxbox/config/enigma/config;
 	echo "i:/ezap/osd/gamma=00000066" >> $@/var_init/tuxbox/config/enigma/config;
 endif
-if !BOXMODEL_DM56x0
-	@for i in skins/small_red*.esml skins/small_red*.info pictures/small-red pictures/triaxlogo-fs8.png ; do \
-		rm -Rf $@/share/tuxbox/enigma/$$i; done
-endif
 
 else
 	cp -pa $(appsdir)/tuxbox/enigma/po/locale.alias.image $@/share/locale/locale.alias
