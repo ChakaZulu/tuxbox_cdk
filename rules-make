@@ -52,7 +52,7 @@ libcrypto;0.9.7e;openssl-0.9.7e;openssl-0.9.7e.tar.gz:libcrypto.diff;extract:ope
 libcurl;7.10.1;curl-7.10.1;curl-7.10.1.tar.gz:libcurl.diff;extract:curl-7.10.1.tar.gz;patch:libcurl.diff
 libdirectfb;1.0.0;DirectFB-1.0.0;DirectFB-1.0.0.tar.gz:libdirectfb.diff;extract:DirectFB-1.0.0.tar.gz;patch:libdirectfb.diff
 libdirectfbpp;1.0.0;DFB++-1.0.0;DFB++-1.0.0.tar.gz;extract:DFB++-1.0.0.tar.gz
-libppdirectfb;1.0.0;++DFB-1.0.0;++DFB-1.0.0.tar.gz;extract:++DFB-1.0.0.tar.gz
+libppdirectfb;1.0.0;++DFB-1.0.0;++DFB-1.0.0.tar.gz:libppdirectfb.diff;extract:++DFB-1.0.0.tar.gz;patch:libppdirectfb.diff
 libdvb;0.5.5.1;libdvb-0.5.5.1;libdvb-0.5.5.1.tar.gz:libdvb.diff;extract:libdvb-0.5.5.1.tar.gz;patch:libdvb.diff
 libdvbpsi;0.1.3;libdvbpsi-0.1.3;libdvbpsi-0.1.3.tar.bz2:libdvbpsi.diff;extract:libdvbpsi-0.1.3.tar.bz2;patch:libdvbpsi.diff
 libexpat;1.95.6;expat-1.95.6;expat-1.95.6.tar.gz:libexpat.diff;extract:expat-1.95.6.tar.gz;patch:libexpat.diff
@@ -79,6 +79,8 @@ libFLAC;1.2.0;flac-1.2.0;flac-1.2.0.tar.gz;extract:flac-1.2.0.tar.gz;patch:flac.
 libgettext;0.17;gettext-0.17;gettext-0.17.tar.gz:gettext.diff;extract:gettext-0.17.tar.gz;patch:gettext.diff
 liblzma465;465;liblzma465;lzma465.tar.bz2;dirextract:lzma465.tar.bz2
 libfaad2;2.7;faad2-2.7;faad2-2.7.tar.bz2;extract:faad2-2.7.tar.bz2
+libgmp_host;4.2.2;gmp-4.2.2;gmp-4.2.2.tar.bz2:libgmp.diff;extract:gmp-4.2.2.tar.bz2;patch:libgmp.diff
+libmpfr_host;2.3.1;mpfr-2.3.1;mpfr-2.3.1.tar.bz2;extract:mpfr-2.3.1.tar.bz2
 
 #
 # contrib apps
@@ -211,5 +213,15 @@ dgstationdriver_cubecafe;1;dgstationdriver_cubecafe;dgstationdriver_cubecafe.tar
 dgstationdriver_mutant200s;1;dgstationdriver_mutant200s;dgstationdriver_mutant200s.tar.bz2;extract:dgstationdriver_mutant200s.tar.bz2
 dgstationdriver_prime;1;dgstationdriver_prime;dgstationdriver_prime.tar.bz2;extract:dgstationdriver_prime.tar.bz2
 dgstationdriver_relook400s;1;dgstationdriver_relook400s;dgstationdriver_relook400s.tar.bz2;extract:dgstationdriver_relook400s.tar.bz2
+
+#
+# coolstream
+#
+linux_cool;2.6.26.1;linux-2.6.26.1;linux-2.6.26.1.tar.bz2;remove:linux;extract:linux-2.6.26.1.tar.bz2;link:linux-2.6.26.1:linux
+bootstrap_gcc_static_cool;4.32.2;gcc-4.3.2;gcc-4.3.2.tar.bz2:gcc-4.3.2.diff;extract:gcc-4.3.2.tar.bz2;patch:gcc-4.3.2.diff
+bootstrap_gcc_shared_cool;4.32.2;gcc-4.3.2;gcc-4.3.2.tar.bz2:gcc-4.3.2.diff;extract:gcc-4.3.2.tar.bz2;patch:gcc-4.3.2.diff
+bootstrap_eglibc;2_8;eglibc-2_8;eglibc-2_8.tar.bz2:eglibc-ports-2_8.tar.bz2;extract:eglibc-2_8.tar.bz2;dirextract:eglibc-ports-2_8.tar.bz2
+eglibc;2_8;eglibc-2_8;eglibc-2_8.tar.bz2:eglibc-ports-2_8.tar.bz2;extract:eglibc-2_8.tar.bz2;dirextract:eglibc-ports-2_8.tar.bz2
+gcc_cool;4.32.2;gcc-4.3.2;gcc-4.3.2.tar.bz2:gcc-4.3.2.diff;extract:gcc-4.3.2.tar.bz2;patch:gcc-4.3.2.diff
 
 >>?;rules-make-local

@@ -100,6 +100,12 @@ IPBOX_DRIVER_DIR = @DIR_dgstationdriver_relook400s@
 IPBOX_DRIVER_PREPARE = @PREPARE_dgstationdriver_relook400s@
 endif
 else
+if BOXTYPE_COOL
+KERNEL_DEPENDS = @DEPENDS_linux_cool@
+KERNEL_DIR = @DIR_linux_cool@
+KERNEL_PREPARE = @PREPARE_linux_cool@
+KERNEL_BUILD_FILENAME = @DIR_linux_cool@/arch/arm/boot/images/uImage
+else
 if KERNEL26
 KERNEL_DEPENDS = @DEPENDS_linux@
 KERNEL_DIR = @DIR_linux@
@@ -110,6 +116,7 @@ KERNEL_DEPENDS = @DEPENDS_linux24@
 KERNEL_DIR = @DIR_linux24@
 KERNEL_PREPARE = @PREPARE_linux24@
 KERNEL_BUILD_FILENAME = @DIR_linux24@/arch/ppc/boot/images/vmlinux.gz
+endif
 endif
 endif
 endif
@@ -129,7 +136,12 @@ if KERNEL26
 if BOXTYPE_DREAMBOX
 	cp $(KERNEL_DIR)/arch/ppc/configs/$(BOXMODEL)_defconfig $(KERNEL_DIR)/.config
 else
+if BOXTYPE_COOL
+# do nothing here
+	touch $(KERNEL_DIR)/.config
+else
 	m4 $(KERNEL_M4) $(kernel_conf) > $(KERNEL_DIR)/.config
+endif
 endif
 if BOXTYPE_DBOX2
 	$(INSTALL) -d $(KERNEL_DIR)/lib/lzma/
@@ -156,6 +168,7 @@ endif
 	cd $(KERNEL_DIR) && patch -p1 -E -i $(buildprefix)/Patches/linux-2.4-jffs2_lzma.diff
 endif
 	@CLEANUP_liblzma465@
+if !BOXTYPE_COOL
 	$(MAKE) -C $(KERNEL_DIR) oldconfig \
 		ARCH=ppc
 if KERNEL26
@@ -164,13 +177,23 @@ if KERNEL26
 endif
 	$(MAKE) -C $(KERNEL_DIR) include/linux/version.h \
 		ARCH=ppc
-if !BOXTYPE_DREAMBOX
-	rm $(KERNEL_DIR)/.config
 endif
+	rm -f $(KERNEL_DIR)/.config
 	touch $@
 
 if !USE_FOREIGN_TOOLCHAIN
+if BOXTYPE_COOL
+BINUTILS_OPTS= \
+--disable-multilib \
+--with-gmp=$(hostprefix) \
+--with-mpfr=$(hostprefix) \
+--with-float=soft
+$(DEPDIR)/binutils: @DEPENDS_binutils@ directories libmpfr_host
+else
+BINUTILS_OPTS= \
+--without-fp
 $(DEPDIR)/binutils: @DEPENDS_binutils@ directories 
+endif
 	@PREPARE_binutils@
 	cd @DIR_binutils@ && \
 		CC=$(CC) \
@@ -180,7 +203,7 @@ $(DEPDIR)/binutils: @DEPENDS_binutils@ directories
 			--prefix=$(hostprefix) \
 			--disable-nls \
 			--disable-werror \
-			--without-fp && \
+			$(BINUTILS_OPTS) && \
 		$(MAKE) configure-host && \
 		$(MAKE) -j $(J) all && \
 		$(MAKE) -j $(J) all-gprof && \
@@ -188,6 +211,7 @@ $(DEPDIR)/binutils: @DEPENDS_binutils@ directories
 	@CLEANUP_binutils@
 	touch $@
 
+if !BOXTYPE_COOL
 #
 # gcc first stage without glibc
 #
@@ -219,9 +243,11 @@ endif
 	@CLEANUP_bootstrap_gcc@
 	touch $@
 endif
+endif
 
 UCLIBC_M4 =
 
+if !BOXTYPE_COOL
 if TARGETRULESET_UCLIBC
 
 if !TARGETRULESET_FLASH
@@ -356,6 +382,166 @@ endif
 	ln -sf $(hostprefix)/$(target)/lib $(hostprefix)/$(target)/lib/nof
 	@CLEANUP_gcc@
 	touch $@
+endif
+
+else
+
+$(DEPDIR)/bootstrap_gcc_static_cool: @DEPENDS_bootstrap_gcc_static_cool@ binutils install-linux-headers
+	@PREPARE_bootstrap_gcc_static_cool@
+	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
+	ln -sf $(buildprefix)/linux/include/{asm,linux} $(hostprefix)/$(target)/sys-include/
+	cd @DIR_bootstrap_gcc_static_cool@ && \
+		CC=$(CC) CFLAGS="$(CFLAGS)" \
+		@CONFIGURE_bootstrap_gcc_static_cool@ \
+			--build=$(build) \
+			--host=$(build) \
+			--target=$(target) \
+			--prefix=$(hostprefix) \
+			--disable-multilib \
+			--with-newlib \
+			--enable-threads=no \
+			--disable-shared \
+			--with-float=soft \
+			--with-gmp=$(hostprefix) \
+			--with-mpfr=$(hostprefix) \
+			--enable-__cxa_atexit \
+			--disable-nls \
+			--enable-symvers=gnu \
+			--enable-languages=c \
+			--enable-target-optspace && \
+		$(MAKE) -j $(J) all-gcc && \
+		@INSTALL_bootstrap_gcc_static_cool@
+	rm -rf $(hostprefix)/$(target)/sys-include
+	@CLEANUP_bootstrap_gcc_static_cool@
+	touch $@
+
+$(DEPDIR)/bootstrap_gcc_shared_cool: @DEPENDS_bootstrap_gcc_shared_cool@ bootstrap_eglibc
+	@PREPARE_bootstrap_gcc_shared_cool@
+	$(INSTALL) -d $(hostprefix)/$(target)/sys-include
+	ln -sf $(buildprefix)/linux/include/{asm,linux} $(hostprefix)/$(target)/sys-include/
+	cd @DIR_bootstrap_gcc_shared_cool@ && \
+		CC=$(CC) CFLAGS="$(CFLAGS)" \
+		@CONFIGURE_bootstrap_gcc_shared_cool@ \
+			--build=$(build) \
+			--host=$(build) \
+			--target=$(target) \
+			--prefix=$(hostprefix) \
+			--disable-multilib \
+			--enable-shared \
+			--with-float=soft \
+			--with-gmp=$(hostprefix) \
+			--with-mpfr=$(hostprefix) \
+			--enable-__cxa_atexit \
+			--disable-nls \
+			--enable-symvers=gnu \
+			--enable-languages=c \
+			--enable-target-optspace && \
+		$(MAKE) configure-gcc configure-libcpp configure-build-libiberty && \
+		$(MAKE) -j $(J) all-libcpp all-build-libiberty && \
+		$(MAKE) configure-libdecnumber && \
+		$(MAKE) -j $(J) -C libdecnumber libdecnumber.a && \
+		$(MAKE) -j $(J) -C gcc libgcc.mvars && \
+		$(MAKE) -j $(J) all-gcc all-target-libgcc && \
+		@INSTALL_bootstrap_gcc_shared_cool@
+	rm -rf $(hostprefix)/$(target)/sys-include
+	@CLEANUP_bootstrap_gcc_shared_cool@
+	touch $@
+
+$(DEPDIR)/bootstrap_eglibc: Archive/eglibc-2_8.tar.bz2 bootstrap_gcc_static_cool
+	@PREPARE_bootstrap_eglibc@
+	cd @DIR_bootstrap_eglibc@ && \
+		@CONFIGURE_bootstrap_eglibc@ \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--with-headers=$(targetprefix)/include \
+			--disable-profile \
+			--without-gd \
+			--without-cvs \
+			--enable-add-ons && \
+		$(MAKE) install-headers install_root=$(targetprefix) install-bootstrap-headers=yes && \
+		$(MAKE) csu/subdir_lib && \
+		cp csu/crt1.o csu/crti.o csu/crtn.o $(targetprefix)/lib && \
+		$(target)-gcc -nostdlib -nostartfiles -shared -x c /dev/null -o $(targetprefix)/lib/libc.so
+	@CLEANUP_bootstrap_eglibc@
+	touch $@
+
+$(DEPDIR)/eglibc: Archive/eglibc-2_8.tar.bz2 bootstrap_gcc_shared_cool
+	@PREPARE_eglibc@
+	cd @DIR_eglibc@ && \
+		@CONFIGURE_eglibc@ \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--with-headers=$(targetprefix)/include \
+			--disable-profile \
+			--without-gd \
+			--without-cvs \
+			--enable-kernel=2.6.26 \
+			--with-__thread \
+			--with-tls \
+			--enable-shared \
+			--without-fp \
+			--enable-add-ons=nptl,ports \
+			--enable-kernel=2.6.18 && \
+		$(MAKE) && \
+		$(MAKE) install install_root=$(targetprefix)
+	sed -e's, /lib/, $(targetprefix)/lib/,g' < $(targetprefix)/lib/libc.so > $(targetprefix)/lib/libc.so.new
+	mv $(targetprefix)/lib/libc.so.new $(targetprefix)/lib/libc.so
+	sed -e's, /lib/, $(targetprefix)/lib/,g' < $(targetprefix)/lib/libpthread.so > $(targetprefix)/lib/libpthread.so.new
+	mv $(targetprefix)/lib/libpthread.so.new $(targetprefix)/lib/libpthread.so
+	@CLEANUP_eglibc@
+	touch $@
+
+$(DEPDIR)/gcc: @DEPENDS_gcc_cool@ eglibc
+	@PREPARE_gcc_cool@
+	cd @DIR_gcc_cool@ && \
+		CC=$(CC) CFLAGS="$(CFLAGS)" \
+		@CONFIGURE_gcc_cool@ \
+			--build=$(build) \
+			--host=$(build) \
+			--target=$(target) \
+			--prefix=$(hostprefix) \
+			--enable-languages=c,c++ \
+			--disable-multilib \
+			--with-float=soft \
+			--with-gmp=$(hostprefix) \
+			--with-mpfr=$(hostprefix) \
+			--enable-__cxa_atexit \
+			--with-local-prefix=$(targetprefix) \
+			--disable-nls \
+			--enable-threads=posix \
+			--enable-symvers=gnu \
+			--enable-c99 \
+			--enable-long-long \
+			--enable-target-optspace \
+			--enable-shared && \
+		$(MAKE) -j $(J) all && \
+		$(MAKE) install
+	@CLEANUP_gcc_cool@
+	touch $@
+
+Archive/eglibc-2_8.tar.bz2:
+	rm -rf $(buildprefix)/eglibc_svn && \
+	mkdir $(buildprefix)/eglibc_svn && \
+	cd $(buildprefix)/eglibc_svn && \
+	svn export --force -r HEAD svn://svn.eglibc.org/branches/eglibc-2_8 . && \
+	mv libc eglibc-2_8 && \
+	tar cjf eglibc-2_8.tar.bz2 eglibc-2_8 && \
+	tar cjf eglibc-linuxthreads-2_8.tar.bz2 linuxthreads && \
+	tar cjf eglibc-localedef-2_8.tar.bz2 localedef && \
+	tar cjf eglibc-ports-2_8.tar.bz2 ports && \
+	for i in eglibc eglibc-linuxthreads eglibc-localedef eglibc-ports; do \
+		mv $$i-2_8.tar.bz2 $(buildprefix)/Archive; \
+	done && \
+	cd $(buildprefix) && \
+	rm -rf $(buildprefix)/eglibc_svn
+
+Archive/eglibc-linuxthreads-2_8.tar.bz2 \
+Archive/eglibc-localedef-2_8.tar.bz2 \
+Archive/eglibc-ports-2_8.tar.bz2: \
+Archive/eglibc-2_8.tar.bz2
+
 endif
 
 # This rule script checks if all archives are present at the given address but

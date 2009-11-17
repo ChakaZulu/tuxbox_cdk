@@ -71,6 +71,8 @@ libFLAC;make:install: -C src/libFLAC DESTDIR=TARGET;rewrite-libtool:TARGET/lib/l
 libgettext;make:install: -C intl DESTDIR=TARGET
 liblzma465
 libfaad2;make:install:DESTDIR=TARGET
+libgmp_host;make:install
+libmpfr_host;make:install
 
 #
 # contrib apps
@@ -193,5 +195,15 @@ dgstationdriver_cubecafe
 dgstationdriver_mutant200s
 dgstationdriver_prime
 dgstationdriver_relook400s
+
+#
+# coolstream
+#
+linux_cool
+bootstrap_gcc_static_cool;make:install-gcc
+bootstrap_gcc_shared_cool;make:install-gcc:install-target-libgcc
+bootstrap_eglibc
+eglibc
+gcc_cool
 
 >>?;rules-install-local

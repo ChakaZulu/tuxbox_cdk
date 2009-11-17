@@ -43,7 +43,7 @@ $(DEPDIR)/utillinux: bootstrap @DEPENDS_utillinux@
 		CFLAGS="-Os -msoft-float -I$(targetprefix)/include/ncurses" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure && \
-		$(MAKE) ARCH=ppc all && \
+		$(MAKE) ARCH=$(CPU_ARCH) all && \
 		@INSTALL_utillinux@
 	@CLEANUP_utillinux@
 	touch $@

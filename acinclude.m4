@@ -38,14 +38,15 @@ AC_MSG_RESULT(done)
 AC_DEFUN([TUXBOX_BOXTYPE],[
 
 KERNELVERSION=check
+CPU_ARCH="ppc"
+CPU_MODEL="823"
 
 AC_ARG_WITH(boxtype,
-	[  --with-boxtype          valid values: dbox2,tripledragon,dreambox,ipbox,generic],
+	[  --with-boxtype          valid values: dbox2,tripledragon,dreambox,ipbox,coolstream,generic],
 	[case "${withval}" in
 dnl		To-Do: extend CPU types and kernel versions when needed
 		dbox2)
 			BOXTYPE="$withval"
-			CPU_MODEL="823"
 			;;
 		dreambox)
 			BOXTYPE="$withval"
@@ -63,11 +64,19 @@ dnl		To-Do: extend CPU types and kernel versions when needed
 			;;
 		tripledragon|generic)
 			BOXTYPE="$withval"
-			CPU_MODEL="823"
+			;;
+		coolstream)
+			BOXTYPE="$withval"
+			CPU_ARCH="arm"
+			CPU_MODEL="1176"
+			target_alias="arm-cx2450x-linux-gnueabi"
+			AM_CONDITIONAL(KERNEL26, true)
+			enable_kernel26=yes
+			enable_uclibc=no
 			;;
 		*)
 			AC_MSG_ERROR([bad value $withval for --with-boxtype]) ;;
-	esac], [BOXTYPE="dbox2"; CPU_MODEL="823"])
+	esac], [BOXTYPE="dbox2"])
 
 if test "$KERNELVERSION" = "check"; then
 	AC_ARG_ENABLE(kernel26,
@@ -109,6 +118,7 @@ AC_ARG_WITH(boxmodel,
 
 AC_SUBST(BOXTYPE)
 AC_SUBST(BOXMODEL)
+AC_SUBST(CPU_ARCH)
 AC_SUBST(CPU_MODEL)
 AC_SUBST(KERNELVERSION)
 
@@ -116,6 +126,7 @@ AM_CONDITIONAL(BOXTYPE_DBOX2, test "$BOXTYPE" = "dbox2")
 AM_CONDITIONAL(BOXTYPE_TRIPLE, test "$BOXTYPE" = "tripledragon")
 AM_CONDITIONAL(BOXTYPE_DREAMBOX, test "$BOXTYPE" = "dreambox")
 AM_CONDITIONAL(BOXTYPE_IPBOX, test "$BOXTYPE" = "ipbox")
+AM_CONDITIONAL(BOXTYPE_COOL, test "$BOXTYPE" = "coolstream")
 AM_CONDITIONAL(BOXTYPE_GENERIC, test "$BOXTYPE" = "generic")
 
 AM_CONDITIONAL(BOXMODEL_DM500,test "$BOXMODEL" = "dm500")
@@ -139,6 +150,8 @@ elif test "$BOXTYPE" = "dreambox"; then
 	AC_DEFINE(HAVE_DREAMBOX_HARDWARE, 1, [building for a dreambox])
 elif test "$BOXTYPE" = "ipbox"; then
 	AC_DEFINE(HAVE_IPBOX_HARDWARE, 1, [building for an ipbox])
+elif test "$BOXTYPE" = "coolstream"; then
+	AC_DEFINE(HAVE_COOL_HARDWARE, 1, [building for a coolstream])
 elif test "$BOXTYPE" = "generic"; then
 	AC_DEFINE(HAVE_GENERIC_HARDWARE, 1, [building for a generic device like a standard PC])
 fi

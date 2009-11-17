@@ -1,0 +1,22 @@
+diff -uNr ++DFB-1.0.0.org/examples/dfbplay.cpp ++DFB-1.0.0/examples/dfbplay.cpp
+--- ++DFB-1.0.0.org/examples/dfbplay.cpp	2007-02-13 21:05:42.000000000 +0100
++++ ++DFB-1.0.0/examples/dfbplay.cpp	2009-10-09 09:20:19.000000000 +0200
+@@ -31,6 +31,7 @@
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <string.h>
+ 
+ #include <++dfb.h>
+ 
+diff -uNr ++DFB-1.0.0.org/examples/dfbswitch.cpp ++DFB-1.0.0/examples/dfbswitch.cpp
+--- ++DFB-1.0.0.org/examples/dfbswitch.cpp	2006-05-07 01:56:13.000000000 +0200
++++ ++DFB-1.0.0/examples/dfbswitch.cpp	2009-10-09 09:20:11.000000000 +0200
+@@ -30,6 +30,7 @@
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <string.h>
+ 
+ #include <++dfb.h>
+ 

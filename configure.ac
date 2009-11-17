@@ -15,6 +15,8 @@ AC_ARG_ENABLE(uclibc,
 	,[enable_uclibc=no])
 AM_CONDITIONAL(TARGETRULESET_UCLIBC,test "$enable_uclibc" = "yes")
 
+TUXBOX_BOXTYPE
+
 if test "$target_alias" = "" ; then
 	if test "$enable_uclibc" = "yes"; then
 		target_alias="powerpc-tuxbox-linux-uclibc"
@@ -32,7 +34,6 @@ AM_MAINTAINER_MODE
 
 AC_PROG_CC
 
-TUXBOX_BOXTYPE
 
 AC_ARG_ENABLE(nptl,
 	AS_HELP_STRING(--disable-nptl,do not use native posix threads for glibc (only meaningful for kernel 2.6.x, default for 2.4.x)),
@@ -874,6 +875,14 @@ case "${BOXTYPE}" in
 		TUXBOX_RULES_MAKE(dgstationdriver_prime)
 		TUXBOX_RULES_MAKE(dgstationdriver_relook400s)
 		;;
+	coolstream)
+		TUXBOX_RULES_MAKE(linux_cool)
+		TUXBOX_RULES_MAKE_EXDIR(bootstrap_gcc_static_cool)
+		TUXBOX_RULES_MAKE_EXDIR(bootstrap_gcc_shared_cool)
+		TUXBOX_RULES_MAKE_EXDIR(bootstrap_eglibc)
+		TUXBOX_RULES_MAKE_EXDIR(eglibc)
+		TUXBOX_RULES_MAKE_EXDIR(gcc_cool)
+		;;
 	*)
 		TUXBOX_RULES_MAKE(linux)
 		TUXBOX_RULES_MAKE(linux24)
@@ -947,6 +956,8 @@ TUXBOX_RULES_MAKE(libFLAC)
 TUXBOX_RULES_MAKE(libgettext)
 TUXBOX_RULES_MAKE(liblzma465)
 TUXBOX_RULES_MAKE(libfaad2)
+TUXBOX_RULES_MAKE(libgmp_host)
+TUXBOX_RULES_MAKE(libmpfr_host)
 
 #
 # contrib apps
@@ -1113,10 +1124,14 @@ else
 	used_libc="glibc"
 fi
 
+if test "$BOXTYPE" = "coolstream"; then
+	used_libc="eglibc"
+fi
+
 AC_MSG_RESULT([
 summary:
 ----------------------------------------
-target cpu/boxtype:		$CPU_MODEL/$BOXTYPE $BOXMODEL
+target cpu/boxtype:		$CPU_ARCH$CPU_MODEL/$BOXTYPE $BOXMODEL
 kernel:				$used_kernelversion
 kernel config:			$kernel_conf
 libc:				$used_libc

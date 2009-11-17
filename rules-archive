@@ -85,6 +85,8 @@ libiconv-1.9.1.tar.gz;http://ftp.gnu.org/pub/gnu/libiconv
 flac-1.2.0.tar.gz;http://prdownloads.sourceforge.net/sourceforge/flac
 gettext-0.17.tar.gz;http://ftp.gnu.org/pub/gnu/gettext
 faad2-2.7.tar.bz2;http://downloads.sourceforge.net/faac
+gmp-4.2.2.tar.bz2;ftp://ftp.informatik.rwth-aachen.de/pub/gnu/gmp
+mpfr-2.3.1.tar.bz2;http://www.mpfr.org/mpfr-2.3.1
 
 #
 # contrib apps
@@ -216,3 +218,10 @@ dgstationdriver_cubecafe.tar.bz2;http://www.dbox2-tuning.net/cvsdata/files
 dgstationdriver_mutant200s.tar.bz2;http://www.dbox2-tuning.net/cvsdata/files
 dgstationdriver_prime.tar.bz2;http://www.dbox2-tuning.net/cvsdata/files
 dgstationdriver_relook400s.tar.bz2;http://www.dbox2-tuning.net/cvsdata/files
+
+#
+# coolstream
+#
+linux-2.6.26.1.tar.bz2;ftp://ftp.de.kernel.org/pub/linux/kernel/v2.6;ftp://ftp.kernel.org/pub/linux/kernel/v2.6
+gcc-4.3.2.tar.bz2;ftp://ftp.gnu.org/gnu/gcc/gcc-4.3.2
+libelf-0.8.10.tar.gz;http://www.mr511.de/software

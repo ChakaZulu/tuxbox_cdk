@@ -14,7 +14,10 @@ libs_optional: \
 	libpcap libxml2 libungif \
 	libexpat libcrypto @SQLITE@
 
-libs_all: libs libs_optional
+libs_host : \
+	libgmp_host libmpfr_host
+
+libs_all: libs libs_optional libs_host
 
 $(DEPDIR)/libboost: bootstrap @DEPENDS_libboost@
 	@PREPARE_libboost@
@@ -278,7 +281,7 @@ $(DEPDIR)/libmad: bootstrap libz @DEPENDS_libmad@
 			--prefix= \
 			--enable-shared=yes \
 			--enable-speed \
-			--enable-fpm=ppc \
+			--enable-fpm=$(CPU_ARCH) \
 			--enable-sso && \
 		$(MAKE) -j $(J) all && \
 		@INSTALL_libmad@
@@ -604,4 +607,36 @@ $(DEPDIR)/libfaad2: bootstrap @DEPENDS_libfaad2@
 		$(MAKE) && \
 		@INSTALL_libfaad2@
 	@CLEANUP_libfaad2@
+	touch $@
+
+$(DEPDIR)/libgmp_host: @DEPENDS_libgmp_host@
+	@PREPARE_libgmp_host@
+	cd @DIR_libgmp_host@ && \
+		CC=$(CC) \
+		CFLAGS="$(CFLAGS)" \
+		./configure \
+			--prefix=$(hostprefix) \
+			--disable-shared \
+			--enable-static \
+			--enable-fft \
+			--enable-mpbsd && \
+		$(MAKE) && \
+		@INSTALL_libgmp_host@
+	@CLEANUP_libgmp_host@
+	touch $@
+
+$(DEPDIR)/libmpfr_host: @DEPENDS_libmpfr_host@ libgmp_host
+	@PREPARE_libmpfr_host@
+	cd @DIR_libmpfr_host@ && \
+		CC=$(CC) \
+		CFLAGS="$(CFLAGS)" \
+		./configure \
+			--prefix=$(hostprefix) \
+			--enable-thread-safe \
+			--disable-shared \
+			--enable-static \
+			--with-gmp=$(hostprefix) && \
+		$(MAKE) && \
+		@INSTALL_libmpfr_host@
+	@CLEANUP_libmpfr_host@
 	touch $@

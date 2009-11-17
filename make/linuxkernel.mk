@@ -100,6 +100,13 @@ if BOXTYPE_IPBOX
 	echo "/* empty */" > $(hostprefix)/$(target)/include/linux/compiler.h
 	@CLEANUP_linux_ipbox_kernel_headers@
 else
+if BOXTYPE_COOL
+	$(MAKE) -C $(KERNEL_DIR) headers_install ARCH=$(CPU_ARCH); \
+	ln -sf $(buildprefix)/linux/usr/include/linux $(hostprefix)/$(target)/include; \
+	ln -sf $(buildprefix)/linux/usr/include/asm $(hostprefix)/$(target)/include; \
+	ln -sf $(buildprefix)/linux/usr/include/asm-generic $(hostprefix)/$(target)/include; \
+	ln -sf $(buildprefix)/linux/usr/include/mtd $(hostprefix)/$(target)/include
+else
 if KERNEL26
 # Kernels after 2.6.18 offer a special "headers_install" target to generate
 # "userspace-blessed" heades. This will create an include directory in
@@ -123,6 +130,7 @@ if KERNEL26
 		ln -sf $(buildprefix)/linux/usr/include/asm-generic $(hostprefix)/$(target)/include; \
 		ln -sf $(buildprefix)/linux/usr/include/mtd $(hostprefix)/$(target)/include; \
 	fi
+endif
 endif
 endif
 endif
