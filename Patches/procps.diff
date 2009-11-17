@@ -25,3 +25,15 @@ diff -rup procps-3.2.7-orig/ps/global.c procps-3.2.7/ps/global.c
  #ifndef __GNU_LIBRARY__
  #define __GNU_LIBRARY__ -1
  #endif
+diff -uNr procps-3.2.8.org/Makefile procps-3.2.8/Makefile
+--- procps-3.2.8.org/Makefile	2009-05-10 20:50:48.000000000 +0200
++++ procps-3.2.8/Makefile	2009-11-03 14:15:19.000000000 +0100
+@@ -127,7 +127,7 @@
+ # produce separate executables for ppc and ppc64, s390 and s390x,
+ # i386 and x86-64, mips and mips64, sparc and sparc64, and so on.
+ # Failure to do so will cause data corruption.
+-m64 := $(call check_gcc,-m64,$(call check_gcc,-mabi=64,))
++m64 := $(call check_gcc,,$(call check_gcc,-mabi=64,))
+ ALL_CFLAGS += $(m64)
+ 
+ ALL_CFLAGS += $(call check_gcc,-Wdeclaration-after-statement,)
