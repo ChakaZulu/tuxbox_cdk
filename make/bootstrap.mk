@@ -532,7 +532,7 @@ Archive/eglibc-2_8.tar.bz2:
 	tar cjf eglibc-localedef-2_8.tar.bz2 localedef && \
 	tar cjf eglibc-ports-2_8.tar.bz2 ports && \
 	for i in eglibc eglibc-linuxthreads eglibc-localedef eglibc-ports; do \
-		mv $$i-2_8.tar.bz2 $(buildprefix)/Archive; \
+		mv $$i-2_8.tar.bz2 $(archivedir)/; \
 	done && \
 	cd $(buildprefix) && \
 	rm -rf $(buildprefix)/eglibc_svn
