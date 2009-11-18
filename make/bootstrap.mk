@@ -447,7 +447,7 @@ $(DEPDIR)/bootstrap_gcc_shared_cool: @DEPENDS_bootstrap_gcc_shared_cool@ bootstr
 	@CLEANUP_bootstrap_gcc_shared_cool@
 	touch $@
 
-$(DEPDIR)/bootstrap_eglibc: Archive/eglibc-2_8.tar.bz2 bootstrap_gcc_static_cool
+$(DEPDIR)/bootstrap_eglibc: $(archivedir)/eglibc-2_8.tar.bz2 bootstrap_gcc_static_cool
 	@PREPARE_bootstrap_eglibc@
 	cd @DIR_bootstrap_eglibc@ && \
 		@CONFIGURE_bootstrap_eglibc@ \
@@ -466,7 +466,7 @@ $(DEPDIR)/bootstrap_eglibc: Archive/eglibc-2_8.tar.bz2 bootstrap_gcc_static_cool
 	@CLEANUP_bootstrap_eglibc@
 	touch $@
 
-$(DEPDIR)/eglibc: Archive/eglibc-2_8.tar.bz2 bootstrap_gcc_shared_cool
+$(DEPDIR)/eglibc: $(archivedir)/eglibc-2_8.tar.bz2 bootstrap_gcc_shared_cool
 	@PREPARE_eglibc@
 	cd @DIR_eglibc@ && \
 		@CONFIGURE_eglibc@ \
@@ -521,7 +521,7 @@ $(DEPDIR)/gcc: @DEPENDS_gcc_cool@ eglibc
 	@CLEANUP_gcc_cool@
 	touch $@
 
-Archive/eglibc-2_8.tar.bz2:
+$(archivedir)/eglibc-2_8.tar.bz2:
 	rm -rf $(buildprefix)/eglibc_svn && \
 	mkdir $(buildprefix)/eglibc_svn && \
 	cd $(buildprefix)/eglibc_svn && \
@@ -537,10 +537,10 @@ Archive/eglibc-2_8.tar.bz2:
 	cd $(buildprefix) && \
 	rm -rf $(buildprefix)/eglibc_svn
 
-Archive/eglibc-linuxthreads-2_8.tar.bz2 \
-Archive/eglibc-localedef-2_8.tar.bz2 \
-Archive/eglibc-ports-2_8.tar.bz2: \
-Archive/eglibc-2_8.tar.bz2
+$(archivedir)/eglibc-linuxthreads-2_8.tar.bz2 \
+$(archivedir)/eglibc-localedef-2_8.tar.bz2 \
+$(archivedir)/eglibc-ports-2_8.tar.bz2: \
+$(archivedir)/eglibc-2_8.tar.bz2
 
 endif
 
