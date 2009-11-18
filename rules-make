@@ -217,7 +217,7 @@ dgstationdriver_relook400s;1;dgstationdriver_relook400s;dgstationdriver_relook40
 #
 # coolstream
 #
-linux_cool;2.6.26.1;linux-2.6.26.1;linux-2.6.26.1.tar.bz2;remove:linux;extract:linux-2.6.26.1.tar.bz2;link:linux-2.6.26.1:linux
+linux_cool;2.6.26.1;linux-2.6.26.1;linux-2.6.26.1.tar.bz2:linux-2.6-coolstream.diff;remove:linux;extract:linux-2.6.26.1.tar.bz2;patch:linux-2.6-coolstream.diff;link:linux-2.6.26.1:linux
 bootstrap_gcc_static_cool;4.32.2;gcc-4.3.2;gcc-4.3.2.tar.bz2:gcc-4.3.2.diff;extract:gcc-4.3.2.tar.bz2;patch:gcc-4.3.2.diff
 bootstrap_gcc_shared_cool;4.32.2;gcc-4.3.2;gcc-4.3.2.tar.bz2:gcc-4.3.2.diff;extract:gcc-4.3.2.tar.bz2;patch:gcc-4.3.2.diff
 bootstrap_eglibc;2_8;eglibc-2_8;eglibc-2_8.tar.bz2:eglibc-ports-2_8.tar.bz2;extract:eglibc-2_8.tar.bz2;dirextract:eglibc-ports-2_8.tar.bz2
