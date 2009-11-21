@@ -1,0 +1,9 @@
+#!/bin/sh
+
+case $1 in
+	start)
+		[ -e /var/etc/.rdate ] && rdate time.fu-berlin.de
+		;;
+esac
+
+exit 0

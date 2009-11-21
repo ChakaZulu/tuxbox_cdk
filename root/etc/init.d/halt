@@ -1,12 +1,12 @@
 #!/bin/sh
 
-# $Id: halt,v 1.5 2009/04/28 08:08:36 seife Exp $
+# $Id: halt,v 1.6 2009/11/21 13:35:52 rhabarber1848 Exp $
 
 mount | grep /hdd >/dev/null && umount /hdd
 
 [ -e /var/run/automount.pid ] && kill -TERM $( cat /var/run/automount.pid )
-[ -e /tmp/tuxmaild.pid ] && kill $( cat /tmp/tuxmaild.pid )
-[ -e /tmp/tuxcald.pid ] && kill $( cat /tmp/tuxcald.pid )
+[ -e /var/run/tuxmaild.pid ] && kill $( cat /var/run/tuxmaild.pid )
+[ -e /var/run/tuxcald.pid ] && kill $( cat /var/run/tuxcald.pid )
 
 switch -fnc 0 -fblk 0
 

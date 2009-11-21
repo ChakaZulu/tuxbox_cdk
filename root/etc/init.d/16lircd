@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case $1 in
+	start)
+		[ -e /var/tuxbox/config/lirc/lircd.conf ] && lircd /var/tuxbox/config/lirc/lircd.conf
+		;;
+	stop)
+		[ -e /var/run/lircd.pid ] && kill $( cat /var/run/lircd.pid )
+		;;
+esac
+
+exit 0

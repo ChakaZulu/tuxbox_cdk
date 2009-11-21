@@ -11,32 +11,35 @@ endif
 
 
 if KERNEL26
-bare-os: yadd-u-boot kernel-cdk driver yadd-etc busybox module_init_tools \
+bare-os: yadd-u-boot kernel-cdk driver busybox module_init_tools \
 		tuxbox_hotplug tuxinfo misc_tools
 else
-bare-os: yadd-u-boot kernel-cdk driver yadd-etc busybox modutils tuxinfo misc_tools
+bare-os: yadd-u-boot kernel-cdk driver busybox modutils tuxinfo misc_tools
 endif
 	@TUXBOX_YADD_CUSTOMIZE@
 
 yadd-none: bare-os config tuxbox_tools procps lcd ftpd yadd-ucodes yadd-bootlogos @AUTOMOUNT@ @LIRC@ @CDKVCINFO@ @XFSPROGS@ @NFSSERVER@ @SAMBASERVER@ @LUFS@ @SMBMOUNT@ @REISERFSPROGS@ @CONSOLE_TOOLS@ @OPENVPN@ version defaultlocale
 	@TUXBOX_YADD_CUSTOMIZE@
 
+yadd-none-etc: yadd-none yadd-etc
+	@TUXBOX_YADD_CUSTOMIZE@
+
 yadd-micro-neutrino: bare-os config yadd-ucodes camd2 switch neutrino
 	@TUXBOX_YADD_CUSTOMIZE@
 
-yadd-neutrino: yadd-none neutrino-plugins @FX2PLUGINS@ @ESOUND@ neutrino
+yadd-neutrino: neutrino-plugins yadd-none-etc @FX2PLUGINS@ @ESOUND@ neutrino
 	@TUXBOX_YADD_CUSTOMIZE@
 
-yadd-enigma: yadd-none enigma-plugins @FX2PLUGINS@ enigma
+yadd-enigma: yadd-none-etc enigma-plugins @FX2PLUGINS@ enigma
 	@TUXBOX_YADD_CUSTOMIZE@
 
-yadd-lcars: yadd-none lcars
+yadd-lcars: yadd-none-etc lcars
 	@TUXBOX_YADD_CUSTOMIZE@
 
-yadd-radiobox: yadd-none radiobox
+yadd-radiobox: yadd-none-etc radiobox
 	@TUXBOX_YADD_CUSTOMIZE@
 
-yadd-all: yadd-none plugins neutrino enigma lcars
+yadd-all: yadd-none-etc plugins neutrino enigma lcars @ESOUND@
 	@TUXBOX_YADD_CUSTOMIZE@
 
 yadd-bootlogos:

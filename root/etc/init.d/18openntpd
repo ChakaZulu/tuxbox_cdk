@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Tuxbox init script for /sbin/ntpd
+
+NTPD_CONF=/var/etc/ntpd.conf
+
+case $1 in
+	start)
+		if [ -x /sbin/ntpd -a -e $NTPD_CONF ] && grep -q ^server $NTPD_CONF; then
+			ntpd -s -f $NTPD_CONF # -s tells ntpd to set the time at startup
+		fi
+		;;
+	stop)
+		killall ntpd
+		;;
+esac
+
+exit 0

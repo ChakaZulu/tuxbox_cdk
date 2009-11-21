@@ -1,0 +1,16 @@
+#!/bin/sh
+
+case $1 in
+	start)
+		if [ -x /sbin/openvpn ]; then
+			$IM tun
+			/sbin/openvpn --cd /tmp --daemon --dev /dev/net/tun
+			sleep 1
+		fi
+		;;
+	stop)
+		[ -e /var/run/openvpn.pid ] && kill $( cat /var/run/openvpn.pid )
+		;;
+esac
+
+exit 0

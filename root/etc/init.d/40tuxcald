@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Tuxbox init script for /bin/tuxcald
+
+PROG=tuxcald
+
+case $1 in
+	start)
+		[ -e /var/etc/.$PROG ] && $PROG
+		;;
+	stop)
+		[ -e /var/run/$PROG.pid ] && kill $( cat /var/run/$PROG.pid )
+		;;
+esac
+
+exit 0

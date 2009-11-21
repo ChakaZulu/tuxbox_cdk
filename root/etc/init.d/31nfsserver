@@ -1,0 +1,21 @@
+#!/bin/sh
+
+case $1 in
+	start)
+		if [ -e /etc/exports ]; then
+			$IM nfsd
+			portmap
+			exportfs -r
+			rpc.mountd
+			rpc.nfsd 3
+		fi
+		;;
+	stop)
+		killall portmap
+		killall rpc.mountd
+		killall -2 nfsd
+		exportfs -u -a
+		;;
+esac
+
+exit 0

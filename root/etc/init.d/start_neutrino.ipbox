@@ -1,0 +1,71 @@
+#!/bin/sh
+
+# $Id: start_neutrino.ipbox,v 1.1 2009/11/21 13:35:52 rhabarber1848 Exp $
+
+date -s 010101001970
+# openntpd support...
+NTPD_CONF=/var/etc/ntpd.conf
+# if nptd exists and is configured...
+if [ -x /sbin/ntpd -a -e $NTPD_CONF ] && grep -q ^server $NTPD_CONF; then
+	#... then start it...
+	ntpd -s -f $NTPD_CONF # -s tells ntpd to set the time at startup
+	#...and tell sectionsd to not do any timethread work...
+	SECTIONSD="-tc"
+fi
+
+sectionsd $SECTIONSD
+timerd
+camd2
+ZAPIT=""
+if [ ! -e /var/etc/.no_pmt_update -a `cat /proc/bus/avia_version` = "avia600" ] ; then
+    ZAPIT=-u
+fi
+zapit $ZAPIT
+
+# start nhttpd a bit later, for faster startup
+{ sleep 20; nhttpd; } &
+
+until neutrino -f -u ; do
+    echo "Neutrino exited with nonzero exit status, restarting..."
+    pidof sectionsd >/dev/null && sectionsdcontrol --nopause || sectionsd $SECTIONSD
+    pidof timerd    >/dev/null || timerd
+    pidof camd2     >/dev/null || camd2
+    pidof zapit     >/dev/null && pzapit -lsb || zapit $ZAPIT
+    pidof nhttpd    >/dev/null || nhttpd
+done
+
+[ -e /tmp/tuxmaild.pid ] && kill $( cat /tmp/tuxmaild.pid )
+[ -e /tmp/tuxcald.pid ] && kill $( cat /tmp/tuxcald.pid )
+[ -e /var/run/automount.pid ] && kill -TERM $( cat /var/run/automount.pid )
+pzapit -kill
+
+i=9
+while expr $i != 0 > /dev/null
+do
+if pidof timerd > /dev/null; then echo "Waiting for timerd (max. $i seconds)"
+elif pidof zapit > /dev/null; then echo "Waiting for zapit (max. $i seconds)"
+elif pidof tuxmaild > /dev/null; then echo "Waiting for tuxmaild (max. $i seconds)"
+elif pidof tuxcald > /dev/null; then echo "Waiting for tuxcald (max. $i seconds)"
+else break;
+fi
+i=`expr $i - 1`
+sleep 1
+done
+
+if [ -e /tmp/.nohalt ] ; then
+    killall -q sectionsd
+    killall -q timerd
+    killall -q camd2
+    killall -q zapit
+    killall -q nhttpd
+    saa --fbas
+    switch -fnc 0 -fblk 0
+    echo "Neutrino and its daemons terminated (hopefully)"
+    exit
+fi
+
+if [ -e /tmp/.reboot ] ; then
+    reboot
+else
+    halt
+fi

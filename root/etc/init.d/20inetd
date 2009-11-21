@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case $1 in
+	start)
+		inetd
+		;;
+	stop)
+		killall -TERM inetd 2>/dev/null
+		killall telnetd 2>/dev/null
+		killall in.ftpd 2>/dev/null
+		;;
+esac
+
+exit 0

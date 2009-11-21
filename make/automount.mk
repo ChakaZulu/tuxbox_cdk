@@ -12,9 +12,8 @@ endif
 	cd @DIR_automount@  && \
 		$(BUILDENV) STRIP=$(target)-strip \
 		$(MAKE) && \
-		$(MAKE) install INSTALLROOT=$(targetprefix)
+		$(MAKE) install SUBDIRS="lib daemon modules" INSTALLROOT=$(targetprefix)
 	rm -rf @DIR_automount@
-#	$(INSTALL) $(buildprefix)/root/etc/init.d/start_automount $(targetprefix)/etc/init.d
 	$(INSTALL) $(buildprefix)/root/etc/auto.net $(targetprefix)/etc
 	ln -sf /proc/mounts $(targetprefix)/etc/mtab
 	@touch $@
@@ -31,7 +30,6 @@ endif
 		$(MAKE) && \
 		$(MAKE) install SUBDIRS="lib daemon modules" INSTALLROOT=$(flashprefix)/root
 	rm -rf @DIR_automount@
-#	$(INSTALL) $(buildprefix)/root/etc/init.d/start_automount $(flashprefix)/root/etc/init.d
 	ln -sf /proc/mounts $(flashprefix)/root/etc/mtab
 	rm -f $(flashprefix)/root/lib/autofs/lookup_multi.so
 	rm -f $(flashprefix)/root/lib/autofs/lookup_program.so

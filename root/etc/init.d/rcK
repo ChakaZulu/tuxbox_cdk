@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. /etc/init.d/functions
+
+get_ROOTFS
+export ROOTFS
+
+run_initscripts stop
+
+switch -fnc 0 -fblk 0
+grep /var /proc/mounts >/dev/null && umount /var
+grep /var /proc/mounts >/dev/null && umount -l /var

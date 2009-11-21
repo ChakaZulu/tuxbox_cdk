@@ -1,0 +1,13 @@
+#!/bin/sh
+
+case $1 in
+	start)
+		/bin/hostname -F /etc/hostname
+		ifup -a
+		;;
+	stop)
+		[ "$ROOTFS" != "nfs" ] && ifdown -a
+		;;
+esac
+
+exit 0

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Tuxbox init script for /bin/cdkVcInfo
+
+case $1 in
+	start)
+		[ -e /var/etc/.boot_info ] && /bin/cdkVcInfo
+		;;
+esac
+
+exit 0

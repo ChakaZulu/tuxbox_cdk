@@ -1,0 +1,117 @@
+#!/bin/sh
+
+case $1 in
+	start)
+
+		echo "[BOOT] running $0"
+
+		if [ $IM = "modprobe" ]; then
+			type -p depmod > /dev/null && touch /etc/modules.conf && depmod -ae
+		fi
+
+		$IM tuxbox
+
+		# Get info about the current box
+		eval `tuxinfo -e`
+
+		echo "Detected STB:"
+		echo "	Vendor: $VENDOR"
+		echo "	Model: $MODEL $SUBMODEL ($FLASHCHIPS flash chips)"
+
+		$IM dvb-core dvb_shutdown_timeout=0
+
+		if [ $MODEL_ID -ne 1 ]; then
+			# Only Dbox2 is supported
+			echo "For your box, please use another version"
+			exit 1
+		fi
+
+		$IM event
+
+		# I2C core
+		$IM dbox2_i2c
+
+		# Frontprocessor
+		$IM dbox2_fp
+		$IM lcd
+		if [ -e /var/etc/.oldrc ]; then
+			INPUT_PAR="disable_new_rc=1"
+		elif [ -e /var/etc/.newrc ]; then
+			INPUT_PAR="disable_old_rc=1"
+		elif [ -e /var/etc/.philips_rc_patch ]; then
+			INPUT_PAR="philips_rc_patch=1"
+		fi
+		$IM dbox2_fp_input $INPUT_PAR
+
+		# Misc IO
+		$IM avs
+		$IM saa7126
+
+		# Frontends
+		if [ $VENDOR_ID -eq 1 ]; then
+			# Nokia
+			$IM ves1820
+			$IM ves1x93 board_type=1
+			$IM cam mio=0xC000000 firmware=/var/tuxbox/ucodes/cam-alpha.bin
+		elif [ $VENDOR_ID -eq 2 ]; then
+			# Philips
+			$IM tda8044h
+			$IM cam mio=0xC040000 firmware=/var/tuxbox/ucodes/cam-alpha.bin
+		elif [ $VENDOR_ID -eq 3 ]; then
+			# Sagem
+			$IM at76c651
+			$IM ves1x93 board_type=2
+			$IM cam mio=0xC000000 firmware=/var/tuxbox/ucodes/cam-alpha.bin
+		fi
+
+		$IM dvb_i2c_bridge
+
+		$IM avia_napi
+		$IM cam_napi
+		$IM dbox2_fp_napi
+
+		# Possibly turn off the watchdog on AVIA 500
+		if [ -e /var/etc/.no_watchdog ]; then
+			AVIA_AV_PARA="no_watchdog=1 "
+		fi
+		if [ -e /var/etc/.sptsfix ]; then
+			AVIA_AV_PARA="${AVIA_AV_PARA} sptsfix=1"
+		fi
+		$IM avia_av firmware=/var/tuxbox/ucodes $AVIA_AV_PARA
+
+		# Bei Avia_gt hw_sections und nowatchdog abfragen
+		GTOPTS=""
+		if [ -e /var/etc/.hw_sections ]; then
+			GTOPTS="hw_sections=0 "
+		fi
+		if [ -e /var/etc/.no_enxwatchdog ]; then
+			GTOPTS="${GTOPTS}no_watchdog=1 "
+		fi
+
+		$IM avia_gt ucode=/var/tuxbox/ucodes/ucode.bin $GTOPTS
+
+		$IM avia_gt_fb console_transparent=0
+		$IM avia_gt_lirc
+		$IM avia_gt_oss
+		$IM avia_gt_v4l2
+
+		$IM avia_av_napi
+		if [ -e /var/etc/.spts_mode ]; then
+			$IM avia_gt_napi mode=1
+		else
+			$IM avia_gt_napi
+		fi
+
+		$IM dvb2eth
+		$IM aviaEXT
+
+		# Create a telnet greeting
+		echo "$VENDOR $MODEL - Kernel %r (%t)." > /etc/issue.net
+
+		# compatibility links
+		ln -sf demux0 /dev/dvb/adapter0/demux1
+		ln -sf dvr0 /dev/dvb/adapter0/dvr1
+		;;
+esac
+
+exit 0

@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# /etc/init.d/sysinit
+#
+# mounts virtual filesystems etc and /var, so that the system can boot
+
+mount -t proc	proc	/proc
+mount -t tmpfs	tmp	/tmp
+echo "[BOOT] running $0"
+
+ln -sf fb/0 /dev/fb0
+
+date -s 010101001970
+
+ROOTFS=$(grep /dev/root /proc/mounts | cut -d " " -f 3)
+
+if [ "$ROOTFS" != "nfs" ]; then
+
+	# find the device of the /var/ partition
+	# after that $VAR_MTD contains "/dev/mtdblock/3"
+	eval $(sed -n 's#^mtd\([0-9]\): .* .* "var .*$#export VAR_MTD=/dev/mtdblock/\1#p;' /proc/mtd)
+
+	# this needs to come after "makedevices" for kernel 2.6...
+	if [ -n "$VAR_MTD" ]; then
+		mount -t jffs2 $VAR_MTD /var
+	else
+		echo "[BOOT] no /var MTD partition found (jffs2-image?)"
+	fi
+
+fi

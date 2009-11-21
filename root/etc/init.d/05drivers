@@ -1,0 +1,50 @@
+#!/bin/sh
+
+case $1 in
+	start)
+
+		echo "[BOOT] running $0"
+
+		if [ $IM = "modprobe" ]; then
+			type -p depmod > /dev/null && touch /etc/modules.conf && depmod -ae
+		fi
+
+		$IM tuxbox
+
+		# Get info about the current box
+		eval `tuxinfo -e`
+
+		echo "Detected STB:"
+		echo "	Vendor: $VENDOR"
+		echo "	Model: $MODEL $SUBMODEL ($FLASHCHIPS flash chips)"
+
+		$IM dvb-core dvb_shutdown_timeout=0
+
+		if [ $MODEL_ID -ne 1 ]; then
+			# Only Dbox2 is supported
+			echo "For your box, please use another version"
+			exit 1
+		fi
+
+		# I2C core
+		$IM dbox2_i2c
+		# load order is somehow important, if dbox2_napi (which pulls in
+		# e.g. the demodulator drivers) is loaded first, at least tda80{xx,44h}
+		# hang while initalizing the i2c-bus :-(
+		$IM saa7126
+		$IM avs  # pulls in event.ko
+		$IM lcd  #
+		$IM dbox2_fp_input  # pulls in dbox2_fp
+
+		$IM avia_gt_fb
+		$IM avia_gt_lirc
+		$IM avia_gt_oss
+		$IM avia_gt_v4l2
+		$IM aviaEXT
+
+		# Create a telnet greeting
+		echo "$VENDOR $MODEL - Kernel %r (%t)." > /etc/issue.net
+		;;
+esac
+
+exit 0

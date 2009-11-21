@@ -1,0 +1,44 @@
+# common functions for init scripts
+
+get_TZ() {
+	[ -e /var/etc/TZ ] && read TZ < /var/etc/TZ && return
+	[ -e /etc/TZ ]     && read TZ < /etc/TZ
+}
+
+get_KMINOR() {
+	# KMINOR == 4 for kernel 2.4, == for 2.6
+	IFS=. read DUMMY KMINOR DUMMY < /proc/version
+	export KMINOR
+}
+
+get_KV() {
+	KV=$(uname -r)
+	export KV
+}
+
+get_ROOTFS() {
+	ROOTFS=$(grep /dev/root /proc/mounts | cut -d " " -f 3)
+	export ROOTFS
+}
+
+run_initscripts() {
+	if [ "x$1" == xstop ]; then
+		action="stop"
+		files="/var/etc/init.d/K* /etc/init.d/K*"
+		names=$(for file in $files ; do echo ${file##*/} ; done | sort -u -r)
+	else
+		action="start"
+		files="/var/etc/init.d/S* /etc/init.d/S*"
+		names=$(for file in $files ; do echo ${file##*/} ; done | sort -u)
+	fi
+
+	for name in $names; do
+		if [ -x "/var/etc/init.d/$name" ]; then
+			echo "${action}ing /var/etc/init.d/$name ..."
+			/var/etc/init.d/$name $action
+		elif [ -x "/etc/init.d/$name" ]; then
+			echo "${action}ing /etc/init.d/$name ..."
+			/etc/init.d/$name $action
+		fi
+	done
+}

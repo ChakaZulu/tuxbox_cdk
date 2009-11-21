@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Tuxbox init script for /sbin/dropbear
+
+case $1 in
+	start)
+		[ -x /sbin/dropbear ] && /sbin/dropbear
+		;;
+	stop)
+		[ -e /var/run/dropbear.pid ] && kill $( cat /var/run/dropbear.pid )
+		;;
+esac
+
+exit 0

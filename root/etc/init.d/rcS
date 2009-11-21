@@ -1,0 +1,20 @@
+#!/bin/sh
+
+. /etc/profile
+. /etc/init.d/functions
+
+get_TZ
+get_KMINOR
+get_KV
+get_ROOTFS
+export TZ KMINOR KV ROOTFS PATH
+
+# use modprobe with kernel 2.6 or yadd
+if [ $KMINOR -ge 6 -o $ROOTFS = "nfs" ]; then
+	IM=modprobe
+else
+	IM=insmod
+fi
+export IM
+
+run_initscripts start

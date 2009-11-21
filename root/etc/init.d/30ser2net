@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Tuxbox init script for /sbin/ser2net
+
+case $1 in
+	start)
+		[ -x /etc/ser2net.conf ] && /sbin/ser2net -P /var/run/ser2net.pid
+		;;
+	stop)
+		[ -e /var/run/ser2net.pid ] && kill $( cat /var/run/ser2net.pid )
+		;;
+esac
+
+exit 0

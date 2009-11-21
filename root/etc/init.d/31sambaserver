@@ -1,0 +1,16 @@
+#!/bin/sh
+
+case $1 in
+	start)
+		if [ -e /var/etc/.sambaserver -a -e /etc/smb.conf ]; then
+			/bin/nmbd -D
+			/bin/smbd -D -a -s /etc/smb.conf
+		fi
+		;;
+	stop)
+		killall smbd
+		killall nmbd
+		;;
+esac
+
+exit 0

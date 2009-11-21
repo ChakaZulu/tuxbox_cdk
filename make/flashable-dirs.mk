@@ -20,7 +20,7 @@ $(flashprefix)/root-% $(flashprefix)/root
 	cp -rd $</var $@
 	cp -rd $(flashprefix)/root/var/* $@
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/tuxbox/boot
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$(flashprefix)/.junk flashprefix_rw=$@
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$(flashprefix)/.junk flashprefix_rw=$@ flashprefix=$(flashprefix)/root
 	rm -rf $(flashprefix)/.junk
 	if [ -d $(flashprefix)/root/etc/ssh ] ; then \
 		cp -rd $(flashprefix)/root/etc/ssh $@/etc/ssh ; \
@@ -45,7 +45,7 @@ $(flashprefix)/root-neutrino $(flashprefix)/root-enigma $(flashprefix)/root
 if !BOXTYPE_DREAMBOX
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/tuxbox/boot
 endif
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$(flashprefix)/.junk flashprefix_rw=$@
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$(flashprefix)/.junk flashprefix_rw=$@  flashprefix=$(flashprefix)/root
 	rm -rf $(flashprefix)/.junk
 	if [ -d $(flashprefix)/root/etc/ssh ] ; then \
 		cp -rd $(flashprefix)/root/etc/ssh $@/etc/ssh ; \
@@ -73,13 +73,10 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-jffs2
 	rm -rf $@/man $@/share/man
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$</lib:$</lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$(flashprefix)/root-jffs2/lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@ flashprefix=$(flashprefix)/root
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
 else
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
 if ENABLE_IDE
 	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
 endif
@@ -98,13 +95,10 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-jffs2_lzma
 	rm -rf $@/man $@/share/man
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$</lib:$</lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$(flashprefix)/root-jffs2_lzma/lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@ flashprefix=$(flashprefix)/root
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
 else
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
 if ENABLE_IDE
 	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
 endif
@@ -123,13 +117,10 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-jffs2_lzma_klzma
 	rm -rf $@/man $@/share/man
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$</lib:$</lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$(flashprefix)/root-jffs2_lzma_klzma/lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@ flashprefix=$(flashprefix)/root
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
 else
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
 if ENABLE_IDE
 	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
 endif
@@ -147,7 +138,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino
 	cp -rd $(flashprefix)/root-neutrino/* $@
 	rm -rf $@/man $@/share/man
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root-neutrino/lib:$(flashprefix)/root-neutrino/lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$</lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk flashprefix=$(flashprefix)/root
 	rm -rf $(flashprefix)/.junk
 	rm -fr $@/var/*
 if BOXTYPE_DREAMBOX
@@ -177,9 +168,6 @@ endif
 	if [ -f $@/lib/libgcc_s_nof.so.1 -a ! -f $@/lib/libgcc_s.so.1 ]; then \
 		ln -s libgcc_s_nof.so.1 $@/lib/libgcc_s.so.1; \
 	fi
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
 	@TUXBOX_CUSTOMIZE@
 
 $(flashprefix)/root-radiobox-cramfs \
@@ -198,7 +186,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-radiobox
 	ln -sf libstdc++.so.6.0.3 $@/lib/libstdc++.so.6
 	ln -sf libstdc++.so.6.0.3 $@/lib/libstdc++.so
 	ls -l $@/lib/
-	$(MAKE) -C root install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk
+	$(MAKE) -C root install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk flashprefix=$(flashprefix)/root
 	rm -rf $(flashprefix)/.junk
 	rm -fr $@/var/*
 if BOXTYPE_DREAMBOX
@@ -221,9 +209,6 @@ endif
 		rm $@/etc/profile.local; \
 		ln -sf /var/etc/profile.local $@/etc/profile.local; \
 	fi
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
 	@TUXBOX_CUSTOMIZE@
 
 $(flashprefix)/root-enigma-cramfs \
@@ -237,7 +222,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-enigma
 	cp -rd $(flashprefix)/root-enigma/* $@
 	rm -rf $@/man $@/share/man
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root-enigma/lib:$(flashprefix)/root-enigma/lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$</lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk flashprefix=$(flashprefix)/root
 	rm -rf $(flashprefix)/.junk
 	rm -fr $@/var/*
 if BOXTYPE_DREAMBOX
@@ -261,9 +246,6 @@ endif
 		rm $@/etc/profile.local; \
 		ln -sf /var/etc/profile.local $@/etc/profile.local; \
 	fi
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
 	@TUXBOX_CUSTOMIZE@
 
 $(flashprefix)/root-enigma+neutrino-squashfs \
@@ -277,7 +259,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino $(flashpr
 	cp -rd $(flashprefix)/root-enigma/* $@
 	rm -rf $@/man $@/share/man
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root-neutrino/lib:$(flashprefix)/root-neutrino/lib/tuxbox/plugins:$(flashprefix)/root-enigma/lib:$(flashprefix)/root-enigma/lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$</lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk flashprefix=$(flashprefix)/root
 	rm -rf $(flashprefix)/.junk
 	rm -fr $@/var/*
 if BOXTYPE_DREAMBOX
@@ -304,9 +286,6 @@ endif
 	if [ -f $@/lib/libgcc_s_nof.so.1 -a ! -f $@/lib/libgcc_s.so.1 ]; then \
 		ln -s libgcc_s_nof.so.1 $@/lib/libgcc_s.so.1; \
 	fi
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
 	@TUXBOX_CUSTOMIZE@
 
 $(flashprefix)/root-enigma+neutrino-jffs2_lzma \
@@ -321,13 +300,10 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino $(flashpr
 	rm -rf $@/man $@/share/man
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root-neutrino/lib:$(flashprefix)/root-neutrino/lib/tuxbox/plugins:$(flashprefix)/root-enigma/lib:$(flashprefix)/root-enigma/lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$</lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@ flashprefix=$(flashprefix)/root
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
 else
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
 if ENABLE_IDE
 	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
 endif
@@ -342,10 +318,7 @@ $(flashprefix)/root-null-jffs2: $(flashprefix)/root $(flashprefix)/root-jffs2
 	rm -rf $@/lib/tuxbox/plugins
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root/lib:$(flashprefix)/root-jffs2/lib:$(targetprefix)/lib
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@ flashprefix=$(flashprefix)/root
 	@TUXBOX_CUSTOMIZE@
 
 $(flashprefix)/root-null-jffs2_lzma: $(flashprefix)/root $(flashprefix)/root-jffs2_lzma
@@ -356,10 +329,7 @@ $(flashprefix)/root-null-jffs2_lzma: $(flashprefix)/root $(flashprefix)/root-jff
 	rm -rf $@/lib/tuxbox/plugins
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root/lib:$(flashprefix)/root-jffs2_lzma/lib_lzma:$(targetprefix)/lib
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@ flashprefix=$(flashprefix)/root
 	@TUXBOX_CUSTOMIZE@
 
 $(flashprefix)/root-null-jffs2_lzma_klzma: $(flashprefix)/root $(flashprefix)/root-jffs2_lzma_klzma
@@ -370,10 +340,7 @@ $(flashprefix)/root-null-jffs2_lzma_klzma: $(flashprefix)/root $(flashprefix)/ro
 	rm -rf $@/lib/tuxbox/plugins
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root/lib:$(flashprefix)/root-jffs2_lzma_klzma/lib:$(targetprefix)/lib
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
-	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@
-if !KERNEL26
-	mv $@/etc/init.d/rcS.insmod $@/etc/init.d/rcS
-endif
+	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@ flashprefix=$(flashprefix)/root
 	@TUXBOX_CUSTOMIZE@
 
 ## "Private"
