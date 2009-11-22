@@ -1,12 +1,3 @@
-#
-# $Log: BUILD.changes,v $
-# Revision 1.2  2009/01/06 21:40:14  dbt
-# newmake goes HEAD see:
-# http://tuxbox-forum.dreambox-fan.de/forum/viewtopic.php?f=7&t=48357&start=40
-# hope it's complete ;-)
-#
-#
-
 Configuration options:
 
 --[enable|disable]-flashrules (replaces

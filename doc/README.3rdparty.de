@@ -1,5 +1,5 @@
 #
-# $Revision: 1.7 $
+# $Revision: 1.8 $
 #
 # Inhalt dieses Dokuments sind die noetigen Schritte zum hinzufuegen
 # von 3rd party programmen zum CDK.
@@ -16,14 +16,6 @@
 # This document is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#
-#
-# $Log: README.3rdparty.de,v $
-# Revision 1.7  2009/01/06 21:40:14  dbt
-# newmake goes HEAD see:
-# http://tuxbox-forum.dreambox-fan.de/forum/viewtopic.php?f=7&t=48357&start=40
-# hope it's complete ;-)
-#
 #
 
 Grundlegende Dokumentation ist zu finden unter:  
