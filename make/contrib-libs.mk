@@ -58,10 +58,37 @@ $(DEPDIR)/libcrypto: bootstrap @DEPENDS_libcrypto@
 	@CLEANUP_libcrypto@
 	touch $@
 
-$(DEPDIR)/libcurl: bootstrap @DEPENDS_libcurl@
 if TARGETRULESET_UCLIBC
 CURL_UCLIBC=ac_cv_func_inet_ntoa_r=no
 endif
+if CURL_CURRENT
+$(DEPDIR)/libcurl: bootstrap libz @DEPENDS_libcurl_current@
+	@PREPARE_libcurl_current@
+	cd @DIR_libcurl_current@ && \
+		$(BUILDENV) \
+		$(CURL_UCLIBC) \
+		CPPFLAGS='-I$(targetprefix)/include' \
+		./configure \
+			--build=$(build) \
+			--host=$(target) \
+			--prefix= \
+			--disable-gopher \
+			--disable-ldap \
+			--disable-dict \
+			--disable-telnet \
+			--without-ssl \
+			--disable-manual \
+			--disable-verbose \
+			--with-random && \
+		$(MAKE) -j $(J) all && \
+		rm -f $(hostprefix)/bin/curl-config && \
+		sed -e "s,^prefix=,prefix=$(targetprefix)," < curl-config > $(hostprefix)/bin/curl-config && \
+		chmod 755 $(hostprefix)/bin/curl-config && \
+		@INSTALL_libcurl_current@
+	@CLEANUP_libcurl_current@
+	touch $@
+else
+$(DEPDIR)/libcurl: bootstrap @DEPENDS_libcurl@
 	@PREPARE_libcurl@
 	cd @DIR_libcurl@ && \
 		$(BUILDENV) \
@@ -84,6 +111,7 @@ endif
 		@INSTALL_libcurl@
 	@CLEANUP_libcurl@
 	touch $@
+endif
 
 $(DEPDIR)/libdirectfb: bootstrap libfreetype libjpeg libpng libz @DEPENDS_libdirectfb@
 	@PREPARE_libdirectfb@

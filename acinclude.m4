@@ -73,6 +73,7 @@ dnl		To-Do: extend CPU types and kernel versions when needed
 			AM_CONDITIONAL(KERNEL26, true)
 			enable_kernel26=yes
 			enable_uclibc=no
+			with_curlversion=current
 			;;
 		*)
 			AC_MSG_ERROR([bad value $withval for --with-boxtype]) ;;

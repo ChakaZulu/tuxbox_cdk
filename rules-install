@@ -41,6 +41,7 @@ udev;make:install:DESTDIR=TARGET
 libboost;remove:TARGET/include/boost;move:boost:TARGET/include/boost
 libcrypto;make:install_cdk:INSTALL_PREFIX=TARGET:INSTALLTOP=
 libcurl;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libcurl.la
+libcurl_current;make:install:DESTDIR=TARGET;archive:TARGET/lib/libcurl_pic.a:lib/*.o;rewrite-libtool:TARGET/lib/libcurl.la
 libcommoncplusplus;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libccext2.la;rewrite-libtool:TARGET/lib/libccgnu2.la
 libdirectfb;rewrite-pkgconfig:directfb.pc;rewrite-pkgconfig:directfb-internal.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libdirectfb.la;rewrite-libtool:TARGET/lib/libdirect.la;rewrite-libtool:TARGET/lib/libfusion.la
 libdirectfbpp;rewrite-pkgconfig:dfb++.pc;make:install:DESTDIR=TARGET;rewrite-libtool:TARGET/lib/libdfb++.la

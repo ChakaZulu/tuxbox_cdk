@@ -737,6 +737,13 @@ AC_ARG_ENABLE(ccache,
 AM_CONDITIONAL(ENABLE_CCACHE,test "$enable_ccache" = "yes")
 AC_SUBST(CCACHE)
 
+AC_ARG_WITH(curlversion,
+	[  --with-curlversion=old/current],
+	[case "${withval}" in
+		current)  with_curlversion=current ;;
+		*)	  with_curlversion=old ;;
+	esac],[with_curlversion=old])
+AM_CONDITIONAL(CURL_CURRENT,test "$with_curlversion" = "current")
 
 hostccachedir=$(dirname `which ccache` 2>/dev/null)
 if  [[ -e $hostccachedir/ccache ]]; then
@@ -926,6 +933,7 @@ TUXBOX_RULES_MAKE(libboost)
 TUXBOX_RULES_MAKE(libcommoncplusplus)
 TUXBOX_RULES_MAKE(libcrypto)
 TUXBOX_RULES_MAKE(libcurl)
+TUXBOX_RULES_MAKE(libcurl_current)
 TUXBOX_RULES_MAKE(libdirectfb)
 TUXBOX_RULES_MAKE(libdirectfbpp)
 TUXBOX_RULES_MAKE(libppdirectfb)
@@ -1187,6 +1195,7 @@ Esound support:			$enable_esd
 Radiotext support:		$enable_radiotext
 Internal Tuxtxt support:	$enable_internal_tuxtxt
 FLAC support:			$enable_flac
+CURL version:			$with_curlversion
 FX2 plugins (games):		$enable_fx2plugins
 German keymaps:			$enable_german_keymaps
 sqlite3 storage:		$enable_sqlite

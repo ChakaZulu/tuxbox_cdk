@@ -19,6 +19,7 @@ libncurses;make:install.libs:DESTDIR=TARGET;archive:TARGET/lib/libncurses_pic.a:
 libjpeg;make:install-lib:libdir=TARGET/lib:includedir=TARGET/include;archive:TARGET/lib/libjpeg_pic.a:*.o
 libpng;make:install:prefix=TARGET;archive:TARGET/lib/libpng12_pic.a:*.o
 libcurl;make:install:DESTDIR=TARGET;archive:TARGET/lib/libcurl_pic.a:lib/*.lo;rewrite-libtool:TARGET/lib/libcurl.la
+libcurl_current;make:install:DESTDIR=TARGET;archive:TARGET/lib/libcurl_pic.a:lib/*.o;rewrite-libtool:TARGET/lib/libcurl.la
 libpopt;make:install:DESTDIR=TARGET;archive:TARGET/lib/libpopt_pic.a:*.lo
 libz;make:install:prefix=TARGET;archive:TARGET/lib/libz_pic.a:*.o
 
