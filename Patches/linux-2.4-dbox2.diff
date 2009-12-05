@@ -547,7 +547,14 @@ diff -Naur linux-2.4.31/drivers/video/fbcmap.c linux-2.4.31-dbox2/drivers/video/
 diff -Naur linux-2.4.31/include/linux/input.h linux-2.4.31-dbox2/include/linux/input.h
 --- linux-2.4.31/include/linux/input.h	2004-02-18 14:36:32.000000000 +0100
 +++ linux-2.4.31-dbox2/include/linux/input.h	2005-06-03 11:02:05.000000000 +0200
-@@ -310,6 +310,77 @@
+@@ -304,12 +304,84 @@
+ #define KEY_PROG4		203
+ #define KEY_SUSPEND		205
+ #define KEY_CLOSE		206
++#define KEY_CAMERA		212
+ 
+ #define KEY_UNKNOWN		220
+ 
  #define KEY_BRIGHTNESSDOWN	224
  #define KEY_BRIGHTNESSUP	225
  
