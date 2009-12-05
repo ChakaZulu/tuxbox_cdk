@@ -117,6 +117,7 @@ upx_host;make:all;install:-m755:src/upx.out:HOST/bin/upx
 lzma;install:-m755:CPP/7zip/Compress/LZMA_Alone/lzma:TARGET/bin;install:-m755:CPP/7zip/Compress/LZMA_Alone/lzma_alone:TARGET/bin
 lzma_host;install:-m755:CPP/7zip/Compress/LZMA_Alone/lzma:HOST/bin;install:-m755:CPP/7zip/Compress/LZMA_Alone/lzma_alone:HOST/bin
 openvpn;make:install:DESTDIR=TARGET
+ipkg
 
 #
 # msttf

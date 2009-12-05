@@ -151,6 +151,14 @@ AC_ARG_ENABLE(openvpn,
 AM_CONDITIONAL(ENABLE_OPENVPN,test "$enable_openvpn" = "yes")
 AC_SUBST(OPENVPN)
 
+AC_ARG_ENABLE(ipkg,
+	AS_HELP_STRING(--enable-ipkg,		include ipkg in yadds and images ),
+	[case "${enableval}" in
+		yes) IPKG=ipkg ;;
+	esac],[enable_ipkg=no])
+AM_CONDITIONAL(ENABLE_IPKG,test "$enable_ipkg" = "yes")
+AC_SUBST(IPKG)
+
 AC_ARG_ENABLE(german_keymaps,
 	AS_HELP_STRING(--enable-german-keymaps,	include loadkey and German keymaps in yadds and images),
 	[case "${enableval}" in
@@ -1001,6 +1009,7 @@ TUXBOX_RULES_MAKE(upx_host)
 TUXBOX_RULES_MAKE(lzma)
 TUXBOX_RULES_MAKE(lzma_host)
 TUXBOX_RULES_MAKE(openvpn)
+TUXBOX_RULES_MAKE(ipkg)
 
 #
 # ide apps
