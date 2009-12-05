@@ -15,6 +15,7 @@ FILES_FLASH_RO_EXEC = \
 
 FILES_FLASH_RO_EXEC_START = \
 	10network \
+	10rtc \
 	15syslogd \
 	17loadkeys \
 	18openntpd \
