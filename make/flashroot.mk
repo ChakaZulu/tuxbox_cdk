@@ -106,6 +106,9 @@ endif
 if ENABLE_SQLITE
 	$(MAKE) flash-sqlite
 endif
+if ENABLE_IPKG
+	$(MAKE) flash-ipkg
+endif
 	$(MAKE) flash-defaultlocale
 	$(MAKE) flash-version
 	@FLASHROOTDIR_MODIFIED@

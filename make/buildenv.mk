@@ -141,6 +141,11 @@ CONFIGURE_OPTS += \
 	--disable-internal-tuxtxt
 endif
 
+if ENABLE_IPKG
+CONFIGURE_OPTS += \
+	--enable-ipkg
+endif
+
 CONFIGURE = \
 	./autogen.sh && \
 	CC=$(target)-gcc \

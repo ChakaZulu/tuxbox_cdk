@@ -754,3 +754,35 @@ $(flashprefix)/root/sbin/openvpn: libcrypto openvpn | $(flashprefix)/root
 
 endif
 endif
+
+if ENABLE_IPKG
+$(DEPDIR)/ipkg: bootstrap @DEPENDS_ipkg@
+	@PREPARE_ipkg@
+	cd @DIR_ipkg@ && \
+		$(BUILDENV) \
+		./configure \
+			crosscompiling=yes \
+			--build=$(build) \
+			--host=$(target) \
+			--with-ipkglibdir=/var/ && \
+		$(MAKE) all && \
+		$(INSTALL) -d $(targetprefix)/bin && \
+		mv .libs/ipkg-cl .libs/ipkg && \
+		ln -sf /var/etc/ipkg.conf $(targetprefix)/etc/ipkg.conf && \
+		$(INSTALL) .libs/ipkg $(targetprefix)/bin && \
+		$(INSTALL) .libs/libipkg.so.0 $(targetprefix)/lib 
+	@CLEANUP_ipkg@
+	touch $@
+
+if TARGETRULESET_FLASH
+flash-ipkg: ipkg $(flashprefix)/root/bin/ipkg
+
+$(flashprefix)/root/bin/ipkg: | $(flashprefix)/root
+	rm -f $(flashprefix)/root/bin/ipkg
+	@$(INSTALL) -d $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/bin/ipkg $(flashprefix)/root/bin
+	$(INSTALL) $(targetprefix)/lib/libipkg.so.0 $(flashprefix)/root/lib 
+	ln -sf  /var/etc/ipkg.conf $(flashprefix)/root/etc/ipkg.conf
+	@FLASHROOTDIR_MODIFIED@
+endif
+endif
