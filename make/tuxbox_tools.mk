@@ -8,7 +8,7 @@
 # pretty special, some (like switch) absolutely essential. For this
 # reason, there is no target flash-tuxbox_tools.
 
-$(appsdir)/tuxbox/tools/config.status: bootstrap $(targetprefix)/lib/pkgconfig/tuxbox.pc $(appsdir)/dvb/zapit/src/zapit
+$(appsdir)/tuxbox/tools/config.status: bootstrap libfreetype $(targetprefix)/lib/pkgconfig/tuxbox.pc $(appsdir)/dvb/zapit/src/zapit
 	cd $(appsdir)/tuxbox/tools && $(CONFIGURE)
 
 tuxbox_tools: $(appsdir)/tuxbox/tools/config.status
@@ -35,6 +35,9 @@ kb2rcd: $(appsdir)/tuxbox/tools/config.status
 aformat: $(appsdir)/tuxbox/tools/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/tools/aformat install
 
+msgbox: $(appsdir)/tuxbox/tools/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/tools/msgbox install
+
 if TARGETRULESET_FLASH
 
 flash-tuxinfo: $(appsdir)/tuxbox/tools/config.status
@@ -59,6 +62,10 @@ flash-kb2rcd: $(appsdir)/tuxbox/tools/config.status
 
 flash-aformat: $(appsdir)/tuxbox/tools/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/tools/aformat install prefix=$(flashprefix)/root
+	@FLASHROOTDIR_MODIFIED@
+
+flash-msgbox: $(appsdir)/tuxbox/tools/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/tools/msgbox install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 
 endif
