@@ -1,6 +1,6 @@
 # tuxbox/lcd
 
-$(appsdir)/tuxbox/lcd/config.status: bootstrap libfreetype $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc $(targetprefix)/lib/pkgconfig/tuxbox-tuxtxt.pc
+$(appsdir)/tuxbox/lcd/config.status: bootstrap libfreetype libpng $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc $(targetprefix)/lib/pkgconfig/tuxbox-tuxtxt.pc
 	cd $(appsdir)/tuxbox/lcd && $(CONFIGURE)
 
 lcd: $(appsdir)/tuxbox/lcd/config.status
@@ -19,5 +19,11 @@ flash-lcdip: lcd $(flashprefix)/root
 flash-lcdcmd: lcd $(flashprefix)/root
 	$(MAKE) -C $(appsdir)/tuxbox/lcd/lcdcmd install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
+
+if BOXTYPE_DBOX2
+flash-lcshot: lcd $(flashprefix)/root
+	$(MAKE) -C $(appsdir)/tuxbox/lcd/lcshot install prefix=$(flashprefix)/root
+	@FLASHROOTDIR_MODIFIED@
+endif
 
 endif
