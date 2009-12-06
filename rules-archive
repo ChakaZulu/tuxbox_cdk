@@ -194,7 +194,7 @@ lzma442.tar.bz2;http://prdownloads.sourceforge.net/sourceforge/sevenzip
 #
 # database
 #
-sqlite-amalgamation-3.6.18.tar.gz;http://www.sqlite.org
+sqlite-amalgamation-3.6.20.tar.gz;http://www.sqlite.org
 
 #
 # dreambox
