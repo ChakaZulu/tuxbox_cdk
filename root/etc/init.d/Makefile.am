@@ -11,9 +11,10 @@ endif
 FILES_FLASH_RW_EXEC_START =
 
 FILES_FLASH_RO_EXEC = \
-	functions rcS rcK initialize
+	functions rcS rcK
 
 FILES_FLASH_RO_EXEC_START = \
+	09lcdip \
 	10network \
 	10rtc \
 	15syslogd \

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Tuxbox init script for /bin/lcdip
+
+case $1 in
+	start)
+		lcdip -i && ( mkdir -p /var/etc/init.d && touch /var/etc/init.d/S09lcdip && chmod +x /var/etc/init.d/S09lcdip ) || exit 0
+		;;
+esac
+
+exit 0

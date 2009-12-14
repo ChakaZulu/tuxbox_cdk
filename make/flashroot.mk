@@ -33,7 +33,6 @@ if BOXTYPE_DBOX2
 	$(MAKE) flash-camd2
 	$(MAKE) flash-ucodes
 	$(MAKE) flash-satfind
-	$(MAKE) flash-lcdip
 	$(MAKE) flash-rtc
 endif
 	$(MAKE) flash-tools_misc

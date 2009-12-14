@@ -6,6 +6,9 @@ $(appsdir)/tuxbox/lcd/config.status: bootstrap libfreetype libpng $(targetprefix
 lcd: $(appsdir)/tuxbox/lcd/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/lcd all install
 
+lcdip: $(appsdir)/tuxbox/lcd/config.status
+	$(MAKE) -C $(appsdir)/tuxbox/lcd/lcdip all install
+
 if TARGETRULESET_FLASH
 flash-lcdmenu: lcd $(flashprefix)/root
 	$(INSTALL) $(targetprefix)/bin/lcdmenu $(flashprefix)/root/bin
