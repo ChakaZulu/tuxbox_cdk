@@ -854,6 +854,15 @@ AC_ARG_WITH(enigma-debug,
 
 AC_SUBST(ENIGMA_DEBUG)
 
+
+# neutrino drive-gui setup
+AC_ARG_ENABLE(drive-gui,
+   AS_HELP_STRING(--enable-drive-gui,   enable neutrino gui-setup for ide hdd mmc administration),
+   [case "${enableval}" in
+      yes) DRIVEGUI=drive-gui ;;
+   esac],[enable_drive_gui=no])
+AM_CONDITIONAL(ENABLE_DRIVE_GUI,test "$enable_drive_gui" = "yes")
+
 #
 ################################################################
 
@@ -1200,6 +1209,7 @@ Neutrino Audioplayer:		$enable_audioplayer
 Neutrino Movieplayer:		$enable_movieplayer
 Neutrino Pictureviewer:		$enable_pictureviewer
 Neutrino Mount:			$enable_gui_mount
+Neutrino Drive-Setup:		$enable_drive_gui
 Esound support:			$enable_esd
 Radiotext support:		$enable_radiotext
 Internal Tuxtxt support:	$enable_internal_tuxtxt

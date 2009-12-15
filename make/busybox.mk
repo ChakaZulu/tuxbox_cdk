@@ -5,6 +5,9 @@ BUSYBOX_M4 += -Dcustomizationsdir=$(customizationsdir)
 # the following if-statements look silly, but:
 # http://www.gnu.org/software/automake/manual/html_node/Conditionals.html#Conditionals
 # "You may only test a single variable in an if statement"
+if ENABLE_DRIVE_GUI
+BUSYBOX_M4 += -Ddrive_gui
+endif
 if ENABLE_IDE
 BUSYBOX_M4 += -Dide
 endif

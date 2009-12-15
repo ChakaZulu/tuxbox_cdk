@@ -51,6 +51,12 @@ if BOXTYPE_IPBOX
 CONFIGURE_OPTS += --with-boxmodel=$(BOXMODEL)
 endif
 
+
+if KERNEL26
+CONFIGURE_OPTS += \
+	--enable-kernel26
+endif
+
 if MAINTAINER_MODE
 CONFIGURE_OPTS += \
 	--enable-maintainer-mode
@@ -84,6 +90,16 @@ endif
 if ENABLE_IDE
 CONFIGURE_OPTS += \
 	--enable-ide
+endif
+
+if ENABLE_MMC
+CONFIGURE_OPTS +=  \
+	--enable-mmc
+endif
+
+if ENABLE_DRIVE_GUI
+CONFIGURE_OPTS += \
+	--enable-drive-gui
 endif
 
 if ENABLE_CCACHE 	 

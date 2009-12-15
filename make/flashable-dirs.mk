@@ -1,17 +1,41 @@
 # This section builds directories that can be used to create filesystems
 #
 # Pattern: $partition-$gui[-$filesystem]
-
+ 
+# ide, hdd, swap mounts #####################################
 if ENABLE_IDE
+if ENABLE_DRIVE_GUI
+HDD_MOUNT_ENTRY = "\# hdd / mmc partitions will be mounted after running setup from gui"
+HDD_SWAP_ENTRY = "\# swaps will be mounted after running setup from gui"
+else
 HDD_MOUNT_ENTRY=/dev/ide/host0/bus0/target0/lun0/part2	/hdd	$(DEFAULT_FS_FSTAB)	\
 defaults	1 2
+HDD_SWAP_ENTRY=/dev/ide/host0/bus0/target0/lun0/part1 swap swap noauto 0 0
 endif
+endif
+
+FSTAB_PATH = $(targetprefix)/etc/fstab
+
+MK_FSTAB_IDEMOUNTS = \
+	 	echo "$(HDD_SWAP_ENTRY)"	>> $(FSTAB_PATH); \
+		echo "$(HDD_MOUNT_ENTRY)"	>> $(FSTAB_PATH)
+# ###########################################################
+
+
+# /var mounts ###############################################
+
 if BOXTYPE_IPBOX
 VAR_MOUNT_ENTRY=/dev/mtdblock/1
 endif
 if BOXTYPE_DBOX2
 VAR_MOUNT_ENTRY=/dev/mtdblock/3
 endif
+ 
+MK_FSTAB_VARMOUNTS = echo "$(VAR_MOUNT_ENTRY)     /var     jffs2     defaults     0 0" >> $@/etc/fstab
+############################################################
+
+# remove man dirs
+REMOVE_MANDIRS = rm -rf $@/man $@/share/man
 
 $(flashprefix)/var-neutrino $(flashprefix)/var-enigma $(flashprefix)/var-radiobox: \
 $(flashprefix)/var-%: \
@@ -70,17 +94,16 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-jffs2
 	cp -rd $(flashprefix)/root $@
 	cp -rd $</* $@
 	cp -rd $(flashprefix)/root-jffs2/* $@
-	rm -rf $@/man $@/share/man
+	$(REMOVE_MANDIRS)
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$</lib:$</lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$(flashprefix)/root-jffs2/lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
 	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@ flashprefix=$(flashprefix)/root
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
 else
-if ENABLE_IDE
-	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
+	$(MAKE) -C root install-flash flashprefix_ro=$@ flashprefix_rw=$@
 endif
-endif
+	$(MK_FSTAB_IDEMOUNTS)
 	@TUXBOX_CUSTOMIZE@
 
 $(flashprefix)/root-neutrino-jffs2_lzma $(flashprefix)/root-enigma-jffs2_lzma \
@@ -92,7 +115,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-jffs2_lzma
 	cp -rd $(flashprefix)/root $@
 	cp -rd $</* $@
 	cp -rd $(flashprefix)/root-jffs2_lzma/* $@
-	rm -rf $@/man $@/share/man
+	$(REMOVE_MANDIRS)
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$</lib:$</lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$(flashprefix)/root-jffs2_lzma/lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
 	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@ flashprefix=$(flashprefix)/root
@@ -114,7 +137,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-jffs2_lzma_klzma
 	cp -rd $(flashprefix)/root $@
 	cp -rd $</* $@
 	cp -rd $(flashprefix)/root-jffs2_lzma_klzma/* $@
-	rm -rf $@/man $@/share/man
+	$(REMOVE_MANDIRS)
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$</lib:$</lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$(flashprefix)/root-jffs2_lzma_klzma/lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
 	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@ flashprefix=$(flashprefix)/root
@@ -136,7 +159,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino
 	cp -rd $(flashprefix)/root $@
 	cp -rd $</* $@
 	cp -rd $(flashprefix)/root-neutrino/* $@
-	rm -rf $@/man $@/share/man
+	$(REMOVE_MANDIRS)
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root-neutrino/lib:$(flashprefix)/root-neutrino/lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$</lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk flashprefix=$(flashprefix)/root
 	rm -rf $(flashprefix)/.junk
@@ -148,10 +171,8 @@ if BOXTYPE_DREAMBOX
 		cp $(flashprefix)/root/share/tuxbox/satellites.xml $@/share/tuxbox/satellites.xml; \
 	fi
 else
-	echo "$(VAR_MOUNT_ENTRY)     /var     jffs2     defaults     0 0" >> $@/etc/fstab
-if ENABLE_IDE
-	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
-endif
+	$(MK_FSTAB_VARMOUNTS)
+	$(MK_FSTAB_IDEMOUNTS)
 endif
 	if [ -d $@/etc/ssh ] ; then \
 		rm -fr $@/etc/ssh ; \
@@ -179,7 +200,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-radiobox
 	cp -rd $(flashprefix)/root $@
 	cp -rd $</* $@
 	cp -rd $(flashprefix)/root-radiobox/* $@
-	rm -rf $@/man $@/share/man
+	$(REMOVE_MANDIRS)
 	cp -rd $(flashprefix)/root/lib/tuxbox/plugins/libfx2.so $@/lib/tuxbox/plugins
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root-radiobox/lib:$(flashprefix)/root-radiobox/lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$</lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	cp $(targetprefix)/lib/libstdc++.so.6.0.3 $@/lib/
@@ -192,10 +213,8 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-radiobox
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
 else
-	echo "$(VAR_MOUNT_ENTRY)     /var     jffs2     defaults     0 0" >> $@/etc/fstab
-if ENABLE_IDE
-	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
-endif
+	$(MK_FSTAB_VARMOUNTS)
+	$(MK_FSTAB_IDEMOUNTS)
 endif
 	if [ -d $@/etc/ssh ] ; then \
 		rm -fr $@/etc/ssh ; \
@@ -220,7 +239,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-enigma
 	cp -rd $(flashprefix)/root $@
 	cp -rd $</* $@
 	cp -rd $(flashprefix)/root-enigma/* $@
-	rm -rf $@/man $@/share/man
+	$(REMOVE_MANDIRS)
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root-enigma/lib:$(flashprefix)/root-enigma/lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$</lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk flashprefix=$(flashprefix)/root
 	rm -rf $(flashprefix)/.junk
@@ -228,10 +247,8 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-enigma
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
 else
-	echo "$(VAR_MOUNT_ENTRY)     /var     jffs2     defaults     0 0" >> $@/etc/fstab
-if ENABLE_IDE
-	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
-endif
+	$(MK_FSTAB_VARMOUNTS)
+	$(MK_FSTAB_IDEMOUNTS)
 endif
 	if [ -d $@/etc/ssh ] ; then \
 		rm -fr $@/etc/ssh ; \
@@ -257,7 +274,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino $(flashpr
 	cp -rd $</* $@
 	cp -rd $(flashprefix)/root-neutrino/* $@
 	cp -rd $(flashprefix)/root-enigma/* $@
-	rm -rf $@/man $@/share/man
+	$(REMOVE_MANDIRS)
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root-neutrino/lib:$(flashprefix)/root-neutrino/lib/tuxbox/plugins:$(flashprefix)/root-enigma/lib:$(flashprefix)/root-enigma/lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$</lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$(flashprefix)/.junk flashprefix=$(flashprefix)/root
 	rm -rf $(flashprefix)/.junk
@@ -265,10 +282,8 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino $(flashpr
 if BOXTYPE_DREAMBOX
 	$(MAKE) flash-dreamfiles dreamfilesrootdir=$@
 else
-	echo "$(VAR_MOUNT_ENTRY)     /var     jffs2     defaults     0 0" >> $@/etc/fstab
-if ENABLE_IDE
-	echo $(HDD_MOUNT_ENTRY)	>> $@/etc/fstab
-endif
+	$(MK_FSTAB_VARMOUNTS)
+	$(MK_FSTAB_IDEMOUNTS)
 endif
 	if [ -d $@/etc/ssh ] ; then \
 		rm -fr $@/etc/ssh ; \
@@ -297,7 +312,7 @@ $(flashprefix)/root-% $(flashprefix)/root $(flashprefix)/root-neutrino $(flashpr
 	cp -rd $</* $@
 	cp -rd $(flashprefix)/root-neutrino/* $@
 	cp -rd $(flashprefix)/root-enigma/* $@
-	rm -rf $@/man $@/share/man
+	$(REMOVE_MANDIRS)
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root-neutrino/lib:$(flashprefix)/root-neutrino/lib/tuxbox/plugins:$(flashprefix)/root-enigma/lib:$(flashprefix)/root-enigma/lib/tuxbox/plugins:$(flashprefix)/root/lib:$(flashprefix)/root/lib/tuxbox/plugins:$</lib:$(targetprefix)/lib:$(targetprefix)/lib/tuxbox/plugins
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
 	$(MAKE) -C ${startscriptdir} install-flash flashprefix_ro=$@ flashprefix_rw=$@ flashprefix=$(flashprefix)/root
@@ -314,7 +329,7 @@ $(flashprefix)/root-null-jffs2: $(flashprefix)/root $(flashprefix)/root-jffs2
 	rm -rf $@
 	cp -rd $(flashprefix)/root $@
 	cp -rd $(flashprefix)/root-jffs2/* $@
-	rm -rf $@/man $@/share/man
+	$(REMOVE_MANDIRS)
 	rm -rf $@/lib/tuxbox/plugins
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root/lib:$(flashprefix)/root-jffs2/lib:$(targetprefix)/lib
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
@@ -325,7 +340,7 @@ $(flashprefix)/root-null-jffs2_lzma: $(flashprefix)/root $(flashprefix)/root-jff
 	rm -rf $@
 	cp -rd $(flashprefix)/root $@
 	cp -rd $(flashprefix)/root-jffs2_lzma/* $@
-	rm -rf $@/man $@/share/man
+	$(REMOVE_MANDIRS)
 	rm -rf $@/lib/tuxbox/plugins
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root/lib:$(flashprefix)/root-jffs2_lzma/lib_lzma:$(targetprefix)/lib
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
@@ -336,7 +351,7 @@ $(flashprefix)/root-null-jffs2_lzma_klzma: $(flashprefix)/root $(flashprefix)/ro
 	rm -rf $@
 	cp -rd $(flashprefix)/root $@
 	cp -rd $(flashprefix)/root-jffs2_lzma_klzma/* $@
-	rm -rf $@/man $@/share/man
+	$(REMOVE_MANDIRS)
 	rm -rf $@/lib/tuxbox/plugins
 	$(MAKE) --assume-old=$@ $@/lib/ld.so.1 mklibs_librarypath=$(flashprefix)/root/lib:$(flashprefix)/root-jffs2_lzma_klzma/lib:$(targetprefix)/lib
 	$(MAKE) flash-bootlogos flashbootlogosdir=$@/var/tuxbox/boot
