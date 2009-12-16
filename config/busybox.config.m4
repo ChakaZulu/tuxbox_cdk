@@ -488,7 +488,7 @@ option(`CONFIG_FEATURE_FDISK_WRITABLE', `y', `y')
 option(`CONFIG_FEATURE_FDISK_ADVANCED', `y', `y')',
 `option(`CONFIG_FDISK', `n', `n')
 option(`CONFIG_FDISK_SUPPORT_LARGE_DISKS', `n', `n')
-option(`CONFIG_FEATURE_FDISK_WRITABLE', `n', `n')'
+option(`CONFIG_FEATURE_FDISK_WRITABLE', `n', `n')
 option(`CONFIG_FEATURE_FDISK_ADVANCED', `n', `n')'
 ))
 option(`CONFIG_FEATURE_AIX_LABEL', `n', `n')
