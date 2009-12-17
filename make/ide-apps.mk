@@ -51,20 +51,20 @@ $(DEPDIR)/utillinux: bootstrap @DEPENDS_utillinux@
 if TARGETRULESET_FLASH
 flash-sfdisk: $(flashprefix)/root/sbin/sfdisk
 
-$(flashprefix)/root/sbin/sfdisk: utillinux
+$(flashprefix)/root/sbin/sfdisk: utillinux | $(flashprefix)/root
 	$(INSTALL) $(targetprefix)/sbin/sfdisk $@
 	@FLASHROOTDIR_MODIFIED@
 
 flash-cfdisk: $(flashprefix)/root/sbin/cfdisk
 
-$(flashprefix)/root/sbin/cfdisk: utillinux
+$(flashprefix)/root/sbin/cfdisk: utillinux | $(flashprefix)/root
 	$(INSTALL) $(targetprefix)/sbin/cfdisk $@
 	@FLASHROOTDIR_MODIFIED@
 
 #replaces busybox fdisk
 flash-fdisk: $(flashprefix)/root/sbin/fdisk
 
-$(flashprefix)/root/sbin/fdisk: utillinux
+$(flashprefix)/root/sbin/fdisk: utillinux | $(flashprefix)/root
 	$(INSTALL) $(targetprefix)/sbin/fdisk $@
 	@FLASHROOTDIR_MODIFIED@
 
