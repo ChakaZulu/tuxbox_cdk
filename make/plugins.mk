@@ -45,7 +45,7 @@ tuxtxt: $(appsdir)/tuxbox/plugins/config.status $(targetprefix)/include/tuxbox/p
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/tuxtxt all install
 
 if TARGETRULESET_FLASH
-flash-tuxtxt: $(appsdir)/tuxbox/plugins/config.status tuxtxt $(flashprefix)/root
+flash-tuxtxt: $(appsdir)/tuxbox/plugins/config.status tuxtxt | $(flashprefix)/root
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/tuxtxt install  prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 endif
@@ -54,7 +54,7 @@ tuxcom: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/tuxcom all install
 
 if TARGETRULESET_FLASH
-flash-tuxcom: $(appsdir)/tuxbox/plugins/config.status $(flashprefix)/root
+flash-tuxcom: $(appsdir)/tuxbox/plugins/config.status | $(flashprefix)/root
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/tuxcom all install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 endif
@@ -63,7 +63,7 @@ tuxcal: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/tuxcal all install
 
 if TARGETRULESET_FLASH
-flash-tuxcal: $(appsdir)/tuxbox/plugins/config.status $(flashprefix)/root
+flash-tuxcal: $(appsdir)/tuxbox/plugins/config.status | $(flashprefix)/root
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/tuxcal all install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 endif
@@ -72,7 +72,7 @@ tuxclock: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/tuxclock all install
 
 if TARGETRULESET_FLASH
-flash-tuxclock: $(appsdir)/tuxbox/plugins/config.status $(flashprefix)/root
+flash-tuxclock: $(appsdir)/tuxbox/plugins/config.status | $(flashprefix)/root
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/tuxclock all install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 endif
@@ -81,7 +81,7 @@ vncviewer: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/vncviewer all install
 
 if TARGETRULESET_FLASH
-flash-vncviewer: $(appsdir)/tuxbox/plugins/config.status
+flash-vncviewer: $(appsdir)/tuxbox/plugins/config.status | $(flashprefix)/root
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/vncviewer all install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 endif
@@ -90,7 +90,7 @@ pip: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/pip all install
 
 if TARGETRULESET_FLASH
-flash-pip: $(appsdir)/tuxbox/plugins/config.status $(flashprefix)/root
+flash-pip: $(appsdir)/tuxbox/plugins/config.status | $(flashprefix)/root
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/pip all install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 endif
@@ -99,7 +99,7 @@ mosaic: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/mosaic all install
 
 if TARGETRULESET_FLASH
-flash-mosaic: $(appsdir)/tuxbox/plugins/config.status $(flashprefix)/root
+flash-mosaic: $(appsdir)/tuxbox/plugins/config.status | $(flashprefix)/root
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/mosaic all install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 endif
@@ -108,7 +108,7 @@ shellexec: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/shellexec all install
 
 if TARGETRULESET_FLASH
-flash-shellexec: $(appsdir)/tuxbox/plugins/config.status
+flash-shellexec: $(appsdir)/tuxbox/plugins/config.status | $(flashprefix)/root
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/shellexec all install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 endif
@@ -135,13 +135,13 @@ dvbsub: $(appsdir)/tuxbox/plugins/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/dvbsub all install
 
 if TARGETRULESET_FLASH
-flash-dvbsub: $(appsdir)/tuxbox/plugins/config.status
+flash-dvbsub: $(appsdir)/tuxbox/plugins/config.status | $(flashprefix)/root
 	$(MAKE) -C $(appsdir)/tuxbox/plugins/dvbsub all install prefix=$(flashprefix)/root
 	@FLASHROOTDIR_MODIFIED@
 
 # $(appsdir)/tuxbox/plugins/fx2/*/Makefile.am are silly and should be
 # rewritten.  In the meantime, use this kludge.
-flash-fx2-plugins: fx2-plugins $(flashprefix)/root
+flash-fx2-plugins: fx2-plugins | $(flashprefix)/root
 	$(INSTALL) -d $(flashprefix)/root/lib/tuxbox/plugins
 	$(INSTALL) -m 755 $(appsdir)/tuxbox/plugins/fx2/[c-z]*/.libs/*.so $(flashprefix)/root/lib/tuxbox/plugins
 	$(INSTALL) -m 644 $(appsdir)/tuxbox/plugins/fx2/[c-z]*/*.cfg $(flashprefix)/root/lib/tuxbox/plugins
