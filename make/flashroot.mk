@@ -32,7 +32,6 @@ if BOXTYPE_DBOX2
 	$(MAKE) flash-tuxinfo
 	$(MAKE) flash-camd2
 	$(MAKE) flash-ucodes
-	$(MAKE) flash-satfind
 	$(MAKE) flash-rtc
 endif
 	$(MAKE) flash-tools_misc
@@ -48,8 +47,9 @@ endif
 	$(MAKE) flash-tuxmail
 	$(MAKE) flash-tuxtxt
 	$(MAKE) flash-tuxcom
-	$(MAKE) flash-vncviewer
 	$(MAKE) flash-dvbsub
+	$(MAKE) flash-tuxwetter
+	$(MAKE) flash-sysinfo
 if ENABLE_FX2PLUGINS
 	$(MAKE) flash-fx2-plugins
 endif
@@ -57,11 +57,16 @@ if BOXTYPE_DREAMBOX
 # TODO: pip and mosaic only work with neutrino...
 	$(MAKE) flash-pip
 	$(MAKE) flash-mosaic
-if ENABLE_IDE
-	$(MAKE) flash-e2fsprogs
-	$(MAKE) flash-sfdisk
-endif
 	$(MAKE) flash-dvbsnoop
+endif
+if ENABLE_IDE
+if ENABLE_EXT2
+	$(MAKE) flash-e2fsprogs
+endif
+if ENABLE_EXT3
+	$(MAKE) flash-e2fsprogs
+endif
+	$(MAKE) flash-sfdisk
 endif
 if ENABLE_AUTOMOUNT
 	$(MAKE) flash-automount
