@@ -162,6 +162,11 @@ CONFIGURE_OPTS += \
 	--enable-ipkg
 endif
 
+if ENABLE_NFSSERVER
+CONFIGURE_OPTS += \
+	--enable-nfsserver
+endif
+
 CONFIGURE = \
 	./autogen.sh && \
 	CC=$(target)-gcc \
