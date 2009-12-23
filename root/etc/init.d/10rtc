@@ -4,9 +4,11 @@
 
 case $1 in
 	start)
-		$IM ds1307
-		sleep 1
-		hwrtc hwtosys
+		if [ -e /var/etc/.rtc ]; then
+			$IM ds1307
+			sleep 1
+			hwrtc hwtosys
+		fi
 		;;
 	stop)
 		if [ ! -e /proc/clock ]; then
