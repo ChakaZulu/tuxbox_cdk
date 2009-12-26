@@ -476,21 +476,16 @@ option(`CONFIG_FEATURE_FBSET_FANCY', `n', `n')
 option(`CONFIG_FEATURE_FBSET_READMODE', `n', `n')
 option(`CONFIG_FDFLUSH', `n', `n')
 option(`CONFIG_FDFORMAT', `n', `n')
-ifdef(`drive_gui',
-`option(`CONFIG_FDISK', `n', `n')
-option(`CONFIG_FDISK_SUPPORT_LARGE_DISKS', `n', `n')
-option(`CONFIG_FEATURE_FDISK_WRITABLE', `n', `n')
-option(`CONFIG_FEATURE_FDISK_ADVANCED', `n', `n')',
-ifdef(`ide',
-`option(`CONFIG_FDISK', `y', `y')
-option(`CONFIG_FDISK_SUPPORT_LARGE_DISKS', `y', `y')
-option(`CONFIG_FEATURE_FDISK_WRITABLE', `y', `y')
-option(`CONFIG_FEATURE_FDISK_ADVANCED', `y', `y')',
+ifdef(`fdisk',
+`option(`CONFIG_FDISK', `n', `y')
+option(`CONFIG_FDISK_SUPPORT_LARGE_DISKS', `n', `y')
+option(`CONFIG_FEATURE_FDISK_WRITABLE', `n', `y')
+option(`CONFIG_FEATURE_FDISK_ADVANCED', `n', `y')',
 `option(`CONFIG_FDISK', `n', `n')
 option(`CONFIG_FDISK_SUPPORT_LARGE_DISKS', `n', `n')
 option(`CONFIG_FEATURE_FDISK_WRITABLE', `n', `n')
 option(`CONFIG_FEATURE_FDISK_ADVANCED', `n', `n')'
-))
+)
 option(`CONFIG_FEATURE_AIX_LABEL', `n', `n')
 option(`CONFIG_FEATURE_SGI_LABEL', `n', `n')
 option(`CONFIG_FEATURE_SUN_LABEL', `n', `n')

@@ -3,7 +3,6 @@
 # Pattern: $partition-$gui[-$filesystem]
  
 # ide, hdd, swap mounts #####################################
-if ENABLE_IDE
 if ENABLE_DRIVE_GUI
 HDD_MOUNT_ENTRY = "\# hdd / mmc partitions will be mounted after running setup from gui"
 HDD_SWAP_ENTRY = "\# swaps will be mounted after running setup from gui"
@@ -11,7 +10,6 @@ else
 HDD_MOUNT_ENTRY=/dev/ide/host0/bus0/target0/lun0/part2	/hdd	$(DEFAULT_FS_FSTAB)	\
 defaults	1 2
 HDD_SWAP_ENTRY=/dev/ide/host0/bus0/target0/lun0/part1 swap swap noauto 0 0
-endif
 endif
 
 FSTAB_PATH = $(targetprefix)/etc/fstab

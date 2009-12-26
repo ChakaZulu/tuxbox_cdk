@@ -194,10 +194,8 @@ AC_ARG_ENABLE(ext3,
 AC_ARG_ENABLE(xfs,
 	AS_HELP_STRING(--enable-xfs,	include xfs drivers in yadds and images),
 	[case "${enableval}" in
-		yes) XFSPROGS=xfsprogs;
-		     [[ "$DEFAULT_FS_FSTAB" = "" ] && DEFAULT_FS_FSTAB="xfs" || /bin/true ] ;;
+		yes) [[ "$DEFAULT_FS_FSTAB" = "" ] && DEFAULT_FS_FSTAB="xfs" || /bin/true ] ;;
 	esac],[enable_xfs=no])
-AC_SUBST(XFSPROGS)
 
 AC_ARG_ENABLE(mmc,
 	AS_HELP_STRING(--enable-mmc,	include mmc drivers in yadds and images - you need to activate a filesystem),
@@ -306,20 +304,86 @@ AC_SUBST(LUFS)
 AM_CONDITIONAL(ENABLE_VFAT,test "$enable_vfat" = "yes")
 AM_CONDITIONAL(ENABLE_IDE,test "$enable_ide" = "yes")
 AM_CONDITIONAL(ENABLE_MMC,test "$enable_use_mmc" = "yes")
+AM_CONDITIONAL(ENABLE_IDEMMC,test "$enable_ide" = "yes" -o "$enable_use_mmc" = "yes")
 AM_CONDITIONAL(ENABLE_EXT2,test "$enable_ext2" = "yes")
 AM_CONDITIONAL(ENABLE_EXT3,test "$enable_ext3" = "yes")
+AM_CONDITIONAL(ENABLE_EXTFS,test "$enable_ext2" = "yes" -o "$enable_ext3" = "yes")
 AM_CONDITIONAL(ENABLE_XFS,test "$enable_xfs" = "yes")
 AM_CONDITIONAL(ENABLE_REISERFS,test "$enable_reiserfs" = "yes")
-if test "$enable_reiserfs" = "yes"; then
-	REISERFSPROGS=reiserfsprogs
-	ENIGMA_REISERFS=yes
-else
-	ENIGMA_REISERFS=no
-fi
-AC_SUBST(REISERFSPROGS)
-AC_SUBST(ENIGMA_REISERFS)
-
 AC_SUBST(DEFAULT_FS_FSTAB)
+
+# enable all needed filesystem tools by default
+enable_fs_fdisk=no
+enable_fs_e2fsprogs=no
+enable_fs_xfsprogs=no
+enable_fs_reiserfsprogs=no
+enable_fs_dosfstools=no
+if test "$enable_ext2" = "yes" -o "$enable_ext3" = "yes"; then
+	enable_fs_e2fsprogs=yes
+fi
+if test "$enable_xfs" = "yes"; then
+	enable_fs_xfsprogs=yes
+fi
+if test "$enable_reiserfs" = "yes"; then
+	enable_fs_reiserfsprogs=yes
+fi
+if test "$enable_vfat" = "yes"; then
+	enable_fs_dosfstools=yes
+fi
+
+AC_ARG_WITH(filesystem-tools,[  --with-filesystem-tools  comma seperated list of filesystem tools to be used,
+                          allowed values: e2fsprogs, reiserfsprogs, dosfstools, xfsprogs, fdisk (standalone)],[
+if test x"${withval+set}" = xset; then
+    enable_filesystem_tools=`echo "${withval}" | sed -e 's/[[ 	,]][[ 	,]]*/,/g' -e 's/,$//' -e 's/,/ /g'`
+    enable_fs_e2fsprogs=no
+    enable_fs_xfsprogs=no
+    enable_fs_reiserfsprogs=no
+    enable_fs_dosfstools=no
+    for i in $enable_filesystem_tools; do
+	case $i in
+	    e2fsprogs)		if test "$enable_ext2" = "yes" -o "$enable_ext3" = "yes"; then
+				    enable_fs_e2fsprogs=yes
+				fi ;;
+	    xfsprogs)		if test "$enable_xfs" = "yes"; then
+				    enable_fs_xfsprogs=yes
+				fi ;;
+	    reiserfsprogs)	if test "$enable_reiserfs" = "yes"; then
+				    enable_fs_reiserfsprogs=yes
+				fi ;;
+	    dosfstools)		if test "$enable_vfat" = "yes"; then
+				    enable_fs_dosfstools=yes
+				fi ;;
+	    fdisk)		if test "$enable_ide" = "yes" -o "$enable_mmc" = "yes"; then
+				    enable_fs_fdisk=yes
+				fi ;;
+	    *)			AC_MSG_ERROR([bad value $i for --with-filesystem-tools]) ;;
+	esac
+    done
+fi],[])
+
+AM_CONDITIONAL(ENABLE_E2FSPROGS,test "$enable_fs_e2fsprogs" = "yes")
+AM_CONDITIONAL(ENABLE_XFSPROGS,test "$enable_fs_xfsprogs" = "yes")
+AM_CONDITIONAL(ENABLE_REISERFSPROGS,test "$enable_fs_reiserfsprogs" = "yes")
+AM_CONDITIONAL(ENABLE_DOSFSTOOLS,test "$enable_fs_dosfstools" = "yes")
+
+# neutrino drive-gui setup
+AC_ARG_ENABLE(drive-gui,
+   AS_HELP_STRING(--enable-drive-gui,   enable neutrino gui-setup for ide hdd mmc administration - uses utillinux fdisk instead of busybox),
+   [case "${enableval}" in
+      yes) if test "$enable_ide" = "yes" -o "$enable_mmc" = "yes"; then
+	     enable_drive_gui=yes
+	   else
+	     enable_drive_gui=no
+	   fi ;;
+      *) enable_drive_gui=no
+   esac],[enable_drive_gui=no])
+AM_CONDITIONAL(ENABLE_DRIVE_GUI,test "$enable_drive_gui" = "yes")
+
+# force standalone fdisk when Neutrino drive GUI is enabled
+if test "$enable_drive_gui" = "yes"; then
+	enable_fs_fdisk=yes
+fi
+AM_CONDITIONAL(ENABLE_FDISK_STANDALONE,test "$enable_fs_fdisk" = "yes")
 
 if test "$enable_uclibc" = "yes" -a "$enable_xfs" = "yes" -a "$enable_kernel26" != "yes"; then
 	echo
@@ -391,14 +455,6 @@ AC_ARG_ENABLE(sambaserver,
 	esac],[enable_sambaserver=no])
 AM_CONDITIONAL(ENABLE_SAMBASERVER,test "$enable_sambaserver" = "yes")
 AC_SUBST(SAMBASERVER)
-
-AC_ARG_ENABLE(dosfstools,
-	AS_HELP_STRING(--enable-dosfstools,    enable the dosfstools),
-	[case "${enableval}" in
-		yes) DOSFSTOOLS=dosfstools ;;
-	esac],[enable_dosfstools=no])
-AM_CONDITIONAL(ENABLE_DOSFSTOOLS,test "$enable_dosfstools" = "yes")
-AC_SUBST(DOSFSTOOLS)
 
 AC_ARG_ENABLE(upnp,
 	AS_HELP_STRING(--enable-upnp,include upnp support - depends on audioplayer),
@@ -854,15 +910,6 @@ AC_ARG_WITH(enigma-debug,
 
 AC_SUBST(ENIGMA_DEBUG)
 
-
-# neutrino drive-gui setup
-AC_ARG_ENABLE(drive-gui,
-   AS_HELP_STRING(--enable-drive-gui,   enable neutrino gui-setup for ide hdd mmc administration),
-   [case "${enableval}" in
-      yes) DRIVEGUI=drive-gui ;;
-   esac],[enable_drive_gui=no])
-AM_CONDITIONAL(ENABLE_DRIVE_GUI,test "$enable_drive_gui" = "yes")
-
 #
 ################################################################
 
@@ -1154,6 +1201,22 @@ if test "$BOXTYPE" = "coolstream"; then
 	used_libc="eglibc"
 fi
 
+if test "$enable_fs_e2fsprogs" = "yes" -a "$enable_ext2" = "yes" ; then
+	summary_e2fsprogs_ext2="/ e2fsprogs"
+fi
+if test "$enable_fs_e2fsprogs" = "yes" -a "$enable_ext3" = "yes" ; then
+	summary_e2fsprogs_ext3="/ e2fsprogs"
+fi
+if test "$enable_fs_xfsprogs" = "yes"; then
+	summary_xfsprogs="/ xfsprogs"
+fi
+if test "$enable_fs_reiserfsprogs" = "yes"; then
+	summary_reiserfsprogs="/ reiserfsprogs"
+fi
+if test "$enable_fs_dosfstools" = "yes"; then
+	summary_dosfstools="/ dosfstools"
+fi
+
 AC_MSG_RESULT([
 summary:
 ----------------------------------------
@@ -1188,12 +1251,13 @@ update http prefix:		$updatehttpprefix
 used busybox-m4-config:		$busybox_conf
 IDE support:			$enable_ide
 MMC support:			$enable_use_mmc
+fdisk standalone:		$enable_fs_fdisk
 fstab default fs:		$DEFAULT_FS_FSTAB
-IDE/MMC: Ext2 support		$enable_ext2
-IDE/MMC: Ext3 support		$enable_ext3
-IDE/MMC: XFS support		$enable_xfs
-IDE/MMC: REISERFS support	$enable_reiserfs
-IDE/MMC: VFAT support		$enable_vfat
+IDE/MMC: Ext2 support		$enable_ext2 $summary_e2fsprogs_ext2
+IDE/MMC: Ext3 support		$enable_ext3 $summary_e2fsprogs_ext3
+IDE/MMC: XFS support		$enable_xfs $summary_xfsprogs
+IDE/MMC: REISERFS support	$enable_reiserfs $summary_reiserfsprogs
+IDE/MMC: VFAT support		$enable_vfat $summary_dosfstools
 CIFS kernel module:		$enable_fs_cifs
 SMBFS kernel module:		$enable_fs_smbfs
 LUFS kernel module:		$enable_fs_lufs
@@ -1202,7 +1266,6 @@ NFS server:			$enable_nfsserver
 OpenVPN:			$enable_openvpn
 Samba server:			$enable_sambaserver
 Automount:			$enable_automount
-dosfstools:			$enable_dosfstools
 LIRC				$enable_lirc
 Neutrino UPnP-support:		$enable_upnp
 Neutrino Audioplayer:		$enable_audioplayer

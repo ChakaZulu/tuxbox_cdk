@@ -58,15 +58,9 @@ if BOXTYPE_DREAMBOX
 	$(MAKE) flash-pip
 	$(MAKE) flash-mosaic
 	$(MAKE) flash-dvbsnoop
-endif
-if ENABLE_IDE
-if ENABLE_EXT2
-	$(MAKE) flash-e2fsprogs
-endif
-if ENABLE_EXT3
-	$(MAKE) flash-e2fsprogs
-endif
+if ENABLE_IDEMMC
 	$(MAKE) flash-sfdisk
+endif
 endif
 if ENABLE_AUTOMOUNT
 	$(MAKE) flash-automount
@@ -78,9 +72,6 @@ if KERNEL26
 	$(MAKE) flash-hotplug
 endif
 endif
-if ENABLE_DOSFSTOOLS
-	$(MAKE) flash-dosfstools
-endif
 if ENABLE_LIRC
 	$(MAKE) flash-lircd
 endif
@@ -90,11 +81,17 @@ endif
 if ENABLE_OPENVPN
 	$(MAKE) flash-openvpn
 endif
-if ENABLE_XFS
+if ENABLE_E2FSPROGS
+	$(MAKE) flash-e2fsprogs
+endif
+if ENABLE_XFSPROGS
 	$(MAKE) flash-xfsprogs
 endif
 if ENABLE_REISERFS
 	$(MAKE) flash-reiserfsprogs
+endif
+if ENABLE_DOSFSTOOLS
+	$(MAKE) flash-dosfstools
 endif
 if ENABLE_NFSSERVER
 	$(MAKE) flash-nfsserver

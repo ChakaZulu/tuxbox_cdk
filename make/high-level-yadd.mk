@@ -18,7 +18,25 @@ bare-os: yadd-u-boot kernel-cdk driver busybox modutils tuxinfo misc_tools
 endif
 	@TUXBOX_YADD_CUSTOMIZE@
 
-yadd-none: bare-os config tuxbox_tools procps lcd ftpd yadd-ucodes yadd-bootlogos @AUTOMOUNT@ @LIRC@ @CDKVCINFO@ @XFSPROGS@ @NFSSERVER@ @SAMBASERVER@ @LUFS@ @SMBMOUNT@ @REISERFSPROGS@ @CONSOLE_TOOLS@ @OPENVPN@ version defaultlocale
+if ENABLE_IDEMMC
+FILESYSTEM_DEBS = utillinux
+else
+FILESYSTEM_DEBS =
+endif
+if ENABLE_E2FSPROGS
+FILESYSTEM_DEBS += e2fsprogs
+endif
+if ENABLE_XFSPROGS
+FILESYSTEM_DEBS += xfsprogs
+endif
+if ENABLE_REISERFSPROGS
+FILESYSTEM_DEBS += reiserfsprogs
+endif
+if ENABLE_DOSFSTOOLS
+FILESYSTEM_DEBS += dosfstools
+endif
+
+yadd-none: bare-os config tuxbox_tools procps lcd ftpd yadd-ucodes yadd-bootlogos @AUTOMOUNT@ @LIRC@ @CDKVCINFO@ @NFSSERVER@ @SAMBASERVER@ @LUFS@ @SMBMOUNT@ @CONSOLE_TOOLS@ @OPENVPN@ $(FILESYSTEM_DEBS) version defaultlocale
 	@TUXBOX_YADD_CUSTOMIZE@
 
 yadd-none-etc: yadd-none yadd-etc

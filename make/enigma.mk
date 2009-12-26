@@ -1,6 +1,12 @@
 # tuxbox/enigma
 
-$(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad libid3tag libvorbisidec libpng libsigc libjpeg libungif @LIBGETTEXT@ @SQLITE@ @REISERFSPROGS@ $(targetprefix)/lib/pkgconfig/tuxbox.pc $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc $(targetprefix)/include/tuxbox/plugin.h
+if ENABLE_REISERFS
+ENIGMA_REISERFS=yes
+else
+ENIGMA_REISERFS=no
+endif
+
+$(appsdir)/tuxbox/enigma/config.status: bootstrap libfreetype libfribidi libmad libid3tag libvorbisidec libpng libsigc libjpeg libungif @LIBGETTEXT@ @SQLITE@ $(targetprefix)/lib/pkgconfig/tuxbox.pc $(targetprefix)/lib/pkgconfig/tuxbox-xmltree.pc $(targetprefix)/include/tuxbox/plugin.h
 	cd $(appsdir)/tuxbox/enigma && $(CONFIGURE) \
 		  --with-webif=$(WEBIF) \
 		  --with-epg=$(EPG) \
@@ -23,6 +29,9 @@ flash-enigma: $(flashprefix)/root-enigma
 $(flashprefix)/root-enigma: $(appsdir)/tuxbox/enigma/config.status
 	$(MAKE) -C $(appsdir)/tuxbox/enigma all install prefix=$@
 	$(INSTALL) $(appsdir)/dvb/zapit/src/scart.conf $@/var/tuxbox/config
+if ENABLE_IDEMMC
+	$(MAKE) flash-sfdisk
+endif
 	cp $(appsdir)/tuxbox/neutrino/data/fonts/*.pcf.gz $@/share/fonts
 	cp $(appsdir)/tuxbox/neutrino/data/fonts/micron*.ttf $@/share/fonts
 if BOXTYPE_DREAMBOX

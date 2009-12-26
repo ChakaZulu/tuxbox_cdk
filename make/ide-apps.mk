@@ -4,7 +4,7 @@
 #
 
 
-ide_apps: hdparm utillinux e2fsprogs parted hddtemp xfsprogs smartmontools @DOSFSTOOLS@
+ide_apps: hdparm utillinux e2fsprogs parted hddtemp xfsprogs smartmontools dosfstools
 
 IDE_DEPSCLEANUP = rm -f .deps/hdparm .deps/e2fsprogs .deps/utillinux .deps/parted .deps/hddtemp .deps/xfsprogs .deps/smartmontools
 

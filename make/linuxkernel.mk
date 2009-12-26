@@ -148,11 +148,14 @@ endif
 if ENABLE_IDE
 KERNEL_M4 += -Dide
 endif
+if ENABLE_EXTFS
+KERNEL_M4 += -Dextfs
+endif
 if ENABLE_EXT2
-KERNEL_M4 += -Dext2 -Dextfs
+KERNEL_M4 += -Dext2
 endif
 if ENABLE_EXT3
-KERNEL_M4 += -Dext3 -Dextfs
+KERNEL_M4 += -Dext3
 endif
 if ENABLE_XFS
 KERNEL_M4 += -Dxfs

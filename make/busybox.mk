@@ -2,26 +2,12 @@
 BUSYBOX_M4 = -D$(BOXTYPE)
 BUSYBOX_M4 += -Dcustomizationsdir=$(customizationsdir)
 
-# the following if-statements look silly, but:
-# http://www.gnu.org/software/automake/manual/html_node/Conditionals.html#Conditionals
-# "You may only test a single variable in an if statement"
-if ENABLE_DRIVE_GUI
-BUSYBOX_M4 += -Ddrive_gui
-endif
-if ENABLE_IDE
+if ENABLE_IDEMMC
 BUSYBOX_M4 += -Dide
 endif
-if ENABLE_MMC
-BUSYBOX_M4 += -Dide
-endif
-
-if ENABLE_EXT3
+if ENABLE_EXTFS
 BUSYBOX_M4 += -Dextfs
 endif
-if ENABLE_EXT2
-BUSYBOX_M4 += -Dextfs
-endif
-
 if KERNEL26
 BUSYBOX_M4 += -Dkernel26
 endif
@@ -35,6 +21,10 @@ endif
 
 if ENABLE_OPENVPN
 BUSYBOX_M4 += -Dopenvpn
+endif
+
+if !ENABLE_FDISK_STANDALONE
+BUSYBOX_M4 += -Dfdisk
 endif
 
 # this variable is needed because cdk/rules.pl assumes *.patch can be found in cdk/Patches
