@@ -4,6 +4,9 @@ BUSYBOX_M4 += -Dcustomizationsdir=$(customizationsdir)
 
 if ENABLE_IDEMMC
 BUSYBOX_M4 += -Dide
+if !ENABLE_FDISK_STANDALONE
+BUSYBOX_M4 += -Dfdisk
+endif
 endif
 if ENABLE_EXTFS
 BUSYBOX_M4 += -Dextfs
@@ -21,10 +24,6 @@ endif
 
 if ENABLE_OPENVPN
 BUSYBOX_M4 += -Dopenvpn
-endif
-
-if !ENABLE_FDISK_STANDALONE
-BUSYBOX_M4 += -Dfdisk
 endif
 
 # this variable is needed because cdk/rules.pl assumes *.patch can be found in cdk/Patches
