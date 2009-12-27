@@ -2,13 +2,15 @@
 
 # Tuxbox init script for /bin/hwrtc
 
+if [ ! -e /var/etc/.rtc ]; then
+	exit 0
+fi
+
 case $1 in
 	start)
-		if [ -e /var/etc/.rtc ]; then
-			$IM ds1307
-			sleep 1
-			hwrtc hwtosys
-		fi
+		$IM ds1307
+		sleep 1
+		hwrtc hwtosys
 		;;
 	stop)
 		if [ ! -e /proc/clock ]; then
