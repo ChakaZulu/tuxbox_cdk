@@ -14,7 +14,9 @@ gcc;make:install;install:-m644:TARGETNAME/libstdc++-v3/src/libstdc++-symbol.ver:
 # contrib libs
 #
 libcrypto;install:libcrypto.a:TARGET/lib/libcrypto_pic.a;install:libssl.a:TARGET/lib/libssl_pic.a;make:install_cdk:INSTALL_PREFIX=TARGET:INSTALLTOP=
-libfreetype;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARGET/bin:prefix=TARGET;archive:TARGET/lib/libfreetype_pic.a:objs/*.lo;rewrite-libtool:TARGET/lib/libfreetype.la
+libfreetype_current;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARGET/bin:prefix=TARGET;archive:TARGET/lib/libfreetype_pic.a:objs/.libs/*.o;rewrite-libtool:TARGET/lib/libfreetype.la
+libfreetype_old;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARGET/bin:prefix=TARGET;archive:TARGET/lib/libfreetype_pic.a:objs/*.lo;rewrite-libtool:TARGET/lib/libfreetype.la
+libfreetype_realold;make:install:libdir=TARGET/lib:includedir=TARGET/include:bindir=TARGET/bin:prefix=TARGET;archive:TARGET/lib/libfreetype_pic.a:objs/*.lo;rewrite-libtool:TARGET/lib/libfreetype.la
 libncurses;make:install.libs:DESTDIR=TARGET;archive:TARGET/lib/libncurses_pic.a:obj_s/*.o
 libjpeg;make:install-lib:libdir=TARGET/lib:includedir=TARGET/include;archive:TARGET/lib/libjpeg_pic.a:*.o
 libpng;make:install:prefix=TARGET;archive:TARGET/lib/libpng12_pic.a:*.o

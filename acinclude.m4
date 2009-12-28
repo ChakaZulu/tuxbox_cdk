@@ -74,6 +74,7 @@ dnl		To-Do: extend CPU types and kernel versions when needed
 			enable_kernel26=yes
 			enable_uclibc=no
 			with_curlversion=current
+			with_freetypeversion=current
 			;;
 		*)
 			AC_MSG_ERROR([bad value $withval for --with-boxtype]) ;;

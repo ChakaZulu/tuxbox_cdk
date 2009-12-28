@@ -809,6 +809,17 @@ AC_ARG_WITH(curlversion,
 	esac],[with_curlversion=old])
 AM_CONDITIONAL(CURL_CURRENT,test "$with_curlversion" = "current")
 
+AC_ARG_WITH(freetypeversion,
+	[  --with-freetypeversion=current/old (default)/realold (experimental)],
+	[case "${withval}" in
+		current)  with_freetypeversion=current ;;
+		realold)  with_freetypeversion=realold ;;
+		*)	  with_freetypeversion=old ;;
+	esac],[with_freetypeversion=old])
+AM_CONDITIONAL(FREETYPE_REALOLD,test "$with_freetypeversion" = "realold")
+AM_CONDITIONAL(FREETYPE_OLD,test "$with_freetypeversion" = "old")
+AM_CONDITIONAL(FREETYPE_CURRENT,test "$with_freetypeversion" = "current")
+
 hostccachedir=$(dirname `which ccache` 2>/dev/null)
 if  [[ -e $hostccachedir/ccache ]]; then
 	ccachedir=$hostccachedir
@@ -1005,7 +1016,9 @@ TUXBOX_RULES_MAKE(libdvb)
 TUXBOX_RULES_MAKE(libdvbpsi)
 TUXBOX_RULES_MAKE(libexpat)
 TUXBOX_RULES_MAKE(libffi)
-TUXBOX_RULES_MAKE(libfreetype)
+TUXBOX_RULES_MAKE(libfreetype_realold)
+TUXBOX_RULES_MAKE(libfreetype_old)
+TUXBOX_RULES_MAKE(libfreetype_current)
 TUXBOX_RULES_MAKE(libfribidi)
 TUXBOX_RULES_MAKE(libid3tag)
 TUXBOX_RULES_MAKE(libgmp)
@@ -1278,6 +1291,7 @@ Radiotext support:		$enable_radiotext
 Internal Tuxtxt support:	$enable_internal_tuxtxt
 FLAC support:			$enable_flac
 CURL version:			$with_curlversion
+Freetype version:		$with_freetypeversion
 FX2 plugins (games):		$enable_fx2plugins
 German keymaps:			$enable_german_keymaps
 sqlite3 storage:		$enable_sqlite

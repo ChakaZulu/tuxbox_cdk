@@ -58,7 +58,9 @@ libdvb;0.5.5.1;libdvb-0.5.5.1;libdvb-0.5.5.1.tar.gz:libdvb.diff;extract:libdvb-0
 libdvbpsi;0.1.3;libdvbpsi-0.1.3;libdvbpsi-0.1.3.tar.bz2:libdvbpsi.diff;extract:libdvbpsi-0.1.3.tar.bz2;patch:libdvbpsi.diff
 libexpat;1.95.6;expat-1.95.6;expat-1.95.6.tar.gz:libexpat.diff;extract:expat-1.95.6.tar.gz;patch:libexpat.diff
 libffi;1.20;libffi-1.20;libffi-1.20.tar.gz:libffi.diff;extract:libffi-1.20.tar.gz;patch:libffi.diff
-libfreetype;2.1.4;freetype-2.1.4;freetype-2.1.4.tar.bz2:libfreetype.diff;extract:freetype-2.1.4.tar.bz2;patch:libfreetype.diff
+libfreetype_realold;2.0.9;freetype-2.0.9;freetype-2.0.9.tar.bz2:libfreetype_realold.diff;extract:freetype-2.0.9.tar.bz2;patch:libfreetype_realold.diff
+libfreetype_old;2.1.4;freetype-2.1.4;freetype-2.1.4.tar.bz2:libfreetype.diff;extract:freetype-2.1.4.tar.bz2;patch:libfreetype.diff
+libfreetype_current;2.3.9;freetype-2.3.9;freetype-2.3.9.tar.bz2:libfreetype.diff;extract:freetype-2.3.9.tar.bz2;patch:libfreetype_current.diff
 libfribidi;0.10.4;fribidi-0.10.4;fribidi-0.10.4.tar.bz2:libfribidi.diff;extract:fribidi-0.10.4.tar.bz2;patch:libfribidi.diff
 libgmp;4.1.2;gmp-4.1.2;gmp-4.1.2.tar.bz2;extract:gmp-4.1.2.tar.bz2
 libjpeg;6b;jpeg-6b;jpegsrc.v6b.tar.gz:jpeg.diff;extract:jpegsrc.v6b.tar.gz;patch:jpeg.diff

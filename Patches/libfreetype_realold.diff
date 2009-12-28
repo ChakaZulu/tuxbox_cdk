@@ -1,0 +1,15 @@
+diff -uNr freetype-2.0.9.org/builds/unix/freetype-config.in freetype-2.0.9/builds/unix/freetype-config.in
+--- freetype-2.0.9.org/builds/unix/freetype-config.in	2002-02-02 16:05:38.000000000 +0100
++++ freetype-2.0.9/builds/unix/freetype-config.in	2009-12-28 20:07:51.000000000 +0100
+@@ -80,11 +80,7 @@
+ 
+ if test "$echo_cflags" = "yes" ; then
+  cflags="-I@includedir@/freetype2"
+- if test "@includedir@" != "/usr/include" ; then
+-  echo -I@includedir@ $cflags
+- else
+   echo $cflags
+- fi
+ fi
+ 
+ if test "$echo_libs" = "yes" ; then

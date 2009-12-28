@@ -1,0 +1,111 @@
+diff -uNr freetype-2.3.9.org/builds/unix/freetype-config.in freetype-2.3.9/builds/unix/freetype-config.in
+--- freetype-2.3.9.org/builds/unix/freetype-config.in	2009-02-04 00:09:49.000000000 +0100
++++ freetype-2.3.9/builds/unix/freetype-config.in	2009-08-19 18:38:46.000000000 +0200
+@@ -132,11 +132,7 @@
+ 
+ if test "$echo_cflags" = "yes" ; then
+   cflags="-I$includedir/freetype2"
+-  if test "$includedir" != "/usr/include" ; then
+-    echo $cflags -I$includedir
+-  else
+     echo $cflags
+-  fi
+ fi
+ 
+ if test "$echo_libs" = "yes" ; then
+diff -uNr freetype-2.3.9.org/builds/unix/unix-cc.in freetype-2.3.9/builds/unix/unix-cc.in
+--- freetype-2.3.9.org/builds/unix/unix-cc.in	2006-10-15 10:57:22.000000000 +0200
++++ freetype-2.3.9/builds/unix/unix-cc.in	2009-08-19 18:39:34.000000000 +0200
+@@ -100,7 +100,7 @@
+ CCraw_build  := @CC_BUILD@	# native CC of building system
+ E_BUILD      := @EXEEXT_BUILD@	# extension for exexutable on building system
+ EXPORTS_LIST := $(OBJ_DIR)/ftexport.sym
+-CCexe        := $(CCraw_build)	# used to compile `apinames' only
++CCexe        := gcc
+ 
+ 
+ # Library linking
+diff -uNr freetype-2.3.9.org/include/freetype/config/ftoption.h freetype-2.3.9/include/freetype/config/ftoption.h
+--- freetype-2.3.9.org/include/freetype/config/ftoption.h	2008-11-05 10:25:14.000000000 +0100
++++ freetype-2.3.9/include/freetype/config/ftoption.h	2009-08-19 18:38:46.000000000 +0200
+@@ -480,7 +480,7 @@
+   /*   Do not #undef this macro here, since the build system might         */
+   /*   define it for certain configurations only.                          */
+   /*                                                                       */
+-/* #define TT_CONFIG_OPTION_BYTECODE_INTERPRETER */
++#define TT_CONFIG_OPTION_BYTECODE_INTERPRETER
+ 
+ 
+   /*************************************************************************/
+@@ -527,7 +527,7 @@
+   /*     ...                                                               */
+   /*   }                                                                   */
+   /*                                                                       */
+-#define TT_CONFIG_OPTION_UNPATENTED_HINTING
++/* #define TT_CONFIG_OPTION_UNPATENTED_HINTING */
+ 
+ 
+   /*************************************************************************/
+diff -uNr freetype-2.3.9.org/src/base/ftapi.c freetype-2.3.9/src/base/ftapi.c
+--- freetype-2.3.9.org/src/base/ftapi.c	2007-01-16 06:10:55.000000000 +0100
++++ freetype-2.3.9/src/base/ftapi.c	2009-08-19 18:38:46.000000000 +0200
+@@ -118,4 +118,18 @@
+   }
+ 
+ 
++  FT_BASE_DEF( FT_Short )
++  FT_Get_Short( FT_Stream stream )
++  {
++    return FT_GET_SHORT();
++  }
++
++
++  FT_BASE_DEF( FT_Long )
++  FT_Get_Long( FT_Stream stream )
++      {
++    return FT_GET_LONG();
++  }
++
++
+ /* END */
+diff -uNr freetype-2.3.9.org/src/base/ftbase.c freetype-2.3.9/src/base/ftbase.c
+--- freetype-2.3.9.org/src/base/ftbase.c	2008-10-04 13:22:08.000000000 +0200
++++ freetype-2.3.9/src/base/ftbase.c	2009-08-19 18:40:14.000000000 +0200
+@@ -31,6 +31,7 @@
+ #include "ftstream.c"
+ #include "fttrigon.c"
+ #include "ftutil.c"
++#include "ftapi.c"
+ 
+ #if defined( FT_MACINTOSH ) && !defined ( DARWIN_NO_CARBON )
+ #include "ftmac.c"
+diff -uNr freetype-2.3.9.org/src/bdf/bdflib.c freetype-2.3.9/src/bdf/bdflib.c
+--- freetype-2.3.9.org/src/bdf/bdflib.c	2009-03-12 07:41:29.000000000 +0100
++++ freetype-2.3.9/src/bdf/bdflib.c	2009-08-19 18:38:46.000000000 +0200
+@@ -1584,6 +1584,14 @@
+         goto Exit;
+       }
+ 
++      /* Check that the encoding is in the range [0, 65535] because       */
++      /* otherwise p->have (a bitmap with static size) overflows.         */
++      if ( p->glyph_enc >= sizeof(p->have) * 8 )
++      {
++	error = BDF_Err_Invalid_File_Format; /* Not the ideal error code */
++	goto Exit;
++      }
++
+       /* Check to see whether this encoding has already been encountered. */
+       /* If it has then change it to unencoded so it gets added if        */
+       /* indicated.                                                       */
+diff -uNr freetype-2.3.9.org/src/sfnt/ttmtx.c freetype-2.3.9/src/sfnt/ttmtx.c
+--- freetype-2.3.9.org/src/sfnt/ttmtx.c	2008-11-28 07:29:08.000000000 +0100
++++ freetype-2.3.9/src/sfnt/ttmtx.c	2009-08-19 18:38:46.000000000 +0200
+@@ -174,7 +174,7 @@
+     }
+ 
+     if ( FT_QNEW_ARRAY( *longs,  num_longs  ) ||
+-         FT_QNEW_ARRAY( *shorts, num_shorts ) )
++         (num_shorts > 0 && FT_QNEW_ARRAY( *shorts, num_shorts ) ) )
+       goto Fail;
+ 
+     if ( FT_FRAME_ENTER( table_len ) )
